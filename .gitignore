@@ -1,0 +1,9 @@
+*.pidb
+*.VisualState.xml
+*.suo
+/Pipes/bin
+/Pipes/obj
+/UnitTests/bin
+/UnitTests/obj
+/UnitTests/TestResult.xml
+Pipes.userprefs
