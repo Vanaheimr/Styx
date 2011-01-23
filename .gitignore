@@ -7,3 +7,5 @@
 /UnitTests/obj
 /UnitTests/TestResult.xml
 Pipes.userprefs
+/TestApplication/obj
+/TestApplication/bin
