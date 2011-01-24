@@ -29,7 +29,9 @@ namespace de.ahzf.Pipes
 	/// The generic interface for any Pipe implementation.
 	/// A Pipe takes/consumes objects of type S and returns/emits objects of type E.
 	/// S refers to <i>starts</i> and the E refers to <i>ends</i>.
-	/// </summary>	
+	/// </summary>
+    /// <typeparam name="S"></typeparam>
+    /// <typeparam name="E"></typeparam>
 	public interface IPipe<S,E> : IEnumerator<E>, IEnumerable<E>
 		where E : IEquatable<E>
 	{

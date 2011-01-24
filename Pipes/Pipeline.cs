@@ -33,6 +33,8 @@ namespace de.ahzf.Pipes
 	/// That is, that the output of the n-1 Pipe is the same as the input to n Pipe.
 	/// Once all provided Pipes are composed, a Pipeline can be treated like any other Pipe.
 	/// </summary>
+    /// <typeparam name="S"></typeparam>
+    /// <typeparam name="E"></typeparam>
 	public class Pipeline<S,E> : IPipe<S,E>
 		where E : IEquatable<E>
 	{

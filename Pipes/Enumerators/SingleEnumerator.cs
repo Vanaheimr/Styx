@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// The order in which objects are returned from both enumerators are with
     /// respect to the order of the enumerators passed into the constructor.
     /// </summary>
-    /// <typeparam name="T">The type of the internal IEnumerator.</typeparam>
+    /// <typeparam name="T">The type of the internal enumerator.</typeparam>
 	public class SingleEnumerator<T> : IEnumerator<T>
     {
 

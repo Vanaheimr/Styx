@@ -36,11 +36,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AbstractPipe.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="Filter\AbstractComparisonFilterPipe.cs" />
+    <Compile Include="Filter\CollectionFilterPipe.cs" />
+    <Compile Include="Filter\ObjectFilterPipe.cs" />
+    <Compile Include="Filter\RangeFilterPipe.cs" />
+    <Compile Include="Filter\OrFilterPipe.cs" />
+    <Compile Include="Filter\RandomFilterPipe.cs" />
+    <Compile Include="Filter\Filter.cs" />
+    <Compile Include="Filter\IComparisonFilterPipe.cs" />
+    <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Enumerators\SingleEnumerator.cs" />
     <Compile Include="Enumerators\MultiEnumerator.cs" />
     <Compile Include="Enumerators\ExpandableEnumerator.cs" />
-    <Compile Include="Interfaces\IPipe.cs" />
+    <Compile Include="Filter\AndFilterPipe.cs" />
+    <Compile Include="Filter\IFilterPipe.cs" />
+    <Compile Include="Pipes\IPipe.cs" />
     <Compile Include="PipeHelper.cs" />
     <Compile Include="Enumerators\HistoryEnumerator.cs" />
     <Compile Include="Pipeline.cs" />
