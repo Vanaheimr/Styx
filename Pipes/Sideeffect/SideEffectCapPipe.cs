@@ -60,8 +60,9 @@ namespace de.ahzf.Pipes
             _PipeToCap.SetStarts(starts);
         }
 
+        #region ProcessNextStart()
 
-        protected override T processNextStart()
+        protected override T ProcessNextStart()
         {
             
             if (_Alive)
@@ -82,15 +83,20 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
 
-        public new List<Object> getPath()
+
+        public new List<Object> Path
         {
-            
-            var _List = _PipeToCap.getPath();
-            _List.Add(this.currentEnd);
+            get
+            {
 
-            return _List;
+                var _List = _PipeToCap.Path;
+                _List.Add(this._CurrentEnd);
 
+                return _List;
+
+            }
         }
 
 

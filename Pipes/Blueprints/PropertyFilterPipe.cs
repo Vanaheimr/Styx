@@ -18,7 +18,8 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+
+using de.ahzf.blueprints;
 
 #endregion
 
@@ -26,62 +27,59 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// The PropertyFilterPipe either allows or disallows all Elements
+    /// that have the provided value for a particular key.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
+    public class PropertyFilterPipe<S, T> : AbstractComparisonFilterPipe<S, T>
+        where S : IElement
     {
 
         #region Data
 
-        private UInt64 _Counter;
+        private readonly String _Key;
+        private readonly T      _Value;
 
         #endregion
 
         #region Constructor(s)
 
-        #region CountPipe()
+        #region PropertyFilterPipe(myKey, myValue, myFilter)
 
-        public CountPipe()
+        public PropertyFilterPipe(String myKey, T myValue, FilterEnum myFilter)
+            : base(myFilter)
         {
-            _Counter = 0UL;
+            _Key   = myKey;
+            _Value = myValue;
         }
 
         #endregion
 
         #endregion
-
 
         #region ProcessNextStart()
 
         protected override S ProcessNextStart()
         {
+            while (true)
+            {
+                
+                _Starts.MoveNext();
+                var _IElement = _Starts.Current;
 
-            _Starts.MoveNext();
-            var _S = _Starts.Current;
+                if (!CompareObjects(_IElement.GetProperty<T>(_Key), _Value))
+                    return _IElement;
 
-            _Counter++;
-
-            return _S;
-
+            }
         }
 
         #endregion
-
-        public UInt64 SideEffect
-        {
-            get
-            {
-                return _Counter;
-            }
-        }
 
 
         #region ToString()
 
         public override String ToString()
         {
-            return base.ToString() + "<" + _Counter + ">";
+            return base.ToString() + "<" + _Key + "," + _Filter + "," + _Value + ">";
         }
 
         #endregion

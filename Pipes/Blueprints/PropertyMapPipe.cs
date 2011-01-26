@@ -20,71 +20,39 @@
 using System;
 using System.Collections.Generic;
 
+using de.ahzf.blueprints;
+
 #endregion
 
 namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// The PropertyMapPipe...
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
+    public class PropertyMapPipe<S, T> : AbstractPipe<S, IDictionary<String, Object>>
+        where S : IElement
     {
-
-        #region Data
-
-        private UInt64 _Counter;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region CountPipe()
-
-        public CountPipe()
-        {
-            _Counter = 0UL;
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region ProcessNextStart()
 
-        protected override S ProcessNextStart()
+        protected override IDictionary<String, Object> ProcessNextStart()
         {
-
+            
             _Starts.MoveNext();
-            var _S = _Starts.Current;
+            var _IElement = _Starts.Current;
 
-            _Counter++;
+            var _Map = new Dictionary<String, Object>();
 
-            return _S;
+            foreach (var _Key in _IElement.PropertyKeys)
+                _Map.Add(_Key, _IElement.GetProperty(_Key));
+
+            return _Map;
 
         }
 
         #endregion
 
-        public UInt64 SideEffect
-        {
-            get
-            {
-                return _Counter;
-            }
-        }
-
-
-        #region ToString()
-
-        public override String ToString()
-        {
-            return base.ToString() + "<" + _Counter + ">";
-        }
-
-        #endregion
 
     }
 

@@ -33,7 +33,7 @@ namespace de.ahzf.Pipes
     public interface IComparisonFilterPipe<S, T> : IFilterPipe<S>
     {
 
-        Boolean compareObjects(T leftObject, T rightObject);
+        Boolean CompareObjects(T leftObject, T rightObject);
 
     }
 

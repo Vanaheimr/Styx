@@ -33,9 +33,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
 	public interface IPipe<S, E> : IEnumerator<E>, IEnumerable<E>
-		//where E : IEquatable<E>
 	{
-	//extends Iterator<E>, Iterable<E> {
 	
 	    /// <summary>
 	    /// Set an iterator of S objects to the head (start) of the pipe.
@@ -55,7 +53,7 @@ namespace de.ahzf.Pipes
 	    /// Returns the path traversed to arrive at the current result of the pipe.
 	    /// </summary> 
 	    /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
-	    List<E> getPath();
+	    List<E> Path { get; }
 	
 	}
 

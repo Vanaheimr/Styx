@@ -64,7 +64,7 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        public Boolean compareObjects(S myLeftObject, S myRightObject)
+        public Boolean CompareObjects(S myLeftObject, S myRightObject)
         {
 
             if (_Filter == FilterEnum.NOT_EQUAL)
@@ -96,13 +96,13 @@ namespace de.ahzf.Pipes
         }
 
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
             while (true)
             {
 
-                starts.MoveNext();
-                var _S = starts.Current;
+                _Starts.MoveNext();
+                var _S = _Starts.Current;
 
                 if (compareObjects(_S))
                     return _S;

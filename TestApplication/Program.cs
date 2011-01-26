@@ -10,7 +10,7 @@ namespace TestApplication
     public class Program
     {
 
-        public static void Main(string[] args)
+        public static void Main(String[] myArgs)
         {
 
             var _SingleEnumerator = new SingleEnumerator<UInt64>(123);

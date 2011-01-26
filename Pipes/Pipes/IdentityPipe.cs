@@ -34,11 +34,15 @@ namespace de.ahzf.Pipes
     public class IdentityPipe<S> : AbstractPipe<S, S>
     {
 
-        protected override S processNextStart()
+        #region ProcessNextStart()
+
+        protected override S ProcessNextStart()
         {
-            starts.MoveNext();
+            _Starts.MoveNext();
             return Current;
         }
+
+        #endregion
 
     }
 

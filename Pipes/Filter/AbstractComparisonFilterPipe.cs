@@ -55,7 +55,7 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        public Boolean compareObjects(T myLeftObject, T myRightObject)
+        public Boolean CompareObjects(T myLeftObject, T myRightObject)
         {
 
             switch (_Filter)

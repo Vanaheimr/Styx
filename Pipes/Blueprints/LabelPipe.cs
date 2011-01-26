@@ -18,7 +18,8 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+
+using de.ahzf.blueprints;
 
 #endregion
 
@@ -26,62 +27,27 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// The LabelPipe will return the label of the given edge.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
+    public class LabelPipe : AbstractPipe<IEdge, String>
     {
-
-        #region Data
-
-        private UInt64 _Counter;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region CountPipe()
-
-        public CountPipe()
-        {
-            _Counter = 0UL;
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region ProcessNextStart()
 
-        protected override S ProcessNextStart()
+        protected override String ProcessNextStart()
         {
-
             _Starts.MoveNext();
-            var _S = _Starts.Current;
-
-            _Counter++;
-
-            return _S;
-
+            return _Starts.Current.Label;
         }
 
         #endregion
-
-        public UInt64 SideEffect
-        {
-            get
-            {
-                return _Counter;
-            }
-        }
 
 
         #region ToString()
 
         public override String ToString()
         {
-            return base.ToString() + "<" + _Counter + ">";
+            return base.ToString() + "<" + _Starts.Current + ">";
         }
 
         #endregion

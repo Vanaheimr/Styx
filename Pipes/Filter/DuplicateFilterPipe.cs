@@ -54,14 +54,14 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
 
             while (true)
             {
 
-                starts.MoveNext();
-                var _S = starts.Current;
+                _Starts.MoveNext();
+                var _S = _Starts.Current;
 
                 if (!_HistorySet.Contains(_S))
                 {

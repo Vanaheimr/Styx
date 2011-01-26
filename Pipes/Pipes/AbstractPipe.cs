@@ -47,10 +47,10 @@ namespace de.ahzf.Pipes
 		
 		#region Data
 		
-		protected IEnumerator<S> starts;
-	    private   E              nextEnd;
-	    protected E              currentEnd;
-	    private   Boolean        available;
+		protected IEnumerator<S> _Starts;
+	    private   E              _NextEnd;
+	    protected E              _CurrentEnd;
+	    private   Boolean        _Available;
 		
 		#endregion
 		
@@ -60,47 +60,70 @@ namespace de.ahzf.Pipes
 		
 		public AbstractPipe()
 		{
-            available = false;
+            _Available = false;
 		}
 		
 		#endregion
 		
 		#endregion
-	
-//	    public void setStarts(final Pipe<?, S> starts) {
-//	        this.starts = starts;
-//	    }
 
-	    public void SetStarts(IEnumerator<S> myStarts)
+
+        #region SetStarts(myStartPipe)
+
+        public void SetStarts(IPipe<Object, S> myStartPipe)
+        {
+            _Starts = myStartPipe;
+	    }
+
+        #endregion
+
+        #region SetStarts(myStartsEnumerator)
+
+        public void SetStarts(IEnumerator<S> myStartsEnumerator)
 		{
-	        if (myStarts is IPipe<S, E>)
-	            this.starts = myStarts;
+	        if (myStartsEnumerator is IPipe<S, E>)
+	            this._Starts = myStartsEnumerator;
 	        else
-	            this.starts = new HistoryEnumerator<S>(myStarts);
+	            this._Starts = new HistoryEnumerator<S>(myStartsEnumerator);
 	    }
 
-	    public void SetStarts(IEnumerable<S> myStarts)
+        #endregion
+
+        #region SetStarts(myStartsEnumerable)
+
+        public void SetStarts(IEnumerable<S> myStartsEnumerable)
 		{
-	        SetStarts(myStarts.GetEnumerator());
+	        SetStarts(myStartsEnumerable.GetEnumerator());
 	    }
 
-	    public virtual List<E> getPath()
+        #endregion
+
+
+        #region Path
+
+        public virtual List<E> Path
 		{
-			
-	        var pathElements = getPathToHere();
-	        var size         = pathElements.Count;
-			
-			// do not repeat filters as they dup the object
-	        // todo: why is size == 0 required (Pangloss?)	        
-			if (size == 0 || !pathElements[size - 1].Equals(this.currentEnd))
-	            pathElements.Add(this.currentEnd);
-			
-	        return pathElements;
-	    
+            get
+            {
+
+                var _PathElements = PathToHere;
+                var _Size         = _PathElements.Count;
+
+                // do not repeat filters as they dup the object
+                // todo: why is size == 0 required (Pangloss?)	        
+                if (_Size == 0 || !_PathElements[_Size - 1].Equals(this._CurrentEnd))
+                    _PathElements.Add(this._CurrentEnd);
+
+                return _PathElements;
+
+            }
 		}
-		
-		
-		public E Current
+
+        #endregion
+
+        #region Current
+
+        public E Current
 		{
 			get
 			{
@@ -115,8 +138,10 @@ namespace de.ahzf.Pipes
 				throw new NotImplementedException();
 			}
 		}
-		
-		public Boolean MoveNext()
+
+        #endregion
+
+        public Boolean MoveNext()
 		{
 			throw new NotImplementedException();
 		}
@@ -153,24 +178,21 @@ namespace de.ahzf.Pipes
 		
 		
 
-	    public void remove() {
-	        throw new NotImplementedException();
-	    }
 
 	    public E next()
 		{
 			
-	        if (this.available)
+	        if (_Available)
 			{
-	            this.available  = false;
-	            this.currentEnd = this.nextEnd;
-	            return this.currentEnd;
+	            _Available  = false;
+	            _CurrentEnd = _NextEnd;
+	            return _CurrentEnd;
 	        }
 			
 			else
 			{
-	            this.currentEnd = this.processNextStart();
-	            return this.currentEnd;
+	            _CurrentEnd = ProcessNextStart();
+	            return _CurrentEnd;
 	        }
 			
 	    }
@@ -178,50 +200,55 @@ namespace de.ahzf.Pipes
 	    public Boolean hasNext()
 		{
 	        
-			if (this.available)
+			if (_Available)
 	            return true;
 			
 	        else
 			{
+
 	            try
 				{
-	                this.nextEnd   = this.processNextStart();
-	                this.available = true;
+	                _NextEnd   = ProcessNextStart();
+	                _Available = true;
 	                return true;
-	            } catch (Exception) {
-	                this.available = false;
+
+	            }
+                
+                catch (Exception)
+                {
+	                _Available = false;
 	                return false;
 	            }
+
 	        }
 			
 	    }
 
 
-        // No longer needed!
-        //public IEnumerator<E> iterator()
-        //{
-        //    return this;
-        //}
+        #region ProcessNextStart()
+        
+        protected abstract E ProcessNextStart();
 
-	    
+        #endregion
 
-	    protected abstract E processNextStart();// throws NoSuchElementException;
-
-	    private List<E> getPathToHere()
+        private List<E> PathToHere
 		{
+            get
+            {
 
-			if (this.starts is IPipe<S, E>)
-			{
-	            return ((IPipe<S, E>) this.starts).getPath();
-//	        } else if (this.starts is HistoryIterator<S>) {
-//	            var list = new List();
-//	            list.add(((HistoryIterator) starts).getLast());
-//	            return list;
-	        }
-			
-			else
-	            return new List<E>();
+                if (_Starts is IPipe<S, E>)
+                {
+                    return ((IPipe<S, E>) _Starts).Path;
+                    //	        } else if (this.starts is HistoryIterator<S>) {
+                    //	            var list = new List();
+                    //	            list.add(((HistoryIterator) starts).getLast());
+                    //	            return list;
+                }
 
+                else
+                    return new List<E>();
+
+            }
 		}
 
 

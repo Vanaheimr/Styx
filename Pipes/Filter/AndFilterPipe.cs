@@ -45,7 +45,7 @@ namespace de.ahzf.Pipes
 
         #region AndFilterPipe(myPipes)
 
-        public AndFilterPipe(IPipe<S, Boolean>[] myPipes)
+        public AndFilterPipe(params IPipe<S, Boolean>[] myPipes)
         {
             _Pipes = new List<IPipe<S, Boolean>>(myPipes);
         }
@@ -64,14 +64,14 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
 
             while (true)
             {
 
-                starts.MoveNext();
-                var _S = starts.Current;
+                _Starts.MoveNext();
+                var _S = _Starts.Current;
 
                 var _And = true;
                 

@@ -23,9 +23,51 @@ using System;
 
 namespace de.ahzf.Pipes
 {
-		
-    public class NoSuchElementException : ApplicationException
+
+    #region PipesException
+
+    public class PipesException : ApplicationException
+    {
+
+        public PipesException()
+            : base()
+        { }
+
+        public PipesException(String myMessage)
+            : base(myMessage)
+        { }
+
+    }
+
+    #endregion
+
+
+    #region NoSuchElementException
+
+    public class NoSuchElementException : PipesException
 	{
-	}
+
+        public NoSuchElementException()
+            : base()
+        { }
+
+        public NoSuchElementException(String myMessage)
+            : base(myMessage)
+        { }
+
+    }
+
+    #endregion
+
+    #region IllegalStateException
+
+    public class IllegalStateException : PipesException
+    {
+        public IllegalStateException(String myMessage)
+            : base(myMessage)
+        { }
+    }
+
+    #endregion
 
 }

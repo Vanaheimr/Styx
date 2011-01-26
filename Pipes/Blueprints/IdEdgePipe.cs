@@ -18,7 +18,9 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.Datastructures;
 
 #endregion
 
@@ -26,62 +28,50 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// The IdEdgePipe will convert the given EdgeIds into the
+    /// corresponding edges of the given graph.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
+    public class IdEdgePipe<S> : AbstractPipe<S, IEdge>
+        where S : EdgeId
     {
 
         #region Data
 
-        private UInt64 _Counter;
+        private readonly IGraph _IGraph;
 
         #endregion
 
         #region Constructor(s)
 
-        #region CountPipe()
+        #region IdEdgePipe(myIGraph)
 
-        public CountPipe()
+        public IdEdgePipe(IGraph myIGraph)
         {
-            _Counter = 0UL;
+            _IGraph = myIGraph;
         }
 
         #endregion
 
         #endregion
-
 
         #region ProcessNextStart()
 
-        protected override S ProcessNextStart()
+        protected override IEdge ProcessNextStart()
         {
 
             _Starts.MoveNext();
-            var _S = _Starts.Current;
-
-            _Counter++;
-
-            return _S;
+            return _IGraph.GetEdge(_Starts.Current);
 
         }
 
         #endregion
-
-        public UInt64 SideEffect
-        {
-            get
-            {
-                return _Counter;
-            }
-        }
 
 
         #region ToString()
 
         public override String ToString()
         {
-            return base.ToString() + "<" + _Counter + ">";
+            return base.ToString() + "<" + _Starts.Current + ">";
         }
 
         #endregion

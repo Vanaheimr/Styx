@@ -58,27 +58,23 @@ namespace de.ahzf.Pipes
 
 
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
 
             while (true)
             {
 
-                starts.MoveNext();
-                var _S = starts.Current;
+                _Starts.MoveNext();
+                var _S = _Starts.Current;
 
                 _Counter++;
 
                 if ((_Low  == -1 || _Counter >= _Low ) &&
                     (_High == -1 || _Counter <  _High))
-                {
                     return _S;
-                }
 
                 if (_High > 0 && _Counter >= _High)
-                {
                     throw new NoSuchElementException();
-                }
 
             }
 

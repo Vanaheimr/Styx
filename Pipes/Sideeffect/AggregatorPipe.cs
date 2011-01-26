@@ -61,15 +61,16 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region ProcessNextStart()
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
 
             if (_AggregateEnumerator == null)
             {
 
-                while (starts.MoveNext())
-                    _Aggregate.Add(starts.Current);
+                while (_Starts.MoveNext())
+                    _Aggregate.Add(_Starts.Current);
                 
                 _AggregateEnumerator = _Aggregate.GetEnumerator();
 
@@ -79,6 +80,8 @@ namespace de.ahzf.Pipes
             return _AggregateEnumerator.Current;
 
         }
+
+        #endregion
 
 
         public ICollection<S> SideEffect

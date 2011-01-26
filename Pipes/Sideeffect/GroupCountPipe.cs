@@ -62,12 +62,13 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region ProcessNextStart()
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
 
-            starts.MoveNext();
-            var _S = starts.Current;
+            _Starts.MoveNext();
+            var _S = _Starts.Current;
 
             UpdateMap(_S);
 
@@ -75,6 +76,7 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
 
         public IDictionary<S, UInt64> SideEffect
         {

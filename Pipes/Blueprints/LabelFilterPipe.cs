@@ -18,7 +18,8 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+
+using de.ahzf.blueprints;
 
 #endregion
 
@@ -26,62 +27,56 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// The LabelFilterPipe either allows or disallows all
+    /// Edges that have the provided label.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
+    public class LabelFilterPipe : AbstractComparisonFilterPipe<IEdge, String>
     {
 
         #region Data
 
-        private UInt64 _Counter;
+        private readonly String _Label;
 
         #endregion
 
         #region Constructor(s)
 
-        #region CountPipe()
+        #region LabelFilterPipe(myLabel, myFilter)
 
-        public CountPipe()
+        public LabelFilterPipe(String myLabel, FilterEnum myFilter)
+            : base(myFilter)
         {
-            _Counter = 0UL;
+            _Label = myLabel;
         }
 
         #endregion
 
         #endregion
-
 
         #region ProcessNextStart()
 
-        protected override S ProcessNextStart()
+        protected override IEdge ProcessNextStart()
         {
+            while (true)
+            {
 
-            _Starts.MoveNext();
-            var _S = _Starts.Current;
+                _Starts.MoveNext();
+                var _Edge = _Starts.Current;
+                
+                if (!CompareObjects(_Edge.Label, _Label))
+                    return _Edge;
 
-            _Counter++;
-
-            return _S;
-
+            }
         }
 
         #endregion
-
-        public UInt64 SideEffect
-        {
-            get
-            {
-                return _Counter;
-            }
-        }
 
 
         #region ToString()
 
         public override String ToString()
         {
-            return base.ToString() + "<" + _Counter + ">";
+            return base.ToString() + "<" + _Filter + "," + _Label + ">";
         }
 
         #endregion

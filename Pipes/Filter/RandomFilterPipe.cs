@@ -56,13 +56,13 @@ namespace de.ahzf.Pipes
 
 
 
-        protected override S processNextStart()
+        protected override S ProcessNextStart()
         {
             while (true)
             {
 
-                starts.MoveNext();
-                var _S = starts.Current;
+                _Starts.MoveNext();
+                var _S = _Starts.Current;
                 
                 if (_Bias >= RANDOM.NextDouble())
                     return _S;

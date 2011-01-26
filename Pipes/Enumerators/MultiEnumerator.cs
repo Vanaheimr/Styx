@@ -50,7 +50,7 @@ namespace de.ahzf.Pipes
         /// Creates a new MultiEnumerator based on the given myIEnumerators.
         /// </summary>
         /// <param name="myIEnumerators">The enumerators to be wrapped.</param>
-        public MultiEnumerator(IEnumerator<T>[] myIEnumerators)
+        public MultiEnumerator(params IEnumerator<T>[] myIEnumerators)
             : this(new List<IEnumerator<T>>(myIEnumerators))
         { }
 
@@ -62,7 +62,7 @@ namespace de.ahzf.Pipes
         /// Creates a new MultiEnumerator based on the given myIEnumerators.
         /// </summary>
         /// <param name="myIEnumerators">The enumerators to be wrapped.</param>
-        public MultiEnumerator(List<IEnumerator<T>> myIEnumerators)
+        public MultiEnumerator(IEnumerable<IEnumerator<T>> myIEnumerators)
         {
             
             _IEnumerators = myIEnumerators.GetEnumerator();

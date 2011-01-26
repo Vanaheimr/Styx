@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication", "TestApplication\TestApplication.csproj", "{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blueprints", "..\blueprints.NET\blueprints\blueprints.csproj", "{B9DE4181-416E-4DE4-A983-B90FC9412774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|x86.ActiveCfg = Release|x86
 		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|x86.Build.0 = Release|x86
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

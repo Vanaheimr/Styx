@@ -81,7 +81,7 @@ namespace de.ahzf.Pipes
 		/// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
 		/// </summary>
 		/// <param name="myPipes">the ordered array of pipes to chain together into a pipeline</param>
-	    public Pipeline(IPipe<S, E>[] myPipes)
+	    public Pipeline(params IPipe<S, E>[] myPipes)
 			: this()
 		{
 	        SetPipes(myPipes);
@@ -111,7 +111,7 @@ namespace de.ahzf.Pipes
 	    /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
 	    /// </summary>
 	    /// <param name="myPipes">the ordered array of pipes to chain together into a pipeline.</param>
-	    protected void SetPipes(IPipe<S, E>[] myPipes)
+	    protected void SetPipes(params IPipe<S, E>[] myPipes)
 		{
 
 			var _PipeNames = new List<String>();
@@ -288,9 +288,12 @@ namespace de.ahzf.Pipes
 //	        return endPipe.next();
 	    }
 	
-	    public List<E> getPath()
+	    public List<E> Path
 		{
-	        return _EndPipe.getPath();
+            get
+            {
+    	        return _EndPipe.Path;
+            }
 	    }
 	
 	    /**

@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Blueprints\VertexEdgePipe.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Filter\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Filter\CollectionFilterPipe.cs" />
@@ -47,6 +48,17 @@
     <Compile Include="Filter\RandomFilterPipe.cs" />
     <Compile Include="Filter\FilterEnum.cs" />
     <Compile Include="Filter\IComparisonFilterPipe.cs" />
+    <Compile Include="Blueprints\PropertyPipe.cs" />
+    <Compile Include="Blueprints\PropertyMapPipe.cs" />
+    <Compile Include="Blueprints\PropertyFilterPipe.cs" />
+    <Compile Include="Blueprints\LabelPipe.cs" />
+    <Compile Include="Blueprints\LabelFilterPipe.cs" />
+    <Compile Include="Blueprints\IdVertexPipe.cs" />
+    <Compile Include="Blueprints\EdgeVertexPipe.cs" />
+    <Compile Include="Blueprints\GraphElementPipe.cs" />
+    <Compile Include="Blueprints\IdEdgePipe.cs" />
+    <Compile Include="Blueprints\IdPipe.cs" />
+    <Compile Include="Blueprints\IdFilterPipe.cs" />
     <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Enumerators\SingleEnumerator.cs" />
     <Compile Include="Enumerators\MultiEnumerator.cs" />
@@ -66,4 +78,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
+      <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>
+      <Name>blueprints</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
