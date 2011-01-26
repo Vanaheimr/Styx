@@ -39,6 +39,8 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Filter\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Filter\CollectionFilterPipe.cs" />
+    <Compile Include="Filter\FutureFilterPipe.cs" />
+    <Compile Include="Filter\DuplicateFilterPipe.cs" />
     <Compile Include="Filter\ObjectFilterPipe.cs" />
     <Compile Include="Filter\RangeFilterPipe.cs" />
     <Compile Include="Filter\OrFilterPipe.cs" />

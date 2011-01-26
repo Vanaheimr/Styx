@@ -26,38 +26,28 @@ namespace de.ahzf.Pipes
 {
     
     /// <summary>
-    /// The AndFilterPipe takes a collection of pipes, where E is boolean.
-    /// Each provided pipe is fed the same incoming S object. If all the
-    /// pipes emit true, then the AndFilterPipe emits the incoming S object.
-    /// If not, then the incoming S object is not emitted.
+    /// FutureFilterPipe will allow an object to pass through it if the
+    /// object has an output from the pipe provided in the constructor
+    /// of the FutureFilterPipe.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class FutureFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
         where S : IEquatable<S>
     {
 
         #region Data
 
-        private readonly List<IPipe<S, Boolean>> _Pipes;
+        private readonly IPipe<S, S> _Pipe;
 
         #endregion
 
         #region Constructor(s)
 
-        #region AndFilterPipe(myPipes)
+        #region FutureFilterPipe(myPipes)
 
-        public AndFilterPipe(IPipe<S, Boolean>[] myPipes)
+        public FutureFilterPipe(IPipe<S, S> myPipe)
         {
-            _Pipes = new List<IPipe<S, Boolean>>(myPipes);
-        }
-
-        #endregion
-
-        #region AndFilterPipe(myPipes)
-
-        public AndFilterPipe(List<IPipe<S, Boolean>> myPipes)
-        {
-            _Pipes = myPipes;
+            _Pipe = myPipe;
         }
 
         #endregion
@@ -74,27 +64,32 @@ namespace de.ahzf.Pipes
                 starts.MoveNext();
                 var _S = starts.Current;
 
-                var _And = true;
-                
-                foreach (var _Pipe in _Pipes)
-                {
+                _Pipe.SetStarts(new SingleEnumerator<S>(_S));
 
-                    _Pipe.SetStarts(new SingleEnumerator<S>(_S));
+                // District of chaos, discord and confusion ;)!
+                //if (_Pipe.hasNext())
+                //{
 
-                    if (!_Pipe.MoveNext())
-                    {
-                        _And = false;
-                        break;
-                    }
+                //    while (_Pipe.hasNext())
+                //        _Pipe.next();
 
-                }
-                
-                if (_And)
-                    return _S;
+                //    return _S;
+
+                //}
             
             }
 
         }
+
+
+        #region ToString()
+
+        public override String ToString()
+        {
+            return base.ToString() + "<" + _Pipe + ">";
+        }
+
+        #endregion
 
     }
 

@@ -7,7 +7,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,14 +35,14 @@ namespace de.ahzf.Pipes
 	/// </summary>
     /// <typeparam name="S"></typeparam>
     /// <typeparam name="E"></typeparam>
-	public class Pipeline<S,E> : IPipe<S,E>
+	public class Pipeline<S, E> : IPipe<S, E>
 		where E : IEquatable<E>
 	{
 	
 		#region Data
 		
-	    private IPipe<S,E> _StartPipe;
-	    private IPipe<S,E> _EndPipe;
+	    private IPipe<S, E> _StartPipe;
+	    private IPipe<S, E> _EndPipe;
 	    private String     _PipelineString;
 	
 		#endregion
@@ -66,7 +66,7 @@ namespace de.ahzf.Pipes
 		/// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
 		/// </summary>
 		/// <param name="myPipes">The ordered list of pipes to chain together into a pipeline</param>
-	    public Pipeline(IEnumerable<IPipe<S,E>> myPipes)
+	    public Pipeline(IEnumerable<IPipe<S, E>> myPipes)
 			: this()
 		{
 	        SetPipes(myPipes);
@@ -82,7 +82,7 @@ namespace de.ahzf.Pipes
 		/// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
 		/// </summary>
 		/// <param name="myPipes">the ordered array of pipes to chain together into a pipeline</param>
-	    public Pipeline(IPipe<S,E>[] myPipes)
+	    public Pipeline(IPipe<S, E>[] myPipes)
 			: this()
 		{
 	        SetPipes(myPipes);
@@ -99,7 +99,7 @@ namespace de.ahzf.Pipes
 	    /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
 	    /// </summary>
 	    /// <param name="myPipes">the ordered list of pipes to chain together into a pipeline.</param>
-	    protected void SetPipes(IEnumerable<IPipe<S,E>> myPipes)
+	    protected void SetPipes(IEnumerable<IPipe<S, E>> myPipes)
 		{
 			SetPipes(myPipes.ToArray());
 		}
@@ -112,7 +112,7 @@ namespace de.ahzf.Pipes
 	    /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
 	    /// </summary>
 	    /// <param name="myPipes">the ordered array of pipes to chain together into a pipeline.</param>
-	    protected void SetPipes(IPipe<S,E>[] myPipes)
+	    protected void SetPipes(IPipe<S, E>[] myPipes)
 		{
 
 			var _PipeNames = new List<String>();
@@ -142,7 +142,7 @@ namespace de.ahzf.Pipes
 		/// Only use if the intermediate pipes of the pipeline have been chained together manually.
 		/// </summary>
 		/// <param name="myStartPipe">the start of the pipeline</param>
-		public void SetStartPipe(IPipe<S,E> myStartPipe)
+		public void SetStartPipe(IPipe<S, E> myStartPipe)
 		{
 	        _StartPipe = myStartPipe;
 	    }
@@ -155,7 +155,7 @@ namespace de.ahzf.Pipes
 		/// Only use if the intermediate pipes of the pipeline have been chained together manually.
 		/// </summary>
 		/// <param name="myEndPipe">the end of the pipeline</param>
-	    public void SetEndPipe(IPipe<S,E> myEndPipe)
+	    public void SetEndPipe(IPipe<S, E> myEndPipe)
 		{
 	        _EndPipe = myEndPipe;
 	    }

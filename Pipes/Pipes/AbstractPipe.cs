@@ -7,7 +7,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,7 +42,7 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="S"></typeparam>
     /// <typeparam name="E"></typeparam>
-	public abstract class AbstractPipe<S,E> : IPipe<S,E>
+	public abstract class AbstractPipe<S, E> : IPipe<S, E>
 		where E : IEquatable<E>
 	{
 		
@@ -74,7 +74,7 @@ namespace de.ahzf.Pipes
 
 	    public void SetStarts(IEnumerator<S> myStarts)
 		{
-	        if (myStarts is IPipe<S,E>)
+	        if (myStarts is IPipe<S, E>)
 	            this.starts = myStarts;
 	        else
 	            this.starts = new HistoryEnumerator<S>(myStarts);
@@ -211,9 +211,9 @@ namespace de.ahzf.Pipes
 	    private List<E> getPathToHere()
 		{
 
-			if (this.starts is IPipe<S,E>)
+			if (this.starts is IPipe<S, E>)
 			{
-	            return ((IPipe<S,E>) this.starts).getPath();
+	            return ((IPipe<S, E>) this.starts).getPath();
 //	        } else if (this.starts is HistoryIterator<S>) {
 //	            var list = new List();
 //	            list.add(((HistoryIterator) starts).getLast());

@@ -26,39 +26,29 @@ namespace de.ahzf.Pipes
 {
     
     /// <summary>
-    /// The AndFilterPipe takes a collection of pipes, where E is boolean.
-    /// Each provided pipe is fed the same incoming S object. If all the
-    /// pipes emit true, then the AndFilterPipe emits the incoming S object.
-    /// If not, then the incoming S object is not emitted.
+    /// The DuplicateFilterPipe will not allow a duplicate object to pass through it.
+    /// This is accomplished by the Pipe maintaining an internal HashSet that is used
+    /// to store a history of previously seen objects.
+    /// Thus, the more unique objects that pass through this Pipe, the slower it
+    /// becomes as a log_2 index is checked for every object.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class DuplicateFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
         where S : IEquatable<S>
     {
 
         #region Data
 
-        private readonly List<IPipe<S, Boolean>> _Pipes;
+        private readonly HashSet<S> _HistorySet = new HashSet<S>();
 
         #endregion
 
         #region Constructor(s)
 
-        #region AndFilterPipe(myPipes)
+        #region DuplicateFilterPipe()
 
-        public AndFilterPipe(IPipe<S, Boolean>[] myPipes)
-        {
-            _Pipes = new List<IPipe<S, Boolean>>(myPipes);
-        }
-
-        #endregion
-
-        #region AndFilterPipe(myPipes)
-
-        public AndFilterPipe(List<IPipe<S, Boolean>> myPipes)
-        {
-            _Pipes = myPipes;
-        }
+        public DuplicateFilterPipe()
+        { }
 
         #endregion
 
@@ -74,23 +64,11 @@ namespace de.ahzf.Pipes
                 starts.MoveNext();
                 var _S = starts.Current;
 
-                var _And = true;
-                
-                foreach (var _Pipe in _Pipes)
+                if (!_HistorySet.Contains(_S))
                 {
-
-                    _Pipe.SetStarts(new SingleEnumerator<S>(_S));
-
-                    if (!_Pipe.MoveNext())
-                    {
-                        _And = false;
-                        break;
-                    }
-
-                }
-                
-                if (_And)
+                    _HistorySet.Add(_S);
                     return _S;
+                }
             
             }
 

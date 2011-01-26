@@ -7,7 +7,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- *     
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// This Pipe is useful in various test case situations.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the pipe.</typeparam>
-    public class IdentityPipe<S> : AbstractPipe<S,S>
+    public class IdentityPipe<S> : AbstractPipe<S, S>
         where S : IEquatable<S>
     {
 
