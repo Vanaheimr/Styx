@@ -45,7 +45,7 @@
     <Compile Include="Filter\RangeFilterPipe.cs" />
     <Compile Include="Filter\OrFilterPipe.cs" />
     <Compile Include="Filter\RandomFilterPipe.cs" />
-    <Compile Include="Filter\Filter.cs" />
+    <Compile Include="Filter\FilterEnum.cs" />
     <Compile Include="Filter\IComparisonFilterPipe.cs" />
     <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Enumerators\SingleEnumerator.cs" />
@@ -58,6 +58,11 @@
     <Compile Include="Enumerators\HistoryEnumerator.cs" />
     <Compile Include="Pipeline.cs" />
     <Compile Include="Pipes\IdentityPipe.cs" />
+    <Compile Include="Sideeffect\AggregatorPipe.cs" />
+    <Compile Include="Sideeffect\GroupCountPipe.cs" />
+    <Compile Include="Sideeffect\SideEffectCapPipe.cs" />
+    <Compile Include="Sideeffect\ISideEffectPipe.cs" />
+    <Compile Include="Sideeffect\CountPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

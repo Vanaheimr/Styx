@@ -33,13 +33,12 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class CollectionFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>, IComparisonFilterPipe<S, S>
-        where S : IEquatable<S>
     {
 
         #region Data
 
         private readonly ICollection<S> _StoredCollection;
-        private readonly Filter         _Filter;
+        private readonly FilterEnum         _Filter;
 
         #endregion
 
@@ -47,12 +46,12 @@ namespace de.ahzf.Pipes
 
         #region CollectionFilterPipe(myStoredCollection, myFilter)
 
-        public CollectionFilterPipe(ICollection<S> myStoredCollection, Filter myFilter)
+        public CollectionFilterPipe(ICollection<S> myStoredCollection, FilterEnum myFilter)
         {
 
             _StoredCollection = myStoredCollection;
 
-            if (myFilter == Filter.NOT_EQUAL || myFilter == Filter.EQUAL)
+            if (myFilter == FilterEnum.NOT_EQUAL || myFilter == FilterEnum.EQUAL)
                 _Filter = myFilter;
 
             else
@@ -68,7 +67,7 @@ namespace de.ahzf.Pipes
         public Boolean compareObjects(S myLeftObject, S myRightObject)
         {
 
-            if (_Filter == Filter.NOT_EQUAL)
+            if (_Filter == FilterEnum.NOT_EQUAL)
                 if (_StoredCollection.Contains(myRightObject))
                     return true;
 
@@ -84,7 +83,7 @@ namespace de.ahzf.Pipes
         private Boolean compareObjects(S myRightObject)
         {
 
-            if (_Filter == Filter.NOT_EQUAL)
+            if (_Filter == FilterEnum.NOT_EQUAL)
                 if (_StoredCollection.Contains(myRightObject))
                     return true;
 

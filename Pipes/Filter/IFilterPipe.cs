@@ -30,7 +30,6 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public interface IFilterPipe<S> : IPipe<S, S>
-        where S : IEquatable<S>
     { }
 
 }

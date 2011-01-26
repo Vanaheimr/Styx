@@ -33,7 +33,6 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
-        where S : IEquatable<S>
     {
 
         #region Data

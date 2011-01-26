@@ -30,10 +30,10 @@ namespace de.ahzf.Pipes
 	/// A Pipe takes/consumes objects of type S and returns/emits objects of type E.
 	/// S refers to <i>starts</i> and the E refers to <i>ends</i>.
 	/// </summary>
-    /// <typeparam name="S"></typeparam>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
 	public interface IPipe<S, E> : IEnumerator<E>, IEnumerable<E>
-		where E : IEquatable<E>
+		//where E : IEquatable<E>
 	{
 	//extends Iterator<E>, Iterable<E> {
 	

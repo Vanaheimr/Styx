@@ -36,7 +36,6 @@ namespace de.ahzf.Pipes
     /// <typeparam name="S"></typeparam>
     /// <typeparam name="E"></typeparam>
 	public class Pipeline<S, E> : IPipe<S, E>
-		where E : IEquatable<E>
 	{
 	
 		#region Data

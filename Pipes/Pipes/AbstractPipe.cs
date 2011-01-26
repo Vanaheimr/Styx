@@ -40,10 +40,9 @@ namespace de.ahzf.Pipes
     /// If the current incoming S is not to be emitted and there are no other S objects
     /// to process and emit, then throw a NoSuchElementException.
     /// </summary>
-    /// <typeparam name="S"></typeparam>
-    /// <typeparam name="E"></typeparam>
-	public abstract class AbstractPipe<S, E> : IPipe<S, E>
-		where E : IEquatable<E>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public abstract class AbstractPipe<S, E> : IPipe<S, E>
 	{
 		
 		#region Data
@@ -85,7 +84,7 @@ namespace de.ahzf.Pipes
 	        SetStarts(myStarts.GetEnumerator());
 	    }
 
-	    public List<E> getPath()
+	    public virtual List<E> getPath()
 		{
 			
 	        var pathElements = getPathToHere();

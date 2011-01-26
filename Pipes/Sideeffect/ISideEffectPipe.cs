@@ -25,15 +25,15 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// A ComparisonFilterPipe will allow or disallow objects that pass
-    /// through it depending on some implemented comparison criteria.
+    /// A SideEffectPipe will produce a side effect which can be retrieved by the SideEffect property.
     /// </summary>
-    /// <typeparam name="S"></typeparam>
-    /// <typeparam name="T"></typeparam>
-    public interface IComparisonFilterPipe<S, T> : IFilterPipe<S>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="T">The type of the sideeffect.</typeparam>
+    public interface ISideEffectPipe<S, E, T> : IPipe<S, E>
     {
 
-        Boolean compareObjects(T leftObject, T rightObject);
+        T SideEffect { get; }
 
     }
 

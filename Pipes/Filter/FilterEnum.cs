@@ -18,7 +18,7 @@
 namespace de.ahzf.Pipes
 {
 
-    public enum Filter
+    public enum FilterEnum
     {
         EQUAL,
         NOT_EQUAL,

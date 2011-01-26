@@ -32,13 +32,12 @@ namespace de.ahzf.Pipes
     /// Depending on the type of ComparisonFilterPipe.Filter used, different
     /// types of comparisons are evaluated.
     /// </summary>
-    public abstract class AbstractComparisonFilterPipe<S,T> : AbstractPipe<S, S>, IComparisonFilterPipe<S,T>
-        where S : IEquatable<S>
+    public abstract class AbstractComparisonFilterPipe<S, T> : AbstractPipe<S, S>, IComparisonFilterPipe<S, T>
     {
 
         #region Data
 
-        protected readonly Filter _Filter;
+        protected readonly FilterEnum _Filter;
 
         #endregion
 
@@ -46,7 +45,7 @@ namespace de.ahzf.Pipes
 
         #region AbstractComparisonFilterPipe(myFilter)
 
-        public AbstractComparisonFilterPipe(Filter myFilter)
+        public AbstractComparisonFilterPipe(FilterEnum myFilter)
         {
             _Filter = myFilter;
         }
@@ -62,32 +61,32 @@ namespace de.ahzf.Pipes
             switch (_Filter)
             {
 
-                case Filter.EQUAL:
+                case FilterEnum.EQUAL:
                     if (null == myLeftObject)
                         return myRightObject == null;
                     return myLeftObject.Equals(myRightObject);
 
-                case Filter.NOT_EQUAL:
+                case FilterEnum.NOT_EQUAL:
                     if (null == myLeftObject)
                         return myRightObject != null;
                     return !myLeftObject.Equals(myRightObject);
 
-                case Filter.GREATER_THAN:
+                case FilterEnum.GREATER_THAN:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable) myLeftObject).CompareTo(myRightObject) == 1;
 
-                case Filter.LESS_THAN:
+                case FilterEnum.LESS_THAN:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable)myLeftObject).CompareTo(myRightObject) == -1;
 
-                case Filter.GREATER_THAN_EQUAL:
+                case FilterEnum.GREATER_THAN_EQUAL:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable)myLeftObject).CompareTo(myRightObject) >= 0;
 
-                case Filter.LESS_THAN_EQUAL:
+                case FilterEnum.LESS_THAN_EQUAL:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable)myLeftObject).CompareTo(myRightObject) <= 0;

@@ -24,29 +24,27 @@ using System.Collections.Generic;
 
 namespace de.ahzf.Pipes
 {
-    
+
     /// <summary>
-    /// FutureFilterPipe will allow an object to pass through it if the
-    /// object has an output from the pipe provided in the constructor
-    /// of the FutureFilterPipe.
+    /// The CountPipe produces a side effect that is the total
+    /// number of objects that have passed through it.
     /// </summary>
-    /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class FutureFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
     {
 
         #region Data
 
-        private readonly IPipe<S, S> _Pipe;
+        private UInt64 _Counter;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FutureFilterPipe(myPipes)
+        #region CountPipe()
 
-        public FutureFilterPipe(IPipe<S, S> myPipe)
+        public CountPipe()
         {
-            _Pipe = myPipe;
+            _Counter = 0UL;
         }
 
         #endregion
@@ -54,30 +52,26 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+
         protected override S processNextStart()
         {
 
-            while (true)
+            starts.MoveNext();
+            var _S = starts.Current;
+
+            _Counter++;
+
+            return _S;
+
+        }
+
+
+        public UInt64 SideEffect
+        {
+            get
             {
-
-                starts.MoveNext();
-                var _S = starts.Current;
-
-                _Pipe.SetStarts(new SingleEnumerator<S>(_S));
-
-                // District of chaos, discord and confusion ;)!
-                //if (_Pipe.hasNext())
-                //{
-
-                //    while (_Pipe.hasNext())
-                //        _Pipe.next();
-
-                //    return _S;
-
-                //}
-            
+                return _Counter;
             }
-
         }
 
 
@@ -85,7 +79,7 @@ namespace de.ahzf.Pipes
 
         public override String ToString()
         {
-            return base.ToString() + "<" + _Pipe + ">";
+            return base.ToString() + "<" + _Counter + ">";
         }
 
         #endregion
