@@ -288,7 +288,7 @@ namespace de.ahzf.Pipes
 //	        return endPipe.next();
 	    }
 	
-	    public List<E> Path
+	    public List<Object> Path
 		{
             get
             {

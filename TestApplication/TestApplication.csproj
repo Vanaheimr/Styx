@@ -48,8 +48,17 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TinkerGraphFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
+      <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>
+      <Name>blueprints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\blueprints.NET\InMemoryGraph\InMemoryGraph.csproj">
+      <Project>{D4D2ACAD-FF2E-44AD-9D4A-6E332C246FAD}</Project>
+      <Name>InMemoryGraph</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Pipes\Pipes.csproj">
       <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
       <Name>Pipes</Name>

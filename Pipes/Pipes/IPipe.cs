@@ -25,6 +25,17 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
+    public interface IPipe
+    {
+
+        /// <summary>
+        /// Returns the path traversed to arrive at the current result of the pipe.
+        /// </summary> 
+        /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
+        List<Object> Path { get; }
+
+    }
+
 	/// <summary>
 	/// The generic interface for any Pipe implementation.
 	/// A Pipe takes/consumes objects of type S and returns/emits objects of type E.
@@ -32,7 +43,7 @@ namespace de.ahzf.Pipes
 	/// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-	public interface IPipe<S, E> : IEnumerator<E>, IEnumerable<E>
+    public interface IPipe<S, E> : IPipe, IEnumerator<E>, IEnumerable<E>
 	{
 	
 	    /// <summary>
@@ -48,13 +59,6 @@ namespace de.ahzf.Pipes
 	    /// <param name="starts">starts the iterable of incoming objects</param>
 	    void SetStarts(IEnumerable<S> starts);
 
-
-		/// <summary>
-	    /// Returns the path traversed to arrive at the current result of the pipe.
-	    /// </summary> 
-	    /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
-	    List<E> Path { get; }
-	
 	}
 
 }

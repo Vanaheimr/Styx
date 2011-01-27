@@ -21,6 +21,9 @@ using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.InMemoryGraph;
+using de.ahzf.blueprints.Datastructures;
 
 #endregion
 
@@ -30,6 +33,8 @@ namespace de.ahzf.Pipes.UnitTests
     [TestFixture]
     public class AbstractPipeTest
     {
+        
+        #region TestIEnumerator()
 
         [Test]
         public void TestIEnumerator()
@@ -62,42 +67,58 @@ namespace de.ahzf.Pipes.UnitTests
 
         }
 
-        //public void testPathConstruction()
-        //{
-        //    Graph graph = TinkerGraphFactory.createTinkerGraph();
-        //    Vertex marko = graph.getVertex("1");
-        //    Pipe<Vertex, Edge> pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-        //    Pipe<Edge, Vertex> pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-        //    Pipe<Vertex, String> pipe3 = new PropertyPipe<Vertex, String>("name");
-        //    pipe3.setStarts(pipe2.iterator());
-        //    pipe2.setStarts(pipe1.iterator());
-        //    pipe1.setStarts(Arrays.asList(marko).iterator());
+        #endregion
 
-        //    for (String name : pipe3) {
-        //        List path = pipe3.getPath();
-        //        assertEquals(path.get(0), marko);
-        //        assertEquals(path.get(1).getClass(), TinkerEdge.class);
-        //        assertEquals(path.get(2).getClass(), TinkerVertex.class);
-        //        assertEquals(path.get(3).getClass(), String.class);
-        //        if (name.equals("vadas")) {
-        //            assertEquals(path.get(1), graph.getEdge(7));
-        //            assertEquals(path.get(2), graph.getVertex(2));
-        //            assertEquals(path.get(3), "vadas");
-        //        } else if (name.equals("lop")) {
-        //            assertEquals(path.get(1), graph.getEdge(9));
-        //            assertEquals(path.get(2), graph.getVertex(3));
-        //            assertEquals(path.get(3), "lop");
-        //        } else if (name.equals("josh")) {
-        //            assertEquals(path.get(1), graph.getEdge(8));
-        //            assertEquals(path.get(2), graph.getVertex(4));
-        //            assertEquals(path.get(3), "josh");
-        //        } else {
-        //            assertFalse(true);
-        //        }
-        //        //System.out.println(name);
-        //        //System.out.println(pipeline.getPath());
-        //    }
-        //}
+        #region testPathConstruction
+
+        public void testPathConstruction()
+        {
+
+            IGraph graph = TinkerGraphFactory.CreateTinkerGraph();
+
+            IVertex marko = graph.GetVertex(new VertexId("1"));
+            IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
+            pipe3.SetStarts(pipe2.GetEnumerator());
+            pipe2.SetStarts(pipe1.GetEnumerator());
+            var _MarkoList = new List<IVertex>() { marko };
+            pipe1.SetStarts(_MarkoList.GetEnumerator());
+
+            foreach (var name in pipe3)
+            {
+
+                var path = pipe3.Path;
+
+                Assert.AreEqual(marko,          path[0]);
+                Assert.AreEqual(typeof(Edge),   path[1].GetType());
+                Assert.AreEqual(typeof(Vertex), path[2].GetType());
+                Assert.AreEqual(typeof(String), path[3].GetType());
+
+                //if (name.equals("vadas"))
+                //{
+                //    Assert.AreEqual(path.get(1), graph.getEdge(7));
+                //    Assert.AreEqual(path.get(2), graph.getVertex(2));
+                //    Assert.AreEqual(path.get(3), "vadas");
+                //}
+                //else if (name.equals("lop")) {
+                //    Assert.AreEqual(path.get(1), graph.getEdge(9));
+                //    Assert.AreEqual(path.get(2), graph.getVertex(3));
+                //    Assert.AreEqual(path.get(3), "lop");
+                //} else if (name.equals("josh")) {
+                //    Assert.AreEqual(path.get(1), graph.getEdge(8));
+                //    Assert.AreEqual(path.get(2), graph.getVertex(4));
+                //    Assert.AreEqual(path.get(3), "josh");
+                //} else {
+                //    assertFalse(true);
+                //}
+                ////System.out.println(name);
+                ////System.out.println(pipeline.getPath());
+            }
+
+        }
+
+        #endregion
 
     }
 

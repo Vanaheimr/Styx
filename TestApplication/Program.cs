@@ -23,6 +23,10 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using de.ahzf.Pipes;
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.Datastructures;
+using de.ahzf.blueprints.InMemoryGraph;
+using de.ahzf.Pipes.UnitTests;
 
 #endregion
 
@@ -52,30 +56,47 @@ namespace TestApplication
 
 
 
-            var names = new List<String>() { "marko", "josh", "peter" };
+            IGraph graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            IPipe<String, String> pipe = new IdentityPipe<String>();
-            pipe.SetStarts(names);
+            IVertex marko = graph.GetVertex(new VertexId("1"));
+            IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
+            pipe3.SetStarts(pipe2.GetEnumerator());
+            pipe2.SetStarts(pipe1.GetEnumerator());
+            var _MarkoList = new List<IVertex>() { marko };
+            pipe1.SetStarts(_MarkoList.GetEnumerator());
 
-            var counter = 0UL;
-            while (pipe.MoveNext())
+            foreach (var name in pipe3)
             {
-                counter++;
-                String name = pipe.Current;
-                Assert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
+
+                var path = pipe3.Path;
+
+                Assert.AreEqual(marko,          path[0]);
+                Assert.AreEqual(typeof(Edge),   path[1].GetType());
+                Assert.AreEqual(typeof(Vertex), path[2].GetType());
+                Assert.AreEqual(typeof(String), path[3].GetType());
+
+                //if (name.equals("vadas"))
+                //{
+                //    Assert.AreEqual(path.get(1), graph.getEdge(7));
+                //    Assert.AreEqual(path.get(2), graph.getVertex(2));
+                //    Assert.AreEqual(path.get(3), "vadas");
+                //}
+                //else if (name.equals("lop")) {
+                //    Assert.AreEqual(path.get(1), graph.getEdge(9));
+                //    Assert.AreEqual(path.get(2), graph.getVertex(3));
+                //    Assert.AreEqual(path.get(3), "lop");
+                //} else if (name.equals("josh")) {
+                //    Assert.AreEqual(path.get(1), graph.getEdge(8));
+                //    Assert.AreEqual(path.get(2), graph.getVertex(4));
+                //    Assert.AreEqual(path.get(3), "josh");
+                //} else {
+                //    assertFalse(true);
+                //}
+                ////System.out.println(name);
+                ////System.out.println(pipeline.getPath());
             }
-
-            Assert.AreEqual(counter, 3UL);
-            pipe.SetStarts(names);
-            counter = 0UL;
-
-            foreach (var name in pipe)
-            {
-                Assert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
-                counter++;
-            }
-
-            Assert.AreEqual(counter, 3UL);
 
         }
 

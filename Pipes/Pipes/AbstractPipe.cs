@@ -68,10 +68,10 @@ namespace de.ahzf.Pipes
 
         public void SetStarts(IEnumerator<S> myStartsEnumerator)
 		{
-	        if (myStartsEnumerator is IPipe<S, E>)
-	            this._Starts = myStartsEnumerator;
+	        if (myStartsEnumerator is IPipe)
+	            _Starts = myStartsEnumerator;
 	        else
-	            this._Starts = new HistoryEnumerator<S>(myStartsEnumerator);
+	            _Starts = new HistoryEnumerator<S>(myStartsEnumerator);
 	    }
 
         #endregion
@@ -84,29 +84,7 @@ namespace de.ahzf.Pipes
 	    }
 
         #endregion
-
-
-        #region Path
-
-        public virtual List<E> Path
-		{
-            get
-            {
-
-                var _PathElements = PathToHere;
-                var _Size         = _PathElements.Count;
-
-                // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)	        
-                if (_Size == 0 || !_PathElements[_Size - 1].Equals(this._CurrentItem))
-                    _PathElements.Add(this._CurrentItem);
-
-                return _PathElements;
-
-            }
-		}
-
-        #endregion
+        
 
         #region Current
 
@@ -168,24 +146,48 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region Path
+
+        public virtual List<Object> Path
+        {
+            get
+            {
+
+                var _PathElements = PathToHere;
+                var _Size         = _PathElements.Count;
+
+                // do not repeat filters as they dup the object
+                // todo: why is size == 0 required (Pangloss?)	        
+                if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentItem))
+                    _PathElements.Add(_CurrentItem);
+
+                return _PathElements;
+
+            }
+        }
+
+        #endregion
+
         #region PathToHere
 
-        private List<E> PathToHere
+        private List<Object> PathToHere
 		{
             get
             {
 
-                if (_Starts is IPipe<S, E>)
+                if (_Starts is IPipe)
+                    return ((IPipe) _Starts).Path;
+
+                else if (_Starts is IHistoryEnumerator)
                 {
-                    return ((IPipe<S, E>) _Starts).Path;
-                    //	        } else if (this.starts is HistoryIterator<S>) {
-                    //	            var list = new List();
-                    //	            list.add(((HistoryIterator) starts).getLast());
-                    //	            return list;
+                    var _List = new List<Object>();
+                    _Starts.MoveNext();
+                    _List.Add(((IHistoryEnumerator)_Starts).Last);
+                    return _List;
                 }
 
                 else
-                    return new List<E>();
+                    return new List<Object>();
 
             }
 		}

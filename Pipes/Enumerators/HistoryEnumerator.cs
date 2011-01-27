@@ -24,13 +24,18 @@ using System.Collections.Generic;
 
 namespace de.ahzf.Pipes
 {
-	
+
+    public interface IHistoryEnumerator
+    {
+        Object Last { get; }
+    }
+
     /// <summary>
     /// A HistoryEnumerator wraps and behaves like a classical IEnumerator.
     /// However, it will remember what was last returned out of the IEnumerator.
     /// </summary>
     /// <typeparam name="T">The type of the internal IEnumerator.</typeparam>
-	public class HistoryEnumerator<T> : IEnumerator<T>
+	public class HistoryEnumerator<T> : IHistoryEnumerator, IEnumerator<T>
 	{
 		
 		#region Data
@@ -90,6 +95,14 @@ namespace de.ahzf.Pipes
         /// Return the last element of the internal IEnumertor.
         /// </summary>
         public T Last
+        {
+            get
+            {
+                return _Last;
+            }
+        }
+
+        Object IHistoryEnumerator.Last
         {
             get
             {
