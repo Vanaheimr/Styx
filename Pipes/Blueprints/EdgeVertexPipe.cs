@@ -27,7 +27,7 @@ namespace de.ahzf.Pipes
 
     /// <summary>
     /// The EdgeVertexPipe returns either the incoming or
-    /// outgoing Vertex of an Edge start.
+    /// outgoing vertex of the given edge.
     /// </summary>
     public class EdgeVertexPipe : AbstractPipe<IEdge, IVertex>
     {
@@ -39,17 +39,42 @@ namespace de.ahzf.Pipes
 
         #endregion
 
+        #region Enum Step
+
+        /// <summary>
+        /// An enum for traversing vertices starting at an edge.
+        /// </summary>
         public enum Step
         {
+
+            /// <summary>
+            /// Only traverse the incoming vertex.
+            /// </summary>
             IN_VERTEX,
+
+            /// <summary>
+            /// Only traverse the outgoing vertex.
+            /// </summary>
             OUT_VERTEX,
+
+            /// <summary>
+            /// Traverse both incoming and outgoing vertex.
+            /// </summary>
             BOTH_VERTICES
+
         }
+
+        #endregion
 
         #region Constructor(s)
 
         #region EdgeVertexPipe(myStep)
 
+        /// <summary>
+        /// The EdgeVertexPipe returns either the incoming or
+        /// outgoing vertex of the given edge.
+        /// </summary>
+        /// <param name="myStep">Visiting only the outgoing vertex, only the incoming vertex or both.</param>
         public EdgeVertexPipe(Step myStep)
         {
             _Step = myStep;
@@ -62,35 +87,46 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
 
             switch (_Step)
             {
 
                 case Step.OUT_VERTEX:
-                    _Starts.MoveNext();
-                    _CurrentItem = _Starts.Current.OutVertex;
+                    _InternalEnumerator.MoveNext();
+                    _CurrentElement = _InternalEnumerator.Current.OutVertex;
                     break;
 
                 case Step.IN_VERTEX:
-                    _Starts.MoveNext();
-                    _CurrentItem = _Starts.Current.InVertex;
+                    _InternalEnumerator.MoveNext();
+                    _CurrentElement = _InternalEnumerator.Current.InVertex;
                     break;
 
                 case Step.BOTH_VERTICES:
                     {
                         if (_StoredOutVertex == null)
                         {
-                            _Starts.MoveNext();
-                            _StoredOutVertex = _Starts.Current.OutVertex;
-                            _CurrentItem = _Starts.Current.InVertex;
+                            _InternalEnumerator.MoveNext();
+                            _StoredOutVertex = _InternalEnumerator.Current.OutVertex;
+                            _CurrentElement  = _InternalEnumerator.Current.InVertex;
                         }
                         else
                         {
                             var _Temp = _StoredOutVertex;
                             _StoredOutVertex = null;
-                            _CurrentItem = _Temp;
+                            _CurrentElement  = _Temp;
                         }
                     }
                     break;
@@ -109,6 +145,9 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
             return base.ToString() + "<" + _Step + ">";

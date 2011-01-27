@@ -62,10 +62,11 @@ namespace TestApplication
             IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
-            pipe3.SetStarts(pipe2.GetEnumerator());
-            pipe2.SetStarts(pipe1.GetEnumerator());
+            pipe3.SetIEnumerator(pipe2);
+            pipe3.SetIEnumerator(pipe2.GetEnumerator());
+            pipe2.SetIEnumerator(pipe1.GetEnumerator());
             var _MarkoList = new List<IVertex>() { marko };
-            pipe1.SetStarts(_MarkoList.GetEnumerator());
+            pipe1.SetIEnumerator(_MarkoList.GetEnumerator());
 
             foreach (var name in pipe3)
             {

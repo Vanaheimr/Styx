@@ -56,20 +56,38 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
 
             while (true)
             {
 
-                _Starts.MoveNext();
-                _CurrentItem = _Starts.Current;
-
-                if (!_HistorySet.Contains(_CurrentItem))
+                if (_InternalEnumerator.MoveNext())
                 {
-                    _HistorySet.Add(_CurrentItem);
-                    return true;
+
+                    _CurrentElement = _InternalEnumerator.Current;
+
+                    if (!_HistorySet.Contains(_CurrentElement))
+                    {
+                        _HistorySet.Add(_CurrentElement);
+                        return true;
+                    }
+
                 }
+
+                else
+                    return false;
             
             }
 

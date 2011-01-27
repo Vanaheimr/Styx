@@ -56,11 +56,29 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
-            _Starts.MoveNext();
-            _CurrentItem = _IGraph.GetEdge(_Starts.Current);
-            return true;
+
+            if (_InternalEnumerator == null)
+                return false;
+
+            if (_InternalEnumerator.MoveNext())
+            {
+                _CurrentElement = _IGraph.GetEdge(_InternalEnumerator.Current);
+                return true;
+            }
+
+            else
+                return false;
+
         }
 
         #endregion
@@ -68,9 +86,12 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Starts.Current + ">";
+            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
         }
 
         #endregion

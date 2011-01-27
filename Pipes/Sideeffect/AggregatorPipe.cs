@@ -63,28 +63,48 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
 
             if (_AggregateEnumerator == null)
             {
 
-                while (_Starts.MoveNext())
-                    _Aggregate.Add(_Starts.Current);
+                while (_InternalEnumerator.MoveNext())
+                    _Aggregate.Add(_InternalEnumerator.Current);
                 
                 _AggregateEnumerator = _Aggregate.GetEnumerator();
 
             }
 
-            _AggregateEnumerator.MoveNext();
-            _CurrentItem = _AggregateEnumerator.Current;
-            return true;
+            if (_AggregateEnumerator.MoveNext())
+            {
+                _CurrentElement = _AggregateEnumerator.Current;
+                return true;
+            }
+
+            else
+                return false;
 
         }
 
         #endregion
 
+        #region SideEffect
 
+        /// <summary>
+        /// The sideeffect produced by this pipe.
+        /// </summary>
         public ICollection<S> SideEffect
         {
             get
@@ -92,6 +112,8 @@ namespace de.ahzf.Pipes
                 return _Aggregate;
             }
         }
+
+        #endregion
 
 
     }

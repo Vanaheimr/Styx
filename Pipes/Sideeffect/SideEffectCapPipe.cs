@@ -55,15 +55,40 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        public void setStarts(IEnumerator<S> starts)
+        #region SetStartIEnumerator(myIEnumerator)
+
+        public override void SetIEnumerator(IEnumerator<S> myIEnumerator)
         {
-            _PipeToCap.SetStarts(starts);
+            _PipeToCap.SetIEnumerator(myIEnumerator);
         }
+
+        #endregion
+
+        #region SetStartIEnumerable(myIEnumerable)
+
+        public override void SetIEnumerable(IEnumerable<S> myIEnumerable)
+        {
+            _PipeToCap.SetIEnumerator(myIEnumerable.GetEnumerator());
+        }
+
+        #endregion
+
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
             
             if (_Alive)
             {
@@ -74,7 +99,7 @@ namespace de.ahzf.Pipes
 
                 _Alive = false;
                 
-                _CurrentItem = _PipeToCap.SideEffect;
+                _CurrentElement = _PipeToCap.SideEffect;
                 return true;
 
             }
@@ -93,7 +118,7 @@ namespace de.ahzf.Pipes
             {
 
                 var _List = _PipeToCap.Path;
-                _List.Add(this._CurrentItem);
+                _List.Add(this._CurrentElement);
 
                 return _List;
 
@@ -103,6 +128,9 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
             return base.ToString() + "[" + _PipeToCap + "]";

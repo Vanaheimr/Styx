@@ -26,13 +26,23 @@ namespace de.ahzf.Pipes
 
     #region PipesException
 
+    /// <summary>
+    /// A general pipes exception.
+    /// </summary>
     public class PipesException : ApplicationException
     {
 
+        /// <summary>
+        /// A general pipes exception.
+        /// </summary>
         public PipesException()
             : base()
         { }
 
+        /// <summary>
+        /// A general pipes exception.
+        /// </summary>
+        /// <param name="myMessage">An additional message.</param>
         public PipesException(String myMessage)
             : base(myMessage)
         { }
@@ -41,16 +51,25 @@ namespace de.ahzf.Pipes
 
     #endregion
 
-
     #region NoSuchElementException
 
+    /// <summary>
+    /// No such element could be found.
+    /// </summary>
     public class NoSuchElementException : PipesException
 	{
 
+        /// <summary>
+        /// No such element could be found.
+        /// </summary>
         public NoSuchElementException()
             : base()
         { }
 
+        /// <summary>
+        /// No such element could be found.
+        /// </summary>
+        /// <param name="myMessage">An additional message.</param>
         public NoSuchElementException(String myMessage)
             : base(myMessage)
         { }
@@ -61,11 +80,19 @@ namespace de.ahzf.Pipes
 
     #region IllegalStateException
 
+    /// <summary>
+    /// An illegal state had been reached.
+    /// </summary>
     public class IllegalStateException : PipesException
     {
+
+        /// <summary>
+        /// An illegal state had been reached.
+        /// </summary>
         public IllegalStateException(String myMessage)
             : base(myMessage)
         { }
+
     }
 
     #endregion

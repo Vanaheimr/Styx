@@ -50,14 +50,14 @@ namespace de.ahzf.Pipes
 	    /// Set an iterator of S objects to the head (start) of the pipe.
 	    /// </summary> 
 	    /// <param name="starts">starts the iterator of incoming objects</param>
-	    void SetStarts(IEnumerator<S> starts);
+	    void SetIEnumerator(IEnumerator<S> starts);
 		
 		
 	    /// <summary>
 	    /// Set an iterable of S objects to the head (start) of the pipe.
 	    /// </summary> 
 	    /// <param name="starts">starts the iterable of incoming objects</param>
-	    void SetStarts(IEnumerable<S> starts);
+	    void SetIEnumerable(IEnumerable<S> starts);
 
 	}
 

@@ -64,15 +64,29 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
 
-            _Starts.MoveNext();
-            _CurrentItem = _Starts.Current;
+            if (_InternalEnumerator == null)
+                return false;
 
-            UpdateMap(_CurrentItem);
+            if (_InternalEnumerator.MoveNext())
+            {
+                _CurrentElement = _InternalEnumerator.Current;
+                UpdateMap(_CurrentElement);
+                return true;
+            }
 
-            return true;
+            else
+                return false;
 
         }
 
@@ -80,6 +94,9 @@ namespace de.ahzf.Pipes
 
         #region SideEffect
 
+        /// <summary>
+        /// The sideeffect produced by this pipe.
+        /// </summary>
         public IDictionary<S, UInt64> SideEffect
         {
             get

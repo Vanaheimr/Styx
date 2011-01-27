@@ -28,7 +28,7 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The GraphElementPipe takes a start of type Graph and will
+    /// The GraphElementPipe takes a start of type IGraph and will
     /// return elements (i.e. vertices or edges).
     /// This pipe is useful for processing all of the vertices (or edges) of a graph.
     /// </summary>
@@ -38,21 +38,47 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        protected          IEnumerator<E> _NextEnds;
-        private   readonly ElementType    _ElementType;
+        private readonly ElementType _ElementType;
+
+        /// <summary>
+        /// Stores all IElements not yet visited.
+        /// </summary>
+        protected IEnumerator<E> _StoredIElements;
 
         #endregion
 
+        #region Enum ElementType
+
+        /// <summary>
+        /// The IElement to return.
+        /// </summary>
         public enum ElementType
         {
+            
+            /// <summary>
+            /// Return the vertex.
+            /// </summary>
             VERTEX,
+
+            /// <summary>
+            /// Return the edge.
+            /// </summary>
             EDGE
+
         }
+
+        #endregion
 
         #region Constructor(s)
 
         #region GraphElementPipe(myElementType)
 
+        /// <summary>
+        /// The GraphElementPipe takes a start of type IGraph and will
+        /// return elements (i.e. vertices or edges).
+        /// This pipe is useful for processing all of the vertices (or edges) of a graph.
+        /// </summary>
+        /// <param name="myElementType">Return vertex or edge.</param>
         public GraphElementPipe(ElementType myElementType)
         {
             _ElementType = myElementType;
@@ -65,8 +91,19 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
 
             while (true)
             {
@@ -100,6 +137,9 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
             return base.ToString() + "<" + _ElementType + ">";

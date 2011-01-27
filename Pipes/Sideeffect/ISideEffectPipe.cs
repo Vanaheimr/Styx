@@ -33,6 +33,9 @@ namespace de.ahzf.Pipes
     public interface ISideEffectPipe<S, E, T> : IPipe<S, E>
     {
 
+        /// <summary>
+        /// The sideeffect produced by this pipe.
+        /// </summary>
         T SideEffect { get; }
 
     }

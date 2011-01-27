@@ -18,14 +18,42 @@
 namespace de.ahzf.Pipes
 {
 
+    /// <summary>
+    /// An enum for pipe filtering purposes.
+    /// </summary>
     public enum FilterEnum
     {
+
+        /// <summary>
+        /// ==
+        /// </summary>
         EQUAL,
+
+        /// <summary>
+        /// !=
+        /// </summary>
         NOT_EQUAL,
+
+        /// <summary>
+        /// &gt;
+        /// </summary>
         GREATER_THAN,
+
+        /// <summary>
+        /// &lt;
+        /// </summary>
         LESS_THAN,
+
+        /// <summary>
+        /// &gt;=
+        /// </summary>
         GREATER_THAN_EQUAL,
+
+        /// <summary>
+        /// &lt;=
+        /// </summary>
         LESS_THAN_EQUAL
+
     }
 
 }

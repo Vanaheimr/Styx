@@ -38,8 +38,15 @@ namespace de.ahzf.Pipes
 		
 		#region Data
 		
-		protected IEnumerator<S> _Starts;
-	    protected E              _CurrentItem;
+        /// <summary>
+        /// The internal enumerator of the collection.
+        /// </summary>
+		protected IEnumerator<S> _InternalEnumerator;
+
+        /// <summary>
+        /// The internal current element in the collection.
+        /// </summary>
+	    protected E              _CurrentElement;
 		
 		#endregion
 		
@@ -47,60 +54,155 @@ namespace de.ahzf.Pipes
 		
 		#region AbstractPipe()
 		
+        /// <summary>
+        /// Creates a new abstract pipe.
+        /// </summary>
 		public AbstractPipe()
 		{ }
 		
 		#endregion
+
+        #region AbstractPipe(myIPipe)
+
+        /// <summary>
+        /// Creates a new abstract pipe using on the given IPipe.
+        /// </summary>
+        public AbstractPipe(IPipe myIPipe)
+        {
+            SetIPipe(myIPipe);
+        }
+
+        #endregion
+
+        #region AbstractPipe(myIEnumerator)
+
+        /// <summary>
+        /// Creates a new abstract pipe using on the given IEnumerator.
+        /// </summary>
+        public AbstractPipe(IEnumerator<S> myIEnumerator)
+        {
+            SetIEnumerator(myIEnumerator);
+        }
+
+        #endregion
+
+        #region AbstractPipe(myIEnumerable)
+
+        /// <summary>
+        /// Creates a new abstract pipe using on the given IEnumerable.
+        /// </summary>
+        public AbstractPipe(IEnumerable<S> myIEnumerable)
+        {   
+            SetIEnumerable(myIEnumerable);
+        }
+
+        #endregion
 		
 		#endregion
 
 
-        #region SetStarts(myStartPipe)
+        #region SetIPipe(myIPipe)
 
-        public void SetStarts(IPipe<Object, S> myStartPipe)
+        //ToDo: Is this really needed?!
+        //public void SetIPipe(IPipe<Object, S> myIPipe)
+        //{
+        //    _Starts = myIPipe;
+        //}
+
+        public virtual void SetIPipe(IPipe myIPipe)
         {
-            _Starts = myStartPipe;
-	    }
+            
+            var _IEnumerator = myIPipe as IEnumerator<S>;
+
+            if (_IEnumerator != null)
+                _InternalEnumerator = _IEnumerator;
+
+            else
+                throw new ArgumentNullException("myPipe must not be null and implement the IPipe<S, E> interface!");
+
+        }
 
         #endregion
 
-        #region SetStarts(myStartsEnumerator)
+        #region SetIEnumerator(myIEnumerator)
 
-        public void SetStarts(IEnumerator<S> myStartsEnumerator)
+        public virtual void SetIEnumerator(IEnumerator<S> myIEnumerator)
 		{
-	        if (myStartsEnumerator is IPipe)
-	            _Starts = myStartsEnumerator;
+
+            if (myIEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+	        if (myIEnumerator is IPipe)
+	            _InternalEnumerator = myIEnumerator;
 	        else
-	            _Starts = new HistoryEnumerator<S>(myStartsEnumerator);
+	            _InternalEnumerator = new HistoryEnumerator<S>(myIEnumerator);
+
 	    }
 
         #endregion
 
-        #region SetStarts(myStartsEnumerable)
+        #region SetIEnumerable(myIEnumerable)
 
-        public void SetStarts(IEnumerable<S> myStartsEnumerable)
+        public virtual void SetIEnumerable(IEnumerable<S> myIEnumerable)
 		{
-	        SetStarts(myStartsEnumerable.GetEnumerator());
+
+            if (myIEnumerable == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+	        SetIEnumerator(myIEnumerable.GetEnumerator());
+
 	    }
 
         #endregion
-        
+
+
+        #region GetEnumerator()
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A IEnumerator&lt;E&gt; that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<E> GetEnumerator()
+        {
+            return this;
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A IEnumerator that can be used to iterate through the collection.
+        /// </returns>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this;
+        }
+
+        #endregion
 
         #region Current
 
+        /// <summary>
+        /// Gets the current element in the collection.
+        /// </summary>
         public E Current
 		{
 			get
 			{
-                return _CurrentItem;
+                return _CurrentElement;
 			}
 		}
-		
+
+        /// <summary>
+        /// Gets the current element in the collection.
+        /// </summary>
 		Object System.Collections.IEnumerator.Current
 		{	
 			get
 			{
-                return _CurrentItem;
+                return _CurrentElement;
 			}
 		}
 
@@ -108,42 +210,44 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public abstract Boolean MoveNext();
 
         #endregion
 
         #region Reset()
 
+        /// <summary>
+        /// Sets the enumerator to its initial position, which is
+        /// before the first element in the collection.
+        /// </summary>
         public void Reset()
 		{
-            _Starts.Reset();
+            _InternalEnumerator.Reset();
 		}
 
         #endregion
 
         #region Dispose()
 
+        /// <summary>
+        /// Disposes this pipe.
+        /// </summary>
         public void Dispose()
 		{
-            _Starts.Dispose();
+            _InternalEnumerator.Dispose();
 		}
 
         #endregion
 
 
-        #region GetEnumerator()
-
-        public IEnumerator<E> GetEnumerator()
-		{
-            return this;
-		}
-		
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-            return this;
-		}
-
-        #endregion
 
 
         #region Path
@@ -158,8 +262,8 @@ namespace de.ahzf.Pipes
 
                 // do not repeat filters as they dup the object
                 // todo: why is size == 0 required (Pangloss?)	        
-                if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentItem))
-                    _PathElements.Add(_CurrentItem);
+                if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
+                    _PathElements.Add(_CurrentElement);
 
                 return _PathElements;
 
@@ -175,14 +279,14 @@ namespace de.ahzf.Pipes
             get
             {
 
-                if (_Starts is IPipe)
-                    return ((IPipe) _Starts).Path;
+                if (_InternalEnumerator is IPipe)
+                    return ((IPipe) _InternalEnumerator).Path;
 
-                else if (_Starts is IHistoryEnumerator)
+                else if (_InternalEnumerator is IHistoryEnumerator)
                 {
                     var _List = new List<Object>();
-                    _Starts.MoveNext();
-                    _List.Add(((IHistoryEnumerator)_Starts).Last);
+                    _InternalEnumerator.MoveNext();
+                    _List.Add(((IHistoryEnumerator)_InternalEnumerator).Last);
                     return _List;
                 }
 
@@ -197,6 +301,9 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
             return this.GetType().Name;

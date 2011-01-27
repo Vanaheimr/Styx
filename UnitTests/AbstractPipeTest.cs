@@ -43,7 +43,7 @@ namespace de.ahzf.Pipes.UnitTests
             var names = new List<String>() { "marko", "josh", "peter" };
 
             IPipe<String, String> pipe = new IdentityPipe<String>();
-            pipe.SetStarts(names);
+            pipe.SetIEnumerable(names);
 
             var counter = 0UL;
             while (pipe.MoveNext())
@@ -54,7 +54,7 @@ namespace de.ahzf.Pipes.UnitTests
             }
             
             Assert.AreEqual(counter, 3UL);
-            pipe.SetStarts(names);
+            pipe.SetIEnumerable(names);
             counter = 0UL;
             
             foreach (var name in pipe)
@@ -80,10 +80,10 @@ namespace de.ahzf.Pipes.UnitTests
             IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
-            pipe3.SetStarts(pipe2.GetEnumerator());
-            pipe2.SetStarts(pipe1.GetEnumerator());
+            pipe3.SetIEnumerator(pipe2.GetEnumerator());
+            pipe2.SetIEnumerator(pipe1.GetEnumerator());
             var _MarkoList = new List<IVertex>() { marko };
-            pipe1.SetStarts(_MarkoList.GetEnumerator());
+            pipe1.SetIEnumerator(_MarkoList.GetEnumerator());
 
             foreach (var name in pipe3)
             {

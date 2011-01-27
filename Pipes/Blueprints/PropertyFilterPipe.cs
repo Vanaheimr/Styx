@@ -58,19 +58,36 @@ namespace de.ahzf.Pipes
 
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
+
             while (true)
             {
-                
-                _Starts.MoveNext();
-                var _IElement = _Starts.Current;
 
-                if (!CompareObjects(_IElement.GetProperty<T>(_Key), _Value))
+                if (_InternalEnumerator.MoveNext())
                 {
-                    _CurrentItem = _IElement;
-                    return true;
+                    var _IElement = _InternalEnumerator.Current;
+
+                    if (!CompareObjects(_IElement.GetProperty<T>(_Key), _Value))
+                    {
+                        _CurrentElement = _IElement;
+                        return true;
+                    }
                 }
+
+                else
+                    return false;
 
             }
         }
@@ -80,6 +97,9 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
             return base.ToString() + "<" + _Key + "," + _Filter + "," + _Value + ">";

@@ -124,7 +124,7 @@ namespace de.ahzf.Pipes
 		
 	        for (var i=1; i < _Length; i++)
 			{
-	            myPipes[i].SetStarts((IEnumerator<S>) myPipes[i-1]); //(Iterator)
+	            myPipes[i].SetIEnumerator((IEnumerator<S>) myPipes[i-1]); //(Iterator)
 	            _PipeNames.Add(myPipes[i].ToString());
 	        }
 			
@@ -163,18 +163,18 @@ namespace de.ahzf.Pipes
 	
 		#region SetStarts(myStarts)
 		
-	    public void SetStarts(IEnumerator<S> myStarts)
+	    public void SetIEnumerator(IEnumerator<S> myStarts)
 		{
-	        _StartPipe.SetStarts(myStarts);
+	        _StartPipe.SetIEnumerator(myStarts);
 	    }
 		
 		#endregion
 		
 		#region SetStarts(myStarts)
 	
-	    public void SetStarts(IEnumerable<S> myStarts)
+	    public void SetIEnumerable(IEnumerable<S> myStarts)
 		{
-	        this.SetStarts(myStarts.GetEnumerator());
+	        this.SetIEnumerator(myStarts.GetEnumerator());
 	    }
 		
 		#endregion
@@ -196,7 +196,16 @@ namespace de.ahzf.Pipes
 				throw new NotImplementedException();
 			}
 		}
-		
+
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
 		public Boolean MoveNext()
 		{
 			throw new NotImplementedException();
@@ -317,7 +326,10 @@ namespace de.ahzf.Pipes
 		#endregion
 	
 		#region ToString()
-		
+
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
 	    public override String ToString()
 		{
 	        return _PipelineString;

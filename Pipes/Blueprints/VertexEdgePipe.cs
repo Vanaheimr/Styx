@@ -29,29 +29,58 @@ namespace de.ahzf.Pipes
 
     /// <summary>
     /// The VertexEdgePipe returns either the incoming or
-    /// outgoing Edges of the Vertex start.
+    /// outgoing edges of the given vertex.
     /// </summary>
     public class VertexEdgePipe : AbstractPipe<IVertex, IEdge>
     {
 
         #region Data
 
-        private   readonly Step               _Step;
-        protected          IEnumerator<IEdge> _NextEnds;
+        private readonly Step _Step;
+
+        /// <summary>
+        /// Stores all edges not yet visited.
+        /// </summary>
+        protected IEnumerator<IEdge> _StoredEdges;
 
         #endregion
 
+        #region Enum Step
+
+        /// <summary>
+        /// An enum for traversing edges starting at a vertex.
+        /// </summary>
         public enum Step
         {
+            
+            /// <summary>
+            /// Only traverse the outgoing edges.
+            /// </summary>
             OUT_EDGES,
+
+            /// <summary>
+            /// Only traverse the incoming edges.
+            /// </summary>
             IN_EDGES,
+
+            /// <summary>
+            /// Traverse both incoming and outgoing edges.
+            /// </summary>
             BOTH_EDGES
+
         }
+
+        #endregion
 
         #region Constructor(s)
 
         #region VertexEdgePipe(myStep)
 
+        /// <summary>
+        /// The VertexEdgePipe returns either the incoming or
+        /// outgoing Edges of the given vertex.
+        /// </summary>
+        /// <param name="myStep">Visiting only outgoing edges, only incoming edges or both.</param>
         public VertexEdgePipe(Step myStep)
         {
             _Step = myStep;
@@ -61,53 +90,69 @@ namespace de.ahzf.Pipes
 
         #endregion
 
+
         #region MoveNext()
 
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
         public override Boolean MoveNext()
         {
+
+            if (_InternalEnumerator == null)
+                return false;
+
             while (true)
             {
 
-                if (_NextEnds != null && _NextEnds.MoveNext())
+                if (_StoredEdges != null && _StoredEdges.MoveNext())
                 {
-                    _CurrentItem = _NextEnds.Current;
+                    _CurrentElement = _StoredEdges.Current;
                     return true;
                 }
 
                 else
                 {
-                    switch (_Step)
+
+                    if (_InternalEnumerator.MoveNext())
                     {
 
-                        case Step.OUT_EDGES:
-                            {
-                                _Starts.MoveNext();
-                                _NextEnds = _Starts.Current.OutEdges.GetEnumerator();
-                                break;
-                            }
+                        switch (_Step)
+                        {
 
-                        case Step.IN_EDGES:
-                            {
-                                _Starts.MoveNext();
-                                _NextEnds = _Starts.Current.InEdges.GetEnumerator();
-                                break;
-                            }
+                            case Step.OUT_EDGES:
+                                _StoredEdges = _InternalEnumerator.Current.OutEdges.GetEnumerator();
+                                return true;
 
-                        case Step.BOTH_EDGES:
-                            {
-                                _Starts.MoveNext();
-                                var _IVertex = _Starts.Current;
-                                _NextEnds = new MultiEnumerator<IEdge>(_IVertex.InEdges.GetEnumerator(), _IVertex.OutEdges.GetEnumerator());
-                                break;
-                            }
+                            case Step.IN_EDGES:
+                                _StoredEdges = _InternalEnumerator.Current.InEdges.GetEnumerator();
+                                return true;
 
-                        // Should not happen, but makes the compiler happy!
-                        default: throw new IllegalStateException("This is an illegal state as there is no step set!");
+                            case Step.BOTH_EDGES:
+                                var _IVertex = _InternalEnumerator.Current;
+                                _StoredEdges = new MultiEnumerator<IEdge>(_IVertex.InEdges.GetEnumerator(), _IVertex.OutEdges.GetEnumerator());
+                                return true;
+
+                            // Should not happen, but makes the compiler happy!
+                            default:
+                                throw new IllegalStateException("This is an illegal state as there is no step set!");
+
+                        }
 
                     }
-                }
+
+                    else
+                        return false;
+
+                }                
 
             }
+
         }
 
         #endregion
@@ -115,6 +160,9 @@ namespace de.ahzf.Pipes
 
         #region ToString()
 
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
         public override String ToString()
         {
             return base.ToString() + "<" + _Step + ">";

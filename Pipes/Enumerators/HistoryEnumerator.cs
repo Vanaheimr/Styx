@@ -25,10 +25,24 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
+    #region IHistoryEnumerator
+
+    /// <summary>
+    /// A helper interface for the HistoryEnumerator&lt;T&gt; enumerator class.
+    /// </summary>
     public interface IHistoryEnumerator
     {
+
+        /// <summary>
+        /// Return the last element of the internal IEnumertor.
+        /// </summary>
         Object Last { get; }
+
     }
+
+    #endregion
+
+    #region HistoryEnumerator<T>
 
     /// <summary>
     /// A HistoryEnumerator wraps and behaves like a classical IEnumerator.
@@ -92,7 +106,7 @@ namespace de.ahzf.Pipes
         #region Last
 
         /// <summary>
-        /// Return the last element of the internal IEnumertor.
+        /// Return the last element of the internal IEnumertor&lt;T&gt;.
         /// </summary>
         public T Last
         {
@@ -102,6 +116,9 @@ namespace de.ahzf.Pipes
             }
         }
 
+        /// <summary>
+        /// Return the last element of the internal IEnumertor.
+        /// </summary>
         Object IHistoryEnumerator.Last
         {
             get
@@ -153,5 +170,7 @@ namespace de.ahzf.Pipes
         #endregion
 	
 	}
+
+    #endregion
 
 }
