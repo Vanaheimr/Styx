@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TinkerGraphFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
@@ -62,6 +61,10 @@
     <ProjectReference Include="..\Pipes\Pipes.csproj">
       <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
       <Name>Pipes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
+      <Project>{62373408-6E14-4753-9B0E-EE0CF5988481}</Project>
+      <Name>UnitTests</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

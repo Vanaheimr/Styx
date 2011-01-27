@@ -31,11 +31,28 @@ namespace de.ahzf.Pipes.UnitTests
     public class SingleEnumeratorTests
     {
 
+        #region testSingleIterator()
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void testSingleIterator()
+        {
+
+            var itty = new SingleEnumerator<String>("marko");
+
+            Assert.IsTrue(itty.MoveNext());
+            Assert.AreEqual("marko", itty.Current);
+            Assert.IsFalse(itty.MoveNext());
+
+            // Will throw an InvalidOperationException!
+            Assert.AreEqual(null, itty.Current);
+
+        }
+
+        #endregion
+
         #region SingleEnumeratorTest()
 
-        /// <summary>
-        /// ...
-        /// </summary>
         [Test]
         public void SingleEnumeratorTest()
         {

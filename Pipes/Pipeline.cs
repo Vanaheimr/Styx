@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -33,8 +34,8 @@ namespace de.ahzf.Pipes
 	/// That is, that the output of the n-1 Pipe is the same as the input to n Pipe.
 	/// Once all provided Pipes are composed, a Pipeline can be treated like any other Pipe.
 	/// </summary>
-    /// <typeparam name="S"></typeparam>
-    /// <typeparam name="E"></typeparam>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
 	public class Pipeline<S, E> : IPipe<S, E>
 	{
 	
@@ -42,14 +43,17 @@ namespace de.ahzf.Pipes
 		
 	    private IPipe<S, E> _StartPipe;
 	    private IPipe<S, E> _EndPipe;
-	    private String     _PipelineString;
+	    private String      _PipelineString;
 	
 		#endregion
 		
 		#region Constructor(s)
 		
 		#region Pipeline()
-		
+
+        /// <summary>
+        /// Constructs a pipeline from the provided pipes.
+        /// </summary>
 	    public Pipeline()
 		{
 			_PipelineString = null;
@@ -124,7 +128,7 @@ namespace de.ahzf.Pipes
 		
 	        for (var i=1; i < _Length; i++)
 			{
-	            myPipes[i].SetIEnumerator((IEnumerator<S>) myPipes[i-1]); //(Iterator)
+	            myPipes[i].SetSource((IEnumerator<S>) myPipes[i-1]);
 	            _PipeNames.Add(myPipes[i].ToString());
 	        }
 			
@@ -160,43 +164,99 @@ namespace de.ahzf.Pipes
 	    }
 		
 		#endregion
-	
-		#region SetStarts(myStarts)
-		
-	    public void SetIEnumerator(IEnumerator<S> myStarts)
-		{
-	        _StartPipe.SetIEnumerator(myStarts);
-	    }
-		
-		#endregion
-		
-		#region SetStarts(myStarts)
-	
-	    public void SetIEnumerable(IEnumerable<S> myStarts)
-		{
-	        this.SetIEnumerator(myStarts.GetEnumerator());
-	    }
-		
-		#endregion
-		
-		
-		
-		public E Current
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-		
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
 
+
+        #region SetIEnumerator(myIEnumerator)
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
+        public virtual void SetSource(IEnumerator<S> myIEnumerator)
+        {
+
+            if (myIEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+            _StartPipe.SetSource(myIEnumerator);
+
+        }
+
+        #endregion
+
+        #region SetIEnumerable(myIEnumerable)
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerable&lt;S&gt; as input.
+        /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        public virtual void SetSourceCollection(IEnumerable<S> myIEnumerable)
+        {
+
+            if (myIEnumerable == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+            _StartPipe.SetSource(myIEnumerable.GetEnumerator());
+
+        }
+
+        #endregion
+
+        
+
+        #region GetEnumerator()
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A IEnumerator&lt;E&gt; that can be used to iterate through the collection.
+        /// </returns>
+        public IEnumerator<E> GetEnumerator()
+        {
+            return this;
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        /// <returns>
+        /// A IEnumerator that can be used to iterate through the collection.
+        /// </returns>
+        IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this;
+        }
+
+        #endregion
+
+        #region Current
+
+        /// <summary>
+        /// Gets the current element in the collection.
+        /// </summary>
+        public E Current
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Gets the current element in the collection.
+        /// </summary>
+        Object System.Collections.IEnumerator.Current
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region MoveNext()
 
         /// <summary>
         /// Advances the enumerator to the next element of the collection.
@@ -206,97 +266,44 @@ namespace de.ahzf.Pipes
         /// element; false if the enumerator has passed the end of the
         /// collection.
         /// </returns>
-		public Boolean MoveNext()
-		{
-			throw new NotImplementedException();
-		}
-		
-		public void Reset()
-		{
-			throw new NotImplementedException();
-		}
-		
+        public Boolean MoveNext()
+        {
+            throw new NotImplementedException();
+        }
 
-		
-		
-		
-		
-		
-		public IEnumerator<E> GetEnumerator()
-		{
-			throw new NotImplementedException();
-		}
-		
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new NotImplementedException();
-		}
-			
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	    /**
-	     * An unsupported operation that throws an UnsupportedOperationException.
-	     */
-	    public void remove()
-		{
-	        throw new NotImplementedException();// UnsupportedOperationException();
-	    }
-	
-	    /**
-	     * Determines if there is another object that can be emitted from the pipeline.
-	     *
-	     * @return true if an object can be next()'d out of the pipeline
-	     */
-	    public Boolean hasNext()
-		{
-			throw new NotImplementedException();
-	        //return endPipe.hasNext();
-	    }
-	
-	    /**
-	     * Get the next object emitted from the pipeline.
-	     * If no such object exists, then a NoSuchElementException is thrown.
-	     *
-	     * @return the next emitted object
-	     */
-	    public E next()
-		{
-			throw new NotImplementedException();
-//	        return endPipe.next();
-	    }
-	
+        #endregion
+
+        #region Reset()
+
+        /// <summary>
+        /// Sets the enumerator to its initial position, which is
+        /// before the first element in the collection.
+        /// </summary>
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Dispose()
+
+        /// <summary>
+        /// Disposes this pipeline.
+        /// </summary>
+        public void Dispose()
+        { }
+
+        #endregion
+
+
+        #region Path
+
+        /// <summary>
+        /// Returns the transformation path to arrive at the current object
+        /// of the pipe. This is a list of all of the objects traversed for
+        /// the current iterator position of the pipe.
+        /// </summary>
 	    public List<Object> Path
 		{
             get
@@ -304,28 +311,11 @@ namespace de.ahzf.Pipes
     	        return _EndPipe.Path;
             }
 	    }
-	
-	    /**
-	     * Simply returns this as as a pipeline (more specifically, pipe) implements Iterator.
-	     *
-	     * @return returns the iterator representation of this pipeline
-	     */
-	    public IEnumerator<E> iterator()
-		{
-	        return this;
-	    }
-		
 
-		#region Dispose()
-		
-		public void Dispose()
-		{
-			throw new NotImplementedException();
-		}
-		
-		#endregion
-	
-		#region ToString()
+        #endregion
+
+
+        #region ToString()
 
         /// <summary>
         /// A string representation of this pipe.

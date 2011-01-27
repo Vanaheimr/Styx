@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -25,30 +26,31 @@ namespace de.ahzf.Pipes
 {
     
     /// <summary>
-    /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
-    /// For each passing object, a random number generator creates a double value between 0 and 1.
-    /// If the randomly generated double is less than or equal the provided bias, then the object is allowed to pass.
-    /// If the randomly generated double is greater than the provided bias, then the object is not allowed to pass.
+    /// The DuplicateFilterPipe will not allow a duplicate object to pass through it.
+    /// This is accomplished by the Pipe maintaining an internal HashSet that is used
+    /// to store a history of previously seen objects.
+    /// Thus, the more unique objects that pass through this Pipe, the slower it
+    /// becomes as a log_2 index is checked for every object.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class RandomFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class DuplicateFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        private static readonly Random RANDOM = new Random();
-        private        readonly double _Bias;
+        private readonly HashSet<S> _HistorySet = new HashSet<S>();
 
         #endregion
 
         #region Constructor(s)
 
-        #region RandomFilterPipe(myBias)
+        #region DuplicateFilterPipe()
 
-        public RandomFilterPipe(Double myBias)
-        {
-            this._Bias = myBias;
-        }
+        /// <summary>
+        /// Creates a new DuplicateFilterPipe.
+        /// </summary>
+        public DuplicateFilterPipe()
+        { }
 
         #endregion
 
@@ -77,11 +79,11 @@ namespace de.ahzf.Pipes
                 if (_InternalEnumerator.MoveNext())
                 {
 
-                    var _S = _InternalEnumerator.Current;
+                    _CurrentElement = _InternalEnumerator.Current;
 
-                    if (_Bias >= RANDOM.NextDouble())
+                    if (!_HistorySet.Contains(_CurrentElement))
                     {
-                        _CurrentElement = _S;
+                        _HistorySet.Add(_CurrentElement);
                         return true;
                     }
 
@@ -89,21 +91,9 @@ namespace de.ahzf.Pipes
 
                 else
                     return false;
-
+            
             }
-        }
 
-        #endregion
-
-
-        #region ToString()
-
-        /// <summary>
-        /// A string representation of this pipe.
-        /// </summary>
-        public override String ToString()
-        {
-            return base.ToString() + "<" + _Bias + ">";
         }
 
         #endregion

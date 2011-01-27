@@ -44,6 +44,10 @@ namespace de.ahzf.Pipes
 
         #region SideEffectCapPipe(myPipeToCap)
 
+        /// <summary>
+        /// Creates a new SideEffectCapPipe.
+        /// </summary>
+        /// <param name="myPipeToCap">A ISideEffectCapPipe.</param>
         public SideEffectCapPipe(ISideEffectPipe<S, Object, T> myPipeToCap)
         {
             _PipeToCap = myPipeToCap;
@@ -57,18 +61,26 @@ namespace de.ahzf.Pipes
 
         #region SetStartIEnumerator(myIEnumerator)
 
-        public override void SetIEnumerator(IEnumerator<S> myIEnumerator)
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
+        public override void SetSource(IEnumerator<S> myIEnumerator)
         {
-            _PipeToCap.SetIEnumerator(myIEnumerator);
+            _PipeToCap.SetSource(myIEnumerator);
         }
 
         #endregion
 
         #region SetStartIEnumerable(myIEnumerable)
 
-        public override void SetIEnumerable(IEnumerable<S> myIEnumerable)
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        public override void SetSourceCollection(IEnumerable<S> myIEnumerable)
         {
-            _PipeToCap.SetIEnumerator(myIEnumerable.GetEnumerator());
+            _PipeToCap.SetSource(myIEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -112,6 +124,13 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region Path
+
+        /// <summary>
+        /// Returns the transformation path to arrive at the current object
+        /// of the pipe. This is a list of all of the objects traversed for
+        /// the current iterator position of the pipe.
+        /// </summary>
         public new List<Object> Path
         {
             get
@@ -124,6 +143,8 @@ namespace de.ahzf.Pipes
 
             }
         }
+
+        #endregion
 
 
         #region ToString()

@@ -25,36 +25,17 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
-    #region IHistoryEnumerator
-
-    /// <summary>
-    /// A helper interface for the HistoryEnumerator&lt;T&gt; enumerator class.
-    /// </summary>
-    public interface IHistoryEnumerator
-    {
-
-        /// <summary>
-        /// Return the last element of the internal IEnumertor.
-        /// </summary>
-        Object Last { get; }
-
-    }
-
-    #endregion
-
-    #region HistoryEnumerator<T>
-
     /// <summary>
     /// A HistoryEnumerator wraps and behaves like a classical IEnumerator.
     /// However, it will remember what was last returned out of the IEnumerator.
     /// </summary>
-    /// <typeparam name="T">The type of the internal IEnumerator.</typeparam>
+    /// <typeparam name="T">The type of the stored elements.</typeparam>
 	public class HistoryEnumerator<T> : IHistoryEnumerator, IEnumerator<T>
 	{
 		
 		#region Data
 		
-	    private readonly IEnumerator<T> _IEnumerator;
+	    private readonly IEnumerator<T> _InternalEnumerator;
 	    private          T              _Last;
 	
 		#endregion
@@ -69,7 +50,8 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerator">The enumerator to be wrapped.</param>
         public HistoryEnumerator(IEnumerator<T> myIEnumerator)
         {
-            _IEnumerator = myIEnumerator;
+            _InternalEnumerator = myIEnumerator;
+            _Last               = default(T);
 	    }
 
         #endregion
@@ -86,7 +68,7 @@ namespace de.ahzf.Pipes
 		{
 			get
 			{
-				return _IEnumerator.Current;
+				return _InternalEnumerator.Current;
 			}
 		}
 
@@ -97,7 +79,7 @@ namespace de.ahzf.Pipes
 		{	
 			get
 			{
-                return _IEnumerator.Current;
+                return _InternalEnumerator.Current;
 			}
 		}
 
@@ -137,8 +119,8 @@ namespace de.ahzf.Pipes
         /// <returns>True if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
 		public Boolean MoveNext()
 		{
-            _Last = _IEnumerator.Current;
-			return _IEnumerator.MoveNext();
+            _Last = _InternalEnumerator.Current;
+			return _InternalEnumerator.MoveNext();
 		}
 
         #endregion
@@ -151,7 +133,8 @@ namespace de.ahzf.Pipes
         /// </summary>
         public void Reset()
 		{
-            _IEnumerator.Reset();
+            _InternalEnumerator.Reset();
+            _Last = default(T);
 		}
 
         #endregion
@@ -160,17 +143,15 @@ namespace de.ahzf.Pipes
         #region Dispose()
 
         /// <summary>
-        /// Dispose this object.
+        /// Dispose this enumerator.
         /// </summary>
         public void Dispose()
         {
-            _IEnumerator.Dispose();
+            _InternalEnumerator.Dispose();
         }
 
         #endregion
 	
 	}
-
-    #endregion
 
 }

@@ -51,6 +51,9 @@ namespace de.ahzf.Pipes
 
         #region AggregatorPipe(myICollection)
 
+        /// <summary>
+        /// Creates a new AggregatorPipe.
+        /// </summary>
         public AggregatorPipe(ICollection<S> myICollection)
         {
             _Aggregate = myICollection;

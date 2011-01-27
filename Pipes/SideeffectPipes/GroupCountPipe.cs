@@ -18,8 +18,7 @@
 #region Usings
 
 using System;
-
-using de.ahzf.blueprints;
+using System.Collections.Generic;
 
 #endregion
 
@@ -27,31 +26,47 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The PropertyPipe returns the property value of the
-    /// Element identified by the provided key.
+    /// The GroupCountPipe will simply emit the incoming object, but generate a map side effect.
+    /// The map's keys are the objects that come into the pipe.
+    /// The map's values are the number of times that the key object has come into the pipe.
     /// </summary>
-    public class PropertyPipe<S, E> : AbstractPipe<S, E>
-        where S : IElement
+    public class GroupCountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, IDictionary<S, UInt64>>
     {
 
         #region Data
 
-        private readonly String _Key;
+        private IDictionary<S, UInt64> _CountMap;
 
         #endregion
 
         #region Constructor(s)
 
-        #region PropertyPipe(myKey)
+        #region GroupCountPipe()
 
-        public PropertyPipe(String myKey)
+        /// <summary>
+        /// Creates a new GroupCountPipe.
+        /// </summary>
+        public GroupCountPipe()
         {
-            _Key   = myKey;
+            _CountMap = new Dictionary<S, UInt64>();
+        }
+
+        #endregion
+
+        #region GroupCountPipe(myIDictionary)
+
+        /// <summary>
+        /// Creates a new GroupCountPipe using the given IDictionary&lt;S, UInt64&gt;.
+        /// </summary>
+        public GroupCountPipe(IDictionary<S, UInt64> myIDictionary)
+        {
+            _CountMap = myIDictionary;
         }
 
         #endregion
 
         #endregion
+
 
         #region MoveNext()
 
@@ -71,7 +86,8 @@ namespace de.ahzf.Pipes
 
             if (_InternalEnumerator.MoveNext())
             {
-                _CurrentElement = _InternalEnumerator.Current.GetProperty<E>(_Key);
+                _CurrentElement = _InternalEnumerator.Current;
+                UpdateMap(_CurrentElement);
                 return true;
             }
 
@@ -82,15 +98,35 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-
-        #region ToString()
+        #region SideEffect
 
         /// <summary>
-        /// A string representation of this pipe.
+        /// The sideeffect produced by this pipe.
         /// </summary>
-        public override String ToString()
+        public IDictionary<S, UInt64> SideEffect
         {
-            return base.ToString() + "<" + _Key + ">";
+            get
+            {
+                return _CountMap;
+            }
+        }
+
+        #endregion
+
+
+        #region (private) UpdateMap(myElement)
+
+        private void UpdateMap(S myElement)
+        {
+
+            UInt64 _Counter;
+
+            if (_CountMap.TryGetValue(myElement, out _Counter))
+                _CountMap[myElement] = _Counter++;
+
+            else
+                _CountMap.Add(myElement, 1);
+
         }
 
         #endregion

@@ -19,40 +19,44 @@
 
 using System;
 
-using de.ahzf.blueprints;
-using de.ahzf.blueprints.Datastructures;
-
 #endregion
 
 namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The IdVertexPipe will convert the given VertexIds into the
-    /// corresponding vertices of the given graph.
+    /// The ObjectFilterPipe will either allow or disallow all objects that pass
+    /// through it depending on the result of the compareObject() method.
     /// </summary>
-    public class IdVertexPipe<S> : AbstractPipe<S, IVertex>
-        where S : VertexId
+    /// <typeparam name="S">The type of the elements within the filter.</typeparam>
+    public class ObjectFilterPipe<S> : AbstractComparisonFilterPipe<S, S>
     {
 
         #region Data
 
-        private readonly IGraph _IGraph;
+        private readonly S _Object;
 
         #endregion
 
         #region Constructor(s)
 
-        #region IdVertexPipe(myIGraph)
+        #region ObjectFilterPipe(myObject, myComparisonFilter)
 
-        public IdVertexPipe(IGraph myIGraph)
+        /// <summary>
+        /// Create a new ObjectFilterPipe.
+        /// </summary>
+        /// <param name="myObject">The Object.</param>
+        /// <param name="myComparisonFilter">The filter to use.</param>
+        public ObjectFilterPipe(S myObject, ComparisonFilter myComparisonFilter)
+            : base(myComparisonFilter)
         {
-            _IGraph = myIGraph;
+            _Object = myObject;
         }
 
         #endregion
 
         #endregion
+
 
         #region MoveNext()
 
@@ -70,13 +74,26 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator.MoveNext())
+            while (true)
             {
-                _CurrentElement = _IGraph.GetVertex(_InternalEnumerator.Current);
-                return true;
-            }
 
-            return false;
+                if (_InternalEnumerator.MoveNext())
+                {
+
+                    var _S = _InternalEnumerator.Current;
+
+                    if (!CompareObjects(_S, _Object))
+                    {
+                        _CurrentElement = _S;
+                        return true;
+                    }
+
+                }
+
+                else
+                    return false;
+
+            }
 
         }
 
@@ -90,7 +107,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _Object + ">";
         }
 
         #endregion

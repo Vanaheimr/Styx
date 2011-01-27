@@ -26,31 +26,10 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// The ToUpperPipe converts all incoming strings to lowercase.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
+    public class ToLowerPipe : AbstractPipe<String, String>, IFilterPipe<String>
     {
-
-        #region Data
-
-        private UInt64 _Counter;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region CountPipe()
-
-        public CountPipe()
-        {
-            _Counter = 0UL;
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region MoveNext()
 
@@ -70,43 +49,13 @@ namespace de.ahzf.Pipes
 
             if (_InternalEnumerator.MoveNext())
             {
-                _CurrentElement = _InternalEnumerator.Current;
-                _Counter++;
-
+                _CurrentElement = _InternalEnumerator.Current.ToLower();
                 return true;
             }
 
             else
                 return false;
 
-        }
-
-        #endregion
-
-        #region SideEffect
-
-        /// <summary>
-        /// The sideeffect produced by this pipe.
-        /// </summary>
-        public UInt64 SideEffect
-        {
-            get
-            {
-                return _Counter;
-            }
-        }
-
-        #endregion
-
-
-        #region ToString()
-
-        /// <summary>
-        /// A string representation of this pipe.
-        /// </summary>
-        public override String ToString()
-        {
-            return base.ToString() + "<" + _Counter + ">";
         }
 
         #endregion

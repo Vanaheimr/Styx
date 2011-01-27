@@ -20,7 +20,6 @@
 using System;
 
 using de.ahzf.blueprints;
-using de.ahzf.blueprints.Datastructures;
 
 #endregion
 
@@ -28,31 +27,36 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The IdEdgePipe will convert the given EdgeIds into the
-    /// corresponding edges of the given graph.
+    /// The PropertyPipe returns the property value of the
+    /// Element identified by the provided key.
     /// </summary>
-    public class IdEdgePipe<S> : AbstractPipe<S, IEdge>
-        where S : EdgeId
+    public class PropertyPipe<S, E> : AbstractPipe<S, E>
+        where S : IElement
     {
 
         #region Data
 
-        private readonly IGraph _IGraph;
+        private readonly String _Key;
 
         #endregion
 
         #region Constructor(s)
 
-        #region IdEdgePipe(myIGraph)
+        #region PropertyPipe(myKey)
 
-        public IdEdgePipe(IGraph myIGraph)
+        /// <summary>
+        /// Creates a new PropertyPipe.
+        /// </summary>
+        /// <param name="myKey">The property key.</param>
+        public PropertyPipe(String myKey)
         {
-            _IGraph = myIGraph;
+            _Key   = myKey;
         }
 
         #endregion
 
         #endregion
+
 
         #region MoveNext()
 
@@ -72,7 +76,7 @@ namespace de.ahzf.Pipes
 
             if (_InternalEnumerator.MoveNext())
             {
-                _CurrentElement = _IGraph.GetEdge(_InternalEnumerator.Current);
+                _CurrentElement = _InternalEnumerator.Current.GetProperty<E>(_Key);
                 return true;
             }
 
@@ -91,7 +95,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _Key + ">";
         }
 
         #endregion

@@ -26,35 +26,28 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The GroupCountPipe will simply emit the incoming object, but generate a map side effect.
-    /// The map's keys are the objects that come into the pipe.
-    /// The map's values are the number of times that the key object has come into the pipe.
+    /// The CountPipe produces a side effect that is the total
+    /// number of objects that have passed through it.
     /// </summary>
-    public class GroupCountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, IDictionary<S, UInt64>>
+    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, UInt64>
     {
 
         #region Data
 
-        private IDictionary<S, UInt64> _CountMap;
+        private UInt64 _Counter;
 
         #endregion
 
         #region Constructor(s)
 
-        #region GroupCountPipe()
+        #region CountPipe()
 
-        public GroupCountPipe()
+        /// <summary>
+        /// Creates a new CountPipe.
+        /// </summary>
+        public CountPipe()
         {
-            _CountMap = new Dictionary<S, UInt64>();
-        }
-
-        #endregion
-
-        #region GroupCountPipe(myIDictionary)
-
-        public GroupCountPipe(IDictionary<S, UInt64> myIDictionary)
-        {
-            _CountMap = myIDictionary;
+            _Counter = 0UL;
         }
 
         #endregion
@@ -81,7 +74,8 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator.MoveNext())
             {
                 _CurrentElement = _InternalEnumerator.Current;
-                UpdateMap(_CurrentElement);
+                _Counter++;
+
                 return true;
             }
 
@@ -97,30 +91,28 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// The sideeffect produced by this pipe.
         /// </summary>
-        public IDictionary<S, UInt64> SideEffect
+        public UInt64 SideEffect
         {
             get
             {
-                return _CountMap;
+                return _Counter;
             }
         }
 
         #endregion
 
 
-        private void UpdateMap(S myS)
+        #region ToString()
+
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
+        public override String ToString()
         {
-
-            UInt64 _Counter;
-
-            if (_CountMap.TryGetValue(myS, out _Counter))
-                _CountMap[myS] = _Counter++;
-
-            else
-                _CountMap.Add(myS, 1);
-
+            return base.ToString() + "<" + _Counter + ">";
         }
 
+        #endregion
 
     }
 

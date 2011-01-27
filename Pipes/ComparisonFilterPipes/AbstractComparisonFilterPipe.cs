@@ -37,7 +37,10 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        protected readonly FilterEnum _Filter;
+        /// <summary>
+        /// The filter used for comparing two objects.
+        /// </summary>
+        protected readonly ComparisonFilter _Filter;
 
         #endregion
 
@@ -45,7 +48,11 @@ namespace de.ahzf.Pipes
 
         #region AbstractComparisonFilterPipe(myFilter)
 
-        public AbstractComparisonFilterPipe(FilterEnum myFilter)
+        /// <summary>
+        /// Creates a new AbstractComparisonFilterPipe using the given filter.
+        /// </summary>
+        /// <param name="myFilter">The filter used for comparing two objects.</param>
+        public AbstractComparisonFilterPipe(ComparisonFilter myFilter)
         {
             _Filter = myFilter;
         }
@@ -55,38 +62,46 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region CompareObjects(myLeftObject, myRightObject)
+
+        /// <summary>
+        /// Compares two objects.
+        /// </summary>
+        /// <param name="myLeftObject">The left object.</param>
+        /// <param name="myRightObject">The right object.</param>
+        /// <returns>A match based on the defined filter.</returns>
         public Boolean CompareObjects(T myLeftObject, T myRightObject)
         {
 
             switch (_Filter)
             {
 
-                case FilterEnum.EQUAL:
+                case ComparisonFilter.EQUAL:
                     if (null == myLeftObject)
                         return myRightObject == null;
                     return myLeftObject.Equals(myRightObject);
 
-                case FilterEnum.NOT_EQUAL:
+                case ComparisonFilter.NOT_EQUAL:
                     if (null == myLeftObject)
                         return myRightObject != null;
                     return !myLeftObject.Equals(myRightObject);
 
-                case FilterEnum.GREATER_THAN:
+                case ComparisonFilter.GREATER_THAN:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable) myLeftObject).CompareTo(myRightObject) == 1;
 
-                case FilterEnum.LESS_THAN:
+                case ComparisonFilter.LESS_THAN:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable)myLeftObject).CompareTo(myRightObject) == -1;
 
-                case FilterEnum.GREATER_THAN_EQUAL:
+                case ComparisonFilter.GREATER_THAN_EQUAL:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable)myLeftObject).CompareTo(myRightObject) >= 0;
 
-                case FilterEnum.LESS_THAN_EQUAL:
+                case ComparisonFilter.LESS_THAN_EQUAL:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
                     return ((IComparable)myLeftObject).CompareTo(myRightObject) <= 0;
@@ -98,6 +113,20 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
+
+
+        #region ToString()
+
+        /// <summary>
+        /// A string representation of this filter pipe.
+        /// </summary>
+        public override String ToString()
+        {
+            return base.ToString() + "<" + _Filter + ">";
+        }
+
+        #endregion
 
     }
 

@@ -18,43 +18,59 @@
 #region Usings
 
 using System;
-
-using de.ahzf.blueprints;
+using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Pipes
 {
-
+    
     /// <summary>
-    /// The PropertyFilterPipe either allows or disallows all Elements
-    /// that have the provided value for a particular key.
+    /// The OrFilterPipe takes a collection of pipes that emit boolean objects.
+    /// Each pipe in the collection is fed the same incoming S object. If one
+    /// of the internal pipes emits true, then the OrFilterPipe emits the S
+    /// object. If not, then the incoming object is not emitted.
     /// </summary>
-    public class PropertyFilterPipe<S, T> : AbstractComparisonFilterPipe<S, T>
-        where S : IElement
+    /// <typeparam name="S">The type of the elements within the filter.</typeparam>
+    public class OrFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        private readonly String _Key;
-        private readonly T      _Value;
+        private readonly IEnumerable<IPipe<S, Boolean>> _Pipes;
 
         #endregion
 
         #region Constructor(s)
 
-        #region PropertyFilterPipe(myKey, myValue, myFilter)
+        #region OrFilterPipe(myPipes)
 
-        public PropertyFilterPipe(String myKey, T myValue, FilterEnum myFilter)
-            : base(myFilter)
+        /// <summary>
+        /// Creates a new pipe based on the given pipes.
+        /// </summary>
+        /// <param name="myPipes">Multiple IPipes&lt;S, Boolean&gt;.</param>
+        public OrFilterPipe(params IPipe<S, Boolean>[] myPipes)
         {
-            _Key   = myKey;
-            _Value = myValue;
+            _Pipes = new List<IPipe<S, Boolean>>(myPipes);
+        }
+
+        #endregion
+
+        #region OrFilterPipe(myPipes)
+
+        /// <summary>
+        /// Creates a new pipe based on the given pipes.
+        /// </summary>
+        /// <param name="myPipes">A collection of IPipes&lt;S, Boolean&gt;.</param>
+        public OrFilterPipe(IEnumerable<IPipe<S, Boolean>> myPipes)
+        {
+            _Pipes = myPipes;
         }
 
         #endregion
 
         #endregion
+
 
         #region MoveNext()
 
@@ -77,32 +93,29 @@ namespace de.ahzf.Pipes
 
                 if (_InternalEnumerator.MoveNext())
                 {
-                    var _IElement = _InternalEnumerator.Current;
 
-                    if (!CompareObjects(_IElement.GetProperty<T>(_Key), _Value))
+                    var _S = _InternalEnumerator.Current;
+
+                    foreach (var _Pipe in _Pipes)
                     {
-                        _CurrentElement = _IElement;
-                        return true;
+
+                        _Pipe.SetSource(new SingleEnumerator<S>(_S));
+
+                        if (_Pipe.MoveNext())
+                        {
+                            _CurrentElement = _S;
+                            return true;
+                        }
+
                     }
+
                 }
 
                 else
                     return false;
-
+            
             }
-        }
 
-        #endregion
-
-
-        #region ToString()
-
-        /// <summary>
-        /// A string representation of this pipe.
-        /// </summary>
-        public override String ToString()
-        {
-            return base.ToString() + "<" + _Key + "," + _Filter + "," + _Value + ">";
         }
 
         #endregion

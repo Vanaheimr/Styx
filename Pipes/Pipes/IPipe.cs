@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -25,6 +26,12 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
+    #region IPipe
+
+    /// <summary>
+    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
+    /// defining a general pipe.
+    /// </summary>
     public interface IPipe
     {
 
@@ -36,29 +43,49 @@ namespace de.ahzf.Pipes
 
     }
 
-	/// <summary>
+    #endregion
+
+    #region IPipe<E>
+
+    /// <summary>
+    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
+    /// defining a general pipe emitting elements of type E.
+    /// </summary>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public interface IPipe<E> : IPipe, IEnumerator<E>, IEnumerable<E>
+    {
+
+    }
+
+    #endregion
+
+    #region IPipe<S, E>
+
+    /// <summary>
 	/// The generic interface for any Pipe implementation.
 	/// A Pipe takes/consumes objects of type S and returns/emits objects of type E.
 	/// S refers to <i>starts</i> and the E refers to <i>ends</i>.
 	/// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<S, E> : IPipe, IEnumerator<E>, IEnumerable<E>
+    public interface IPipe<S, E> : IPipe, IPipe<E>
 	{
 	
 	    /// <summary>
-	    /// Set an iterator of S objects to the head (start) of the pipe.
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
 	    /// </summary> 
-	    /// <param name="starts">starts the iterator of incoming objects</param>
-	    void SetIEnumerator(IEnumerator<S> starts);
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
+        void SetSource(IEnumerator<S> myIEnumerator);
 		
 		
 	    /// <summary>
-	    /// Set an iterable of S objects to the head (start) of the pipe.
+        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
 	    /// </summary> 
-	    /// <param name="starts">starts the iterable of incoming objects</param>
-	    void SetIEnumerable(IEnumerable<S> starts);
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        void SetSourceCollection(IEnumerable<S> myIEnumerable);
 
 	}
+
+    #endregion
 
 }

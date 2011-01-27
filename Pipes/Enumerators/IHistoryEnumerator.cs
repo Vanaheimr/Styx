@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET
  *
@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -25,15 +26,15 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// A ComparisonFilterPipe will allow or disallow objects that pass
-    /// through it depending on some implemented comparison criteria.
+    /// A helper interface for the HistoryEnumerator&lt;T&gt; enumerator class.
     /// </summary>
-    /// <typeparam name="S"></typeparam>
-    /// <typeparam name="T"></typeparam>
-    public interface IComparisonFilterPipe<S, T> : IFilterPipe<S>
+    public interface IHistoryEnumerator
     {
 
-        Boolean CompareObjects(T leftObject, T rightObject);
+        /// <summary>
+        /// Return the last element of the internal IEnumertor.
+        /// </summary>
+        Object Last { get; }
 
     }
 

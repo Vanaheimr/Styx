@@ -19,39 +19,44 @@
 
 using System;
 
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.Datastructures;
+
 #endregion
 
 namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The ObjectFilterPipe will either allow or disallow all objects that pass
-    /// through it depending on the result of the compareObject() method.
+    /// The IdEdgePipe will convert the given EdgeIds into the
+    /// corresponding edges of the given graph.
     /// </summary>
-    /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class ObjectFilterPipe<S> : AbstractComparisonFilterPipe<S, S>
+    public class IdEdgePipe<S> : AbstractPipe<S, IEdge>
+        where S : EdgeId
     {
 
         #region Data
 
-        private readonly S _Object;
+        private readonly IGraph _IGraph;
 
         #endregion
 
         #region Constructor(s)
 
-        #region ObjectFilterPipe(myObject, myFilter)
+        #region IdEdgePipe(myIGraph)
 
-        public ObjectFilterPipe(S myObject, FilterEnum myFilter)
-            : base(myFilter)
+        /// <summary>
+        /// Creates a new IdEdgePipe.
+        /// </summary>
+        /// <param name="myIGraph">The IGraph to use.</param>
+        public IdEdgePipe(IGraph myIGraph)
         {
-            _Object = myObject;
+            _IGraph = myIGraph;
         }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -69,26 +74,14 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            if (_InternalEnumerator.MoveNext())
             {
-
-                if (_InternalEnumerator.MoveNext())
-                {
-
-                    var _S = _InternalEnumerator.Current;
-
-                    if (!CompareObjects(_S, _Object))
-                    {
-                        _CurrentElement = _S;
-                        return true;
-                    }
-
-                }
-
-                else
-                    return false;
-
+                _CurrentElement = _IGraph.GetEdge(_InternalEnumerator.Current);
+                return true;
             }
+
+            else
+                return false;
 
         }
 
@@ -102,7 +95,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Object + ">";
+            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
         }
 
         #endregion

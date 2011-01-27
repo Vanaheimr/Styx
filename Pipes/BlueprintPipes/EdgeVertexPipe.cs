@@ -18,9 +18,7 @@
 #region Usings
 
 using System;
-
 using de.ahzf.blueprints;
-using System.Collections.Generic;
 
 #endregion
 
@@ -28,45 +26,41 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The VertexEdgePipe returns either the incoming or
-    /// outgoing edges of the given vertex.
+    /// The EdgeVertexPipe returns either the incoming or
+    /// outgoing vertex of the given edge.
     /// </summary>
-    public class VertexEdgePipe : AbstractPipe<IVertex, IEdge>
+    public class EdgeVertexPipe : AbstractPipe<IEdge, IVertex>
     {
 
         #region Data
 
-        private readonly Step _Step;
-
-        /// <summary>
-        /// Stores all edges not yet visited.
-        /// </summary>
-        protected IEnumerator<IEdge> _StoredEdges;
+        private readonly Step    _Step;
+        private          IVertex _StoredOutVertex;
 
         #endregion
 
         #region Enum Step
 
         /// <summary>
-        /// An enum for traversing edges starting at a vertex.
+        /// An enum for traversing vertices starting at an edge.
         /// </summary>
         public enum Step
         {
-            
-            /// <summary>
-            /// Only traverse the outgoing edges.
-            /// </summary>
-            OUT_EDGES,
 
             /// <summary>
-            /// Only traverse the incoming edges.
+            /// Only traverse the incoming vertex.
             /// </summary>
-            IN_EDGES,
+            IN_VERTEX,
 
             /// <summary>
-            /// Traverse both incoming and outgoing edges.
+            /// Only traverse the outgoing vertex.
             /// </summary>
-            BOTH_EDGES
+            OUT_VERTEX,
+
+            /// <summary>
+            /// Traverse both incoming and outgoing vertex.
+            /// </summary>
+            BOTH_VERTICES
 
         }
 
@@ -74,14 +68,14 @@ namespace de.ahzf.Pipes
 
         #region Constructor(s)
 
-        #region VertexEdgePipe(myStep)
+        #region EdgeVertexPipe(myStep)
 
         /// <summary>
-        /// The VertexEdgePipe returns either the incoming or
-        /// outgoing Edges of the given vertex.
+        /// The EdgeVertexPipe returns either the incoming or
+        /// outgoing vertex of the given edge.
         /// </summary>
-        /// <param name="myStep">Visiting only outgoing edges, only incoming edges or both.</param>
-        public VertexEdgePipe(Step myStep)
+        /// <param name="myStep">Visiting only the outgoing vertex, only the incoming vertex or both.</param>
+        public EdgeVertexPipe(Step myStep)
         {
             _Step = myStep;
         }
@@ -107,51 +101,52 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            switch (_Step)
             {
 
-                if (_StoredEdges != null && _StoredEdges.MoveNext())
-                {
-                    _CurrentElement = _StoredEdges.Current;
-                    return true;
-                }
-
-                else
-                {
-
+                case Step.OUT_VERTEX:
                     if (_InternalEnumerator.MoveNext())
                     {
-
-                        switch (_Step)
-                        {
-
-                            case Step.OUT_EDGES:
-                                _StoredEdges = _InternalEnumerator.Current.OutEdges.GetEnumerator();
-                                return true;
-
-                            case Step.IN_EDGES:
-                                _StoredEdges = _InternalEnumerator.Current.InEdges.GetEnumerator();
-                                return true;
-
-                            case Step.BOTH_EDGES:
-                                var _IVertex = _InternalEnumerator.Current;
-                                _StoredEdges = new MultiEnumerator<IEdge>(_IVertex.InEdges.GetEnumerator(), _IVertex.OutEdges.GetEnumerator());
-                                return true;
-
-                            // Should not happen, but makes the compiler happy!
-                            default:
-                                throw new IllegalStateException("This is an illegal state as there is no step set!");
-
-                        }
-
+                        _CurrentElement = _InternalEnumerator.Current.OutVertex;
+                        return true;
                     }
+                    return false;
 
-                    else
-                        return false;
+                case Step.IN_VERTEX:
+                    if (_InternalEnumerator.MoveNext())
+                    {
+                        _CurrentElement = _InternalEnumerator.Current.InVertex;
+                        return true;
+                    }
+                    return false;
 
-                }                
+                case Step.BOTH_VERTICES:
+                    {
+                        if (_StoredOutVertex == null)
+                        {
+                            if (_InternalEnumerator.MoveNext())
+                            {
+                                _StoredOutVertex = _InternalEnumerator.Current.OutVertex;
+                                _CurrentElement  = _InternalEnumerator.Current.InVertex;
+                                return true;
+                            }
+                            return false;
+                        }
+                        else
+                        {
+                            var _Temp = _StoredOutVertex;
+                            _StoredOutVertex = null;
+                            _CurrentElement  = _Temp;
+                        }
+                    }
+                    break;
+
+                // Should not happen, but makes the compiler happy!
+                default: throw new IllegalStateException("This is an illegal state as there is no step set!");
 
             }
+
+            return true;
 
         }
 

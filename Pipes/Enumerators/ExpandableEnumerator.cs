@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// an internal queue. The queue has priority over the internal enumerator when
     /// accessing the current element.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">The type of the stored elements.</typeparam>
 	public class ExpandableEnumerator<T> : IEnumerator<T>
     {
 
@@ -39,6 +39,8 @@ namespace de.ahzf.Pipes
 
         private readonly Queue<T>       _Queue;
         private readonly IEnumerator<T> _IEnumerator;
+        private          T              _CurrentQueueElement;
+        private          Boolean        _ValidQueueElement;
 
         #endregion
 
@@ -52,8 +54,10 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerator">The enumerator to be wrapped.</param>
         public ExpandableEnumerator(IEnumerator<T> myIEnumerator)
         {
-            _Queue       = new Queue<T>();
-            _IEnumerator = myIEnumerator;
+            _Queue               = new Queue<T>();
+            _IEnumerator         = myIEnumerator;
+            _CurrentQueueElement = default(T);
+            _ValidQueueElement   = false;
         }
     
         #endregion
@@ -70,11 +74,13 @@ namespace de.ahzf.Pipes
         {
             get
             {
-                if (_Queue.Count == 0)
-                    return _IEnumerator.Current;
+                
+                if (_ValidQueueElement)
+                    return _CurrentQueueElement;
 
                 else
-                    return _Queue.Dequeue();
+                    return _IEnumerator.Current;
+
             }
         }
 
@@ -85,11 +91,13 @@ namespace de.ahzf.Pipes
         {
             get
             {
-                if (_Queue.Count == 0)
-                    return _IEnumerator.Current;
+
+                if (_ValidQueueElement)
+                    return _CurrentQueueElement;
 
                 else
-                    return _Queue.Dequeue();
+                    return _IEnumerator.Current;
+
             }
         }
 
@@ -103,7 +111,18 @@ namespace de.ahzf.Pipes
         /// <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
         public Boolean MoveNext()
         {
-            return (_Queue.Count > 0 || _IEnumerator.MoveNext());
+
+            if (_Queue.Count > 0)
+            {
+                _CurrentQueueElement = _Queue.Dequeue();
+                _ValidQueueElement   = true;
+                return true;
+            }
+
+            _ValidQueueElement = false;
+
+            return _IEnumerator.MoveNext();
+
         }
 
         #endregion
@@ -112,25 +131,26 @@ namespace de.ahzf.Pipes
 
         /// <summary>
         /// Sets the enumerator to its initial position, which is
-        /// before the first element in the collection.
+        /// before the first element in the collection and clears
+        /// the internal queue.
         /// </summary>
         public void Reset()
         {
-            throw new NotImplementedException();
+            _IEnumerator.Reset();
+            _Queue.Clear();
         }
 
         #endregion
 
-
-        #region Add(myT)
+        #region Add(myElement)
 
         /// <summary>
         /// Adds an element to the internal queue.
         /// </summary>
-        /// <param name="myT">The element to add.</param>
-        public void Add(T myT)
+        /// <param name="myElement">The element to add.</param>
+        public void Add(T myElement)
         {
-            _Queue.Enqueue(myT);
+            _Queue.Enqueue(myElement);
         }
 
         #endregion

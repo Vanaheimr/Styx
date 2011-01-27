@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -62,11 +63,10 @@ namespace TestApplication
             IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
-            pipe3.SetIEnumerator(pipe2);
-            pipe3.SetIEnumerator(pipe2.GetEnumerator());
-            pipe2.SetIEnumerator(pipe1.GetEnumerator());
+            pipe3.SetSource(pipe2);
+            pipe2.SetSource(pipe1);
             var _MarkoList = new List<IVertex>() { marko };
-            pipe1.SetIEnumerator(_MarkoList.GetEnumerator());
+            pipe1.SetSource(_MarkoList.GetEnumerator());
 
             foreach (var name in pipe3)
             {

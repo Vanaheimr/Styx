@@ -29,28 +29,48 @@ namespace de.ahzf.Pipes
 	/// PipeHelper provides a collection of static methods that are useful when dealing with Pipes.
 	/// </summary>
 	public static class PipeHelper
-	{
-	
-	    public static void fillCollection<T>(IEnumerator<T> iterator, ICollection<T> collection)
+    {
+
+        #region FillCollection<T>(this myIEnumerator, myICollection)
+
+        /// <summary>
+        /// Fill the given collection with the elements emitted by the IEnumerator&lt;T&gt;.
+        /// </summary>
+        /// <typeparam name="T">The type of the emitted objects.</typeparam>
+        /// <param name="myIEnumerator">An IEnumerator&lt;T&gt;.</param>
+        /// <param name="myICollection">An ICollection&lt;T&gt;.</param>
+	    public static void FillCollection<T>(this IEnumerator<T> myIEnumerator, ICollection<T> myICollection)
 		{
-	        while (iterator.MoveNext())
+	        while (myIEnumerator.MoveNext())
 			{
-	            collection.Add(iterator.Current);
+	            myICollection.Add(myIEnumerator.Current);
 	        }
 	    }
-	
-	    public static long counter<T>(IEnumerator<T> iterator)
+
+        #endregion
+
+        #region Counter<T>(this myIEnumerator)
+
+        /// <summary>
+        /// Counts the elements emitted by the IEnumerator&lt;T&gt;.
+        /// </summary>
+        /// <typeparam name="T">The type of the emitted objects.</typeparam>
+        /// <param name="myIEnumerator">An IEnumerator&lt;T&gt;.</param>
+        /// <returns>The number of elements emitted by the IEnumerator&lt;T&gt;.</returns>
+        public static UInt64 Counter<T>(this IEnumerator<T> myIEnumerator)
 		{
 			
-	        long counter = 0;
+	        var _Counter = 0UL;
 	        
-			while (iterator.MoveNext())
-	            counter++;
+			while (myIEnumerator.MoveNext())
+	            _Counter++;
 			
-	        return counter;
-	    
-		}
-		
-	}
+	        return _Counter;
+
+        }
+
+        #endregion
+
+    }
 
 }

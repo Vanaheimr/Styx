@@ -26,27 +26,45 @@ namespace de.ahzf.Pipes
 {
     
     /// <summary>
-    /// FutureFilterPipe will allow an object to pass through it if the
-    /// object has an output from the pipe provided in the constructor
-    /// of the FutureFilterPipe.
+    /// The AndFilterPipe takes a collection of pipes, where E is boolean.
+    /// Each provided pipe is fed the same incoming S object. If all the
+    /// pipes emit true, then the AndFilterPipe emits the incoming S object.
+    /// If not, then the incoming S object is not emitted.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class FutureFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        private readonly IPipe<S, S> _Pipe;
+        private readonly IEnumerable<IPipe<S, Boolean>> _Pipes;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FutureFilterPipe(myPipes)
+        #region AndFilterPipe(myPipes)
 
-        public FutureFilterPipe(IPipe<S, S> myPipe)
+        /// <summary>
+        /// Creates a new pipe based on the given pipes.
+        /// </summary>
+        /// <param name="myPipes">Multiple IPipes&lt;S, Boolean&gt;.</param>
+        public AndFilterPipe(params IPipe<S, Boolean>[] myPipes)
         {
-            _Pipe = myPipe;
+            _Pipes = new List<IPipe<S, Boolean>>(myPipes);
+        }
+
+        #endregion
+
+        #region AndFilterPipe(myPipes)
+
+        /// <summary>
+        /// Creates a new pipe based on the given pipes.
+        /// </summary>
+        /// <param name="myPipes">A collection of IPipes&lt;S, Boolean&gt;.</param>
+        public AndFilterPipe(IEnumerable<IPipe<S, Boolean>> myPipes)
+        {
+            _Pipes = myPipes;
         }
 
         #endregion
@@ -78,39 +96,34 @@ namespace de.ahzf.Pipes
 
                     var _S = _InternalEnumerator.Current;
 
-                    _Pipe.SetIEnumerator(new SingleEnumerator<S>(_S));
+                    var _And = true;
 
-                    // District of chaos, discord and confusion ;)!
-                    //if (_Pipe.hasNext())
-                    //{
+                    foreach (var _Pipe in _Pipes)
+                    {
 
-                    //    while (_Pipe.hasNext())
-                    //        _Pipe.next();
+                        _Pipe.SetSource(new SingleEnumerator<S>(_S));
 
-                    //    return _S;
+                        if (!_Pipe.MoveNext())
+                        {
+                            _And = false;
+                            break;
+                        }
 
-                    //}
+                    }
+
+                    if (_And)
+                    {
+                        _CurrentElement = _S;
+                        return true;
+                    }
 
                 }
 
                 else
                     return false;
-            
+
             }
 
-        }
-
-        #endregion
-
-
-        #region ToString()
-
-        /// <summary>
-        /// A string representation of this pipe.
-        /// </summary>
-        public override String ToString()
-        {
-            return base.ToString() + "<" + _Pipe + ">";
         }
 
         #endregion

@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// The order in which objects are returned from both enumerators are with
     /// respect to the order of the enumerators passed into the constructor.
     /// </summary>
-    /// <typeparam name="T">The type of the internal IEnumerator.</typeparam>
+    /// <typeparam name="T">The type of the stored elements.</typeparam>
 	public class MultiEnumerator<T> : IEnumerator<T>
 	{
 		
@@ -115,17 +115,24 @@ namespace de.ahzf.Pipes
             while (true)
             {
 
+                if (_CurrentEnumerator == null)
+                    return false;
+
                 // Move to the next element of the current enumerator
-                var _NextElement = _CurrentEnumerator.MoveNext();
-                if (_NextElement)
+                if (_CurrentEnumerator.MoveNext())
                     return true;
 
-                // Move to the next enumerator
-                var _NextEnumerator = _IEnumerators.MoveNext();
-                if (_NextEnumerator)
-                    _CurrentEnumerator = _IEnumerators.Current;
                 else
-                    return false;
+                {
+
+                    // Move to the next enumerator
+                    if (_IEnumerators.MoveNext())
+                        _CurrentEnumerator = _IEnumerators.Current;
+
+                    else
+                        return false;
+
+                }
 
             }
 
@@ -150,7 +157,7 @@ namespace de.ahzf.Pipes
         #region Dispose()
 
         /// <summary>
-        /// Dispose this object.
+        /// Dispose this enumerator.
         /// </summary>
         public void Dispose()
         { }

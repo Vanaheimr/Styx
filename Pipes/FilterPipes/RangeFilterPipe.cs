@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -26,28 +25,37 @@ namespace de.ahzf.Pipes
 {
     
     /// <summary>
-    /// The DuplicateFilterPipe will not allow a duplicate object to pass through it.
-    /// This is accomplished by the Pipe maintaining an internal HashSet that is used
-    /// to store a history of previously seen objects.
-    /// Thus, the more unique objects that pass through this Pipe, the slower it
-    /// becomes as a log_2 index is checked for every object.
+    /// The RangeFilterPipe will only allow a sequential subset of its incoming
+    /// objects to be emitted to its output. This pipe can be provided -1 for
+    /// both its high and low range to denote a wildcard for high and/or low.
+    /// Note that -1 for both high and low is equivalent to the IdentityPipe.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class DuplicateFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class RangeFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        private readonly HashSet<S> _HistorySet = new HashSet<S>();
+        private readonly Int32 _Low;
+        private readonly Int32 _High;
+        private          Int32 _Counter;
 
         #endregion
 
         #region Constructor(s)
 
-        #region DuplicateFilterPipe()
+        #region RangeFilterPipe(myLow, myHigh)
 
-        public DuplicateFilterPipe()
-        { }
+        /// <summary>
+        /// Creates a new RangeFilterPipe.
+        /// </summary>
+        /// <param name="myLow">The minima.</param>
+        /// <param name="myHigh">The maxima.</param>
+        public RangeFilterPipe(Int32 myLow, Int32 myHigh)
+        {
+            _Low  = myLow;
+            _High = myHigh;
+        }
 
         #endregion
 
@@ -76,21 +84,40 @@ namespace de.ahzf.Pipes
                 if (_InternalEnumerator.MoveNext())
                 {
 
-                    _CurrentElement = _InternalEnumerator.Current;
+                    var _S = _InternalEnumerator.Current;
 
-                    if (!_HistorySet.Contains(_CurrentElement))
+                    _Counter++;
+
+                    if ((_Low  == -1 || _Counter >= _Low) &&
+                        (_High == -1 || _Counter <  _High))
                     {
-                        _HistorySet.Add(_CurrentElement);
+                        _CurrentElement = _S;
                         return true;
                     }
+
+                    if (_High > 0 && _Counter >= _High)
+                        throw new NoSuchElementException();
 
                 }
 
                 else
                     return false;
-            
+
             }
 
+        }
+
+        #endregion
+
+
+        #region ToString()
+
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
+        public override String ToString()
+        {
+            return base.ToString() + "<" + _Low + "," + _High + ">";
         }
 
         #endregion

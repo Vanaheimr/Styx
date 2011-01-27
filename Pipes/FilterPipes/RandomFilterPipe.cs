@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -26,37 +25,33 @@ namespace de.ahzf.Pipes
 {
     
     /// <summary>
-    /// The AndFilterPipe takes a collection of pipes, where E is boolean.
-    /// Each provided pipe is fed the same incoming S object. If all the
-    /// pipes emit true, then the AndFilterPipe emits the incoming S object.
-    /// If not, then the incoming S object is not emitted.
+    /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
+    /// For each passing object, a random number generator creates a double value between 0 and 1.
+    /// If the randomly generated double is less than or equal the provided bias, then the object is allowed to pass.
+    /// If the randomly generated double is greater than the provided bias, then the object is not allowed to pass.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class RandomFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        private readonly IEnumerable<IPipe<S, Boolean>> _Pipes;
+        private static readonly Random _Random = new Random();
+        private        readonly Double _Bias;
 
         #endregion
 
         #region Constructor(s)
 
-        #region AndFilterPipe(myPipes)
+        #region RandomFilterPipe(myBias)
 
-        public AndFilterPipe(params IPipe<S, Boolean>[] myPipes)
+        /// <summary>
+        /// Creates a new RandomFilterPipe.
+        /// </summary>
+        /// <param name="myBias">The bias.</param>
+        public RandomFilterPipe(Double myBias)
         {
-            _Pipes = new List<IPipe<S, Boolean>>(myPipes);
-        }
-
-        #endregion
-
-        #region AndFilterPipe(myPipes)
-
-        public AndFilterPipe(IEnumerable<IPipe<S, Boolean>> myPipes)
-        {
-            _Pipes = myPipes;
+            _Bias = myBias;
         }
 
         #endregion
@@ -88,22 +83,7 @@ namespace de.ahzf.Pipes
 
                     var _S = _InternalEnumerator.Current;
 
-                    var _And = true;
-
-                    foreach (var _Pipe in _Pipes)
-                    {
-
-                        _Pipe.SetIEnumerator(new SingleEnumerator<S>(_S));
-
-                        if (!_Pipe.MoveNext())
-                        {
-                            _And = false;
-                            break;
-                        }
-
-                    }
-
-                    if (_And)
+                    if (_Bias >= _Random.NextDouble())
                     {
                         _CurrentElement = _S;
                         return true;
@@ -116,6 +96,19 @@ namespace de.ahzf.Pipes
 
             }
 
+        }
+
+        #endregion
+
+
+        #region ToString()
+
+        /// <summary>
+        /// A string representation of this pipe.
+        /// </summary>
+        public override String ToString()
+        {
+            return base.ToString() + "<" + _Bias + ">";
         }
 
         #endregion

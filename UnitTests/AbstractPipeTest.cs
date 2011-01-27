@@ -20,10 +20,11 @@
 using System;
 using System.Collections.Generic;
 
-using NUnit.Framework;
 using de.ahzf.blueprints;
 using de.ahzf.blueprints.InMemoryGraph;
 using de.ahzf.blueprints.Datastructures;
+
+using NUnit.Framework;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace de.ahzf.Pipes.UnitTests
             var names = new List<String>() { "marko", "josh", "peter" };
 
             IPipe<String, String> pipe = new IdentityPipe<String>();
-            pipe.SetIEnumerable(names);
+            pipe.SetSourceCollection(names);
 
             var counter = 0UL;
             while (pipe.MoveNext())
@@ -54,7 +55,7 @@ namespace de.ahzf.Pipes.UnitTests
             }
             
             Assert.AreEqual(counter, 3UL);
-            pipe.SetIEnumerable(names);
+            pipe.SetSourceCollection(names);
             counter = 0UL;
             
             foreach (var name in pipe)
@@ -71,6 +72,7 @@ namespace de.ahzf.Pipes.UnitTests
 
         #region testPathConstruction
 
+        [Test]
         public void testPathConstruction()
         {
 
@@ -80,10 +82,10 @@ namespace de.ahzf.Pipes.UnitTests
             IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
-            pipe3.SetIEnumerator(pipe2.GetEnumerator());
-            pipe2.SetIEnumerator(pipe1.GetEnumerator());
+            pipe3.SetSource(pipe2.GetEnumerator());
+            pipe2.SetSource(pipe1.GetEnumerator());
             var _MarkoList = new List<IVertex>() { marko };
-            pipe1.SetIEnumerator(_MarkoList.GetEnumerator());
+            pipe1.SetSource(_MarkoList.GetEnumerator());
 
             foreach (var name in pipe3)
             {

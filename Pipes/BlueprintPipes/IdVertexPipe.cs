@@ -20,6 +20,7 @@
 using System;
 
 using de.ahzf.blueprints;
+using de.ahzf.blueprints.Datastructures;
 
 #endregion
 
@@ -27,26 +28,30 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The LabelFilterPipe either allows or disallows all
-    /// Edges that have the provided label.
+    /// The IdVertexPipe will convert the given VertexIds into the
+    /// corresponding vertices of the given graph.
     /// </summary>
-    public class LabelFilterPipe : AbstractComparisonFilterPipe<IEdge, String>
+    public class IdVertexPipe<S> : AbstractPipe<S, IVertex>
+        where S : VertexId
     {
 
         #region Data
 
-        private readonly String _Label;
+        private readonly IGraph _IGraph;
 
         #endregion
 
         #region Constructor(s)
 
-        #region LabelFilterPipe(myLabel, myFilter)
+        #region IdVertexPipe(myIGraph)
 
-        public LabelFilterPipe(String myLabel, FilterEnum myFilter)
-            : base(myFilter)
+        /// <summary>
+        /// Creates a new IdVertexPipe.
+        /// </summary>
+        /// <param name="myIGraph">The IGraph to use.</param>
+        public IdVertexPipe(IGraph myIGraph)
         {
-            _Label = myLabel;
+            _IGraph = myIGraph;
         }
 
         #endregion
@@ -69,24 +74,14 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            if (_InternalEnumerator.MoveNext())
             {
-
-                if (_InternalEnumerator.MoveNext())
-                {
-                    var _Edge = _InternalEnumerator.Current;
-
-                    if (!CompareObjects(_Edge.Label, _Label))
-                    {
-                        _CurrentElement = _Edge;
-                        return true;
-                    }
-                }
-
-                else
-                    return false;
-
+                _CurrentElement = _IGraph.GetVertex(_InternalEnumerator.Current);
+                return true;
             }
+
+            return false;
+
         }
 
         #endregion
@@ -99,7 +94,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Filter + "," + _Label + ">";
+            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
         }
 
         #endregion

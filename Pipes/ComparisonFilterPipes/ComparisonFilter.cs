@@ -21,7 +21,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// An enum for pipe filtering purposes.
     /// </summary>
-    public enum FilterEnum
+    public enum ComparisonFilter
     {
 
         /// <summary>

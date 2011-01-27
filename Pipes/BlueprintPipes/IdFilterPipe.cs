@@ -41,10 +41,15 @@ namespace de.ahzf.Pipes
 
         #region Constructor(s)
 
-        #region IdFilterPipe(myElementId, myFilter)
+        #region IdFilterPipe(myElementId, myComparisonFilter)
 
-        public IdFilterPipe(ElementId myElementId, FilterEnum myFilter)
-            : base(myFilter)
+        /// <summary>
+        /// Creates a new IdFilterPipe.
+        /// </summary>
+        /// <param name="myElementId">The Id of the IElement.</param>
+        /// <param name="myComparisonFilter">The filter to use.</param>
+        public IdFilterPipe(ElementId myElementId, ComparisonFilter myComparisonFilter)
+            : base(myComparisonFilter)
         {
             _ElementId = myElementId;
         }
@@ -52,6 +57,7 @@ namespace de.ahzf.Pipes
         #endregion
 
         #endregion
+
 
         #region MoveNext()
 

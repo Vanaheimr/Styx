@@ -41,6 +41,9 @@
   <ItemGroup>
     <Compile Include="AbstractPipeTest.cs" />
     <Compile Include="BaseTest.cs" />
+    <Compile Include="ExpandableIteratorTest.cs" />
+    <Compile Include="IdentityPipeTest.cs" />
+    <Compile Include="MultiIteratorTest.cs" />
     <Compile Include="SingleEnumeratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TinkerGraphFactory.cs" />

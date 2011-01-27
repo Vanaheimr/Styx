@@ -19,43 +19,44 @@
 
 using System;
 
+using de.ahzf.blueprints;
+
 #endregion
 
 namespace de.ahzf.Pipes
 {
-    
+
     /// <summary>
-    /// The RangeFilterPipe will only allow a sequential subset of its incoming
-    /// objects to be emitted to its output. This pipe can be provided -1 for
-    /// both its high and low range to denote a wildcard for high and/or low.
-    /// Note that -1 for both high and low is equivalent to the IdentityPipe.
+    /// The LabelFilterPipe either allows or disallows all
+    /// Edges that have the provided label.
     /// </summary>
-    /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class RangeFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class LabelFilterPipe : AbstractComparisonFilterPipe<IEdge, String>
     {
 
         #region Data
 
-        private readonly Int32 _Low;
-        private readonly Int32 _High;
-        private          Int32 _Counter;
+        private readonly String _Label;
 
         #endregion
 
         #region Constructor(s)
 
-        #region RangeFilterPipe(myBias)
+        #region LabelFilterPipe(myLabel, myComparisonFilter)
 
-        public RangeFilterPipe(Int32 myLow, Int32 myHigh)
+        /// <summary>
+        /// Creates a new LabelFilterPipe.
+        /// </summary>
+        /// <param name="myLabel">The edge label.</param>
+        /// <param name="myComparisonFilter">The filter to use.</param>
+        public LabelFilterPipe(String myLabel, ComparisonFilter myComparisonFilter)
+            : base(myComparisonFilter)
         {
-            _Low  = myLow;
-            _High = myHigh;
+            _Label = myLabel;
         }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -78,28 +79,19 @@ namespace de.ahzf.Pipes
 
                 if (_InternalEnumerator.MoveNext())
                 {
+                    var _Edge = _InternalEnumerator.Current;
 
-                    var _S = _InternalEnumerator.Current;
-
-                    _Counter++;
-
-                    if ((_Low == -1 || _Counter >= _Low) &&
-                        (_High == -1 || _Counter < _High))
+                    if (!CompareObjects(_Edge.Label, _Label))
                     {
-                        _CurrentElement = _S;
+                        _CurrentElement = _Edge;
                         return true;
                     }
-
-                    if (_High > 0 && _Counter >= _High)
-                        throw new NoSuchElementException();
-
                 }
 
                 else
                     return false;
 
             }
-
         }
 
         #endregion
@@ -112,7 +104,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Low + "," + _High + ">";
+            return base.ToString() + "<" + _Filter + "," + _Label + ">";
         }
 
         #endregion

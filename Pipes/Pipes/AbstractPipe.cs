@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -62,26 +63,16 @@ namespace de.ahzf.Pipes
 		
 		#endregion
 
-        #region AbstractPipe(myIPipe)
-
-        /// <summary>
-        /// Creates a new abstract pipe using on the given IPipe.
-        /// </summary>
-        public AbstractPipe(IPipe myIPipe)
-        {
-            SetIPipe(myIPipe);
-        }
-
-        #endregion
-
         #region AbstractPipe(myIEnumerator)
 
         /// <summary>
-        /// Creates a new abstract pipe using on the given IEnumerator.
+        /// Creates a new abstract pipe using the elements emitted
+        /// by the given IEnumerator as input.
         /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
         public AbstractPipe(IEnumerator<S> myIEnumerator)
         {
-            SetIEnumerator(myIEnumerator);
+            SetSource(myIEnumerator);
         }
 
         #endregion
@@ -89,11 +80,13 @@ namespace de.ahzf.Pipes
         #region AbstractPipe(myIEnumerable)
 
         /// <summary>
-        /// Creates a new abstract pipe using on the given IEnumerable.
+        /// Creates a new abstract pipe using the elements emitted
+        /// by the given IEnumerable as input.
         /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
         public AbstractPipe(IEnumerable<S> myIEnumerable)
         {   
-            SetIEnumerable(myIEnumerable);
+            SetSourceCollection(myIEnumerable);
         }
 
         #endregion
@@ -101,38 +94,19 @@ namespace de.ahzf.Pipes
 		#endregion
 
 
-        #region SetIPipe(myIPipe)
+        #region SetSource(myIEnumerator)
 
-        //ToDo: Is this really needed?!
-        //public void SetIPipe(IPipe<Object, S> myIPipe)
-        //{
-        //    _Starts = myIPipe;
-        //}
-
-        public virtual void SetIPipe(IPipe myIPipe)
-        {
-            
-            var _IEnumerator = myIPipe as IEnumerator<S>;
-
-            if (_IEnumerator != null)
-                _InternalEnumerator = _IEnumerator;
-
-            else
-                throw new ArgumentNullException("myPipe must not be null and implement the IPipe<S, E> interface!");
-
-        }
-
-        #endregion
-
-        #region SetIEnumerator(myIEnumerator)
-
-        public virtual void SetIEnumerator(IEnumerator<S> myIEnumerator)
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
+        public virtual void SetSource(IEnumerator<S> myIEnumerator)
 		{
 
             if (myIEnumerator == null)
                 throw new ArgumentNullException("myIEnumerator must not be null!");
 
-	        if (myIEnumerator is IPipe)
+	        if (myIEnumerator is IPipe<S>)
 	            _InternalEnumerator = myIEnumerator;
 	        else
 	            _InternalEnumerator = new HistoryEnumerator<S>(myIEnumerator);
@@ -141,15 +115,19 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region SetIEnumerable(myIEnumerable)
+        #region SetSourceCollection(myIEnumerable)
 
-        public virtual void SetIEnumerable(IEnumerable<S> myIEnumerable)
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
+        /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        public virtual void SetSourceCollection(IEnumerable<S> myIEnumerable)
 		{
 
             if (myIEnumerable == null)
                 throw new ArgumentNullException("myIEnumerator must not be null!");
 
-	        SetIEnumerator(myIEnumerable.GetEnumerator());
+	        SetSource(myIEnumerable.GetEnumerator());
 
 	    }
 
@@ -175,7 +153,7 @@ namespace de.ahzf.Pipes
         /// <returns>
         /// A IEnumerator that can be used to iterate through the collection.
         /// </returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this;
         }
@@ -248,10 +226,13 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-
-
         #region Path
 
+        /// <summary>
+        /// Returns the transformation path to arrive at the current object
+        /// of the pipe. This is a list of all of the objects traversed for
+        /// the current iterator position of the pipe.
+        /// </summary>
         public virtual List<Object> Path
         {
             get

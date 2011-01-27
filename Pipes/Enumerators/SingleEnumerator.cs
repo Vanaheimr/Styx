@@ -26,45 +26,60 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// A MultiEnumerator takes multiple IEnumerators in its constructor
-    /// and makes them behave like a single enumerator.
-    /// The order in which objects are returned from both enumerators are with
-    /// respect to the order of the enumerators passed into the constructor.
+    /// SingleEnumerator is an iterator that only contains one element
+    /// of type T. This has applications in various metapipes, where
+    /// single objects are manipulated at a time.
     /// </summary>
-    /// <typeparam name="T">The type of the internal enumerator.</typeparam>
+    /// <typeparam name="T">The type of the stored element.</typeparam>
 	public class SingleEnumerator<T> : IEnumerator<T>
     {
 
-        #region EnumeratorLiveliness
+        #region Data
 
-        private enum EnumeratorLiveliness
+        private readonly T                     _Element;
+        private          SingleEnumeratorState _InternalState;
+	
+		#endregion
+
+        #region Enum SingleEnumeratorState
+
+        /// <summary>
+        /// The internal state of the SingleEnumerator&lt;T&gt;.
+        /// </summary>
+        private enum SingleEnumeratorState
         {
-            PREBIRTH,
-            ALIVE,
-            DEATH
+
+            /// <summary>
+            /// Before the element.
+            /// </summary>
+            BEFORE,
+
+            /// <summary>
+            /// At the element.
+            /// </summary>
+            AT,
+
+            /// <summary>
+            /// Behind the element.
+            /// </summary>
+            BEHIND
+
         }
 
         #endregion
 
-        #region Data
-
-        private readonly T                    _Element;
-        private          EnumeratorLiveliness _Alive;
-	
-		#endregion
-		
 		#region Constructor(s)
 
         #region SingleEnumerator(myElement)
 
         /// <summary>
-        /// Creates a new SingleEnumerator based on the given element.
+        /// Creates a new single element enumerator based on the given element.
         /// </summary>
-        /// <param name="myElement"></param>
+        /// <param name="myElement">The element within the enumerator.</param>
         public SingleEnumerator(T myElement)
         {
-            _Element = myElement;
-            _Alive   = EnumeratorLiveliness.PREBIRTH;
+            _Element       = myElement;
+            _InternalState = SingleEnumeratorState.BEFORE;
         }
 
         #endregion
@@ -75,14 +90,14 @@ namespace de.ahzf.Pipes
         #region Current
 
         /// <summary>
-        /// Return the current element of the current IEnumertor.
+        /// Return the current element of the current IEnumertor&lt;T&gt;.
         /// </summary>
 		public T Current
 		{
 			get
 			{
 
-                if (_Alive == EnumeratorLiveliness.ALIVE)
+                if (_InternalState == SingleEnumeratorState.AT)
                     return _Element;
 
                 throw new InvalidOperationException();
@@ -98,7 +113,7 @@ namespace de.ahzf.Pipes
 			get
 			{
 
-                if (_Alive == EnumeratorLiveliness.ALIVE)
+                if (_InternalState == SingleEnumeratorState.AT)
                     return _Element;
 
                 throw new InvalidOperationException();
@@ -117,11 +132,20 @@ namespace de.ahzf.Pipes
 		public Boolean MoveNext()
 		{
 
-            switch (_Alive)
+            switch (_InternalState)
             {
-                case EnumeratorLiveliness.PREBIRTH : _Alive = EnumeratorLiveliness.ALIVE;  return true;
-                case EnumeratorLiveliness.ALIVE:    _Alive = EnumeratorLiveliness.DEATH; return false;
-                case EnumeratorLiveliness.DEATH:   _Alive = EnumeratorLiveliness.DEATH; return false;
+
+                case SingleEnumeratorState.BEFORE:
+                    _InternalState = SingleEnumeratorState.AT;
+                    return true;
+
+                case SingleEnumeratorState.AT:
+                    _InternalState = SingleEnumeratorState.BEHIND;
+                    return false;
+
+                case SingleEnumeratorState.BEHIND:
+                    return false;
+
             }
 
             return false;
@@ -138,7 +162,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public void Reset()
 		{
-            _Alive = EnumeratorLiveliness.PREBIRTH;
+            _InternalState = SingleEnumeratorState.BEFORE;
 		}
 
         #endregion
@@ -147,7 +171,7 @@ namespace de.ahzf.Pipes
         #region Dispose()
 
         /// <summary>
-        /// Dispose this object.
+        /// Dispose this enumerator.
         /// </summary>
         public void Dispose()
         { }
