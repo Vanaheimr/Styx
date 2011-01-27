@@ -54,24 +54,28 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        protected override S ProcessNextStart()
+        #region MoveNext()
+
+        public override Boolean MoveNext()
         {
 
             while (true)
             {
 
                 _Starts.MoveNext();
-                var _S = _Starts.Current;
+                _CurrentItem = _Starts.Current;
 
-                if (!_HistorySet.Contains(_S))
+                if (!_HistorySet.Contains(_CurrentItem))
                 {
-                    _HistorySet.Add(_S);
-                    return _S;
+                    _HistorySet.Add(_CurrentItem);
+                    return true;
                 }
             
             }
 
         }
+
+        #endregion
 
     }
 

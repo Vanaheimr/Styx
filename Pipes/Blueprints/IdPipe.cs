@@ -33,12 +33,13 @@ namespace de.ahzf.Pipes
     public class IdPipe : AbstractPipe<IElement, ElementId>
     {
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override ElementId ProcessNextStart()
+        public override Boolean MoveNext()
         {
             _Starts.MoveNext();
-            return _Starts.Current.Id;
+            _CurrentItem = _Starts.Current.Id;
+            return true;
         }
 
         #endregion

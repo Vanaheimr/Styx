@@ -52,21 +52,22 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override S ProcessNextStart()
+        public override Boolean MoveNext()
         {
 
             _Starts.MoveNext();
-            var _S = _Starts.Current;
-
+            _CurrentItem = _Starts.Current;
             _Counter++;
 
-            return _S;
+            return true;
 
         }
 
         #endregion
+
+        #region SideEffect
 
         public UInt64 SideEffect
         {
@@ -75,6 +76,8 @@ namespace de.ahzf.Pipes
                 return _Counter;
             }
         }
+
+        #endregion
 
 
         #region ToString()

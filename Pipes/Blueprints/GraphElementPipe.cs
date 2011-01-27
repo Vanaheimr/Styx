@@ -62,9 +62,10 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region ProcessNextStart()
 
-        protected override E ProcessNextStart()
+        #region MoveNext()
+
+        public override Boolean MoveNext()
         {
 
             while (true)

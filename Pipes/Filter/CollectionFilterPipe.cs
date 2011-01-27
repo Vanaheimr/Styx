@@ -64,6 +64,28 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region MoveNext()
+
+        public override Boolean MoveNext()
+        {
+            while (true)
+            {
+
+                _Starts.MoveNext();
+                var _S = _Starts.Current;
+
+                if (CompareObjects(_S))
+                {
+                    _CurrentItem = _S;
+                    return true;
+                }
+
+            }
+        }
+
+        #endregion
+
+
         public Boolean CompareObjects(S myLeftObject, S myRightObject)
         {
 
@@ -80,7 +102,7 @@ namespace de.ahzf.Pipes
         }
 
 
-        private Boolean compareObjects(S myRightObject)
+        private Boolean CompareObjects(S myRightObject)
         {
 
             if (_Filter == FilterEnum.NOT_EQUAL)
@@ -95,20 +117,6 @@ namespace de.ahzf.Pipes
 
         }
 
-
-        protected override S ProcessNextStart()
-        {
-            while (true)
-            {
-
-                _Starts.MoveNext();
-                var _S = _Starts.Current;
-
-                if (compareObjects(_S))
-                    return _S;
-
-            }
-        }
 
     }
 

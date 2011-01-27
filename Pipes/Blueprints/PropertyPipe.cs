@@ -53,12 +53,13 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override E ProcessNextStart()
+        public override Boolean MoveNext()
         {
             _Starts.MoveNext();
-            return _Starts.Current.GetProperty<E>(_Key);
+            _CurrentItem = _Starts.Current.GetProperty<E>(_Key);
+            return true;
         }
 
         #endregion

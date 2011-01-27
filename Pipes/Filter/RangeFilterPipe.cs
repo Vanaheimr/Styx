@@ -57,8 +57,9 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region MoveNext()
 
-        protected override S ProcessNextStart()
+        public override Boolean MoveNext()
         {
 
             while (true)
@@ -71,7 +72,10 @@ namespace de.ahzf.Pipes
 
                 if ((_Low  == -1 || _Counter >= _Low ) &&
                     (_High == -1 || _Counter <  _High))
-                    return _S;
+                {
+                    _CurrentItem = _S;
+                    return true;
+                }
 
                 if (_High > 0 && _Counter >= _High)
                     throw new NoSuchElementException();
@@ -79,6 +83,8 @@ namespace de.ahzf.Pipes
             }
 
         }
+
+        #endregion
 
 
         #region ToString()

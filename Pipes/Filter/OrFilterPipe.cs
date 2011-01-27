@@ -37,7 +37,7 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly List<IPipe<S, Boolean>> _Pipes;
+        private readonly IEnumerable<IPipe<S, Boolean>> _Pipes;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace de.ahzf.Pipes
 
         #region OrFilterPipe(myPipes)
 
-        public OrFilterPipe(List<IPipe<S, Boolean>> myPipes)
+        public OrFilterPipe(IEnumerable<IPipe<S, Boolean>> myPipes)
         {
             _Pipes = myPipes;
         }
@@ -64,7 +64,9 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        protected override S ProcessNextStart()
+        #region MoveNext()
+
+        public override Boolean MoveNext()
         {
 
             while (true)
@@ -80,7 +82,8 @@ namespace de.ahzf.Pipes
 
                     if (_Pipe.MoveNext())
                     {
-                        return _S;
+                        _CurrentItem = _S;
+                        return true;
                     }
 
                 }
@@ -88,6 +91,8 @@ namespace de.ahzf.Pipes
             }
 
         }
+
+        #endregion
 
     }
 

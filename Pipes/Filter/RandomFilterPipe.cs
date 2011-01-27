@@ -45,7 +45,7 @@ namespace de.ahzf.Pipes
 
         #region RandomFilterPipe(myBias)
 
-        public RandomFilterPipe(double myBias)
+        public RandomFilterPipe(Double myBias)
         {
             this._Bias = myBias;
         }
@@ -55,20 +55,26 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+        #region MoveNext()
 
-        protected override S ProcessNextStart()
+        public override Boolean MoveNext()
         {
             while (true)
             {
 
                 _Starts.MoveNext();
                 var _S = _Starts.Current;
-                
+
                 if (_Bias >= RANDOM.NextDouble())
-                    return _S;
+                {
+                    _CurrentItem = _S;
+                    return true;
+                }
 
             }
         }
+
+        #endregion
 
 
         #region ToString()

@@ -59,9 +59,10 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region ProcessNextStart()
 
-        protected override IVertex ProcessNextStart()
+        #region MoveNext()
+
+        public override Boolean MoveNext()
         {
 
             switch (_Step)
@@ -69,11 +70,13 @@ namespace de.ahzf.Pipes
 
                 case Step.OUT_VERTEX:
                     _Starts.MoveNext();
-                    return _Starts.Current.OutVertex;
+                    _CurrentItem = _Starts.Current.OutVertex;
+                    break;
 
                 case Step.IN_VERTEX:
                     _Starts.MoveNext();
-                    return _Starts.Current.InVertex;
+                    _CurrentItem = _Starts.Current.InVertex;
+                    break;
 
                 case Step.BOTH_VERTICES:
                     {
@@ -81,20 +84,23 @@ namespace de.ahzf.Pipes
                         {
                             _Starts.MoveNext();
                             _StoredOutVertex = _Starts.Current.OutVertex;
-                            return _Starts.Current.InVertex;
+                            _CurrentItem = _Starts.Current.InVertex;
                         }
                         else
                         {
                             var _Temp = _StoredOutVertex;
                             _StoredOutVertex = null;
-                            return _Temp;
+                            _CurrentItem = _Temp;
                         }
                     }
+                    break;
 
                 // Should not happen, but makes the compiler happy!
                 default: throw new IllegalStateException("This is an illegal state as there is no step set!");
 
             }
+
+            return true;
 
         }
 

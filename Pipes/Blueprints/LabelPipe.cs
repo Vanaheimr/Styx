@@ -32,12 +32,13 @@ namespace de.ahzf.Pipes
     public class LabelPipe : AbstractPipe<IEdge, String>
     {
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override String ProcessNextStart()
+        public override Boolean MoveNext()
         {
             _Starts.MoveNext();
-            return _Starts.Current.Label;
+            _CurrentItem = _Starts.Current.Label;
+            return true;
         }
 
         #endregion

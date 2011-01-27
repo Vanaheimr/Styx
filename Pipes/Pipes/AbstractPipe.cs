@@ -29,16 +29,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// An AbstractPipe provides most of the functionality that is repeated
     /// in every instance of a Pipe. Any subclass of AbstractPipe should simply
-    /// implement processNextStart(). The standard model is
-    /// <pre>
-    /// protected E processNextStart() throws NoSuchElementException {
-    ///     S s = this.starts.next();
-    ///     E e = // do something with the S to yield an E
-    ///     return e;
-    /// }
-    /// </pre>
-    /// If the current incoming S is not to be emitted and there are no other S objects
-    /// to process and emit, then throw a NoSuchElementException.
+    /// implement MoveNext().
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
@@ -48,9 +39,7 @@ namespace de.ahzf.Pipes
 		#region Data
 		
 		protected IEnumerator<S> _Starts;
-	    private   E              _NextEnd;
-	    protected E              _CurrentEnd;
-	    private   Boolean        _Available;
+	    protected E              _CurrentItem;
 		
 		#endregion
 		
@@ -59,9 +48,7 @@ namespace de.ahzf.Pipes
 		#region AbstractPipe()
 		
 		public AbstractPipe()
-		{
-            _Available = false;
-		}
+		{ }
 		
 		#endregion
 		
@@ -111,8 +98,8 @@ namespace de.ahzf.Pipes
 
                 // do not repeat filters as they dup the object
                 // todo: why is size == 0 required (Pangloss?)	        
-                if (_Size == 0 || !_PathElements[_Size - 1].Equals(this._CurrentEnd))
-                    _PathElements.Add(this._CurrentEnd);
+                if (_Size == 0 || !_PathElements[_Size - 1].Equals(this._CurrentItem))
+                    _PathElements.Add(this._CurrentItem);
 
                 return _PathElements;
 
@@ -127,7 +114,7 @@ namespace de.ahzf.Pipes
 		{
 			get
 			{
-				throw new NotImplementedException();
+                return _CurrentItem;
 			}
 		}
 		
@@ -135,101 +122,53 @@ namespace de.ahzf.Pipes
 		{	
 			get
 			{
-				throw new NotImplementedException();
+                return _CurrentItem;
 			}
 		}
 
         #endregion
 
-        public Boolean MoveNext()
+        #region MoveNext()
+
+        public abstract Boolean MoveNext();
+
+        #endregion
+
+        #region Reset()
+
+        public void Reset()
 		{
-			throw new NotImplementedException();
+            _Starts.Reset();
 		}
-		
-		public void Reset()
+
+        #endregion
+
+        #region Dispose()
+
+        public void Dispose()
 		{
-			throw new NotImplementedException();
+            _Starts.Dispose();
 		}
-		
-		public void Dispose()
+
+        #endregion
+
+
+        #region GetEnumerator()
+
+        public IEnumerator<E> GetEnumerator()
 		{
-			throw new NotImplementedException();
-		}	
-		
-		
-		
-		
-		
-		public IEnumerator<E> GetEnumerator()
-		{
-			throw new NotImplementedException();
+            return this;
 		}
 		
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
+            return this;
 		}
-			
-		
-		
-		
-		
-		
-		
-		
-
-
-	    public E next()
-		{
-			
-	        if (_Available)
-			{
-	            _Available  = false;
-	            _CurrentEnd = _NextEnd;
-	            return _CurrentEnd;
-	        }
-			
-			else
-			{
-	            _CurrentEnd = ProcessNextStart();
-	            return _CurrentEnd;
-	        }
-			
-	    }
-
-	    public Boolean hasNext()
-		{
-	        
-			if (_Available)
-	            return true;
-			
-	        else
-			{
-
-	            try
-				{
-	                _NextEnd   = ProcessNextStart();
-	                _Available = true;
-	                return true;
-
-	            }
-                
-                catch (Exception)
-                {
-	                _Available = false;
-	                return false;
-	            }
-
-	        }
-			
-	    }
-
-
-        #region ProcessNextStart()
-        
-        protected abstract E ProcessNextStart();
 
         #endregion
+
+
+        #region PathToHere
 
         private List<E> PathToHere
 		{
@@ -250,6 +189,8 @@ namespace de.ahzf.Pipes
 
             }
 		}
+
+        #endregion
 
 
         #region ToString()

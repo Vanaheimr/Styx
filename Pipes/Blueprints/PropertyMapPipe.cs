@@ -34,9 +34,9 @@ namespace de.ahzf.Pipes
         where S : IElement
     {
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override IDictionary<String, Object> ProcessNextStart()
+        public override Boolean MoveNext()
         {
             
             _Starts.MoveNext();
@@ -47,7 +47,8 @@ namespace de.ahzf.Pipes
             foreach (var _Key in _IElement.PropertyKeys)
                 _Map.Add(_Key, _IElement.GetProperty(_Key));
 
-            return _Map;
+            _CurrentItem = _Map;
+            return true;
 
         }
 

@@ -54,7 +54,9 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        protected override S ProcessNextStart()
+        #region MoveNext()
+
+        public override Boolean MoveNext()
         {
 
             while (true)
@@ -79,6 +81,8 @@ namespace de.ahzf.Pipes
             }
 
         }
+
+        #endregion
 
 
         #region ToString()

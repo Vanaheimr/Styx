@@ -54,14 +54,13 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override IEdge ProcessNextStart()
+        public override Boolean MoveNext()
         {
-
             _Starts.MoveNext();
-            return _IGraph.GetEdge(_Starts.Current);
-
+            _CurrentItem = _IGraph.GetEdge(_Starts.Current);
+            return true;
         }
 
         #endregion

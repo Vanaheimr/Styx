@@ -61,9 +61,9 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override S ProcessNextStart()
+        public override Boolean MoveNext()
         {
 
             if (_AggregateEnumerator == null)
@@ -77,7 +77,8 @@ namespace de.ahzf.Pipes
             }
 
             _AggregateEnumerator.MoveNext();
-            return _AggregateEnumerator.Current;
+            _CurrentItem = _AggregateEnumerator.Current;
+            return true;
 
         }
 

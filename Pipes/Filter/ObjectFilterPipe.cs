@@ -53,7 +53,9 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        protected override S ProcessNextStart()
+        #region MoveNext()
+
+        public override Boolean MoveNext()
         {
             while (true)
             {
@@ -61,11 +63,16 @@ namespace de.ahzf.Pipes
                 _Starts.MoveNext();
                 var _S = _Starts.Current;
 
-                if (!this.CompareObjects(_S, _Object))
-                    return _S;
+                if (!CompareObjects(_S, _Object))
+                {
+                    _CurrentItem = _S;
+                    return true;
+                }
 
             }
         }
+
+        #endregion
 
 
         #region ToString()

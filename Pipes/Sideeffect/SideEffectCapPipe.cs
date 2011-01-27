@@ -60,9 +60,9 @@ namespace de.ahzf.Pipes
             _PipeToCap.SetStarts(starts);
         }
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override T ProcessNextStart()
+        public override Boolean MoveNext()
         {
             
             if (_Alive)
@@ -74,7 +74,8 @@ namespace de.ahzf.Pipes
 
                 _Alive = false;
                 
-                return _PipeToCap.SideEffect;
+                _CurrentItem = _PipeToCap.SideEffect;
+                return true;
 
             }
             
@@ -92,7 +93,7 @@ namespace de.ahzf.Pipes
             {
 
                 var _List = _PipeToCap.Path;
-                _List.Add(this._CurrentEnd);
+                _List.Add(this._CurrentItem);
 
                 return _List;
 

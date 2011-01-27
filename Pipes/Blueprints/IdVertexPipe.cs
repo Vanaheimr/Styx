@@ -54,12 +54,19 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override IVertex ProcessNextStart()
+        public override Boolean MoveNext()
         {
-            _Starts.MoveNext();
-            return _IGraph.GetVertex(_Starts.Current);
+
+            if (_Starts.MoveNext())
+            {
+                _CurrentItem = _IGraph.GetVertex(_Starts.Current);
+                return true;
+            }
+
+            return false;
+
         }
 
         #endregion

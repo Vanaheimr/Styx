@@ -53,18 +53,21 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region ProcessNextStart()
+        #region MoveNext()
 
-        protected override IEdge ProcessNextStart()
+        public override Boolean MoveNext()
         {
             while (true)
             {
 
                 _Starts.MoveNext();
                 var _Edge = _Starts.Current;
-                
+
                 if (!CompareObjects(_Edge.Label, _Label))
-                    return _Edge;
+                {
+                    _CurrentItem = _Edge;
+                    return true;
+                }
 
             }
         }
