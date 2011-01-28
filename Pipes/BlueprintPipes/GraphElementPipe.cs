@@ -108,25 +108,54 @@ namespace de.ahzf.Pipes
             while (true)
             {
 
-                //if (_NextEnds != null && _NextEnds.hasNext())
-                //    return _NextEnds.next();
+                if (_StoredIElements != null && _StoredIElements.MoveNext())
+                {
+                    _CurrentElement = _StoredIElements.Current;
+                    return true;
+                }
 
-                //else
-                //{
-                //    switch (_ElementType)
-                //    {
-                //        case ElementType.VERTEX:
-                //            {
-                //                _NextEnds = (IEnumerator<E>) _Starts.next().getVertices().iterator();
-                //                break;
-                //            }
-                //        case ElementType.EDGE:
-                //            {
-                //                _NextEnds = (IEnumerator<E>) _Starts.next().getEdges().iterator();
-                //                break;
-                //            }
-                //    }
-                //}
+                else
+                {
+
+                    if (_InternalEnumerator.MoveNext())
+                    {
+
+                        switch (_ElementType)
+                        {
+
+                            case ElementType.VERTEX:
+
+                                _StoredIElements = (IEnumerator<E>) _InternalEnumerator.Current.GetVertices().GetEnumerator();
+
+                                if (_StoredIElements.MoveNext())
+                                {
+                                    _CurrentElement = _StoredIElements.Current;
+                                    return true;
+                                }
+                                else
+                                    return false;
+
+
+                            case ElementType.EDGE:
+                                    
+                                _StoredIElements = (IEnumerator<E>) _InternalEnumerator.Current.GetEdges().GetEnumerator();
+
+                                if (_StoredIElements.MoveNext())
+                                {
+                                    _CurrentElement = _StoredIElements.Current;
+                                    return true;
+                                }
+                                else
+                                    return false;
+
+                        }
+
+                    }
+
+                    else
+                        return false;
+
+                }
 
             }
 

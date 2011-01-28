@@ -41,6 +41,8 @@
   <ItemGroup>
     <Compile Include="AbstractPipeTest.cs" />
     <Compile Include="BaseTest.cs" />
+    <Compile Include="BlueprintPipes\EdgeVertexPipeTest.cs" />
+    <Compile Include="BlueprintPipes\GraphElementPipeTest.cs" />
     <Compile Include="ExpandableIteratorTest.cs" />
     <Compile Include="IdentityPipeTest.cs" />
     <Compile Include="MultiIteratorTest.cs" />
@@ -61,6 +63,9 @@
       <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
       <Name>Pipes</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SideeffectPipes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

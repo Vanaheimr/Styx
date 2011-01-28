@@ -37,6 +37,7 @@ namespace de.ahzf.Pipes
 		
 	    private readonly IEnumerator<T> _InternalEnumerator;
 	    private          T              _Last;
+        private          Boolean        _FirstMove;
 	
 		#endregion
 		
@@ -52,6 +53,7 @@ namespace de.ahzf.Pipes
         {
             _InternalEnumerator = myIEnumerator;
             _Last               = default(T);
+            _FirstMove          = true;
 	    }
 
         #endregion
@@ -119,8 +121,14 @@ namespace de.ahzf.Pipes
         /// <returns>True if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
 		public Boolean MoveNext()
 		{
-            _Last = _InternalEnumerator.Current;
+
+            if (!_FirstMove)
+                _Last = _InternalEnumerator.Current;
+            else
+                _FirstMove = false;
+
 			return _InternalEnumerator.MoveNext();
+
 		}
 
         #endregion
