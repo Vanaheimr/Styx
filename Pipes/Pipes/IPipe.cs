@@ -26,13 +26,79 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
-    #region IPipe
+    #region IStartPipe<S>
 
     /// <summary>
     /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe.
+    /// defining a general pipe consuming elements of type S.
     /// </summary>
-    public interface IPipe
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    public interface IStartPipe<S>
+    {
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// </summary> 
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
+        void SetSource(IEnumerator<S> myIEnumerator);
+
+
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
+        /// </summary> 
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        void SetSourceCollection(IEnumerable<S> myIEnumerable);
+
+
+    }
+
+    #endregion
+
+    #region IStartPipe
+
+    /// <summary>
+    /// A helper interface for the IPipe pipe interface
+    /// defining a general pipe consuming elements.
+    /// </summary>
+    public interface IStartPipe
+    {
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator as input.
+        /// </summary> 
+        /// <param name="myIEnumerator">An IEnumerator as element source.</param>
+        void SetSource(IEnumerator myIEnumerator);
+
+
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable as input.
+        /// </summary> 
+        /// <param name="myIEnumerable">An IEnumerable as element source.</param>
+        void SetSourceCollection(IEnumerable myIEnumerable);
+
+    }
+
+    #endregion
+
+    #region IEndPipe<E>
+
+    /// <summary>
+    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
+    /// defining a general pipe emitting elements of type E.
+    /// </summary>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public interface IEndPipe<E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
+    { }
+
+    #endregion
+
+    #region IEndPipe
+
+    /// <summary>
+    /// A helper interface for the IPipe pipe interface
+    /// defining a general pipe emitting elements.
+    /// </summary>
+    public interface IEndPipe : IEnumerator, IEnumerable
     {
 
         /// <summary>
@@ -40,21 +106,7 @@ namespace de.ahzf.Pipes
         /// </summary> 
         /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
         List<Object> Path { get; }
-
-    }
-
-    #endregion
-
-    #region IPipe<E>
-
-    /// <summary>
-    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe emitting elements of type E.
-    /// </summary>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<E> : IPipe, IEnumerator<E>, IEnumerable<E>
-    {
-
+    
     }
 
     #endregion
@@ -68,23 +120,19 @@ namespace de.ahzf.Pipes
 	/// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<S, E> : IPipe, IPipe<E>
-	{
-	
-	    /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
-	    /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        void SetSource(IEnumerator<S> myIEnumerator);
-		
-		
-	    /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
-	    /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        void SetSourceCollection(IEnumerable<S> myIEnumerable);
+    public interface IPipe<S, E> : IStartPipe<S>, IEndPipe<E>, IPipe
+	{ }
 
-	}
+    #endregion
+
+    #region IPipe
+
+    /// <summary>
+    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
+    /// defining a general pipe.
+    /// </summary>
+    public interface IPipe : IStartPipe, IEndPipe, IDisposable
+    { }
 
     #endregion
 

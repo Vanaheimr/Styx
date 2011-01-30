@@ -84,6 +84,7 @@ namespace de.ahzf.Pipes
 
                 if (_InternalEnumerator.MoveNext())
                 {
+
                     var _IElement = _InternalEnumerator.Current;
 
                     if (!CompareObjects(_IElement.GetProperty<T>(_Key), _Value))
@@ -91,6 +92,7 @@ namespace de.ahzf.Pipes
                         _CurrentElement = _IElement;
                         return true;
                     }
+
                 }
 
                 else

@@ -44,6 +44,7 @@ namespace de.ahzf.Pipes
         /// </summary>
 		protected IEnumerator<S> _InternalEnumerator;
 
+
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
@@ -106,12 +107,29 @@ namespace de.ahzf.Pipes
             if (myIEnumerator == null)
                 throw new ArgumentNullException("myIEnumerator must not be null!");
 
-	        if (myIEnumerator is IPipe<S>)
+	        if (myIEnumerator is IEndPipe<S>)
 	            _InternalEnumerator = myIEnumerator;
 	        else
 	            _InternalEnumerator = new HistoryEnumerator<S>(myIEnumerator);
 
 	    }
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator as input.
+        /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator as element source.</param>
+        void IStartPipe.SetSource(IEnumerator myIEnumerator)
+        {
+
+            if (myIEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+            _InternalEnumerator = myIEnumerator as IEnumerator<S>;
+
+            if (_InternalEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must implement 'IEnumerator<" + typeof(S) + ">'!");
+
+        }
 
         #endregion
 
@@ -125,11 +143,28 @@ namespace de.ahzf.Pipes
 		{
 
             if (myIEnumerable == null)
-                throw new ArgumentNullException("myIEnumerator must not be null!");
+                throw new ArgumentNullException("myIEnumerable must not be null!");
 
 	        SetSource(myIEnumerable.GetEnumerator());
 
 	    }
+
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable as input.
+        /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable as element source.</param>
+        void IStartPipe.SetSourceCollection(IEnumerable myIEnumerable)
+        {
+
+            if (myIEnumerable == null)
+                throw new ArgumentNullException("myIEnumerable must not be null!");
+
+            _InternalEnumerator = myIEnumerable.GetEnumerator() as IEnumerator<S>;
+
+            if (_InternalEnumerator == null)
+                throw new ArgumentNullException("myIEnumerable must implement 'IEnumerable<" + typeof(S) + ">'!");
+
+        }
 
         #endregion
 

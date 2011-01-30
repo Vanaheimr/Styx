@@ -30,28 +30,28 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The IdPipe will return the Id of the given graph element.
     /// </summary>
-    public class IdFilterPipe : AbstractComparisonFilterPipe<IElement, ElementId>
+    public class VertexIdFilterPipe : AbstractComparisonFilterPipe<IVertex, VertexId>
     {
 
         #region Data
 
-        private readonly ElementId _ElementId;
+        private readonly VertexId _VertexId;
 
         #endregion
 
         #region Constructor(s)
 
-        #region IdFilterPipe(myElementId, myComparisonFilter)
+        #region IdFilterPipe(VertexId, myComparisonFilter)
 
         /// <summary>
-        /// Creates a new IdFilterPipe.
+        /// Creates a new VertexIdFilterPipe.
         /// </summary>
-        /// <param name="myElementId">The Id of the IElement.</param>
+        /// <param name="myVertexId">The Id of the IElement.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        public IdFilterPipe(ElementId myElementId, ComparisonFilter myComparisonFilter)
+        public VertexIdFilterPipe(VertexId myVertexId, ComparisonFilter myComparisonFilter)
             : base(myComparisonFilter)
         {
-            _ElementId = myElementId;
+            _VertexId = myVertexId;
         }
 
         #endregion
@@ -81,11 +81,11 @@ namespace de.ahzf.Pipes
                 if (_InternalEnumerator.MoveNext())
                 {
 
-                    var _Element = _InternalEnumerator.Current;
+                    var _Vertex = _InternalEnumerator.Current;
 
-                    if (!CompareObjects(_Element.Id, _ElementId))
+                    if (!CompareObjects(_Vertex.Id, _VertexId))
                     {
-                        _CurrentElement = _Element;
+                        _CurrentElement = _Vertex;
                         return true;
                     }
 

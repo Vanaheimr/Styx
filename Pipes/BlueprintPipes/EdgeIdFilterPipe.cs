@@ -30,28 +30,28 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The IdPipe will return the Id of the given graph element.
     /// </summary>
-    public class IdFilterPipe : AbstractComparisonFilterPipe<IElement, ElementId>
+    public class EdgeIdFilterPipe : AbstractComparisonFilterPipe<IEdge, EdgeId>
     {
 
         #region Data
 
-        private readonly ElementId _ElementId;
+        private readonly EdgeId _EdgeId;
 
         #endregion
 
         #region Constructor(s)
 
-        #region IdFilterPipe(myElementId, myComparisonFilter)
+        #region IdFilterPipe(EdgeId, myComparisonFilter)
 
         /// <summary>
-        /// Creates a new IdFilterPipe.
+        /// Creates a new EdgeIdFilterPipe.
         /// </summary>
-        /// <param name="myElementId">The Id of the IElement.</param>
+        /// <param name="myEdgeId">The Id of the IElement.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        public IdFilterPipe(ElementId myElementId, ComparisonFilter myComparisonFilter)
+        public EdgeIdFilterPipe(EdgeId myEdgeId, ComparisonFilter myComparisonFilter)
             : base(myComparisonFilter)
         {
-            _ElementId = myElementId;
+            _EdgeId = myEdgeId;
         }
 
         #endregion
@@ -81,11 +81,11 @@ namespace de.ahzf.Pipes
                 if (_InternalEnumerator.MoveNext())
                 {
 
-                    var _Element = _InternalEnumerator.Current;
+                    var _Edge = _InternalEnumerator.Current;
 
-                    if (!CompareObjects(_Element.Id, _ElementId))
+                    if (!CompareObjects(_Edge.Id, _EdgeId))
                     {
-                        _CurrentElement = _Element;
+                        _CurrentElement = _Edge;
                         return true;
                     }
 

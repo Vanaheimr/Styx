@@ -61,6 +61,7 @@ namespace de.ahzf.Pipes
                     _Map.Add(_Key, _IElement.GetProperty(_Key));
 
                 _CurrentElement = _Map;
+
                 return true;
 
             }

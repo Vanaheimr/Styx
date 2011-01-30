@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 
 #endregion
 
@@ -38,12 +39,16 @@ namespace de.ahzf.Pipes
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
 	public class Pipeline<S, E> : IPipe<S, E>
 	{
-	
+
 		#region Data
-		
-	    private IPipe<S, E> _StartPipe;
-	    private IPipe<S, E> _EndPipe;
-	    private String      _PipelineString;
+
+        private IPipe[]        _Pipes;
+        private IStartPipe<S>  _StartPipe;
+        private IEndPipe<E>    _EndPipe;
+        private String         _PipelineString;
+
+        private IEnumerator<S> _InternalEnumerator;
+        private E              _CurrentElement;
 	
 		#endregion
 		
@@ -56,117 +61,122 @@ namespace de.ahzf.Pipes
         /// </summary>
 	    public Pipeline()
 		{
-			_PipelineString = null;
+            _PipelineString = null;
 		}
 		
 		#endregion
 		
-		#region Pipeline(myPipes)
+        #region Pipeline(myPipes)
 
-		/// <summary>
-		/// Constructs a pipeline from the provided pipes.
-		/// The ordered list determines how the pipes will be chained together.
-		/// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
-		/// </summary>
-		/// <param name="myPipes">The ordered list of pipes to chain together into a pipeline</param>
-	    public Pipeline(IEnumerable<IPipe<S, E>> myPipes)
-			: this()
-		{
-	        SetPipes(myPipes);
-	    }
-		
-		#endregion
+        /// <summary>
+        /// Constructs a pipeline from the provided pipes.
+        /// The ordered list determines how the pipes will be chained together.
+        /// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
+        /// </summary>
+        /// <param name="myPipes">The ordered list of pipes to chain together into a pipeline</param>
+        public Pipeline(IEnumerable<IPipe> myPipes)
+            : this()
+        {
+            SetPipes(myPipes);
+        }
+
+        #endregion
 	
-		#region Pipeline(myPipes)
+        #region Pipeline(myPipes)
 
-		/// <summary>
-		/// Constructs a pipeline from the provided pipes.
-		/// The ordered array determines how the pipes will be chained together.
-		/// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
-		/// </summary>
-		/// <param name="myPipes">the ordered array of pipes to chain together into a pipeline</param>
-	    public Pipeline(params IPipe<S, E>[] myPipes)
-			: this()
-		{
-	        SetPipes(myPipes);
-	    }
+        /// <summary>
+        /// Constructs a pipeline from the provided pipes.
+        /// The ordered array determines how the pipes will be chained together.
+        /// When the pipes are chained together, the start of pipe n is the end of pipe n-1.
+        /// </summary>
+        /// <param name="myPipes">the ordered array of pipes to chain together into a pipeline</param>
+        public Pipeline(params IPipe[] myPipes)
+            : this()
+        {
+            SetPipes(myPipes);
+        }
 		
-		#endregion
-		
-		#endregion
-
-
-		#region SetPipes(myPipes)
-	
-	    /// <summary>
-	    /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
-	    /// </summary>
-	    /// <param name="myPipes">the ordered list of pipes to chain together into a pipeline.</param>
-	    protected void SetPipes(IEnumerable<IPipe<S, E>> myPipes)
-		{
-			SetPipes(myPipes.ToArray());
-		}
+        #endregion
 		
 		#endregion
 
-		#region SetPipes(myPipes)
-		
-	    /// <summary>
-	    /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
-	    /// </summary>
-	    /// <param name="myPipes">the ordered array of pipes to chain together into a pipeline.</param>
-	    protected void SetPipes(params IPipe<S, E>[] myPipes)
-		{
 
-			var _PipeNames = new List<String>();
-			var _Length    = myPipes.Length;
-	        
-			_StartPipe = myPipes[0];
-	        _PipeNames.Add(_StartPipe.ToString());
+        #region SetPipes(myPipes)
+
+        /// <summary>
+        /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
+        /// </summary>
+        /// <param name="myPipes">the ordered list of pipes to chain together into a pipeline.</param>
+        protected void SetPipes(IEnumerable<IPipe> myPipes)
+        {
+            SetPipes(myPipes.ToArray());
+        }
+
+        #endregion
+
+        #region SetPipes(myPipes)
+		
+        /// <summary>
+        /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
+        /// </summary>
+        /// <param name="myPipes">the ordered array of pipes to chain together into a pipeline.</param>
+        protected void SetPipes(params IPipe[] myPipes)
+        {
+
+            _Pipes = myPipes;
+            var _PipeNames = new List<String>();
+            var _Length    = myPipes.Length;
+
+            _StartPipe = myPipes[0] as IStartPipe<S>;
+
+            if (_StartPipe == null)
+                throw new ArgumentException("The first Pipe must be of type 'IStartPipe<" + typeof(S) + ">'!");
+
+            _EndPipe = myPipes[_Length - 1] as IEndPipe<E>;
+
+            if (_EndPipe == null)
+                throw new ArgumentException("The last Pipe must be of type 'IEndPipe<" + typeof(E) + ">'!");
 			
-	        _EndPipe   = myPipes[_Length-1];
-		
-	        for (var i=1; i < _Length; i++)
-			{
-	            myPipes[i].SetSource((IEnumerator<S>) myPipes[i-1]);
-	            _PipeNames.Add(myPipes[i].ToString());
-	        }
+            _PipeNames.Add(_StartPipe.ToString());
+
+            Type[] _GenericArguments = null;
+            Type   _Consumes;
+            Type   _Emitts;
+
+            Type _GenericIPipeInterface = _StartPipe.GetType().GetInterface("IPipe`2");
+            if (_GenericIPipeInterface == null)
+                throw new ArgumentException("IPipe<?,?> expected!");
+
+            _Emitts = _GenericIPipeInterface.GetGenericArguments()[1];
+
+            for (var i = 1; i < _Length; i++)
+            {
+
+                _GenericArguments = myPipes[i].GetType().GetInterface("IPipe`2").GetGenericArguments();
+                _Consumes = _GenericArguments[0];
+
+                if (_Consumes != _Emitts)
+                    throw new ArgumentException("_Consumes != _Emitts!");
+
+                _Emitts = _GenericArguments[1];
+
+                myPipes[i].SetSource(myPipes[i - 1]);
+
+                _PipeNames.Add(myPipes[i].ToString());
+
+            }
+
+            if (_InternalEnumerator != null)
+                myPipes[0].SetSource(_InternalEnumerator);
 			
-	        _PipelineString = _PipeNames.ToString();
+            _PipelineString = _PipeNames.ToString();
 		
-		}
+        }
 		
-		#endregion
-		
-	
-		#region SetStartPipe(myStartPipe)
-		
-		/// <summary>
-		/// Only use if the intermediate pipes of the pipeline have been chained together manually.
-		/// </summary>
-		/// <param name="myStartPipe">the start of the pipeline</param>
-		public void SetStartPipe(IPipe<S, E> myStartPipe)
-		{
-	        _StartPipe = myStartPipe;
-	    }
-		
-		#endregion
-		
-		#region SetEndPipe(myEndPipe)
-
-		/// <summary>
-		/// Only use if the intermediate pipes of the pipeline have been chained together manually.
-		/// </summary>
-		/// <param name="myEndPipe">the end of the pipeline</param>
-	    public void SetEndPipe(IPipe<S, E> myEndPipe)
-		{
-	        _EndPipe = myEndPipe;
-	    }
-		
-		#endregion
+        #endregion
 
 
-        #region SetIEnumerator(myIEnumerator)
+        #region SetSource(myIEnumerator)
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
@@ -178,13 +188,37 @@ namespace de.ahzf.Pipes
             if (myIEnumerator == null)
                 throw new ArgumentNullException("myIEnumerator must not be null!");
 
-            _StartPipe.SetSource(myIEnumerator);
+            _InternalEnumerator = myIEnumerator;
+
+            if (_Pipes != null && _Pipes.Length > 0)
+                _Pipes[0].SetSource(_InternalEnumerator);
+
+        }
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator as input.
+        /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator as element source.</param>
+        void IStartPipe.SetSource(IEnumerator myIEnumerator)
+        {
+
+            if (myIEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+            _InternalEnumerator = myIEnumerator as IEnumerator<S>;
+
+            if (_InternalEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must implement 'IEnumerator<" + typeof(S) + ">'!");
+
+            if (_Pipes != null && _Pipes.Length > 0)
+                _Pipes[0].SetSource(_InternalEnumerator);
+
 
         }
 
         #endregion
 
-        #region SetIEnumerable(myIEnumerable)
+        #region SetSourceCollection(myIEnumerable)
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerable&lt;S&gt; as input.
@@ -196,13 +230,36 @@ namespace de.ahzf.Pipes
             if (myIEnumerable == null)
                 throw new ArgumentNullException("myIEnumerator must not be null!");
 
-            _StartPipe.SetSource(myIEnumerable.GetEnumerator());
+            _InternalEnumerator = myIEnumerable.GetEnumerator();
+
+            if (_Pipes != null && _Pipes.Length > 0)
+                _Pipes[0].SetSource(_InternalEnumerator);
+
+
+        }
+
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable as input.
+        /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable as element source.</param>
+        void IStartPipe.SetSourceCollection(IEnumerable myIEnumerable)
+        {
+
+            if (myIEnumerable == null)
+                throw new ArgumentNullException("myIEnumerable must not be null!");
+
+            _InternalEnumerator = myIEnumerable.GetEnumerator() as IEnumerator<S>;
+
+            if (_InternalEnumerator == null)
+                throw new ArgumentNullException("myIEnumerable must implement 'IEnumerable<" + typeof(S) + ">'!");
+
+            if (_Pipes != null && _Pipes.Length > 0)
+                _Pipes[0].SetSource(_InternalEnumerator);
 
         }
 
         #endregion
 
-        
 
         #region GetEnumerator()
 
@@ -239,7 +296,7 @@ namespace de.ahzf.Pipes
         {
             get
             {
-                throw new NotImplementedException();
+                return _CurrentElement;
             }
         }
 
@@ -250,7 +307,7 @@ namespace de.ahzf.Pipes
         {
             get
             {
-                throw new NotImplementedException();
+                return _CurrentElement;
             }
         }
 
@@ -268,7 +325,21 @@ namespace de.ahzf.Pipes
         /// </returns>
         public Boolean MoveNext()
         {
-            throw new NotImplementedException();
+
+            if (_InternalEnumerator == null)
+                return false;
+
+            if (_EndPipe == null)
+                return false;
+
+            if (_EndPipe.MoveNext())
+            {
+                _CurrentElement = _EndPipe.Current;
+                return true;
+            }
+
+            return false;
+
         }
 
         #endregion
@@ -281,7 +352,8 @@ namespace de.ahzf.Pipes
         /// </summary>
         public void Reset()
         {
-            throw new NotImplementedException();
+            foreach (var _Pipe in _Pipes)
+                _Pipe.Reset();
         }
 
         #endregion
@@ -292,7 +364,10 @@ namespace de.ahzf.Pipes
         /// Disposes this pipeline.
         /// </summary>
         public void Dispose()
-        { }
+        {
+            foreach (var _Pipe in _Pipes)
+                _Pipe.Dispose();
+        }
 
         #endregion
 
@@ -308,7 +383,7 @@ namespace de.ahzf.Pipes
 		{
             get
             {
-    	        return _EndPipe.Path;
+                return _EndPipe.Path;
             }
 	    }
 
@@ -320,12 +395,12 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// A string representation of this pipe.
         /// </summary>
-	    public override String ToString()
-		{
-	        return _PipelineString;
-	    }
-		
-		#endregion
+        public override String ToString()
+        {
+            return _PipelineString;
+        }
+
+        #endregion
 
 	}
 

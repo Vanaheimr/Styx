@@ -126,17 +126,44 @@ namespace de.ahzf.Pipes
                         {
 
                             case Step.OUT_EDGES:
+                                
                                 _StoredEdges = _InternalEnumerator.Current.OutEdges.GetEnumerator();
-                                return _StoredEdges.MoveNext();
+
+                                if (_StoredEdges.MoveNext())
+                                {
+                                    _CurrentElement = _StoredEdges.Current;
+                                    return true;
+                                }
+                                else
+                                    return false;
+
 
                             case Step.IN_EDGES:
+
                                 _StoredEdges = _InternalEnumerator.Current.InEdges.GetEnumerator();
-                                return _StoredEdges.MoveNext();
+
+                                if (_StoredEdges.MoveNext())
+                                {
+                                    _CurrentElement = _StoredEdges.Current;
+                                    return true;
+                                }
+                                else
+                                    return false;
+
 
                             case Step.BOTH_EDGES:
+
                                 var _IVertex = _InternalEnumerator.Current;
                                 _StoredEdges = new MultiEnumerator<IEdge>(_IVertex.InEdges.GetEnumerator(), _IVertex.OutEdges.GetEnumerator());
-                                return _StoredEdges.MoveNext();
+
+                                if (_StoredEdges.MoveNext())
+                                {
+                                    _CurrentElement = _StoredEdges.Current;
+                                    return true;
+                                }
+                                else
+                                    return false;
+
 
                             // Should not happen, but makes the compiler happy!
                             default:

@@ -56,26 +56,9 @@ namespace TestApplication
 
 
 
+
+
             var graph = TinkerGraphFactory.CreateTinkerGraph();
-
-            IPipe<IGraph, IEdge> pipe = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
-            pipe.SetSourceCollection(new List<IGraph>() { graph, graph, graph });
-            int counter = 0;
-            var edges = new HashSet<IEdge>();
-
-            while (pipe.MoveNext())
-            {
-                counter++;
-                var edge = pipe.Current;
-                edges.Add(edge);
-                //System.out.println(edge);
-            }
-            Assert.AreEqual(18, counter);
-            Assert.AreEqual(6, edges.Count);
-
-
-
-             graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var marko = graph.GetVertex(new VertexId("1"));
             IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
