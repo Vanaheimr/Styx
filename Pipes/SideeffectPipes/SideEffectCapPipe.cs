@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 #endregion
 
@@ -30,8 +31,13 @@ namespace de.ahzf.Pipes
     /// the provided SideEffectPipe. This is useful for when the side
     /// effect of a Pipe is desired in a computational stream.
     /// </summary>
-    public class SideEffectCapPipe<S, T> : AbstractPipe<S, T>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="T">The type of the sideeffect.</typeparam>
+    public class SideEffectCapPipe<S, T> : AbstractPipe<S, T>, IStartPipe
     {
+
+        // Note: Usage of IStartPipe in order to allow explicit
+        //       interface implementation!
 
         #region Data
 
@@ -41,6 +47,16 @@ namespace de.ahzf.Pipes
         #endregion
 
         #region Constructor(s)
+
+        #region SideEffectCapPipe()
+
+        /// <summary>
+        /// Creates a new SideEffectCapPipe.
+        /// </summary>
+        public SideEffectCapPipe()
+        { }
+
+        #endregion
 
         #region SideEffectCapPipe(myPipeToCap)
 
@@ -70,6 +86,25 @@ namespace de.ahzf.Pipes
             _PipeToCap.SetSource(myIEnumerator);
         }
 
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator as input.
+        /// </summary>
+        /// <param name="myIEnumerator">An IEnumerator as element source.</param>
+        void IStartPipe.SetSource(IEnumerator myIEnumerator)
+        {
+
+            if (myIEnumerator == null)
+                throw new ArgumentNullException("myIEnumerator must not be null!");
+
+            var _Enumerator = myIEnumerator as IEnumerator<S>;
+
+            if (_Enumerator == null)
+                throw new ArgumentNullException("myIEnumerator must implement 'IEnumerator<" + typeof(S) + ">'!");
+
+            _PipeToCap.SetSource(_Enumerator);
+
+        }
+
         #endregion
 
         #region SetSourceCollection(myIEnumerable)
@@ -81,6 +116,25 @@ namespace de.ahzf.Pipes
         public override void SetSourceCollection(IEnumerable<S> myIEnumerable)
         {
             _PipeToCap.SetSource(myIEnumerable.GetEnumerator());
+        }
+
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable as input.
+        /// </summary>
+        /// <param name="myIEnumerable">An IEnumerable as element source.</param>
+        void IStartPipe.SetSourceCollection(IEnumerable myIEnumerable)
+        {
+
+            if (myIEnumerable == null)
+                throw new ArgumentNullException("myIEnumerable must not be null!");
+
+            var _Enumerator = myIEnumerable.GetEnumerator() as IEnumerator<S>;
+
+            if (_Enumerator == null)
+                throw new ArgumentNullException("myIEnumerable must implement 'IEnumerable<" + typeof(S) + ">'!");
+
+            _PipeToCap.SetSource(_Enumerator);
+
         }
 
         #endregion

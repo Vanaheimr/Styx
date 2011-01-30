@@ -130,12 +130,12 @@ namespace de.ahzf.Pipes
             _StartPipe = myPipes[0] as IStartPipe<S>;
 
             if (_StartPipe == null)
-                throw new ArgumentException("The first Pipe must be of type 'IStartPipe<" + typeof(S) + ">'!");
+                throw new ArgumentException("The first Pipe must be of type 'IStartPipe<" + typeof(S) + ">', but '" + myPipes[0].GetType() + "' was provided!");
 
             _EndPipe = myPipes[_Length - 1] as IEndPipe<E>;
 
             if (_EndPipe == null)
-                throw new ArgumentException("The last Pipe must be of type 'IEndPipe<" + typeof(E) + ">'!");
+                throw new ArgumentException("The last Pipe must be of type 'IEndPipe<" + typeof(E) + ">', but '" + myPipes[_Length - 1].GetType() + "' was provided!");
 			
             _PipeNames.Add(_StartPipe.ToString());
 

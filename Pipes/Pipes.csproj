@@ -84,6 +84,10 @@
     <Compile Include="SideeffectPipes\SideEffectCapPipe.cs" />
     <Compile Include="SideeffectPipes\ISideEffectPipe.cs" />
     <Compile Include="SideeffectPipes\CountPipe.cs" />
+    <Compile Include="util\ScatterPipe.cs" />
+    <Compile Include="util\PathPipe.cs" />
+    <Compile Include="util\GatherPipe.cs" />
+    <Compile Include="util\HasNextPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

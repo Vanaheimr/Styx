@@ -56,16 +56,6 @@ namespace TestApplication
 
 
 
-            var list = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-
-            var pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
-            pipe.SetSourceCollection(list);
-
-            Assert.IsTrue(pipe.MoveNext());
-            Assert.AreEqual(6UL, pipe.Current);
-            Assert.IsFalse(pipe.MoveNext());
-
-
 
 
             var graph = TinkerGraphFactory.CreateTinkerGraph();

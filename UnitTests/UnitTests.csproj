@@ -62,6 +62,10 @@
     <Compile Include="SideeffectPipes\GroupCountPipeTest.cs" />
     <Compile Include="SideeffectPipes\SideEffectCapPipeTest.cs" />
     <Compile Include="TinkerGraphFactory.cs" />
+    <Compile Include="util\ScatterPipeTest.cs" />
+    <Compile Include="util\PathPipeTest.cs" />
+    <Compile Include="util\GatherPipeTest.cs" />
+    <Compile Include="util\HasNextPipeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">

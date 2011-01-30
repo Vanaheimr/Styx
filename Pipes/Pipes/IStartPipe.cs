@@ -59,7 +59,7 @@ namespace de.ahzf.Pipes
     /// defining a general pipe consuming elements of type S.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    public interface IStartPipe<in S>
+    public interface IStartPipe<in S> : IStartPipe
     {
 
         /// <summary>

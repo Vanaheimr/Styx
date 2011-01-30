@@ -30,7 +30,7 @@ namespace de.ahzf.Pipes
     /// filled with the contents of all the objects that have passed through it.
     /// Before the first object is emitted from the AggregatorPipe, all of its
     /// incoming objects have been aggregated into the collection.
-    /// The collection enumerator is used as the emitting enumerator Thus, what
+    /// The collection enumerator is used as the emitting enumerator. Thus, what
     /// goes into AggregatorPipe may not be the same as what comes out of
     /// AggregatorPipe.
     /// For example, duplicates removed, different order to the stream, etc.
@@ -77,11 +77,12 @@ namespace de.ahzf.Pipes
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
-                return false;
-
+            // First consume all elements emitted by the _InternalEnumerator
             if (_AggregateEnumerator == null)
             {
+
+                if (_InternalEnumerator == null)
+                    return false;
 
                 while (_InternalEnumerator.MoveNext())
                     _Aggregate.Add(_InternalEnumerator.Current);
@@ -90,6 +91,7 @@ namespace de.ahzf.Pipes
 
             }
 
+            // Second emit the collected elements
             if (_AggregateEnumerator.MoveNext())
             {
                 _CurrentElement = _AggregateEnumerator.Current;
