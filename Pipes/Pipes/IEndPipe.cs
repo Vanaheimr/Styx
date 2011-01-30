@@ -26,28 +26,34 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
-    #region IPipe
+    #region IEndPipe
 
     /// <summary>
-    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe.
+    /// A helper interface for the IPipe pipe interface
+    /// defining a general pipe emitting elements.
     /// </summary>
-    public interface IPipe : IStartPipe, IEndPipe, IDisposable
-    { }
+    public interface IEndPipe : IEnumerator, IEnumerable
+    {
+
+        /// <summary>
+        /// Returns the path traversed to arrive at the current result of the pipe.
+        /// </summary> 
+        /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
+        List<Object> Path { get; }
+
+    }
 
     #endregion
 
-    #region IPipe<in S, out E>
+    #region IEndPipe<out E>
 
     /// <summary>
-    /// The generic interface for any Pipe implementation.
-    /// A Pipe takes/consumes objects of type S and returns/emits objects of type E.
-    /// S refers to <i>starts</i> and the E refers to <i>ends</i>.
+    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
+    /// defining a general pipe emitting elements of type E.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S, out E> : IStartPipe<S>, IEndPipe<E>, IPipe
-	{ }
+    public interface IEndPipe<out E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
+    { }
 
     #endregion
 

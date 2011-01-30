@@ -26,7 +26,7 @@ using de.ahzf.blueprints;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests
+namespace de.ahzf.Pipes.UnitTests.Blueprints
 {
 
     [TestFixture]

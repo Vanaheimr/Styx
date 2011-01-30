@@ -122,7 +122,7 @@ namespace de.ahzf.Pipes
             UInt64 _Counter;
 
             if (_CountMap.TryGetValue(myElement, out _Counter))
-                _CountMap[myElement] = _Counter++;
+                _CountMap[myElement] = _Counter + 1;
 
             else
                 _CountMap.Add(myElement, 1);

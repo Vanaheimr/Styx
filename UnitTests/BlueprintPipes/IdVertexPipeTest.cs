@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;
-using de.ahzf.blueprints;
 
 #endregion
 
@@ -31,47 +30,48 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 {
 
     [TestFixture]
-    public class IdEdgePipeTest
+    public class IdVertexPipeTest
     {
 
-        #region testIdEdgePipeGraph()
+        #region testIdVertexPipeGraph()
 
         [Test]
-        public void testIdEdgePipeGraph()
+        public void testIdVertexPipeGraph()
         {
 
             var graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            var ids = new List<EdgeId>() { new EdgeId("9"), new EdgeId("11"), new EdgeId("12") };
-            IPipe<EdgeId, IEdge> pipe = new IdEdgePipe<EdgeId>(graph);
+            var ids = new List<VertexId>() { new VertexId("1"), new VertexId("6"), new VertexId("5") };
+            var pipe = new IdVertexPipe<VertexId>(graph);
             pipe.SetSourceCollection(ids);
-            int counter = 0;
 
+            int counter = 0;
             while (pipe.MoveNext())
             {
-                
-                IEdge edge = pipe.Current;
 
+                var vertex = pipe.Current;
+                
                 if (counter == 0)
                 {
-                    Assert.AreEqual(new EdgeId("9"), edge.Id);
-                    Assert.AreEqual(0.4f, edge.GetProperty("weight"));
+                    Assert.AreEqual(new VertexId("1"), vertex.Id);
+                    Assert.AreEqual("marko", vertex.GetProperty("name"));
                 }
+                
                 else if (counter == 1)
                 {
-                    Assert.AreEqual(new EdgeId("11"), edge.Id);
-                    Assert.AreEqual(graph.GetVertex(new VertexId("3")), edge.InVertex);
+                    Assert.AreEqual(new VertexId("6"), vertex.Id);
+                    Assert.AreEqual("peter", vertex.GetProperty("name"));
                 }
+                
                 else if (counter == 2)
                 {
-                    Assert.AreEqual(new EdgeId("12"), edge.Id);
-                    Assert.AreEqual("created", edge.Label);
-                }
-                else
-                {
-                    throw new Exception("Illegal state.");
+                    Assert.AreEqual(new VertexId("5"), vertex.Id);
+                    Assert.AreEqual("ripple", vertex.GetProperty("name"));
                 }
 
+                else
+                    throw new Exception("Illegal state.");
+                
                 counter++;
 
             }

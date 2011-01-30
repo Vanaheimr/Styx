@@ -72,6 +72,8 @@
     <Compile Include="FilterPipes\AndFilterPipe.cs" />
     <Compile Include="FilterPipes\IFilterPipe.cs" />
     <Compile Include="FilterPipes\ToUpperPipe.cs" />
+    <Compile Include="Pipes\IStartPipe.cs" />
+    <Compile Include="Pipes\IEndPipe.cs" />
     <Compile Include="Pipes\IPipe.cs" />
     <Compile Include="PipeHelper.cs" />
     <Compile Include="Enumerators\HistoryEnumerator.cs" />

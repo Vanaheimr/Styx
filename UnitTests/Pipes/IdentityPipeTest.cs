@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests
+namespace de.ahzf.Pipes.UnitTests.Pipes
 {
 
     [TestFixture]
@@ -37,7 +37,7 @@ namespace de.ahzf.Pipes.UnitTests
         public void testIdentityPipeNormal()
         {
 
-            var uuids = BaseTest.GenerateUUIDs(100);
+            var uuids = de.ahzf.Pipes.UnitTests.BaseTest.GenerateUUIDs(100);
             IPipe<String, String> pipe = new IdentityPipe<String>();
             pipe.SetSourceCollection(uuids);
             int counter = 0;
@@ -61,7 +61,7 @@ namespace de.ahzf.Pipes.UnitTests
         public void testIdentityPipeZero()
         {
 
-            var uuids = BaseTest.GenerateUUIDs(0);
+            var uuids = de.ahzf.Pipes.UnitTests.BaseTest.GenerateUUIDs(0);
             IPipe<String, String> pipe = new IdentityPipe<String>();
             pipe.SetSourceCollection(uuids);
             int counter = 0;

@@ -17,48 +17,42 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;
-using de.ahzf.blueprints;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests
+namespace de.ahzf.Pipes.UnitTests.Blueprints
 {
 
     [TestFixture]
-    public class IdFilterPipeTest
+    public class LabelPipeTest
     {
 
-        #region testIdEdgePipeGraph()
+        #region testLabels()
 
         [Test]
-        public void testIdEdgePipeGraph()
+        public void testLabels()
         {
 
             var graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            IVertex marko = graph.GetVertex(new VertexId("1"));
-
-            var pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe3 = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
-
-            var pipeline = new Pipeline<IVertex, IVertex>(pipe1, pipe2, pipe3);
-            pipeline.SetSourceCollection(new List<IVertex>() { marko });
+            var pipe = new LabelPipe();
+            pipe.SetSourceCollection(graph.GetVertex(new VertexId("1")).OutEdges);
 
             int counter = 0;
-            while (pipeline.MoveNext())
+            while (pipe.MoveNext())
             {
-                var vertex = pipeline.Current;
-                Assert.AreEqual("lop", vertex.GetProperty("name"));
+                String label = pipe.Current;
+                Assert.IsTrue(label.Equals("knows") || label.Equals("created"));
                 counter++;
             }
 
-            Assert.AreEqual(1, counter);
+            Assert.AreEqual(3, counter);
 
         }
 

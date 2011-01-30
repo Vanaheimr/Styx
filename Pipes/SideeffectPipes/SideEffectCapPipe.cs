@@ -59,7 +59,7 @@ namespace de.ahzf.Pipes
         #endregion
 
 
-        #region SetStartIEnumerator(myIEnumerator)
+        #region SetSource(myIEnumerator)
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
@@ -72,7 +72,7 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region SetStartIEnumerable(myIEnumerable)
+        #region SetSourceCollection(myIEnumerable)
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
@@ -99,9 +99,6 @@ namespace de.ahzf.Pipes
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
-                return false;
-            
             if (_Alive)
             {
 
@@ -117,7 +114,7 @@ namespace de.ahzf.Pipes
             }
             
             else
-                throw new NoSuchElementException();
+                return false;
 
         }
 

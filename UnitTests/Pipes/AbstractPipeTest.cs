@@ -28,7 +28,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests
+namespace de.ahzf.Pipes.UnitTests.Pipes
 {
 
     [TestFixture]

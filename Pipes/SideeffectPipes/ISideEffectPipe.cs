@@ -30,7 +30,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
-    public interface ISideEffectPipe<S, E, T> : IPipe<S, E>
+    public interface ISideEffectPipe<in S, out E, out T> : IPipe<S, E>
     {
 
         /// <summary>
