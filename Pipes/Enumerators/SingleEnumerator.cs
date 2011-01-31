@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// single objects are manipulated at a time.
     /// </summary>
     /// <typeparam name="T">The type of the stored element.</typeparam>
-	public class SingleEnumerator<T> : IEnumerator<T>
+	public class SingleEnumerator<T> : ISingleEnumerator, IEnumerator<T>
     {
 
         #region Data
@@ -121,6 +121,22 @@ namespace de.ahzf.Pipes
 			}
 		}
 
+        /// <summary>
+        /// Return the current element of the internal ISingleEnumerator.
+        /// </summary>
+        Object ISingleEnumerator.Current
+        {
+            get
+            {
+
+                if (_InternalState == SingleEnumeratorState.AT)
+                    return _Element;
+
+                throw new InvalidOperationException();
+
+            }
+        }
+
         #endregion
 
         #region MoveNext()
@@ -177,7 +193,9 @@ namespace de.ahzf.Pipes
         { }
 
         #endregion
-	
-	}
+
+
+        
+    }
 
 }

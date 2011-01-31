@@ -26,15 +26,15 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// A helper interface for the HistoryEnumerator&lt;T&gt; class.
+    /// A helper interface for the SingleEnumerator&lt;T&gt; class.
     /// </summary>
-    public interface IHistoryEnumerator
+    public interface ISingleEnumerator
     {
 
         /// <summary>
-        /// Return the last element of the internal IEnumertor.
+        /// Return the current element of the internal IEnumertor.
         /// </summary>
-        Object Last { get; }
+        Object Current { get; }
 
     }
 

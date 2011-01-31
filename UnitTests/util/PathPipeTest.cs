@@ -41,20 +41,20 @@ namespace de.ahzf.Pipes.UnitTests.util
         public void testPipeBasic()
         {
 
-            var graph    = TinkerGraphFactory.CreateTinkerGraph();
+            var grapha   = TinkerGraphFactory.CreateTinkerGraph();
 
-            var marko    = graph.GetVertex(new VertexId("1"));
+            var marko    = grapha.GetVertex(new VertexId("1"));
             var pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             var pipe3    = new PathPipe<IVertex>();
-            var pipeline = new Pipeline<IVertex, List<Object>>(pipe1, pipe2, pipe3);
+            var pipeline = new Pipeline<IVertex, IEnumerable<Object>>(pipe1, pipe2, pipe3);
             pipeline.SetSource(new SingleEnumerator<IVertex>(marko));
 
             foreach (var _Path in pipeline)
             {
-                Assert.AreEqual(marko, _Path[0]);
-                Assert.IsTrue(_Path[1] is IEdge);
-                Assert.IsTrue(_Path[2] is IVertex);
+                Assert.AreEqual(marko, _Path.ElementAt(0));
+                Assert.IsTrue(_Path.ElementAt(1) is IEdge);
+                Assert.IsTrue(_Path.ElementAt(2) is IVertex);
             }
 
         }

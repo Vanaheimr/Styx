@@ -26,10 +26,12 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// GatherPipe 
+    /// Emits the path that the traverser has taken up to this object.
+    /// In other words, it uses the Path property of the previous pipe
+    /// to emit the transformation stages.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    public class PathPipe<S> : AbstractPipe<S, IEnumerable<Object>>
+    public class PathPipe<S> : AbstractPipe<S, IEnumerable<Object>>, IEndPipe<IEnumerable<Object>>
     {
 
         #region MoveNext()
@@ -62,7 +64,7 @@ namespace de.ahzf.Pipes
             }
             
             else
-                throw new NoSuchElementException("The source of this pipe was not a pipe");
+                throw new NoSuchElementException("The source of this pipe was not a pipe!");
 
         }
 

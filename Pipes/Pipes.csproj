@@ -41,6 +41,7 @@
     <Compile Include="BlueprintPipes\EdgeIdFilterPipe.cs" />
     <Compile Include="BlueprintPipes\VertexIdFilterPipe.cs" />
     <Compile Include="BlueprintPipes\VertexEdgePipe.cs" />
+    <Compile Include="Enumerators\ISingleEnumerator.cs" />
     <Compile Include="Enumerators\IHistoryEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />

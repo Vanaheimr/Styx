@@ -76,14 +76,14 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
         public void testPathConstruction()
         {
 
-            IGraph graph = TinkerGraphFactory.CreateTinkerGraph();
+            var graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            IVertex marko = graph.GetVertex(new VertexId("1"));
-            IPipe<IVertex, IEdge>  pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            IPipe<IEdge, IVertex>  pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            IPipe<IVertex, String> pipe3 = new PropertyPipe<IVertex, String>("name");
-            pipe3.SetSource(pipe2.GetEnumerator());
-            pipe2.SetSource(pipe1.GetEnumerator());
+            var marko = graph.GetVertex(new VertexId("1"));
+            var pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var pipe3 = new PropertyPipe<IVertex, String>("name");
+            pipe3.SetSource(pipe2);
+            pipe2.SetSource(pipe1);
             var _MarkoList = new List<IVertex>() { marko };
             pipe1.SetSource(_MarkoList.GetEnumerator());
 
@@ -97,25 +97,33 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
                 Assert.AreEqual(typeof(Vertex), path[2].GetType());
                 Assert.AreEqual(typeof(String), path[3].GetType());
 
-                //if (name.equals("vadas"))
-                //{
-                //    Assert.AreEqual(path.get(1), graph.getEdge(7));
-                //    Assert.AreEqual(path.get(2), graph.getVertex(2));
-                //    Assert.AreEqual(path.get(3), "vadas");
-                //}
-                //else if (name.equals("lop")) {
-                //    Assert.AreEqual(path.get(1), graph.getEdge(9));
-                //    Assert.AreEqual(path.get(2), graph.getVertex(3));
-                //    Assert.AreEqual(path.get(3), "lop");
-                //} else if (name.equals("josh")) {
-                //    Assert.AreEqual(path.get(1), graph.getEdge(8));
-                //    Assert.AreEqual(path.get(2), graph.getVertex(4));
-                //    Assert.AreEqual(path.get(3), "josh");
-                //} else {
-                //    assertFalse(true);
-                //}
-                ////System.out.println(name);
-                ////System.out.println(pipeline.getPath());
+                if (name == "vadas")
+                {
+                    Assert.AreEqual(graph.GetEdge(new EdgeId(7)),     path[1]);
+                    Assert.AreEqual(graph.GetVertex(new VertexId(2)), path[2]);
+                    Assert.AreEqual("vadas", path[3]);
+                }
+                
+                else if (name == "lop")
+                {
+                    Assert.AreEqual(graph.GetEdge(new EdgeId(9)),     path[1]);
+                    Assert.AreEqual(graph.GetVertex(new VertexId(3)), path[2]);
+                    Assert.AreEqual("lop", path[3]);
+                }
+                
+                else if (name == "josh")
+                {
+                    Assert.AreEqual(graph.GetEdge(new EdgeId(8)),     path[1]);
+                    Assert.AreEqual(graph.GetVertex(new VertexId(4)), path[2]);
+                    Assert.AreEqual("josh", path[3]);
+                }
+
+                else
+                    Assert.Fail();
+
+                //System.out.println(name);
+                //System.out.println(pipeline.getPath());
+
             }
 
         }

@@ -270,6 +270,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public virtual List<Object> Path
         {
+
             get
             {
 
@@ -284,6 +285,7 @@ namespace de.ahzf.Pipes
                 return _PathElements;
 
             }
+
         }
 
         #endregion
@@ -300,10 +302,22 @@ namespace de.ahzf.Pipes
 
                 else if (_InternalEnumerator is IHistoryEnumerator)
                 {
+
                     var _List = new List<Object>();
-                    _InternalEnumerator.MoveNext();
-                    _List.Add(((IHistoryEnumerator)_InternalEnumerator).Last);
+                    var _Last = ((IHistoryEnumerator) _InternalEnumerator).Last;
+
+                    if (_Last == null)
+                        _List.Add(_InternalEnumerator.Current);
+                    else
+                        _List.Add(_Last);
+
                     return _List;
+
+                }
+
+                else if (_InternalEnumerator is ISingleEnumerator)
+                {
+                    return new List<Object>() { ((ISingleEnumerator) _InternalEnumerator).Current };
                 }
 
                 else
