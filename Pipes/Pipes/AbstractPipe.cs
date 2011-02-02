@@ -294,6 +294,7 @@ namespace de.ahzf.Pipes
 
         private List<Object> PathToHere
 		{
+
             get
             {
 
@@ -316,14 +317,13 @@ namespace de.ahzf.Pipes
                 }
 
                 else if (_InternalEnumerator is ISingleEnumerator)
-                {
                     return new List<Object>() { ((ISingleEnumerator) _InternalEnumerator).Current };
-                }
 
                 else
                     return new List<Object>();
 
             }
+
 		}
 
         #endregion
