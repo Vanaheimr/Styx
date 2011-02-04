@@ -53,8 +53,7 @@ namespace de.ahzf.Pipes
                 return true;
             }
 
-            else
-                return false;
+            return false;
 
         }
 

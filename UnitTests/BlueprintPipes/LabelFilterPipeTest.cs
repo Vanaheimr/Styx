@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;

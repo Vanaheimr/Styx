@@ -17,8 +17,6 @@
 
 #region Usings
 
-using System;
-
 using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;

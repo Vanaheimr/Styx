@@ -17,10 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
+
 using de.ahzf.blueprints.Datastructures;
 using de.ahzf.blueprints;
 
@@ -41,7 +39,6 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            
             var marko = graph.GetVertex(new VertexId("1"));
             var evp = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             evp.SetSourceCollection(marko.OutEdges);

@@ -18,7 +18,7 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+using System.Threading;
 
 #endregion
 
@@ -34,7 +34,7 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private UInt64 _Counter;
+        private Int64 _Counter;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public CountPipe()
         {
-            _Counter = 0UL;
+            _Counter = 0L;
         }
 
         #endregion
@@ -74,13 +74,11 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator.MoveNext())
             {
                 _CurrentElement = _InternalEnumerator.Current;
-                _Counter++;
-
+                Interlocked.Increment(ref _Counter);
                 return true;
             }
 
-            else
-                return false;
+            return false;
 
         }
 
@@ -95,7 +93,7 @@ namespace de.ahzf.Pipes
         {
             get
             {
-                return _Counter;
+                return (UInt64) _Counter;
             }
         }
 
