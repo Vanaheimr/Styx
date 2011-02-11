@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -89,6 +89,8 @@
     <Compile Include="util\PathPipe.cs" />
     <Compile Include="util\GatherPipe.cs" />
     <Compile Include="util\HasNextPipe.cs" />
+    <Compile Include="Concurrent\AndFilterPipeConcurrent.cs" />
+    <Compile Include="util\CharacterCountPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -97,5 +99,8 @@
       <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>
       <Name>blueprints</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Concurrent\" />
   </ItemGroup>
 </Project>

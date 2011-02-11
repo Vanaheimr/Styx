@@ -36,7 +36,7 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly IPipe<S, S> _Pipe;
+        private readonly IPipe<S, Object> _Pipe;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Creates a new FutureFilterPipe.
         /// </summary>
-        public FutureFilterPipe(IPipe<S, S> myPipe)
+        public FutureFilterPipe(IPipe<S, Object> myPipe)
         {
             _Pipe = myPipe;
         }
@@ -93,6 +93,21 @@ namespace de.ahzf.Pipes
                     //    return _S;
 
                     //}
+					
+					/*
+					while (true) {
+			            S s = this.starts.next();
+			            pipe.setStarts(new SingleIterator<S>(s));
+			            if (pipe.hasNext()) {
+			                while (pipe.hasNext()) {
+			                    pipe.next();
+			                }
+			                return s;
+			            }
+        			}
+					 */
+					
+					
 
                 }
 

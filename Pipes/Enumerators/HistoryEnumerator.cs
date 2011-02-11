@@ -141,7 +141,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public void Reset()
 		{
-            _InternalEnumerator.Reset();
+            //_InternalEnumerator.Reset();
             _Last = default(T);
 		}
 

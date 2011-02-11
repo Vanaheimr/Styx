@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipes", "Pipes\Pipes.csproj", "{3949790D-8591-4101-9E4D-CE7A758E7409}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{62373408-6E14-4753-9B0E-EE0CF5988481}"
@@ -41,16 +41,6 @@ Global
 		{62373408-6E14-4753-9B0E-EE0CF5988481}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{62373408-6E14-4753-9B0E-EE0CF5988481}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{62373408-6E14-4753-9B0E-EE0CF5988481}.Release|x86.ActiveCfg = Release|Any CPU
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|x86.ActiveCfg = Debug|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|x86.Build.0 = Debug|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Any CPU.ActiveCfg = Release|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Mixed Platforms.Build.0 = Release|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|x86.ActiveCfg = Release|x86
-		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|x86.Build.0 = Release|x86
 		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9DE4181-416E-4DE4-A983-B90FC9412774}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -71,11 +61,22 @@ Global
 		{D4D2ACAD-FF2E-44AD-9D4A-6E332C246FAD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D4D2ACAD-FF2E-44AD-9D4A-6E332C246FAD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D4D2ACAD-FF2E-44AD-9D4A-6E332C246FAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Any CPU.Build.0 = Debug|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|x86.ActiveCfg = Debug|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Debug|x86.Build.0 = Debug|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Any CPU.ActiveCfg = Release|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|x86.ActiveCfg = Release|x86
+		{FBFA1774-4642-42CC-8B0D-3DE60A4E641E}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = TestApplication\TestApplication.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Pipes\Pipes.csproj
 	EndGlobalSection
 EndGlobal

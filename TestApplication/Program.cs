@@ -40,7 +40,7 @@ namespace TestApplication
         public static void Main(String[] myArgs)
         {
 
-
+			/*
             var grapha    = TinkerGraphFactory.CreateTinkerGraph();
 
             var markoa   = grapha.GetVertex(new VertexId("1"));
@@ -56,13 +56,35 @@ namespace TestApplication
                 Assert.IsTrue(_Path.ElementAt(1) is IEdge);
                 Assert.IsTrue(_Path.ElementAt(2) is IVertex);
             }
+			 */
+
+			
+			var _Graph 			= TinkerGraphFactory.CreateTinkerGraph();
+		    var _Marko 			= _Graph.GetVertex(new VertexId("1"));
+		    var _Peter 			= _Graph.GetVertex(new VertexId("6"));
+		    var _Pipe0 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+		    var _Pipe1 			= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
+		    var _Pipe2 			= new PropertyFilterPipe<IEdge, Double>("weight", 0.5f, ComparisonFilter.LESS_THAN_EQUAL);
+		    var _AndFilterPipe	= new AndFilterPipe<IEdge>(new HasNextPipe<IEdge>(_Pipe1), new HasNextPipe<IEdge>(_Pipe2));
+		    var _Pipeline 		= new Pipeline<IVertex, IEdge>(_Pipe0, _AndFilterPipe);
+		    _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko, _Peter, _Marko });
+
+			var _Counter = 0;
+		    while (_Pipeline.MoveNext())
+			{
+		        var _Edge = _Pipeline.Current;
+		        Assert.IsTrue(_Edge.Id.Equals("8"));
+		        Assert.IsTrue(_Edge.GetProperty<Double>("weight") > 0.5f && _Edge.Label.Equals("knows"));
+		        _Counter++;
+		    }
+			
+		    Assert.AreEqual(2, _Counter);
+			
+			
 
 
 
-
-
-
-
+			/*
             var graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var marko = graph.GetVertex(new VertexId("1"));
@@ -112,7 +134,11 @@ namespace TestApplication
                 //System.out.println(pipeline.getPath());
 
             }
-
+			 */
+			
+			Console.WriteLine("ok!");
+			Console.ReadLine();
+			
         }
 
     }
