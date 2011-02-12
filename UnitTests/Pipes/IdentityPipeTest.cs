@@ -38,19 +38,18 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
         public void testIdentityPipeNormal()
         {
 
-            var uuids = de.ahzf.Pipes.UnitTests.BaseTest.GenerateUUIDs(100);
-            IPipe<String, String> pipe = new IdentityPipe<String>();
-            pipe.SetSourceCollection(uuids);
-            int counter = 0;
-            Assert.IsTrue(pipe.Any());
-            pipe.Reset();
-            while (pipe.MoveNext())
+            var _UUIDs = de.ahzf.Pipes.UnitTests.BaseTest.GenerateUUIDs(100);
+            var _Pipe  = new IdentityPipe<String>();
+            _Pipe.SetSourceCollection(_UUIDs);
+
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
-                Assert.AreEqual(pipe.Current, uuids.ElementAt(counter));
-                counter++;
+                Assert.AreEqual(_Pipe.Current, _UUIDs.ElementAt(_Counter));
+                _Counter++;
             }
-            Assert.AreEqual(counter, 100);
-            //Assert.IsFalse(pipe.Any());
+
+            Assert.AreEqual(_Counter, 100);
 
         }
 

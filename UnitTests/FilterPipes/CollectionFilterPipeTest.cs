@@ -42,7 +42,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Pipe1 		= new CollectionFilterPipe<String>(_Collection, ComparisonFilter.NOT_EQUAL);
 	        _Pipe1.SetSourceCollection(_Names);
 			
-	        int _Counter = 0;
+	        var _Counter = 0;
 	        while (_Pipe1.MoveNext())
 			{
 	            _Counter++;
@@ -67,7 +67,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Pipe1 		= new CollectionFilterPipe<String>(_Collection, ComparisonFilter.EQUAL);
 	        _Pipe1.SetSourceCollection(_Names);
 			
-	        int _Counter = 0;
+	        var _Counter = 0;
 	        while (_Pipe1.MoveNext())
 			{
 	            _Counter++;

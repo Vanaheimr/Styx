@@ -59,26 +59,20 @@ namespace TestApplication
 			 */
 
 			
-			var _Graph 			= TinkerGraphFactory.CreateTinkerGraph();
-		    var _Marko 			= _Graph.GetVertex(new VertexId("1"));
-		    var _Peter 			= _Graph.GetVertex(new VertexId("6"));
-		    var _Pipe0 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-		    var _Pipe1 			= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
-		    var _Pipe2 			= new PropertyFilterPipe<IEdge, Double>("weight", 0.5f, ComparisonFilter.LESS_THAN_EQUAL);
-		    var _AndFilterPipe	= new AndFilterPipe<IEdge>(new HasNextPipe<IEdge>(_Pipe1), new HasNextPipe<IEdge>(_Pipe2));
-		    var _Pipeline 		= new Pipeline<IVertex, IEdge>(_Pipe0, _AndFilterPipe);
-		    _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko, _Peter, _Marko });
-
-			var _Counter = 0;
-		    while (_Pipeline.MoveNext())
-			{
-		        var _Edge = _Pipeline.Current;
-		        Assert.IsTrue(_Edge.Id.Equals("8"));
-		        Assert.IsTrue(_Edge.GetProperty<Double>("weight") > 0.5f && _Edge.Label.Equals("knows"));
-		        _Counter++;
-		    }
+			var _Names 		= new List<String>() { "marko", "marko", "peter", "josh", "pavel", "marko" };
+	        var _Collection = new HashSet<String>() { "marko", "pavel" };
+	        var _Pipe1 		= new CollectionFilterPipe<String>(_Collection, ComparisonFilter.NOT_EQUAL);
+	        _Pipe1.SetSourceCollection(_Names);
 			
-		    Assert.AreEqual(2, _Counter);
+	        var _Counter = 0;
+	        while (_Pipe1.MoveNext())
+			{
+	            _Counter++;
+	            var _Name = _Pipe1.Current;
+	            Assert.IsTrue(_Name.Equals("marko") || _Name.Equals("pavel"));
+	        }
+	        
+			Assert.AreEqual(4, _Counter);
 			
 			
 

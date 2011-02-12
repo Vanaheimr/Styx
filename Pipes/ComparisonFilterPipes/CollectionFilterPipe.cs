@@ -48,7 +48,10 @@ namespace de.ahzf.Pipes
         #region CollectionFilterPipe(myIEnumerable, myComparisonFilter)
 
         /// <summary>
-        /// Creates a new CollectionFilterPipe based on the given filter.
+        /// A CollectionFilterPipe will take a collection of objects and
+        /// a Filter.NOT_EQUAL or Filter.EQUAL argument.
+        /// If an incoming object is contained (or not contained) in the
+        /// provided collection, then it is emitted (or not emitted).
         /// </summary>
         /// <param name="myIEnumerable">The IEnumerable for filtering.</param>
         /// <param name="myComparisonFilter">The ComparisonFilter used for filtering.</param>
@@ -138,21 +141,31 @@ namespace de.ahzf.Pipes
 
         #endregion
 
+        #region CompareObjects(myRightObject)
 
         private Boolean CompareObjects(S myRightObject)
         {
 
+            // NOT_EQUAL
             if (_ComparisonFilter == ComparisonFilter.NOT_EQUAL)
+            {
                 if (_InternalEnumerable.Contains(myRightObject))
                     return true;
 
-                else
-                    if (!_InternalEnumerable.Contains(myRightObject))
-                        return true;
+            }
+
+            // EQUAL
+            else
+            {
+                if (!_InternalEnumerable.Contains(myRightObject))
+                    return true;
+            }
 
             return false;
 
         }
+
+        #endregion
 
 
     }

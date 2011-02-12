@@ -40,43 +40,43 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testIdEdgePipeGraph()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _IDs  = new List<EdgeId>() { new EdgeId("9"), new EdgeId("11"), new EdgeId("12") };
+            var _Pipe = new IdEdgePipe<EdgeId>(_Graph);
+            _Pipe.SetSourceCollection(_IDs);
 
-            var ids = new List<EdgeId>() { new EdgeId("9"), new EdgeId("11"), new EdgeId("12") };
-            IPipe<EdgeId, IEdge> pipe = new IdEdgePipe<EdgeId>(graph);
-            pipe.SetSourceCollection(ids);
-            int counter = 0;
-
-            while (pipe.MoveNext())
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
                 
-                IEdge edge = pipe.Current;
+                var _Edge = _Pipe.Current;
 
-                if (counter == 0)
+                if (_Counter == 0)
                 {
-                    Assert.AreEqual(new EdgeId("9"), edge.Id);
-                    Assert.AreEqual(0.4f, edge.GetProperty("weight"));
+                    Assert.AreEqual(new EdgeId("9"), _Edge.Id);
+                    Assert.AreEqual(0.4, _Edge.GetProperty("weight"));
                 }
-                else if (counter == 1)
+
+                else if (_Counter == 1)
                 {
-                    Assert.AreEqual(new EdgeId("11"), edge.Id);
-                    Assert.AreEqual(graph.GetVertex(new VertexId("3")), edge.InVertex);
+                    Assert.AreEqual(new EdgeId("11"), _Edge.Id);
+                    Assert.AreEqual(_Graph.GetVertex(new VertexId("3")), _Edge.InVertex);
                 }
-                else if (counter == 2)
+
+                else if (_Counter == 2)
                 {
-                    Assert.AreEqual(new EdgeId("12"), edge.Id);
-                    Assert.AreEqual("created", edge.Label);
+                    Assert.AreEqual(new EdgeId("12"), _Edge.Id);
+                    Assert.AreEqual("created", _Edge.Label);
                 }
+
                 else
-                {
                     throw new Exception("Illegal state.");
-                }
 
-                counter++;
+                _Counter++;
 
             }
 
-            Assert.AreEqual(3, counter);
+            Assert.AreEqual(3, _Counter);
 
         }
 

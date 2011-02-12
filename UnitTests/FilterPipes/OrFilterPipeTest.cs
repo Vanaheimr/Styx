@@ -73,16 +73,16 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Peter 			= _Graph.GetVertex(new VertexId("6"));
 	        var _Pipe0 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
 	        var _Pipe1 			= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
-	        var _Pipe2 			= new PropertyFilterPipe<IEdge, Double>("weight", 0.5f, ComparisonFilter.LESS_THAN_EQUAL);
+	        var _Pipe2 			= new PropertyFilterPipe<IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
 	        var _ORFilterPipe	= new OrFilterPipe<IEdge>(new HasNextPipe<IEdge>(_Pipe1), new HasNextPipe<IEdge>(_Pipe2));
 	        var _Pipeline 		= new Pipeline<IVertex, IEdge>(_Pipe0, _ORFilterPipe);
 	        _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko, _Peter, _Marko });
 	        
-			int _Counter = 0;
+			var _Counter = 0;
 	        while (_Pipeline.MoveNext())
 			{
 	            var _Edge = _Pipeline.Current;
-	            Assert.IsTrue(_Edge.Id.Equals("8") || _Edge.Id.Equals("9") || _Edge.Id.Equals("12"));
+	            Assert.IsTrue(_Edge.Id.Equals(new EdgeId("8")) || _Edge.Id.Equals(new EdgeId("9")) || _Edge.Id.Equals(new EdgeId("12")));
 	            Assert.IsTrue(_Edge.GetProperty<Double>("weight") > 0.5f || _Edge.Label.Equals("created"));
 	            _Counter++;
 	        }
@@ -106,7 +106,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Pipe1 		= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
 	        var _PipeA 		= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
 	        var _PipeB 		= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
-	        var _PipeC 		= new PropertyFilterPipe<IEdge, Double>("weight", 0.5f, ComparisonFilter.LESS_THAN_EQUAL);
+	        var _PipeC 		= new PropertyFilterPipe<IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
 	        var _PipeD 		= new AndFilterPipe<IEdge>(new HasNextPipe<IEdge>(_PipeB), new HasNextPipe<IEdge>(_PipeC));
 	        var _Pipe2 		= new OrFilterPipe<IEdge>(new HasNextPipe<IEdge>(_PipeA), new HasNextPipe<IEdge>(_PipeD));
 	        var _Pipeline 	= new Pipeline<IVertex, IEdge>(_Pipe1, _Pipe2);
@@ -116,8 +116,8 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        while (_Pipeline.MoveNext())
 			{
 	            var _Edge = _Pipeline.Current;
-	            Assert.IsTrue(_Edge.Id.Equals("8") || _Edge.Id.Equals("9"));
-	            Assert.IsTrue(_Edge.Label.Equals("created") || (_Edge.GetProperty<Double>("weight") > 0.5f && _Edge.Label.Equals("knows")));
+	            Assert.IsTrue(_Edge.Id.Equals(new EdgeId("8")) || _Edge.Id.Equals(new EdgeId("9")));
+	            Assert.IsTrue(_Edge.Label.Equals("created") || (_Edge.GetProperty<Double>("weight") > 0.5 && _Edge.Label.Equals("knows")));
 	            _Counter++;
 	        }
 	        

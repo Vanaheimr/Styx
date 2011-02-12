@@ -35,11 +35,11 @@ namespace de.ahzf.Pipes.UnitTests
 
             var marko = _TinkerGraph.AddVertex(new VertexId("1"));
             marko.SetProperty("name", "marko");
-            marko.SetProperty("age", 29);
+            marko.SetProperty("age",   29);
 
             var vadas = _TinkerGraph.AddVertex(new VertexId("2"));
             vadas.SetProperty("name", "vadas");
-            vadas.SetProperty("age", 27);
+            vadas.SetProperty("age",   27);
 
             var lop = _TinkerGraph.AddVertex(new VertexId("3"));
             lop.SetProperty("name", "lop");
@@ -47,24 +47,22 @@ namespace de.ahzf.Pipes.UnitTests
 
             var josh = _TinkerGraph.AddVertex(new VertexId("4"));
             josh.SetProperty("name", "josh");
-            josh.SetProperty("age", 32);
+            josh.SetProperty("age",   32);
 
             var ripple = _TinkerGraph.AddVertex(new VertexId("5"));
             ripple.SetProperty("name", "ripple");
             ripple.SetProperty("lang", "java");
 
-            var peter = _TinkerGraph.AddVertex(new VertexId("6"));
-            peter.SetProperty("name", "peter");
-            peter.SetProperty("age", 35);
+            var peter = _TinkerGraph.AddVertex(new VertexId("6"), v => v.SetProperty("name", "peter").SetProperty("age", 35));
 
-            _TinkerGraph.AddEdge(marko, vadas, new EdgeId("7"), "knows").SetProperty("weight", 0.5f);
-            _TinkerGraph.AddEdge(marko, josh, new EdgeId("8"), "knows").SetProperty("weight", 1.0f);
-            _TinkerGraph.AddEdge(marko, lop, new EdgeId("9"), "created").SetProperty("weight", 0.4f);
+            _TinkerGraph.AddEdge(marko, vadas,  new EdgeId("7"),  "knows").  SetProperty("weight", 0.5);
+            _TinkerGraph.AddEdge(marko, josh,   new EdgeId("8"),  "knows").  SetProperty("weight", 1.0);
+            _TinkerGraph.AddEdge(marko, lop,    new EdgeId("9"),  "created").SetProperty("weight", 0.4);
 
-            _TinkerGraph.AddEdge(josh, ripple, new EdgeId("10"), "created").SetProperty("weight", 1.0f);
-            _TinkerGraph.AddEdge(josh, lop, new EdgeId("11"), "created").SetProperty("weight", 0.4f);
+            _TinkerGraph.AddEdge(josh,  ripple, new EdgeId("10"), "created").SetProperty("weight", 1.0);
+            _TinkerGraph.AddEdge(josh,  lop,    new EdgeId("11"), "created").SetProperty("weight", 0.4);
 
-            _TinkerGraph.AddEdge(peter, lop, new EdgeId("12"), "created").SetProperty("weight", 0.2f);
+            _TinkerGraph.AddEdge(peter, lop,    new EdgeId("12"), "created").SetProperty("weight", 0.2);
 
             return _TinkerGraph;
 
