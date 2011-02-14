@@ -37,36 +37,38 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testInCommingVertex()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            var marko = graph.GetVertex(new VertexId("1"));
-            var evp = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            evp.SetSourceCollection(marko.OutEdges);
-            //Assert.IsTrue(evp.MoveNext());
-            int counter = 0;
-            while (evp.MoveNext())
+            var _Marko = _Graph.GetVertex(new VertexId("1"));
+            var _EVP   = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            _EVP.SetSourceCollection(_Marko.OutEdges);
+
+            var _Counter = 0;
+            while (_EVP.MoveNext())
             {
-                var v = evp.Current;
+                var v = _EVP.Current;
                 Assert.IsTrue(v.Id.Equals(new VertexId("2")) || v.Id.Equals(new VertexId("3")) || v.Id.Equals(new VertexId("4")));
-                counter++;
+                _Counter++;
             }
-            Assert.AreEqual(3, counter);
+
+            Assert.AreEqual(3, _Counter);
 
 
-            var josh = graph.GetVertex(new VertexId("4"));
-            evp = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            evp.SetSource(josh.OutEdges.GetEnumerator());
-            //Assert.IsTrue(evp.hasNext());
-            counter = 0;
-            while (evp.MoveNext())
+            var _Josh = _Graph.GetVertex(new VertexId("4"));
+            _EVP = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            _EVP.SetSource(_Josh.OutEdges.GetEnumerator());
+
+            _Counter = 0;
+            while (_EVP.MoveNext())
             {
-                var v = evp.Current;
+                var v = _EVP.Current;
                 Assert.IsTrue(v.Id.Equals(new VertexId("5")) || v.Id.Equals(new VertexId("3")));
-                counter++;
+                _Counter++;
             }
-            Assert.AreEqual(2, counter);
 
-            Assert.IsFalse(evp.MoveNext());
+            Assert.AreEqual(2, _Counter);
+
+            Assert.IsFalse(_EVP.MoveNext());
 
         }
 
@@ -78,30 +80,29 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testBothVertices()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
+            var _Josh  = _Graph.GetVertex(new VertexId("4"));
+            IEdge _TmpEdge = null;
 
-            var josh = graph.GetVertex(new VertexId("4"));
-            IEdge tempEdge = null;
-
-            foreach (var edge in josh.OutEdges)
+            foreach (var _Edge in _Josh.OutEdges)
             {
-                if (edge.Id.Equals(new VertexId("11")))
-                    tempEdge = edge;
+                if (_Edge.Id.Equals(new VertexId("11")))
+                    _TmpEdge = _Edge;
             }
 
-            var pipe = new EdgeVertexPipe(EdgeVertexPipe.Step.BOTH_VERTICES);
+            var _Pipe = new EdgeVertexPipe(EdgeVertexPipe.Step.BOTH_VERTICES);
 
-            pipe.SetSource(new SingleEnumerator<IEdge>(tempEdge));
-            int counter = 0;
-            while (pipe.MoveNext())
+            _Pipe.SetSource(new SingleEnumerator<IEdge>(_TmpEdge));
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
-                counter++;
-                var vertex = pipe.Current;
-                Assert.IsTrue(vertex.Id.Equals(new VertexId("4")) || vertex.Id.Equals(new VertexId("3")));
+                _Counter++;
+                var _Vertex = _Pipe.Current;
+                Assert.IsTrue(_Vertex.Id.Equals(new VertexId("4")) || _Vertex.Id.Equals(new VertexId("3")));
             }
 
-            Assert.AreEqual(2, counter);
+            Assert.AreEqual(2, _Counter);
 
         }
 

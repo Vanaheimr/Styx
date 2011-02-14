@@ -36,20 +36,19 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testIds()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
-
-            IdPipe pipe = new IdPipe();
-            pipe.SetSourceCollection(graph.GetVertex(new VertexId("1")).OutEdges);
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Pipe  = new IdPipe();
+            _Pipe.SetSourceCollection(_Graph.GetVertex(new VertexId("1")).OutEdges);
             
-            int counter = 0;
-            while (pipe.MoveNext())
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
-                var id = pipe.Current;
-                Assert.IsTrue(id.Equals(new VertexId("7")) || id.Equals(new VertexId("8")) || id.Equals(new VertexId("9")));
-                counter++;
+                var _Id = _Pipe.Current;
+                Assert.IsTrue(_Id.Equals(new VertexId("7")) || _Id.Equals(new VertexId("8")) || _Id.Equals(new VertexId("9")));
+                _Counter++;
             }
 
-            Assert.AreEqual(3, counter);
+            Assert.AreEqual(3, _Counter);
 
         }
 

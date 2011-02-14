@@ -41,18 +41,18 @@ namespace de.ahzf.Pipes.UnitTests.util
         public void testScatterPipe()
         {
 
-            var scatter = new ScatterPipe<Int32, Int32>();
-            scatter.SetSourceCollection(new List<Int32>() { 1, 2, 3 });
+            var _Scatter = new ScatterPipe<Int32, Int32>();
+            _Scatter.SetSourceCollection(new List<Int32>() { 1, 2, 3 });
 
-            int counter = 0;
-            while (scatter.MoveNext())
+            var _Counter = 0;
+            while (_Scatter.MoveNext())
             {
-                var _Object = scatter.Current;
+                var _Object = _Scatter.Current;
                 Assert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3));
-                counter++;
+                _Counter++;
             }
 
-            Assert.AreEqual(3, counter);
+            Assert.AreEqual(3, _Counter);
 
         }
 
@@ -64,18 +64,18 @@ namespace de.ahzf.Pipes.UnitTests.util
         public void testScatterPipeComplex()
         {
 
-            var scatter = new ScatterPipe<Object, Int32>();
-            scatter.SetSourceCollection(new List<Object>() { 1, 2, new List<Object>() { 3, 4 }, 5, 6 });
+            var _Scatter = new ScatterPipe<Object, Int32>();
+            _Scatter.SetSourceCollection(new List<Object>() { 1, 2, new List<Object>() { 3, 4 }, 5, 6 });
 
-            int counter = 0;
-            while (scatter.MoveNext())
+            var _Counter = 0;
+            while (_Scatter.MoveNext())
             {
-                var _Object = scatter.Current;
+                var _Object = _Scatter.Current;
                 Assert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3) || _Object.Equals(4) || _Object.Equals(5) || _Object.Equals(6));
-                counter++;
+                _Counter++;
             }
 
-            Assert.AreEqual(6, counter);
+            Assert.AreEqual(6, _Counter);
 
         }
 

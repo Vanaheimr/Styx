@@ -37,27 +37,28 @@ namespace de.ahzf.Pipes.UnitTests.Enumerators
         public void testIdentityPipeNormal()
         {
 
-            var itty = new ExpandableEnumerator<Int32>((new List<Int32>() { 1, 2, 3 }).GetEnumerator());
+            var _Enumerator = new ExpandableEnumerator<Int32>((new List<Int32>() { 1, 2, 3 }).GetEnumerator());
 
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual(1, itty.Current);
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual(1, _Enumerator.Current);
 
-            itty.Add(4);
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual(4, itty.Current);
-            itty.Add(5);
-            itty.Add(6);
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual(5, itty.Current);
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual(6, itty.Current);
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual(2, itty.Current);
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual(3, itty.Current);
-            Assert.IsFalse(itty.MoveNext());
+            _Enumerator.Add(4);
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual(4, _Enumerator.Current);
+            _Enumerator.Add(5);
+            _Enumerator.Add(6);
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual(5, _Enumerator.Current);
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual(6, _Enumerator.Current);
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual(2, _Enumerator.Current);
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual(3, _Enumerator.Current);
+            Assert.IsFalse(_Enumerator.MoveNext());
 
         }
+
         #endregion
 
     }

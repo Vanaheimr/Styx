@@ -38,20 +38,19 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testLabels()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Pipe  = new LabelPipe();
+            _Pipe.SetSourceCollection(_Graph.GetVertex(new VertexId("1")).OutEdges);
 
-            var pipe = new LabelPipe();
-            pipe.SetSourceCollection(graph.GetVertex(new VertexId("1")).OutEdges);
-
-            int counter = 0;
-            while (pipe.MoveNext())
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
-                String label = pipe.Current;
+                String label = _Pipe.Current;
                 Assert.IsTrue(label.Equals("knows") || label.Equals("created"));
-                counter++;
+                _Counter++;
             }
 
-            Assert.AreEqual(3, counter);
+            Assert.AreEqual(3, _Counter);
 
         }
 

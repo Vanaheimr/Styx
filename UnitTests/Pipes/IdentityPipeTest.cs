@@ -61,13 +61,14 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
         public void testIdentityPipeZero()
         {
 
-            var uuids = de.ahzf.Pipes.UnitTests.BaseTest.GenerateUUIDs(0);
-            IPipe<String, String> pipe = new IdentityPipe<String>();
-            pipe.SetSourceCollection(uuids);
-            int counter = 0;
-            Assert.IsFalse(pipe.Any());
-            Assert.AreEqual(counter, 0);
-            Assert.IsFalse(pipe.Any());
+            var _UUIDs = de.ahzf.Pipes.UnitTests.BaseTest.GenerateUUIDs(0);
+            var _Pipe  = new IdentityPipe<String>();
+            _Pipe.SetSourceCollection(_UUIDs);
+
+            var _Counter = 0;
+            Assert.IsFalse(_Pipe.Any());
+            Assert.AreEqual(_Counter, 0);
+            Assert.IsFalse(_Pipe.Any());
 
         }
 

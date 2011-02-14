@@ -34,20 +34,19 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
 
         #region testSideEffectCapPipeNormalCount()
 		
-		//HACK: Mono build problems!
-		/*
+		//TODO: Mono build problems!
+
         [Test]
         public void testSideEffectCapPipeNormalCount()
         {
 
-            var list = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            
-            var pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
-            pipe.SetSourceCollection(list);
+            var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var _Pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
+            _Pipe.SetSourceCollection(_List);
 
-            Assert.IsTrue(pipe.MoveNext());
-            Assert.AreEqual(6UL, pipe.Current);
-            Assert.IsFalse(pipe.MoveNext());
+            Assert.IsTrue(_Pipe.MoveNext());
+            Assert.AreEqual(6UL, _Pipe.Current);
+            Assert.IsFalse(_Pipe.MoveNext());
 
         }
 
@@ -59,16 +58,16 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testSideEffectCapPipeZeroCount()
         {
 
-            var list = new List<String>();
-            var pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
-            pipe.SetSourceCollection(list);
+            var _List = new List<String>();
+            var _Pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
+            _Pipe.SetSourceCollection(_List);
 
-            Assert.IsTrue(pipe.MoveNext());
-            Assert.AreEqual(0UL, pipe.Current);
-            Assert.IsFalse(pipe.MoveNext());
+            Assert.IsTrue(_Pipe.MoveNext());
+            Assert.AreEqual(0UL, _Pipe.Current);
+            Assert.IsFalse(_Pipe.MoveNext());
 
         }
-*/
+
         #endregion
 
     }

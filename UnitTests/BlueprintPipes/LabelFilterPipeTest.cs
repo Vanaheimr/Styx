@@ -36,37 +36,37 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testFilterLabels()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
-            var marko = graph.GetVertex(new VertexId("1"));
-            var lfp = new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
-            lfp.SetSourceCollection(marko.OutEdges);
+            var _Marko = _Graph.GetVertex(new VertexId("1"));
+            var _LFP   = new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
+            _LFP.SetSourceCollection(_Marko.OutEdges);
 
-            int counter = 0;
-            while (lfp.MoveNext())
+            var _Counter = 0;
+            while (_LFP.MoveNext())
             {
-                var e = lfp.Current;
-                Assert.AreEqual(marko, e.OutVertex);
-                Assert.IsTrue(e.InVertex.Id.Equals(new VertexId("2")) || e.InVertex.Id.Equals(new VertexId("4")));
-                counter++;
+                var _E = _LFP.Current;
+                Assert.AreEqual(_Marko, _E.OutVertex);
+                Assert.IsTrue(_E.InVertex.Id.Equals(new VertexId("2")) || _E.InVertex.Id.Equals(new VertexId("4")));
+                _Counter++;
             }
 
-            Assert.AreEqual(2, counter);
+            Assert.AreEqual(2, _Counter);
 
 
-            lfp = new LabelFilterPipe("knows", ComparisonFilter.EQUAL);
-            lfp.SetSourceCollection(marko.OutEdges);
+            _LFP = new LabelFilterPipe("knows", ComparisonFilter.EQUAL);
+            _LFP.SetSourceCollection(_Marko.OutEdges);
 
-            counter = 0;
-            while (lfp.MoveNext())
+            _Counter = 0;
+            while (_LFP.MoveNext())
             {
-                var e = lfp.Current;
-                Assert.AreEqual(marko, e.OutVertex);
-                Assert.IsTrue(e.InVertex.Id.Equals(new VertexId("3")));
-                counter++;
+                var _E = _LFP.Current;
+                Assert.AreEqual(_Marko, _E.OutVertex);
+                Assert.IsTrue(_E.InVertex.Id.Equals(new VertexId("3")));
+                _Counter++;
             }
 
-            Assert.AreEqual(1, counter);
+            Assert.AreEqual(1, _Counter);
 
         }
 

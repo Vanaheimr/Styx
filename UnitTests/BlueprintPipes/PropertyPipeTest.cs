@@ -40,18 +40,17 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testSingleProperty()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
-            var marko = graph.GetVertex(new VertexId("1"));
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko = _Graph.GetVertex(new VertexId("1"));
+            var _PPipe = new PropertyPipe<IVertex, String>("name");
+            _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 
-            var pp = new PropertyPipe<IVertex, String>("name");
-            pp.SetSource(new List<IVertex>() { marko }.GetEnumerator());
-
-            int counter = 0;
-            while (pp.MoveNext())
+            var _Counter = 0;
+            while (_PPipe.MoveNext())
             {
-                var name = pp.Current;
+                var name = _PPipe.Current;
                 Assert.AreEqual("marko", name);
-                counter++;
+                _Counter++;
             }
 
         }
@@ -64,23 +63,22 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testMultiProperty()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
-            var marko = graph.GetVertex(new VertexId("1"));
+            var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko    = _Graph.GetVertex(new VertexId("1"));
+            var _EVP      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _PPipe    = new PropertyPipe<IVertex, String>("name");
+            var _Pipeline = new Pipeline<IEdge, String>(_EVP, _PPipe);
+            _Pipeline.SetSourceCollection(_Marko.OutEdges);
 
-            var evp      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pp       = new PropertyPipe<IVertex, String>("name");
-            var pipeline = new Pipeline<IEdge, String>(evp, pp);
-            pipeline.SetSourceCollection(marko.OutEdges);
-
-            int counter = 0;
-            while (pipeline.MoveNext())
+            var _Counter = 0;
+            while (_Pipeline.MoveNext())
             {
-                var name = pipeline.Current;
-                Assert.IsTrue(name.Equals("vadas") || name.Equals("josh") || name.Equals("lop"));
-                counter++;
+                var _Name = _Pipeline.Current;
+                Assert.IsTrue(_Name.Equals("vadas") || _Name.Equals("josh") || _Name.Equals("lop"));
+                _Counter++;
             }
 
-            Assert.AreEqual(3, counter);
+            Assert.AreEqual(3, _Counter);
 
         }
 
@@ -92,23 +90,22 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testListProperty()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
-            var marko = graph.GetVertex(new VertexId("1"));
+            var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko    = _Graph.GetVertex(new VertexId("1"));
+            var _Vadas    = _Graph.GetVertex(new VertexId("2"));
+            var _Pipe     = new PropertyPipe<IVertex, String>("name");
+            var _Pipeline = new Pipeline<IVertex, String>(_Pipe);
+            _Pipeline.SetSource(new List<IVertex>() { _Marko, _Vadas }.GetEnumerator());
 
-            var vadas    = graph.GetVertex(new VertexId("2"));
-            var pipe     = new PropertyPipe<IVertex, String>("name");
-            var pipeline = new Pipeline<IVertex, String>(pipe);
-            pipeline.SetSource(new List<IVertex>() { marko, vadas }.GetEnumerator());
-
-            int counter = 0;
-            while (pipeline.MoveNext())
+            var _Counter = 0;
+            while (_Pipeline.MoveNext())
             {
-                var name = pipeline.Current;
-                Assert.IsTrue(name.Equals("vadas") || name.Equals("marko"));
-                counter++;
+                var _Name = _Pipeline.Current;
+                Assert.IsTrue(_Name.Equals("vadas") || _Name.Equals("marko"));
+                _Counter++;
             }
 
-            Assert.AreEqual(2, counter);
+            Assert.AreEqual(2, _Counter);
 
         }
 

@@ -39,25 +39,23 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testFilterIds1()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko    = _Graph.GetVertex(new VertexId("1"));
+            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
+            var _Pipeline = new Pipeline<IVertex, IVertex>(_Pipe1, _Pipe2, _Pipe3);
+            _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
 
-            IVertex marko = graph.GetVertex(new VertexId("1"));
-
-            var pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
-            var pipeline = new Pipeline<IVertex, IVertex>(pipe1, pipe2, pipe3);
-            pipeline.SetSourceCollection(new List<IVertex>() { marko });
-
-            int counter = 0;
-            while (pipeline.MoveNext())
+            var _Counter = 0;
+            while (_Pipeline.MoveNext())
             {
-                var vertex = pipeline.Current;
-                Assert.AreEqual("lop", vertex.GetProperty("name"));
-                counter++;
+                var _Vertex = _Pipeline.Current;
+                Assert.AreEqual("lop", _Vertex.GetProperty("name"));
+                _Counter++;
             }
 
-            Assert.AreEqual(1, counter);
+            Assert.AreEqual(1, _Counter);
 
         }
 
@@ -69,24 +67,22 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testFilterIds2()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko    = _Graph.GetVertex(new VertexId("1"));
+            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.EQUAL);
+            var _Pipeline = new Pipeline<IVertex, IVertex>(_Pipe1, _Pipe2, _Pipe3);
+            _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
 
-            IVertex marko = graph.GetVertex(new VertexId("1"));
-
-            var pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.EQUAL);
-            var pipeline = new Pipeline<IVertex, IVertex>(pipe1, pipe2, pipe3);
-            pipeline.SetSourceCollection(new List<IVertex>() { marko });
-
-            int counter = 0;
-            while (pipeline.MoveNext())
+            var _Counter = 0;
+            while (_Pipeline.MoveNext())
             {
-                var vertex = pipeline.Current;
-                Assert.IsTrue(vertex.GetProperty("name").Equals("vadas") || vertex.GetProperty("name").Equals("josh"));
-                counter++;
+                var _Vertex = _Pipeline.Current;
+                Assert.IsTrue(_Vertex.GetProperty("name").Equals("vadas") || _Vertex.GetProperty("name").Equals("josh"));
+                _Counter++;
             }
-            Assert.AreEqual(2, counter);
+            Assert.AreEqual(2, _Counter);
 
         }
 

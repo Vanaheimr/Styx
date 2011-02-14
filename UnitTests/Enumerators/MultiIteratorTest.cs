@@ -37,20 +37,20 @@ namespace de.ahzf.Pipes.UnitTests.Enumerators
         public void testMultiIteratorSimple()
         {
 
-            var a       = new List<Int32>() {1, 2}.GetEnumerator();
+            var a       = new List<Int32>() { 1, 2    }.GetEnumerator();
             var b       = new List<Int32>() { 3, 4, 5 }.GetEnumerator();
             var c       = new List<Int32>() { 6, 7, 8 }.GetEnumerator();
 
-            var itty    = new MultiEnumerator<Int32>(a, b, c);
-            var counter = 0;
+            var _Enumerator = new MultiEnumerator<Int32>(a, b, c);
+            var _Counter    = 0;
             
-            while (itty.MoveNext())
+            while (_Enumerator.MoveNext())
             {
-                counter++;
-                Assert.AreEqual(counter, itty.Current);
+                _Counter++;
+                Assert.AreEqual(_Counter, _Enumerator.Current);
             }
 
-            Assert.AreEqual(counter, 8);
+            Assert.AreEqual(_Counter, 8);
 
         }
 
@@ -62,15 +62,13 @@ namespace de.ahzf.Pipes.UnitTests.Enumerators
         public void testMultiIteratorNoParameters()
         {
 
-            var itty    = new MultiEnumerator<Int32>();
-            int counter = 0;
+            var _Enumerator = new MultiEnumerator<Int32>();
+            var _Counter    = 0;
 
-            while (itty.MoveNext())
-            {
-                counter++;
-            }
+            while (_Enumerator.MoveNext())
+                _Counter++;
 
-            Assert.AreEqual(0, counter);
+            Assert.AreEqual(0, _Counter);
 
         }
 

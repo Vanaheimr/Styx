@@ -38,14 +38,14 @@ namespace de.ahzf.Pipes.UnitTests.Enumerators
         public void testSingleIterator()
         {
 
-            var itty = new SingleEnumerator<String>("marko");
+            var _Enumerator = new SingleEnumerator<String>("marko");
 
-            Assert.IsTrue(itty.MoveNext());
-            Assert.AreEqual("marko", itty.Current);
-            Assert.IsFalse(itty.MoveNext());
+            Assert.IsTrue(_Enumerator.MoveNext());
+            Assert.AreEqual("marko", _Enumerator.Current);
+            Assert.IsFalse(_Enumerator.MoveNext());
 
             // Will throw an InvalidOperationException!
-            Assert.AreEqual(null, itty.Current);
+            Assert.AreEqual(null, _Enumerator.Current);
 
         }
 

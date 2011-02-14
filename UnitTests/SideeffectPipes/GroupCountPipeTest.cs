@@ -37,24 +37,23 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testCountCombinePipeNormal()
         {
 
-            var names = new List<String>() { "marko", "josh", "peter", "peter", "peter", "josh" };
+            var _Names = new List<String>() { "marko", "josh", "peter", "peter", "peter", "josh" };
+            var _Pipe  = new GroupCountPipe<String>();
+            _Pipe.SetSourceCollection(_Names);
 
-            ISideEffectPipe<String, String, IDictionary<String, UInt64>> pipe = new GroupCountPipe<String>();
-            pipe.SetSourceCollection(names);
-
-            int counter = 0;
-            foreach (var name in pipe)
+            var _Counter = 0;
+            foreach (var name in _Pipe)
             {
                 Assert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
-                counter++;
+                _Counter++;
             }
 
-            Assert.AreEqual(6UL, counter);
-            Assert.AreEqual(1UL, pipe.SideEffect["marko"]);
-            Assert.AreEqual(2UL, pipe.SideEffect["josh"]);
-            Assert.AreEqual(3UL, pipe.SideEffect["peter"]);
+            Assert.AreEqual(6UL, _Counter);
+            Assert.AreEqual(1UL, _Pipe.SideEffect["marko"]);
+            Assert.AreEqual(2UL, _Pipe.SideEffect["josh"]);
+            Assert.AreEqual(3UL, _Pipe.SideEffect["peter"]);
 
-            Assert.IsFalse(pipe.SideEffect.ContainsKey("povel"));
+            Assert.IsFalse(_Pipe.SideEffect.ContainsKey("povel"));
 
         }
 
@@ -66,12 +65,12 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testCountCombinePipeZero()
         {
 
-            var names = new List<String>();
-            var pipe  = new GroupCountPipe<String>();
-            pipe.SetSourceCollection(names);
+            var _Names = new List<String>();
+            var _Pipe  = new GroupCountPipe<String>();
+            _Pipe.SetSourceCollection(_Names);
 
-            Assert.IsFalse(pipe.MoveNext());
-            Assert.IsFalse(pipe.SideEffect.ContainsKey("povel"));
+            Assert.IsFalse(_Pipe.MoveNext());
+            Assert.IsFalse(_Pipe.SideEffect.ContainsKey("povel"));
 
         }
 

@@ -38,25 +38,24 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testAggregatorPipe()
         {
 
-            var list = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            
-            var pipe1 = new AggregatorPipe<String>(new List<String>());
-            pipe1.SetSourceCollection(list);
+            var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };            
+            var _Pipe = new AggregatorPipe<String>(new List<String>());
+            _Pipe.SetSourceCollection(_List);
 
-            int counter = 0;
-            while (pipe1.MoveNext())
+            int _Counter = 0;
+            while (_Pipe.MoveNext())
             {
-                Assert.AreEqual(list[counter], pipe1.Current);
-                counter++;
+                Assert.AreEqual(_List[_Counter], _Pipe.Current);
+                _Counter++;
             }
 
-            Assert.AreEqual(6, counter);
-            Assert.AreEqual(counter, pipe1.SideEffect.Count);
-            Assert.AreEqual(counter, list.Count);
+            Assert.AreEqual(6, _Counter);
+            Assert.AreEqual(_Counter, _Pipe.SideEffect.Count);
+            Assert.AreEqual(_Counter, _List.Count);
             
-            for (int i = 0; i < counter; i++)
+            for (int i = 0; i < _Counter; i++)
             {
-                Assert.AreEqual(pipe1.SideEffect.ToArray()[i], list[i]);
+                Assert.AreEqual(_Pipe.SideEffect.ToArray()[i], _List[i]);
             }
 
         }
@@ -69,34 +68,29 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testSelfFilter()
         {
 
-            var list = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var _List     = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var _Pipe1    = new AggregatorPipe<String>(new List<String>());
+            var _Pipe2    = new CollectionFilterPipe<String>(_Pipe1.SideEffect, ComparisonFilter.NOT_EQUAL);
+            var _Pipeline = new Pipeline<String, String>(_Pipe1, _Pipe2);
+            _Pipeline.SetSourceCollection(_List);
 
-            var pipe1    = new AggregatorPipe<String>(new List<String>());
-            var pipe2    = new CollectionFilterPipe<String>(pipe1.SideEffect, ComparisonFilter.NOT_EQUAL);
-            var pipeline = new Pipeline<String, String>(pipe1, pipe2);
-            pipeline.SetSourceCollection(list);
+            var _Counter = 0;
+            while (_Pipeline.MoveNext())
+                _Counter++;
 
-            int counter = 0;
-            while (pipeline.MoveNext())
-            {
-                counter++;
-            }
-
-            Assert.AreEqual(6, counter);
+            Assert.AreEqual(6, _Counter);
 
 
-            pipe1    = new AggregatorPipe<String>(new List<String>());
-            pipe2    = new CollectionFilterPipe<String>(pipe1.SideEffect, ComparisonFilter.EQUAL);
-            pipeline = new Pipeline<String, String>(pipe1, pipe2);
-            pipeline.SetSourceCollection(list);
+            _Pipe1    = new AggregatorPipe<String>(new List<String>());
+            _Pipe2    = new CollectionFilterPipe<String>(_Pipe1.SideEffect, ComparisonFilter.EQUAL);
+            _Pipeline = new Pipeline<String, String>(_Pipe1, _Pipe2);
+            _Pipeline.SetSourceCollection(_List);
 
-            counter = 0;
-            while (pipeline.MoveNext())
-            {
-                counter++;
-            }
+            _Counter = 0;
+            while (_Pipeline.MoveNext())
+                _Counter++;
 
-            Assert.AreEqual(0, counter);
+            Assert.AreEqual(0, _Counter);
 
         }
 
@@ -108,30 +102,26 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testNullIterator()
         {
 
-            var list = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            IEnumerator<String> itty = list.GetEnumerator();
+            var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            IEnumerator<String> _Enumerator = _List.GetEnumerator();
 
-            int counter = 0;
-            while (itty.MoveNext())
-            {
-                counter++;
-            }
+            var _Counter = 0;
+            while (_Enumerator.MoveNext())
+                _Counter++;
             
-            Assert.AreEqual(6, counter);
-            Assert.IsFalse(itty.MoveNext());
+            Assert.AreEqual(6, _Counter);
+            Assert.IsFalse(_Enumerator.MoveNext());
 
 
-            list = new List<String>() { null, null, null, null, null, null };
-            itty = list.GetEnumerator();
+            _List = new List<String>() { null, null, null, null, null, null };
+            _Enumerator = _List.GetEnumerator();
 
-            counter = 0;
-            while (itty.MoveNext())
-            {
-                counter++;
-            }
+            _Counter = 0;
+            while (_Enumerator.MoveNext())
+                _Counter++;
 
-            Assert.AreEqual(6, counter);
-            Assert.IsFalse(itty.MoveNext());
+            Assert.AreEqual(6, _Counter);
+            Assert.IsFalse(_Enumerator.MoveNext());
 
         }
 

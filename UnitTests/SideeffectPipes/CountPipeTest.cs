@@ -37,21 +37,20 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testCountPipeNormal()
         {
 
-            var list = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var _Pipe = new CountPipe<String>();
+            _Pipe.SetSourceCollection(_List);
 
-            var pipe1 = new CountPipe<String>();
-            pipe1.SetSourceCollection(list);
-
-            var counter = 0UL;
-            while (pipe1.MoveNext())
+            var _Counter = 0UL;
+            while (_Pipe.MoveNext())
             {
-                var s = pipe1.Current;
+                var s = _Pipe.Current;
                 Assert.IsTrue(s.Equals("marko") || s.Equals("antonio") || s.Equals("rodriguez") || s.Equals("was") || s.Equals("here") || s.Equals("."));
-                counter++;
-                Assert.AreEqual(counter, pipe1.SideEffect);
+                _Counter++;
+                Assert.AreEqual(_Counter, _Pipe.SideEffect);
             }
             
-            Assert.AreEqual(6UL, pipe1.SideEffect);
+            Assert.AreEqual(6UL, _Pipe.SideEffect);
 
         }
 
@@ -63,14 +62,14 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         public void testCountPipeZero()
         {
 
-            var list  = new List<String>();
-            var pipe1 = new CountPipe<String>();
-            pipe1.SetSourceCollection(list);
+            var _List = new List<String>();
+            var _Pipe = new CountPipe<String>();
+            _Pipe.SetSourceCollection(_List);
 
-            while (pipe1.MoveNext())
+            while (_Pipe.MoveNext())
             { }
 
-            Assert.AreEqual(0UL, pipe1.SideEffect);
+            Assert.AreEqual(0UL, _Pipe.SideEffect);
 
         }
 

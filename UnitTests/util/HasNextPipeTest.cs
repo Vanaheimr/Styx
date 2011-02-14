@@ -41,19 +41,19 @@ namespace de.ahzf.Pipes.UnitTests.util
         public void testPipeBasic()
         {
 
-            var names = new List<String>() { "marko", "povel", "peter", "josh" };
+            var _Names = new List<String>() { "marko", "povel", "peter", "josh" };
 
-            var pipe1 = new HasNextPipe<String>(new IdentityPipe<String>());
-            pipe1.SetSourceCollection(names);
+            var _Pipe = new HasNextPipe<String>(new IdentityPipe<String>());
+            _Pipe.SetSourceCollection(_Names);
 
-            int counter = 0;
-            while (pipe1.MoveNext())
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
-                counter++;
-                Assert.IsTrue(pipe1.Current);
+                _Counter++;
+                Assert.IsTrue(_Pipe.Current);
             }
             
-            Assert.AreEqual(4, counter);
+            Assert.AreEqual(4, _Counter);
 
         }
 

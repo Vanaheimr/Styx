@@ -39,44 +39,43 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testIdVertexPipeGraph()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Ids   = new List<VertexId>() { new VertexId("1"), new VertexId("6"), new VertexId("5") };
+            var _Pipe  = new IdVertexPipe<VertexId>(_Graph);
+            _Pipe.SetSourceCollection(_Ids);
 
-            var ids = new List<VertexId>() { new VertexId("1"), new VertexId("6"), new VertexId("5") };
-            var pipe = new IdVertexPipe<VertexId>(graph);
-            pipe.SetSourceCollection(ids);
-
-            int counter = 0;
-            while (pipe.MoveNext())
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
             {
 
-                var vertex = pipe.Current;
+                var _Vertex = _Pipe.Current;
                 
-                if (counter == 0)
+                if (_Counter == 0)
                 {
-                    Assert.AreEqual(new VertexId("1"), vertex.Id);
-                    Assert.AreEqual("marko", vertex.GetProperty("name"));
+                    Assert.AreEqual(new VertexId("1"), _Vertex.Id);
+                    Assert.AreEqual("marko", _Vertex.GetProperty("name"));
                 }
                 
-                else if (counter == 1)
+                else if (_Counter == 1)
                 {
-                    Assert.AreEqual(new VertexId("6"), vertex.Id);
-                    Assert.AreEqual("peter", vertex.GetProperty("name"));
+                    Assert.AreEqual(new VertexId("6"), _Vertex.Id);
+                    Assert.AreEqual("peter", _Vertex.GetProperty("name"));
                 }
                 
-                else if (counter == 2)
+                else if (_Counter == 2)
                 {
-                    Assert.AreEqual(new VertexId("5"), vertex.Id);
-                    Assert.AreEqual("ripple", vertex.GetProperty("name"));
+                    Assert.AreEqual(new VertexId("5"), _Vertex.Id);
+                    Assert.AreEqual("ripple", _Vertex.GetProperty("name"));
                 }
 
                 else
                     throw new Exception("Illegal state.");
                 
-                counter++;
+                _Counter++;
 
             }
 
-            Assert.AreEqual(3, counter);
+            Assert.AreEqual(3, _Counter);
 
         }
 

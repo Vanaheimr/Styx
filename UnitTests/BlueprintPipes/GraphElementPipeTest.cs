@@ -38,23 +38,22 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testVertexIterator()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Pipe  = new GraphElementPipe<IVertex>(GraphElementPipe<IVertex>.ElementType.VERTEX);
+            _Pipe.SetSource(new SingleEnumerator<IGraph>(_Graph));
+            
+            var _Counter = 0;
+            var _Vertices = new HashSet<IVertex>();
 
-            IPipe<IGraph, IVertex> pipe = new GraphElementPipe<IVertex>(GraphElementPipe<IVertex>.ElementType.VERTEX);
-            pipe.SetSource(new SingleEnumerator<IGraph>(graph));
-            int counter = 0;
-            var vertices = new HashSet<IVertex>();
-
-            while (pipe.MoveNext())
+            while (_Pipe.MoveNext())
             {
-                counter++;
-                var vertex = pipe.Current;
-                vertices.Add(vertex);
-                //System.out.println(vertex);
+                _Counter++;
+                var _Vertex = _Pipe.Current;
+                _Vertices.Add(_Vertex);
             }
 
-            Assert.AreEqual(6, counter);
-            Assert.AreEqual(6, vertices.Count);
+            Assert.AreEqual(6, _Counter);
+            Assert.AreEqual(6, _Vertices.Count);
 
         }
 
@@ -66,23 +65,22 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testEdgeIterator()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Pipe = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
+            _Pipe.SetSource(new SingleEnumerator<IGraph>(_Graph));
 
-            IPipe<IGraph, IEdge> pipe = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
-            pipe.SetSource(new SingleEnumerator<IGraph>(graph));
-            int counter = 0;
-            var edges = new HashSet<IEdge>();
+            var _Counter = 0;
+            var _Edges = new HashSet<IEdge>();
 
-            while (pipe.MoveNext())
+            while (_Pipe.MoveNext())
             {
-                counter++;
-                var edge = pipe.Current;
-                edges.Add(edge);
-                //System.out.println(edge);
+                _Counter++;
+                var _Edge = _Pipe.Current;
+                _Edges.Add(_Edge);
             }
 
-            Assert.AreEqual(6, counter);
-            Assert.AreEqual(6, edges.Count);
+            Assert.AreEqual(6, _Counter);
+            Assert.AreEqual(6, _Edges.Count);
 
         }
 
@@ -94,22 +92,22 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testEdgeIteratorThreeGraphs()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Pipe  = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
+            _Pipe.SetSourceCollection(new List<IGraph>() { _Graph, _Graph, _Graph });
+            
+            var _Counter = 0;
+            var _Edges   = new HashSet<IEdge>();
 
-            IPipe<IGraph, IEdge> pipe = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
-            pipe.SetSourceCollection(new List<IGraph>() { graph, graph, graph });
-            int counter = 0;
-            var edges = new HashSet<IEdge>();
-
-            while (pipe.MoveNext())
+            while (_Pipe.MoveNext())
             {
-                counter++;
-                var edge = pipe.Current;
-                edges.Add(edge);
-                //System.out.println(edge);
+                _Counter++;
+                var _Edge = _Pipe.Current;
+                _Edges.Add(_Edge);
             }
-            Assert.AreEqual(18, counter);
-            Assert.AreEqual(6, edges.Count);
+
+            Assert.AreEqual(18, _Counter);
+            Assert.AreEqual(6, _Edges.Count);
 
         }
 

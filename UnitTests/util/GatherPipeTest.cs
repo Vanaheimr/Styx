@@ -41,18 +41,16 @@ namespace de.ahzf.Pipes.UnitTests.util
         public void testBasicGather()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
 
-            var pipe0    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe1    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe2    = new GatherPipe<IVertex>();
-            var pipeline = new Pipeline<IVertex, IEnumerable<IVertex>>(pipe0, pipe1, pipe2);
-            pipeline.SetSource(new SingleEnumerator<IVertex>(graph.GetVertex(new VertexId("1"))));
+            var _Pipe0    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _Pipe1    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe2    = new GatherPipe<IVertex>();
+            var _Pipeline = new Pipeline<IVertex, IEnumerable<IVertex>>(_Pipe0, _Pipe1, _Pipe2);
+            _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId("1"))));
 
-            while (pipeline.MoveNext())
-            {
-                Console.WriteLine(pipeline.Current + "--->");// + pipeline.Path);
-            }
+            while (_Pipeline.MoveNext())
+                Console.WriteLine(_Pipeline.Current + "--->");// + pipeline.Path);
 
         }
 

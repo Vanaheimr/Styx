@@ -40,26 +40,25 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         public void testPropertyFilter()
         {
 
-            var graph = TinkerGraphFactory.CreateTinkerGraph();
-            var marko = graph.GetVertex(new VertexId("1"));
+            var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko    = _Graph.GetVertex(new VertexId("1"));
+            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe3    = new PropertyFilterPipe<IVertex, String>("lang", "java", ComparisonFilter.NOT_EQUAL);
+            var _Pipeline = new Pipeline<IVertex, IVertex>(new List<IPipe>() { _Pipe1, _Pipe2, _Pipe3 });
+            _Pipeline.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 
-            var pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe3    = new PropertyFilterPipe<IVertex, String>("lang", "java", ComparisonFilter.NOT_EQUAL);
-            var pipeline = new Pipeline<IVertex, IVertex>(new List<IPipe>() { pipe1, pipe2, pipe3});
-            pipeline.SetSource(new List<IVertex>() { marko }.GetEnumerator());
-
-            int counter = 0;
-            while (pipeline.MoveNext())
+            var _Counter = 0;
+            while (_Pipeline.MoveNext())
             {
-                counter++;
-                var vertex = pipeline.Current;
-                Assert.AreEqual(new VertexId("3"), vertex.Id);
-                Assert.AreEqual("java", vertex.GetProperty("lang"));
-                Assert.AreEqual("lop", vertex.GetProperty("name"));
+                _Counter++;
+                var _Vertex = _Pipeline.Current;
+                Assert.AreEqual(new VertexId("3"), _Vertex.Id);
+                Assert.AreEqual("java", _Vertex.GetProperty("lang"));
+                Assert.AreEqual("lop",  _Vertex.GetProperty("name"));
             }
 
-            Assert.AreEqual(1, counter);
+            Assert.AreEqual(1, _Counter);
 
         }
 
