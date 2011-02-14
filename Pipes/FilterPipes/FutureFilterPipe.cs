@@ -87,10 +87,12 @@ namespace de.ahzf.Pipes
                     //if (_Pipe.hasNext())
                     //{
 
-                    //    while (_Pipe.hasNext())
-                    //        _Pipe.next();
+                    while (_Pipe.MoveNext())
+                    { }
 
-                    //    return _S;
+                    _CurrentElement = _S;
+
+                    return true;
 
                     //}
 					
@@ -106,8 +108,6 @@ namespace de.ahzf.Pipes
 			            }
         			}
 					 */
-					
-					
 
                 }
 

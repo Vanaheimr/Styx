@@ -149,19 +149,24 @@ namespace de.ahzf.Pipes
             // NOT_EQUAL
             if (_ComparisonFilter == ComparisonFilter.NOT_EQUAL)
             {
+
                 if (_InternalEnumerable.Contains(myRightObject))
                     return true;
+
+                return false;
 
             }
 
             // EQUAL
             else
             {
-                if (!_InternalEnumerable.Contains(myRightObject))
-                    return true;
-            }
+                
+                if (_InternalEnumerable.Contains(myRightObject))
+                    return false;
+                
+                return true;
 
-            return false;
+            }
 
         }
 

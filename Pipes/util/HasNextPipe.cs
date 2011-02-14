@@ -34,7 +34,7 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly IPipe<S, Object> _InternalPipe;
+        private readonly IPipe _InternalPipe;
 
         #endregion
 
@@ -45,7 +45,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Creates a new HasNextPipe.
         /// </summary>
-        public HasNextPipe(IPipe<S, Object> myIPipe)
+        public HasNextPipe(IPipe myIPipe)
         {
             _InternalPipe = myIPipe;
         }

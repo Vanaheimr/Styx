@@ -44,9 +44,11 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Pipe1	= new FutureFilterPipe<String>(new IdentityPipe<String>());
 	        _Pipe1.SetSourceCollection(_Names);
 			
-	        int _Counter = 0;
-	        while (_Pipe1.MoveNext())
-	            _Counter++;
+	        var _Counter = 0;
+            while (_Pipe1.MoveNext())
+            {
+                _Counter++;
+            }
 
 			Assert.AreEqual(4, _Counter);
 
@@ -64,12 +66,12 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Pipe1  = new FutureFilterPipe<String>(new CollectionFilterPipe<String>(new List<String>() { "marko", "povel" }, ComparisonFilter.EQUAL));
 	        _Pipe1.SetSourceCollection(_Names);
 
-			int _Counter = 0;
+			var _Counter = 0;
 	        while (_Pipe1.MoveNext())
 			{
 	            _Counter++;
-	            var name = _Pipe1.Current;
-	            Assert.IsTrue(name.Equals("peter") || name.Equals("josh"));
+	            var _Name = _Pipe1.Current;
+	            Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
 	        }
 
 	        Assert.AreEqual(2, _Counter);
@@ -97,7 +99,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        while (_Pipeline.MoveNext())
 			{
 	            _Counter++;
-	            Assert.AreEqual("9", _Pipeline.Current.Id);
+                Assert.AreEqual(new EdgeId(9), _Pipeline.Current.Id);
 	        }
 
 			Assert.AreEqual(1, _Counter);

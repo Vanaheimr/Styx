@@ -73,6 +73,29 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
         #endregion
 
+        #region testIdentityPipeInt32()
+
+        [Test]
+        public void testIdentityPipeInt32()
+        {
+
+            var _Numbers = new List<Int32>() { 1, 2, 3, 4 };
+            var _Pipe    = new IdentityPipe<Int32>();
+            _Pipe.SetSourceCollection(_Numbers);
+
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
+            {
+                Assert.AreEqual(_Pipe.Current, _Numbers.ElementAt(_Counter));
+                _Counter++;
+            }
+
+            Assert.AreEqual(_Counter, 4);
+
+        }
+
+        #endregion
+
     }
 
 }

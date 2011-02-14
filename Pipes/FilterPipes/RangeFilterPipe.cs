@@ -53,8 +53,14 @@ namespace de.ahzf.Pipes
         /// <param name="myHigh">The maxima.</param>
         public RangeFilterPipe(Int32 myLow, Int32 myHigh)
         {
-            _Low  = myLow;
-            _High = myHigh;
+
+            if (myLow > -1 && myHigh > -1 && myLow >= myHigh)
+                throw new ArgumentOutOfRangeException("myLow must be smaller than myHigh!");
+
+            _Low     = myLow;
+            _High    = myHigh;
+            _Counter = -1;
+
         }
 
         #endregion
@@ -95,8 +101,8 @@ namespace de.ahzf.Pipes
                         return true;
                     }
 
-                    if (_High > 0 && _Counter >= _High)
-                        throw new NoSuchElementException();
+                    if (_High > 0 && _Counter > _High)
+                        return false;
 
                 }
 
