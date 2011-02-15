@@ -20,6 +20,7 @@
 using System;
 
 using de.ahzf.blueprints;
+using System.Collections.Generic;
 
 #endregion
 
@@ -113,5 +114,55 @@ namespace de.ahzf.Pipes
         #endregion
 
     }
+
+
+    #region Extensions
+
+    /// <summary>
+    /// Pipes extensions.
+    /// </summary>
+    public static partial class Extensions
+    {
+
+        /// <summary>
+        /// The LabelFilterPipe either allows or disallows all
+        /// Edges that have the provided label.
+        /// </summary>
+        /// <param name="myIEnumerable">A collection of objects implementing IEdge.</param>
+        /// <param name="myLabel">The edge label.</param>
+        /// <param name="myComparisonFilter">The filter to use.</param>
+        /// <returns>A filtered collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> LabelFilterPipe(this IEnumerable<IEdge> myIEnumerable, String myLabel, ComparisonFilter myComparisonFilter)
+        {
+
+            var _Pipe = new LabelFilterPipe(myLabel, myComparisonFilter);
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        /// <summary>
+        /// The LabelFilterPipe either allows or disallows all
+        /// Edges that have the provided label.
+        /// </summary>
+        /// <param name="myIEnumerator">An enumerator of objects implementing IEdge.</param>
+        /// <param name="myLabel">The edge label.</param>
+        /// <param name="myComparisonFilter">The filter to use.</param>
+        /// <returns>A filtered collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> LabelFilterPipe(this IEnumerator<IEdge> myIEnumerator, String myLabel, ComparisonFilter myComparisonFilter)
+        {
+
+            var _Pipe = new LabelFilterPipe(myLabel, myComparisonFilter);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+    }
+
+    #endregion
+
 
 }

@@ -99,14 +99,16 @@ namespace TestApplication
 
             var _Friends = _Graph.GetVertices(new VertexId("1")).
                            VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
+                           LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL).
                            EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
+                           VertexPropertyPipe<String>("name").
                            ToList();
 
-            // Stopps when an intermediate vertex has no edges!
+            //BUG: Stopps when an intermediate vertex has no edges!
             var _FFriends= _Graph.GetVertices(new VertexId("1"), new VertexId("4")).
                            VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
                            EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
-                           VertexPropertyPipe("name").ToList();
+                           VertexPropertyPipe<String>("name").ToList();
 
             var _Counter = 0;
             while (_PPipe.MoveNext())
