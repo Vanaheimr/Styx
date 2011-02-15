@@ -27,7 +27,7 @@ Pipes.NET comes with some syntactic LINQ sugar:
         Console.WriteLine(_Friend);
     }
 
-In detail this is equivalent to the following:
+...which is in detail equivalent to the following standard syntax:
 
     var _Pipe1    = new VertexEdgePipe(Step.OUT_EDGES);
     var _Pipe2    = new LabelFilterPipe("knows", Filter.NOT_EQUAL);
