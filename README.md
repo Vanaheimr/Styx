@@ -16,15 +16,13 @@ Please read the [NOTICE](/ahzf/pipes.NET/blob/master/NOTICE) file for further cr
 
 #### Usage
 
-```java
-var _Pipe1 = new VertexEdgePipe(Step.OUT_EDGES);
-var _Pipe2 = new LabelFilterPipe("knows", Filter.NOT_EQUAL);
-var _Pipe3 = new EdgeVertexPipe(Step.IN_VERTEX);
-var _Pipeline = new Pipeline<IVertex,IVertex>(_Pipe1, _Pipe2, _Pipe3);
-_Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1)));
 
-foreach (var _Friend in _Pipeline)
-{
-    Console.WriteLine(_Friend);
-}
-```
+    var _Pipe1 = new VertexEdgePipe(Step.OUT_EDGES);
+    var _Pipe2 = new LabelFilterPipe("knows", Filter.NOT_EQUAL);
+    var _Pipe3 = new EdgeVertexPipe(Step.IN_VERTEX);
+    var _Pipeline = new Pipeline<IVertex,IVertex>(_Pipe1, _Pipe2, _Pipe3);
+    _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1)));
+    foreach (var _Friend in _Pipeline)
+    {
+        Console.WriteLine(_Friend);
+    }
