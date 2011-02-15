@@ -20,9 +20,9 @@ Pipes.NET comes with some syntactic LINQ sugar:
 
 ...which is in detail equivalent to the following standard syntax:
 
-    var _Pipe1    = new VertexEdgePipe(Step.OUT_EDGES);
-    var _Pipe2    = new LabelFilterPipe("knows", Filter.NOT_EQUAL);
-    var _Pipe3    = new EdgeVertexPipe(Step.IN_VERTEX);
+    var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+    var _Pipe2    = new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
+    var _Pipe3    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
     var _Pipe4    = new VertexPropertyPipe<String>("name");
     var _Pipeline = new Pipeline<IVertex,String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
     _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1)));
