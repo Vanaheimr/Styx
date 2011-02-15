@@ -184,7 +184,7 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerable">A collection of objects implementing IEdge.</param>
         /// <param name="myStep">Visiting only the outgoing vertex, only the incoming vertex or both.</param>
         /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> VertexEdgePipe(this IEnumerable<IEdge> myIEnumerable, de.ahzf.Pipes.EdgeVertexPipe.Step myStep)
+        public static IEnumerable<IVertex> EdgeVertexPipe(this IEnumerable<IEdge> myIEnumerable, de.ahzf.Pipes.EdgeVertexPipe.Step myStep)
         {
 
             var _Pipe = new EdgeVertexPipe(myStep);
@@ -201,7 +201,7 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerator">An enumerator of objects implementing IEdge.</param>
         /// <param name="myStep">Visiting only the outgoing vertex, only the incoming vertex or both.</param>
         /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> VertexEdgePipe(this IEnumerator<IEdge> myIEnumerator, de.ahzf.Pipes.EdgeVertexPipe.Step myStep)
+        public static IEnumerable<IVertex> EdgeVertexPipe(this IEnumerator<IEdge> myIEnumerator, de.ahzf.Pipes.EdgeVertexPipe.Step myStep)
         {
 
             var _Pipe = new EdgeVertexPipe(myStep);

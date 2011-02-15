@@ -97,9 +97,15 @@ namespace TestApplication
             var _PPipe = new PropertyPipe<IVertex, String>("name");
             _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 
-            var _Friends = _Graph.GetVertex(new VertexId("1")).AsList().
+            var _Friends = _Graph.GetVertices(new VertexId("1")).
                            VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
-                           VertexEdgePipe(EdgeVertexPipe.Step.IN_VERTEX).
+                           EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
+                           ToList();
+
+            // Stopps when an intermediate vertex has no edges!
+            var _FFriends= _Graph.GetVertices(new VertexId("1"), new VertexId("4")).
+                           VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
+                           EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
                            VertexPropertyPipe("name").ToList();
 
             var _Counter = 0;
