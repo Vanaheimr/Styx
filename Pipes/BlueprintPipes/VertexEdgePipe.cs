@@ -199,4 +199,51 @@ namespace de.ahzf.Pipes
 
     }
 
+
+    #region Extensions
+
+    /// <summary>
+    /// Pipes extensions.
+    /// </summary>
+    public static partial class Extensions
+    {
+
+        /// <summary>
+        /// The VertexEdgePipe returns either the incoming or
+        /// outgoing edges of the given vertex.
+        /// </summary>
+        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <param name="myStep">Visiting only outgoing edges, only incoming edges or both.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> VertexEdgePipe(this IEnumerable<IVertex> myIEnumerable, de.ahzf.Pipes.VertexEdgePipe.Step myStep)
+        {
+
+            var _Pipe = new VertexEdgePipe(myStep);
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        /// <summary>
+        /// The VertexEdgePipe returns either the incoming or
+        /// outgoing edges of the given vertex.
+        /// </summary>
+        /// <param name="myIEnumerator">An enumerator of objects implementing IVertex.</param>
+        /// <param name="myStep">Visiting only outgoing edges, only incoming edges or both.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> VertexEdgePipe(this IEnumerator<IVertex> myIEnumerator, de.ahzf.Pipes.VertexEdgePipe.Step myStep)
+        {
+
+            var _Pipe = new VertexEdgePipe(myStep);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+    }
+
+    #endregion
+
 }

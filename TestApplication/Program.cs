@@ -34,13 +34,45 @@ using de.ahzf.Pipes.UnitTests;
 namespace TestApplication
 {
 
+    public static class Extensions
+    {
+
+        public static IEnumerable<S> IdentityPipe<S>(this IEnumerable<S> myIEnumerable)
+        {
+
+            var _Pipe = new IdentityPipe<S>();
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        public static IEnumerable<S> IdentityPipe<S>(this IEnumerator<S> myIEnumerator)
+        {
+
+            var _Pipe = new IdentityPipe<S>();
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        
+
+        //public static IEnumerable<E> ToEnumerable<S, E>(this IPipe<S, E> myIPipe)
+        //{
+        //    return myIPipe;
+        //}
+
+    }
+
     public class Program
     {
 
         public static void Main(String[] myArgs)
         {
 
-			/*
+            /*
             var grapha    = TinkerGraphFactory.CreateTinkerGraph();
 
             var markoa   = grapha.GetVertex(new VertexId("1"));
@@ -56,25 +88,27 @@ namespace TestApplication
                 Assert.IsTrue(_Path.ElementAt(1) is IEdge);
                 Assert.IsTrue(_Path.ElementAt(2) is IVertex);
             }
-			 */
+             */
 
 
 
-            var _Names = new List<String>() { "marko", "povel", "peter", "josh" };
-            var _Pipe1 = new FutureFilterPipe<String>(new CollectionFilterPipe<String>(new List<String>() { "marko", "povel" }, ComparisonFilter.EQUAL));
-            _Pipe1.SetSourceCollection(_Names);
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+            var _Marko = _Graph.GetVertex(new VertexId("1"));
+            var _PPipe = new PropertyPipe<IVertex, String>("name");
+            _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
+
+            var _Friends = _Graph.GetVertex(new VertexId("1")).AsList().
+                           VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
+                           VertexEdgePipe(EdgeVertexPipe.Step.IN_VERTEX).
+                           VertexPropertyPipe("name").ToList();
 
             var _Counter = 0;
-            while (_Pipe1.MoveNext())
+            while (_PPipe.MoveNext())
             {
+                var name = _PPipe.Current;
+                Assert.AreEqual("marko", name);
                 _Counter++;
-                var _Name = _Pipe1.Current;
-                Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
             }
-
-            Assert.AreEqual(2, _Counter);
-			
-			
 
 
 

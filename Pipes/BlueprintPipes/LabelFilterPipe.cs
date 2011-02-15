@@ -79,6 +79,7 @@ namespace de.ahzf.Pipes
 
                 if (_InternalEnumerator.MoveNext())
                 {
+
                     var _Edge = _InternalEnumerator.Current;
 
                     if (!CompareObjects(_Edge.Label, _Label))
@@ -86,12 +87,14 @@ namespace de.ahzf.Pipes
                         _CurrentElement = _Edge;
                         return true;
                     }
+
                 }
 
                 else
                     return false;
 
             }
+
         }
 
         #endregion
