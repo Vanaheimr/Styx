@@ -19,9 +19,9 @@ Please read the [NOTICE](/ahzf/pipes.NET/blob/master/NOTICE) file for further cr
 Pipes.NET comes with some syntactic LINQ sugar:
 
     var _Friends = _Graph.GetVertices(new VertexId("1")).
-                           VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
-                           LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL).
-                           EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+                   VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
+                   LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL).
+                   EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
     foreach (var _Friend in _Friends)
     {
         Console.WriteLine(_Friend);
