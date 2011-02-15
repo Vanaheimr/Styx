@@ -37,14 +37,14 @@ namespace de.ahzf.Pipes
 
         #region Constructor(s)
 
-        #region VertexPropertyPipe(myKey)
+        #region VertexPropertyPipe(myKeys)
 
         /// <summary>
         /// Creates a new VertexPropertyPipe.
         /// </summary>
-        /// <param name="myKey">The property key.</param>
-        public VertexPropertyPipe(String myKey)
-            : base(myKey)
+        /// <param name="myKeys">The property keys.</param>
+        public VertexPropertyPipe(params String[] myKeys)
+            : base(myKeys)
         { }
 
         #endregion
@@ -67,12 +67,12 @@ namespace de.ahzf.Pipes
         /// Element identified by the provided key.
         /// </summary>
         /// <param name="myIEnumerable">A collection of consumable objects implementing IVertex.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> VertexPropertyPipe(this IEnumerable<IVertex> myIEnumerable, String myKey)
+        public static IEnumerable<Object> VertexPropertyPipe(this IEnumerable<IVertex> myIEnumerable, params String[] myKeys)
         {
 
-            var _Pipe = new VertexPropertyPipe<Object>(myKey);
+            var _Pipe = new VertexPropertyPipe<Object>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -85,12 +85,12 @@ namespace de.ahzf.Pipes
         /// </summary>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerable">A collection of consumable objects implementing IVertex.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerable<IVertex> myIEnumerable, String myKey)
+        public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerable<IVertex> myIEnumerable, params String[] myKeys)
         {
 
-            var _Pipe = new VertexPropertyPipe<E>(myKey);
+            var _Pipe = new VertexPropertyPipe<E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -102,14 +102,31 @@ namespace de.ahzf.Pipes
         /// The VertexPropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
-        /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerator">An enumerator of consumable objects implementing IVertex.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerator<IVertex> myIEnumerator, String myKey)
+        public static IEnumerable<Object> VertexPropertyPipe(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
         {
 
-            var _Pipe = new VertexPropertyPipe<E>(myKey);
+            var _Pipe = new VertexPropertyPipe<Object>(myKeys);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        /// <summary>
+        /// The VertexPropertyPipe returns the property value of the
+        /// Element identified by the provided key.
+        /// </summary>
+        /// <typeparam name="E">The type of the emitting objects.</typeparam>
+        /// <param name="myIEnumerator">An enumerator of consumable objects implementing IVertex.</param>
+        /// <param name="myKeys">The property keys.</param>
+        /// <returns>A collection of emittable objects.</returns>
+        public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
+        {
+
+            var _Pipe = new VertexPropertyPipe<E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;

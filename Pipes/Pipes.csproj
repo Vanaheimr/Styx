@@ -48,7 +48,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="ComparisonFilterPipes\CollectionFilterPipe.cs" />
-    <Compile Include="FilterPipes\ToLowerPipe.cs" />
+    <Compile Include="tools\ToLowerPipe.cs" />
     <Compile Include="FilterPipes\FutureFilterPipe.cs" />
     <Compile Include="FilterPipes\DuplicateFilterPipe.cs" />
     <Compile Include="ComparisonFilterPipes\ObjectFilterPipe.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="Enumerators\ExpandableEnumerator.cs" />
     <Compile Include="FilterPipes\AndFilterPipe.cs" />
     <Compile Include="FilterPipes\IFilterPipe.cs" />
-    <Compile Include="FilterPipes\ToUpperPipe.cs" />
+    <Compile Include="tools\ToUpperPipe.cs" />
     <Compile Include="Pipes\IStartPipe.cs" />
     <Compile Include="Pipes\IEndPipe.cs" />
     <Compile Include="Pipes\IPipe.cs" />
@@ -92,7 +92,7 @@
     <Compile Include="util\GatherPipe.cs" />
     <Compile Include="util\HasNextPipe.cs" />
     <Compile Include="Concurrent\AndFilterPipeConcurrent.cs" />
-    <Compile Include="util\CharacterCountPipe.cs" />
+    <Compile Include="tools\CharacterCountPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

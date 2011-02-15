@@ -18,9 +18,11 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 
 using de.ahzf.blueprints;
-using System.Collections.Generic;
 
 #endregion
 
@@ -39,21 +41,22 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly String _Key;
+        private readonly String[]            _Keys;
+        private          IEnumerator<String> _PropertyEnumerator;
 
         #endregion
 
         #region Constructor(s)
 
-        #region PropertyPipe(myKey)
+        #region PropertyPipe(myKeys)
 
         /// <summary>
         /// Creates a new PropertyPipe.
         /// </summary>
-        /// <param name="myKey">The property key.</param>
-        public PropertyPipe(String myKey)
+        /// <param name="myKeys">The property keys.</param>
+        public PropertyPipe(params String[] myKeys)
         {
-            _Key   = myKey;
+            _Keys = myKeys;
         }
 
         #endregion
@@ -77,14 +80,31 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator.MoveNext())
+            while (true)
             {
-                _CurrentElement = _InternalEnumerator.Current.GetProperty<E>(_Key);
-                return true;
-            }
 
-            else
-                return false;
+                // First set the property enumerator
+                if (_PropertyEnumerator == null)
+                {
+
+                    if (_InternalEnumerator.MoveNext())
+                        _PropertyEnumerator = new List<String>(_Keys).GetEnumerator();
+
+                    else
+                        return false;
+
+                }
+
+                // Second emit the properties
+                if (_PropertyEnumerator.MoveNext())
+                {
+                    _CurrentElement = _InternalEnumerator.Current.GetProperty<E>(_PropertyEnumerator.Current);
+                    return true;
+                }
+
+                _PropertyEnumerator = null;
+
+            }
 
         }
 
@@ -98,7 +118,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Key + ">";
+            return base.ToString() + "<" + _Keys.Aggregate((a, b) => a + ", " + b) + ">";
         }
 
         #endregion
@@ -121,13 +141,13 @@ namespace de.ahzf.Pipes
         /// <typeparam name="S">The type of the consuming objects.</typeparam>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerable">A collection of consumable objects.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerable<S> myIEnumerable, String myKey)
+        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerable<S> myIEnumerable, String[] myKeys)
             where S : IElement
         {
 
-            var _Pipe = new PropertyPipe<S, E>(myKey);
+            var _Pipe = new PropertyPipe<S, E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -141,13 +161,13 @@ namespace de.ahzf.Pipes
         /// <typeparam name="S">The type of the consuming objects.</typeparam>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerator">An enumerator of consumable objects.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerator<S> myIEnumerator, String myKey)
+        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerator<S> myIEnumerator, String[] myKeys)
             where S : IElement
         {
 
-            var _Pipe = new PropertyPipe<S, E>(myKey);
+            var _Pipe = new PropertyPipe<S, E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;

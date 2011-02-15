@@ -37,14 +37,14 @@ namespace de.ahzf.Pipes
 
         #region Constructor(s)
 
-        #region EdgePropertyPipe(myKey)
+        #region EdgePropertyPipe(myKeys)
 
         /// <summary>
         /// Creates a new EdgePropertyPipe.
         /// </summary>
-        /// <param name="myKey">The property key.</param>
-        public EdgePropertyPipe(String myKey)
-            : base(myKey)
+        /// <param name="myKeys">The property keys.</param>
+        public EdgePropertyPipe(String[] myKeys)
+            : base(myKeys)
         { }
 
         #endregion
@@ -67,12 +67,12 @@ namespace de.ahzf.Pipes
         /// Element identified by the provided key.
         /// </summary>
         /// <param name="myIEnumerable">A collection of consumable objects implementing IEdge.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> EdgePropertyPipe(this IEnumerable<IEdge> myIEnumerable, String myKey)
+        public static IEnumerable<Object> EdgePropertyPipe(this IEnumerable<IEdge> myIEnumerable, params String[] myKeys)
         {
 
-            var _Pipe = new EdgePropertyPipe<Object>(myKey);
+            var _Pipe = new EdgePropertyPipe<Object>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -85,12 +85,12 @@ namespace de.ahzf.Pipes
         /// </summary>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerable">A collection of consumable objects implementing IEdge.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> EdgePropertyPipe<E>(this IEnumerable<IEdge> myIEnumerable, String myKey)
+        public static IEnumerable<E> EdgePropertyPipe<E>(this IEnumerable<IEdge> myIEnumerable, params String[] myKeys)
         {
 
-            var _Pipe = new EdgePropertyPipe<E>(myKey);
+            var _Pipe = new EdgePropertyPipe<E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -102,14 +102,31 @@ namespace de.ahzf.Pipes
         /// The EdgePropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
-        /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerator">An enumerator of consumable objects implementing IEdge.</param>
-        /// <param name="myKey">The property key.</param>
+        /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> EdgePropertyPipe<E>(this IEnumerator<IEdge> myIEnumerator, String myKey)
+        public static IEnumerable<Object> EdgePropertyPipe(this IEnumerator<IEdge> myIEnumerator, params String[] myKeys)
         {
 
-            var _Pipe = new EdgePropertyPipe<E>(myKey);
+            var _Pipe = new EdgePropertyPipe<Object>(myKeys);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        /// <summary>
+        /// The EdgePropertyPipe returns the property value of the
+        /// Element identified by the provided key.
+        /// </summary>
+        /// <typeparam name="E">The type of the emitting objects.</typeparam>
+        /// <param name="myIEnumerator">An enumerator of consumable objects implementing IEdge.</param>
+        /// <param name="myKeys">The property keys.</param>
+        /// <returns>A collection of emittable objects.</returns>
+        public static IEnumerable<E> EdgePropertyPipe<E>(this IEnumerator<IEdge> myIEnumerator, params String[] myKeys)
+        {
+
+            var _Pipe = new EdgePropertyPipe<E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;
