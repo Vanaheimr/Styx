@@ -13,3 +13,18 @@ Pipes.NET is released under the [Apache License 2.0](http://www.apache.org/licen
 Pipes.NET is a reimplementation of the [Pipes](http://github.com/tinkerpop/pipes) library for Java provided by [Tinkerpop](http://tinkerpop.com).
 
 Please read the [NOTICE](/ahzf/pipes.NET/blob/master/NOTICE) file for further credits.
+
+#### Usage
+
+```java
+var _Pipe1 = new VertexEdgePipe(Step.OUT_EDGES);
+var _Pipe2 = new LabelFilterPipe("knows", Filter.NOT_EQUAL);
+var _Pipe3 = new EdgeVertexPipe(Step.IN_VERTEX);
+var _Pipeline = new Pipeline<IVertex,IVertex>(_Pipe1, _Pipe2, _Pipe3);
+_Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1)));
+
+foreach (var _Friend in _Pipeline)
+{
+    Console.WriteLine(_Friend);
+}
+```
