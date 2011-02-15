@@ -38,10 +38,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="BlueprintPipes\Extensions\Neighbors.cs" />
     <Compile Include="BlueprintPipes\EdgePropertyPipe.cs" />
     <Compile Include="BlueprintPipes\VertexPropertyPipe.cs" />
-    <Compile Include="BlueprintPipes\EdgeIdFilterPipe.cs" />
-    <Compile Include="BlueprintPipes\VertexIdFilterPipe.cs" />
+    <Compile Include="BlueprintPipes\Filters\EdgeIdFilterPipe.cs" />
+    <Compile Include="BlueprintPipes\Filters\VertexIdFilterPipe.cs" />
     <Compile Include="BlueprintPipes\VertexEdgePipe.cs" />
     <Compile Include="Enumerators\ISingleEnumerator.cs" />
     <Compile Include="Enumerators\IHistoryEnumerator.cs" />
@@ -59,15 +60,15 @@
     <Compile Include="ComparisonFilterPipes\IComparisonFilterPipe.cs" />
     <Compile Include="BlueprintPipes\PropertyPipe.cs" />
     <Compile Include="BlueprintPipes\PropertyMapPipe.cs" />
-    <Compile Include="BlueprintPipes\PropertyFilterPipe.cs" />
+    <Compile Include="BlueprintPipes\Filters\PropertyFilterPipe.cs" />
     <Compile Include="BlueprintPipes\LabelPipe.cs" />
-    <Compile Include="BlueprintPipes\LabelFilterPipe.cs" />
+    <Compile Include="BlueprintPipes\Filters\LabelFilterPipe.cs" />
     <Compile Include="BlueprintPipes\IdVertexPipe.cs" />
     <Compile Include="BlueprintPipes\EdgeVertexPipe.cs" />
     <Compile Include="BlueprintPipes\GraphElementPipe.cs" />
     <Compile Include="BlueprintPipes\IdEdgePipe.cs" />
     <Compile Include="BlueprintPipes\IdPipe.cs" />
-    <Compile Include="BlueprintPipes\IdFilterPipe.cs" />
+    <Compile Include="BlueprintPipes\Filters\IdFilterPipe.cs" />
     <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Enumerators\SingleEnumerator.cs" />
     <Compile Include="Enumerators\MultiEnumerator.cs" />

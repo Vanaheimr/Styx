@@ -102,7 +102,7 @@ namespace de.ahzf.Pipes
         /// The VertexPropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
-        /// <param name="myIEnumerator">An enumerator of consumable objects implementing IVertex.</param>
+        /// <param name="myIEnumerator">A enumerator of consumable objects implementing IVertex.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
         public static IEnumerable<Object> VertexPropertyPipe(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
@@ -120,7 +120,7 @@ namespace de.ahzf.Pipes
         /// Element identified by the provided key.
         /// </summary>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
-        /// <param name="myIEnumerator">An enumerator of consumable objects implementing IVertex.</param>
+        /// <param name="myIEnumerator">A enumerator of consumable objects implementing IVertex.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
         public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)

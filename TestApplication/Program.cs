@@ -98,9 +98,10 @@ namespace TestApplication
             _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 
             var _Friends = _Graph.GetVertices(new VertexId("1")).
-                           VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
-                           LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL).
-                           EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
+                           //OutEdges().
+                           //LabelEquals("knows").
+                           //InVertex().
+                           Neighbors("knows").
                            VertexPropertyPipe<String>("name").
                            ToList();
 

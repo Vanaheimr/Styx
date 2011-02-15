@@ -208,6 +208,8 @@ namespace de.ahzf.Pipes
     public static partial class Extensions
     {
 
+        #region VertexEdgePipe(this myIEnumerable, myStep)
+
         /// <summary>
         /// The VertexEdgePipe returns either the incoming or
         /// outgoing edges of the given vertex.
@@ -225,11 +227,76 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
+
+        #region OutEdges(this myIEnumerable)
+
+        /// <summary>
+        /// This specialized VertexEdgePipe returns just the OutEdges
+        /// of an IVertex.
+        /// </summary>
+        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> OutEdges(this IEnumerable<IVertex> myIEnumerable)
+        {
+
+            var _Pipe = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        #endregion
+
+        #region InEdges(this myIEnumerable)
+
+        /// <summary>
+        /// This specialized VertexEdgePipe returns just the InEdges
+        /// of an IVertex.
+        /// </summary>
+        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> InEdges(this IEnumerable<IVertex> myIEnumerable)
+        {
+
+            var _Pipe = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.IN_EDGES);
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        #endregion
+
+        #region BothEdges(this myIEnumerable)
+
+        /// <summary>
+        /// This specialized VertexEdgePipe returns both the InEdges
+        /// and OutEdges of an IVertex.
+        /// </summary>
+        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> BothEdges(this IEnumerable<IVertex> myIEnumerable)
+        {
+
+            var _Pipe = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.BOTH_EDGES);
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        #endregion
+
+
+        #region VertexEdgePipe(this myIEnumerator, myStep)
+
         /// <summary>
         /// The VertexEdgePipe returns either the incoming or
         /// outgoing edges of the given vertex.
         /// </summary>
-        /// <param name="myIEnumerator">An enumerator of objects implementing IVertex.</param>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
         /// <param name="myStep">Visiting only outgoing edges, only incoming edges or both.</param>
         /// <returns>A collection of objects implementing IEdge.</returns>
         public static IEnumerable<IEdge> VertexEdgePipe(this IEnumerator<IVertex> myIEnumerator, de.ahzf.Pipes.VertexEdgePipe.Step myStep)
@@ -241,6 +308,68 @@ namespace de.ahzf.Pipes
             return _Pipe;
 
         }
+
+        #endregion
+
+        #region OutEdges(this myIEnumerator)
+
+        /// <summary>
+        /// This specialized VertexEdgePipe returns just the OutEdges
+        /// of an IVertex.
+        /// </summary>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> OutEdges(this IEnumerator<IVertex> myIEnumerator)
+        {
+
+            var _Pipe = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        #endregion
+
+        #region InEdges(this myIEnumerator)
+
+        /// <summary>
+        /// This specialized VertexEdgePipe returns just the InEdges
+        /// of an IVertex.
+        /// </summary>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> InEdges(this IEnumerator<IVertex> myIEnumerator)
+        {
+
+            var _Pipe = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.IN_EDGES);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        #endregion
+
+        #region BothEdges(this myIEnumerator)
+
+        /// <summary>
+        /// This specialized VertexEdgePipe returns both the InEdges
+        /// and OutEdges of an IVertex.
+        /// </summary>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
+        /// <returns>A collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> BothEdges(this IEnumerator<IVertex> myIEnumerator)
+        {
+
+            var _Pipe = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.BOTH_EDGES);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        #endregion
 
     }
 

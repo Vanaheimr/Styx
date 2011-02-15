@@ -124,6 +124,8 @@ namespace de.ahzf.Pipes
     public static partial class Extensions
     {
 
+        #region LabelFilterPipe(this myIEnumerable, myLabel, myComparisonFilter)
+
         /// <summary>
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
@@ -142,11 +144,37 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
+
+        #region LabelEquals(this myIEnumerable, myLabel)
+
         /// <summary>
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerator">An enumerator of objects implementing IEdge.</param>
+        /// <param name="myIEnumerable">A collection of objects implementing IEdge.</param>
+        /// <param name="myLabel">The edge label.</param>
+        /// <returns>A filtered collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> LabelEquals(this IEnumerable<IEdge> myIEnumerable, String myLabel)
+        {
+
+            var _Pipe = new LabelFilterPipe(myLabel, ComparisonFilter.NOT_EQUAL);
+            _Pipe.SetSourceCollection(myIEnumerable);
+
+            return _Pipe;
+
+        }
+
+        #endregion
+
+
+        #region LabelFilterPipe(this myIEnumerator, myLabel, myComparisonFilter)
+
+        /// <summary>
+        /// The LabelFilterPipe either allows or disallows all
+        /// Edges that have the provided label.
+        /// </summary>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IEdge.</param>
         /// <param name="myLabel">The edge label.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
         /// <returns>A filtered collection of objects implementing IEdge.</returns>
@@ -159,6 +187,29 @@ namespace de.ahzf.Pipes
             return _Pipe;
 
         }
+
+        #endregion
+
+        #region LabelEquals(this myIEnumerable, myLabel)
+
+        /// <summary>
+        /// The LabelFilterPipe either allows or disallows all
+        /// Edges that have the provided label.
+        /// </summary>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IEdge.</param>
+        /// <param name="myLabel">The edge label.</param>
+        /// <returns>A filtered collection of objects implementing IEdge.</returns>
+        public static IEnumerable<IEdge> LabelEquals(this IEnumerator<IEdge> myIEnumerator, String myLabel)
+        {
+
+            var _Pipe = new LabelFilterPipe(myLabel, ComparisonFilter.NOT_EQUAL);
+            _Pipe.SetSource(myIEnumerator);
+
+            return _Pipe;
+
+        }
+
+        #endregion
 
     }
 
