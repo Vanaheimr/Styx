@@ -9,9 +9,9 @@ Pipes supports the splitting, merging, and transformation of data from input to 
 Pipes.NET comes with some syntactic LINQ sugar:
 
     var _Friends = _Graph.GetVertices(new VertexId("1")).
-                   VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
-                   LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL).
-                   EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
+                   OutEdges().
+                   LabelEquals("knows").
+                   InVertex().
                    VertexPropertyPipe<String>("name");
     foreach (var _Friend in _Friends)
     {
