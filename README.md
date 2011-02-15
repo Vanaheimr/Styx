@@ -11,7 +11,8 @@ Pipes.NET comes with some syntactic LINQ sugar:
     var _Friends = _Graph.GetVertices(new VertexId("1")).
                    VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
                    LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL).
-                   EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+                   EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
+                   VertexPropertyPipe("name");
     foreach (var _Friend in _Friends)
     {
         Console.WriteLine(_Friend);
@@ -22,7 +23,8 @@ Pipes.NET comes with some syntactic LINQ sugar:
     var _Pipe1    = new VertexEdgePipe(Step.OUT_EDGES);
     var _Pipe2    = new LabelFilterPipe("knows", Filter.NOT_EQUAL);
     var _Pipe3    = new EdgeVertexPipe(Step.IN_VERTEX);
-    var _Pipeline = new Pipeline<IVertex,IVertex>(_Pipe1, _Pipe2, _Pipe3);
+    var _Pipe4    = new VertexPropertyPipe("name");
+    var _Pipeline = new Pipeline<IVertex,IVertex>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
     _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1)));
     foreach (var _Friend in _Pipeline)
     {
