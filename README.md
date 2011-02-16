@@ -8,7 +8,7 @@ Pipes supports the splitting, merging, and transformation of data from input to 
 
 Pipes.NET comes with some syntactic sugar to make coexistance with LINQ a bit easier:
 
-    var _Friends = _Graph.VId(1).
+    var _Friends = _Graph.VertexId(1).
                    OutEdges("knows").
                    InVertex().
                    GetProperty<String>("name");
