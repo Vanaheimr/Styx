@@ -6,13 +6,12 @@ Pipes supports the splitting, merging, and transformation of data from input to 
 
 #### Usage
 
-Pipes.NET comes with some syntactic LINQ sugar:
+Pipes.NET comes with some syntactic sugar to make coexistance with LINQ a bit easier:
 
-    var _Friends = _Graph.GetVertices(new VertexId("1")).
-                   OutEdges().
-                   LabelEquals("knows").
+    var _Friends = _Graph.VId(1).
+                   OutEdges("knows").
                    InVertex().
-                   VertexPropertyPipe<String>("name");
+                   GetProperty<String>("name");
     foreach (var _Friend in _Friends)
     {
         Console.WriteLine(_Friend);
