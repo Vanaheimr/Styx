@@ -18,49 +18,22 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using de.ahzf.blueprints;
-using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Pipes
+namespace de.ahzf.Pipes.ExtensionMethods
 {
 
     /// <summary>
-    /// The VertexPropertyPipe returns the property value of the
-    /// Element identified by the provided key.
+    /// VertexPropertyPipe extensions.
     /// </summary>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class VertexPropertyPipe<E> : PropertyPipe<IVertex, E>
+    public static class VertexPropertyPipeExtensions
     {
 
-        #region Constructor(s)
-
-        #region VertexPropertyPipe(myKeys)
-
-        /// <summary>
-        /// Creates a new VertexPropertyPipe.
-        /// </summary>
-        /// <param name="myKeys">The property keys.</param>
-        public VertexPropertyPipe(params String[] myKeys)
-            : base(myKeys)
-        { }
-
-        #endregion
-
-        #endregion
-
-    }
-
-    
-    #region Extensions
-
-    /// <summary>
-    /// Pipes extensions.
-    /// </summary>
-    public static partial class Extensions
-    {
+        #region GetProperty(this myIEnumerable, params myKeys)
 
         /// <summary>
         /// The VertexPropertyPipe returns the property value of the
@@ -69,7 +42,7 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerable">A collection of consumable objects implementing IVertex.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> VertexPropertyPipe(this IEnumerable<IVertex> myIEnumerable, params String[] myKeys)
+        public static IEnumerable<Object> GetProperty(this IEnumerable<IVertex> myIEnumerable, params String[] myKeys)
         {
 
             var _Pipe = new VertexPropertyPipe<Object>(myKeys);
@@ -79,6 +52,10 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
+
+        #region GetProperty<E>(this myIEnumerable, params myKeys)
+
         /// <summary>
         /// The VertexPropertyPipe returns the property value of the
         /// Element identified by the provided key.
@@ -87,7 +64,7 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerable">A collection of consumable objects implementing IVertex.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerable<IVertex> myIEnumerable, params String[] myKeys)
+        public static IEnumerable<E> GetProperty<E>(this IEnumerable<IVertex> myIEnumerable, params String[] myKeys)
         {
 
             var _Pipe = new VertexPropertyPipe<E>(myKeys);
@@ -97,6 +74,10 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
+
+
+        #region GetProperty(this myIEnumerator, params myKeys)
 
         /// <summary>
         /// The VertexPropertyPipe returns the property value of the
@@ -105,7 +86,7 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerator">A enumerator of consumable objects implementing IVertex.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> VertexPropertyPipe(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
+        public static IEnumerable<Object> GetProperty(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
         {
 
             var _Pipe = new VertexPropertyPipe<Object>(myKeys);
@@ -115,6 +96,10 @@ namespace de.ahzf.Pipes
 
         }
 
+        #endregion
+
+        #region GetProperty<E>(this myIEnumerator, params myKeys)
+
         /// <summary>
         /// The VertexPropertyPipe returns the property value of the
         /// Element identified by the provided key.
@@ -123,7 +108,7 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerator">A enumerator of consumable objects implementing IVertex.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> VertexPropertyPipe<E>(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
+        public static IEnumerable<E> GetProperty<E>(this IEnumerator<IVertex> myIEnumerator, params String[] myKeys)
         {
 
             var _Pipe = new VertexPropertyPipe<E>(myKeys);
@@ -133,8 +118,8 @@ namespace de.ahzf.Pipes
 
         }
 
-    }
+        #endregion
 
-    #endregion
+    }
 
 }

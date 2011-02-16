@@ -21,50 +21,19 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using NUnit.Framework;
-
 using de.ahzf.Pipes;
+using de.ahzf.Pipes.ExtensionMethods;
 using de.ahzf.blueprints;
 using de.ahzf.blueprints.Datastructures;
 using de.ahzf.blueprints.InMemoryGraph;
 using de.ahzf.Pipes.UnitTests;
 
+using NUnit.Framework;
+
 #endregion
 
 namespace TestApplication
 {
-
-    public static class Extensions
-    {
-
-        public static IEnumerable<S> IdentityPipe<S>(this IEnumerable<S> myIEnumerable)
-        {
-
-            var _Pipe = new IdentityPipe<S>();
-            _Pipe.SetSourceCollection(myIEnumerable);
-
-            return _Pipe;
-
-        }
-
-        public static IEnumerable<S> IdentityPipe<S>(this IEnumerator<S> myIEnumerator)
-        {
-
-            var _Pipe = new IdentityPipe<S>();
-            _Pipe.SetSource(myIEnumerator);
-
-            return _Pipe;
-
-        }
-
-        
-
-        //public static IEnumerable<E> ToEnumerable<S, E>(this IPipe<S, E> myIPipe)
-        //{
-        //    return myIPipe;
-        //}
-
-    }
 
     public class Program
     {
@@ -97,19 +66,18 @@ namespace TestApplication
             var _PPipe = new PropertyPipe<IVertex, String>("name");
             _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 
-            var _Friends = _Graph.GetVertices(new VertexId("1")).
-                           //OutEdges().
-                           //LabelEquals("knows").
-                           //InVertex().
-                           Neighbors("knows").
-                           VertexPropertyPipe<String>("name").
+            var _Friends = _Graph.VId(1).
+                           OutEdges("knows").
+                           InVertex().
+                           //Neighbors("knows").
+                           GetProperty<String>("name").
                            ToList();
 
             //BUG: Stopps when an intermediate vertex has no edges!
             var _FFriends= _Graph.GetVertices(new VertexId("1"), new VertexId("4")).
                            VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
                            EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
-                           VertexPropertyPipe<String>("name").ToList();
+                           GetProperty<String>("name").ToList();
 
             var _Counter = 0;
             while (_PPipe.MoveNext())

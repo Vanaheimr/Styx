@@ -25,13 +25,14 @@ using de.ahzf.blueprints;
 
 #endregion
 
-namespace de.ahzf.Pipes
+namespace de.ahzf.Pipes.ExtensionMethods
 {
 
     /// <summary>
-    /// Pipes extensions.
+    /// A class of specialized pipelines returning the
+    /// adjacent vertices (the neighborhood) of a vertex.
     /// </summary>
-    public static partial class Extensions
+    public static class NeighborsExtensions
     {
 
         #region Neighbor(this myIEnumerable)

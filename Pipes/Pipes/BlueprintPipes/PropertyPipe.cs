@@ -19,7 +19,6 @@
 
 using System;
 using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
 
 using de.ahzf.blueprints;
@@ -124,58 +123,5 @@ namespace de.ahzf.Pipes
         #endregion
 
     }
-
-    
-    #region Extensions
-
-    /// <summary>
-    /// Pipes extensions.
-    /// </summary>
-    public static partial class Extensions
-    {
-
-        /// <summary>
-        /// The PropertyPipe returns the property value of the
-        /// Element identified by the provided key.
-        /// </summary>
-        /// <typeparam name="S">The type of the consuming objects.</typeparam>
-        /// <typeparam name="E">The type of the emitting objects.</typeparam>
-        /// <param name="myIEnumerable">A collection of consumable objects.</param>
-        /// <param name="myKeys">The property keys.</param>
-        /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerable<S> myIEnumerable, String[] myKeys)
-            where S : IElement
-        {
-
-            var _Pipe = new PropertyPipe<S, E>(myKeys);
-            _Pipe.SetSourceCollection(myIEnumerable);
-
-            return _Pipe;
-
-        }
-
-        /// <summary>
-        /// The PropertyPipe returns the property value of the
-        /// Element identified by the provided key.
-        /// </summary>
-        /// <typeparam name="S">The type of the consuming objects.</typeparam>
-        /// <typeparam name="E">The type of the emitting objects.</typeparam>
-        /// <param name="myIEnumerator">A enumerator of consumable objects.</param>
-        /// <param name="myKeys">The property keys.</param>
-        /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerator<S> myIEnumerator, String[] myKeys)
-            where S : IElement
-        {
-
-            var _Pipe = new PropertyPipe<S, E>(myKeys);
-            _Pipe.SetSource(myIEnumerator);
-
-            return _Pipe;
-
-        }
-
-    }
-
-    #endregion
 
 }

@@ -58,6 +58,7 @@ namespace de.ahzf.Pipes
 
         #endregion
 
+
         #region MoveNext()
 
         /// <summary>
