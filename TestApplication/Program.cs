@@ -66,7 +66,7 @@ namespace TestApplication
             var _PPipe = new PropertyPipe<IVertex, String>("name");
             _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 
-            var _Friends = _Graph.VId(1).
+            var _Friends = _Graph.VertexId(1).
                            OutEdges("knows").
                            InVertex().
                            //Neighbors("knows").
