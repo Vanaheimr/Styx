@@ -6,7 +6,7 @@ Pipes supports the splitting, merging, and transformation of data from input to 
 
 #### Usage
 
-Pipes.NET comes with some syntactic sugar to make coexistance with LINQ a bit easier:
+Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit easier:
 
     var _Friends = _Graph.VertexId(1).
                    OutEdges("knows").
