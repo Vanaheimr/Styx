@@ -1,12 +1,11 @@
 ![Pipes.NET logo](/ahzf/pipes.NET/raw/master/doc/pipes.NET-logo.png)
 
 Pipes.NET is a graph-based data flow framework for [property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph)
-written in .NET/Mono. A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
-Pipes supports the splitting, merging, and transformation of data from input to output.
+written in .NET/Mono. It comes with some syntactic sugar to build a powerful "LINQ to graphs" interface. A process graph is composed of a set of process vertices connected to one another by a set of communication edges. Pipes supports the splitting, merging, and transformation of data from input to output. 
 
 #### Usage
 
-Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit easier:
+Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit easier.
 
     var _Friends = _Graph.VertexId(1).
                    OutEdges("knows").
