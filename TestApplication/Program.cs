@@ -61,20 +61,23 @@ namespace TestApplication
 
 
 
-            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Marko = _Graph.GetVertex(new VertexId("1"));
+            var _Graph = ToyGraphFactory.CreateToyGraph();
+            var _Alice = _Graph.GetVertex(new VertexId("1"));
             var _PPipe = new PropertyPipe<IVertex, String>("name");
-            _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
+            _PPipe.SetSource(new List<IVertex>() { _Alice }.GetEnumerator());
 
             var _Friends = _Graph.VertexId(1).
-                           OutEdges("knows").
-                           InVertex().
-                           //Neighbors("knows").
+                           //OutEdges("knows").
+                           //InVertex().
+                           Neighbors("loves").
+                           //Foaf("knows").
                            GetProperty<String>("name").
                            ToList();
 
+            var _IdComplicated = _Graph.VertexId(1,3).IsComplicated().ToList();
+
             //BUG: Stopps when an intermediate vertex has no edges!
-            var _FFriends= _Graph.GetVertices(new VertexId("1"), new VertexId("4")).
+            var _FFriends= _Graph.GetVertices(new VertexId("1"), new VertexId("3")).
                            VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
                            EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
                            GetProperty<String>("name").ToList();

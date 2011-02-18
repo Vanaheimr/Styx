@@ -39,6 +39,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TinkerGraphFactory.cs" />
     <Compile Include="Pipes\FilterPipes\RandomFilterPipeTest.cs" />
     <Compile Include="Pipes\FilterPipes\RangeFilterPipeTest.cs" />
     <Compile Include="Pipes\AbstractPipeTest.cs" />
@@ -63,7 +64,7 @@
     <Compile Include="Pipes\SideeffectPipes\CountPipeTest.cs" />
     <Compile Include="Pipes\SideeffectPipes\GroupCountPipeTest.cs" />
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipeTest.cs" />
-    <Compile Include="TinkerGraphFactory.cs" />
+    <Compile Include="ToyGraphFactory.cs" />
     <Compile Include="Pipes\Utils\ScatterPipeTest.cs" />
     <Compile Include="Pipes\Utils\PathPipeTest.cs" />
     <Compile Include="Pipes\Utils\GatherPipeTest.cs" />

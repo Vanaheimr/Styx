@@ -17,6 +17,7 @@
 
 #region Usings
 
+using de.ahzf.blueprints;
 using de.ahzf.blueprints.InMemoryGraph;
 using de.ahzf.blueprints.Datastructures;
 
@@ -28,10 +29,10 @@ namespace de.ahzf.Pipes.UnitTests
     public static class TinkerGraphFactory
     {
 
-        public static InMemoryGraph CreateTinkerGraph()
+        public static IGraph CreateTinkerGraph()
         {
 
-            var _TinkerGraph = new InMemoryGraph();
+            var _TinkerGraph = new InMemoryGraph() as IGraph;
 
             var marko  = _TinkerGraph.AddVertex(new VertexId("1"), v => v.SetProperty("name", "marko"). SetProperty("age",   29));
             var vadas  = _TinkerGraph.AddVertex(new VertexId("2"), v => v.SetProperty("name", "vadas"). SetProperty("age",   27));
