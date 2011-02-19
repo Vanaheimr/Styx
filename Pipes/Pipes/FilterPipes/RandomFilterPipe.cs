@@ -75,26 +75,18 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            while (_InternalEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (_Bias >= _Random.NextDouble())
                 {
-
-                    var _S = _InternalEnumerator.Current;
-
-                    if (_Bias >= _Random.NextDouble())
-                    {
-                        _CurrentElement = _S;
-                        return true;
-                    }
-
+                    _CurrentElement = _InternalEnumerator.Current;
+                    return true;
                 }
 
-                else
-                    return false;
-
             }
+
+            return false;
 
         }
 

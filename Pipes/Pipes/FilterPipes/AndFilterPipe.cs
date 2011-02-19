@@ -88,45 +88,38 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            while (_InternalEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.MoveNext())
+                var _And = true;
+
+                foreach (var _Pipe in _Pipes)
                 {
 
-                    var _S = _InternalEnumerator.Current;
+                    _Pipe.SetSource(new SingleEnumerator<S>(_InternalEnumerator.Current));
 
-                    var _And = true;
-
-                    foreach (var _Pipe in _Pipes)
+                    if (!_Pipe.MoveNext())
                     {
-
-                        _Pipe.SetSource(new SingleEnumerator<S>(_S));
-
-                        if (!_Pipe.MoveNext())
-                        {
-                            _And = false;
-                            break;
-                        }
-
-                    }
-
-                    if (_And)
-                    {
-                        _CurrentElement = _S;
-                        return true;
+                        _And = false;
+                        break;
                     }
 
                 }
 
-                else
-                    return false;
+                if (_And)
+                {
+                    _CurrentElement = _InternalEnumerator.Current;
+                    return true;
+                }
 
             }
+
+            return false;
 
         }
 
         #endregion
+
 
     }
 

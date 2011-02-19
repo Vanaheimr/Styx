@@ -73,30 +73,25 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            while (_InternalEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.MoveNext())
+                _CurrentElement = _InternalEnumerator.Current;
+
+                if (!_HistorySet.Contains(_CurrentElement))
                 {
-
-                    _CurrentElement = _InternalEnumerator.Current;
-
-                    if (!_HistorySet.Contains(_CurrentElement))
-                    {
-                        _HistorySet.Add(_CurrentElement);
-                        return true;
-                    }
-
+                    _HistorySet.Add(_CurrentElement);
+                    return true;
                 }
 
-                else
-                    return false;
-            
             }
+
+            return false;
 
         }
 
         #endregion
+
 
     }
 

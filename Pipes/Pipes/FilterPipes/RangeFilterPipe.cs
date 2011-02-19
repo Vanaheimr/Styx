@@ -84,32 +84,24 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            while (_InternalEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.MoveNext())
+                _Counter++;
+
+                if ((_Low  == -1 || _Counter >= _Low) &&
+                    (_High == -1 || _Counter <  _High))
                 {
-
-                    var _S = _InternalEnumerator.Current;
-
-                    _Counter++;
-
-                    if ((_Low  == -1 || _Counter >= _Low) &&
-                        (_High == -1 || _Counter <  _High))
-                    {
-                        _CurrentElement = _S;
-                        return true;
-                    }
-
-                    if (_High > 0 && _Counter > _High)
-                        return false;
-
+                    _CurrentElement = _InternalEnumerator.Current;
+                    return true;
                 }
 
-                else
+                if (_High > 0 && _Counter > _High)
                     return false;
 
             }
+
+            return false;
 
         }
 

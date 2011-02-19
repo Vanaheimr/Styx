@@ -94,59 +94,54 @@ namespace de.ahzf.Pipes.Concurrent
             if (_InternalEnumerator == null)
                 return false;
 
-            while (true)
+            while (_InternalEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.MoveNext())
-                {
-
-                    var _S                = _InternalEnumerator.Current;
-					var _TaskCancellation = new CancellationTokenSource();
+                var _S                = _InternalEnumerator.Current;
+				var _TaskCancellation = new CancellationTokenSource();
 //					var _NumberOfTasks    = _Pipes.Count();
 					
-					Task[] _Tasks = (from _Pipe in _Pipes
-                                     select Task<Boolean>.Factory.StartNew((_Pipe2) =>
-                                     {
+				Task[] _Tasks = (from _Pipe in _Pipes
+                                    select Task<Boolean>.Factory.StartNew((_Pipe2) =>
+                                    {
 
-                                         ((IPipe<S,Boolean>) _Pipe2).SetSource(new SingleEnumerator<S>(_S));
+                                        ((IPipe<S,Boolean>) _Pipe2).SetSource(new SingleEnumerator<S>(_S));
 				
-				                         var _return = ((IPipe<S,Boolean>) _Pipe2).MoveNext();
+				                        var _return = ((IPipe<S,Boolean>) _Pipe2).MoveNext();
 						
 //										 Interlocked.Decrement(ref _NumberOfTasks);
 						
-										 if (_return == false)
-											_And = false;
+										if (_return == false)
+										_And = false;
 						
-										 return _return;
+										return _return;
 						
-                                     },
-                                         _Pipe,
-                                         _TaskCancellation.Token,
-                                         TaskCreationOptions.AttachedToParent,
-                                         TaskScheduler.Current)).ToArray();
+                                    },
+                                        _Pipe,
+                                        _TaskCancellation.Token,
+                                        TaskCreationOptions.AttachedToParent,
+                                        TaskScheduler.Current)).ToArray();
 
 					
-					while (_And == true && !_Tasks.All(_T => _T.IsCompleted))
-					{
-						// Wait until a task completes, but no longer than 100ms!
-						Task.WaitAny(_Tasks, 100);
-					}
+				while (_And == true && !_Tasks.All(_T => _T.IsCompleted))
+				{
+					// Wait until a task completes, but no longer than 100ms!
+					Task.WaitAny(_Tasks, 100);
+				}
 					
-					// Canel remaining tasks!
-					_TaskCancellation.Cancel();
+				// Canel remaining tasks!
+				_TaskCancellation.Cancel();
 					
-					return _And;
-
-                }
-
-                else
-                    return false;
+				return _And;
 
             }
+
+            return false;
 
         }
 
         #endregion
+
 
     }
 
