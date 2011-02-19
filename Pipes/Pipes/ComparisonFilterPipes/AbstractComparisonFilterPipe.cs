@@ -107,7 +107,7 @@ namespace de.ahzf.Pipes
                     return ((IComparable) myLeftObject).CompareTo(myRightObject) <= 0;
 
                 default:
-                    throw new Exception("Invalid state as no valid filter was provided");
+                    throw new Exception("Invalid state as no valid filter had been provided!");
             
             }
 
