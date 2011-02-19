@@ -29,17 +29,17 @@ Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit ea
         Console.WriteLine(_Friend);
     }
 
+#### Help and Documentation
+
+Additional help and much more examples can be found in the [Wiki](https://github.com/ahzf/pipes.NET/wiki).   
+News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
+
 #### Installation
 
 The installation of Pipes.NET is very straightforward. Just check out or download its sources and all its dependencies:
 
 - [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
 - [NUnit](http://www.nunit.org/) for unit tests
-
-#### Help
-
-Additional help and much more examples can be found in the [Wiki](https://github.com/ahzf/pipes.NET/wiki).   
-News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
 
 #### License and your Contribution
 
