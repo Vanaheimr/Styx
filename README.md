@@ -38,7 +38,7 @@ The installation of Pipes.NET is very straightforward. Just check out or downloa
 
 #### Help and Contribution
 
-Additional help and much more examples can be found in the [Wiki](https://github.com/ahzf/pipes.NET/wiki).
+Additional help and much more examples can be found in the [Wiki](https://github.com/ahzf/pipes.NET/wiki).   
 News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
 
 #### License
@@ -53,5 +53,5 @@ Please read the [NOTICE](/ahzf/pipes.NET/blob/master/NOTICE) file for further cr
 
 #### Contribution
 
-If you want to help or contribute source code to this project, please use the Apache 2.0 License.
+If you want to help or contribute source code to this project, please use the Apache 2.0 License.   
 The coding standards can be found by reading the code ;)
