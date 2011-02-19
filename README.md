@@ -32,8 +32,8 @@ Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit ea
 #### Installation
 
 The installation of Pipes.NET is very straightforward. Just check out or download its sources and all its dependencies:
- - [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
- - [NUnit](http://www.nunit.org/) for unit tests
+- [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
+- [NUnit](http://www.nunit.org/) for unit tests
 
 #### Help and Contribution
 
