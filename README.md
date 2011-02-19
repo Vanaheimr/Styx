@@ -29,6 +29,18 @@ Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit ea
         Console.WriteLine(_Friend);
     }
 
+#### Installation
+
+The installation of Pipes.NET is very straightforward. Just check out or download its sources and all its dependencies. These include: [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs and [NUnit](http://www.nunit.org/) for unit tests.
+
+#### Help and Contribution
+
+Additional help and much more examples can be found in the [Wiki](https://github.com/ahzf/pipes.NET/wiki).
+
+News and updates can be found on twitter. Just follow [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
+
+If you want to help or contribute source code, please use the Apache 2.0 License. The coding standards can be found by reading the code ;)
+
 #### License
 
 Pipes.NET is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/pipes.NET/blob/master/LICENSE) file.
