@@ -75,14 +75,14 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
         {
 
             var _Pipe = new RandomFilterPipe<String>(0.5d);
-            _Pipe.SetSourceCollection(BaseTest.GenerateUUIDs(100));
+            _Pipe.SetSourceCollection(BaseTest.GenerateUUIDs(10000));
 
             var _Counter = 0;
             while (_Pipe.MoveNext())
                 _Counter++;
 
-            Assert.GreaterOrEqual(_Counter, 40);
-            Assert.LessOrEqual(_Counter, 60);
+            Assert.GreaterOrEqual(_Counter, 4000);
+            Assert.LessOrEqual(_Counter, 6000);
 
         }
 

@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// that have the provided value for a particular key.
     /// </summary>
     public class PropertyFilterPipe<S, T> : AbstractComparisonFilterPipe<S, T>
-        where S : IElement
+        where S : IElement, IComparable
         where T : IComparable
     {
 
