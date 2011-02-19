@@ -34,6 +34,7 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class CollectionFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>, IComparisonFilterPipe<S, S>
+        where S : IComparable
     {
 
         #region Data

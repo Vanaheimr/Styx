@@ -32,6 +32,7 @@ namespace de.ahzf.Pipes
     /// </summary>
     public class PropertyFilterPipe<S, T> : AbstractComparisonFilterPipe<S, T>
         where S : IElement
+        where T : IComparable
     {
 
         #region Data

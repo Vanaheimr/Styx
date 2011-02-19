@@ -33,6 +33,7 @@ namespace de.ahzf.Pipes
     /// types of comparisons are evaluated.
     /// </summary>
     public abstract class AbstractComparisonFilterPipe<S, T> : AbstractPipe<S, S>, IComparisonFilterPipe<S, T>
+        where T : IComparable
     {
 
         #region Data

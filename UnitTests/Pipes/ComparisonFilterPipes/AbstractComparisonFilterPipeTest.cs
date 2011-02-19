@@ -73,9 +73,9 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
         #endregion
 	
 	}
-	
-	
-	public class BasicComparisonFilterPipe : AbstractComparisonFilterPipe<Object, Object>
+
+
+    public class BasicComparisonFilterPipe : AbstractComparisonFilterPipe<IComparable, IComparable>
 	{
 
         public BasicComparisonFilterPipe(ComparisonFilter myComparisonFilter)

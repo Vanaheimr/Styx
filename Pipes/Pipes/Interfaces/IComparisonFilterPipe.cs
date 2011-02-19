@@ -31,6 +31,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="S"></typeparam>
     /// <typeparam name="T"></typeparam>
     public interface IComparisonFilterPipe<S, T> : IFilterPipe<S>
+        where T : IComparable
     {
 
         /// <summary>

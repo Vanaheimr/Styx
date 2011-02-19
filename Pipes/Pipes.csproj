@@ -62,7 +62,7 @@
     <Compile Include="Pipes\FilterPipes\RangeFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\OrFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\RandomFilterPipe.cs" />
-    <Compile Include="Pipes\ComparisonFilterPipes\ComparisonFilter.cs" />
+    <Compile Include="Pipes\Interfaces\ComparisonFilter.cs" />
     <Compile Include="Pipes\Interfaces\IComparisonFilterPipe.cs" />
     <Compile Include="Pipes\BlueprintPipes\PropertyPipe.cs" />
     <Compile Include="Pipes\BlueprintPipes\PropertyMapPipe.cs" />
