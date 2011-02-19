@@ -44,7 +44,7 @@ The installation of Pipes.NET is very straightforward. Just check out or downloa
 #### License and your Contribution
 
 Pipes.NET is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/pipes.NET/blob/master/LICENSE) file.   
-If you want to help or contribute source code to this project, please use the same License.   
+If you want to help or contribute source code to this project, please use the same license.   
 The coding standards can be found by reading the code ;)
 
 #### Acknowledgments
