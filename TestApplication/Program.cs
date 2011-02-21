@@ -61,6 +61,8 @@ namespace TestApplication
 
 
 
+
+
             var _Graph = ToyGraphFactory.CreateToyGraph();
             var _Alice = _Graph.GetVertex(new VertexId("1"));
             var _PPipe = new PropertyPipe<IVertex, String>("name");

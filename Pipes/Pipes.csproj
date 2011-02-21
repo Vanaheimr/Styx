@@ -55,6 +55,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
+    <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FutureFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\DuplicateFilterPipe.cs" />

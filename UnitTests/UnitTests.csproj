@@ -39,6 +39,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pipes\FilterPipes\UniquePathFilterPipeTest.cs" />
     <Compile Include="TinkerGraphFactory.cs" />
     <Compile Include="Pipes\FilterPipes\RandomFilterPipeTest.cs" />
     <Compile Include="Pipes\FilterPipes\RangeFilterPipeTest.cs" />
