@@ -8,9 +8,9 @@ written in .NET/Mono. It comes with some syntactic sugar to build a powerful "LI
 Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit easier.
 
     var _Friends = _Graph.VertexId(1).
-                           OutEdges("knows").
-                           InVertex().
-                           GetProperty<String>("name");
+                   OutEdges("knows").
+                   InVertex().
+                   GetProperty<String>("name");
 
     _Friends.ForEach(_Friend => Console.WriteLine(_Friend));
 
