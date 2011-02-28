@@ -91,22 +91,22 @@ namespace de.ahzf.Pipes
                 case ComparisonFilter.GREATER_THAN:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
-                    return ((IComparable) myLeftObject).CompareTo(myRightObject) == 1;
+                    return myLeftObject.CompareTo(myRightObject) == 1;
 
                 case ComparisonFilter.LESS_THAN:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
-                    return ((IComparable) myLeftObject).CompareTo(myRightObject) == -1;
+                    return myLeftObject.CompareTo(myRightObject) == -1;
 
                 case ComparisonFilter.GREATER_THAN_EQUAL:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
-                    return ((IComparable) myLeftObject).CompareTo(myRightObject) >= 0;
+                    return myLeftObject.CompareTo(myRightObject) >= 0;
 
                 case ComparisonFilter.LESS_THAN_EQUAL:
                     if (null == myLeftObject || myRightObject == null)
                         return true;
-                    return ((IComparable) myLeftObject).CompareTo(myRightObject) <= 0;
+                    return myLeftObject.CompareTo(myRightObject) <= 0;
 
                 default:
                     throw new Exception("Invalid state as no valid filter had been provided!");

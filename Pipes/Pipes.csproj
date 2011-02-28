@@ -42,6 +42,7 @@
     <Compile Include="ExtensionMethods\Blueprints\EdgePropertyPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\EdgeVertexPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\Neighbors.cs" />
+    <Compile Include="ExtensionMethods\IEnumerable.cs" />
     <Compile Include="Pipes\BlueprintPipes\EdgePropertyPipe.cs" />
     <Compile Include="ExtensionMethods\Blueprints\PropertyPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\VertexEdgePipeExtensions.cs" />

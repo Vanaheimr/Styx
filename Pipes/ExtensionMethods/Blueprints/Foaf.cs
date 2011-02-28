@@ -58,7 +58,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
             var _Pipe4 = new EdgeVertexPipe(Pipes.EdgeVertexPipe.Step.IN_VERTEX);
             _Pipe4.SetSource(_Pipe3);
 
-            return _Pipe4;
+            return _Pipe4.Distinct().Except(myIEnumerable);
 
         }
 
@@ -94,7 +94,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
             var _Pipe6 = new EdgeVertexPipe(Pipes.EdgeVertexPipe.Step.IN_VERTEX);
             _Pipe6.SetSource(_Pipe5);
 
-            return _Pipe6;
+            return _Pipe6.Distinct().Except(myIEnumerable);
 
         }
 
@@ -124,7 +124,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
             var _Pipe4 = new EdgeVertexPipe(Pipes.EdgeVertexPipe.Step.IN_VERTEX);
             _Pipe4.SetSource(_Pipe3);
 
-            return _Pipe4;
+            return _Pipe4.Distinct();
 
         }
 
@@ -160,7 +160,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
             var _Pipe6 = new EdgeVertexPipe(Pipes.EdgeVertexPipe.Step.IN_VERTEX);
             _Pipe6.SetSource(_Pipe5);
 
-            return _Pipe6;
+            return _Pipe6.Distinct();
 
         }
 
