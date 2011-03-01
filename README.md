@@ -39,6 +39,8 @@ The installation of Pipes.NET is very straightforward. Just check out or downloa
 - [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
 - [NUnit](http://www.nunit.org/) for unit tests
 
+If you are interessted in using the [PipesShell] you have to add the latest Mono.CSharp.dll or project.
+
 #### License and your Contribution
 
 Pipes.NET is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/pipes.NET/blob/master/LICENSE) file.   
