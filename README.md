@@ -29,7 +29,7 @@ Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit ea
 
 #### Help and Documentation
 
-Additional help and much more examples can be found in the [Wiki](https://github.com/ahzf/pipes.NET/wiki).   
+Additional help and much more examples can be found in the [Wiki](http://github.com/ahzf/pipes.NET/wiki).   
 News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
 
 #### Installation
@@ -39,7 +39,7 @@ The installation of Pipes.NET is very straightforward. Just check out or downloa
 - [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
 - [NUnit](http://www.nunit.org/) for unit tests
 
-If you are interessted in using the [PipesShell] you have to add the latest Mono.CSharp.dll or project.
+If you are interessted in using the [PipesShell](https://github.com/ahzf/pipes.NET/wiki/PipesShell-for-Adhoc-Graph-Querying) you have to add the latest Mono.CSharp.dll or project.
 
 #### License and your Contribution
 
