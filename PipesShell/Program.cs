@@ -181,56 +181,39 @@ namespace PipesShell
                 DescribeTypeExpressions = true
             };
 
+            // Adding a assembly twice will lead to delayed errors...
             _Evaluator.ReferenceAssembly(typeof(IGraph).Assembly);
-            _Evaluator.ReferenceAssembly(typeof(IGraphExtensions).Assembly);
+            _Evaluator.ReferenceAssembly(typeof(VertexEdgePipeExtensions).Assembly);
             _Evaluator.ReferenceAssembly(typeof(InMemoryGraph).Assembly);
             _Evaluator.ReferenceAssembly(typeof(IPipe).Assembly);
             _Evaluator.ReferenceAssembly(typeof(TinkerGraphFactory).Assembly);
 
             String[] _StartupFiles = { };
 
-            //var g = TinkerGraphFactory.CreateTinkerGraph();
-            //var f = g.VertexId(1).OutEdges("knows").InVertex().GetProperty<String>("name");
-            //   var f = g.GetVertex(new VertexId(1)).OutEdges.InVertex.GetProperty<String>("name");
+
+            // Create a graph...
+            var g = TinkerGraphFactory.CreateTinkerGraph();
+
+            // params seem to fail!
+            var f0 = g.GetVertices(new VertexId(1));
+            // This is a work-around!
+            var f1 = g.GetVertices(new VertexId[] { new VertexId(1) });
+
+            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe3    = new PropertyPipe<IVertex, String>(new String[] { "name" });
+            var _Pipeline = new Pipeline<IVertex, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
+            _Pipeline.SetSourceCollection(f1);
+
+            //foreach (var _Friend in _Pipeline) Console.WriteLine(_Friend);
+
+
+            // Still problems with extension methods?
+            var f3 = g.GetVertices(new VertexId[] { new VertexId(1) }).OutEdges().InVertex().GetProperty<String>("name").ToList();
+            var f4 = g.VertexId(1).OutEdges("knows").InVertex().GetProperty<String>("name").ToList();
 
 
             return new CSharpShell(_Evaluator).Run(_StartupFiles);
-
-
-
-            // newer Mono.CSharp
-
-            //Initializing the evaluator  
-     //       Evaluator.Init(new string[1] { " " });
-
-            //Mono.CSharp.Evaluator.Init(myArgs);
-
-            //Evaluator.ReferenceAssembly(typeof(IGraph).Assembly);
-            //Evaluator.ReferenceAssembly(typeof(IGraphExtensions).Assembly);
-            //Evaluator.ReferenceAssembly(typeof(InMemoryGraph).Assembly);
-            //Evaluator.ReferenceAssembly(typeof(IPipe).Assembly);
-            //Evaluator.ReferenceAssembly(typeof(TinkerGraphFactory).Assembly);
-            //Evaluator.ReferenceAssembly(Assembly.GetExecutingAssembly());
-
-            //Console.WriteLine(Mono.CSharp.Evaluator.Evaluate("5+5;")); 
-
-
-            ////Importing namespaces   
-            //Evaluator.Run("using System;");
-            //Evaluator.Run("using System.Linq;");
-            //Evaluator.Run("using System.Collections.Generic;");
-            //Evaluator.Run("using de.ahzf.Pipes; using de.ahzf.Pipes.ExtensionMethods; using de.ahzf.blueprints; using de.ahzf.blueprints.Datastructures; using de.ahzf.blueprints.InMemoryGraph; using de.ahzf.Pipes.UnitTests;");
-
-            ////Sum of 'n' numbers  
-            //Evaluator.Run("List<int> numbers= new List<int> {1,2,4,3} ;");
-            //Evaluator.Run("var sum=0; foreach(var num in numbers) sum+=num;");
-            //Evaluator.Run("Console.WriteLine(sum);");
-            //Evaluator.Run(@"var _Graph = ToyGraphFactory.CreateToyGraph();");
-            //Evaluator.Run(@"var _Friends = _Graph.VertexId(1).OutEdges(""knows"").InVertex().GetProperty<String>(""name"");");
-            //Evaluator.Run(@"_Friends.ForEach(_Friend => Console.WriteLine(_Friend));");
-
-            //return 0;
-
 
         }
 
