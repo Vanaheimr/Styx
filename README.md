@@ -39,7 +39,7 @@ The installation of Pipes.NET is very straightforward. Just check out or downloa
 - [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
 - [NUnit](http://www.nunit.org/) for unit tests
 
-If you are interessted in using the [PipesShell](https://github.com/ahzf/pipes.NET/wiki/PipesShell-for-Adhoc-Graph-Querying) you have to add the latest Mono.CSharp.dll or project.
+If you are interessted in using the [PipesShell](https://github.com/ahzf/pipes.NET/wiki/PipesShell-for-Adhoc-Graph-Querying) you have to add the latest [Mono.CSharp](http://tirania.org/blog/archive/2011/Feb-24.html) library (2011-02-28).
 
 #### License and your Contribution
 
