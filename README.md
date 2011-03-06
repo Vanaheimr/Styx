@@ -43,8 +43,8 @@ If you are interessted in using the [PipesShell](http://github.com/ahzf/pipes.NE
 
 #### License and your contribution
 
-Pipes.NET is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/pipes.NET/blob/master/LICENSE) file.    
-To suggest a feature, report a bug or general discussion: http://github.com/ahzf/pipes.NET/issues    
+[Pipes.NET](http://github.com/ahzf/pipes.NET) is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/pipes.NET/blob/master/LICENSE) file.    
+To suggest a feature, report a bug or general discussion: [http://github.com/ahzf/pipes.NET/issues](http://github.com/ahzf/pipes.NET/issues)    
 If you want to help or contribute source code to this project, please use the same license.   
 The coding standards can be found by reading the code ;)
 
