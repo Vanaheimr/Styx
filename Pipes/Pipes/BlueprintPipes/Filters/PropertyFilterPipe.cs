@@ -30,15 +30,20 @@ namespace de.ahzf.Pipes
     /// The PropertyFilterPipe either allows or disallows all Elements
     /// that have the provided value for a particular key.
     /// </summary>
-    public class PropertyFilterPipe<S, T> : AbstractComparisonFilterPipe<S, T>
-        where S : IElement, IComparable
+    /// <typeparam name="TKey">The type of the property keys.</typeparam>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public class PropertyFilterPipe<TId, TKey, S, T> : AbstractComparisonFilterPipe<S, T>
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        where S : IElement<TId, TKey>
         where T : IComparable
     {
 
         #region Data
 
-        private readonly String _Key;
-        private readonly T      _Value;
+        private readonly TKey _Key;
+        private readonly T    _Value;
 
         #endregion
 
@@ -52,7 +57,7 @@ namespace de.ahzf.Pipes
         /// <param name="myKey">The property key.</param>
         /// <param name="myValue">The property value.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        public PropertyFilterPipe(String myKey, T myValue, ComparisonFilter myComparisonFilter)
+        public PropertyFilterPipe(TKey myKey, T myValue, ComparisonFilter myComparisonFilter)
             : base(myComparisonFilter)
         {
             _Key   = myKey;
@@ -88,7 +93,7 @@ namespace de.ahzf.Pipes
 
                     var _IElement = _InternalEnumerator.Current;
 
-                    if (!CompareObjects(_IElement.GetProperty<T>(_Key), _Value))
+                    if (!CompareObjects((T)_IElement.GetProperty(_Key), _Value))
                     {
                         _CurrentElement = _IElement;
                         return true;

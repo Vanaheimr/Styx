@@ -22,6 +22,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using de.ahzf.blueprints;
+using System.Text;
 
 #endregion
 
@@ -32,16 +33,19 @@ namespace de.ahzf.Pipes
     /// The PropertyPipe returns the property value of the
     /// Element identified by the provided key.
     /// </summary>
+    /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class PropertyPipe<S, E> : AbstractPipe<S, E>
-        where S : IElement
+    public class PropertyPipe<TId, TKey, S, E> : AbstractPipe<S, E>
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        where S : IElement<TId, TKey>
     {
 
         #region Data
 
-        private readonly String[]            _Keys;
-        private          IEnumerator<String> _PropertyEnumerator;
+        private readonly TKey[]            _Keys;
+        private          IEnumerator<TKey> _PropertyEnumerator;
 
         #endregion
 
@@ -53,7 +57,7 @@ namespace de.ahzf.Pipes
         /// Creates a new PropertyPipe.
         /// </summary>
         /// <param name="myKeys">The property keys.</param>
-        public PropertyPipe(params String[] myKeys)
+        public PropertyPipe(params TKey[] myKeys)
         {
             _Keys = myKeys;
         }
@@ -87,7 +91,7 @@ namespace de.ahzf.Pipes
                 {
 
                     if (_InternalEnumerator.MoveNext())
-                        _PropertyEnumerator = new List<String>(_Keys).GetEnumerator();
+                        _PropertyEnumerator = new List<TKey>(_Keys).GetEnumerator();
 
                     else
                         return false;
@@ -97,7 +101,7 @@ namespace de.ahzf.Pipes
                 // Second emit the properties
                 if (_PropertyEnumerator.MoveNext())
                 {
-                    _CurrentElement = _InternalEnumerator.Current.GetProperty<E>(_PropertyEnumerator.Current);
+                    _CurrentElement = (E) _InternalEnumerator.Current.GetProperty(_PropertyEnumerator.Current);
                     return true;
                 }
 
@@ -117,7 +121,17 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Keys.Aggregate((a, b) => a + ", " + b) + ">";
+
+            var _StringBuilder = new StringBuilder();
+
+            foreach (var _Key in _Keys)
+                _StringBuilder.Append(_Key.ToString() + ", ");
+
+            if (_StringBuilder.Length >= 2)
+                _StringBuilder.Length = _StringBuilder.Length - 2;
+
+            return base.ToString() + "<" + _StringBuilder.ToString() + ">";
+
         }
 
         #endregion

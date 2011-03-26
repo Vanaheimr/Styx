@@ -30,8 +30,11 @@ namespace de.ahzf.Pipes
     /// The VertexPropertyPipe returns the property value of the
     /// Element identified by the provided key.
     /// </summary>
+    /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class VertexPropertyPipe<E> : PropertyPipe<IVertex, E>
+    public class VertexPropertyPipe<TId, TKey, E> : PropertyPipe<TId, TKey, IVertex<TId, TKey>, E>
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
     {
 
         #region Constructor(s)
@@ -42,7 +45,7 @@ namespace de.ahzf.Pipes
         /// Creates a new VertexPropertyPipe.
         /// </summary>
         /// <param name="myKeys">The property keys.</param>
-        public VertexPropertyPipe(params String[] myKeys)
+        public VertexPropertyPipe(params TKey[] myKeys)
             : base(myKeys)
         { }
 

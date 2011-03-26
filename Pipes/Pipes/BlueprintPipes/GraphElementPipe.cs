@@ -32,8 +32,10 @@ namespace de.ahzf.Pipes
     /// return elements (i.e. vertices or edges).
     /// This pipe is useful for processing all of the vertices (or edges) of a graph.
     /// </summary>
-    public class GraphElementPipe<E> : AbstractPipe<IGraph, E>
-        where E : IElement
+    public class GraphElementPipe<TId, TKey, E> : AbstractPipe<IGraph, E>
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        where E : IElement<TId, TKey>
     {
 
         #region Data

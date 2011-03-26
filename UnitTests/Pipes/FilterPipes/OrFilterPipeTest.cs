@@ -73,7 +73,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Peter 			= _Graph.GetVertex(new VertexId("6"));
 	        var _Pipe0 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
 	        var _Pipe1 			= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
-	        var _Pipe2 			= new PropertyFilterPipe<IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+	        var _Pipe2 			= new PropertyFilterPipe<EdgeId, String, IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
 	        var _ORFilterPipe	= new OrFilterPipe<IEdge>(new HasNextPipe<IEdge>(_Pipe1), new HasNextPipe<IEdge>(_Pipe2));
 	        var _Pipeline 		= new Pipeline<IVertex, IEdge>(_Pipe0, _ORFilterPipe);
 	        _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko, _Peter, _Marko });
@@ -83,7 +83,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 			{
 	            var _Edge = _Pipeline.Current;
 	            Assert.IsTrue(_Edge.Id.Equals(new EdgeId("8")) || _Edge.Id.Equals(new EdgeId("9")) || _Edge.Id.Equals(new EdgeId("12")));
-	            Assert.IsTrue(_Edge.GetProperty<Double>("weight") > 0.5f || _Edge.Label.Equals("created"));
+	            Assert.IsTrue(((Double)_Edge.GetProperty("weight")) > 0.5f || _Edge.Label.Equals("created"));
 	            _Counter++;
 	        }
 
@@ -106,7 +106,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Pipe1 		= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
 	        var _PipeA 		= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
 	        var _PipeB 		= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
-	        var _PipeC 		= new PropertyFilterPipe<IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+	        var _PipeC 		= new PropertyFilterPipe<EdgeId, String, IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
 	        var _PipeD 		= new AndFilterPipe<IEdge>(new HasNextPipe<IEdge>(_PipeB), new HasNextPipe<IEdge>(_PipeC));
 	        var _Pipe2 		= new OrFilterPipe<IEdge>(new HasNextPipe<IEdge>(_PipeA), new HasNextPipe<IEdge>(_PipeD));
 	        var _Pipeline 	= new Pipeline<IVertex, IEdge>(_Pipe1, _Pipe2);
@@ -117,7 +117,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 			{
 	            var _Edge = _Pipeline.Current;
 	            Assert.IsTrue(_Edge.Id.Equals(new EdgeId("8")) || _Edge.Id.Equals(new EdgeId("9")));
-	            Assert.IsTrue(_Edge.Label.Equals("created") || (_Edge.GetProperty<Double>("weight") > 0.5 && _Edge.Label.Equals("knows")));
+	            Assert.IsTrue(_Edge.Label.Equals("created") || (((Double)_Edge.GetProperty("weight")) > 0.5 && _Edge.Label.Equals("knows")));
 	            _Counter++;
 	        }
 	        
@@ -168,9 +168,9 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _PipeA      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _PipeB      = new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
             var _PipeC      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _PipeD      = new PropertyFilterPipe<IVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
+            var _PipeD      = new PropertyFilterPipe<VertexId, String, IVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
             var _Pipe1      = new AndFilterPipe<IVertex>(new HasNextPipe<IVertex>(new Pipeline<IVertex, IVertex>(_PipeA, _PipeB, _PipeC, _PipeD)));
-            var _Pipe2      = new PropertyPipe<IVertex, String>("name");
+            var _Pipe2      = new PropertyPipe<VertexId, String, IVertex, String>("name");
             var _Pipeline   = new Pipeline<IVertex, String>(_Pipe1, _Pipe2);
             _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
 
@@ -200,12 +200,12 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
 
             var _PipeA      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _PipeB      = new PropertyFilterPipe<IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+            var _PipeB      = new PropertyFilterPipe<EdgeId, String, IEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
             var _PipeC      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             var _Pipe1      = new AndFilterPipe<IVertex>(new HasNextPipe<IVertex>(new Pipeline<IVertex, IVertex>(_PipeA, _PipeB, _PipeC)));
             var _Pipe2      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe3      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe4      = new PropertyPipe<IVertex, String>("name");
+            var _Pipe4      = new PropertyPipe<VertexId, String, IVertex, String>("name");
             var _Pipeline   = new Pipeline<IVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
             _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
 
@@ -241,7 +241,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Pipe2      = new OrFilterPipe<IVertex>(new HasNextPipe<IVertex>(_PipeC));
             var _Pipe3      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe4      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe5      = new PropertyPipe<IVertex, String>("name");
+            var _Pipe5      = new PropertyPipe<VertexId, String, IVertex, String>("name");
             var _Pipeline   = new Pipeline<IVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
             _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
 

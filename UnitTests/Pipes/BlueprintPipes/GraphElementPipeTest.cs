@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using de.ahzf.blueprints;
+using System;
+using de.ahzf.blueprints.Datastructures;
 
 #endregion
 
@@ -39,7 +41,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe  = new GraphElementPipe<IVertex>(GraphElementPipe<IVertex>.ElementType.VERTEX);
+            var _Pipe = new GraphElementPipe<VertexId, String, IVertex>(GraphElementPipe<VertexId, String, IVertex>.ElementType.VERTEX);
             _Pipe.SetSource(new SingleEnumerator<IGraph>(_Graph));
             
             var _Counter = 0;
@@ -66,7 +68,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
+            var _Pipe = new GraphElementPipe<EdgeId, String, IEdge>(GraphElementPipe<EdgeId, String, IEdge>.ElementType.EDGE);
             _Pipe.SetSource(new SingleEnumerator<IGraph>(_Graph));
 
             var _Counter = 0;
@@ -93,7 +95,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe  = new GraphElementPipe<IEdge>(GraphElementPipe<IEdge>.ElementType.EDGE);
+            var _Pipe  = new GraphElementPipe<EdgeId, String, IEdge>(GraphElementPipe<EdgeId, String, IEdge>.ElementType.EDGE);
             _Pipe.SetSourceCollection(new List<IGraph>() { _Graph, _Graph, _Graph });
             
             var _Counter = 0;

@@ -30,7 +30,8 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The IdPipe will return the Id of the given graph element.
     /// </summary>
-    public class IdPipe : AbstractPipe<IElement, ElementId>
+    public class IdPipe<TId> : AbstractPipe<IGenericElement<TId>, TId>
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable
     {
 
         #region MoveNext()

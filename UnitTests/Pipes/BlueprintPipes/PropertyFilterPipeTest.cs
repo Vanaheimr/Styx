@@ -44,7 +44,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
             var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3    = new PropertyFilterPipe<IVertex, String>("lang", "java", ComparisonFilter.NOT_EQUAL);
+            var _Pipe3    = new PropertyFilterPipe<VertexId, String, IVertex, String>("lang", "java", ComparisonFilter.NOT_EQUAL);
             var _Pipeline = new Pipeline<IVertex, IVertex>(new List<IPipe>() { _Pipe1, _Pipe2, _Pipe3 });
             _Pipeline.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
 

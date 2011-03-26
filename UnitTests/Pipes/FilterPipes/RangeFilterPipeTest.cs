@@ -173,7 +173,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Pipe1      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2      = new RangeFilterPipe<IEdge>(2, 3);
             var _Pipe3      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe4      = new PropertyPipe<IVertex, String>("name");
+            var _Pipe4      = new PropertyPipe<VertexId, String, IVertex, String>("name");
             var _Pipeline   = new Pipeline<IVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
             _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Marko));
             

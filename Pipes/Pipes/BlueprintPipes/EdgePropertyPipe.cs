@@ -30,8 +30,11 @@ namespace de.ahzf.Pipes
     /// The EdgePropertyPipe returns the property value of the
     /// Element identified by the provided key.
     /// </summary>
+    /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class EdgePropertyPipe<E> : PropertyPipe<IEdge, E>
+    public class EdgePropertyPipe<TId, TKey, E> : PropertyPipe<TId, TKey, IEdge<TId, TKey>, E>
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
     {
 
         #region Constructor(s)
@@ -42,7 +45,7 @@ namespace de.ahzf.Pipes
         /// Creates a new EdgePropertyPipe.
         /// </summary>
         /// <param name="myKeys">The property keys.</param>
-        public EdgePropertyPipe(String[] myKeys)
+        public EdgePropertyPipe(TKey[] myKeys)
             : base(myKeys)
         { }
 

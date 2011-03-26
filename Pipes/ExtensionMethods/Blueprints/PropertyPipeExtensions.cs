@@ -44,11 +44,13 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <param name="myIEnumerable">A collection of consumable objects.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerable<S> myIEnumerable, String[] myKeys)
-            where S : IElement
+        public static IEnumerable<E> PropertyPipe<TId, TKey, S, E>(this IEnumerable<S> myIEnumerable, TKey[] myKeys)
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where S : IElement<TId, TKey>
         {
 
-            var _Pipe = new PropertyPipe<S, E>(myKeys);
+            var _Pipe = new PropertyPipe<TId, TKey, S, E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -68,11 +70,13 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <param name="myIEnumerator">A enumerator of consumable objects.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> PropertyPipe<S, E>(this IEnumerator<S> myIEnumerator, String[] myKeys)
-            where S : IElement
+        public static IEnumerable<E> PropertyPipe<TId, TKey, S, E>(this IEnumerator<S> myIEnumerator, TKey[] myKeys)
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where S : IElement<TId, TKey>
         {
 
-            var _Pipe = new PropertyPipe<S, E>(myKeys);
+            var _Pipe = new PropertyPipe<TId, TKey, S, E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;

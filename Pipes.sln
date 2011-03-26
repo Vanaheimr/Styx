@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pipes", "Pipes\Pipes.csproj", "{3949790D-8591-4101-9E4D-CE7A758E7409}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{62373408-6E14-4753-9B0E-EE0CF5988481}"
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InMemoryGraph", "..\blueprints.NET\InMemoryGraph\InMemoryGraph.csproj", "{D4D2ACAD-FF2E-44AD-9D4A-6E332C246FAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PipesShell", "PipesShell\PipesShell.csproj", "{72C2F0A1-36D8-4F2E-B3E9-50406F728585}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeoGraph", "..\blueprints.NET\GeoGraph\GeoGraph.csproj", "{029206EA-447E-4906-B34E-28EC9625FF27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,16 @@ Global
 		{72C2F0A1-36D8-4F2E-B3E9-50406F728585}.Release|Mixed Platforms.Build.0 = Release|x86
 		{72C2F0A1-36D8-4F2E-B3E9-50406F728585}.Release|x86.ActiveCfg = Release|x86
 		{72C2F0A1-36D8-4F2E-B3E9-50406F728585}.Release|x86.Build.0 = Release|x86
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{029206EA-447E-4906-B34E-28EC9625FF27}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

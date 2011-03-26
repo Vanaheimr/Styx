@@ -33,19 +33,22 @@ namespace de.ahzf.Pipes.ExtensionMethods
     public static class EdgePropertyPipeExtensions
     {
 
-        #region GetProperty(this myIEnumerable, params myKeys)
+        #region GetProperty<TKey>(this myIEnumerable, params myKeys)
 
         /// <summary>
         /// The EdgePropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
+        /// <typeparam name="TKey">The type of the property keys.</typeparam>
         /// <param name="myIEnumerable">A collection of consumable objects implementing IEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> GetProperty(this IEnumerable<IEdge> myIEnumerable, params String[] myKeys)
+        public static IEnumerable<Object> GetProperty<TId, TKey>(this IEnumerable<IEdge<TId, TKey>> myIEnumerable, params TKey[] myKeys)
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
-            var _Pipe = new EdgePropertyPipe<Object>(myKeys);
+            var _Pipe = new EdgePropertyPipe<TId, TKey, Object>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -54,20 +57,23 @@ namespace de.ahzf.Pipes.ExtensionMethods
 
         #endregion
 
-        #region GetProperty<E>(this myIEnumerable, params myKeys)
+        #region GetProperty<TKey, E>(this myIEnumerable, params myKeys)
 
         /// <summary>
         /// The EdgePropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
+        /// <typeparam name="TKey">The type of the property keys.</typeparam>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerable">A collection of consumable objects implementing IEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> GetProperty<E>(this IEnumerable<IEdge> myIEnumerable, params String[] myKeys)
+        public static IEnumerable<E> GetProperty<TId, TKey, E>(this IEnumerable<IEdge<TId, TKey>> myIEnumerable, params TKey[] myKeys)
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
-            var _Pipe = new EdgePropertyPipe<E>(myKeys);
+            var _Pipe = new EdgePropertyPipe<TId, TKey, E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -77,19 +83,22 @@ namespace de.ahzf.Pipes.ExtensionMethods
         #endregion
 
 
-        #region GetProperty(this myIEnumerator, params myKeys)
+        #region GetProperty<TKey>(this myIEnumerator, params myKeys)
 
         /// <summary>
         /// The EdgePropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
+        /// <typeparam name="TKey">The type of the property keys.</typeparam>
         /// <param name="myIEnumerator">A enumerator of consumable objects implementing IEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> GetProperty(this IEnumerator<IEdge> myIEnumerator, params String[] myKeys)
+        public static IEnumerable<Object> GetProperty<TId, TKey>(this IEnumerator<IEdge<TId, TKey>> myIEnumerator, params TKey[] myKeys)
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
-            var _Pipe = new EdgePropertyPipe<Object>(myKeys);
+            var _Pipe = new EdgePropertyPipe<TId, TKey, Object>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;
@@ -98,20 +107,23 @@ namespace de.ahzf.Pipes.ExtensionMethods
 
         #endregion
 
-        #region GetProperty<E>(this myIEnumerator, params myKeys)
+        #region GetProperty<TKey, E>(this myIEnumerator, params myKeys)
 
         /// <summary>
         /// The EdgePropertyPipe returns the property value of the
         /// Element identified by the provided key.
         /// </summary>
+        /// <typeparam name="TKey">The type of the property keys.</typeparam>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
         /// <param name="myIEnumerator">A enumerator of consumable objects implementing IEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> GetProperty<E>(this IEnumerator<IEdge> myIEnumerator, params String[] myKeys)
+        public static IEnumerable<E> GetProperty<TId, TKey, E>(this IEnumerator<IEdge<TId, TKey>> myIEnumerator, params TKey[] myKeys)
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
-            var _Pipe = new EdgePropertyPipe<E>(myKeys);
+            var _Pipe = new EdgePropertyPipe<TId, TKey, E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;

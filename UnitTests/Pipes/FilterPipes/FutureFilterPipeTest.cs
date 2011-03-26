@@ -90,7 +90,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Marko 				= _Graph.GetVertex(new VertexId(1));
 	        var _OutEPipe 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
 	        var _InVPipe 			= new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-	        var _PropertyFilterPipe = new PropertyFilterPipe<IVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
+	        var _PropertyFilterPipe = new PropertyFilterPipe<VertexId, String, IVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
 	        var _FutureFilterPipe 	= new FutureFilterPipe<IEdge>(new Pipeline<IEdge, IVertex>(_InVPipe, _PropertyFilterPipe));
 	        var _Pipeline 			= new Pipeline<IVertex, IEdge>(_OutEPipe, _FutureFilterPipe);
 	        _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });

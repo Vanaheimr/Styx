@@ -23,6 +23,7 @@ using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;
 using de.ahzf.blueprints;
+using System;
 
 #endregion
 
@@ -151,7 +152,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             for (var i = 0; i < 100000; i++)
                 _Graph.AddVertex(null);
 
-            var _Vertices = new GraphElementPipe<IVertex>(GraphElementPipe<IVertex>.ElementType.VERTEX);
+            var _Vertices = new GraphElementPipe<VertexId, String, IVertex>(GraphElementPipe<VertexId, String, IVertex>.ElementType.VERTEX);
             _Vertices.SetSource(new SingleEnumerator<IGraph>(_Graph));
             var _OutEdges = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             _OutEdges.SetSource(_Vertices);

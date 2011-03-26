@@ -201,7 +201,7 @@ namespace PipesShell
 
             var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3    = new PropertyPipe<IVertex, String>(new String[] { "name" });
+            var _Pipe3    = new PropertyPipe<VertexId, String, IVertex, String>(new String[] { "name" });
             var _Pipeline = new Pipeline<IVertex, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
             _Pipeline.SetSourceCollection(f1);
 
@@ -209,8 +209,8 @@ namespace PipesShell
 
 
             // Still problems with extension methods?
-            var f3 = g.GetVertices(new VertexId[] { new VertexId(1) }).OutEdges().InVertex().GetProperty<String>("name").ToList();
-            var f4 = g.VertexId(1).OutEdges("knows").InVertex().GetProperty<String>("name").ToList();
+            //var f3 = g.GetVertices(new VertexId[] { new VertexId(1) }).OutEdges().InVertex().GetProperty<String>("name").ToList();
+            //var f4 = g.VertexId(1).OutEdges("knows").InVertex().GetProperty<String>("name").ToList();
 
 
             return new CSharpShell(_Evaluator).Run(_StartupFiles);
