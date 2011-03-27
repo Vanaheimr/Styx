@@ -26,7 +26,7 @@ using de.ahzf.Pipes;
 using de.ahzf.Pipes.ExtensionMethods;
 using de.ahzf.blueprints;
 using de.ahzf.blueprints.Datastructures;
-using de.ahzf.blueprints.InMemoryGraph;
+using de.ahzf.blueprints.InMemory.PropertyGraph;
 using de.ahzf.Pipes.UnitTests;
 
 using NUnit.Framework;
@@ -182,9 +182,9 @@ namespace PipesShell
             };
 
             // Adding a assembly twice will lead to delayed errors...
-            _Evaluator.ReferenceAssembly(typeof(IGraph).Assembly);
+            _Evaluator.ReferenceAssembly(typeof(IPropertyGraph).Assembly);
             _Evaluator.ReferenceAssembly(typeof(VertexEdgePipeExtensions).Assembly);
-            _Evaluator.ReferenceAssembly(typeof(InMemoryGraph).Assembly);
+            _Evaluator.ReferenceAssembly(typeof(InMemoryPropertyGraph).Assembly);
             _Evaluator.ReferenceAssembly(typeof(IPipe).Assembly);
             _Evaluator.ReferenceAssembly(typeof(TinkerGraphFactory).Assembly);
 

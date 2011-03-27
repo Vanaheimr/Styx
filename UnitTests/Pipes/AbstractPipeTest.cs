@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 
 using de.ahzf.blueprints;
-using de.ahzf.blueprints.InMemoryGraph;
+using de.ahzf.blueprints.InMemory.PropertyGraph;
 using de.ahzf.blueprints.Datastructures;
 
 using NUnit.Framework;

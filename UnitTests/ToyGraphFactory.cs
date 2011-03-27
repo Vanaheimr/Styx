@@ -18,7 +18,7 @@
 #region Usings
 
 using de.ahzf.blueprints;
-using de.ahzf.blueprints.InMemoryGraph;
+using de.ahzf.blueprints.InMemory.PropertyGraph;
 using de.ahzf.blueprints.Datastructures;
 
 #endregion
@@ -29,10 +29,10 @@ namespace de.ahzf.Pipes.UnitTests
     public static class ToyGraphFactory
     {
 
-        public static IGraph CreateToyGraph()
+        public static IPropertyGraph CreateToyGraph()
         {
 
-            var _ToyGraph    = new InMemoryGraph() as IGraph;
+            var _ToyGraph    = new InMemoryGraph() as IPropertyGraph;
 
             var _Alice       = _ToyGraph.AddVertex(new VertexId("1"), v => v.SetProperty("name", "Alice").    SetProperty("age", 29));
             var _Bob         = _ToyGraph.AddVertex(new VertexId("2"), v => v.SetProperty("name", "Bob").      SetProperty("age", 27));
