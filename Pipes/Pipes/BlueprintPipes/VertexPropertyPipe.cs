@@ -32,8 +32,8 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class VertexPropertyPipe<TId, TKey, E> : PropertyPipe<TId, TKey, IVertex<TId, TKey>, E>
-        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+    public class VertexPropertyPipe<TId, TKey, E> : PropertyPipe<TId, TKey, IPropertyVertex<TId, TKey>, E>
+        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
     {
 

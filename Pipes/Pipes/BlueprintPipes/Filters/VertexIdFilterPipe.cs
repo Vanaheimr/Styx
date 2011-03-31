@@ -30,7 +30,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The IdPipe will return the Id of the given graph element.
     /// </summary>
-    public class VertexIdFilterPipe : AbstractComparisonFilterPipe<IVertex, VertexId>
+    public class VertexIdFilterPipe : AbstractComparisonFilterPipe<IPropertyVertex, VertexId>
     {
 
         #region Data

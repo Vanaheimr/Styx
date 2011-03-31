@@ -32,9 +32,12 @@ namespace de.ahzf.Pipes
     /// </summary>
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class EdgePropertyPipe<TId, TKey, E> : PropertyPipe<TId, TKey, IEdge<TId, TKey>, E>
-        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+    public class EdgePropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, E>
+                    : PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, IPropertyEdge<TId, TKey>, E>
+
+        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+
     {
 
         #region Constructor(s)

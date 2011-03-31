@@ -46,15 +46,15 @@ namespace de.ahzf.Pipes.UnitTests.util
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
             var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3    = new PathPipe<IVertex>();
-            var _Pipeline = new Pipeline<IVertex, IEnumerable<Object>>(_Pipe1, _Pipe2, _Pipe3);
-            _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Marko));
+            var _Pipe3    = new PathPipe<IPropertyVertex>();
+            var _Pipeline = new Pipeline<IPropertyVertex, IEnumerable<Object>>(_Pipe1, _Pipe2, _Pipe3);
+            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Marko));
 
             foreach (var _Path in _Pipeline)
             {
                 Assert.AreEqual(_Marko, _Path.ElementAt(0));
-                Assert.IsTrue(_Path.ElementAt(1) is IEdge);
-                Assert.IsTrue(_Path.ElementAt(2) is IVertex);
+                Assert.IsTrue(_Path.ElementAt(1) is IPropertyEdge);
+                Assert.IsTrue(_Path.ElementAt(2) is IPropertyVertex);
             }
 
         }

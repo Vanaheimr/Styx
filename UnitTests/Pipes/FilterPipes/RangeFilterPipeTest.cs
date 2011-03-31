@@ -171,11 +171,11 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
             var _Pipe1      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe2      = new RangeFilterPipe<IEdge>(2, 3);
+            var _Pipe2      = new RangeFilterPipe<IPropertyEdge>(2, 3);
             var _Pipe3      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe4      = new PropertyPipe<VertexId, String, IVertex, String>("name");
-            var _Pipeline   = new Pipeline<IVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
-            _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Marko));
+            var _Pipe4      = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+            var _Pipeline   = new Pipeline<IPropertyVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
+            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Marko));
             
             var _Counter = 0;
             while (_Pipeline.MoveNext())

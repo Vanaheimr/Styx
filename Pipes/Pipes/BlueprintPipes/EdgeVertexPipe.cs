@@ -30,13 +30,13 @@ namespace de.ahzf.Pipes
     /// The EdgeVertexPipe returns either the incoming or
     /// outgoing vertex of the given edge.
     /// </summary>
-    public class EdgeVertexPipe : AbstractPipe<IEdge, IVertex>
+    public class EdgeVertexPipe : AbstractPipe<IPropertyEdge, IPropertyVertex>
     {
 
         #region Data
 
         private readonly Step    _Step;
-        private          IVertex _StoredOutVertex;
+        private          IPropertyVertex _StoredOutVertex;
 
         #endregion
 

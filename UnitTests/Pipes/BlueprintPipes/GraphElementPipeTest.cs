@@ -41,11 +41,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<VertexId, String, IVertex>(GraphElementPipe<VertexId, String, IVertex>.ElementType.VERTEX);
-            _Pipe.SetSource(new SingleEnumerator<IGraph>(_Graph));
+            var _Pipe = new GraphElementPipe<VertexId, String, IPropertyVertex>(GraphElementPipe<VertexId, String, IPropertyVertex>.ElementType.VERTEX);
+            _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
             
             var _Counter = 0;
-            var _Vertices = new HashSet<IVertex>();
+            var _Vertices = new HashSet<IPropertyVertex>();
 
             while (_Pipe.MoveNext())
             {
@@ -68,11 +68,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<EdgeId, String, IEdge>(GraphElementPipe<EdgeId, String, IEdge>.ElementType.EDGE);
-            _Pipe.SetSource(new SingleEnumerator<IGraph>(_Graph));
+            var _Pipe = new GraphElementPipe<EdgeId, String, IPropertyEdge>(GraphElementPipe<EdgeId, String, IPropertyEdge>.ElementType.EDGE);
+            _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
 
             var _Counter = 0;
-            var _Edges = new HashSet<IEdge>();
+            var _Edges = new HashSet<IPropertyEdge>();
 
             while (_Pipe.MoveNext())
             {
@@ -95,11 +95,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe  = new GraphElementPipe<EdgeId, String, IEdge>(GraphElementPipe<EdgeId, String, IEdge>.ElementType.EDGE);
-            _Pipe.SetSourceCollection(new List<IGraph>() { _Graph, _Graph, _Graph });
+            var _Pipe  = new GraphElementPipe<EdgeId, String, IPropertyEdge>(GraphElementPipe<EdgeId, String, IPropertyEdge>.ElementType.EDGE);
+            _Pipe.SetSourceCollection(new List<IPropertyGraph>() { _Graph, _Graph, _Graph });
             
             var _Counter = 0;
-            var _Edges   = new HashSet<IEdge>();
+            var _Edges   = new HashSet<IPropertyEdge>();
 
             while (_Pipe.MoveNext())
             {

@@ -32,15 +32,15 @@ namespace de.ahzf.Pipes.UnitTests
         public static IPropertyGraph CreateToyGraph()
         {
 
-            var _ToyGraph    = new InMemoryGraph() as IPropertyGraph;
+            var _ToyGraph    = new InMemoryPropertyGraph() as IPropertyGraph;
 
-            var _Alice       = _ToyGraph.AddVertex(new VertexId("1"), v => v.SetProperty("name", "Alice").    SetProperty("age", 29));
-            var _Bob         = _ToyGraph.AddVertex(new VertexId("2"), v => v.SetProperty("name", "Bob").      SetProperty("age", 27));
-            var _Carol       = _ToyGraph.AddVertex(new VertexId("3"), v => v.SetProperty("name", "Carol").    SetProperty("age", 23));
-            var _Dave        = _ToyGraph.AddVertex(new VertexId("4"), v => v.SetProperty("name", "Dave").     SetProperty("age", 32));
-            var _Eve         = _ToyGraph.AddVertex(new VertexId("5"), v => v.SetProperty("name", "Eve").      SetProperty("age", 12));
-            var _Fred        = _ToyGraph.AddVertex(new VertexId("6"), v => v.SetProperty("name", "Fred").     SetProperty("age", 35));
-            var _Geraldine   = _ToyGraph.AddVertex(new VertexId("7"), v => v.SetProperty("name", "Geraldine").SetProperty("age", 35));
+            var _Alice       = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("1"), v => v.SetProperty("name", "Alice").    SetProperty("age", 29))) as IPropertyVertex;
+            var _Bob         = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("2"), v => v.SetProperty("name", "Bob").      SetProperty("age", 27))) as IPropertyVertex;
+            var _Carol       = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("3"), v => v.SetProperty("name", "Carol").    SetProperty("age", 23))) as IPropertyVertex;
+            var _Dave        = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("4"), v => v.SetProperty("name", "Dave").     SetProperty("age", 32))) as IPropertyVertex;
+            var _Eve         = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("5"), v => v.SetProperty("name", "Eve").      SetProperty("age", 12))) as IPropertyVertex;
+            var _Fred        = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("6"), v => v.SetProperty("name", "Fred").     SetProperty("age", 35))) as IPropertyVertex;
+            var _Geraldine   = _ToyGraph.AddVertex(new PropertyVertex(new VertexId("7"), v => v.SetProperty("name", "Geraldine").SetProperty("age", 35))) as IPropertyVertex;
 
             _ToyGraph.AddDoubleEdge(_Alice, _Bob,   new EdgeId("1a"), new EdgeId("1b"), "knows");
             _ToyGraph.AddDoubleEdge(_Alice, _Bob,   new EdgeId("2a"), new EdgeId("2b"), "loves");

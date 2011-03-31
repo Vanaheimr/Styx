@@ -36,10 +36,10 @@ namespace de.ahzf.Pipes
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class PropertyPipe<TId, TKey, S, E> : AbstractPipe<S, E>
-        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+    public class PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E> : AbstractPipe<S, E>
+        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S : IElement<TId, TKey>
+        where S    : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
     {
 
         #region Data
@@ -101,7 +101,7 @@ namespace de.ahzf.Pipes
                 // Second emit the properties
                 if (_PropertyEnumerator.MoveNext())
                 {
-                    _CurrentElement = (E) _InternalEnumerator.Current.GetProperty(_PropertyEnumerator.Current);
+                    _CurrentElement = (E) _InternalEnumerator.Current.Properties.GetProperty(_PropertyEnumerator.Current);
                     return true;
                 }
 

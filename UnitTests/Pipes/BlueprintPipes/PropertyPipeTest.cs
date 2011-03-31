@@ -42,8 +42,8 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko = _Graph.GetVertex(new VertexId("1"));
-            var _PPipe = new PropertyPipe<VertexId, String, IVertex, String>("name");
-            _PPipe.SetSource(new List<IVertex>() { _Marko }.GetEnumerator());
+            var _PPipe = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+            _PPipe.SetSource(new List<IPropertyVertex>() { _Marko }.GetEnumerator());
 
             var _Counter = 0;
             while (_PPipe.MoveNext())
@@ -66,8 +66,8 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
             var _EVP      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _PPipe    = new PropertyPipe<VertexId, String, IVertex, String>("name");
-            var _Pipeline = new Pipeline<IEdge, String>(_EVP, _PPipe);
+            var _PPipe    = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+            var _Pipeline = new Pipeline<IPropertyEdge, String>(_EVP, _PPipe);
             _Pipeline.SetSourceCollection(_Marko.OutEdges);
 
             var _Counter = 0;
@@ -93,9 +93,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
             var _Vadas    = _Graph.GetVertex(new VertexId("2"));
-            var _Pipe     = new PropertyPipe<VertexId, String, IVertex, String>("name");
-            var _Pipeline = new Pipeline<IVertex, String>(_Pipe);
-            _Pipeline.SetSource(new List<IVertex>() { _Marko, _Vadas }.GetEnumerator());
+            var _Pipe     = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+            var _Pipeline = new Pipeline<IPropertyVertex, String>(_Pipe);
+            _Pipeline.SetSource(new List<IPropertyVertex>() { _Marko, _Vadas }.GetEnumerator());
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())

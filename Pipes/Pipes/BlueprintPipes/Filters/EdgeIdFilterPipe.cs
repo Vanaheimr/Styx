@@ -30,7 +30,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The IdPipe will return the Id of the given graph element.
     /// </summary>
-    public class EdgeIdFilterPipe : AbstractComparisonFilterPipe<IEdge, EdgeId>
+    public class EdgeIdFilterPipe : AbstractComparisonFilterPipe<IPropertyEdge, EdgeId>
     {
 
         #region Data

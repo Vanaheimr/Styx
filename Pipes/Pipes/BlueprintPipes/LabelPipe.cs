@@ -29,7 +29,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The LabelPipe will return the label of the given edge.
     /// </summary>
-    public class LabelPipe : AbstractPipe<IEdge, String>
+    public class LabelPipe : AbstractPipe<IPropertyEdge, String>
     {
 
         #region MoveNext()

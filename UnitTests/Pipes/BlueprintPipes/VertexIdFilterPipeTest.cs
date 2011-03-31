@@ -44,8 +44,8 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
-            var _Pipeline = new Pipeline<IVertex, IVertex>(_Pipe1, _Pipe2, _Pipe3);
-            _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
+            var _Pipeline = new Pipeline<IPropertyVertex, IPropertyVertex>(_Pipe1, _Pipe2, _Pipe3);
+            _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())
@@ -72,8 +72,8 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.EQUAL);
-            var _Pipeline = new Pipeline<IVertex, IVertex>(_Pipe1, _Pipe2, _Pipe3);
-            _Pipeline.SetSourceCollection(new List<IVertex>() { _Marko });
+            var _Pipeline = new Pipeline<IPropertyVertex, IPropertyVertex>(_Pipe1, _Pipe2, _Pipe3);
+            _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())

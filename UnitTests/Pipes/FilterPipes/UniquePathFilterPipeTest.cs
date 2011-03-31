@@ -45,9 +45,9 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Pipe2      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
             var _Pipe3      = new VertexEdgePipe(VertexEdgePipe.Step.IN_EDGES);
             var _Pipe4      = new EdgeVertexPipe(EdgeVertexPipe.Step.OUT_VERTEX);
-            var _Pipe5      = new UniquePathFilterPipe<IVertex>();
-            var _Pipeline   = new Pipeline<IVertex, IVertex>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
-            _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1))));
+            var _Pipe5      = new UniquePathFilterPipe<IPropertyVertex>();
+            var _Pipeline   = new Pipeline<IPropertyVertex, IPropertyVertex>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
+            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Graph.GetVertex(new VertexId(1))));
 	
             var _Counter = 0;
 	

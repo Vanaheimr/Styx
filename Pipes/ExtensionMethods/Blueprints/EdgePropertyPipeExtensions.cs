@@ -40,10 +40,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// Element identified by the provided key.
         /// </summary>
         /// <typeparam name="TKey">The type of the property keys.</typeparam>
-        /// <param name="myIEnumerable">A collection of consumable objects implementing IEdge.</param>
+        /// <param name="myIEnumerable">A collection of consumable objects implementing IPropertyEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> GetProperty<TId, TKey>(this IEnumerable<IEdge<TId, TKey>> myIEnumerable, params TKey[] myKeys)
+        public static IEnumerable<Object> GetProperty<TId, TKey>(this IEnumerable<IPropertyEdge<TId, TKey>> myIEnumerable, params TKey[] myKeys)
             where TId : IEquatable<TId>, IComparable<TId>, IComparable
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
@@ -65,10 +65,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// </summary>
         /// <typeparam name="TKey">The type of the property keys.</typeparam>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
-        /// <param name="myIEnumerable">A collection of consumable objects implementing IEdge.</param>
+        /// <param name="myIEnumerable">A collection of consumable objects implementing IPropertyEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> GetProperty<TId, TKey, E>(this IEnumerable<IEdge<TId, TKey>> myIEnumerable, params TKey[] myKeys)
+        public static IEnumerable<E> GetProperty<TId, TKey, E>(this IEnumerable<IPropertyEdge<TId, TKey>> myIEnumerable, params TKey[] myKeys)
             where TId : IEquatable<TId>, IComparable<TId>, IComparable
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
@@ -90,10 +90,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// Element identified by the provided key.
         /// </summary>
         /// <typeparam name="TKey">The type of the property keys.</typeparam>
-        /// <param name="myIEnumerator">A enumerator of consumable objects implementing IEdge.</param>
+        /// <param name="myIEnumerator">A enumerator of consumable objects implementing IPropertyEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<Object> GetProperty<TId, TKey>(this IEnumerator<IEdge<TId, TKey>> myIEnumerator, params TKey[] myKeys)
+        public static IEnumerable<Object> GetProperty<TId, TKey>(this IEnumerator<IPropertyEdge<TId, TKey>> myIEnumerator, params TKey[] myKeys)
             where TId : IEquatable<TId>, IComparable<TId>, IComparable
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
@@ -115,11 +115,11 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// </summary>
         /// <typeparam name="TKey">The type of the property keys.</typeparam>
         /// <typeparam name="E">The type of the emitting objects.</typeparam>
-        /// <param name="myIEnumerator">A enumerator of consumable objects implementing IEdge.</param>
+        /// <param name="myIEnumerator">A enumerator of consumable objects implementing IPropertyEdge.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<E> GetProperty<TId, TKey, E>(this IEnumerator<IEdge<TId, TKey>> myIEnumerator, params TKey[] myKeys)
-            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        public static IEnumerable<E> GetProperty<TId, TKey, E>(this IEnumerator<IPropertyEdge<TId, TKey>> myIEnumerator, params TKey[] myKeys)
+            where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 

@@ -81,10 +81,10 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
             var _Marko = _Graph.GetVertex(new VertexId("1"));
             var _Pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3 = new PropertyPipe<VertexId, String, IVertex, String>("name");
+            var _Pipe3 = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
             _Pipe3.SetSource(_Pipe2);
             _Pipe2.SetSource(_Pipe1);
-            var _MarkoList = new List<IVertex>() { _Marko };
+            var _MarkoList = new List<IPropertyVertex>() { _Marko };
             _Pipe1.SetSource(_MarkoList.GetEnumerator());
 
             foreach (var _Name in _Pipe3)

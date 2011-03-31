@@ -31,27 +31,27 @@ namespace de.ahzf.Pipes
     /// The IdVertexPipe will convert the given VertexIds into the
     /// corresponding vertices of the given graph.
     /// </summary>
-    public class IdVertexPipe<S> : AbstractPipe<S, IVertex>
+    public class IdVertexPipe<S> : AbstractPipe<S, IPropertyVertex>
         where S : VertexId
     {
 
         #region Data
 
-        private readonly IGraph _IGraph;
+        private readonly IPropertyGraph _IPropertyGraph;
 
         #endregion
 
         #region Constructor(s)
 
-        #region IdVertexPipe(myIGraph)
+        #region IdVertexPipe(myIPropertyGraph)
 
         /// <summary>
         /// Creates a new IdVertexPipe.
         /// </summary>
-        /// <param name="myIGraph">The IGraph to use.</param>
-        public IdVertexPipe(IGraph myIGraph)
+        /// <param name="myIPropertyGraph">The IPropertyGraph to use.</param>
+        public IdVertexPipe(IPropertyGraph myIPropertyGraph)
         {
-            _IGraph = myIGraph;
+            _IPropertyGraph = myIPropertyGraph;
         }
 
         #endregion
@@ -76,7 +76,7 @@ namespace de.ahzf.Pipes
 
             if (_InternalEnumerator.MoveNext())
             {
-                _CurrentElement = _IGraph.GetVertex(_InternalEnumerator.Current);
+                _CurrentElement = _IPropertyGraph.GetVertex(_InternalEnumerator.Current);
                 return true;
             }
 

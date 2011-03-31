@@ -51,15 +51,15 @@ namespace PipesShell
             var markoa   = grapha.GetVertex(new VertexId("1"));
             var pipe1a   = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var pipe2a   = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe3a   = new PathPipe<IVertex>();
-            var pipeline = new Pipeline<IVertex, IEnumerable<Object>>(pipe1a, pipe2a, pipe3a);
-            pipeline.SetSource(new SingleEnumerator<IVertex>(markoa));
+            var pipe3a   = new PathPipe<IPropertyVertex>();
+            var pipeline = new Pipeline<IPropertyVertex, IEnumerable<Object>>(pipe1a, pipe2a, pipe3a);
+            pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(markoa));
 
             foreach (var _Path in pipeline)
             {
                 Assert.AreEqual(markoa, _Path.ElementAt(0));
-                Assert.IsTrue(_Path.ElementAt(1) is IEdge);
-                Assert.IsTrue(_Path.ElementAt(2) is IVertex);
+                Assert.IsTrue(_Path.ElementAt(1) is IPropertyEdge);
+                Assert.IsTrue(_Path.ElementAt(2) is IPropertyVertex);
             }
 			
 			
@@ -74,8 +74,8 @@ namespace PipesShell
 
             //var _Graph = ToyGraphFactory.CreateToyGraph();
             //var _Alice = _Graph.GetVertex(new VertexId("1"));
-            //var _PPipe = new PropertyPipe<IVertex, String>("name");
-            //_PPipe.SetSource(new List<IVertex>() { _Alice }.GetEnumerator());
+            //var _PPipe = new PropertyPipe<IPropertyVertex, String>("name");
+            //_PPipe.SetSource(new List<IPropertyVertex>() { _Alice }.GetEnumerator());
 
             //var _Friends = _Graph.VertexId(1).
             //               OutEdges("knows").
@@ -114,10 +114,10 @@ namespace PipesShell
             var marko = graph.GetVertex(new VertexId("1"));
             var pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var pipe3 = new PropertyPipe<IVertex, String>("name");
+            var pipe3 = new PropertyPipe<IPropertyVertex, String>("name");
             pipe3.SetSource(pipe2);
             pipe2.SetSource(pipe1);
-            var _MarkoList = new List<IVertex>() { marko };
+            var _MarkoList = new List<IPropertyVertex>() { marko };
             pipe1.SetSource(_MarkoList.GetEnumerator());
 
             foreach (var name in pipe3)
@@ -201,8 +201,8 @@ namespace PipesShell
 
             var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
             var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3    = new PropertyPipe<VertexId, String, IVertex, String>(new String[] { "name" });
-            var _Pipeline = new Pipeline<IVertex, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
+            var _Pipe3    = new PropertyPipe<VertexId, String, IPropertyVertex, String>(new String[] { "name" });
+            var _Pipeline = new Pipeline<IPropertyVertex, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
             _Pipeline.SetSourceCollection(f1);
 
             //foreach (var _Friend in _Pipeline) Console.WriteLine(_Friend);

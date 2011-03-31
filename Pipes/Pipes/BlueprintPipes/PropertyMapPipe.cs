@@ -30,10 +30,10 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The PropertyMapPipe...
     /// </summary>
-    public class PropertyMapPipe<TId, TKey, S, T> : AbstractPipe<S, IDictionary<TKey, Object>>
-        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+    public class PropertyMapPipe<TId, TRevisionId, TValue, TDatastructure, TKey, S, T> : AbstractPipe<S, IDictionary<TKey, TValue>>
+        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S : IElement<TId, TKey>
+        where S : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
     {
 
         #region MoveNext()
@@ -57,10 +57,10 @@ namespace de.ahzf.Pipes
 
                 var _IElement = _InternalEnumerator.Current;
 
-                var _Map = new Dictionary<TKey, Object>();
+                var _Map = new Dictionary<TKey, TValue>();
 
-                foreach (var _Key in _IElement.PropertyKeys)
-                    _Map.Add(_Key, _IElement.GetProperty(_Key));
+                foreach (var _Key in _IElement.Properties.PropertyKeys)
+                    _Map.Add(_Key, _IElement.Properties.GetProperty(_Key));
 
                 _CurrentElement = _Map;
 

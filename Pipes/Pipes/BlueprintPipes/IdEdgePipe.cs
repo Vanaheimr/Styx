@@ -31,27 +31,27 @@ namespace de.ahzf.Pipes
     /// The IdEdgePipe will convert the given EdgeIds into the
     /// corresponding edges of the given graph.
     /// </summary>
-    public class IdEdgePipe<S> : AbstractPipe<S, IEdge>
+    public class IdEdgePipe<S> : AbstractPipe<S, IPropertyEdge>
         where S : EdgeId
     {
 
         #region Data
 
-        private readonly IGraph _IGraph;
+        private readonly IPropertyGraph _IPropertyGraph;
 
         #endregion
 
         #region Constructor(s)
 
-        #region IdEdgePipe(myIGraph)
+        #region IdEdgePipe(myIPropertyGraph)
 
         /// <summary>
         /// Creates a new IdEdgePipe.
         /// </summary>
-        /// <param name="myIGraph">The IGraph to use.</param>
-        public IdEdgePipe(IGraph myIGraph)
+        /// <param name="myIPropertyGraph">The IPropertyGraph to use.</param>
+        public IdEdgePipe(IPropertyGraph myIPropertyGraph)
         {
-            _IGraph = myIGraph;
+            _IPropertyGraph = myIPropertyGraph;
         }
 
         #endregion
@@ -77,7 +77,7 @@ namespace de.ahzf.Pipes
 
             if (_InternalEnumerator.MoveNext())
             {
-                _CurrentElement = _IGraph.GetEdge(_InternalEnumerator.Current);
+                _CurrentElement = _IPropertyGraph.GetEdge(_InternalEnumerator.Current);
                 return true;
             }
 

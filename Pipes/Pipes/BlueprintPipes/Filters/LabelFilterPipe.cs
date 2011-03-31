@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// The LabelFilterPipe either allows or disallows all
     /// Edges that have the provided label.
     /// </summary>
-    public class LabelFilterPipe : AbstractComparisonFilterPipe<IEdge, String>
+    public class LabelFilterPipe : AbstractComparisonFilterPipe<IPropertyEdge, String>
     {
 
         #region Data
@@ -130,11 +130,11 @@ namespace de.ahzf.Pipes
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IEdge.</param>
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyEdge.</param>
         /// <param name="myLabel">The edge label.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        /// <returns>A filtered collection of objects implementing IEdge.</returns>
-        public static IEnumerable<IEdge> LabelFilterPipe(this IEnumerable<IEdge> myIEnumerable, String myLabel, ComparisonFilter myComparisonFilter)
+        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
+        public static IEnumerable<IPropertyEdge> LabelFilterPipe(this IEnumerable<IPropertyEdge> myIEnumerable, String myLabel, ComparisonFilter myComparisonFilter)
         {
 
             var _Pipe = new LabelFilterPipe(myLabel, myComparisonFilter);
@@ -152,10 +152,10 @@ namespace de.ahzf.Pipes
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IEdge.</param>
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyEdge.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A filtered collection of objects implementing IEdge.</returns>
-        public static IEnumerable<IEdge> LabelEquals(this IEnumerable<IEdge> myIEnumerable, String myLabel)
+        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
+        public static IEnumerable<IPropertyEdge> LabelEquals(this IEnumerable<IPropertyEdge> myIEnumerable, String myLabel)
         {
 
             var _Pipe = new LabelFilterPipe(myLabel, ComparisonFilter.NOT_EQUAL);
@@ -174,11 +174,11 @@ namespace de.ahzf.Pipes
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IEdge.</param>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
         /// <param name="myLabel">The edge label.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        /// <returns>A filtered collection of objects implementing IEdge.</returns>
-        public static IEnumerable<IEdge> LabelFilterPipe(this IEnumerator<IEdge> myIEnumerator, String myLabel, ComparisonFilter myComparisonFilter)
+        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
+        public static IEnumerable<IPropertyEdge> LabelFilterPipe(this IEnumerator<IPropertyEdge> myIEnumerator, String myLabel, ComparisonFilter myComparisonFilter)
         {
 
             var _Pipe = new LabelFilterPipe(myLabel, myComparisonFilter);
@@ -196,10 +196,10 @@ namespace de.ahzf.Pipes
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IEdge.</param>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A filtered collection of objects implementing IEdge.</returns>
-        public static IEnumerable<IEdge> LabelEquals(this IEnumerator<IEdge> myIEnumerator, String myLabel)
+        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
+        public static IEnumerable<IPropertyEdge> LabelEquals(this IEnumerator<IPropertyEdge> myIEnumerator, String myLabel)
         {
 
             var _Pipe = new LabelFilterPipe(myLabel, ComparisonFilter.NOT_EQUAL);

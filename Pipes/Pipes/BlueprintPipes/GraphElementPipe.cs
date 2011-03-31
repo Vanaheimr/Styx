@@ -28,14 +28,14 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The GraphElementPipe takes a start of type IGraph and will
+    /// The GraphElementPipe takes a start of type IPropertyGraph and will
     /// return elements (i.e. vertices or edges).
     /// This pipe is useful for processing all of the vertices (or edges) of a graph.
     /// </summary>
-    public class GraphElementPipe<TId, TKey, E> : AbstractPipe<IGraph, E>
-        where TId : IEquatable<TId>, IComparable<TId>, IComparable
+    public class GraphElementPipe<TId, TRevisionId, TKey, TValue, TDatastructure, E> : AbstractPipe<IPropertyGraph, E>
+        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where E : IElement<TId, TKey>
+        where E : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
     {
 
         #region Data
@@ -76,7 +76,7 @@ namespace de.ahzf.Pipes
         #region GraphElementPipe(myElementType)
 
         /// <summary>
-        /// The GraphElementPipe takes a start of type IGraph and will
+        /// The GraphElementPipe takes a start of type IPropertyGraph and will
         /// return elements (i.e. vertices or edges).
         /// This pipe is useful for processing all of the vertices (or edges) of a graph.
         /// </summary>

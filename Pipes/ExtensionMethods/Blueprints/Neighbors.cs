@@ -40,9 +40,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <summary>
         /// A specialized pipeline returning the first adjacent vertex.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
-        /// <returns>A single IVertex.</returns>
-        public static IVertex Neighbor(this IEnumerable<IVertex> myIEnumerable)
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
+        /// <returns>A single IPropertyVertex.</returns>
+        public static IPropertyVertex Neighbor(this IEnumerable<IPropertyVertex> myIEnumerable)
         {
             return myIEnumerable.Neighbors().First();
         }
@@ -55,10 +55,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the first adjacent vertex
         /// filtered by the connecting edge label.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A single IVertex.</returns>
-        public static IVertex Neighbor(this IEnumerable<IVertex> myIEnumerable, String myLabel)
+        /// <returns>A single IPropertyVertex.</returns>
+        public static IPropertyVertex Neighbor(this IEnumerable<IPropertyVertex> myIEnumerable, String myLabel)
         {
             return myIEnumerable.Neighbors(myLabel).First();
         }
@@ -70,9 +70,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <summary>
         /// A specialized pipeline returning the adjacent vertices.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Neighbors(this IEnumerable<IVertex> myIEnumerable)
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Neighbors(this IEnumerable<IPropertyVertex> myIEnumerable)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -93,10 +93,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the adjacent vertices
         /// filtered by the connecting edge label.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Neighbors(this IEnumerable<IVertex> myIEnumerable, String myLabel)
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Neighbors(this IEnumerable<IPropertyVertex> myIEnumerable, String myLabel)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -120,9 +120,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <summary>
         /// A specialized pipeline returning the first adjacent vertex.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
-        /// <returns>A single IVertex.</returns>
-        public static IVertex Neighbor(this IEnumerator<IVertex> myIEnumerator)
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyVertex.</param>
+        /// <returns>A single IPropertyVertex.</returns>
+        public static IPropertyVertex Neighbor(this IEnumerator<IPropertyVertex> myIEnumerator)
         {
             return myIEnumerator.Neighbors().First();
         }
@@ -135,10 +135,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the first adjacent vertex
         /// filtered by the connecting edge label.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyVertex.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A single IVertex.</returns>
-        public static IVertex Neighbor(this IEnumerator<IVertex> myIEnumerator, String myLabel)
+        /// <returns>A single IPropertyVertex.</returns>
+        public static IPropertyVertex Neighbor(this IEnumerator<IPropertyVertex> myIEnumerator, String myLabel)
         {
             return myIEnumerator.Neighbors(myLabel).First();
         }
@@ -150,9 +150,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <summary>
         /// A specialized pipeline returning the adjacent vertices.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Neighbors(this IEnumerator<IVertex> myIEnumerator)
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyVertex.</param>
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Neighbors(this IEnumerator<IPropertyVertex> myIEnumerator)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -173,10 +173,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the adjacent vertices
         /// filtered by the connecting edge label.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyVertex.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Neighbors(this IEnumerator<IVertex> myIEnumerator, String myLabel)
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Neighbors(this IEnumerator<IPropertyVertex> myIEnumerator, String myLabel)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -201,9 +201,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <summary>
         /// A specialized pipeline returning the adjacent vertices.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<Boolean> IsComplicated(this IEnumerable<IVertex> myIEnumerable)
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<Boolean> IsComplicated(this IEnumerable<IPropertyVertex> myIEnumerable)
         {
 
             foreach (var _User in myIEnumerable)
@@ -212,7 +212,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
                 var _IsComplicated = false;
 
                 var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
-                _Pipe1.SetSource(new SingleEnumerator<IVertex>(_User));
+                _Pipe1.SetSource(new SingleEnumerator<IPropertyVertex>(_User));
 
                 var _Pipe2 = new LabelFilterPipe("loves", ComparisonFilter.NOT_EQUAL);
                 _Pipe2.SetSource(_Pipe1);

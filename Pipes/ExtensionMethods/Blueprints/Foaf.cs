@@ -41,9 +41,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the 1-hop neighborhood
         /// (friend-of-a-friend).
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Foaf(this IEnumerable<IVertex> myIEnumerable)
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Foaf(this IEnumerable<IPropertyVertex> myIEnumerable)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -70,10 +70,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the 1-hop neighborhood
         /// (friend-of-a-friend) filtered by the connecting edge label.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IVertex.</param>
+        /// <param name="myIEnumerable">A collection of objects implementing IPropertyVertex.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Foaf(this IEnumerable<IVertex> myIEnumerable, String myLabel)
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Foaf(this IEnumerable<IPropertyVertex> myIEnumerable, String myLabel)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -107,9 +107,9 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the 1-hop neighborhood
         /// (friend-of-a-friend).
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Foaf(this IEnumerator<IVertex> myIEnumerator)
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyVertex.</param>
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Foaf(this IEnumerator<IPropertyVertex> myIEnumerator)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);
@@ -136,10 +136,10 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// A specialized pipeline returning the 1-hop neighborhood
         /// (friend-of-a-friend) filtered by the connecting edge label.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IVertex.</param>
+        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyVertex.</param>
         /// <param name="myLabel">The edge label.</param>
-        /// <returns>A collection of objects implementing IVertex.</returns>
-        public static IEnumerable<IVertex> Foaf(this IEnumerator<IVertex> myIEnumerator, String myLabel)
+        /// <returns>A collection of objects implementing IPropertyVertex.</returns>
+        public static IEnumerable<IPropertyVertex> Foaf(this IEnumerator<IPropertyVertex> myIEnumerator, String myLabel)
         {
 
             var _Pipe1 = new VertexEdgePipe(Pipes.VertexEdgePipe.Step.OUT_EDGES);

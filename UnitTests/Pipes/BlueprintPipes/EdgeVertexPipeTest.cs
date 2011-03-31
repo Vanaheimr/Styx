@@ -83,7 +83,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Josh  = _Graph.GetVertex(new VertexId("4"));
-            IEdge _TmpEdge = null;
+            IPropertyEdge _TmpEdge = null;
 
             foreach (var _Edge in _Josh.OutEdges)
             {
@@ -93,7 +93,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Pipe = new EdgeVertexPipe(EdgeVertexPipe.Step.BOTH_VERTICES);
 
-            _Pipe.SetSource(new SingleEnumerator<IEdge>(_TmpEdge));
+            _Pipe.SetSource(new SingleEnumerator<IPropertyEdge>(_TmpEdge));
             var _Counter = 0;
             while (_Pipe.MoveNext())
             {

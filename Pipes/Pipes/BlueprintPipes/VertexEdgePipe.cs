@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// The VertexEdgePipe returns either the incoming or
     /// outgoing edges of the given vertex.
     /// </summary>
-    public class VertexEdgePipe : AbstractPipe<IVertex, IEdge>
+    public class VertexEdgePipe : AbstractPipe<IPropertyVertex, IPropertyEdge>
     {
 
         #region Data
@@ -41,7 +41,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Stores all edges not yet visited.
         /// </summary>
-        protected IEnumerator<IEdge> _StoredEdges;
+        protected IEnumerator<IPropertyEdge> _StoredEdges;
 
         #endregion
 
@@ -153,8 +153,8 @@ namespace de.ahzf.Pipes
 
                             case Step.BOTH_EDGES:
 
-                                var _IVertex = _InternalEnumerator.Current;
-                                _StoredEdges = new MultiEnumerator<IEdge>(_IVertex.InEdges.GetEnumerator(), _IVertex.OutEdges.GetEnumerator());
+                                var _IPropertyVertex = _InternalEnumerator.Current;
+                                _StoredEdges = new MultiEnumerator<IPropertyEdge>(_IPropertyVertex.InEdges.GetEnumerator(), _IPropertyVertex.OutEdges.GetEnumerator());
 
                                 if (_StoredEdges.MoveNext())
                                 {
