@@ -79,8 +79,8 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
-            var _Pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe1 = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
+            var _Pipe2 = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var _Pipe3 = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
             _Pipe3.SetSource(_Pipe2);
             _Pipe2.SetSource(_Pipe1);

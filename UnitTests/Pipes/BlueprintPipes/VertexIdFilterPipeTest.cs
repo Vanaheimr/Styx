@@ -23,6 +23,7 @@ using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;
 using de.ahzf.blueprints;
+using System;
 
 #endregion
 
@@ -41,8 +42,15 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
-            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+
+            var _Pipe1    = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _Pipe2    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
             var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
             var _Pipeline = new Pipeline<IPropertyVertex, IPropertyVertex>(_Pipe1, _Pipe2, _Pipe3);
             _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
@@ -69,8 +77,8 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
-            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe1    = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
+            var _Pipe2    = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.EQUAL);
             var _Pipeline = new Pipeline<IPropertyVertex, IPropertyVertex>(_Pipe1, _Pipe2, _Pipe3);
             _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });

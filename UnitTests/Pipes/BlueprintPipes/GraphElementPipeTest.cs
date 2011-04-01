@@ -41,7 +41,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<VertexId, String, IPropertyVertex>(GraphElementPipe<VertexId, String, IPropertyVertex>.ElementType.VERTEX);
+            var _Pipe = new GraphElementPipe<VertexId, RevisionId, String, Object, IPropertyVertex>(GraphElementPipe<VertexId, String, IPropertyVertex>.ElementType.VERTEX);
             _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
             
             var _Counter = 0;

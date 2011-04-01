@@ -20,6 +20,7 @@
 using System;
 
 using de.ahzf.blueprints;
+using System.Collections.Generic;
 
 #endregion
 
@@ -30,42 +31,49 @@ namespace de.ahzf.Pipes
     /// The EdgeVertexPipe returns either the incoming or
     /// outgoing vertex of the given edge.
     /// </summary>
-    public class EdgeVertexPipe : AbstractPipe<IPropertyEdge, IPropertyVertex>
+    public class EdgeVertexPipe<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>
+
+                                : AbstractPipe<
+                                     IPropertyEdge  <TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                     TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                     THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>,
+                                     IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                     TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                     THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>>
+
+        where TDatastructureVertex    : IDictionary<TKeyVertex,    TValueVertex>
+        where TDatastructureEdge      : IDictionary<TKeyEdge,      TValueEdge>
+        where TDatastructureHyperEdge : IDictionary<TKeyHyperEdge, TValueHyperEdge>
+
+        where TKeyVertex              : IEquatable<TKeyVertex>,           IComparable<TKeyVertex>,           IComparable
+        where TKeyEdge                : IEquatable<TKeyEdge>,             IComparable<TKeyEdge>,             IComparable
+        where TKeyHyperEdge           : IEquatable<TKeyHyperEdge>,        IComparable<TKeyHyperEdge>,        IComparable
+
+        where TVertexId               : IEquatable<TVertexId>,            IComparable<TVertexId>,            IComparable, TValueVertex
+        where TEdgeId                 : IEquatable<TEdgeId>,              IComparable<TEdgeId>,              IComparable, TValueEdge
+        where THyperEdgeId            : IEquatable<THyperEdgeId>,         IComparable<THyperEdgeId>,         IComparable, TValueHyperEdge
+
+        where TVertexRevisionId       : IEquatable<TVertexRevisionId>,    IComparable<TVertexRevisionId>,    IComparable, TValueVertex
+        where TEdgeRevisionId         : IEquatable<TEdgeRevisionId>,      IComparable<TEdgeRevisionId>,      IComparable, TValueEdge
+        where THyperEdgeRevisionId    : IEquatable<THyperEdgeRevisionId>, IComparable<THyperEdgeRevisionId>, IComparable, TValueHyperEdge
+
     {
 
         #region Data
 
-        private readonly Step    _Step;
-        private          IPropertyVertex _StoredOutVertex;
-
-        #endregion
-
-        #region Enum Step
+        private readonly Steps.EdgeVertexStep _Step;
 
         /// <summary>
-        /// An enum for traversing vertices starting at an edge.
+        /// The stored OutVertex.
         /// </summary>
-        public enum Step
-        {
-
-            /// <summary>
-            /// Only traverse the incoming vertex.
-            /// </summary>
-            IN_VERTEX,
-
-            /// <summary>
-            /// Only traverse the outgoing vertex.
-            /// </summary>
-            OUT_VERTEX,
-
-            /// <summary>
-            /// Traverse both incoming and outgoing vertex.
-            /// </summary>
-            BOTH_VERTICES
-
-        }
+        protected        IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                         TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                         THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge> _StoredOutVertex;
 
         #endregion
+
 
         #region Constructor(s)
 
@@ -76,7 +84,7 @@ namespace de.ahzf.Pipes
         /// outgoing vertex of the given edge.
         /// </summary>
         /// <param name="myStep">Visiting only the outgoing vertex, only the incoming vertex or both.</param>
-        public EdgeVertexPipe(Step myStep)
+        public EdgeVertexPipe(Steps.EdgeVertexStep myStep)
         {
             _Step = myStep;
         }
@@ -105,31 +113,43 @@ namespace de.ahzf.Pipes
             switch (_Step)
             {
 
-                case Step.OUT_VERTEX:
+                case Steps.EdgeVertexStep.OUT_VERTEX:
                     if (_InternalEnumerator.MoveNext())
                     {
-                        _CurrentElement = _InternalEnumerator.Current.OutVertex;
+                        _CurrentElement = _InternalEnumerator.Current.OutVertex as IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                                                                   TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                                                                   THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>;
                         return true;
                     }
                     return false;
 
-                case Step.IN_VERTEX:
+                case Steps.EdgeVertexStep.IN_VERTEX:
                     if (_InternalEnumerator.MoveNext())
                     {
-                        _CurrentElement = _InternalEnumerator.Current.InVertex;
+                        _CurrentElement = _InternalEnumerator.Current.InVertex as IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                                                                  TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                                                                  THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>;
                         return true;
                     }
                     return false;
 
-                case Step.BOTH_VERTICES:
+                case Steps.EdgeVertexStep.BOTH_VERTICES:
                     {
                         if (_StoredOutVertex == null)
                         {
                             if (_InternalEnumerator.MoveNext())
                             {
-                                _StoredOutVertex = _InternalEnumerator.Current.OutVertex;
-                                _CurrentElement  = _InternalEnumerator.Current.InVertex;
+
+                                _StoredOutVertex = _InternalEnumerator.Current.OutVertex as IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                                                                            TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                                                                            THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>;
+
+                                _CurrentElement  = _InternalEnumerator.Current.InVertex as IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                                                                           TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                                                                           THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>;
+
                                 return true;
+
                             }
                             return false;
                         }

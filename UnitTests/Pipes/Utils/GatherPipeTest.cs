@@ -43,8 +43,14 @@ namespace de.ahzf.Pipes.UnitTests.util
 
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
 
-            var _Pipe0    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe1    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe0    = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+            
+            var _Pipe1    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
             var _Pipe2    = new GatherPipe<IPropertyVertex>();
             var _Pipeline = new Pipeline<IPropertyVertex, IEnumerable<IPropertyVertex>>(_Pipe0, _Pipe1, _Pipe2);
             _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Graph.GetVertex(new VertexId("1"))));

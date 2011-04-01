@@ -41,12 +41,14 @@
     <Compile Include="ExtensionMethods\Blueprints\Foaf.cs" />
     <Compile Include="ExtensionMethods\Blueprints\EdgePropertyPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\EdgeVertexPipeExtensions.cs" />
+    <Compile Include="ExtensionMethods\Blueprints\LabelFilterPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\Neighbors.cs" />
     <Compile Include="ExtensionMethods\IEnumerable.cs" />
     <Compile Include="Pipes\BlueprintPipes\EdgePropertyPipe.cs" />
     <Compile Include="ExtensionMethods\Blueprints\PropertyPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\VertexEdgePipeExtensions.cs" />
     <Compile Include="ExtensionMethods\Blueprints\VertexPropertyPipeExtensions.cs" />
+    <Compile Include="Pipes\BlueprintPipes\Steps.cs" />
     <Compile Include="Pipes\BlueprintPipes\VertexPropertyPipe.cs" />
     <Compile Include="Pipes\BlueprintPipes\Filters\EdgeIdFilterPipe.cs" />
     <Compile Include="Pipes\BlueprintPipes\Filters\VertexIdFilterPipe.cs" />

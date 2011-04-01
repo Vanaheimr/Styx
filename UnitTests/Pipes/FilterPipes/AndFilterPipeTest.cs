@@ -87,9 +87,17 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 			var _Graph 			= TinkerGraphFactory.CreateTinkerGraph();
 		    var _Marko 			= _Graph.GetVertex(new VertexId("1"));
 		    var _Peter 			= _Graph.GetVertex(new VertexId("6"));
-		    var _Pipe0 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-		    var _Pipe1 			= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
+
+		    var _Pipe0 			= new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+		    var _Pipe1 			= new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.NOT_EQUAL);
+
 		    var _Pipe2 			= new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+
 		    var _AndFilterPipe	= new AndFilterPipe<IPropertyEdge>(new HasNextPipe<IPropertyEdge>(_Pipe1), new HasNextPipe<IPropertyEdge>(_Pipe2));
 		    var _Pipeline 		= new Pipeline<IPropertyVertex, IPropertyEdge>(_Pipe0, _AndFilterPipe);
 		    _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko, _Peter, _Marko });

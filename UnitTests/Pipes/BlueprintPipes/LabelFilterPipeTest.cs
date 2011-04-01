@@ -20,6 +20,8 @@
 using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;
+using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -39,7 +41,10 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
-            var _LFP   = new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
+            var _LFP   = new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.NOT_EQUAL);
+
             _LFP.SetSourceCollection(_Marko.OutEdges);
 
             var _Counter = 0;
@@ -54,7 +59,10 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             Assert.AreEqual(2, _Counter);
 
 
-            _LFP = new LabelFilterPipe("knows", ComparisonFilter.EQUAL);
+            _LFP = new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                       EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                       HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.EQUAL);
+
             _LFP.SetSourceCollection(_Marko.OutEdges);
 
             _Counter = 0;

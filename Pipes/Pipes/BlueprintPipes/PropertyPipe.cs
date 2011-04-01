@@ -36,10 +36,16 @@ namespace de.ahzf.Pipes
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E> : AbstractPipe<S, E>
-        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
-        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S    : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+    public class PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>
+
+                    : AbstractPipe<S, TValue>
+        
+        where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
+        where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
+        where TKey           : IEquatable<TKey>,        IComparable<TKey>,        IComparable
+        where TDatastructure : IDictionary<TKey, TValue>
+        where S              : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+
     {
 
         #region Data
@@ -101,7 +107,7 @@ namespace de.ahzf.Pipes
                 // Second emit the properties
                 if (_PropertyEnumerator.MoveNext())
                 {
-                    _CurrentElement = (E) _InternalEnumerator.Current.Properties.GetProperty(_PropertyEnumerator.Current);
+                    _CurrentElement = (TValue) _InternalEnumerator.Current.Properties.GetProperty(_PropertyEnumerator.Current);
                     return true;
                 }
 

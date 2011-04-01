@@ -41,12 +41,25 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
         {
 	
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe1      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe2      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3      = new VertexEdgePipe(VertexEdgePipe.Step.IN_EDGES);
-            var _Pipe4      = new EdgeVertexPipe(EdgeVertexPipe.Step.OUT_VERTEX);
+            var _Pipe1      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _Pipe2      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _Pipe3      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.IN_EDGES);
+
+            var _Pipe4      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.OUT_VERTEX);
+
             var _Pipe5      = new UniquePathFilterPipe<IPropertyVertex>();
             var _Pipeline   = new Pipeline<IPropertyVertex, IPropertyVertex>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
+
             _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Graph.GetVertex(new VertexId(1))));
 	
             var _Counter = 0;

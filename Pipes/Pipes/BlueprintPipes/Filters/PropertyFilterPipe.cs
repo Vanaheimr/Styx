@@ -20,6 +20,7 @@
 using System;
 
 using de.ahzf.blueprints;
+using System.Collections.Generic;
 
 #endregion
 
@@ -33,17 +34,22 @@ namespace de.ahzf.Pipes
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class PropertyFilterPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, T> : AbstractComparisonFilterPipe<S, T>
-        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
-        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S    : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
-        where T    : IComparable
+    public class PropertyFilterPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>
+                    : AbstractComparisonFilterPipe<S, TValue>
+
+        where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
+        where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
+        where TKey           : IEquatable<TKey>,        IComparable<TKey>,        IComparable
+        where TValue         : IComparable
+        where TDatastructure : IDictionary<TKey, TValue>
+        where S              : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+
     {
 
         #region Data
 
-        private readonly TKey _Key;
-        private readonly T    _Value;
+        private readonly TKey   _Key;
+        private readonly TValue _Value;
 
         #endregion
 
@@ -57,7 +63,7 @@ namespace de.ahzf.Pipes
         /// <param name="myKey">The property key.</param>
         /// <param name="myValue">The property value.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        public PropertyFilterPipe(TKey myKey, T myValue, ComparisonFilter myComparisonFilter)
+        public PropertyFilterPipe(TKey myKey, TValue myValue, ComparisonFilter myComparisonFilter)
             : base(myComparisonFilter)
         {
             _Key   = myKey;
@@ -93,7 +99,7 @@ namespace de.ahzf.Pipes
 
                     var _IElement = _InternalEnumerator.Current;
 
-                    if (!CompareObjects((T)_IElement.Properties.GetProperty(_Key), _Value))
+                    if (!CompareObjects(_IElement.Properties.GetProperty(_Key), _Value))
                     {
                         _CurrentElement = _IElement;
                         return true;

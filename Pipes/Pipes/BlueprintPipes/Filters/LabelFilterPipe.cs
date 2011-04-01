@@ -31,7 +31,31 @@ namespace de.ahzf.Pipes
     /// The LabelFilterPipe either allows or disallows all
     /// Edges that have the provided label.
     /// </summary>
-    public class LabelFilterPipe : AbstractComparisonFilterPipe<IPropertyEdge, String>
+    public class LabelFilterPipe<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                 TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                 THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>
+
+                    : AbstractComparisonFilterPipe<IPropertyEdge<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+                                                                 TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+                                                                 THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>,
+                                                   String>
+
+        where TDatastructureVertex    : IDictionary<TKeyVertex,    TValueVertex>
+        where TDatastructureEdge      : IDictionary<TKeyEdge,      TValueEdge>
+        where TDatastructureHyperEdge : IDictionary<TKeyHyperEdge, TValueHyperEdge>
+
+        where TKeyVertex              : IEquatable<TKeyVertex>,           IComparable<TKeyVertex>,           IComparable
+        where TKeyEdge                : IEquatable<TKeyEdge>,             IComparable<TKeyEdge>,             IComparable
+        where TKeyHyperEdge           : IEquatable<TKeyHyperEdge>,        IComparable<TKeyHyperEdge>,        IComparable
+
+        where TVertexId               : IEquatable<TVertexId>,            IComparable<TVertexId>,            IComparable, TValueVertex
+        where TEdgeId                 : IEquatable<TEdgeId>,              IComparable<TEdgeId>,              IComparable, TValueEdge
+        where THyperEdgeId            : IEquatable<THyperEdgeId>,         IComparable<THyperEdgeId>,         IComparable, TValueHyperEdge
+
+        where TVertexRevisionId       : IEquatable<TVertexRevisionId>,    IComparable<TVertexRevisionId>,    IComparable, TValueVertex
+        where TEdgeRevisionId         : IEquatable<TEdgeRevisionId>,      IComparable<TEdgeRevisionId>,      IComparable, TValueEdge
+        where THyperEdgeRevisionId    : IEquatable<THyperEdgeRevisionId>, IComparable<THyperEdgeRevisionId>, IComparable, TValueHyperEdge
+
     {
 
         #region Data
@@ -114,106 +138,5 @@ namespace de.ahzf.Pipes
         #endregion
 
     }
-
-
-    #region Extensions
-
-    /// <summary>
-    /// Pipes extensions.
-    /// </summary>
-    public static partial class Extensions
-    {
-
-        #region LabelFilterPipe(this myIEnumerable, myLabel, myComparisonFilter)
-
-        /// <summary>
-        /// The LabelFilterPipe either allows or disallows all
-        /// Edges that have the provided label.
-        /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IPropertyEdge.</param>
-        /// <param name="myLabel">The edge label.</param>
-        /// <param name="myComparisonFilter">The filter to use.</param>
-        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
-        public static IEnumerable<IPropertyEdge> LabelFilterPipe(this IEnumerable<IPropertyEdge> myIEnumerable, String myLabel, ComparisonFilter myComparisonFilter)
-        {
-
-            var _Pipe = new LabelFilterPipe(myLabel, myComparisonFilter);
-            _Pipe.SetSourceCollection(myIEnumerable);
-
-            return _Pipe;
-
-        }
-
-        #endregion
-
-        #region LabelEquals(this myIEnumerable, myLabel)
-
-        /// <summary>
-        /// The LabelFilterPipe either allows or disallows all
-        /// Edges that have the provided label.
-        /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IPropertyEdge.</param>
-        /// <param name="myLabel">The edge label.</param>
-        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
-        public static IEnumerable<IPropertyEdge> LabelEquals(this IEnumerable<IPropertyEdge> myIEnumerable, String myLabel)
-        {
-
-            var _Pipe = new LabelFilterPipe(myLabel, ComparisonFilter.NOT_EQUAL);
-            _Pipe.SetSourceCollection(myIEnumerable);
-
-            return _Pipe;
-
-        }
-
-        #endregion
-
-
-        #region LabelFilterPipe(this myIEnumerator, myLabel, myComparisonFilter)
-
-        /// <summary>
-        /// The LabelFilterPipe either allows or disallows all
-        /// Edges that have the provided label.
-        /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
-        /// <param name="myLabel">The edge label.</param>
-        /// <param name="myComparisonFilter">The filter to use.</param>
-        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
-        public static IEnumerable<IPropertyEdge> LabelFilterPipe(this IEnumerator<IPropertyEdge> myIEnumerator, String myLabel, ComparisonFilter myComparisonFilter)
-        {
-
-            var _Pipe = new LabelFilterPipe(myLabel, myComparisonFilter);
-            _Pipe.SetSource(myIEnumerator);
-
-            return _Pipe;
-
-        }
-
-        #endregion
-
-        #region LabelEquals(this myIEnumerable, myLabel)
-
-        /// <summary>
-        /// The LabelFilterPipe either allows or disallows all
-        /// Edges that have the provided label.
-        /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
-        /// <param name="myLabel">The edge label.</param>
-        /// <returns>A filtered collection of objects implementing IPropertyEdge.</returns>
-        public static IEnumerable<IPropertyEdge> LabelEquals(this IEnumerator<IPropertyEdge> myIEnumerator, String myLabel)
-        {
-
-            var _Pipe = new LabelFilterPipe(myLabel, ComparisonFilter.NOT_EQUAL);
-            _Pipe.SetSource(myIEnumerator);
-
-            return _Pipe;
-
-        }
-
-        #endregion
-
-    }
-
-    #endregion
-
 
 }

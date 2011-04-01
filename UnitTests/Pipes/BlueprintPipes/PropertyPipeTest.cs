@@ -42,7 +42,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko = _Graph.GetVertex(new VertexId("1"));
-            var _PPipe = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+
+            var _PPipe = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>("name");
+            
             _PPipe.SetSource(new List<IPropertyVertex>() { _Marko }.GetEnumerator());
 
             var _Counter = 0;
@@ -65,8 +69,15 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
-            var _EVP      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _PPipe    = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+            
+            var _EVP      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _PPipe    = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>("name");
+
             var _Pipeline = new Pipeline<IPropertyEdge, String>(_EVP, _PPipe);
             _Pipeline.SetSourceCollection(_Marko.OutEdges);
 
@@ -93,7 +104,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph    = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
             var _Vadas    = _Graph.GetVertex(new VertexId("2"));
-            var _Pipe     = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+
+            var _Pipe     = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>("name");
+
             var _Pipeline = new Pipeline<IPropertyVertex, String>(_Pipe);
             _Pipeline.SetSource(new List<IPropertyVertex>() { _Marko, _Vadas }.GetEnumerator());
 

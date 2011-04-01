@@ -49,8 +49,8 @@ namespace PipesShell
             var grapha    = TinkerGraphFactory.CreateTinkerGraph();
 
             var markoa   = grapha.GetVertex(new VertexId("1"));
-            var pipe1a   = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe2a   = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var pipe1a   = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
+            var pipe2a   = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var pipe3a   = new PathPipe<IPropertyVertex>();
             var pipeline = new Pipeline<IPropertyVertex, IEnumerable<Object>>(pipe1a, pipe2a, pipe3a);
             pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(markoa));
@@ -94,8 +94,8 @@ namespace PipesShell
 
             ////BUG: Stopps when an intermediate vertex has no edges!
             //var _FFriends = _Graph.GetVertices(new VertexId("1"), new VertexId("3")).
-            //               VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES).
-            //               EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX).
+            //               VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES).
+            //               EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX).
             //               GetProperty<String>("name").ToList();
 
             //var _Counter = 0;
@@ -112,8 +112,8 @@ namespace PipesShell
             var graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var marko = graph.GetVertex(new VertexId("1"));
-            var pipe1 = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var pipe2 = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var pipe1 = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
+            var pipe2 = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var pipe3 = new PropertyPipe<IPropertyVertex, String>("name");
             pipe3.SetSource(pipe2);
             pipe2.SetSource(pipe1);
@@ -192,20 +192,33 @@ namespace PipesShell
 
 
             // Create a graph...
-            var g = TinkerGraphFactory.CreateTinkerGraph();
+            //var g = TinkerGraphFactory.CreateTinkerGraph();
+            IPropertyGraph g = null;
 
             // params seem to fail!
             var f0 = g.GetVertices(new VertexId(1));
             // This is a work-around!
             var f1 = g.GetVertices(new VertexId[] { new VertexId(1) });
 
-            var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe2    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe3    = new PropertyPipe<VertexId, String, IPropertyVertex, String>(new String[] { "name" });
-            var _Pipeline = new Pipeline<IPropertyVertex, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
+            var _Pipe1    = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _Pipe2    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _Pipe3    = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(new String[] { "name" });
+            
+            var _Pipeline = new Pipeline<IGenericVertex<VertexId,    RevisionId, IProperties<String, Object, IDictionary<String, Object>>,
+                                                        EdgeId,      RevisionId, IProperties<String, Object, IDictionary<String, Object>>,
+                                                        HyperEdgeId, RevisionId, IProperties<String, Object, IDictionary<String, Object>>>, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
+
             _Pipeline.SetSourceCollection(f1);
 
-            //foreach (var _Friend in _Pipeline) Console.WriteLine(_Friend);
+            foreach (var _Friend in _Pipeline) Console.WriteLine(_Friend);
 
 
             // Still problems with extension methods?

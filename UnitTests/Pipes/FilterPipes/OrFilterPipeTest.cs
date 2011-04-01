@@ -71,7 +71,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Graph 			= TinkerGraphFactory.CreateTinkerGraph();
 	        var _Marko 			= _Graph.GetVertex(new VertexId("1"));
 	        var _Peter 			= _Graph.GetVertex(new VertexId("6"));
-	        var _Pipe0 			= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+	        var _Pipe0 			= new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
 	        var _Pipe1 			= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
 	        var _Pipe2 			= new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
 	        var _ORFilterPipe	= new OrFilterPipe<IPropertyEdge>(new HasNextPipe<IPropertyEdge>(_Pipe1), new HasNextPipe<IPropertyEdge>(_Pipe2));
@@ -103,7 +103,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 
 	        var _Graph 		= TinkerGraphFactory.CreateTinkerGraph();
 	        var _Marko 		= _Graph.GetVertex(new VertexId("1"));
-	        var _Pipe1 		= new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+	        var _Pipe1 		= new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
 	        var _PipeA 		= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
 	        var _PipeB 		= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
 	        var _PipeC 		= new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
@@ -165,9 +165,9 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
 
-            var _PipeA      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _PipeA      = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
             var _PipeB      = new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
-            var _PipeC      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _PipeC      = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var _PipeD      = new PropertyFilterPipe<VertexId, String, IPropertyVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
             var _Pipe1      = new AndFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(new Pipeline<IPropertyVertex, IPropertyVertex>(_PipeA, _PipeB, _PipeC, _PipeD)));
             var _Pipe2      = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
@@ -199,12 +199,12 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
 
-            var _PipeA      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+            var _PipeA      = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
             var _PipeB      = new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
-            var _PipeC      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _PipeC      = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var _Pipe1      = new AndFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(new Pipeline<IPropertyVertex, IPropertyVertex>(_PipeA, _PipeB, _PipeC)));
-            var _Pipe2      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe3      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _Pipe2      = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
+            var _Pipe3      = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
             var _Pipe4      = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
             var _Pipeline   = new Pipeline<IPropertyVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
             _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
@@ -234,14 +234,34 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
 
-            var _PipeA      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _PipeB      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            var _PipeA      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _PipeB      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
             var _Pipe1      = new OrFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(new Pipeline<IPropertyVertex, IPropertyVertex>(_PipeA, _PipeB)));
-            var _PipeC      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
+
+            var _PipeC      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
             var _Pipe2      = new OrFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(_PipeC));
-            var _Pipe3      = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-            var _Pipe4      = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-            var _Pipe5      = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+
+            var _Pipe3      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _Pipe4      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _Pipe5      = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>("name");
+
             var _Pipeline   = new Pipeline<IPropertyVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
             _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
 

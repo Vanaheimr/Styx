@@ -30,10 +30,16 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The PropertyMapPipe...
     /// </summary>
-    public class PropertyMapPipe<TId, TRevisionId, TValue, TDatastructure, TKey, S, T> : AbstractPipe<S, IDictionary<TKey, TValue>>
-        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
-        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+    public class PropertyMapPipe<TId, TRevisionId, TValue, TDatastructure, TKey, S, T>
+                    : AbstractPipe<S, IDictionary<TKey, TValue>>
+
+        where TDatastructure : IDictionary<TKey, TValue>
+        where TKey           : IEquatable<TKey>,        IComparable<TKey>,        IComparable
+        where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
+        where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
+        where S              : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+
+
     {
 
         #region MoveNext()

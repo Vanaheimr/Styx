@@ -21,6 +21,8 @@ using NUnit.Framework;
 
 using de.ahzf.blueprints.Datastructures;
 using de.ahzf.blueprints;
+using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -40,7 +42,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
-            var _EVP   = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+
+            var _EVP   = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
             _EVP.SetSourceCollection(_Marko.OutEdges);
 
             var _Counter = 0;
@@ -55,7 +61,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
 
             var _Josh = _Graph.GetVertex(new VertexId("4"));
-            _EVP = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
+            
+            _EVP = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
             _EVP.SetSource(_Josh.OutEdges.GetEnumerator());
 
             _Counter = 0;
@@ -91,7 +101,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                     _TmpEdge = _Edge;
             }
 
-            var _Pipe = new EdgeVertexPipe(EdgeVertexPipe.Step.BOTH_VERTICES);
+            var _Pipe = new EdgeVertexPipe(Steps.EdgeVertexStep.BOTH_VERTICES);
 
             _Pipe.SetSource(new SingleEnumerator<IPropertyEdge>(_TmpEdge));
             var _Counter = 0;
