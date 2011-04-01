@@ -51,9 +51,21 @@ namespace de.ahzf.Pipes.UnitTests.util
                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe2    = new GatherPipe<IPropertyVertex>();
-            var _Pipeline = new Pipeline<IPropertyVertex, IEnumerable<IPropertyVertex>>(_Pipe0, _Pipe1, _Pipe2);
-            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Graph.GetVertex(new VertexId("1"))));
+            var _Pipe2    = new GatherPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                           EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                           HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>();
+
+            var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                         IEnumerable<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>>(_Pipe0, _Pipe1, _Pipe2);
+
+            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Graph.GetVertex(new VertexId("1"))));
 
             while (_Pipeline.MoveNext())
                 Console.WriteLine(_Pipeline.Current + "--->");// + pipeline.Path);

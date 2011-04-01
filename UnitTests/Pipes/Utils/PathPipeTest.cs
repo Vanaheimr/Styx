@@ -53,9 +53,19 @@ namespace de.ahzf.Pipes.UnitTests.util
                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe3    = new PathPipe<IPropertyVertex>();
-            var _Pipeline = new Pipeline<IPropertyVertex, IEnumerable<Object>>(_Pipe1, _Pipe2, _Pipe3);
-            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex>(_Marko));
+            var _Pipe3    = new PathPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>();
+
+            var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                         IEnumerable<Object>>(_Pipe1, _Pipe2, _Pipe3);
+
+            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Marko));
 
             foreach (var _Path in _Pipeline)
             {

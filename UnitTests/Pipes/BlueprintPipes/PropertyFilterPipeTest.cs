@@ -51,10 +51,21 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe3    = new PropertyFilterPipe<VertexId, String, IPropertyVertex, String>("lang", "java", ComparisonFilter.NOT_EQUAL);
+            var _Pipe3    = new PropertyFilterPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("lang", "java", ComparisonFilter.NOT_EQUAL);
 
-            var _Pipeline = new Pipeline<IPropertyVertex, IPropertyVertex>(new List<IPipe>() { _Pipe1, _Pipe2, _Pipe3 });
-            _Pipeline.SetSource(new List<IPropertyVertex>() { _Marko }.GetEnumerator());
+            var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                         IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(new List<IPipe>() { _Pipe1, _Pipe2, _Pipe3 });
+
+            _Pipeline.SetSource(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko }.GetEnumerator());
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())

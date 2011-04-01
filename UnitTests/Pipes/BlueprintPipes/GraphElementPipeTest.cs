@@ -41,11 +41,18 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<VertexId, RevisionId, String, Object, IPropertyVertex>(GraphElementPipe<VertexId, String, IPropertyVertex>.ElementType.VERTEX);
-            _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
+            var _Pipe = new GraphElementPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.VERTEX);
+            _Pipe.SetSource(new SingleEnumerator<IPropertyGraph<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+                                                                Object>(_Graph));
             
             var _Counter = 0;
-            var _Vertices = new HashSet<IPropertyVertex>();
+            var _Vertices = new HashSet<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                        EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                        HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>();
 
             while (_Pipe.MoveNext())
             {
@@ -68,7 +75,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<EdgeId, String, IPropertyEdge>(GraphElementPipe<EdgeId, String, IPropertyEdge>.ElementType.EDGE);
+            
+            var _Pipe = new GraphElementPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.EDGE);
+            
             _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
 
             var _Counter = 0;
@@ -95,7 +106,11 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe  = new GraphElementPipe<EdgeId, String, IPropertyEdge>(GraphElementPipe<EdgeId, String, IPropertyEdge>.ElementType.EDGE);
+            
+            var _Pipe = new GraphElementPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.EDGE);
+
             _Pipe.SetSourceCollection(new List<IPropertyGraph>() { _Graph, _Graph, _Graph });
             
             var _Counter = 0;

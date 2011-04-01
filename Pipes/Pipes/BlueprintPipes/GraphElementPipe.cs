@@ -45,34 +45,12 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly ElementType _ElementType;
+        private readonly Steps.ElementType _ElementType;
 
         /// <summary>
         /// Stores all IElements not yet visited.
         /// </summary>
         protected IEnumerator<E> _StoredIElements;
-
-        #endregion
-
-        #region Enum ElementType
-
-        /// <summary>
-        /// The IElement to return.
-        /// </summary>
-        public enum ElementType
-        {
-            
-            /// <summary>
-            /// Return the vertex.
-            /// </summary>
-            VERTEX,
-
-            /// <summary>
-            /// Return the edge.
-            /// </summary>
-            EDGE
-
-        }
 
         #endregion
 
@@ -86,7 +64,7 @@ namespace de.ahzf.Pipes
         /// This pipe is useful for processing all of the vertices (or edges) of a graph.
         /// </summary>
         /// <param name="myElementType">Return vertex or edge.</param>
-        public GraphElementPipe(ElementType myElementType)
+        public GraphElementPipe(Steps.ElementType myElementType)
         {
             _ElementType = myElementType;
         }
@@ -130,7 +108,7 @@ namespace de.ahzf.Pipes
                         switch (_ElementType)
                         {
 
-                            case ElementType.VERTEX:
+                            case Steps.ElementType.VERTEX:
 
                                 _StoredIElements = (IEnumerator<E>) _InternalEnumerator.Current.GetVertices().GetEnumerator();
 
@@ -143,7 +121,7 @@ namespace de.ahzf.Pipes
                                     return false;
 
 
-                            case ElementType.EDGE:
+                            case Steps.ElementType.EDGE:
                                     
                                 _StoredIElements = (IEnumerator<E>) _InternalEnumerator.Current.GetEdges().GetEnumerator();
 

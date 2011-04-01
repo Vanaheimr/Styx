@@ -79,12 +79,26 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
-            var _Pipe1 = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
-            var _Pipe2 = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
-            var _Pipe3 = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
+            
+            var _Pipe1 = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _Pipe2 = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _Pipe3 = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name");
+
             _Pipe3.SetSource(_Pipe2);
             _Pipe2.SetSource(_Pipe1);
-            var _MarkoList = new List<IPropertyVertex>() { _Marko };
+
+            var _MarkoList = new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko };
+
             _Pipe1.SetSource(_MarkoList.GetEnumerator());
 
             foreach (var _Name in _Pipe3)
@@ -92,10 +106,10 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
                 var path = _Pipe3.Path;
 
-                Assert.AreEqual(_Marko,         path[0]);
-                Assert.AreEqual(typeof(Edge),   path[1].GetType());
-                Assert.AreEqual(typeof(Vertex), path[2].GetType());
-                Assert.AreEqual(typeof(String), path[3].GetType());
+                Assert.AreEqual(_Marko,                 path[0]);
+                Assert.AreEqual(typeof(PropertyEdge),   path[1].GetType());
+                Assert.AreEqual(typeof(PropertyVertex), path[2].GetType());
+                Assert.AreEqual(typeof(String),         path[3].GetType());
 
                 if (_Name == "vadas")
                 {

@@ -44,7 +44,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <param name="myIEnumerable">A collection of consumable objects.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<TValue> PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>(this IEnumerable<S> myIEnumerable, TKey[] myKeys)
+        public static IEnumerable<E> PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>(this IEnumerable<S> myIEnumerable, TKey[] myKeys)
             
             where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
             where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
@@ -54,7 +54,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
 
         {
 
-            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>(myKeys);
+            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -74,7 +74,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// <param name="myIEnumerator">A enumerator of consumable objects.</param>
         /// <param name="myKeys">The property keys.</param>
         /// <returns>A collection of emittable objects.</returns>
-        public static IEnumerable<TValue> PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>(this IEnumerator<S> myIEnumerator, TKey[] myKeys)
+        public static IEnumerable<E> PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>(this IEnumerator<S> myIEnumerator, TKey[] myKeys)
             
             where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
             where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
@@ -84,7 +84,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
 
         {
 
-            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>(myKeys);
+            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;

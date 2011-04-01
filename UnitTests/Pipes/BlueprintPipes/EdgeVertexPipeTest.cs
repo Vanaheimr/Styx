@@ -93,7 +93,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Josh  = _Graph.GetVertex(new VertexId("4"));
-            IPropertyEdge _TmpEdge = null;
+            IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                          EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                          HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>> _TmpEdge = null;
 
             foreach (var _Edge in _Josh.OutEdges)
             {
@@ -101,9 +103,14 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                     _TmpEdge = _Edge;
             }
 
-            var _Pipe = new EdgeVertexPipe(Steps.EdgeVertexStep.BOTH_VERTICES);
+            var _Pipe = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                           EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                           HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.BOTH_VERTICES);
 
-            _Pipe.SetSource(new SingleEnumerator<IPropertyEdge>(_TmpEdge));
+            _Pipe.SetSource(new SingleEnumerator<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_TmpEdge));
+
             var _Counter = 0;
             while (_Pipe.MoveNext())
             {

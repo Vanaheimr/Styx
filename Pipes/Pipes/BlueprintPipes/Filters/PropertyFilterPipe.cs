@@ -34,15 +34,15 @@ namespace de.ahzf.Pipes
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class PropertyFilterPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S>
-                    : AbstractComparisonFilterPipe<S, TValue>
+    public class PropertyFilterPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>
+                    : AbstractComparisonFilterPipe<S, E>
 
         where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
         where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
         where TKey           : IEquatable<TKey>,        IComparable<TKey>,        IComparable
-        where TValue         : IComparable
         where TDatastructure : IDictionary<TKey, TValue>
         where S              : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+        where E              : TValue, IComparable
 
     {
 
@@ -99,7 +99,7 @@ namespace de.ahzf.Pipes
 
                     var _IElement = _InternalEnumerator.Current;
 
-                    if (!CompareObjects(_IElement.Properties.GetProperty(_Key), _Value))
+                    if (!CompareObjects((E) (Object) _IElement.Properties.GetProperty(_Key), (E) (Object) _Value))
                     {
                         _CurrentElement = _IElement;
                         return true;

@@ -97,12 +97,33 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
                                                          EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                                          HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
 
-	        var _PropertyFilterPipe = new PropertyFilterPipe<VertexId, String, IPropertyVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
+	        var _PropertyFilterPipe = new PropertyFilterPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
 
-	        var _FutureFilterPipe 	= new FutureFilterPipe<IPropertyEdge>(new Pipeline<IPropertyEdge, IPropertyVertex>(_InVPipe, _PropertyFilterPipe));
+	        var _FutureFilterPipe 	= new FutureFilterPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
 
-	        var _Pipeline 			= new Pipeline<IPropertyVertex, IPropertyEdge>(_OutEPipe, _FutureFilterPipe);
-	        _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
+                                          new Pipeline<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                                       IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                       EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                       HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_InVPipe, _PropertyFilterPipe));
+
+	        var _Pipeline 			= new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                                   IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_OutEPipe, _FutureFilterPipe);
+
+	        _Pipeline.SetSourceCollection(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko });
 	        
 			int _Counter = 0;
 	        while (_Pipeline.MoveNext())

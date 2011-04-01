@@ -47,7 +47,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            _VSF.SetSource(new List<IPropertyVertex>() { _Marko }.GetEnumerator());
+            _VSF.SetSource(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko }.GetEnumerator());
 
             var _Counter = 0;
             while (_VSF.MoveNext())
@@ -68,7 +70,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                       EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                       HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            _VSF.SetSource(new List<IPropertyVertex>() { _Josh }.GetEnumerator());
+            _VSF.SetSource(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Josh }.GetEnumerator());
 
             _Counter = 0;
             while (_VSF.MoveNext())
@@ -89,7 +93,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                       EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                       HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            _VSF.SetSource(new List<IPropertyVertex>() { _Lop }.GetEnumerator());
+            _VSF.SetSource(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Lop }.GetEnumerator());
 
             _Counter = 0;
             while (_VSF.MoveNext())
@@ -116,7 +122,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.IN_EDGES);
 
-            _Pipe.SetSource(new SingleEnumerator<IPropertyVertex>(_Josh));
+            _Pipe.SetSource(new SingleEnumerator<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Josh));
 
             var _Counter = 0;
             while (_Pipe.MoveNext())
@@ -145,7 +153,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.BOTH_EDGES);
 
-            _Pipe.SetSource(new SingleEnumerator<IPropertyVertex>(_Josh));
+            _Pipe.SetSource(new SingleEnumerator<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Josh));
 
             var _Counter = 0;
             while (_Pipe.MoveNext())
@@ -172,7 +182,10 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             for (var i = 0; i < 100000; i++)
                 _Graph.AddVertex(null);
 
-            var _Vertices = new GraphElementPipe<VertexId, String, IPropertyVertex>(GraphElementPipe<VertexId, String, IPropertyVertex>.ElementType.VERTEX);
+            var _Vertices = new GraphElementPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.VERTEX);
+
             _Vertices.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
 
             var _OutEdges = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,

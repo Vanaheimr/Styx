@@ -1,86 +1,86 @@
-﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿///*
+// * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+// * This file is part of Pipes.NET
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
 
-#region Usings
+//#region Usings
 
-using System;
-using System.Collections.Generic;
+//using System;
+//using System.Collections.Generic;
 
-using NUnit.Framework;
+//using NUnit.Framework;
 
-using de.ahzf.blueprints.Datastructures;
+//using de.ahzf.blueprints.Datastructures;
 
-#endregion
+//#endregion
 
-namespace de.ahzf.Pipes.UnitTests.Blueprints
-{
+//namespace de.ahzf.Pipes.UnitTests.Blueprints
+//{
 
-    [TestFixture]
-    public class IdVertexPipeTest
-    {
+//    [TestFixture]
+//    public class IdVertexPipeTest
+//    {
 
-        #region testIdVertexPipeGraph()
+//        #region testIdVertexPipeGraph()
 
-        [Test]
-        public void testIdVertexPipeGraph()
-        {
+//        [Test]
+//        public void testIdVertexPipeGraph()
+//        {
 
-            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Ids   = new List<VertexId>() { new VertexId("1"), new VertexId("6"), new VertexId("5") };
-            var _Pipe  = new IdVertexPipe<VertexId>(_Graph);
-            _Pipe.SetSourceCollection(_Ids);
+//            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+//            var _Ids   = new List<VertexId>() { new VertexId("1"), new VertexId("6"), new VertexId("5") };
+//            var _Pipe  = new IdVertexPipe<VertexId>(_Graph);
+//            _Pipe.SetSourceCollection(_Ids);
 
-            var _Counter = 0;
-            while (_Pipe.MoveNext())
-            {
+//            var _Counter = 0;
+//            while (_Pipe.MoveNext())
+//            {
 
-                var _Vertex = _Pipe.Current;
+//                var _Vertex = _Pipe.Current;
                 
-                if (_Counter == 0)
-                {
-                    Assert.AreEqual(new VertexId("1"), _Vertex.Id);
-                    Assert.AreEqual("marko", _Vertex.GetProperty("name"));
-                }
+//                if (_Counter == 0)
+//                {
+//                    Assert.AreEqual(new VertexId("1"), _Vertex.Id);
+//                    Assert.AreEqual("marko", _Vertex.GetProperty("name"));
+//                }
                 
-                else if (_Counter == 1)
-                {
-                    Assert.AreEqual(new VertexId("6"), _Vertex.Id);
-                    Assert.AreEqual("peter", _Vertex.GetProperty("name"));
-                }
+//                else if (_Counter == 1)
+//                {
+//                    Assert.AreEqual(new VertexId("6"), _Vertex.Id);
+//                    Assert.AreEqual("peter", _Vertex.GetProperty("name"));
+//                }
                 
-                else if (_Counter == 2)
-                {
-                    Assert.AreEqual(new VertexId("5"), _Vertex.Id);
-                    Assert.AreEqual("ripple", _Vertex.GetProperty("name"));
-                }
+//                else if (_Counter == 2)
+//                {
+//                    Assert.AreEqual(new VertexId("5"), _Vertex.Id);
+//                    Assert.AreEqual("ripple", _Vertex.GetProperty("name"));
+//                }
 
-                else
-                    throw new Exception("Illegal state.");
+//                else
+//                    throw new Exception("Illegal state.");
                 
-                _Counter++;
+//                _Counter++;
 
-            }
+//            }
 
-            Assert.AreEqual(3, _Counter);
+//            Assert.AreEqual(3, _Counter);
 
-        }
+//        }
 
-        #endregion
+//        #endregion
 
-    }
+//    }
 
-}
+//}

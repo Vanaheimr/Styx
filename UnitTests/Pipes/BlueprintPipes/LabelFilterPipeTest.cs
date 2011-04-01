@@ -41,6 +41,7 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
+
             var _LFP   = new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
                                              EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                              HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.NOT_EQUAL);

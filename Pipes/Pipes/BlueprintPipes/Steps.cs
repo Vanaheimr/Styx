@@ -24,7 +24,7 @@ namespace de.ahzf.Pipes
     public class Steps
     {
 
-        #region EdgeVertexStep
+        #region Enum EdgeVertexStep
 
         /// <summary>
         /// An enum for traversing vertices starting at an edge.
@@ -51,7 +51,7 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-        #region VertexEdgeStep
+        #region Enum VertexEdgeStep
 
         /// <summary>
         /// An enum for traversing edges starting at a vertex.
@@ -73,6 +73,28 @@ namespace de.ahzf.Pipes
             /// Traverse both incoming and outgoing edges.
             /// </summary>
             BOTH_EDGES
+
+        }
+
+        #endregion
+
+        #region Enum ElementType
+
+        /// <summary>
+        /// The IElement to return.
+        /// </summary>
+        public enum ElementType
+        {
+
+            /// <summary>
+            /// Return the vertex.
+            /// </summary>
+            VERTEX,
+
+            /// <summary>
+            /// Return the edge.
+            /// </summary>
+            EDGE
 
         }
 

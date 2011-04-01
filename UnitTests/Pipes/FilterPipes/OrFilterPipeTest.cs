@@ -71,12 +71,42 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 	        var _Graph 			= TinkerGraphFactory.CreateTinkerGraph();
 	        var _Marko 			= _Graph.GetVertex(new VertexId("1"));
 	        var _Peter 			= _Graph.GetVertex(new VertexId("6"));
-	        var _Pipe0 			= new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
-	        var _Pipe1 			= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
-	        var _Pipe2 			= new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
-	        var _ORFilterPipe	= new OrFilterPipe<IPropertyEdge>(new HasNextPipe<IPropertyEdge>(_Pipe1), new HasNextPipe<IPropertyEdge>(_Pipe2));
-	        var _Pipeline 		= new Pipeline<IPropertyVertex, IPropertyEdge>(_Pipe0, _ORFilterPipe);
-	        _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko, _Peter, _Marko });
+
+	        var _Pipe0 			= new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+	        
+            var _Pipe1 			= new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("created", ComparisonFilter.NOT_EQUAL);
+
+            var _Pipe2 			= new PropertyFilterPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                        EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                        HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+
+            var _ORFilterPipe	= new OrFilterPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                      new HasNextPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Pipe1),
+
+                                      new HasNextPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Pipe2));
+
+	        var _Pipeline 		= new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                                 IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Pipe0, _ORFilterPipe);
+
+	        _Pipeline.SetSourceCollection(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko, _Peter, _Marko });
 	        
 			var _Counter = 0;
 	        while (_Pipeline.MoveNext())
@@ -103,14 +133,56 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 
 	        var _Graph 		= TinkerGraphFactory.CreateTinkerGraph();
 	        var _Marko 		= _Graph.GetVertex(new VertexId("1"));
-	        var _Pipe1 		= new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
-	        var _PipeA 		= new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
-	        var _PipeB 		= new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
-	        var _PipeC 		= new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
-	        var _PipeD 		= new AndFilterPipe<IPropertyEdge>(new HasNextPipe<IPropertyEdge>(_PipeB), new HasNextPipe<IPropertyEdge>(_PipeC));
-	        var _Pipe2 		= new OrFilterPipe<IPropertyEdge>(new HasNextPipe<IPropertyEdge>(_PipeA), new HasNextPipe<IPropertyEdge>(_PipeD));
-	        var _Pipeline 	= new Pipeline<IPropertyVertex, IPropertyEdge>(_Pipe1, _Pipe2);
-	        _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
+	        
+            var _Pipe1 		= new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+	        var _PipeA 		= new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("created", ComparisonFilter.NOT_EQUAL);
+
+	        var _PipeB 		= new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.NOT_EQUAL);
+
+	        var _PipeC 		= new PropertyFilterPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                    EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                    HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+
+	        var _PipeD 		= new AndFilterPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                              EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                              HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new HasNextPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeB),
+                                  new HasNextPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeC));
+
+	        var _Pipe2 		= new OrFilterPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new HasNextPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeA),
+                                  new HasNextPipe<IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeD));
+	        
+            var _Pipeline 	= new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                           EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                           HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                           IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Pipe1, _Pipe2);
+
+	        _Pipeline.SetSourceCollection(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko });
 	        
 			int _Counter = 0;
 	        while (_Pipeline.MoveNext())
@@ -165,14 +237,49 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
 
-            var _PipeA      = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
-            var _PipeB      = new LabelFilterPipe("created", ComparisonFilter.NOT_EQUAL);
-            var _PipeC      = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
-            var _PipeD      = new PropertyFilterPipe<VertexId, String, IPropertyVertex, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
-            var _Pipe1      = new AndFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(new Pipeline<IPropertyVertex, IPropertyVertex>(_PipeA, _PipeB, _PipeC, _PipeD)));
-            var _Pipe2      = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
-            var _Pipeline   = new Pipeline<IPropertyVertex, String>(_Pipe1, _Pipe2);
-            _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
+            var _PipeA      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _PipeB      = new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("created", ComparisonFilter.NOT_EQUAL);
+
+            var _PipeC      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _PipeD      = new PropertyFilterPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                        EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                        HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name", "lop", ComparisonFilter.NOT_EQUAL);
+
+            var _Pipe1      = new AndFilterPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new HasNextPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                               IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeA, _PipeB, _PipeC, _PipeD)));
+            
+            var _Pipe2      = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name");
+
+            var _Pipeline   = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                           EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                           HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>(_Pipe1, _Pipe2);
+            
+            _Pipeline.SetSourceCollection(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko });
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())
@@ -199,15 +306,53 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
             var _Graph      = TinkerGraphFactory.CreateTinkerGraph();
             var _Marko      = _Graph.GetVertex(new VertexId("1"));
 
-            var _PipeA      = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
-            var _PipeB      = new PropertyFilterPipe<EdgeId, String, IPropertyEdge, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
-            var _PipeC      = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
-            var _Pipe1      = new AndFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(new Pipeline<IPropertyVertex, IPropertyVertex>(_PipeA, _PipeB, _PipeC)));
-            var _Pipe2      = new VertexEdgePipe(Steps.VertexEdgeStep.OUT_EDGES);
-            var _Pipe3      = new EdgeVertexPipe(Steps.EdgeVertexStep.IN_VERTEX);
-            var _Pipe4      = new PropertyPipe<VertexId, String, IPropertyVertex, String>("name");
-            var _Pipeline   = new Pipeline<IPropertyVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
-            _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
+            var _PipeA      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+            
+            var _PipeB      = new PropertyFilterPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, Double>("weight", 0.5, ComparisonFilter.LESS_THAN_EQUAL);
+
+            var _PipeC      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _Pipe1      = new AndFilterPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new HasNextPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+                                                                  
+                                      new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                                   IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeA, _PipeB, _PipeC)));
+
+            var _Pipe2      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+
+            var _Pipe3      = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                 EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                 HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+
+            var _Pipe4      = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name");
+
+            var _Pipeline   = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                           EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                           HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
+
+            _Pipeline.SetSourceCollection(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko });
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())
@@ -242,13 +387,33 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe1      = new OrFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(new Pipeline<IPropertyVertex, IPropertyVertex>(_PipeA, _PipeB)));
+            var _Pipe1      = new OrFilterPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new HasNextPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                      new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+
+                                                   IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeA, _PipeB)));
 
             var _PipeC      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            var _Pipe2      = new OrFilterPipe<IPropertyVertex>(new HasNextPipe<IPropertyVertex>(_PipeC));
+            var _Pipe2      = new OrFilterPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(
+
+                                  new HasNextPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_PipeC));
 
             var _Pipe3      = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
                                                  EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
@@ -260,10 +425,15 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 
             var _Pipe5      = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
                                                                                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>("name");
+                                                                                                                                  HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name");
 
-            var _Pipeline   = new Pipeline<IPropertyVertex, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
-            _Pipeline.SetSourceCollection(new List<IPropertyVertex>() { _Marko });
+            var _Pipeline   = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                           EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                           HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4, _Pipe5);
+
+            _Pipeline.SetSourceCollection(new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
+                                                                   HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko });
 
             var _Counter = 0;
             while (_Pipeline.MoveNext())
