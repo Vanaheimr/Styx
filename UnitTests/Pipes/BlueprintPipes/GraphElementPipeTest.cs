@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,18 +41,16 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
         {
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
-            var _Pipe = new GraphElementPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.VERTEX);
-            _Pipe.SetSource(new SingleEnumerator<IPropertyGraph<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
-                                                                Object>(_Graph));
+            var _Pipe = new GraphElementPipe<VertexId, RevisionId, String, Object, IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                                                                   EdgeId,      RevisionId, String, Object,
+                                                                                                   HyperEdgeId, RevisionId, String, Object>>(Steps.ElementType.VERTEX);
+
+            _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
             
             var _Counter = 0;
-            var _Vertices = new HashSet<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                        EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                        HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>();
+            var _Vertices = new HashSet<IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                        EdgeId,      RevisionId, String, Object,
+                                                        HyperEdgeId, RevisionId, String, Object>>();
 
             while (_Pipe.MoveNext())
             {
@@ -76,14 +74,16 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
             
-            var _Pipe = new GraphElementPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.EDGE);
+            var _Pipe = new GraphElementPipe<EdgeId, RevisionId, String, Object, IPropertyEdge<VertexId,    RevisionId, String, Object,
+                                                                                               EdgeId,      RevisionId, String, Object,
+                                                                                               HyperEdgeId, RevisionId, String, Object>>(Steps.ElementType.EDGE);
             
             _Pipe.SetSource(new SingleEnumerator<IPropertyGraph>(_Graph));
 
             var _Counter = 0;
-            var _Edges = new HashSet<IPropertyEdge>();
+            var _Edges = new HashSet<IPropertyEdge<VertexId,    RevisionId, String, Object,
+                                                   EdgeId,      RevisionId, String, Object,
+                                                   HyperEdgeId, RevisionId, String, Object>>();
 
             while (_Pipe.MoveNext())
             {
@@ -107,14 +107,16 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Graph = TinkerGraphFactory.CreateTinkerGraph();
             
-            var _Pipe = new GraphElementPipe<EdgeId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyEdge<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(Steps.ElementType.EDGE);
+            var _Pipe = new GraphElementPipe<EdgeId, RevisionId, String, Object, IPropertyEdge<VertexId,    RevisionId, String, Object,
+                                                                                               EdgeId,      RevisionId, String, Object,
+                                                                                               HyperEdgeId, RevisionId, String, Object>>(Steps.ElementType.EDGE);
 
             _Pipe.SetSourceCollection(new List<IPropertyGraph>() { _Graph, _Graph, _Graph });
             
             var _Counter = 0;
-            var _Edges   = new HashSet<IPropertyEdge>();
+            var _Edges = new HashSet<IPropertyEdge<VertexId,    RevisionId, String, Object,
+                                                   EdgeId,      RevisionId, String, Object,
+                                                   HyperEdgeId, RevisionId, String, Object>>();
 
             while (_Pipe.MoveNext())
             {

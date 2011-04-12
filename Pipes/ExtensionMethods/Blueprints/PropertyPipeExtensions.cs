@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
 
         {
 
-            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>(myKeys);
+            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, S, E>(myKeys);
             _Pipe.SetSourceCollection(myIEnumerable);
 
             return _Pipe;
@@ -84,7 +84,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
 
         {
 
-            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>(myKeys);
+            var _Pipe = new PropertyPipe<TId, TRevisionId, TKey, TValue, S, E>(myKeys);
             _Pipe.SetSource(myIEnumerator);
 
             return _Pipe;

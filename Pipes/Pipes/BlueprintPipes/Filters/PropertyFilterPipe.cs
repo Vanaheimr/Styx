@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,13 @@ namespace de.ahzf.Pipes
     /// <typeparam name="TKey">The type of the property keys.</typeparam>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class PropertyFilterPipe<TId, TRevisionId, TKey, TValue, TDatastructure, S, E>
+    public class PropertyFilterPipe<TId, TRevisionId, TKey, TValue, S, E>
                     : AbstractComparisonFilterPipe<S, E>
 
         where TId            : IEquatable<TId>,         IComparable<TId>,         IComparable, TValue
         where TRevisionId    : IEquatable<TRevisionId>, IComparable<TRevisionId>, IComparable, TValue
         where TKey           : IEquatable<TKey>,        IComparable<TKey>,        IComparable
-        where TDatastructure : IDictionary<TKey, TValue>
-        where S              : IPropertyElement<TId, TRevisionId, TKey, TValue, TDatastructure>
+        where S              : IPropertyElement<TId, TRevisionId, TKey, TValue>
         where E              : TValue, IComparable
 
     {

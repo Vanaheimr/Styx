@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,24 +80,24 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
             
-            var _Pipe1 = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+            var _Pipe1 = new VertexEdgePipe<VertexId,    RevisionId, String, Object,
+                                            EdgeId,      RevisionId, String, Object,
+                                            HyperEdgeId, RevisionId, String, Object>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            var _Pipe2 = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                            EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+            var _Pipe2 = new EdgeVertexPipe<VertexId,    RevisionId, String, Object,
+                                            EdgeId,      RevisionId, String, Object,
+                                            HyperEdgeId, RevisionId, String, Object>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe3 = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>, String>("name");
+            var _Pipe3 = new PropertyPipe<VertexId, RevisionId, String, Object,  IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                                                                 EdgeId,      RevisionId, String, Object,
+                                                                                                 HyperEdgeId, RevisionId, String, Object>, String>("name");
 
             _Pipe3.SetSource(_Pipe2);
             _Pipe2.SetSource(_Pipe1);
 
-            var _MarkoList = new List<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                      EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                      HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>() { _Marko };
+            var _MarkoList = new List<IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                      EdgeId,      RevisionId, String, Object,
+                                                      HyperEdgeId, RevisionId, String, Object>>() { _Marko };
 
             _Pipe1.SetSource(_MarkoList.GetEnumerator());
 

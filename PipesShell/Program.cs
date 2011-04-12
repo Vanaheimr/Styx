@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,23 @@ namespace PipesShell
         public static Int32 Main(String[] myArgs)
         {
 
+            var _Graph = TinkerGraphFactory.CreateTinkerGraph();
+
+            var _Pipe = new LabelPipe<VertexId, RevisionId, String, Object,
+                                       EdgeId, RevisionId, String, Object,
+                                       HyperEdgeId, RevisionId, String, Object>();
+
+            _Pipe.SetSourceCollection(_Graph.GetVertex(new VertexId("1")).OutEdges);
+
+            var _Counter = 0;
+            while (_Pipe.MoveNext())
+            {
+                String label = _Pipe.Current;
+                Assert.IsTrue(label.Equals("knows") || label.Equals("created"));
+                _Counter++;
+            }
+
+            Assert.AreEqual(3, _Counter);
 
             /*
             var grapha    = TinkerGraphFactory.CreateTinkerGraph();
@@ -200,21 +217,21 @@ namespace PipesShell
             // This is a work-around!
             var f1 = g.GetVertices(new VertexId[] { new VertexId(1) });
 
-            var _Pipe1    = new VertexEdgePipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+            var _Pipe1    = new VertexEdgePipe<VertexId,    RevisionId, String, Object,
+                                               EdgeId,      RevisionId, String, Object,
+                                               HyperEdgeId, RevisionId, String, Object>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            var _Pipe2    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+            var _Pipe2    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object,
+                                               EdgeId,      RevisionId, String, Object,
+                                               HyperEdgeId, RevisionId, String, Object>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe3    = new PropertyPipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>, IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                                EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                                                                                HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(new String[] { "name" });
+            var _Pipe3    = new PropertyPipe<VertexId, RevisionId, String, Object, IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                                                                   EdgeId,      RevisionId, String, Object,
+                                                                                                   HyperEdgeId, RevisionId, String, Object>, String>(new String[] { "name" });
             
-            var _Pipeline = new Pipeline<IGenericVertex<VertexId,    RevisionId, IProperties<String, Object, IDictionary<String, Object>>,
-                                                        EdgeId,      RevisionId, IProperties<String, Object, IDictionary<String, Object>>,
-                                                        HyperEdgeId, RevisionId, IProperties<String, Object, IDictionary<String, Object>>>, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
+            var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                         EdgeId,      RevisionId, String, Object,
+                                                         HyperEdgeId, RevisionId, String, Object>, String>(new IPipe[] { _Pipe1, _Pipe2, _Pipe3 });
 
             _Pipeline.SetSourceCollection(f1);
 

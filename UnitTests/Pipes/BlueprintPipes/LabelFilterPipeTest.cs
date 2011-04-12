@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
 
             var _Marko = _Graph.GetVertex(new VertexId("1"));
 
-            var _LFP   = new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                             EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                             HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.NOT_EQUAL);
+            var _LFP   = new LabelFilterPipe<VertexId,    RevisionId, String, Object,
+                                             EdgeId,      RevisionId, String, Object,
+                                             HyperEdgeId, RevisionId, String, Object>("knows", ComparisonFilter.NOT_EQUAL);
 
             _LFP.SetSourceCollection(_Marko.OutEdges);
 
@@ -60,9 +60,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
             Assert.AreEqual(2, _Counter);
 
 
-            _LFP = new LabelFilterPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                       EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                       HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>("knows", ComparisonFilter.EQUAL);
+            _LFP = new LabelFilterPipe<VertexId,    RevisionId, String, Object,
+                                       EdgeId,      RevisionId, String, Object,
+                                       HyperEdgeId, RevisionId, String, Object>("knows", ComparisonFilter.EQUAL);
 
             _LFP.SetSourceCollection(_Marko.OutEdges);
 

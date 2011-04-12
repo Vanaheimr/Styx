@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,27 +45,27 @@ namespace de.ahzf.Pipes.UnitTests.util
 
             var _Marko    = _Graph.GetVertex(new VertexId("1"));
 
-            var _Pipe1 = new VertexEdgePipe<VertexId, RevisionId, String, Object, IDictionary<String, Object>,
-                                            EdgeId, RevisionId, String, Object, IDictionary<String, Object>,
-                                            HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.VertexEdgeStep.OUT_EDGES);
+            var _Pipe1 = new VertexEdgePipe<VertexId,    RevisionId, String, Object,
+                                            EdgeId,      RevisionId, String, Object,
+                                            HyperEdgeId, RevisionId, String, Object>(Steps.VertexEdgeStep.OUT_EDGES);
 
-            var _Pipe2    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                               EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                               HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>(Steps.EdgeVertexStep.IN_VERTEX);
+            var _Pipe2    = new EdgeVertexPipe<VertexId,    RevisionId, String, Object,
+                                               EdgeId,      RevisionId, String, Object,
+                                               HyperEdgeId, RevisionId, String, Object>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe3    = new PathPipe<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>();
+            var _Pipe3    = new PathPipe<IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                         EdgeId,      RevisionId, String, Object,
+                                                         HyperEdgeId, RevisionId, String, Object>>();
 
-            var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                         EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                         HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>,
+            var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                         EdgeId,      RevisionId, String, Object,
+                                                         HyperEdgeId, RevisionId, String, Object>,
 
                                          IEnumerable<Object>>(_Pipe1, _Pipe2, _Pipe3);
 
-            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex<VertexId,    RevisionId, String, Object, IDictionary<String, Object>,
-                                                                     EdgeId,      RevisionId, String, Object, IDictionary<String, Object>,
-                                                                     HyperEdgeId, RevisionId, String, Object, IDictionary<String, Object>>>(_Marko));
+            _Pipeline.SetSource(new SingleEnumerator<IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                                     EdgeId,      RevisionId, String, Object,
+                                                                     HyperEdgeId, RevisionId, String, Object>>(_Marko));
 
             foreach (var _Path in _Pipeline)
             {

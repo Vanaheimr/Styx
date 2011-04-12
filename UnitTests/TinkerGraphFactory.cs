@@ -32,14 +32,14 @@ namespace de.ahzf.Pipes.UnitTests
         public static IPropertyGraph CreateTinkerGraph()
         {
 
-            var _TinkerGraph = new InMemoryPropertyGraph();
+            var _TinkerGraph = new InMemoryPropertyGraph() as IPropertyGraph;
 
-            var marko  = _TinkerGraph.AddVertex(new PropertyVertex(new VertexId("1"), v => v.SetProperty("name", "marko"). SetProperty("age",   29)))    as IPropertyVertex;
-            var vadas  = _TinkerGraph.AddVertex(new PropertyVertex(new VertexId("2"), v => v.SetProperty("name", "vadas"). SetProperty("age",   27)))    as IPropertyVertex;
-            var lop    = _TinkerGraph.AddVertex(new PropertyVertex(new VertexId("3"), v => v.SetProperty("name", "lop").   SetProperty("lang", "java"))) as IPropertyVertex;
-            var josh   = _TinkerGraph.AddVertex(new PropertyVertex(new VertexId("4"), v => v.SetProperty("name", "josh").  SetProperty("age",   32)))    as IPropertyVertex;
-            var ripple = _TinkerGraph.AddVertex(new PropertyVertex(new VertexId("5"), v => v.SetProperty("name", "ripple").SetProperty("lang", "java"))) as IPropertyVertex;
-            var peter  = _TinkerGraph.AddVertex(new PropertyVertex(new VertexId("6"), v => v.SetProperty("name", "peter"). SetProperty("age",   35)))    as IPropertyVertex;
+            var marko  = _TinkerGraph.AddVertex(new VertexId("1"), v => v.SetProperty("name", "marko"). SetProperty("age",   29));
+            var vadas  = _TinkerGraph.AddVertex(new VertexId("2"), v => v.SetProperty("name", "vadas"). SetProperty("age",   27));
+            var lop    = _TinkerGraph.AddVertex(new VertexId("3"), v => v.SetProperty("name", "lop").   SetProperty("lang", "java"));
+            var josh   = _TinkerGraph.AddVertex(new VertexId("4"), v => v.SetProperty("name", "josh").  SetProperty("age",   32));
+            var ripple = _TinkerGraph.AddVertex(new VertexId("5"), v => v.SetProperty("name", "ripple").SetProperty("lang", "java"));
+            var peter  = _TinkerGraph.AddVertex(new VertexId("6"), v => v.SetProperty("name", "peter"). SetProperty("age",   35));
 
             var e7  = _TinkerGraph.AddEdge(marko, vadas,  new EdgeId("7"),  "knows",   e => e.SetProperty("weight", 0.5));
             var e8  = _TinkerGraph.AddEdge(marko, josh,   new EdgeId("8"),  "knows",   e => e.SetProperty("weight", 1.0));
@@ -50,7 +50,7 @@ namespace de.ahzf.Pipes.UnitTests
 
             var e12 = _TinkerGraph.AddEdge(peter, lop,    new EdgeId("12"), "created", e => e.SetProperty("weight", 0.2));
 
-            return _TinkerGraph as IPropertyGraph;
+            return _TinkerGraph;
 
         }
 

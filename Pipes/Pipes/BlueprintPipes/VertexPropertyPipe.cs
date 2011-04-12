@@ -1,6 +1,6 @@
 ﻿///*
 // * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
-// * This file is part of Pipes.NET
+// * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");
 // * you may not use this file except in compliance with the License.
@@ -33,10 +33,10 @@
 //    /// </summary>
 //    /// <typeparam name="TKey">The type of the property keys.</typeparam>
 //    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-//    public class VertexPropertyPipe<TVertexId, TVertexRevisionId, TKeyVertex, TValueVertex, TDatastructureVertex, E>
-//                    : PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, IPropertyVertex<TVertexId,    TVertexRevisionId,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
-//                                                                                                   TEdgeId,      TEdgeRevisionId,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
-//                                                                                                   THyperEdgeId, THyperEdgeRevisionId, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>, E>
+//    public class VertexPropertyPipe<TIdVertex, TRevisionIdVertex, TKeyVertex, TValueVertex, TDatastructureVertex, E>
+//                    : PropertyPipe<TId, TRevisionId, TKey, TValue, TDatastructure, IPropertyVertex<TIdVertex,    TRevisionIdVertex,    TKeyVertex,    TValueVertex,    TDatastructureVertex,
+//                                                                                                   TIdEdge,      TRevisionIdEdge,      TKeyEdge,      TValueEdge,      TDatastructureEdge,
+//                                                                                                   TIdHyperEdge, TRevisionIdHyperEdge, TKeyHyperEdge, TValueHyperEdge, TDatastructureHyperEdge>, E>
 
 //        where TId  : IEquatable<TId>,  IComparable<TId>,  IComparable
 //        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
