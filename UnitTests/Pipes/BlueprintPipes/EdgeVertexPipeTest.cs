@@ -17,12 +17,12 @@
 
 #region Usings
 
-using NUnit.Framework;
-
-using de.ahzf.blueprints.Datastructures;
-using de.ahzf.blueprints;
 using System;
-using System.Collections.Generic;
+
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.PropertyGraph;
+
+using NUnit.Framework;
 
 #endregion
 

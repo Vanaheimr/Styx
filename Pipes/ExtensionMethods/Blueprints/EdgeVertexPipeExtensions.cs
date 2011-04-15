@@ -17,10 +17,10 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 
-using de.ahzf.blueprints;
-using System;
+using de.ahzf.blueprints.PropertyGraph;
 
 #endregion
 

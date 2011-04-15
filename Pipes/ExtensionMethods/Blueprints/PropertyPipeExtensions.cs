@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-using de.ahzf.blueprints;
+using de.ahzf.blueprints.PropertyGraph;
 
 #endregion
 

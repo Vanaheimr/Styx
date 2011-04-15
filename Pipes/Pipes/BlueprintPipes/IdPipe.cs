@@ -20,7 +20,6 @@
 using System;
 
 using de.ahzf.blueprints;
-using de.ahzf.blueprints.Datastructures;
 
 #endregion
 

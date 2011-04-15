@@ -17,13 +17,13 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 
-using NUnit.Framework;
-
-using de.ahzf.blueprints.Datastructures;
 using de.ahzf.blueprints;
-using System;
+using de.ahzf.blueprints.PropertyGraph;
+
+using NUnit.Framework;
 
 #endregion
 
@@ -51,7 +51,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                                EdgeId,      RevisionId, String, Object,
                                                HyperEdgeId, RevisionId, String, Object>(Steps.EdgeVertexStep.IN_VERTEX);
 
-            var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
+            var _Pipe3    = new VertexIdFilterPipe<VertexId,    RevisionId, String, Object,
+                                                   EdgeId,      RevisionId, String, Object,
+                                                   HyperEdgeId, RevisionId, String, Object>(new VertexId("3"), ComparisonFilter.NOT_EQUAL);
 
             var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object,
                                                          EdgeId,      RevisionId, String, Object,
@@ -96,7 +98,9 @@ namespace de.ahzf.Pipes.UnitTests.Blueprints
                                                EdgeId,      RevisionId, String, Object,
                                                HyperEdgeId, RevisionId, String, Object>(Steps.EdgeVertexStep.IN_VERTEX);
             
-            var _Pipe3    = new VertexIdFilterPipe(new VertexId("3"), ComparisonFilter.EQUAL);
+            var _Pipe3    = new VertexIdFilterPipe<VertexId,    RevisionId, String, Object,
+                                                   EdgeId,      RevisionId, String, Object,
+                                                   HyperEdgeId, RevisionId, String, Object>(new VertexId("3"), ComparisonFilter.EQUAL);
 
             var _Pipeline = new Pipeline<IPropertyVertex<VertexId,    RevisionId, String, Object,
                                                          EdgeId,      RevisionId, String, Object,

@@ -19,9 +19,10 @@
 
 using System;
 
-using NUnit.Framework;
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.PropertyGraph;
 
-using de.ahzf.blueprints.Datastructures;
+using NUnit.Framework;
 
 #endregion
 

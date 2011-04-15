@@ -22,7 +22,6 @@ using System.Linq;
 using System.Collections.Generic;
 
 using de.ahzf.blueprints;
-using de.ahzf.blueprints.Datastructures;
 
 using NUnit.Framework;
 

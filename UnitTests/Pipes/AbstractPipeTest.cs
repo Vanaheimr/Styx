@@ -20,11 +20,9 @@
 using System;
 using System.Collections.Generic;
 
-using de.ahzf.blueprints;
-using de.ahzf.blueprints.InMemory.PropertyGraph;
-using de.ahzf.blueprints.Datastructures;
-
 using NUnit.Framework;
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.PropertyGraph;
 
 #endregion
 
@@ -107,8 +105,12 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
                 var path = _Pipe3.Path;
 
                 Assert.AreEqual(_Marko,                 path[0]);
-                Assert.AreEqual(typeof(PropertyEdge),   path[1].GetType());
-                Assert.AreEqual(typeof(PropertyVertex), path[2].GetType());
+                Assert.AreEqual(typeof(IPropertyEdge<VertexId,    RevisionId, String, Object,
+                                                     EdgeId,      RevisionId, String, Object,
+                                                     HyperEdgeId, RevisionId, String, Object>),   path[1].GetType());
+                Assert.AreEqual(typeof(IPropertyVertex<VertexId,    RevisionId, String, Object,
+                                                       EdgeId,      RevisionId, String, Object,
+                                                       HyperEdgeId, RevisionId, String, Object>), path[2].GetType());
                 Assert.AreEqual(typeof(String),         path[3].GetType());
 
                 if (_Name == "vadas")

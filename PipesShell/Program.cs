@@ -18,20 +18,19 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
+
+using de.ahzf.blueprints;
+using de.ahzf.blueprints.PropertyGraph;
+using de.ahzf.blueprints.PropertyGraph.InMemory;
 
 using de.ahzf.Pipes;
-using de.ahzf.Pipes.ExtensionMethods;
-using de.ahzf.blueprints;
-using de.ahzf.blueprints.Datastructures;
-using de.ahzf.blueprints.InMemory.PropertyGraph;
 using de.ahzf.Pipes.UnitTests;
+using de.ahzf.Pipes.ExtensionMethods;
+
+using Mono;
+using Mono.CSharp;
 
 using NUnit.Framework;
-using Mono.CSharp;
-using Mono;
 
 #endregion
 

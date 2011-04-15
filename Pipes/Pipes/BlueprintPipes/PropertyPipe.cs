@@ -18,11 +18,10 @@
 #region Usings
 
 using System;
-using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 
-using de.ahzf.blueprints;
-using System.Text;
+using de.ahzf.blueprints.PropertyGraph;
 
 #endregion
 

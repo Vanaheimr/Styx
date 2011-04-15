@@ -20,7 +20,7 @@
 using System;
 
 using de.ahzf.blueprints;
-using de.ahzf.blueprints.Datastructures;
+using de.ahzf.blueprints.PropertyGraph;
 
 #endregion
 
@@ -30,12 +30,29 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// The IdPipe will return the Id of the given graph element.
     /// </summary>
-    public class EdgeIdFilterPipe : AbstractComparisonFilterPipe<IPropertyEdge, EdgeId>
+    public class EdgeIdFilterPipe<TIdVertex,    TRevisionIdVertex,    TKeyVertex,    TValueVertex,
+                                  TIdEdge,      TRevisionIdEdge,      TKeyEdge,      TValueEdge,
+                                  TIdHyperEdge, TRevisionIdHyperEdge, TKeyHyperEdge, TValueHyperEdge> : AbstractComparisonFilterPipe<IPropertyEdge<TIdVertex,    TRevisionIdVertex,    TKeyVertex,    TValueVertex,
+                                                                                                                                                   TIdEdge,      TRevisionIdEdge,      TKeyEdge,      TValueEdge,
+                                                                                                                                                   TIdHyperEdge, TRevisionIdHyperEdge, TKeyHyperEdge, TValueHyperEdge>, TIdEdge>
+
+        where TKeyVertex              : IEquatable<TKeyVertex>,           IComparable<TKeyVertex>,           IComparable
+        where TKeyEdge                : IEquatable<TKeyEdge>,             IComparable<TKeyEdge>,             IComparable
+        where TKeyHyperEdge           : IEquatable<TKeyHyperEdge>,        IComparable<TKeyHyperEdge>,        IComparable
+
+        where TIdVertex               : IEquatable<TIdVertex>,            IComparable<TIdVertex>,            IComparable, TValueVertex
+        where TIdEdge                 : IEquatable<TIdEdge>,              IComparable<TIdEdge>,              IComparable, TValueEdge
+        where TIdHyperEdge            : IEquatable<TIdHyperEdge>,         IComparable<TIdHyperEdge>,         IComparable, TValueHyperEdge
+
+        where TRevisionIdVertex       : IEquatable<TRevisionIdVertex>,    IComparable<TRevisionIdVertex>,    IComparable, TValueVertex
+        where TRevisionIdEdge         : IEquatable<TRevisionIdEdge>,      IComparable<TRevisionIdEdge>,      IComparable, TValueEdge
+        where TRevisionIdHyperEdge    : IEquatable<TRevisionIdHyperEdge>, IComparable<TRevisionIdHyperEdge>, IComparable, TValueHyperEdge
+
     {
 
         #region Data
 
-        private readonly EdgeId _EdgeId;
+        private readonly TIdEdge _EdgeId;
 
         #endregion
 
@@ -48,7 +65,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         /// <param name="myEdgeId">The Id of the IElement.</param>
         /// <param name="myComparisonFilter">The filter to use.</param>
-        public EdgeIdFilterPipe(EdgeId myEdgeId, ComparisonFilter myComparisonFilter)
+        public EdgeIdFilterPipe(TIdEdge myEdgeId, ComparisonFilter myComparisonFilter)
             : base(myComparisonFilter)
         {
             _EdgeId = myEdgeId;
