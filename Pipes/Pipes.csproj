@@ -38,21 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\Foaf.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\EdgePropertyPipeExtensions.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\EdgeVertexPipeExtensions.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\LabelFilterPipeExtensions.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\Neighbors.cs" />
     <Compile Include="ExtensionMethods\IEnumerable.cs" />
-    <Compile Include="Pipes\BlueprintPipes\EdgePropertyPipe.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\PropertyPipeExtensions.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\VertexEdgePipeExtensions.cs" />
-    <Compile Include="ExtensionMethods\Blueprints\VertexPropertyPipeExtensions.cs" />
-    <Compile Include="Pipes\BlueprintPipes\Steps.cs" />
-    <Compile Include="Pipes\BlueprintPipes\VertexPropertyPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\Filters\EdgeIdFilterPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\Filters\VertexIdFilterPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\VertexEdgePipe.cs" />
     <Compile Include="Enumerators\ISingleEnumerator.cs" />
     <Compile Include="Enumerators\IHistoryEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
@@ -68,17 +54,6 @@
     <Compile Include="Pipes\FilterPipes\RandomFilterPipe.cs" />
     <Compile Include="Pipes\Interfaces\ComparisonFilter.cs" />
     <Compile Include="Pipes\Interfaces\IComparisonFilterPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\PropertyPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\PropertyMapPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\Filters\PropertyFilterPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\LabelPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\Filters\LabelFilterPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\IdVertexPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\EdgeVertexPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\GraphElementPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\IdEdgePipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\IdPipe.cs" />
-    <Compile Include="Pipes\BlueprintPipes\Filters\IdFilterPipe.cs" />
     <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Enumerators\SingleEnumerator.cs" />
     <Compile Include="Enumerators\MultiEnumerator.cs" />
@@ -106,9 +81,7 @@
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="ExtensionMethods\Blueprints\Filters\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
       <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>

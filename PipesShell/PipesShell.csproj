@@ -58,6 +58,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BlueprintPipes.NET\BlueprintPipes.NET\BlueprintPipes.NET.csproj">
+      <Project>{F60A10D8-4967-46E2-9C05-6292240C6E6B}</Project>
+      <Name>BlueprintPipes.NET</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BlueprintPipes.NET\UnitTests\UnitTests.csproj">
+      <Project>{4BF95036-986A-47EE-B48E-CF8C2B0E7841}</Project>
+      <Name>UnitTests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
       <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>
       <Name>blueprints</Name>
@@ -69,10 +77,6 @@
     <ProjectReference Include="..\Pipes\Pipes.csproj">
       <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
       <Name>Pipes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnitTests\UnitTests.csproj">
-      <Project>{62373408-6E14-4753-9B0E-EE0CF5988481}</Project>
-      <Name>UnitTests</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
