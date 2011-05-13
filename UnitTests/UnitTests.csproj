@@ -39,11 +39,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pipes\FilterPipes\UniquePathFilterPipeTest.cs" />
+    <Compile Include="Pipes\FilterPipes\FilterFuncPipeTest.cs" />
+    <Compile Include="Pipes\SimplePipes\ActionPipeTest.cs" />
+    <Compile Include="Pipes\SimplePipes\FuncPipeTest.cs" />
     <Compile Include="TinkerGraphFactory.cs" />
-    <Compile Include="Pipes\FilterPipes\RandomFilterPipeTest.cs" />
-    <Compile Include="Pipes\FilterPipes\RangeFilterPipeTest.cs" />
-    <Compile Include="Pipes\AbstractPipeTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Enumerators\ExpandableIteratorTest.cs" />
     <Compile Include="Pipes\SimplePipes\IdentityPipeTest.cs" />
@@ -56,16 +55,10 @@
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipeTest.cs" />
     <Compile Include="ToyGraphFactory.cs" />
     <Compile Include="Pipes\Utils\ScatterPipeTest.cs" />
-    <Compile Include="Pipes\Utils\PathPipeTest.cs" />
-    <Compile Include="Pipes\Utils\GatherPipeTest.cs" />
     <Compile Include="Pipes\Utils\HasNextPipeTest.cs" />
-    <Compile Include="Pipes\FilterPipes\AndFilterPipeTest.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipeTest.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipeTest.cs" />
-    <Compile Include="Pipes\FilterPipes\DuplicateFilterPipeTest.cs" />
-    <Compile Include="Pipes\FilterPipes\FutureFilterPipeTest.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipeTest.cs" />
-    <Compile Include="Pipes\FilterPipes\OrFilterPipeTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">

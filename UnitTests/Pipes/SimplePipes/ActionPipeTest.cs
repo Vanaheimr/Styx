@@ -29,59 +29,18 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 {
 
     [TestFixture]
-    public class IdentityPipeTest
+    public class ActionPipeTest
     {
 
-        #region testIdentityPipeNormal()
+        #region testActionPipeNormal()
 
         [Test]
-        public void testIdentityPipeNormal()
+        public void testActionPipeNormal()
         {
 
-            var _UUIDs = BaseTest.GenerateUUIDs(100);
-            var _Pipe  = new IdentityPipe<String>();
-            _Pipe.SetSourceCollection(_UUIDs);
-
-            var _Counter = 0;
-            while (_Pipe.MoveNext())
-            {
-                Assert.AreEqual(_Pipe.Current, _UUIDs.ElementAt(_Counter));
-                _Counter++;
-            }
-
-            Assert.AreEqual(_Counter, 100);
-
-        }
-
-        #endregion
-
-        #region testIdentityPipeZero
-        
-        [Test]
-        public void testIdentityPipeZero()
-        {
-
-            var _UUIDs = BaseTest.GenerateUUIDs(0);
-            var _Pipe  = new IdentityPipe<String>();
-            _Pipe.SetSourceCollection(_UUIDs);
-
-            var _Counter = 0;
-            Assert.IsFalse(_Pipe.Any());
-            Assert.AreEqual(_Counter, 0);
-            Assert.IsFalse(_Pipe.Any());
-
-        }
-
-        #endregion
-
-        #region testIdentityPipeInt32()
-
-        [Test]
-        public void testIdentityPipeInt32()
-        {
-
-            var _Numbers = new List<Int32>() { 1, 2, 3, 4 };
-            var _Pipe    = new IdentityPipe<Int32>();
+            var _Sum     = 0;
+            var _Numbers = Enumerable.Range(1, 10);
+            var _Pipe    = new ActionPipe<Int32>((_Int32) => _Sum += _Int32);
             _Pipe.SetSourceCollection(_Numbers);
 
             var _Counter = 0;
@@ -91,7 +50,43 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
                 _Counter++;
             }
 
-            Assert.AreEqual(_Counter, 4);
+            Assert.AreEqual(_Counter, 10);
+            Assert.AreEqual(_Sum,     55);
+
+        }
+
+        #endregion
+
+        #region testActionPipeZero
+
+        [Test]
+        public void testActionPipeZero()
+        {
+
+            var _Sum     = 0;
+            var _Numbers = new List<Int32>();
+            var _Pipe    = new ActionPipe<Int32>((_Int32) => _Sum += _Int32);
+            _Pipe.SetSourceCollection(_Numbers);
+
+            var _Counter = 0;
+            Assert.IsFalse(_Pipe.Any());
+            Assert.AreEqual(_Counter, 0);
+            Assert.AreEqual(_Sum,     0);
+            Assert.IsFalse(_Pipe.Any());
+
+        }
+
+        #endregion
+
+        #region testActionPipeNull()
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void testActionPipeNull()
+        {
+
+            Action<Int32> myAction = null;
+            var _Pipe = new ActionPipe<Int32>(myAction);
 
         }
 

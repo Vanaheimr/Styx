@@ -58,9 +58,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BlueprintPipes.NET\BlueprintPipes.NET\BlueprintPipes.NET.csproj">
-      <Project>{F60A10D8-4967-46E2-9C05-6292240C6E6B}</Project>
-      <Name>BlueprintPipes.NET</Name>
+    <ProjectReference Include="..\..\BlueprintPipes.NET\BlueprintPipes\BlueprintPipes.csproj">
+      <Project>{6BDAAB41-73D0-4899-A184-F10B3403BAFD}</Project>
+      <Name>BlueprintPipes</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\BlueprintPipes.NET\UnitTests\UnitTests.csproj">
       <Project>{4BF95036-986A-47EE-B48E-CF8C2B0E7841}</Project>

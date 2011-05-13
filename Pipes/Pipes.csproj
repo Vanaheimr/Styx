@@ -44,6 +44,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
+    <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FutureFilterPipe.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipe.cs" />
     <Compile Include="Pipes\Interfaces\ISideEffectPipe.cs" />
     <Compile Include="Pipes\SideeffectPipes\CountPipe.cs" />
+    <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
+    <Compile Include="Pipes\SimplePipes\FuncPipe.cs" />
     <Compile Include="Pipes\Utils\ScatterPipe.cs" />
     <Compile Include="Pipes\Utils\PathPipe.cs" />
     <Compile Include="Pipes\Utils\GatherPipe.cs" />
