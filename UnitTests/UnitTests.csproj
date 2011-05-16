@@ -42,7 +42,6 @@
     <Compile Include="Pipes\FilterPipes\FilterFuncPipeTest.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipeTest.cs" />
     <Compile Include="Pipes\SimplePipes\FuncPipeTest.cs" />
-    <Compile Include="TinkerGraphFactory.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Enumerators\ExpandableIteratorTest.cs" />
     <Compile Include="Pipes\SimplePipes\IdentityPipeTest.cs" />
@@ -53,7 +52,6 @@
     <Compile Include="Pipes\SideeffectPipes\CountPipeTest.cs" />
     <Compile Include="Pipes\SideeffectPipes\GroupCountPipeTest.cs" />
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipeTest.cs" />
-    <Compile Include="ToyGraphFactory.cs" />
     <Compile Include="Pipes\Utils\ScatterPipeTest.cs" />
     <Compile Include="Pipes\Utils\HasNextPipeTest.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipeTest.cs" />
@@ -61,14 +59,6 @@
     <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipeTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
-      <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>
-      <Name>blueprints</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\blueprints.NET\InMemoryGraph\InMemoryGraph.csproj">
-      <Project>{D4D2ACAD-FF2E-44AD-9D4A-6E332C246FAD}</Project>
-      <Name>InMemoryGraph</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Pipes\Pipes.csproj">
       <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
       <Name>Pipes</Name>

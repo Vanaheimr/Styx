@@ -18,44 +18,18 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using NUnit.Framework;
+using System.IO;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests.util
+namespace de.ahzf.Pipes
 {
 
-    [TestFixture]
-    public class HasNextPipeTest
-    {
-
-        #region testPipeBasic()
-
-        [Test]
-        public void testPipeBasic()
-        {
-
-            var _Names = new List<String>() { "marko", "povel", "peter", "josh" };
-
-            var _Pipe = new HasNextPipe<String>(new IdentityPipe<String>());
-            _Pipe.SetSourceCollection(_Names);
-
-            var _Counter = 0;
-            while (_Pipe.MoveNext())
-            {
-                _Counter++;
-                Assert.IsTrue(_Pipe.Current);
-            }
-            
-            Assert.AreEqual(4, _Counter);
-
-        }
-
-        #endregion
-
-    }
+    /// <summary>
+    /// A delegate to filter files based on their FileInfo.
+    /// </summary>
+    /// <param name="myFileInfo">The FileInfo of a given file.</param>
+    /// <returns>true to filter (ignore) the file, else false.</returns>
+    public delegate Boolean FileFilter(FileInfo myFileInfo);
 
 }

@@ -46,6 +46,9 @@
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
+    <Compile Include="Pipes\IOPipes\OpenStreamPipe.cs" />
+    <Compile Include="Pipes\IOPipes\Delegates.cs" />
+    <Compile Include="Pipes\IOPipes\FileFilterPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FutureFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\DuplicateFilterPipe.cs" />
@@ -85,11 +88,5 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\..\blueprints.NET\blueprints\blueprints.csproj">
-      <Project>{B9DE4181-416E-4DE4-A983-B90FC9412774}</Project>
-      <Name>blueprints</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
 </Project>

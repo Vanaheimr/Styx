@@ -1,7 +1,10 @@
 ![Pipes.NET logo](/ahzf/pipes.NET/raw/master/doc/pipes.NET-logo.png)
 
-[Pipes.NET](http://github.com/ahzf/pipes.NET) is a graph-based data flow framework for [property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph)
-written in .NET/Mono. It comes with some syntactic sugar to build a powerful "LINQ to graphs" interface. A process graph is composed of a set of process vertices connected to one another by a set of communication edges. Pipes supports the splitting, merging, and transformation of data from input to output. 
+[Pipes.NET](http://github.com/ahzf/pipes.NET) is the foundation of a graph-based data flow framework for any kind of data processing.
+It is used heavily within [BlueprintPipes.NET](http://github.com/ahzf/BlueprintPipes.NET) a data flow framework for
+[property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph) for .NET/Mono.
+A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
+Pipes supports the splitting, merging, and transformation of data from input to output. 
 
 #### Usage
 
@@ -37,10 +40,7 @@ News and updates can also be found on twitter by following: [@ahzf](http://www.t
 The installation of Pipes.NET is very straightforward.    
 Just check out or download its sources and all its dependencies:
 
-- [Blueprints.NET](https://github.com/ahzf/blueprints.NET) for the handling of property graphs
 - [NUnit](http://www.nunit.org/) for unit tests
-
-If you are interessted in using the [PipesShell](http://github.com/ahzf/pipes.NET/wiki/PipesShell-for-Adhoc-Graph-Querying) you have to add the latest [Mono.CSharp](http://tirania.org/blog/archive/2011/Feb-24.html) library (2011-02-28).
 
 #### License and your contribution
 
@@ -55,5 +55,3 @@ Pipes.NET is a reimplementation of the [Pipes](http://github.com/tinkerpop/pipes
 Please read the [NOTICE](/ahzf/pipes.NET/blob/master/NOTICE) file for further credits.
 
 #### 
-
-
