@@ -39,6 +39,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pipes\SimplePipes\DualFuncPipeTest.cs" />
     <Compile Include="Pipes\FilterPipes\FilterFuncPipeTest.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipeTest.cs" />
     <Compile Include="Pipes\SimplePipes\FuncPipeTest.cs" />

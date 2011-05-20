@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Pipes.NET <http://www.github.com/ahzf/pipes.NET>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ using System.Collections.Generic;
 
 namespace de.ahzf.Pipes
 {
+
+    #region FuncPipe<S, E>
 
     /// <summary>
     /// Converts the consuming objects to emitting objects
@@ -92,5 +94,256 @@ namespace de.ahzf.Pipes
         #endregion
 
     }
+
+    #endregion
+
+    #region FuncPipe<S1, S2, E>
+
+    /// <summary>
+    /// Converts the consuming objects to emitting objects
+    /// by calling a Func&lt;S1, S2, E&gt;.
+    /// </summary>
+    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public class FuncPipe<S1, S2, E> : AbstractPipe<S1, S2, E>
+    {
+
+        #region Data
+
+        private Func<S1, S2, E> _Func;
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region FuncPipe(Func)
+
+        /// <summary>
+        /// Creates a new FuncPipe using the elements emitted
+        /// by the given IEnumerables as input.
+        /// </summary>
+        /// <param name="Func">A Func&lt;S1, S2, E&gt; converting the consuming objects into emitting objects.</param>
+        public FuncPipe(Func<S1, S2, E> Func)
+        {
+
+            if (Func == null)
+                throw new ArgumentNullException("The given Func must not be null!");
+
+            _Func = Func;
+
+        }
+
+        #endregion
+		
+		#endregion
+
+
+		#region MoveNext()
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
+        public override Boolean MoveNext()
+        {
+
+            if (_InternalEnumerator1 == null)
+                return false;
+
+            if (_InternalEnumerator2 == null)
+                return false;
+
+            if (_InternalEnumerator1.MoveNext())
+                if (_InternalEnumerator2.MoveNext())
+                {
+                    _CurrentElement = _Func(_InternalEnumerator1.Current, _InternalEnumerator2.Current);
+			    	return true;
+                }
+
+            return false;
+
+        }
+
+        #endregion
+
+    }
+
+    #endregion
+
+    #region FuncPipe<S1, S2, S3, E>
+
+    /// <summary>
+    /// Converts the consuming objects to emitting objects
+    /// by calling a Func&lt;S1, S2, S3, E&gt;.
+    /// </summary>
+    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S3">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public class FuncPipe<S1, S2, S3, E> : AbstractPipe<S1, S2, S3, E>
+    {
+
+        #region Data
+
+        private Func<S1, S2, S3, E> _Func;
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region FuncPipe(Func)
+
+        /// <summary>
+        /// Creates a new FuncPipe using the elements emitted
+        /// by the given IEnumerables as input.
+        /// </summary>
+        /// <param name="Func">A Func&lt;S1, S2, S3, E&gt; converting the consuming objects into emitting objects.</param>
+        public FuncPipe(Func<S1, S2, S3, E> Func)
+        {
+
+            if (Func == null)
+                throw new ArgumentNullException("The given Func must not be null!");
+
+            _Func = Func;
+
+        }
+
+        #endregion
+		
+		#endregion
+
+
+		#region MoveNext()
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
+        public override Boolean MoveNext()
+        {
+
+            if (_InternalEnumerator1 == null)
+                return false;
+
+            if (_InternalEnumerator2 == null)
+                return false;
+
+            if (_InternalEnumerator3 == null)
+                return false;
+
+            if (_InternalEnumerator1.MoveNext())
+                if (_InternalEnumerator2.MoveNext())
+                    if (_InternalEnumerator3.MoveNext())
+                    {
+                        _CurrentElement = _Func(_InternalEnumerator1.Current, _InternalEnumerator2.Current, _InternalEnumerator3.Current);
+			        	return true;
+                    }
+
+            return false;
+
+        }
+
+        #endregion
+		
+	}
+
+    #endregion
+
+    #region FuncPipe<S1, S2, S3, S4, E>
+
+    /// <summary>
+    /// Converts the consuming objects to emitting objects
+    /// by calling a Func&lt;S1, S2, S3, S4, E&gt;.
+    /// </summary>
+    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S3">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S4">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public class FuncPipe<S1, S2, S3, S4, E> : AbstractPipe<S1, S2, S3, S4, E>
+    {
+
+        #region Data
+
+        private Func<S1, S2, S3, S4, E> _Func;
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region FuncPipe(Func)
+
+        /// <summary>
+        /// Creates a new FuncPipe using the elements emitted
+        /// by the given IEnumerables as input.
+        /// </summary>
+        /// <param name="Func">A Func&lt;S1, S2, S3, S4, E&gt; converting the consuming objects into emitting objects.</param>
+        public FuncPipe(Func<S1, S2, S3, S4, E> Func)
+        {
+
+            if (Func == null)
+                throw new ArgumentNullException("The given Func must not be null!");
+
+            _Func = Func;
+
+        }
+
+        #endregion
+		
+		#endregion
+
+
+		#region MoveNext()
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
+        public override Boolean MoveNext()
+        {
+
+            if (_InternalEnumerator1 == null)
+                return false;
+
+            if (_InternalEnumerator2 == null)
+                return false;
+
+            if (_InternalEnumerator3 == null)
+                return false;
+
+            if (_InternalEnumerator4 == null)
+                return false;
+
+            if (_InternalEnumerator1.MoveNext())
+                if (_InternalEnumerator2.MoveNext())
+                    if (_InternalEnumerator3.MoveNext())
+                        if (_InternalEnumerator4.MoveNext())
+                        {
+                            _CurrentElement = _Func(_InternalEnumerator1.Current, _InternalEnumerator2.Current, _InternalEnumerator3.Current, _InternalEnumerator4.Current);
+			        	    return true;
+                        }
+
+            return false;
+
+        }
+
+        #endregion
+		
+	}
+
+    #endregion
 
 }

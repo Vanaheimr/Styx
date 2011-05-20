@@ -87,6 +87,8 @@
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Pipes\FuncPipes\" />
+  </ItemGroup>
   <ItemGroup />
 </Project>
