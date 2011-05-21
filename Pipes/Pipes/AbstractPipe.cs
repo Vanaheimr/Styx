@@ -66,30 +66,26 @@ namespace de.ahzf.Pipes
 		
 		#endregion
 
-        #region AbstractPipe(IEnumerator)
+        #region AbstractPipe(IEnumerator, IEnumerable)
 
         /// <summary>
         /// Creates a new abstract pipe using the elements emitted
         /// by the given IEnumerator as input.
         /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public AbstractPipe(IEnumerator<S> IEnumerator)
+        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
+        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
+        public AbstractPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
         {
-            SetSource(IEnumerator);
-        }
 
-        #endregion
+            if (IEnumerator != null && IEnumerable != null)
+                throw new ArgumentException("Please decide between IEnumerator and IEnumerable!");
 
-        #region AbstractPipe(IEnumerable)
+            if (IEnumerable != null)
+                SetSourceCollection(IEnumerable);
 
-        /// <summary>
-        /// Creates a new abstract pipe using the elements emitted
-        /// by the given IEnumerable as input.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public AbstractPipe(IEnumerable<S> IEnumerable)
-        {   
-            SetSourceCollection(IEnumerable);
+            if (IEnumerator != null)
+                SetSource(IEnumerator);
+
         }
 
         #endregion
@@ -103,7 +99,7 @@ namespace de.ahzf.Pipes
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
         /// </summary>
         /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public virtual void SetSource(IEnumerator<S> IEnumerator)
+        public virtual IPipe<S, E> SetSource(IEnumerator<S> IEnumerator)
 		{
 
             if (IEnumerator == null)
@@ -113,6 +109,8 @@ namespace de.ahzf.Pipes
 	            _InternalEnumerator = IEnumerator;
 	        else
 	            _InternalEnumerator = new HistoryEnumerator<S>(IEnumerator);
+
+            return this;
 
 	    }
 
@@ -141,13 +139,14 @@ namespace de.ahzf.Pipes
         /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public virtual void SetSourceCollection(IEnumerable<S> IEnumerable)
+        public virtual IPipe<S, E> SetSourceCollection(IEnumerable<S> IEnumerable)
 		{
 
             if (IEnumerable == null)
                 throw new ArgumentNullException("IEnumerable must not be null!");
 
 	        SetSource(IEnumerable.GetEnumerator());
+            return this;
 
 	    }
 
@@ -255,7 +254,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Disposes this pipe.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
 		{
             _InternalEnumerator.Dispose();
 		}
@@ -592,7 +591,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Disposes this pipe.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
 		{
             _InternalEnumerator1.Dispose();
             _InternalEnumerator2.Dispose();
@@ -984,7 +983,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Disposes this pipe.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
 		{
             _InternalEnumerator1.Dispose();
             _InternalEnumerator2.Dispose();
@@ -1428,7 +1427,7 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Disposes this pipe.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
 		{
             _InternalEnumerator1.Dispose();
             _InternalEnumerator2.Dispose();

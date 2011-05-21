@@ -44,8 +44,10 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
+    <Compile Include="Pipes\AbstractSplittPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
+    <Compile Include="Pipes\Interfaces\ISplitPipe.cs" />
     <Compile Include="Pipes\IOPipes\OpenStreamPipe.cs" />
     <Compile Include="Pipes\IOPipes\Delegates.cs" />
     <Compile Include="Pipes\IOPipes\FileFilterPipe.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Pipes\SideeffectPipes\CountPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\FuncPipe.cs" />
+    <Compile Include="Pipes\SplitPipes\SplitPipe.cs" />
     <Compile Include="Pipes\Utils\ScatterPipe.cs" />
     <Compile Include="Pipes\Utils\PathPipe.cs" />
     <Compile Include="Pipes\Utils\GatherPipe.cs" />
@@ -87,8 +90,6 @@
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Pipes\FuncPipes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup />
 </Project>

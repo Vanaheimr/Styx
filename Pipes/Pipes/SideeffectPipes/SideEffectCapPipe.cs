@@ -81,9 +81,10 @@ namespace de.ahzf.Pipes
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
         /// </summary>
         /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public override void SetSource(IEnumerator<S> myIEnumerator)
+        public override IPipe<S, T> SetSource(IEnumerator<S> myIEnumerator)
         {
             _PipeToCap.SetSource(myIEnumerator);
+            return this;
         }
 
         /// <summary>
@@ -113,9 +114,10 @@ namespace de.ahzf.Pipes
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
         /// </summary>
         /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public override void SetSourceCollection(IEnumerable<S> myIEnumerable)
+        public override IPipe<S, T> SetSourceCollection(IEnumerable<S> myIEnumerable)
         {
             _PipeToCap.SetSource(myIEnumerable.GetEnumerator());
+            return this;
         }
 
         /// <summary>

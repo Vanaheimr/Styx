@@ -50,7 +50,10 @@ namespace de.ahzf.Pipes
         /// Creates a new FuncPipe using the given Func&lt;S, E&gt;.
         /// </summary>
         /// <param name="myFunc">A Func&lt;S, E&gt; converting the consuming objects into emitting objects.</param>
-        public FuncPipe(Func<S, E> myFunc)
+        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
+        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
+        public FuncPipe(Func<S, E> myFunc, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
+            : base(IEnumerable, IEnumerator)
         {
 
             if (myFunc == null)
@@ -124,13 +127,19 @@ namespace de.ahzf.Pipes
         /// by the given IEnumerables as input.
         /// </summary>
         /// <param name="Func">A Func&lt;S1, S2, E&gt; converting the consuming objects into emitting objects.</param>
-        public FuncPipe(Func<S1, S2, E> Func)
+        public FuncPipe(Func<S1, S2, E> Func, IEnumerator<S1> IEnumerator1 = null, IEnumerator<S2> IEnumerator2 = null)
         {
 
             if (Func == null)
                 throw new ArgumentNullException("The given Func must not be null!");
 
             _Func = Func;
+
+            if (IEnumerator1 != null)
+                SetSource1(IEnumerator1);
+
+            if (IEnumerator2 != null)
+                SetSource2(IEnumerator2);
 
         }
 

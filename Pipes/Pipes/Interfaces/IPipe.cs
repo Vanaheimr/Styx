@@ -47,7 +47,22 @@ namespace de.ahzf.Pipes
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public interface IPipe<in S, out E> : IStartPipe<S>, IEndPipe<E>, IPipe
-	{ }
+	{
+
+        /// <summary>
+        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// </summary> 
+        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
+        IPipe<S, E> SetSource(IEnumerator<S> myIEnumerator);
+
+
+        /// <summary>
+        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
+        /// </summary> 
+        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        IPipe<S, E> SetSourceCollection(IEnumerable<S> myIEnumerable);
+    
+    }
 
     #endregion
 

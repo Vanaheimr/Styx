@@ -106,9 +106,10 @@ namespace de.ahzf.Pipes
         /// Use when extending Pipeline and setting the pipeline chain without making use of the constructor.
         /// </summary>
         /// <param name="myPipes">the ordered list of pipes to chain together into a pipeline.</param>
-        protected void SetPipes(IEnumerable<IPipe> myPipes)
+        protected IPipe<S, E> SetPipes(IEnumerable<IPipe> myPipes)
         {
             SetPipes(myPipes.ToArray());
+            return this;
         }
 
         #endregion
@@ -181,7 +182,7 @@ namespace de.ahzf.Pipes
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
         /// </summary>
         /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public virtual void SetSource(IEnumerator<S> myIEnumerator)
+        public virtual IPipe<S, E> SetSource(IEnumerator<S> myIEnumerator)
         {
 
             if (myIEnumerator == null)
@@ -191,6 +192,8 @@ namespace de.ahzf.Pipes
 
             if (_Pipes != null && _Pipes.Length > 0)
                 _Pipes[0].SetSource(_InternalEnumerator);
+
+            return this;
 
         }
 
@@ -223,7 +226,7 @@ namespace de.ahzf.Pipes
         /// Set the elements emitted by the given IEnumerable&lt;S&gt; as input.
         /// </summary>
         /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public virtual void SetSourceCollection(IEnumerable<S> myIEnumerable)
+        public virtual IPipe<S, E> SetSourceCollection(IEnumerable<S> myIEnumerable)
         {
 
             if (myIEnumerable == null)
@@ -234,6 +237,7 @@ namespace de.ahzf.Pipes
             if (_Pipes != null && _Pipes.Length > 0)
                 _Pipes[0].SetSource(_InternalEnumerator);
 
+            return this;
 
         }
 

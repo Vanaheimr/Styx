@@ -26,34 +26,29 @@ using System.Collections.Generic;
 namespace de.ahzf.Pipes
 {
 
-    #region IEndPipe
+    #region ISplitPipe
 
     /// <summary>
-    /// A helper interface for the IPipe pipe interface
-    /// defining a general pipe emitting elements.
+    /// A helper interface for the ISplitPipe&lt;S, E&gt; pipe interface
+    /// defining a general pipe.
     /// </summary>
-    public interface IEndPipe : IEnumerator, IEnumerable, IDisposable
-    {
-
-        /// <summary>
-        /// Returns the path traversed to arrive at the current result of the pipe.
-        /// </summary> 
-        /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
-        List<Object> Path { get; }
-
-    }
+    public interface ISplitPipe : IDisposable
+    { }
 
     #endregion
 
-    #region IEndPipe<out E>
+    #region ISplitPipe<in S, out E1, out E2>
 
     /// <summary>
-    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe emitting elements of type E.
+    /// The generic interface for any Pipe implementation.
+    /// A Pipe takes/consumes objects of type S and returns/emits objects of type E1 and E2.
+    /// S refers to <i>starts</i> and the E1 and E2 refers to <i>ends</i>.
     /// </summary>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IEndPipe<out E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
-    { }
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E1">The type of the first emitting objects.</typeparam>
+    /// <typeparam name="E2">The type of the second emitting objects.</typeparam>
+    public interface ISplitPipe<in S, out E1, out E2> : ISplitPipe
+	{ }
 
     #endregion
 
