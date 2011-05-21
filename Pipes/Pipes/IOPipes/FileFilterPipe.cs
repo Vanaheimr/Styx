@@ -49,16 +49,16 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Scans the given directories for files matching the given filters.
         /// </summary>
+        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
+        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
         /// <param name="SearchPattern">A simple search pattern like "*.jpg".</param>
         /// <param name="SearchOption">Include or do not include subdirectories.</param>
         /// <param name="FileFilter">A delegate for filtering the found files.</param>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
-        public FileFilterPipe(String              SearchPattern = "*",
+        public FileFilterPipe(IEnumerable<String> IEnumerable   = null,
+                              IEnumerator<String> IEnumerator   = null,
+                              String              SearchPattern = "*",
                               SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
-                              FileFilter          FileFilter    = null,
-                              IEnumerable<String> IEnumerable   = null,
-                              IEnumerator<String> IEnumerator   = null)
+                              FileFilter          FileFilter    = null)
             : base(IEnumerable, IEnumerator)
         {
             _SearchPattern = SearchPattern;

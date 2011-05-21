@@ -38,13 +38,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ExtensionMethods\IOPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\IEnumerable.cs" />
     <Compile Include="Enumerators\ISingleEnumerator.cs" />
     <Compile Include="Enumerators\IHistoryEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
-    <Compile Include="Pipes\AbstractSplittPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
     <Compile Include="Pipes\Interfaces\ISplitPipe.cs" />
