@@ -72,8 +72,8 @@ namespace de.ahzf.Pipes
         /// Creates a new abstract pipe using the elements emitted
         /// by the given IEnumerator as input.
         /// </summary>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
+        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
         public AbstractPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
         {
 
