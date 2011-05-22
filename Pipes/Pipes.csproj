@@ -44,10 +44,15 @@
     <Compile Include="Enumerators\IHistoryEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="ExtensionMethods\SplitPipeExtensions.cs" />
+    <Compile Include="Pipes\Branch\FairMergePipe.cs" />
+    <Compile Include="Pipes\Branch\CopySplitPipe.cs" />
+    <Compile Include="Pipes\Branch\ExhaustiveMergePipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
+    <Compile Include="Pipes\FilterPipes\BackFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
+    <Compile Include="Pipes\Interfaces\IMetaPipe.cs" />
     <Compile Include="Pipes\Interfaces\ISplitPipe.cs" />
     <Compile Include="Pipes\IOPipes\OpenStreamPipe.cs" />
     <Compile Include="Pipes\IOPipes\Delegates.cs" />
@@ -82,7 +87,9 @@
     <Compile Include="Pipes\SideeffectPipes\CountPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\FuncPipe.cs" />
-    <Compile Include="Pipes\SplitPipes\SplitPipe.cs" />
+    <Compile Include="Pipes\Branch\SplitPipe.cs" />
+    <Compile Include="Pipes\Utils\HasCountPipe.cs" />
+    <Compile Include="Pipes\Utils\StartPipe.cs" />
     <Compile Include="Pipes\Utils\ScatterPipe.cs" />
     <Compile Include="Pipes\Utils\PathPipe.cs" />
     <Compile Include="Pipes\Utils\GatherPipe.cs" />

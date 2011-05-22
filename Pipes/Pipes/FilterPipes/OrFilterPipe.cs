@@ -112,7 +112,6 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-
     }
 
 }

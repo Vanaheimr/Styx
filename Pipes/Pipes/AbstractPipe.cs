@@ -242,7 +242,7 @@ namespace de.ahzf.Pipes
         /// Sets the enumerator to its initial position, which is
         /// before the first element in the collection.
         /// </summary>
-        public void Reset()
+        public virtual void Reset()
 		{
             _InternalEnumerator.Reset();
 		}
@@ -578,7 +578,7 @@ namespace de.ahzf.Pipes
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public void Reset()
+        public virtual void Reset()
 		{
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
@@ -969,7 +969,7 @@ namespace de.ahzf.Pipes
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public void Reset()
+        public virtual void Reset()
 		{
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
@@ -1412,7 +1412,7 @@ namespace de.ahzf.Pipes
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public void Reset()
+        public virtual void Reset()
 		{
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
