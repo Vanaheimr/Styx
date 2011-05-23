@@ -50,6 +50,12 @@ namespace de.ahzf.Pipes
 	{
 
         /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S, E> SetSource(S SourceElement);
+
+        /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
@@ -80,11 +86,23 @@ namespace de.ahzf.Pipes
     {
 
         /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, E> SetSource1(S1 SourceElement);
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, E> SetSource2(S2 SourceElement);
+
+
+        /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
         void SetSource1(IEnumerator<S1> myIEnumerator);
-
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
@@ -98,7 +116,6 @@ namespace de.ahzf.Pipes
         /// </summary> 
         /// <param name="myIEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
         void SetSourceCollection1(IEnumerable<S1> myIEnumerable);
-
 
         /// <summary>
         /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
@@ -125,18 +142,35 @@ namespace de.ahzf.Pipes
     {
 
         /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, E> SetSource1(S1 SourceElement);
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, E> SetSource2(S2 SourceElement);
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, E> SetSource3(S3 SourceElement);
+
+
+        /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
         void SetSource1(IEnumerator<S1> myIEnumerator);
-
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
         void SetSource2(IEnumerator<S2> myIEnumerator);
-
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S3&gt; as input.
@@ -151,13 +185,11 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
         void SetSourceCollection1(IEnumerable<S1> myIEnumerable);
 
-
         /// <summary>
         /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
         void SetSourceCollection2(IEnumerable<S2> myIEnumerable);
-
 
         /// <summary>
         /// Set the elements emitted from the given IEnumerable&lt;S3&gt; as input.
@@ -185,11 +217,35 @@ namespace de.ahzf.Pipes
     {
 
         /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, S4, E> SetSource1(S1 SourceElement);
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, S4, E> SetSource2(S2 SourceElement);
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, S4, E> SetSource3(S3 SourceElement);
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        IPipe<S1, S2, S3, S4, E> SetSource4(S4 SourceElement);
+
+
+        /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
         void SetSource1(IEnumerator<S1> myIEnumerator);
-
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
@@ -197,13 +253,11 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
         void SetSource2(IEnumerator<S2> myIEnumerator);
 
-
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S3&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerator">An IEnumerator&lt;S3&gt; as element source.</param>
         void SetSource3(IEnumerator<S3> myIEnumerator);
-
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S4&gt; as input.
@@ -218,20 +272,17 @@ namespace de.ahzf.Pipes
         /// <param name="myIEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
         void SetSourceCollection1(IEnumerable<S1> myIEnumerable);
 
-
         /// <summary>
         /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
         void SetSourceCollection2(IEnumerable<S2> myIEnumerable);
 
-
         /// <summary>
         /// Set the elements emitted from the given IEnumerable&lt;S3&gt; as input.
         /// </summary> 
         /// <param name="myIEnumerable">An IEnumerable&lt;S3&gt; as element source.</param>
         void SetSourceCollection3(IEnumerable<S3> myIEnumerable);
-
 
         /// <summary>
         /// Set the elements emitted from the given IEnumerable&lt;S4&gt; as input.

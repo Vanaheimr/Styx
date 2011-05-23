@@ -93,6 +93,23 @@ namespace de.ahzf.Pipes
 		#endregion
 
 
+        #region SetSource(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S, E> SetSource(S SourceElement)
+        {
+
+            _InternalEnumerator = new HistoryEnumerator<S>(new List<S>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
         #region SetSource(IEnumerator)
 
         /// <summary>
@@ -427,6 +444,41 @@ namespace de.ahzf.Pipes
 		#endregion
 
 
+        #region SetSource1(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, E> SetSource1(S1 SourceElement)
+        {
+
+            _InternalEnumerator1 = new HistoryEnumerator<S1>(new List<S1>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region SetSource2(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, E> SetSource2(S2 SourceElement)
+        {
+
+            _InternalEnumerator2 = new HistoryEnumerator<S2>(new List<S2>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
+
         #region SetSource1(IEnumerator)
 
         /// <summary>
@@ -468,6 +520,7 @@ namespace de.ahzf.Pipes
         }
 
         #endregion
+
 
         #region SetSourceCollection1(IEnumerable)
 
@@ -776,6 +829,58 @@ namespace de.ahzf.Pipes
         #endregion
 		
 		#endregion
+
+
+        #region SetSource1(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, E> SetSource1(S1 SourceElement)
+        {
+
+            _InternalEnumerator1 = new HistoryEnumerator<S1>(new List<S1>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region SetSource2(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, E> SetSource2(S2 SourceElement)
+        {
+
+            _InternalEnumerator2 = new HistoryEnumerator<S2>(new List<S2>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+        
+        #region SetSource3(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, E> SetSource3(S3 SourceElement)
+        {
+
+            _InternalEnumerator3 = new HistoryEnumerator<S3>(new List<S3>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
 
 
         #region SetSource1(IEnumerator)
@@ -1180,6 +1285,75 @@ namespace de.ahzf.Pipes
         #endregion
 		
 		#endregion
+
+
+        #region SetSource1(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, S4, E> SetSource1(S1 SourceElement)
+        {
+
+            _InternalEnumerator1 = new HistoryEnumerator<S1>(new List<S1>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region SetSource2(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, S4, E> SetSource2(S2 SourceElement)
+        {
+
+            _InternalEnumerator2 = new HistoryEnumerator<S2>(new List<S2>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region SetSource3(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, S4, E> SetSource3(S3 SourceElement)
+        {
+
+            _InternalEnumerator3 = new HistoryEnumerator<S3>(new List<S3>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region SetSource4(SourceElement)
+
+        /// <summary>
+        /// Set the given element as source.
+        /// </summary>
+        /// <param name="SourceElement">A single source element.</param>
+        public virtual IPipe<S1, S2, S3, S4, E> SetSource4(S4 SourceElement)
+        {
+
+            _InternalEnumerator4 = new HistoryEnumerator<S4>(new List<S4>() { SourceElement }.GetEnumerator());
+
+            return this;
+
+        }
+
+        #endregion
 
 
         #region SetSource1(IEnumerator)
