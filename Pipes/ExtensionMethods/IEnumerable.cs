@@ -32,29 +32,29 @@ namespace de.ahzf.Pipes.ExtensionMethods
     public static class IEnumerableExtensions
     {
 
-        #region ForEach(this myIEnumerable, myAction)
+        #region ForEach(this IEnumerable, Action)
 
         /// <summary>
         /// Iterates over the given enumeration and calls the
         /// given action for each item.
         /// </summary>
         /// <typeparam name="T">The type of the enumerated objects.</typeparam>
-        /// <param name="myIEnumerable">A enumeration of objects of type T.</param>
-        /// <param name="myAction">A action method to call for every item of the enumeration.</param>
-        public static void ForEach<T>(this IEnumerable<T> myIEnumerable, Action<T> myAction)
+        /// <param name="IEnumerable">A enumeration of objects of type T.</param>
+        /// <param name="Action">A action method to call for every item of the enumeration.</param>
+        public static void ForEach<T>(this IEnumerable<T> IEnumerable, Action<T> Action)
         {
 
-            if (myAction == null)
-                throw new ArgumentNullException("The parameter 'myAction' must not be null!");
+            if (Action == null)
+                throw new ArgumentNullException("The parameter 'Action' must not be null!");
 
-            foreach (var _item in myIEnumerable)
-                myAction(_item);
+            foreach (var _item in IEnumerable)
+                Action(_item);
 
         }
 
         #endregion
 
-        #region MapEach(this myIEnumerable, myFunc)
+        #region MapEach(this IEnumerable, Func)
 
         /// <summary>
         /// Iterates over the given enumeration, calls the given func
@@ -62,17 +62,17 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// </summary>
         /// <typeparam name="S">The type of the enumerated objects.</typeparam>
         /// <typeparam name="E">The type of the returining objects.</typeparam>
-        /// <param name="myIEnumerable">A enumeration of objects of type T.</param>
-        /// <param name="myFunc">A mapping method to call for every item of the enumeration.</param>
+        /// <param name="IEnumerable">A enumeration of objects of type T.</param>
+        /// <param name="Func">A mapping method to call for every item of the enumeration.</param>
         /// <returns>An enumeration of mapped objects of type E</returns>
-        public static IEnumerable<E> MapEach<S, E>(this IEnumerable<S> myIEnumerable, Func<S, E> myFunc)
+        public static IEnumerable<E> MapEach<S, E>(this IEnumerable<S> IEnumerable, Func<S, E> Func)
         {
 
-            if (myFunc == null)
-                throw new ArgumentNullException("The parameter 'myFunc' must not be null!");
+            if (Func == null)
+                throw new ArgumentNullException("The parameter 'Func' must not be null!");
 
-            foreach (var _item in myIEnumerable)
-                yield return myFunc(_item);
+            foreach (var _item in IEnumerable)
+                yield return Func(_item);
 
         }
 
