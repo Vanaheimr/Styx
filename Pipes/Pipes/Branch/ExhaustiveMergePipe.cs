@@ -30,8 +30,7 @@ namespace de.ahzf.Pipes
     /// ExhaustiveMergePipe will drain its first internal pipe, then its second,
     /// so on until all internal pipes are drained.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class ExhaustiveMergePipe<S> : AbstractPipe<S, S>, IMetaPipe
     {
 

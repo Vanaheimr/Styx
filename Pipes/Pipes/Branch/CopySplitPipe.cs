@@ -30,8 +30,7 @@ namespace de.ahzf.Pipes
     /// CopySplitPipe takes a number of pipes during construction.
     /// Every object pulled through CopySplitPipe is copied to each of the internal pipes.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class CopySplitPipe<S> : AbstractPipe<S, S>, IMetaPipe
     {
 

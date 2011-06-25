@@ -30,8 +30,7 @@ namespace de.ahzf.Pipes
     /// FairMergePipe will, in a round robin fashion,
     /// emit the objects of its internal pipes.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class FairMergePipe<S> : AbstractPipe<S, S>, IMetaPipe
     {
 

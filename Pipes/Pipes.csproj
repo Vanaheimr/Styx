@@ -57,6 +57,7 @@
     <Compile Include="Pipes\IOPipes\OpenStreamPipe.cs" />
     <Compile Include="Pipes\IOPipes\Delegates.cs" />
     <Compile Include="Pipes\IOPipes\FileFilterPipe.cs" />
+    <Compile Include="Pipes\SideeffectPipes\MinMaxPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FutureFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\DuplicateFilterPipe.cs" />

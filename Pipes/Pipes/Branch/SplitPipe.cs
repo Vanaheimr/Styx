@@ -66,8 +66,7 @@ namespace de.ahzf.Pipes
     /// Converts the consuming objects to emitting objects
     /// by calling a Func&lt;S, E&gt;.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class SplitPipe<S> : ISplitPipe<S, S, S>
     {
 

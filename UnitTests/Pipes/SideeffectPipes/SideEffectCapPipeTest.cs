@@ -41,7 +41,7 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         {
 
             var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            var _Pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
+            var _Pipe = new SideEffectCapPipe<String, Int64>(new CountPipe<String>());
             _Pipe.SetSourceCollection(_List);
 
             Assert.IsTrue(_Pipe.MoveNext());
@@ -59,7 +59,7 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
         {
 
             var _List = new List<String>();
-            var _Pipe = new SideEffectCapPipe<String, UInt64>(new CountPipe<String>());
+            var _Pipe = new SideEffectCapPipe<String, Int64>(new CountPipe<String>());
             _Pipe.SetSourceCollection(_List);
 
             Assert.IsTrue(_Pipe.MoveNext());

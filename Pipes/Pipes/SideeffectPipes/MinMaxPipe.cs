@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Threading;
 using System.Collections.Generic;
 
 #endregion
@@ -27,32 +26,44 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CountPipe produces a side effect that is the total
-    /// number of objects that have passed through it.
+    /// Passes all sensor values while keeping track
+    /// of the Min, Max and Average value.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, Int64>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
+    public class MinMaxPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, Tuple<S, S>>
+        where S: IComparable, IComparable<S>, IEquatable<S>
     {
 
-        #region Data
+        #region Properties
 
-        private Int64 _InternalCounter;
+        /// <summary>
+        /// The minimum of the passed values.
+        /// </summary>
+        public S Min { get; protected set; }
+
+        /// <summary>
+        /// The maximum of the passed values.
+        /// </summary>
+        public S Max { get; protected set; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CountPipe()
+        #region MinMaxFilter<S>(Min, Max, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
-        /// Creates a new CountPipe.
+        /// Creates a new MinMaxPipe&lt;S&gt;.
         /// </summary>
-        /// <param name="InitialValue">An optional initial value.</param>
+        /// <param name="Min">The initial minimum.</param>
+        /// <param name="Max">The initial maximum.</param>
         /// <param name="IEnumerable">An optional IEnumerable&lt;Double&gt; as element source.</param>
         /// <param name="IEnumerator">An optional IEnumerator&lt;Double&gt; as element source.</param>
-        public CountPipe(Int64 InitialValue = 0, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
+        public MinMaxPipe(S Min, S Max, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
             : base(IEnumerable, IEnumerator)
         {
-            _InternalCounter = InitialValue;
+            this.Min = Min;
+            this.Max = Max;
         }
 
         #endregion
@@ -78,9 +89,17 @@ namespace de.ahzf.Pipes
 
             if (_InternalEnumerator.MoveNext())
             {
+
                 _CurrentElement = _InternalEnumerator.Current;
-                Interlocked.Increment(ref _InternalCounter);
+
+                if (Min.CompareTo(_CurrentElement) > 0)
+                    Min = _CurrentElement;
+
+                if (Max.CompareTo(_CurrentElement) < 0)
+                    Max = _CurrentElement;
+
                 return true;
+
             }
 
             return false;
@@ -94,11 +113,11 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// The sideeffect produced by this pipe.
         /// </summary>
-        public Int64 SideEffect
+        public Tuple<S, S> SideEffect
         {
             get
             {
-                return _InternalCounter;
+                return new Tuple<S, S>(Min, Max);
             }
         }
 
@@ -112,7 +131,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalCounter + ">";
+            return base.ToString() + "<Min: " + Min + ", Max: " + Max + ">";
         }
 
         #endregion
