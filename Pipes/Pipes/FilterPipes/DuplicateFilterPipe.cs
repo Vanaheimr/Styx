@@ -38,7 +38,7 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly HashSet<S> _HistorySet = new HashSet<S>();
+        private readonly HashSet<S> _HistorySet;
 
         #endregion
 
@@ -50,7 +50,9 @@ namespace de.ahzf.Pipes
         /// Creates a new DuplicateFilterPipe.
         /// </summary>
         public DuplicateFilterPipe()
-        { }
+        {
+            _HistorySet = new HashSet<S>();
+        }
 
         #endregion
 
@@ -91,7 +93,6 @@ namespace de.ahzf.Pipes
         }
 
         #endregion
-
 
     }
 

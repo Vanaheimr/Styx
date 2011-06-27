@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// pipes emit true, then the AndFilterPipe emits the incoming S object.
     /// If not, then the incoming S object is not emitted.
     /// </summary>
-    /// <typeparam name="S">The type of the elements within the filter.</typeparam>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
@@ -119,7 +119,6 @@ namespace de.ahzf.Pipes
         }
 
         #endregion
-
 
     }
 

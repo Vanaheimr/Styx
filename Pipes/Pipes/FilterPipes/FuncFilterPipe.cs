@@ -26,33 +26,33 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// Filters the consuming objects by calling a Func&lt;S, E&gt;.
+    /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    public class FuncFilterPipe<S> : AbstractPipe<S, S>
+    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
+    public class FuncFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        private Func<S, Boolean> _FilterFunc;
+        private readonly Func<S, Boolean> _FilterFunc;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FuncFilterPipe(myFilterFunc)
+        #region FuncFilterPipe(FilterFunc)
 
         /// <summary>
         /// Creates a new FuncFilterPipe using the given Func&lt;S, E&gt;.
         /// </summary>
-        /// <param name="myFilterFunc">A Func&lt;S, E&gt; filtering the consuming objects. True means filter (ignore).</param>
-        public FuncFilterPipe(Func<S, Boolean> myFilterFunc)
+        /// <param name="FilterFunc">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
+        public FuncFilterPipe(Func<S, Boolean> FilterFunc)
         {
 
-            if (myFilterFunc == null)
-                throw new ArgumentNullException("myFilterFunc must not be null!");
+            if (FilterFunc == null)
+                throw new ArgumentNullException("The given FilterFunc must not be null!");
 
-            _FilterFunc = myFilterFunc;
+            _FilterFunc = FilterFunc;
 
         }
 

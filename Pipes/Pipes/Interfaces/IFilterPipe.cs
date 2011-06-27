@@ -15,18 +15,12 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// A FilterPipe has no specified behavior save that it takes the same objects it emits.
-    /// This interface is used to specify that a Pipe will either emit its input or not.
+    /// A FilterPipe is much like the IdentityPipe, but may or may not filter 
+    /// some of the messages/objects instead of emitting everything.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public interface IFilterPipe<S> : IPipe<S, S>

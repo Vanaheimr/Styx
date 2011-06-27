@@ -26,25 +26,45 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// Passes all sensor values while keeping track
-    /// of the Min, Max and Average value.
+    /// The MinMaxPipe produces two side effects which keep
+    /// track of the Min and Max values of S.
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
-    public class MinMaxPipe<S> : AbstractSideEffectPipe<S, S, Tuple<S, S>>
+    public class MinMaxPipe<S> : AbstractSideEffectPipe<S, S, S, S>
         where S: IComparable, IComparable<S>, IEquatable<S>
     {
 
         #region Properties
 
+        #region Min
+
         /// <summary>
         /// The minimum of the passed values.
         /// </summary>
-        public S Min { get; protected set; }
+        public S Min
+        {
+            get
+            {
+                return _SideEffect1;
+            }
+        }
+
+        #endregion
+
+        #region Max
 
         /// <summary>
         /// The maximum of the passed values.
         /// </summary>
-        public S Max { get; protected set; }
+        public S Max
+        {
+            get
+            {
+                return _SideEffect2;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -53,7 +73,8 @@ namespace de.ahzf.Pipes
         #region MinMaxFilter<S>(Min, Max, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
-        /// Creates a new MinMaxPipe&lt;S&gt;.
+        /// The MinMaxPipe produces two side effects which keep
+        /// track of the Min and Max values of S.
         /// </summary>
         /// <param name="Min">The initial minimum.</param>
         /// <param name="Max">The initial maximum.</param>
@@ -62,8 +83,8 @@ namespace de.ahzf.Pipes
         public MinMaxPipe(S Min, S Max, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
             : base(IEnumerable, IEnumerator)
         {
-            this.Min = Min;
-            this.Max = Max;
+            this.SideEffect1 = Min;
+            this.SideEffect2 = Max;
         }
 
         #endregion
@@ -93,10 +114,10 @@ namespace de.ahzf.Pipes
                 _CurrentElement = _InternalEnumerator.Current;
 
                 if (Min.CompareTo(_CurrentElement) > 0)
-                    Min = _CurrentElement;
+                    SideEffect1 = _CurrentElement;
 
                 if (Max.CompareTo(_CurrentElement) < 0)
-                    Max = _CurrentElement;
+                    SideEffect2 = _CurrentElement;
 
                 return true;
 
@@ -104,21 +125,6 @@ namespace de.ahzf.Pipes
 
             return false;
 
-        }
-
-        #endregion
-
-        #region SideEffect
-
-        /// <summary>
-        /// The sideeffect produced by this pipe.
-        /// </summary>
-        public Tuple<S, S> SideEffect
-        {
-            get
-            {
-                return new Tuple<S, S>(Min, Max);
-            }
         }
 
         #endregion

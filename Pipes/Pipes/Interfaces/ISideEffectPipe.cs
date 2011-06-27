@@ -72,4 +72,37 @@ namespace de.ahzf.Pipes
 
     #endregion
 
+    #region ISideEffectPipe<in S, out E, out T1, out T2, out T3>
+
+    /// <summary>
+    /// This SideEffectPipe will produce two side effects which can
+    /// be retrieved by the SideEffect properties.
+    /// </summary>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
+    /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
+    /// <typeparam name="T2">The type of the third sideeffect.</typeparam>
+    public interface ISideEffectPipe<in S, out E, out T1, out T2, out T3> : IPipe<S, E>
+    {
+
+        /// <summary>
+        /// The first SideEffect produced by this Pipe.
+        /// </summary>
+        T1 SideEffect1 { get; }
+
+        /// <summary>
+        /// The second SideEffect produced by this Pipe.
+        /// </summary>
+        T2 SideEffect2 { get; }
+
+        /// <summary>
+        /// The third SideEffect produced by this Pipe.
+        /// </summary>
+        T3 SideEffect3 { get; }
+
+    }
+
+    #endregion
+
 }
