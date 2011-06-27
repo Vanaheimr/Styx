@@ -26,7 +26,7 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The AggregatorPipe produces a side effect that is the provided Collection
+    /// The AggregatorPipe produces a side effect that is the provided collection
     /// filled with the contents of all the objects that have passed through it.
     /// Before the first object is emitted from the AggregatorPipe, all of its
     /// incoming objects have been aggregated into the collection.
@@ -37,26 +37,29 @@ namespace de.ahzf.Pipes
     /// Finally, note that different Collections have different behaviors and
     /// write/read times.
     /// </summary>
-    public class AggregatorPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, ICollection<S>>
+    public class AggregatorPipe<S> : AbstractSideEffectPipe<S, S, ICollection<S>>
     {
 
         #region Data
 
-        private readonly ICollection<S> _Aggregate;
-        private          IEnumerator<S> _AggregateEnumerator;
+        private IEnumerator<S> _AggregateEnumerator;
 
         #endregion
 
         #region Constructor(s)
 
-        #region AggregatorPipe(myICollection)
+        #region AggregatorPipe(ICollection = null)
 
         /// <summary>
         /// Creates a new AggregatorPipe.
         /// </summary>
-        public AggregatorPipe(ICollection<S> myICollection)
+        /// <param name="ICollection">An optional ICollection to store the passed objects.</param>
+        public AggregatorPipe(ICollection<S> ICollection = null)
         {
-            _Aggregate = myICollection;
+            if (ICollection == null)
+                _SideEffect = new List<S>();
+            else
+                _SideEffect = ICollection;
         }
 
         #endregion
@@ -85,9 +88,9 @@ namespace de.ahzf.Pipes
                     return false;
 
                 while (_InternalEnumerator.MoveNext())
-                    _Aggregate.Add(_InternalEnumerator.Current);
-                
-                _AggregateEnumerator = _Aggregate.GetEnumerator();
+                    _SideEffect.Add(_InternalEnumerator.Current);
+
+                _AggregateEnumerator = _SideEffect.GetEnumerator();
 
             }
 
@@ -104,22 +107,6 @@ namespace de.ahzf.Pipes
         }
 
         #endregion
-
-        #region SideEffect
-
-        /// <summary>
-        /// The sideeffect produced by this pipe.
-        /// </summary>
-        public ICollection<S> SideEffect
-        {
-            get
-            {
-                return _Aggregate;
-            }
-        }
-
-        #endregion
-
 
     }
 

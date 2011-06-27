@@ -59,7 +59,7 @@ namespace de.ahzf.Pipes
 		#region AbstractPipe()
 		
         /// <summary>
-        /// Creates a new abstract pipe.
+        /// Creates a AbstractPipe pipe.
         /// </summary>
 		public AbstractPipe()
 		{ }
@@ -69,7 +69,7 @@ namespace de.ahzf.Pipes
         #region AbstractPipe(IEnumerator, IEnumerable)
 
         /// <summary>
-        /// Creates a new abstract pipe using the elements emitted
+        /// Creates a new AbstractPipe using the elements emitted
         /// by the given IEnumerator as input.
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>

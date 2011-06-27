@@ -49,6 +49,7 @@
     <Compile Include="Pipes\Branch\ExhaustiveMergePipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
+    <Compile Include="Pipes\AbstractSideEffectPipe.cs" />
     <Compile Include="Pipes\FilterPipes\BackFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />

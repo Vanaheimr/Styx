@@ -30,7 +30,7 @@ namespace de.ahzf.Pipes
     /// of the Min, Max and Average value.
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
-    public class MinMaxPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, Tuple<S, S>>
+    public class MinMaxPipe<S> : AbstractSideEffectPipe<S, S, Tuple<S, S>>
         where S: IComparable, IComparable<S>, IEquatable<S>
     {
 

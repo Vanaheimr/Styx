@@ -30,14 +30,8 @@ namespace de.ahzf.Pipes
     /// The CountPipe produces a side effect that is the total
     /// number of objects that have passed through it.
     /// </summary>
-    public class CountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, Int64>
+    public class CountPipe<S> : AbstractSideEffectPipe<S, S, Int64>
     {
-
-        #region Data
-
-        private Int64 _InternalCounter;
-
-        #endregion
 
         #region Constructor(s)
 
@@ -52,7 +46,7 @@ namespace de.ahzf.Pipes
         public CountPipe(Int64 InitialValue = 0, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
             : base(IEnumerable, IEnumerator)
         {
-            _InternalCounter = InitialValue;
+            _SideEffect = InitialValue;
         }
 
         #endregion
@@ -79,27 +73,12 @@ namespace de.ahzf.Pipes
             if (_InternalEnumerator.MoveNext())
             {
                 _CurrentElement = _InternalEnumerator.Current;
-                Interlocked.Increment(ref _InternalCounter);
+                Interlocked.Increment(ref _SideEffect);
                 return true;
             }
 
             return false;
 
-        }
-
-        #endregion
-
-        #region SideEffect
-
-        /// <summary>
-        /// The sideeffect produced by this pipe.
-        /// </summary>
-        public Int64 SideEffect
-        {
-            get
-            {
-                return _InternalCounter;
-            }
         }
 
         #endregion
@@ -112,7 +91,7 @@ namespace de.ahzf.Pipes
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalCounter + ">";
+            return base.ToString() + "<" + _SideEffect + ">";
         }
 
         #endregion
