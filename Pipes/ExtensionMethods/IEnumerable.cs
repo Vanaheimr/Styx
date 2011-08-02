@@ -61,7 +61,7 @@ namespace de.ahzf.Pipes.ExtensionMethods
         /// for each item and returns it immediately.
         /// </summary>
         /// <typeparam name="S">The type of the enumerated objects.</typeparam>
-        /// <typeparam name="E">The type of the returining objects.</typeparam>
+        /// <typeparam name="E">The type of the returning objects.</typeparam>
         /// <param name="IEnumerable">A enumeration of objects of type T.</param>
         /// <param name="Func">A mapping method to call for every item of the enumeration.</param>
         /// <returns>An enumeration of mapped objects of type E</returns>
