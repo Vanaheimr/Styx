@@ -64,6 +64,24 @@ namespace de.ahzf.Pipes
         #endregion
 
 
+#if SILVERLIGHT
+
+        /// <summary>
+        /// Silverlight is stupid... :(
+        /// </summary>
+        private T CompareExchange<T>(ref T location1, T value, T comparand)
+        {
+
+            Object _location1 = location1;
+            Object _value     = value;
+            Object _comparand = comparand;
+
+            return (T) Interlocked.CompareExchange(ref _location1, _value, _comparand);
+
+        }
+
+#endif
+
         #region (private) AddToSum(Summand)
 
         private Double AddToSum(Double Summand)
@@ -81,7 +99,11 @@ namespace de.ahzf.Pipes
 
             }
             // If Sum still equals _InitialValue, exchange it with _NewLocalSum
-            while (_InitialValue != Interlocked.CompareExchange(ref Sum, _NewLocalSum, _InitialValue));
+#if SILVERLIGHT
+            while (_InitialValue != CompareExchange(ref Sum, _NewLocalSum, _InitialValue));
+#else
+            while (_InitialValue != Interlocked.CompareExchange(ref Sum, _NewLocalSum, _InitialValue)) ;
+#endif
 
             // Return _NewLocalSum as Sum may already be alternated
             // by a concurrent thread between the end of the loop
@@ -109,7 +131,11 @@ namespace de.ahzf.Pipes
 
             }
             // If Sum still equals _InitialValue, exchange it with _NewLocalSum
+#if SILVERLIGHT
+            while (_InitialValue != CompareExchange(ref QuadratSum, _NewLocalSum, _InitialValue));
+#else
             while (_InitialValue != Interlocked.CompareExchange(ref QuadratSum, _NewLocalSum, _InitialValue));
+#endif
 
             // Return _NewLocalSum as Sum may already be alternated
             // by a concurrent thread between the end of the loop

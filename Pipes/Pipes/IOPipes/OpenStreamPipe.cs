@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+#if !SILVERLIGHT
+
 #region Usings
 
 using System;
@@ -125,3 +127,6 @@ namespace de.ahzf.Pipes
     }
 
 }
+
+#endif
+

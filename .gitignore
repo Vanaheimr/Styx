@@ -1,6 +1,7 @@
 *.pidb
 *.VisualState.xml
 *.suo
+*.csproj.user
 /Pipes/bin
 /Pipes/obj
 /UnitTests/bin

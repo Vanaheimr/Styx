@@ -29,7 +29,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// A general pipes exception.
     /// </summary>
-    public class PipesException : ApplicationException
+    public class PipesException : Exception
     {
 
         /// <summary>

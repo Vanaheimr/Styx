@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+#if !SILVERLIGHT
+
 #region Usings
 
 using System;
@@ -27,7 +29,7 @@ using System.Threading.Tasks;
 
 namespace de.ahzf.Pipes.Concurrent
 {
-    
+
     /// <summary>
     /// The AndFilterPipe takes a collection of pipes, where E is boolean.
     /// Each provided pipe is fed the same incoming S object concurrently.
@@ -146,3 +148,5 @@ namespace de.ahzf.Pipes.Concurrent
     }
 
 }
+
+#endif

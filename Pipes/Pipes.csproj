@@ -37,7 +37,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ExtensionMethods\IOPipeExtensions.cs" />
     <Compile Include="ExtensionMethods\IEnumerable.cs" />
     <Compile Include="Enumerators\ISingleEnumerator.cs" />
@@ -99,6 +98,7 @@
     <Compile Include="Pipes\Utils\HasNextPipe.cs" />
     <Compile Include="Pipes\FilterPipes\AndFilterPipeConcurrent.cs" />
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

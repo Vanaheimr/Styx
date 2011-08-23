@@ -170,7 +170,11 @@ namespace de.ahzf.Pipes
             Type   _Consumes;
             Type   _Emitts;
 
+#if SILVERLIGHT
+            Type _GenericIPipeInterface = _StartPipe.GetType().GetInterface("IPipe`2", false);
+#else
             Type _GenericIPipeInterface = _StartPipe.GetType().GetInterface("IPipe`2");
+#endif
             if (_GenericIPipeInterface == null)
                 throw new ArgumentException("IPipe<?,?> expected!");
 
@@ -179,7 +183,11 @@ namespace de.ahzf.Pipes
             for (var i = 1; i < _Length; i++)
             {
 
+#if SILVERLIGHT
+                _GenericArguments = IPipes[i].GetType().GetInterface("IPipe`2", false).GetGenericArguments();
+#else
                 _GenericArguments = IPipes[i].GetType().GetInterface("IPipe`2").GetGenericArguments();
+#endif
                 _Consumes = _GenericArguments[0];
 
                 if (_Consumes != _Emitts)
