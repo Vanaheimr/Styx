@@ -104,6 +104,7 @@
     <Compile Include="Pipes\SideeffectPipes\MinMaxPipe.cs" />
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipe.cs" />
     <Compile Include="Pipes\SideeffectPipes\StdDevPipe.cs" />
+    <Compile Include="Pipes\SilverlightTools.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
     <Compile Include="Pipes\SimplePipes\FuncPipe.cs" />
