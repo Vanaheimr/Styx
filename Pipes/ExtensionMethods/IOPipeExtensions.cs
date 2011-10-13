@@ -23,7 +23,7 @@ using System.IO;
 
 #endregion
 
-namespace de.ahzf.Pipes.ExtensionMethods
+namespace de.ahzf.Pipes
 {
 
     public static class IOPipeExtensions

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Pipes.ExtensionMethods
+namespace de.ahzf.Pipes
 {
 
     /// <summary>
