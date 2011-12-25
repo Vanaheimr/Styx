@@ -29,7 +29,7 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 {
 
     [TestFixture]
-    public class FuncFilterPipeTest
+    public class FuncFilterPipeTests
     {
 
         #region testFuncFilterPipeNormal()

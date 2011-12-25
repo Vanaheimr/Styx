@@ -28,7 +28,7 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
 {
 
     [TestFixture]
-    public class GroupCountPipeTest
+    public class GroupCountPipeTests
     {
 
         #region testCountCombinePipeNormal()

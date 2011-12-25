@@ -26,7 +26,7 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// ScatterPipe will unroll any IEnumerator/IEnumerable that is inputted into it.
+    /// The ScatterPipe will unroll any IEnumerator/IEnumerable that is inputted into it.
     /// This will only occur for one level deep. It will not unroll an IEnumerator emitted by an IEnumerator, etc.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
@@ -37,6 +37,26 @@ namespace de.ahzf.Pipes
         #region Data
 
         private IEnumerator<S> _TempIterator;
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region ScatterPipe
+
+        /// <summary>
+        /// The ScatterPipe will unroll any IEnumerator/IEnumerable that is inputted into it.
+        /// </summary>
+        /// <param name="IEnumerable"></param>
+        /// <param name="IEnumerator"></param>
+        public ScatterPipe(IEnumerable<S> IEnumerable = null,
+                           IEnumerator<S> IEnumerator = null)
+
+            : base(IEnumerable, IEnumerator)
+
+        { }
+
+        #endregion
 
         #endregion
 
@@ -72,7 +92,7 @@ namespace de.ahzf.Pipes
                     var _S = _InternalEnumerator.Current;
                     
                     if (_S is IEnumerator<S>)
-                        _TempIterator = (IEnumerator<S>) _S;
+                        _TempIterator = (IEnumerator<S> ) _S;
 
                     else if (_S is IEnumerable<S>)
                         _TempIterator = ((IEnumerable<S>) _S).GetEnumerator();

@@ -27,7 +27,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 {
 
     [TestFixture]
-    public class AbstractComparisonFilterPipeTest
+    public class AbstractComparisonFilterPipeTests
 	{
 		
 		#region testComparisons()

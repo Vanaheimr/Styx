@@ -58,11 +58,17 @@ namespace de.ahzf.Pipes
         /// Opens the given files and returns a stream of bytes.
         /// </summary>
         /// <param name="mode">A System.IO.FileMode constant that determines how to open or create the file.</param>
-        /// <param name="access">A System.IO.FileAccess constant that determines how the file can be accessed by the FileStream object. This gets the System.IO.FileStream.CanRead and System.IO.FileStream.CanWrite properties of the FileStream object. System.IO.FileStream.CanSeek is true if path specifies a disk file.</paparam>
+        /// <param name="access">A System.IO.FileAccess constant that determines how the file can be accessed by the FileStream object. This gets the System.IO.FileStream.CanRead and System.IO.FileStream.CanWrite properties of the FileStream object. System.IO.FileStream.CanSeek is true if path specifies a disk file.</param>
         /// <param name="share">A System.IO.FileShare constant that determines how the file will be shared by processes.</param>
         /// <param name="bufferSize">A positive System.Int32 value greater than 0 indicating the buffer size. For bufferSize values between one and eight, the actual buffer size is set to eight bytes.</param>
         /// <param name="options">A System.IO.FileOptions value that specifies additional file options.</param>
-        public OpenStreamPipe(FileMode FileMode, FileAccess FileAccess, FileShare FileShare, UInt32 BufferSize, FileOptions FileOptions)
+        public OpenStreamPipe(FileMode              FileMode,
+                              FileAccess            FileAccess,
+                              FileShare             FileShare,
+                              UInt32                BufferSize,
+                              FileOptions           FileOptions,
+                              IEnumerable<FileInfo> IEnumerable = null,
+                              IEnumerator<FileInfo> IEnumerator = null)
         {
 
             if (_BufferSize > Int32.MaxValue)

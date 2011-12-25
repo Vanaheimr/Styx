@@ -28,7 +28,7 @@ namespace de.ahzf.Pipes.UnitTests.Enumerators
 {
 
     [TestFixture]
-    public class ExpandableIteratorTest
+    public class ExpandableIteratorTests
     {
 
         #region testIdentityPipeNormal()

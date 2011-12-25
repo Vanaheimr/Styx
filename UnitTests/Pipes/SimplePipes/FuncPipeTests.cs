@@ -29,41 +29,41 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 {
 
     [TestFixture]
-    public class IdentityPipeTest
+    public class FuncPipeTests
     {
 
-        #region testIdentityPipeNormal()
+        #region testFuncPipeNormal()
 
         [Test]
-        public void testIdentityPipeNormal()
+        public void testFuncPipeNormal()
         {
 
-            var _UUIDs = BaseTest.GenerateUUIDs(100);
-            var _Pipe  = new IdentityPipe<String>();
-            _Pipe.SetSourceCollection(_UUIDs);
+            var _Numbers = Enumerable.Range(1, 10);
+            var _Pipe    = new FuncPipe<Int32, String>((_Int32) => (_Int32 * _Int32).ToString());
+            _Pipe.SetSourceCollection(_Numbers);
 
             var _Counter = 0;
             while (_Pipe.MoveNext())
             {
-                Assert.AreEqual(_Pipe.Current, _UUIDs.ElementAt(_Counter));
+                Assert.AreEqual(_Pipe.Current , (_Numbers.ElementAt(_Counter) * _Numbers.ElementAt(_Counter)).ToString());
                 _Counter++;
             }
 
-            Assert.AreEqual(_Counter, 100);
+            Assert.AreEqual(_Counter, 10);
 
         }
 
         #endregion
 
-        #region testIdentityPipeZero
-        
+        #region testFuncPipeZero
+
         [Test]
-        public void testIdentityPipeZero()
+        public void testFuncPipeZero()
         {
 
-            var _UUIDs = BaseTest.GenerateUUIDs(0);
-            var _Pipe  = new IdentityPipe<String>();
-            _Pipe.SetSourceCollection(_UUIDs);
+            var _Numbers = new List<Int32>();
+            var _Pipe    = new FuncPipe<Int32, String>((_Int32) => _Int32.ToString());
+            _Pipe.SetSourceCollection(_Numbers);
 
             var _Counter = 0;
             Assert.IsFalse(_Pipe.Any());
@@ -74,24 +74,15 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
         #endregion
 
-        #region testIdentityPipeInt32()
+        #region testFuncPipeNull()
 
         [Test]
-        public void testIdentityPipeInt32()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void testFuncPipeNull()
         {
 
-            var _Numbers = new List<Int32>() { 1, 2, 3, 4 };
-            var _Pipe    = new IdentityPipe<Int32>();
-            _Pipe.SetSourceCollection(_Numbers);
-
-            var _Counter = 0;
-            while (_Pipe.MoveNext())
-            {
-                Assert.AreEqual(_Pipe.Current, _Numbers.ElementAt(_Counter));
-                _Counter++;
-            }
-
-            Assert.AreEqual(_Counter, 4);
+            Func<Int32, String> myFunc = null;
+            var _Pipe = new FuncPipe<Int32, String>(myFunc);
 
         }
 

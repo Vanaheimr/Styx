@@ -29,7 +29,7 @@ namespace de.ahzf.Pipes.UnitTests.util
 {
 
     [TestFixture]
-    public class HasNextPipeTest
+    public class HasNextPipeTests
     {
 
         #region testPipeBasic()

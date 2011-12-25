@@ -28,7 +28,7 @@ namespace de.ahzf.Pipes.UnitTests.FilterPipes
 {
 
     [TestFixture]
-    public class CollectionFilterPipeTest
+    public class CollectionFilterPipeTests
 	{
 		
 		#region testBasicCollectionFilterEquals()

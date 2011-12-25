@@ -39,27 +39,28 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pipes\Branch\CopySplitPipeTest.cs" />
+    <Compile Include="Pipes\Branch\CopySplitPipeTests.cs" />
+    <Compile Include="Pipes\IOPipes\CSVPipeTests.cs" />
     <Compile Include="Pipes\SideeffectPipes\StdDevTests.cs" />
-    <Compile Include="Pipes\SimplePipes\DualFuncPipeTest.cs" />
-    <Compile Include="Pipes\FilterPipes\FilterFuncPipeTest.cs" />
-    <Compile Include="Pipes\SimplePipes\ActionPipeTest.cs" />
-    <Compile Include="Pipes\SimplePipes\FuncPipeTest.cs" />
+    <Compile Include="Pipes\SimplePipes\DualFuncPipeTests.cs" />
+    <Compile Include="Pipes\FilterPipes\FilterFuncPipeTests.cs" />
+    <Compile Include="Pipes\SimplePipes\ActionPipeTests.cs" />
+    <Compile Include="Pipes\SimplePipes\FuncPipeTests.cs" />
     <Compile Include="BaseTest.cs" />
-    <Compile Include="Enumerators\ExpandableIteratorTest.cs" />
-    <Compile Include="Pipes\SimplePipes\IdentityPipeTest.cs" />
-    <Compile Include="Enumerators\MultiIteratorTest.cs" />
-    <Compile Include="Pipes\SideeffectPipes\AggregatorPipeTest.cs" />
+    <Compile Include="Enumerators\ExpandableIteratorTests.cs" />
+    <Compile Include="Pipes\SimplePipes\IdentityPipeTests.cs" />
+    <Compile Include="Enumerators\MultiIteratorTests.cs" />
+    <Compile Include="Pipes\SideeffectPipes\AggregatorPipeTests.cs" />
     <Compile Include="Enumerators\SingleEnumeratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Pipes\SideeffectPipes\CountPipeTest.cs" />
-    <Compile Include="Pipes\SideeffectPipes\GroupCountPipeTest.cs" />
-    <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipeTest.cs" />
-    <Compile Include="Pipes\Utils\ScatterPipeTest.cs" />
-    <Compile Include="Pipes\Utils\HasNextPipeTest.cs" />
-    <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipeTest.cs" />
-    <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipeTest.cs" />
-    <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipeTest.cs" />
+    <Compile Include="Pipes\SideeffectPipes\CountPipeTests.cs" />
+    <Compile Include="Pipes\SideeffectPipes\GroupCountPipeTests.cs" />
+    <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipeTests.cs" />
+    <Compile Include="Pipes\Utils\ScatterPipeTests.cs" />
+    <Compile Include="Pipes\Utils\HasNextPipeTests.cs" />
+    <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipeTests.cs" />
+    <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipeTests.cs" />
+    <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipeTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Pipes\Pipes.csproj">

@@ -110,6 +110,7 @@ namespace de.ahzf.Pipes
 
         #endregion
 
+
         #region SetSource(IEnumerator)
 
         /// <summary>

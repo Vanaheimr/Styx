@@ -54,7 +54,10 @@
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
     <Compile Include="Pipes\Interfaces\IMetaPipe.cs" />
     <Compile Include="Pipes\Interfaces\ISplitPipe.cs" />
-    <Compile Include="Pipes\IOPipes\ReadTextfilePipe.cs" />
+    <Compile Include="Pipes\IOPipes\CSV.cs" />
+    <Compile Include="Pipes\IOPipes\CSVMetaPipe.cs" />
+    <Compile Include="Pipes\IOPipes\CSVPipe.cs" />
+    <Compile Include="Pipes\IOPipes\ReadTextStreamPipe.cs" />
     <Compile Include="Pipes\IOPipes\OpenStreamPipe.cs" />
     <Compile Include="Pipes\IOPipes\Delegates.cs" />
     <Compile Include="Pipes\IOPipes\FileFilterPipe.cs" />

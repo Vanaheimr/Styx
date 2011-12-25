@@ -34,7 +34,7 @@ namespace de.ahzf.Pipes
                                                            SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
                                                            FileFilter          FileFilter    = null)
         {
-            return new FileFilterPipe(myIEnumerable, null, SearchPattern, SearchOption, FileFilter);
+            return new FileFilterPipe(SearchPattern, SearchOption, FileFilter, myIEnumerable, null);
         }
 
 
@@ -43,7 +43,7 @@ namespace de.ahzf.Pipes
                                                            SearchOption SearchOption = SearchOption.TopDirectoryOnly,
                                                            FileFilter FileFilter = null)
         {
-            return new FileFilterPipe(null, myIEnumerator, SearchPattern, SearchOption, FileFilter);
+            return new FileFilterPipe(SearchPattern, SearchOption, FileFilter, null, myIEnumerator);
         }
 
     }

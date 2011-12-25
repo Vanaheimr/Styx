@@ -28,7 +28,7 @@ namespace de.ahzf.Pipes.UnitTests.Enumerators
 {
 
     [TestFixture]
-    public class MultiIteratorTest
+    public class MultiIteratorTests
     {
 
         #region testMultiIteratorSimple()

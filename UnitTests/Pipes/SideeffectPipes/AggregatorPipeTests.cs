@@ -29,7 +29,7 @@ namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
 {
 
     [TestFixture]
-    public class AggregatorPipeTest
+    public class AggregatorPipeTests
     {
 
         #region testAggregatorPipe()
