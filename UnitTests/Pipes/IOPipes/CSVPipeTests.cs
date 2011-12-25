@@ -59,6 +59,28 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
         #endregion
 
+        #region testCSVPipeNormal__()
+
+        [Test]
+        public void testCSVPipeNormal__()
+        {
+
+            var _Result = new List<String>() { "#Id,Name,Verb,Help,Action",
+                                               "0, Alice ,loves,to,read",
+                                               "1,Bob ,likes,to,ski" }.
+                          CSVPipe(ExpectedNumberOfColumns:    5,
+                                  FailOnWrongNumberOfColumns: true,
+                                  TrimColumns:                true).
+                          ToArray();
+
+            Assert.AreEqual(2, _Result.Length);
+            Assert.AreEqual("Alice", _Result[0][1]);
+            Assert.AreEqual("Bob",   _Result[1][1]);
+
+        }
+
+        #endregion
+
         #region testCSVPipeNormal2()
 
         [Test]

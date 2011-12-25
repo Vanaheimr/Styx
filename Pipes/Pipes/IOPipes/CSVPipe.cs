@@ -29,7 +29,7 @@ namespace de.ahzf.Pipes
 {
 
     /// <summary>
-    /// The CSVPipe splits a given string into pieces.
+    /// Splits a given strings into elements by a given sperator.
     /// </summary>
     public class CSVPipe : AbstractPipe<String, String[]>
     {
@@ -54,7 +54,7 @@ namespace de.ahzf.Pipes
         #region CSVPipe(IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
 
         /// <summary>
-        /// The CSVPipe splits a given string into pieces.
+        /// Splits a given strings into elements by a given sperator.
         /// </summary>
         /// <param name="IgnoreLines">A regular expression indicating which input strings should be ignored. Default: All lines starting with a '#'.</param>
         /// <param name="Seperators">An array of string used to split the input strings.</param>
@@ -62,9 +62,9 @@ namespace de.ahzf.Pipes
         /// <param name="ExpectedNumberOfColumns">If the CSV file had a schema, a specific number of columns can be expected. If instead it is a list of values no such value can be expected.</param>
         /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
         /// <param name="TrimColumns">Remove leading and trailing whitespaces.</param>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
-        public CSVPipe(Regex IgnoreLines = null,
+        /// <param name="IEnumerable">An optional enumeration of strings as element source.</param>
+        /// <param name="IEnumerator">An optional enumerator of strings as element source.</param>
+        public CSVPipe(Regex               IgnoreLines                = null,
                        String[]            Seperators                 = null,
                        StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
                        UInt16?             ExpectedNumberOfColumns    = null,
