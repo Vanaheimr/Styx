@@ -57,11 +57,13 @@ namespace de.ahzf.Pipes
         /// <summary>
         /// Opens the given files and returns a stream of bytes.
         /// </summary>
-        /// <param name="mode">A System.IO.FileMode constant that determines how to open or create the file.</param>
-        /// <param name="access">A System.IO.FileAccess constant that determines how the file can be accessed by the FileStream object. This gets the System.IO.FileStream.CanRead and System.IO.FileStream.CanWrite properties of the FileStream object. System.IO.FileStream.CanSeek is true if path specifies a disk file.</param>
-        /// <param name="share">A System.IO.FileShare constant that determines how the file will be shared by processes.</param>
-        /// <param name="bufferSize">A positive System.Int32 value greater than 0 indicating the buffer size. For bufferSize values between one and eight, the actual buffer size is set to eight bytes.</param>
-        /// <param name="options">A System.IO.FileOptions value that specifies additional file options.</param>
+        /// <param name="FileMode">A System.IO.FileMode constant that determines how to open or create the file.</param>
+        /// <param name="FileAccess">A System.IO.FileAccess constant that determines how the file can be accessed by the FileStream object. This gets the System.IO.FileStream.CanRead and System.IO.FileStream.CanWrite properties of the FileStream object. System.IO.FileStream.CanSeek is true if path specifies a disk file.</param>
+        /// <param name="FileShare">A System.IO.FileShare constant that determines how the file will be shared by processes.</param>
+        /// <param name="BufferSize">A positive System.Int32 value greater than 0 indicating the buffer size. For bufferSize values between one and eight, the actual buffer size is set to eight bytes.</param>
+        /// <param name="FileOptions">A System.IO.FileOptions value that specifies additional file options.</param>
+        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
+        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
         public OpenStreamPipe(FileMode              FileMode,
                               FileAccess            FileAccess,
                               FileShare             FileShare,
@@ -69,6 +71,9 @@ namespace de.ahzf.Pipes
                               FileOptions           FileOptions,
                               IEnumerable<FileInfo> IEnumerable = null,
                               IEnumerator<FileInfo> IEnumerator = null)
+
+            : base(IEnumerable, IEnumerator)
+
         {
 
             if (_BufferSize > Int32.MaxValue)
