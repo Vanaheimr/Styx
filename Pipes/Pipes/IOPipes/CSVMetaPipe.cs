@@ -39,7 +39,7 @@ namespace de.ahzf.Pipes
         private readonly OpenStreamPipe                               OpenStreamPipe;
         private readonly FuncPipe<Stream, StreamReader>               StreamReaderPipe;
         private readonly FuncPipe<StreamReader, IEnumerable<String>>  GetLinesPipe;
-        private readonly ScatterPipe<IEnumerable<String>, String>     ScatterPipe;
+        private readonly UnrollPipe<String>                           UnrollPipe;
         private readonly CSVPipe                                      CSVPipe;
 
         #endregion
@@ -80,6 +80,9 @@ namespace de.ahzf.Pipes
                                                         FileFilter:    FileFilter,
                                                         IEnumerable:   IEnumerable);
 
+            if (IEnumerable == null && IEnumerator == null)
+                this.FileFilterPipe.SetSource(Directory.GetCurrentDirectory());
+
             this.OpenStreamPipe   = new OpenStreamPipe (FileMode.Open,
                                                         FileAccess.Read,
                                                         FileShare.Read,
@@ -93,14 +96,38 @@ namespace de.ahzf.Pipes
             this.GetLinesPipe     = new FuncPipe<StreamReader, IEnumerable<String>>((streamReader) => streamReader.GetLines(),
                                                                                     IEnumerable: StreamReaderPipe);
 
-            this.ScatterPipe      = new ScatterPipe<IEnumerable<String>, String>(IEnumerable: GetLinesPipe);
+            this.UnrollPipe       = new UnrollPipe<String>(GetLinesPipe);
 
-            this.CSVPipe          = new CSVPipe        (IgnoreLines:                IgnoreLines,
-                                                        Seperators:                 Seperators,
-                                                        StringSplitOptions:         StringSplitOptions,
-                                                        ExpectedNumberOfColumns:    ExpectedNumberOfColumns,
-                                                        FailOnWrongNumberOfColumns: FailOnWrongNumberOfColumns,
-                                                        IEnumerable:                ScatterPipe);
+            this.CSVPipe          = new CSVPipe(IgnoreLines:                IgnoreLines,
+                                                Seperators:                 Seperators,
+                                                StringSplitOptions:         StringSplitOptions,
+                                                ExpectedNumberOfColumns:    ExpectedNumberOfColumns,
+                                                FailOnWrongNumberOfColumns: FailOnWrongNumberOfColumns,
+                                                IEnumerable:                UnrollPipe);
+
+
+
+
+            //var _FileFilterPipe = new FileFilterPipe("*.csv", SearchOption.TopDirectoryOnly);
+            //_FileFilterPipe.SetSource(Directory.GetCurrentDirectory());
+
+            //var _OpenStreamPipe = new OpenStreamPipe(FileMode.Open,
+            //                                         FileAccess.Read,
+            //                                         FileShare.Read,
+            //                                         64000,
+            //                                         FileOptions.SequentialScan,
+            //                                         IEnumerable: _FileFilterPipe);
+
+            //var _StreamReaderPipe = new FuncPipe<Stream, StreamReader>((stream) => new StreamReader(stream),
+            //                                                           IEnumerable: _OpenStreamPipe);
+
+            //var _GetLinesPipe = new FuncPipe<StreamReader, IEnumerable<String>>((streamReader) => streamReader.GetLines(),
+            //                                                                     IEnumerable: _StreamReaderPipe);
+
+            //var _UnrollPipe = new UnrollPipe<String>(_GetLinesPipe);
+
+            //var _CSVPipe = new CSVPipe(Seperators: new String[1] { "³" }, IEnumerable: _UnrollPipe);
+
 
         }
 
@@ -128,11 +155,20 @@ namespace de.ahzf.Pipes
                 return true;
             }
 
-            return true;
+            return false;
 
         }
 
         #endregion
+
+        public override IPipe<String, String[]> SetSource(String SourceElement)
+        {
+
+            this.FileFilterPipe.SetSource(SourceElement);
+
+            return this;
+
+        }
 
 
         #region ToString()
