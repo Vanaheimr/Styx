@@ -29,8 +29,7 @@ namespace de.ahzf.Pipes
     #region ISplitPipe
 
     /// <summary>
-    /// A helper interface for the ISplitPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe.
+    /// A SplitPipe consumes objects of type S and emits objects of type E1 and E2.
     /// </summary>
     public interface ISplitPipe : IDisposable
     { }
@@ -40,9 +39,7 @@ namespace de.ahzf.Pipes
     #region ISplitPipe<in S, out E1, out E2>
 
     /// <summary>
-    /// The generic interface for any Pipe implementation.
-    /// A Pipe takes/consumes objects of type S and returns/emits objects of type E1 and E2.
-    /// S refers to <i>starts</i> and the E1 and E2 refers to <i>ends</i>.
+    /// A SplitPipe consumes objects of type S and emits objects of type E1 and E2.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E1">The type of the first emitting objects.</typeparam>

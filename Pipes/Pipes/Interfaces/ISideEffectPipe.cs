@@ -24,6 +24,17 @@ using System;
 namespace de.ahzf.Pipes
 {
 
+    #region ISideEffectPipe
+
+    /// <summary>
+    /// This SideEffectPipe will produce a side effect which can be
+    /// retrieved by the SideEffect property.
+    /// </summary>
+    public interface ISideEffectPipe : IDisposable
+    { }
+
+    #endregion
+
     #region ISideEffectPipe<in S, out E, out T>
 
     /// <summary>
@@ -33,7 +44,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
-    public interface ISideEffectPipe<in S, out E, out T> : IPipe<S, E>
+    public interface ISideEffectPipe<in S, out E, out T> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
@@ -55,7 +66,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    public interface ISideEffectPipe<in S, out E, out T1, out T2> : IPipe<S, E>
+    public interface ISideEffectPipe<in S, out E, out T1, out T2> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
@@ -83,7 +94,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
     /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
-    public interface ISideEffectPipe<in S, out E, out T1, out T2, out T3> : IPipe<S, E>
+    public interface ISideEffectPipe<in S, out E, out T1, out T2, out T3> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
