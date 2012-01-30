@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,10 +29,12 @@ namespace de.ahzf.Pipes
     #region IPipe
 
     /// <summary>
-    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe.
+    /// The non-generic interface for any pipe implementation.
     /// </summary>
-    public interface IPipe : IStartPipe, IEndPipe, IDisposable
+    public interface IPipe
+        : IStartPipe,
+          IEndPipe,
+          IDisposable
     { }
 
     #endregion
@@ -40,257 +42,95 @@ namespace de.ahzf.Pipes
     #region IPipe<in S, out E>
 
     /// <summary>
-    /// The generic interface for any Pipe implementation.
-    /// A Pipe takes/consumes objects of type S and returns/emits objects of type E.
+    /// The generic interface for any single-element pipe implementation.
+    /// Such a pipe takes/consumes objects of type S and returns/emits objects of type E.
     /// S refers to <i>starts</i> and the E refers to <i>ends</i>.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S, out E> : IStartPipe<S>, IEndPipe<E>, IPipe
-	{
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S, E> SetSource(S SourceElement);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        IPipe<S, E> SetSource(IEnumerator<S> myIEnumerator);
-
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        IPipe<S, E> SetSourceCollection(IEnumerable<S> myIEnumerable);
-    
-    }
+    public interface IPipe<in S, out E>
+        : IStartPipe<S>,
+          IEndPipe<E>,
+          IPipe
+	{ }
 
     #endregion
 
     #region IPipe<in S1, in S2, out E>
 
     /// <summary>
-    /// The generic interface for any Pipe implementation.
-    /// A Pipe takes/consumes objects of type S1 and S2 and returns/emits objects of type E.
+    /// The generic interface for any two-element pipe implementation.
+    /// Such a pipe takes/consumes objects of type S1 and S2 and returns/emits objects of type E.
     /// S1 and S2 refers to <i>starts</i> and the E refers to <i>ends</i>.
     /// </summary>
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, out E> : IEndPipe<E>
-    {
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, E> SetSource1(S1 SourceElement);
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, E> SetSource2(S2 SourceElement);
-
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
-        void SetSource1(IEnumerator<S1> myIEnumerator);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
-        void SetSource2(IEnumerator<S2> myIEnumerator);
-
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        void SetSourceCollection1(IEnumerable<S1> myIEnumerable);
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        void SetSourceCollection2(IEnumerable<S2> myIEnumerable);
-
-    }
+    public interface IPipe<in S1, in S2, out E>
+        : IStartPipe<S1, S2>,
+          IEndPipe<E>,
+          IPipe
+    { }
 
     #endregion
 
     #region IPipe<in S1, in S2, in S3, out E>
 
     /// <summary>
-    /// The generic interface for any Pipe implementation.
-    /// A Pipe takes/consumes objects of type S1, S2 and S3 and returns/emits objects of type E.
+    /// The generic interface for any three-element pipe implementation.
+    /// Such a pipe takes/consumes objects of type S1, S2 and S3 and returns/emits objects of type E.
     /// S1, S2 and S3 refers to <i>starts</i> and the E refers to <i>ends</i>.
     /// </summary>
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, in S3, out E> : IEndPipe<E>
-    {
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, E> SetSource1(S1 SourceElement);
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, E> SetSource2(S2 SourceElement);
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, E> SetSource3(S3 SourceElement);
-
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
-        void SetSource1(IEnumerator<S1> myIEnumerator);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
-        void SetSource2(IEnumerator<S2> myIEnumerator);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S3&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S3&gt; as element source.</param>
-        void SetSource3(IEnumerator<S3> myIEnumerator);
-
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        void SetSourceCollection1(IEnumerable<S1> myIEnumerable);
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        void SetSourceCollection2(IEnumerable<S2> myIEnumerable);
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S3&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S3&gt; as element source.</param>
-        void SetSourceCollection3(IEnumerable<S3> myIEnumerable);
-
-    }
+    public interface IPipe<in S1, in S2, in S3, out E>
+        : IStartPipe<S1, S2, S3>,
+          IEndPipe<E>,
+          IPipe
+    { }
 
     #endregion
 
     #region IPipe<in S1, in S2, in S3, in S4, out E>
 
     /// <summary>
-    /// The generic interface for any Pipe implementation.
-    /// A Pipe takes/consumes objects of type S1, S2 and S3 and returns/emits objects of type E.
-    /// S1, S2 and S3 refers to <i>starts</i> and the E refers to <i>ends</i>.
+    /// The generic interface for any four-element pipe implementation.
+    /// Such a pipe takes/consumes objects of type S1, S2, S3 and S4 and returns/emits objects of type E.
+    /// S1, S2, S3 and S4 refers to <i>starts</i> and the E refers to <i>ends</i>.
     /// </summary>
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, in S3, in S4, out E> : IEndPipe<E>
-    {
+    public interface IPipe<in S1, in S2, in S3, in S4, out E>
+        : IStartPipe<S1, S2, S3, S4>,
+          IEndPipe<E>,
+          IPipe
+    { }
 
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, S4, E> SetSource1(S1 SourceElement);
+    #endregion
 
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, S4, E> SetSource2(S2 SourceElement);
+    #region IPipe<in S1, in S2, in S3, in S4, in S5, out E>
 
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, S4, E> SetSource3(S3 SourceElement);
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        IPipe<S1, S2, S3, S4, E> SetSource4(S4 SourceElement);
-
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
-        void SetSource1(IEnumerator<S1> myIEnumerator);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
-        void SetSource2(IEnumerator<S2> myIEnumerator);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S3&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S3&gt; as element source.</param>
-        void SetSource3(IEnumerator<S3> myIEnumerator);
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S4&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerator">An IEnumerator&lt;S4&gt; as element source.</param>
-        void SetSource4(IEnumerator<S4> myIEnumerator);
-
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        void SetSourceCollection1(IEnumerable<S1> myIEnumerable);
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        void SetSourceCollection2(IEnumerable<S2> myIEnumerable);
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S3&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S3&gt; as element source.</param>
-        void SetSourceCollection3(IEnumerable<S3> myIEnumerable);
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S4&gt; as input.
-        /// </summary> 
-        /// <param name="myIEnumerable">An IEnumerable&lt;S4&gt; as element source.</param>
-        void SetSourceCollection4(IEnumerable<S4> myIEnumerable);
-
-    }
+    /// <summary>
+    /// The generic interface for any five-element pipe implementation.
+    /// Such a pipe takes/consumes objects of type S1, S2, S3, S4 and S5 and returns/emits objects of type E.
+    /// S1, S2, S3, S4 and S5 refers to <i>starts</i> and the E refers to <i>ends</i>.
+    /// </summary>
+    /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
+    /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
+    /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
+    /// <typeparam name="S5">The type of the fifth consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public interface IPipe<in S1, in S2, in S3, in S4, in S5, out E>
+        : IStartPipe<S1, S2, S3, S4, S5>,
+          IEndPipe<E>,
+          IPipe
+    { }
 
     #endregion
 

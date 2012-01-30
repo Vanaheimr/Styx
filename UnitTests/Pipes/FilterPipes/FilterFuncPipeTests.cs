@@ -47,7 +47,7 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
             var _Counter = 0;
             while (_Pipe.MoveNext())
             {
-                Assert.AreEqual(_Pipe.Current, ((_Numbers.ElementAt(_Counter) & 0x1) != 0) ? true : false);
+                Assert.IsTrue((_Pipe.Current & 0x01) == 0);
                 _Counter++;
             }
 

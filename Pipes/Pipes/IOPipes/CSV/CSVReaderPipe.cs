@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// Splits a given strings into elements by a given sperator.
     /// </summary>
-    public class CSVPipe : AbstractPipe<String, String[]>
+    public class CSVReaderPipe : AbstractPipe<String, String[]>
     {
 
         #region Data
@@ -51,7 +51,7 @@ namespace de.ahzf.Pipes
 
         #region Constructor(s)
 
-        #region CSVPipe(IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
+        #region CSVReaderPipe(IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
 
         /// <summary>
         /// Splits a given strings into elements by a given sperator.
@@ -64,14 +64,14 @@ namespace de.ahzf.Pipes
         /// <param name="TrimColumns">Remove leading and trailing whitespaces.</param>
         /// <param name="IEnumerable">An optional enumeration of strings as element source.</param>
         /// <param name="IEnumerator">An optional enumerator of strings as element source.</param>
-        public CSVPipe(Regex               IgnoreLines                = null,
-                       String[]            Seperators                 = null,
-                       StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
-                       UInt16?             ExpectedNumberOfColumns    = null,
-                       Boolean             FailOnWrongNumberOfColumns = false,
-                       Boolean             TrimColumns                = true,
-                       IEnumerable<String> IEnumerable                = null,
-                       IEnumerator<String> IEnumerator                = null)
+        public CSVReaderPipe(Regex               IgnoreLines                = null,
+                             String[]            Seperators                 = null,
+                             StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
+                             UInt16?             ExpectedNumberOfColumns    = null,
+                             Boolean             FailOnWrongNumberOfColumns = false,
+                             Boolean             TrimColumns                = true,
+                             IEnumerable<String> IEnumerable                = null,
+                             IEnumerator<String> IEnumerator                = null)
 
             : base(IEnumerable, IEnumerator)
 

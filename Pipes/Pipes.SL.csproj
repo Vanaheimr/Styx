@@ -67,6 +67,7 @@
     <Compile Include="ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="PipeHelper.cs" />
     <Compile Include="Pipes\AbstractComparisonFilterPipe.cs" />
+    <Compile Include="Pipes\AbstractMetaPipe.cs" />
     <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Pipes\AbstractSideEffectPipe.cs" />
     <Compile Include="Pipes\Branch\CopySplitPipe.cs" />
@@ -94,9 +95,13 @@
     <Compile Include="Pipes\Interfaces\ISideEffectPipe.cs" />
     <Compile Include="Pipes\Interfaces\ISplitPipe.cs" />
     <Compile Include="Pipes\Interfaces\IStartPipe.cs" />
+    <Compile Include="Pipes\IOPipes\CSV\CSV.cs" />
+    <Compile Include="Pipes\IOPipes\CSV\CSVReaderMetaPipe.cs" />
+    <Compile Include="Pipes\IOPipes\CSV\CSVReaderPipe.cs" />
     <Compile Include="Pipes\IOPipes\Delegates.cs" />
     <Compile Include="Pipes\IOPipes\FileFilterPipe.cs" />
     <Compile Include="Pipes\IOPipes\OpenStreamPipe.cs" />
+    <Compile Include="Pipes\IOPipes\ReadTextStreamPipe.cs" />
     <Compile Include="Pipes\Pipeline.cs" />
     <Compile Include="Pipes\SideeffectPipes\AggregatorPipe.cs" />
     <Compile Include="Pipes\SideeffectPipes\CountPipe.cs" />
@@ -117,6 +122,7 @@
     <Compile Include="Pipes\Utils\PathPipe.cs" />
     <Compile Include="Pipes\Utils\ScatterPipe.cs" />
     <Compile Include="Pipes\Utils\StartPipe.cs" />
+    <Compile Include="Pipes\Utils\UnrollPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

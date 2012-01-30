@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ namespace de.ahzf.Pipes
     /// from the BackFilterPipe.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class BackFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>, IMetaPipe
+    public class BackFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>, IMetaPipe<S, S>
     {
 
         private IStartPipe<S> _Pipe;

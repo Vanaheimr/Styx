@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -486,6 +486,27 @@ namespace de.ahzf.Pipes
 
         #endregion
 
-	}
+
+        void IStartPipe<S>.SetSource(S SourceElement)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IStartPipe<S>.SetSource(IEnumerator<S> IEnumerator)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IStartPipe<S>.SetSourceCollection(IEnumerable<S> IEnumerable)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public void SetSource(object SourceElement)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 }

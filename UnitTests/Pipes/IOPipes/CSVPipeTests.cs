@@ -32,19 +32,19 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
     public class CSVPipeTests
     {
 
-        #region testCSVPipeNormal()
+        #region testCSVPipeNormal1()
 
         [Test]
-        public void testCSVPipeNormal()
+        public void testCSVPipeNormal1()
         {
 
-            var _Pipe = new CSVPipe(ExpectedNumberOfColumns:    5,
-                                    FailOnWrongNumberOfColumns: true,
-                                    IEnumerable: new List<String>() {
-                                                     "#Id,Name,Verb,Help,Action",
-                                                     "0,Alice,loves,to,read",
-                                                     "1,Bob,likes,to,ski"
-                                                 });
+            var _Pipe = new CSVReaderPipe(ExpectedNumberOfColumns:    5,
+                                          FailOnWrongNumberOfColumns: true,
+                                          IEnumerable: new List<String>() {
+                                                           "#Id,Name,Verb,Help,Action",
+                                                           "0,Alice,loves,to,read",
+                                                           "1,Bob,likes,to,ski"
+                                                       });
 
             var _Counter = 0;
             while (_Pipe.MoveNext())
@@ -59,10 +59,10 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
         #endregion
 
-        #region testCSVPipeNormal__()
+        #region testCSVPipeNormal2()
 
         [Test]
-        public void testCSVPipeNormal__()
+        public void testCSVPipeNormal2()
         {
 
             var _Result = new List<String>() { "#Id,Name,Verb,Help,Action",
@@ -81,20 +81,20 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
 
         #endregion
 
-        #region testCSVPipeNormal2()
+        #region testCSVPipeNormal3()
 
         [Test]
-        public void testCSVPipeNormal2()
+        public void testCSVPipeNormal3()
         {
 
-            var _Pipe = new CSVPipe(StringSplitOptions: StringSplitOptions.RemoveEmptyEntries,
-                                    IEnumerable:        new List<String>() {
-                                                            "#Id,Name,Friendlist",
-                                                            "    0,Alice,   a,,b,c, ,d,e     ,f,g   ",
-                                                            "",
-                                                            ",",
-                                                            "1,Bob,a,g,h"
-                                                        });
+            var _Pipe = new CSVReaderPipe(StringSplitOptions: StringSplitOptions.RemoveEmptyEntries,
+                                          IEnumerable:        new List<String>() {
+                                                                  "#Id,Name,Friendlist",
+                                                                  "    0,Alice,   a,,b,c, ,d,e     ,f,g   ",
+                                                                  "",
+                                                                  ",",
+                                                                  "1,Bob,a,g,h"
+                                                              });
 
             var _Counter = 0;
             while (_Pipe.MoveNext())
@@ -109,41 +109,6 @@ namespace de.ahzf.Pipes.UnitTests.Pipes
         }
 
         #endregion
-
-        //#region testActionPipeZero
-
-        //[Test]
-        //public void testActionPipeZero()
-        //{
-
-        //    var _Sum     = 0;
-        //    var _Numbers = new List<Int32>();
-        //    var _Pipe    = new ActionPipe<Int32>((_Int32) => _Sum += _Int32);
-        //    _Pipe.SetSourceCollection(_Numbers);
-
-        //    var _Counter = 0;
-        //    Assert.IsFalse(_Pipe.Any());
-        //    Assert.AreEqual(_Counter, 0);
-        //    Assert.AreEqual(_Sum,     0);
-        //    Assert.IsFalse(_Pipe.Any());
-
-        //}
-
-        //#endregion
-
-        //#region testActionPipeNull()
-
-        //[Test]
-        //[ExpectedException(typeof(ArgumentNullException))]
-        //public void testActionPipeNull()
-        //{
-
-        //    Action<Int32> myAction = null;
-        //    var _Pipe = new ActionPipe<Int32>(myAction);
-
-        //}
-
-        //#endregion
 
     }
 

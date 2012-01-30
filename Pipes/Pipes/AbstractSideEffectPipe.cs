@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -218,7 +218,7 @@ namespace de.ahzf.Pipes
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    /// <typeparam name="T2">The type of the third sideeffect.</typeparam>
+    /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
     public abstract class AbstractSideEffectPipe<S, E, T1, T2, T3> : AbstractPipe<S, E>, ISideEffectPipe<S, E, T1, T2, T3>
     {
 

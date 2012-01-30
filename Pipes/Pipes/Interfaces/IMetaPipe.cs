@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,9 +31,14 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// A MetaPipe is a pipe that "wraps" some collection of pipes.
     /// </summary>
-    public interface IMetaPipe
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public interface IMetaPipe<in S, out E> : IPipe<S,E>
     {
 
+        /// <summary>
+        /// A list of all wrapped pipes
+        /// </summary>
         IEnumerable<IPipe> Pipes { get; }
     
     }

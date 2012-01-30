@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,7 +92,7 @@ namespace de.ahzf.Pipes
                                                          Boolean             FailOnWrongNumberOfColumns = false,
                                                          Boolean             TrimColumns                = true)
         {
-            return new CSVPipe(IgnoreLines, Seperators, StringSplitOptions, ExpectedNumberOfColumns, FailOnWrongNumberOfColumns, TrimColumns, IEnumerable, null);
+            return new CSVReaderPipe(IgnoreLines, Seperators, StringSplitOptions, ExpectedNumberOfColumns, FailOnWrongNumberOfColumns, TrimColumns, IEnumerable, null);
         }
 
         #endregion
@@ -118,7 +118,7 @@ namespace de.ahzf.Pipes
                                                          Boolean             FailOnWrongNumberOfColumns = false,
                                                          Boolean             TrimColumns                = true)
         {
-            return new CSVPipe(IgnoreLines, Seperators, StringSplitOptions, ExpectedNumberOfColumns, FailOnWrongNumberOfColumns, TrimColumns, null, IEnumerator);
+            return new CSVReaderPipe(IgnoreLines, Seperators, StringSplitOptions, ExpectedNumberOfColumns, FailOnWrongNumberOfColumns, TrimColumns, null, IEnumerator);
         }
 
         #endregion

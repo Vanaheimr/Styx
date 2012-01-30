@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#if !SILVERLIGHT
+//#if !SILVERLIGHT
 
 #region Usings
 
@@ -37,16 +37,13 @@ namespace de.ahzf.Pipes
 
         #region Data
 
-        private readonly String                _SearchPattern;
-        private readonly SearchOption          _SearchOption;
-        private readonly FileFilter            _FileFilter;
-        private          IEnumerator<FileInfo> _TempIterator;
-
         private readonly FileMode              _FileMode;
         private readonly FileAccess            _FileAccess;
         private readonly FileShare             _FileShare;
         private readonly UInt32                _BufferSize;
+#if !SILVERLIGHT
         private readonly FileOptions           _FileOptions;
+#endif
 
         #endregion
 
@@ -68,7 +65,9 @@ namespace de.ahzf.Pipes
                               FileAccess            FileAccess,
                               FileShare             FileShare,
                               UInt32                BufferSize,
+#if !SILVERLIGHT
                               FileOptions           FileOptions,
+#endif
                               IEnumerable<FileInfo> IEnumerable = null,
                               IEnumerator<FileInfo> IEnumerator = null)
 
@@ -83,7 +82,9 @@ namespace de.ahzf.Pipes
             _FileAccess  = FileAccess;
             _FileShare   = FileShare;
             _BufferSize  = BufferSize;
+#if !SILVERLIGHT
             _FileOptions = FileOptions;
+#endif
 
         }
 
@@ -111,7 +112,11 @@ namespace de.ahzf.Pipes
             while (_InternalEnumerator.MoveNext())
             {
 
-                _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize, _FileOptions);
+#if SILVERLIGHT
+                _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize);
+#else
+                _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32)_BufferSize, _FileOptions);
+#endif
                 return true;
 
             }
@@ -139,5 +144,5 @@ namespace de.ahzf.Pipes
 
 }
 
-#endif
+//#endif
 

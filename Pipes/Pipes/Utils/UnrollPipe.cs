@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,6 @@ namespace de.ahzf.Pipes
     /// The UnrollPipe will unroll any IEnumerator/IEnumerable of IEnumerable that is inputted into it.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public class UnrollPipe<S> : AbstractPipe<IEnumerable<S>, S>
     {
 

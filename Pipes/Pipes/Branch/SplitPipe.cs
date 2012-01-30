@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2011, Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -108,14 +108,14 @@ namespace de.ahzf.Pipes
             if (IEnumerator != null)
                 SetSource(IEnumerator);
 
-            _Ids = Ids;
-            Emit = new Stub<S, S>[Ids];
+            _Ids  = Ids;
+            Emit  = new Stub<S, S>[Ids];
             Moved = new Boolean[Ids];
 
             for (Byte i = 0; i < Ids; i++)
             {
-                Emit[i] = new Stub<S, S>(i, (Id) => MoveNext(Id), () => _CurrentElement);
-                Moved[i]    = true;
+                Emit[i]  = new Stub<S, S>(i, (Id) => MoveNext(Id), () => _CurrentElement);
+                Moved[i] = true;
             }
 
         }
