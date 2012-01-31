@@ -21,6 +21,10 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
+#if SILVERLIGHT
+using de.ahzf.Silverlight;
+#endif
+
 #endregion
 
 namespace de.ahzf.Pipes

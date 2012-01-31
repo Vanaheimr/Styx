@@ -24,7 +24,7 @@ using System.Threading;
 
 #endregion
 
-namespace de.ahzf.Pipes
+namespace de.ahzf.Silverlight
 {
 
     public static class SilverlightTools
@@ -40,7 +40,7 @@ namespace de.ahzf.Pipes
             Object _value = value;
             Object _comparand = comparand;
 
-            return (T)Interlocked.CompareExchange(ref _location1, _value, _comparand);
+            return (T) Interlocked.CompareExchange(ref _location1, _value, _comparand);
 
         }
 
