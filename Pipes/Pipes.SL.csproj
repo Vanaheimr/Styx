@@ -75,8 +75,6 @@
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\FuncFilterArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\SameValueFilterArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\IArrowReceiverExtensions.cs" />
-    <Compile Include="Arrows\ExtensionMethods\IEnumerableExtensions.cs" />
-    <Compile Include="Arrows\ExtensionMethods\IEnumeratorExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SideEffectArrows\AggregatorArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SideEffectArrows\CountArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SideEffectArrows\MinMaxArrowExtensions.cs" />
@@ -94,6 +92,10 @@
     <Compile Include="Arrows\Interfaces\ISideEffectArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISniper.cs" />
     <Compile Include="Arrows\Sniper.cs" />
+    <Compile Include="IEnumerableExtensions.cs" />
+    <Compile Include="IEnumeratorExtensions.cs" />
+    <Compile Include="Pipes\ExtensionMethods\IOPipeExtensions.cs" />
+    <Compile Include="Pipes\ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="SilverlightTools.cs" />
     <Compile Include="Enumerators\ExpandableEnumerator.cs" />
     <Compile Include="Enumerators\HistoryEnumerator.cs" />
@@ -102,9 +104,6 @@
     <Compile Include="Enumerators\MultiEnumerator.cs" />
     <Compile Include="Enumerators\SingleEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="ExtensionMethods\IEnumerable.cs" />
-    <Compile Include="ExtensionMethods\IOPipeExtensions.cs" />
-    <Compile Include="ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="PipeHelper.cs" />
     <Compile Include="Pipes\AbstractComparisonFilterPipe.cs" />
     <Compile Include="Pipes\AbstractMetaPipe.cs" />

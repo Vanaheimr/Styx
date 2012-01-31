@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using de.ahzf.Arrows;
 
 #endregion
 
@@ -77,6 +78,32 @@ namespace de.ahzf.Pipes
         }
 
         #endregion
+
+#if SILVERLIGHT
+
+        // todo!
+
+#else
+
+        #region ToSniper(this IEnumerable)
+
+        /// <summary>
+        /// Creates a new Sniper fireing the content of the given IEnumerable.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of the emitted messages/objects.</typeparam>
+        /// <param name="IEnumerable">An enumeration of messages/objects to send.</param>
+        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="StartAsTask">Start the sniper within its own task.</param>
+        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
+        /// <returns>A new Sniper.</returns>
+        public static Sniper<TMessage> ToSniper<TMessage>(this IEnumerable<TMessage> IEnumerable, Boolean Autostart = false, Boolean StartAsTask = false, Nullable<TimeSpan> InitialDelay = null)
+        {
+            return new Sniper<TMessage>(IEnumerable, Autostart, StartAsTask, InitialDelay);
+        }
+
+        #endregion
+
+#endif
 
     }
 
