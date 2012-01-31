@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,27 @@
 namespace de.ahzf.Arrows
 {
 
+    #region IFilterArrow
+
     /// <summary>
     /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
     /// some of the messages/objects instead of emitting everything.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
-    public interface IFilterArrow<TMessage> : IArrow<TMessage, TMessage>
+    public interface IFilterArrow : IArrow
     { }
+
+    #endregion
+
+    #region IFilterArrow<T>
+
+    /// <summary>
+    /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
+    /// some of the messages/objects instead of emitting everything.
+    /// </summary>
+    /// <typeparam name="T">The type of the consuming messages/objects.</typeparam>
+    public interface IFilterArrow<T> : IFilterArrow, IArrow<T, T>
+    { }
+
+    #endregion
 
 }

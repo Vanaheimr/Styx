@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,13 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace de.ahzf.Arrows
 {
 
-    // Attention: TIn and TOutput reversed ;)
+    #region IArrowSender
 
-    /// <summary>
-    /// The common interface for any Arrow implementations sending messages of type E.
-    /// </summary>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrowSender<TOut>
+    public interface IArrowSender
     {
-
-        /// <summary>
-        /// An event for message delivery.
-        /// </summary>
-        event MessageRecipient<TOut> OnMessageAvailable;
 
         /// <summary>
         /// An event for signaling the completion of a message delivery.
@@ -49,6 +33,25 @@ namespace de.ahzf.Arrows
         /// </summary>
         event ExceptionRecipient OnError;
 
+    }
+
+    #endregion
+
+    #region IArrowSender<TOut>
+
+    // Attention: TIn and TOut reversed ;)
+
+    /// <summary>
+    /// The common interface for any Arrow implementation sending messages of type TOut.
+    /// </summary>
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public interface IArrowSender<TOut> : IArrowSender
+    {
+
+        /// <summary>
+        /// An event for message delivery.
+        /// </summary>
+        event MessageRecipient<TOut> OnMessageAvailable;
 
         /// <summary>
         /// Sends messages/objects from this Arrow to the given recipients.
@@ -63,5 +66,7 @@ namespace de.ahzf.Arrows
         void SendTo(params IArrowReceiver<TOut>[] Recipients);
 
     }
+
+    #endregion
 
 }

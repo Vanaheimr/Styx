@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@
 using System;
 using System.Threading;
 using System.Collections.Generic;
+
+using de.ahzf.Pipes;
 
 #endregion
 

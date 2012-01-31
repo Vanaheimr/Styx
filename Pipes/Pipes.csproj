@@ -145,5 +145,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Arrows\Interfaces\ArrowClassDiagram.cd" />
+    <None Include="Pipes\Interfaces\PipesClassDiagram.cd" />
+  </ItemGroup>
 </Project>

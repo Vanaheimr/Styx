@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ namespace de.ahzf.Arrows
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowReceiver<TIn>, IArrowSender<TOut>, IArrow
+    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
     { }
 
     #endregion

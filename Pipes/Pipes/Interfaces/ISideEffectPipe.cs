@@ -30,7 +30,7 @@ namespace de.ahzf.Pipes
     /// This SideEffectPipe will produce a side effect which can be
     /// retrieved by the SideEffect property.
     /// </summary>
-    public interface ISideEffectPipe : IDisposable
+    public interface ISideEffectPipe : IPipe, IDisposable
     { }
 
     #endregion

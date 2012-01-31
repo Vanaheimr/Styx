@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,29 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Arrows
 {
 
-    #region IArrowReceiver<TIn> - Attention: TIn and TOutput reversed ;)
+    #region IArrowReceiver
+
+    public interface IArrowReceiver
+    {
+    }
+
+    #endregion
+
+    #region IArrowReceiver<TIn>
+
+    // Attention: TIn and TOut reversed ;)
 
     /// <summary>
-    /// The common interface for any Arrow implementations accepting messages of type S.
+    /// The common interface for any Arrow implementation accepting messages of type TIn.
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    public interface IArrowReceiver<in TIn>
+    public interface IArrowReceiver<in TIn> : IArrowReceiver
     {
 
         /// <summary>

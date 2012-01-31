@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ namespace de.ahzf.Arrows
 {
 
     /// <summary>
-    /// The Sniper fetches messages/objects from an IEnumerable or via an
-    /// IEnumerator and sends them to the recipients.
+    /// The Sniper fetches messages/objects from a pipe, an IEnumerable or
+    /// via an IEnumerator and sends them to the recipients.
     /// </summary>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
     public class Sniper<TOut> : ISniper<TOut>

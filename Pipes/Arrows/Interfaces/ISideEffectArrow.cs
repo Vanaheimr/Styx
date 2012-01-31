@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2011, Achim 'ahzf' Friedland <code@ahzf.de>
- * This file is part of Arrows.NET <http://www.github.com/ahzf/Arrows.NET>
+ * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <code@ahzf.de>
+ * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,41 +15,34 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace de.ahzf.Arrows
 {
 
-    #region ISideEffectArrow<in TIn, TOutput, out T>
+    #region ISideEffectArrow<in TIn, TOut, out T>
 
     /// <summary>
     /// This SideEffectArrow will produce a side effect which can
     /// be retrieved by the SideEffect property.
     /// </summary>
-    public interface ISideEffectArrow<in TIn, TOutput, out TSideeffect> : IArrow<TIn, TOutput>
+    public interface ISideEffectArrow<in TIn, TOut, out T> : IArrow<TIn, TOut>
     {
 
         /// <summary>
         /// The SideEffect produced by this Arrow.
         /// </summary>
-        TSideeffect SideEffect { get; }
+        T SideEffect { get; }
 
     }
 
     #endregion
 
-    #region ISideEffectArrow<in TIn, TOutput, out T1, out T2>
+    #region ISideEffectArrow<in TIn, TOut, out T1, out T2>
 
     /// <summary>
     /// This SideEffectArrow will produce two side effects which can
     /// be retrieved by the SideEffect properties.
     /// </summary>
-    public interface ISideEffectArrow<in TIn, E, out T1, out T2> : IArrow<TIn, E>
+    public interface ISideEffectArrow<in TIn, TOut, out T1, out T2> : IArrow<TIn, TOut>
     {
 
         /// <summary>
@@ -66,13 +59,13 @@ namespace de.ahzf.Arrows
 
     #endregion
 
-    #region ISideEffectArrow<in TIn, TOutput, out T1, out T2, out T3>
+    #region ISideEffectArrow<in TIn, TOut, out T1, out T2, out T3>
 
     /// <summary>
     /// This SideEffectArrow will produce three side effects which can
     /// be retrieved by the SideEffect properties.
     /// </summary>
-    public interface ISideEffectArrow<in TIn, E, out T1, out T2, out T3> : IArrow<TIn, E>
+    public interface ISideEffectArrow<in TIn, TOut, out T1, out T2, out T3> : IArrow<TIn, TOut>
     {
 
         /// <summary>
