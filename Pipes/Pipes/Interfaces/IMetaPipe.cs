@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -31,16 +30,26 @@ namespace de.ahzf.Pipes
     /// <summary>
     /// A MetaPipe is a pipe that "wraps" some collection of pipes.
     /// </summary>
+    public interface IMetaPipe : IDisposable
+    { }
+
+    #endregion
+
+    #region IMetaPipe<in S, out E>
+
+    /// <summary>
+    /// A MetaPipe is a pipe that "wraps" some collection of pipes.
+    /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IMetaPipe<in S, out E> : IPipe<S,E>
+    public interface IMetaPipe<in S, out E> : IPipe<S, E>, IMetaPipe
     {
 
         /// <summary>
         /// A list of all wrapped pipes
         /// </summary>
         IEnumerable<IPipe> Pipes { get; }
-    
+
     }
 
     #endregion

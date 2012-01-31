@@ -29,8 +29,9 @@ namespace de.ahzf.Pipes
     #region IEndPipe
 
     /// <summary>
-    /// A helper interface for the IPipe pipe interface
-    /// defining a general pipe emitting elements.
+    /// An interface for the element emitting part of a pipe.
+    /// Pipes implementing just this interface do not neccessarily
+    /// consume elements, but e.g. might receive them via network.
     /// </summary>
     public interface IEndPipe : IEnumerator, IEnumerable, IDisposable
     {
@@ -48,8 +49,9 @@ namespace de.ahzf.Pipes
     #region IEndPipe<out E>
 
     /// <summary>
-    /// A helper interface for the IPipe&lt;S, E&gt; pipe interface
-    /// defining a general pipe emitting elements of type E.
+    /// An interface for the element emitting part of a pipe.
+    /// Pipes implementing just this interface do not neccessarily
+    /// consume elements, but e.g. might receive them via network.
     /// </summary>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public interface IEndPipe<out E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
