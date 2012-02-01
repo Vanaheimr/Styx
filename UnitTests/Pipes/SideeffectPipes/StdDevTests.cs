@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests.SideeffectPipes
+namespace de.ahzf.Styx.UnitTests.SideeffectPipes
 {
 
     [TestFixture]

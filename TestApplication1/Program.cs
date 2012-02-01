@@ -21,7 +21,7 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 
-using de.ahzf.Pipes;
+using de.ahzf.Styx;
 
 #endregion
 

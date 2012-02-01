@@ -23,7 +23,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests.FilterPipes
+namespace de.ahzf.Styx.UnitTests.FilterPipes
 {
 
     [TestFixture]

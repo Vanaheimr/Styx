@@ -2,13 +2,11 @@
 *.VisualState.xml
 *.suo
 *.csproj.user
-/Pipes/bin
-/Pipes/obj
+/Styx/bin
+/Styx/obj
 /UnitTests/bin
 /UnitTests/obj
 /UnitTests/TestResult.xml
-Pipes.userprefs
-/PipesShell/obj
-/PipesShell/bin
+Styx.userprefs
 /TestApplication1/bin
 /TestApplication1/obj

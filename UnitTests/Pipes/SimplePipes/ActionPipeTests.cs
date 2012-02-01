@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Pipes.UnitTests.Pipes
+namespace de.ahzf.Styx.UnitTests.Pipes
 {
 
     [TestFixture]

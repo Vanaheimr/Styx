@@ -63,12 +63,6 @@
     <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipeTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Pipes\Pipes.csproj">
-      <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
-      <Name>Pipes</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="ExtensionMethods\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -79,5 +73,10 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Styx\Styx.csproj">
+      <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
+      <Name>Styx</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

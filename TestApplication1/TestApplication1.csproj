@@ -51,9 +51,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Pipes\Pipes.csproj">
-      <Project>{6AB1B02B-4D20-4E80-AF02-D1CAE6C70805}</Project>
-      <Name>Pipes</Name>
+    <ProjectReference Include="..\Styx\Styx.csproj">
+      <Project>{3949790D-8591-4101-9E4D-CE7A758E7409}</Project>
+      <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
