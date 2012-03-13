@@ -2,9 +2,9 @@
 
 [Styx](http://github.com/ahzf/Styx) is the foundation of a graph-based data flow framework for any kind of data processing.
 It is used heavily within [Balder](http://github.com/ahzf/Balder) a data flow framework for
-[property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph) for .NET/Mono.
+[property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph) on .NET/Mono.
 A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
-Styx supports the splitting, merging, transformation and concurrent processing of data from input to output. It comes in thre flavors:
+Styx supports the splitting, merging, transformation and concurrent processing of data from input to output. It comes in three flavors:
 
 * **Pipes** is a lazy data flow framework.    
   ![Pipes visualization](/ahzf/Styx/raw/master/artwork/pipes_small.png)
