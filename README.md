@@ -8,9 +8,9 @@ Styx supports the splitting, merging, transformation and concurrent processing o
 
 * **Pipes** is a lazy data flow framework.    
   ![Pipes visualization](/ahzf/Styx/raw/master/artwork/pipes_small.png)
-* **Arrows** is an event-based data flow framework.
+* **Arrows** is an event-based data flow framework.    
   ![Arrows visualization](/ahzf/Styx/raw/master/artwork/arrows_small.png)
-* **Sensors** is an data source framework for all kinds of data emitting objects.
+* **Sensors** is an data source framework for all kinds of data emitting objects.    
   ![Sensors visualization](/ahzf/Styx/raw/master/artwork/sensors_small.png)
 
 #### Usage
