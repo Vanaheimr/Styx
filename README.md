@@ -6,9 +6,12 @@ It is used heavily within [Balder](http://github.com/ahzf/Balder) a data flow fr
 A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
 Styx supports the splitting, merging, transformation and concurrent processing of data from input to output. It comes in thre flavors:
 
-* **Pipes** is a lazy data flow framework.
+* **Pipes** is a lazy data flow framework.    
+  ![Pipes visualization](/ahzf/Styx/raw/master/artwork/pipes_small.png)
 * **Arrows** is an event-based data flow framework.
+  ![Arrows visualization](/ahzf/Styx/raw/master/artwork/arrows_small.png)
 * **Sensors** is an data source framework for all kinds of data emitting objects.
+  ![Sensors visualization](/ahzf/Styx/raw/master/artwork/sensors_small.png)
 
 #### Usage
 
