@@ -4,9 +4,9 @@
 *.csproj.user
 /Styx/bin
 /Styx/obj
-/UnitTests/bin
-/UnitTests/obj
-/UnitTests/TestResult.xml
 Styx.userprefs
 /TestApplication1/bin
 /TestApplication1/obj
+/StyxUnitTests/obj
+/StyxUnitTests/bin
+/StyxUnitTests/TestResult.xml
