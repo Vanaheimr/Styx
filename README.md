@@ -4,7 +4,11 @@
 It is used heavily within [Balder](http://github.com/ahzf/Balder) a data flow framework for
 [property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph) for .NET/Mono.
 A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
-Pipes supports the splitting, merging, and transformation of data from input to output. 
+Styx supports the splitting, merging, transformation and concurrent processing of data from input to output. It comes in thre flavors:
+
+* **Pipes** is a lazy data flow framework.
+* **Arrows** is an event-based data flow framework.
+* **Sensors** is an data source framework for all kinds of data emitting objects.
 
 #### Usage
 
@@ -33,14 +37,15 @@ Styx comes with some syntactic sugar to make coexistence with LINQ a bit easier.
 #### Help and Documentation
 
 Additional help and much more examples can be found in the [Wiki](http://github.com/ahzf/Styx/wiki).   
-News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
+News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf).
 
 #### Installation
 
 The installation of Styx is very straightforward.    
 Just check out or download its sources and all its dependencies:
 
-- [NUnit](http://www.nunit.org/) for unit tests
+- [Illias Commons](http://www.github.com/ahzf/Illias) for common .NET tools.
+- [NUnit](http://www.nunit.org/) for unit tests.
 
 #### License and your contribution
 
