@@ -13,6 +13,12 @@ Styx supports the splitting, merging, transformation and concurrent processing o
 The **Pipes** subproject is a lazy data flow framework.    
 ![Pipes visualization](/ahzf/Styx/raw/master/artwork/pipes_small.png)
 
+    var List = new List<Int32>() { 0, 1, 2, 2, 3, 4, 4, 5, 6, 2, 7, 8, 9, 1 }.
+        DuplicateFilter().
+        RangeFilter(2, 7).
+        Skip(2).
+        RandomFilter(0.25).
+        ToList();
 
 ##### Arrows
 
@@ -31,17 +37,17 @@ The **ToActiveSensor** extension method will transform the sensor from an lazy s
 The **SkipArrow** extension method will skip the first event.    
 The **ActionArrow** extention method will call the given delegate for every received arrow/event.    
 
-    var _SinusSensor = new SinusSensor("/dev/sinus") {
-                            Frequency            = 0.05,
-                            Amplitude            = 240,
-                            MeasurementIntervall = TimeSpan.FromSeconds(1)
-                       }.
-                       WithTimestamp().
-                       ToActiveSensor(Autostart: true).
-                       SkipArrow(1).
-                       ActionArrow(measurement => {
-                           Console.WriteLine(measurement.Timestamp + "\t" + measurement.Value);
-                       });
+    new SinusSensor("/dev/sinus") {
+        Frequency            = 0.05,
+        Amplitude            = 240,
+        MeasurementIntervall = TimeSpan.FromSeconds(1)
+    }.
+    WithTimestamp().
+    ToActiveSensor(Autostart: true).
+    SkipArrow(1).
+    ActionArrow(measurement => {
+        Console.WriteLine(measurement.Timestamp + "\t" + measurement.Value);
+    });
 
 You will see the current timestamp and value of a slow sinus wave on the console output.
 
