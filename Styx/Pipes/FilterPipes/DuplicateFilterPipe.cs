@@ -24,6 +24,32 @@ using System.Collections.Generic;
 
 namespace de.ahzf.Styx
 {
+
+    /// <summary>
+    /// The DuplicateFilterPipe will not allow a duplicate object to pass through it.
+    /// This is accomplished by the Pipe maintaining an internal HashSet that is used
+    /// to store a history of previously seen objects.
+    /// Thus, the more unique objects that pass through this Pipe, the slower it
+    /// becomes as a log_2 index is checked for every object.
+    /// </summary>
+    public static class DuplicateFilterPipeExtensions
+    {
+
+        #region DuplicateFilter(this IEnumerable)
+
+        /// <summary>
+        /// The DuplicateFilter will filter duplicate entries from the enumeration.
+        /// </summary>
+        /// <param name="IEnumerable">An enumeration of objects of type S.</param>
+        /// <typeparam name="S">The type of the elements within the filter.</typeparam>
+        public static DuplicateFilterPipe<S> DuplicateFilter<S>(this IEnumerable<S> IEnumerable)
+        {
+            return new DuplicateFilterPipe<S>(IEnumerable);
+        }
+
+        #endregion
+
+    }
     
     /// <summary>
     /// The DuplicateFilterPipe will not allow a duplicate object to pass through it.
@@ -38,18 +64,24 @@ namespace de.ahzf.Styx
 
         #region Data
 
+        /// <summary>
+        /// The internal hashset used as a history of values.
+        /// </summary>
         private readonly HashSet<S> _HistorySet;
 
         #endregion
 
         #region Constructor(s)
 
-        #region DuplicateFilterPipe()
+        #region DuplicateFilterPipe(IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Creates a new DuplicateFilterPipe.
         /// </summary>
-        public DuplicateFilterPipe()
+        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
+        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
+        public DuplicateFilterPipe(IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
+            : base(IEnumerable, IEnumerator)
         {
             _HistorySet = new HashSet<S>();
         }
@@ -57,7 +89,6 @@ namespace de.ahzf.Styx
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 

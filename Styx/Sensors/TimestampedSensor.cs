@@ -136,17 +136,17 @@ namespace de.ahzf.Styx.Sensors.Active
         /// The intervall will throttle the measurements of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
-        public TimeSpan Intervall
+        public TimeSpan MeasurementIntervall
         {
 
             get
             {
-                return InternalSensor.Intervall;
+                return InternalSensor.MeasurementIntervall;
             }
 
             set
             {
-                InternalSensor.Intervall = value;
+                InternalSensor.MeasurementIntervall = value;
             }
 
         }

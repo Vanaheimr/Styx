@@ -18,11 +18,43 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Styx
 {
+
+    /// <summary>
+    /// The RangeFilterPipe will only allow a sequential subset of its incoming
+    /// objects to be emitted to its output. This pipe can be provided -1 for
+    /// both its high and low range to denote a wildcard for high and/or low.
+    /// Note that -1 for both high and low is equivalent to the IdentityPipe.
+    /// </summary>
+    public static class RangeFilterPipeExtensions
+    {
+
+        #region RangeFilter(this IEnumerable, Low, High)
+
+        /// <summary>
+        /// The RangeFilter will only allow a sequential subset of its incoming
+        /// objects to be emitted to its output. This pipe can be provided -1 for
+        /// both its high and low range to denote a wildcard for high and/or low.
+        /// Note that -1 for both high and low is equivalent to the IdentityPipe.
+        /// </summary>
+        /// <param name="Low">The minimal value.</param>
+        /// <param name="High">The maximum value.</param>
+        /// <param name="IEnumerable">An enumeration of objects of type S.</param>
+        /// <typeparam name="S">The type of the elements within the filter.</typeparam>
+        public static RangeFilterPipe<S> RangeFilter<S>(this IEnumerable<S> IEnumerable, Int32 Low, Int32 High)
+        {
+            return new RangeFilterPipe<S>(Low, High, IEnumerable);
+        }
+
+        #endregion
+
+    }
+
     
     /// <summary>
     /// The RangeFilterPipe will only allow a sequential subset of its incoming
@@ -36,37 +68,39 @@ namespace de.ahzf.Styx
 
         #region Data
 
-        private readonly Int32 _Low;
-        private readonly Int32 _High;
-        private          Int32 _Counter;
+        private readonly Int32 Low;
+        private readonly Int32 High;
+        private          Int32 Counter;
 
         #endregion
 
         #region Constructor(s)
 
-        #region RangeFilterPipe(myLow, myHigh)
+        #region RangeFilterPipe(Low, High, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Creates a new RangeFilterPipe.
         /// </summary>
-        /// <param name="myLow">The minima.</param>
-        /// <param name="myHigh">The maxima.</param>
-        public RangeFilterPipe(Int32 myLow, Int32 myHigh)
+        /// <param name="Low">The minimal value.</param>
+        /// <param name="High">The maximum value.</param>
+        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
+        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
+        public RangeFilterPipe(Int32 Low, Int32 High, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
+            : base(IEnumerable, IEnumerator)
         {
 
-            if (myLow > -1 && myHigh > -1 && myLow >= myHigh)
-                throw new ArgumentOutOfRangeException("myLow must be smaller than myHigh!");
+            if (Low > -1 && High > -1 && Low >= High)
+                throw new ArgumentOutOfRangeException("Low must be smaller than High!");
 
-            _Low     = myLow;
-            _High    = myHigh;
-            _Counter = -1;
+            this.Low     = Low;
+            this.High    = High;
+            this.Counter = -1;
 
         }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -87,16 +121,16 @@ namespace de.ahzf.Styx
             while (_InternalEnumerator.MoveNext())
             {
 
-                _Counter++;
+                Counter++;
 
-                if ((_Low  == -1 || _Counter >= _Low) &&
-                    (_High == -1 || _Counter <  _High))
+                if ((Low  == -1 || Counter >= Low) &&
+                    (High == -1 || Counter <= High))
                 {
                     _CurrentElement = _InternalEnumerator.Current;
                     return true;
                 }
 
-                if (_High > 0 && _Counter > _High)
+                if (High > 0 && Counter > High)
                     return false;
 
             }
@@ -107,7 +141,6 @@ namespace de.ahzf.Styx
 
         #endregion
 
-
         #region ToString()
 
         /// <summary>
@@ -115,7 +148,7 @@ namespace de.ahzf.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Low + "," + _High + ">";
+            return base.ToString() + "<" + Low + ", " + High + ">";
         }
 
         #endregion

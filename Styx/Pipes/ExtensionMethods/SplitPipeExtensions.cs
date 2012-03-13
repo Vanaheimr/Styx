@@ -32,13 +32,13 @@ namespace de.ahzf.Styx
         #region SplitPipeExtensions(this myIEnumerable, Ids, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
-        /// The LabelFilterPipe either allows or disallows all
+        /// The SplitPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerable">A collection of objects implementing IPropertyEdge.</param>
-        public static SplitPipe<S> SplitPipe<S>(this IEnumerable<S> myIEnumerable, Byte Ids)
+        /// <param name="IEnumerable">A collection of objects implementing IPropertyEdge.</param>
+        public static SplitPipe<S> SplitPipe<S>(this IEnumerable<S> IEnumerable, Byte Ids)
         {
-            return new SplitPipe<S>(Ids, myIEnumerable);
+            return new SplitPipe<S>(Ids, IEnumerable);
         }
 
         #endregion
@@ -49,10 +49,10 @@ namespace de.ahzf.Styx
         /// The LabelFilterPipe either allows or disallows all
         /// Edges that have the provided label.
         /// </summary>
-        /// <param name="myIEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
-        public static SplitPipe<S> SplitPipe<S>(this IEnumerator<S> myIEnumerator, Byte Ids)
+        /// <param name="IEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
+        public static SplitPipe<S> SplitPipe<S>(this IEnumerator<S> IEnumerator, Byte Ids)
         {
-            return new SplitPipe<S>(Ids, null, myIEnumerator);
+            return new SplitPipe<S>(Ids, null, IEnumerator);
         }
 
         #endregion

@@ -56,7 +56,7 @@ namespace de.ahzf.Styx.Sensors
         /// The intervall will throttle the measurements of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
-        TimeSpan Intervall { get; set; }
+        TimeSpan MeasurementIntervall { get; set; }
 
         /// <summary>
         /// The amount of time in milliseconds a passive sensor

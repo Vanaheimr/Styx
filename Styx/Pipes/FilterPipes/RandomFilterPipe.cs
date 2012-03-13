@@ -18,11 +18,42 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Styx
 {
+
+    /// <summary>
+    /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
+    /// For each passing object, a random number generator creates a double value between 0 and 1.
+    /// If the randomly generated double is less than or equal the provided bias, then the object is allowed to pass.
+    /// If the randomly generated double is greater than the provided bias, then the object is not allowed to pass.
+    /// </summary>
+    public static class RandomFilterPipeExtensions
+    {
+
+        #region RandomFilter(this IEnumerable)
+
+        /// <summary>
+        /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
+        /// For each passing object, a random number generator creates a double value between 0 and 1.
+        /// If the randomly generated double is less than or equal the provided bias, then the object is allowed to pass.
+        /// If the randomly generated double is greater than the provided bias, then the object is not allowed to pass.        /// </summary>
+        /// <param name="Bias">The bias.</param>
+        /// <param name="Random">An optional source of randomness.</param>
+        /// <param name="IEnumerable">An enumeration of objects of type S.</param>
+        /// <typeparam name="S">The type of the elements within the filter.</typeparam>
+        public static RandomFilterPipe<S> RandomFilter<S>(this IEnumerable<S> IEnumerable, Double Bias, Random Random = null)
+        {
+            return new RandomFilterPipe<S>(Bias, Random, IEnumerable);
+        }
+
+        #endregion
+
+    }
+
     
     /// <summary>
     /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
@@ -36,28 +67,32 @@ namespace de.ahzf.Styx
 
         #region Data
 
-        private static readonly Random _Random = new Random();
-        private        readonly Double _Bias;
+        private readonly Random Random;
+        private readonly Double Bias;
 
         #endregion
 
         #region Constructor(s)
 
-        #region RandomFilterPipe(myBias)
+        #region RandomFilterPipe(Bias, Random = null, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Creates a new RandomFilterPipe.
         /// </summary>
-        /// <param name="myBias">The bias.</param>
-        public RandomFilterPipe(Double myBias)
+        /// <param name="Bias">The bias.</param>
+        /// <param name="Random">An optional source of randomness.</param>
+        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
+        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
+        public RandomFilterPipe(Double Bias, Random Random = null, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
+            : base(IEnumerable, IEnumerator)
         {
-            _Bias = myBias;
+            this.Bias   = Bias;
+            this.Random = (Random == null) ? new Random() : Random;
         }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -78,7 +113,7 @@ namespace de.ahzf.Styx
             while (_InternalEnumerator.MoveNext())
             {
 
-                if (_Bias >= _Random.NextDouble())
+                if (Bias >= Random.NextDouble())
                 {
                     _CurrentElement = _InternalEnumerator.Current;
                     return true;
@@ -92,7 +127,6 @@ namespace de.ahzf.Styx
 
         #endregion
 
-
         #region ToString()
 
         /// <summary>
@@ -100,7 +134,7 @@ namespace de.ahzf.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Bias + ">";
+            return base.ToString() + "<" + Bias + ">";
         }
 
         #endregion

@@ -98,7 +98,7 @@ namespace de.ahzf.Styx.Sensors.Simple
         /// <summary>
         /// The frequency of the sinus wave.
         /// </summary>
-        public Double Hertz     { get; set; }
+        public Double Frequency { get; set; }
 
         /// <summary>
         /// The amplitude of the sinus wave.
@@ -128,7 +128,7 @@ namespace de.ahzf.Styx.Sensors.Simple
             : base(SensorId, SensorName, "Double")
         {
             Arc              = 0;
-            Hertz            = 1.0;
+            Frequency            = 1.0;
             Amplitude        = 1.0;
             XOffset          = 0.0;
             YOffset          = 0.0;
@@ -148,7 +148,7 @@ namespace de.ahzf.Styx.Sensors.Simple
             base.MoveNext();
 
             var diff      = (Now - LastMeasurementAt);
-            Arc          += (diff.TotalMilliseconds / 1000 * Hertz) * 2 * Math.PI;
+            Arc          += (diff.TotalMilliseconds / 1000 * Frequency) * 2 * Math.PI;
             Arc           = Arc % (2 * Math.PI);
             var diff2     = LastMeasurementAt - Now;
 

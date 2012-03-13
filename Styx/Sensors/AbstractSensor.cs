@@ -93,13 +93,13 @@ namespace de.ahzf.Styx.Sensors
         #endregion
 
 
-        #region Intervall
+        #region MeasurementIntervall
 
         /// <summary>
         /// The intervall will throttle the measurements of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
-        public TimeSpan Intervall { get; set; }
+        public TimeSpan MeasurementIntervall { get; set; }
 
         #endregion
 
@@ -310,7 +310,7 @@ namespace de.ahzf.Styx.Sensors
             Now                = DateTime.Now;
 
             // Avoid to stack delays!
-            NextMeasurementAt += Intervall;
+            NextMeasurementAt += MeasurementIntervall;
 
             // This might be a little bit later than expected!
             _LastMeasurementAt = Now;
