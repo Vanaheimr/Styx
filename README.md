@@ -6,36 +6,51 @@ It is used heavily within [Balder](http://github.com/ahzf/Balder) a data flow fr
 A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
 Styx supports the splitting, merging, transformation and concurrent processing of data from input to output. It comes in three flavors:
 
-* **Pipes** is a lazy data flow framework.    
-  ![Pipes visualization](/ahzf/Styx/raw/master/artwork/pipes_small.png)
-* **Arrows** is an event-based data flow framework.    
-  ![Arrows visualization](/ahzf/Styx/raw/master/artwork/arrows_small.png)
-* **Sensors** is an data source framework for all kinds of data emitting objects.    
-  ![Sensors visualization](/ahzf/Styx/raw/master/artwork/sensors_small.png)
-
 #### Usage
 
-Styx comes with some syntactic sugar to make coexistence with LINQ a bit easier.
 
-    var _Friends = _Graph.VertexId(1).
-                   OutEdges("knows").
-                   InVertex().
-                   GetProperty<String>("name");
+##### Pipes
+The **Pipes** subproject is a lazy data flow framework.    
+![Pipes visualization](/ahzf/Styx/raw/master/artwork/pipes_small.png)
 
-    _Friends.ForEach(_Friend => Console.WriteLine(_Friend));
+    var List = new List<Int32>() { 0, 1, 2, 2, 3, 4, 4, 5, 6, 2, 7, 8, 9, 1 }.
+        DuplicateFilter().
+        RangeFilter(2, 7).
+        Skip(2).
+        RandomFilter(0.25).
+        ToList();
 
-...which is in detail equivalent to the following standard syntax:
+##### Arrows
 
-    var _Pipe1    = new VertexEdgePipe(VertexEdgePipe.Step.OUT_EDGES);
-    var _Pipe2    = new LabelFilterPipe("knows", ComparisonFilter.NOT_EQUAL);
-    var _Pipe3    = new EdgeVertexPipe(EdgeVertexPipe.Step.IN_VERTEX);
-    var _Pipe4    = new VertexPropertyPipe<String>("name");
-    var _Pipeline = new Pipeline<IVertex,String>(_Pipe1, _Pipe2, _Pipe3, _Pipe4);
-    _Pipeline.SetSource(new SingleEnumerator<IVertex>(_Graph.GetVertex(new VertexId(1)));
-    foreach (var _Friend in _Pipeline)
-    {
-        Console.WriteLine(_Friend);
-    }
+The **Arrows** subproject is an event-based data flow framework.    
+![Arrows visualization](/ahzf/Styx/raw/master/artwork/arrows_small.png)
+
+
+##### Sensors
+
+The **Sensors** subproject is an data source framework for all kinds of data emitting objects.    
+  ![Sensors visualization](/ahzf/Styx/raw/master/artwork/sensors_small.png)
+
+The following code will create an instance of a sensor producing a sinus wave. This could be used as a mockup for a voltage or current sensoring application - even when the frequency is very low here ;)    
+The **WithTimestamp** extension method will modify the output of the sensor to include the timestamp when the 'measurement' took place.    
+The **ToActiveSensor** extension method will transform the sensor from an lazy sensor to an event-sending sensor.    
+The **SkipArrow** extension method will skip the first event.    
+The **ActionArrow** extention method will call the given delegate for every received arrow/event.    
+
+    new SinusSensor("/dev/sinus") {
+        Frequency            = 0.05,
+        Amplitude            = 240,
+        MeasurementIntervall = TimeSpan.FromSeconds(1)
+    }.
+    WithTimestamp().
+    ToActiveSensor(Autostart: true).
+    SkipArrow(1).
+    ActionArrow(measurement => {
+        Console.WriteLine(measurement.Timestamp + "\t" + measurement.Value);
+    });
+
+You will see the current timestamp and value of a slow sinus wave on the console output.
+
 
 #### Help and Documentation
 
