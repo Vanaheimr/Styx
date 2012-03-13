@@ -32,7 +32,8 @@ The **SkipArrow** extension method will skip the first event.
 The **ActionArrow** extention method will call the given delegate for every received arrow/event.    
 
     var _SinusSensor = new SinusSensor("/dev/sinus") {
-                            Hertz                = 0.05,
+                            Frequency            = 0.05,
+                            Amplitude            = 240,
                             MeasurementIntervall = TimeSpan.FromSeconds(1)
                        }.
                        WithTimestamp().
