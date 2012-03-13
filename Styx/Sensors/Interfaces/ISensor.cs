@@ -70,6 +70,11 @@ namespace de.ahzf.Styx.Sensors
         DateTime Now { get; }
 
         /// <summary>
+        /// The timestamp when this sensor was initialized.
+        /// </summary>
+        DateTime InitializationTimestamp { get; }
+
+        /// <summary>
         /// The timestamp of the last time this sensor invoked a measurement.
         /// </summary>
         DateTime LastMeasurementAt { get; }
@@ -117,6 +122,11 @@ namespace de.ahzf.Styx.Sensors
         /// The current value of this sensor.
         /// </summary>
         TValue CurrentValue { get; }
+
+        /// <summary>
+        /// The current value of this sensor and its measurement timestamp.
+        /// </summary>
+        Measurement<TValue> TimestampedValue { get; }
 
     }
 

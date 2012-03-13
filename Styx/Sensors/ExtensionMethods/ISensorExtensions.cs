@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 
 using de.ahzf.Styx;
+using de.ahzf.Illias.Commons;
 
 #endregion
 
@@ -126,6 +127,25 @@ namespace de.ahzf.Styx.Sensors.Active
 
         {
             return new ActiveSensor<TId, TValue>(ISensor, Recipient, Autostart, StartAsTask, InitialDelay);
+        }
+
+        #endregion
+
+
+        #region WithTimestamp(this ISensor<TId, TValue>)
+
+        /// <summary>
+        /// Creates a new TimestampedSensor based on the given ISensor&lt;TId, TValue&gt;.
+        /// </summary>
+        /// <typeparam name="TId">The type of the unique identification.</typeparam>
+        /// <typeparam name="TValue">The type of the measured value.</typeparam>
+        /// <param name="ISensor">An ISensor&lt;TId, TValue&gt;.</param>
+        /// <returns>A new TimestampedSensor&lt;TId, TValue&gt;.</returns>
+        public static ISensor<TId, Measurement<TValue>> WithTimestamp<TId, TValue>(this ISensor<TId, TValue> ISensor)
+
+            where TId : IEquatable<TId>, IComparable<TId>, IComparable
+        {
+            return new TimestampedSensor<TId, TValue>(ISensor);
         }
 
         #endregion

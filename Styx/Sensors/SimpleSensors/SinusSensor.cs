@@ -80,7 +80,7 @@ namespace de.ahzf.Styx.Sensors.Simple
     /// A sensor returning Sinus numbers.
     /// </summary>
     /// <typeparam name="TId">The type of the unique identification.</typeparam>
-    public class SinusSensor<TId> : AbstractSensor<TId, Tuple<Double, Double>>
+    public class SinusSensor<TId> : AbstractSensor<TId, Double>
         where TId : IEquatable<TId>, IComparable<TId>, IComparable
     {
 
@@ -152,7 +152,8 @@ namespace de.ahzf.Styx.Sensors.Simple
             Arc           = Arc % (2 * Math.PI);
             var diff2     = LastMeasurementAt - Now;
 
-            _Current = new Tuple<Double, Double>(diff.TotalMilliseconds, Amplitude * Math.Sin(Arc + XOffset) + YOffset);
+            _Current = Amplitude * Math.Sin(Arc + XOffset) + YOffset;
+
             return true;
 
         }

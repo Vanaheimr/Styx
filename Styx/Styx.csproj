@@ -168,6 +168,7 @@
     <Compile Include="Sensors\SimpleSensors\RandomSensor.cs" />
     <Compile Include="Sensors\SimpleSensors\SinusSensor.cs" />
     <Compile Include="Sensors\SimpleSensors\TimestampSensor.cs" />
+    <Compile Include="Sensors\TimestampedSensor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

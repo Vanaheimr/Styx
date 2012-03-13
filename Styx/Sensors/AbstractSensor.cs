@@ -19,6 +19,7 @@
 
 using System;
 using System.Threading;
+using de.ahzf.Illias.Commons;
 
 #endregion
 
@@ -196,6 +197,21 @@ namespace de.ahzf.Styx.Sensors
 
                 return default(TValue);
 
+            }
+        }
+
+        #endregion
+
+        #region TimestampedValue
+
+        /// <summary>
+        /// The current value of this sensor and its measurement timestamp.
+        /// </summary>
+        public Measurement<TValue> TimestampedValue
+        {
+            get
+            {
+                return new Measurement<TValue>(Now, _Current);
             }
         }
 
@@ -580,7 +596,6 @@ namespace de.ahzf.Styx.Sensors
         { }
 
         #endregion
-
 
     }
 
