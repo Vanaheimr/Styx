@@ -1,14 +1,14 @@
-![Pipes.NET logo](/ahzf/Pipes.NET/raw/master/doc/Pipes.NET-logo.png)
+![Styx logo](/ahzf/Styx/raw/master/artwork/styx_small.png)
 
-[Pipes.NET](http://github.com/ahzf/Pipes.NET) is the foundation of a graph-based data flow framework for any kind of data processing.
-It is used heavily within [BlueprintPipes.NET](http://github.com/ahzf/BlueprintPipes.NET) a data flow framework for
+[Styx](http://github.com/ahzf/Styx) is the foundation of a graph-based data flow framework for any kind of data processing.
+It is used heavily within [Balder](http://github.com/ahzf/Balder) a data flow framework for
 [property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph) for .NET/Mono.
 A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
 Pipes supports the splitting, merging, and transformation of data from input to output. 
 
 #### Usage
 
-Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit easier.
+Styx comes with some syntactic sugar to make coexistence with LINQ a bit easier.
 
     var _Friends = _Graph.VertexId(1).
                    OutEdges("knows").
@@ -32,26 +32,26 @@ Pipes.NET comes with some syntactic sugar to make coexistence with LINQ a bit ea
 
 #### Help and Documentation
 
-Additional help and much more examples can be found in the [Wiki](http://github.com/ahzf/Pipes.NET/wiki).   
+Additional help and much more examples can be found in the [Wiki](http://github.com/ahzf/Styx/wiki).   
 News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf) or [@graphdbs](http://www.twitter.com/graphdbs).
 
 #### Installation
 
-The installation of Pipes.NET is very straightforward.    
+The installation of Styx is very straightforward.    
 Just check out or download its sources and all its dependencies:
 
 - [NUnit](http://www.nunit.org/) for unit tests
 
 #### License and your contribution
 
-[Pipes.NET](http://github.com/ahzf/Pipes.NET) is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/Pipes.NET/blob/master/LICENSE) file.    
-To suggest a feature, report a bug or general discussion: [http://github.com/ahzf/Pipes.NET/issues](http://github.com/ahzf/Pipes.NET/issues)    
+[Styx](http://github.com/ahzf/Styx) is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/ahzf/Styx/blob/master/LICENSE) file.    
+To suggest a feature, report a bug or general discussion: [http://github.com/ahzf/Styx/issues](http://github.com/ahzf/Styx/issues)    
 If you want to help or contribute source code to this project, please use the same license.   
 The coding standards can be found by reading the code ;)
 
 #### Acknowledgments
 
-Pipes.NET is a reimplementation of the [Pipes](http://github.com/tinkerpop/pipes) library for Java provided by [Tinkerpop](http://tinkerpop.com).    
-Please read the [NOTICE](/ahzf/Pipes.NET/blob/master/NOTICE) file for further credits.
+Styx is a reimplementation of the [Pipes](http://github.com/tinkerpop/pipes) library for Java provided by [Tinkerpop](http://tinkerpop.com).    
+Please read the [NOTICE](/ahzf/Styx/blob/master/NOTICE) file for further credits.
 
 #### 
