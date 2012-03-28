@@ -89,7 +89,7 @@ namespace de.ahzf.Styx.Sensors.UnitTests
 
             var _Stopwatch = new Stopwatch();
             _Stopwatch.Start();
-            var _TimestampSensor = new TimestampSensor("ts1") { Intervall = TimeSpan.FromSeconds(2) };
+            var _TimestampSensor = new TimestampSensor("ts1") { MeasurementIntervall = TimeSpan.FromSeconds(2) };
             var _Result          = _TimestampSensor.Take(10).ToArray();
             _Stopwatch.Stop();
 
