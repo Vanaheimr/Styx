@@ -32,22 +32,22 @@ namespace de.ahzf.Styx
     public static class CSV
     {
 
-        #region GetLines(this myStreamReader)
+        #region GetLines(this StreamReader)
 
         /// <summary>
         /// Yields one line from the given stream reader.
         /// </summary>
-        /// <param name="myStreamReader">The stream to read the lines from.</param>
+        /// <param name="StreamReader">The stream to read the lines from.</param>
         /// <returns>A single line.</returns>
-        public static IEnumerable<String> GetLines(this StreamReader myStreamReader)
+        public static IEnumerable<String> GetLines(this StreamReader StreamReader)
         {
 
-            if (myStreamReader == null)
-                throw new ArgumentNullException("myStreamReader must not be null!");
+            if (StreamReader == null)
+                throw new ArgumentNullException("StreamReader", "StreamReader must not be null!");
 
             String _Line;
 
-            while ((_Line = myStreamReader.ReadLine()) != null)
+            while ((_Line = StreamReader.ReadLine()) != null)
                 yield return _Line;
 
         }

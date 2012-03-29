@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApplication1", "TestApplication1\TestApplication1.csproj", "{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Styx", "Styx\Styx.csproj", "{3949790D-8591-4101-9E4D-CE7A758E7409}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{ADFA1020-4944-4824-90D8-634B5E6E8A14}"
@@ -25,16 +23,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Debug|x86.ActiveCfg = Debug|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Debug|x86.Build.0 = Debug|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Release|Any CPU.ActiveCfg = Release|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Release|x86.ActiveCfg = Release|x86
-		{303BE46E-E86C-4BC6-8C15-FBF2CD28B00A}.Release|x86.Build.0 = Release|x86
 		{3949790D-8591-4101-9E4D-CE7A758E7409}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3949790D-8591-4101-9E4D-CE7A758E7409}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3949790D-8591-4101-9E4D-CE7A758E7409}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
