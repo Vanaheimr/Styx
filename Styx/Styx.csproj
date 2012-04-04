@@ -135,6 +135,7 @@
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\FuncPipe.cs" />
     <Compile Include="Pipes\Branch\SplitPipe.cs" />
+    <Compile Include="Pipes\Utils\BackPipe.cs" />
     <Compile Include="Pipes\Utils\UnrollPipe.cs" />
     <Compile Include="Pipes\Utils\HasCountPipe.cs" />
     <Compile Include="Pipes\Utils\StartPipe.cs" />

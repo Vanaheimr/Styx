@@ -26,19 +26,60 @@ namespace de.ahzf.Styx
 {
 
     /// <summary>
+    /// Extension methods for the BackFilterPipe.
+    /// </summary>
+    public static class BackFilterPipeExtensions
+    {
+
+        #region InV(this IEnumerable<IGenericPropertyEdge<...>>, VertexFilter = null)
+
+        /// <summary>
+        /// Returns the incomming vertices of the given PropertyEdges.
+        /// </summary>
+        /// <param name="IEnumerable">An enumeration of PropertyEdges.</param>
+        /// <param name="VertexFilter">An optional delegate for vertex filtering.</param>
+        /// <returns>The incomming vertices of the given PropertyEdges.</returns>
+        public static BackFilterPipe<E, S> BackFilter<E, S>(this IPipe<S, E> IPipe, UInt64 Steps)
+        {
+            return new BackFilterPipe<E, S>(IPipe, Steps);
+        }
+
+        #endregion
+
+    }
+
+
+    #region InVertexPipe()
+
+    /// <summary>
     /// BackFilterPipe will fully process the object through its internal pipe.
     /// If the internal pipe yields results, then the original object is emitted
     /// from the BackFilterPipe.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class BackFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>, IMetaPipe<S, S>
+    public class BackFilterPipe<E, S> : AbstractPipe<E, S>
     {
 
-        private IStartPipe<S> _Pipe;
+        private IPipe<S, E> IPipe;
+        private UInt64 Steps;
 
-        public BackFilterPipe(IStartPipe<S> pipe)
+        //public BackFilterPipe(IPipe<S, Boolean> FilterPipe, IEnumerable<S> IEnumerable)
+        //{
+        //    this.FilterPipe      = FilterPipe;
+        //    _InternalEnumerator = IEnumerable.GetEnumerator();
+        //}
+
+        //public BackFilterPipe(Func<S, Boolean> FilterFunc, IEnumerable<S> IEnumerable)
+        //{
+        //    this.FilterFunc = FilterFunc;
+        //    _InternalEnumerator = IEnumerable.GetEnumerator();
+        //}
+
+        public BackFilterPipe(IPipe<S, E> IPipe, UInt64 Steps = 1)
         {
-            _Pipe = pipe;
+            this.IPipe = IPipe;
+            this.Steps = Steps;
+            _InternalEnumerator = IPipe.GetEnumerator();
         }
 
         
@@ -47,6 +88,19 @@ namespace de.ahzf.Styx
 
             if (_InternalEnumerator == null)
                 return false;
+
+            while (_InternalEnumerator.MoveNext())
+            {
+
+                var aa = this.Path;
+                var bb = this.Path[this.Path.Count - 2 - (Int32) Steps];
+
+                //_CurrentElement = _InternalEnumerator.Current;
+                _CurrentElement = (S) bb;
+
+                return true;
+
+            }
 
             //while (true)
             //{
@@ -67,34 +121,36 @@ namespace de.ahzf.Styx
         }
 
 
-        #region Pipes
+        //#region Pipes
 
-        /// <summary>
-        /// A MetaPipe is a pipe that "wraps" some collection of pipes.
-        /// </summary>
-        public IEnumerable<IPipe> Pipes
-        {
-            get
-            {
-                return new List<IPipe>() { _Pipe as IPipe };
-            }
-        }
+        ///// <summary>
+        ///// A MetaPipe is a pipe that "wraps" some collection of pipes.
+        ///// </summary>
+        //public IEnumerable<IPipe> Pipes
+        //{
+        //    get
+        //    {
+        //        return new List<IPipe>() { FilterPipe as IPipe };
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
 
-        #region ToString()
+        //#region ToString()
 
-        /// <summary>
-        /// A string representation of this pipe.
-        /// </summary>
-        public override String ToString()
-        {
-            return base.ToString() + "[" + _Pipe + "]";
-        }
+        ///// <summary>
+        ///// A string representation of this pipe.
+        ///// </summary>
+        //public override String ToString()
+        //{
+        //    return base.ToString() + "[" + FilterPipe + "]";
+        //}
 
-        #endregion
+        //#endregion
 
     }
+
+    #endregion
 
 }
