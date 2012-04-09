@@ -32,28 +32,6 @@ namespace de.ahzf.Styx
     public static class IEnumerableExtensions
     {
 
-        #region ForEach(this IEnumerable, Action)
-
-        /// <summary>
-        /// Iterates over the given enumeration and calls the
-        /// given action for each item.
-        /// </summary>
-        /// <typeparam name="T">The type of the enumerated objects.</typeparam>
-        /// <param name="IEnumerable">A enumeration of objects of type T.</param>
-        /// <param name="Action">A action method to call for every item of the enumeration.</param>
-        public static void ForEach<T>(this IEnumerable<T> IEnumerable, Action<T> Action)
-        {
-
-            if (Action == null)
-                throw new ArgumentNullException("The parameter 'Action' must not be null!");
-
-            foreach (var _item in IEnumerable)
-                Action(_item);
-
-        }
-
-        #endregion
-
         #region MapEach(this IEnumerable, Func)
 
         /// <summary>
