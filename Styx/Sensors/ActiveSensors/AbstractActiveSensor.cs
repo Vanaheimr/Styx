@@ -1,7 +1,7 @@
 ﻿/*
  * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <code@ahzf.de>
  * Autor: Achim 'ahzf' Friedland <achim.friedland@belectric.com>
- * This file is part of Styx <http://www.github.com/ahzf/Styx>
+ * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
