@@ -54,7 +54,7 @@ You will see the current timestamp and value of a slow sinus wave on the console
 
 #### Help and Documentation
 
-Additional help and much more examples can be found in the [Wiki](http://github.com/ahzf/Styx/wiki).   
+Additional help and much more examples can be found in the [Wiki](http://github.com/Vanaheimr/Styx/wiki).   
 News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf).
 
 #### Installation
@@ -62,13 +62,13 @@ News and updates can also be found on twitter by following: [@ahzf](http://www.t
 The installation of Styx is very straightforward.    
 Just check out or download its sources and all its dependencies:
 
-- [Illias Commons](http://www.github.com/ahzf/Illias) for common .NET tools.
+- [Illias Commons](http://www.github.com/Vanaheimr/Illias) for common .NET tools.
 - [NUnit](http://www.nunit.org/) for unit tests.
 
 #### License and your contribution
 
 [Styx](http://github.com/Vanaheimr/Styx) is released under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0). For details see the [LICENSE](/Vanaheimr/Styx/blob/master/LICENSE) file.    
-To suggest a feature, report a bug or general discussion: [http://github.com/ahzf/Styx/issues](http://github.com/Vanaheimr/Styx/issues)    
+To suggest a feature, report a bug or general discussion: [http://github.com/Vanaheimr/Styx/issues](http://github.com/Vanaheimr/Styx/issues)    
 If you want to help or contribute source code to this project, please use the same license.   
 The coding standards can be found by reading the code ;)
 
