@@ -41,8 +41,8 @@ namespace de.ahzf.Styx
 
         #region Data
 
-        private readonly ISideEffectPipe<S, Object, T> _PipeToCap;
-        private          Boolean                       _Alive;
+        private readonly ISideEffectPipe<S, S, T> _PipeToCap;
+        private          Boolean                  _Alive;
 
         #endregion
 
@@ -58,15 +58,15 @@ namespace de.ahzf.Styx
 
         #endregion
 
-        #region SideEffectCapPipe(myPipeToCap)
+        #region SideEffectCapPipe(PipeToCap)
 
         /// <summary>
         /// Creates a new SideEffectCapPipe.
         /// </summary>
-        /// <param name="myPipeToCap">A ISideEffectCapPipe.</param>
-        public SideEffectCapPipe(ISideEffectPipe<S, Object, T> myPipeToCap)
+        /// <param name="PipeToCap">A ISideEffectCapPipe.</param>
+        public SideEffectCapPipe(ISideEffectPipe<S, S, T> PipeToCap)
         {
-            _PipeToCap = myPipeToCap;
+            _PipeToCap = PipeToCap;
             _Alive     = true;
         }
 

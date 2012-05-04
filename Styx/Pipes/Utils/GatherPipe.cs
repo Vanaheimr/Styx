@@ -40,7 +40,7 @@ namespace de.ahzf.Styx
         /// Creates a new GatherPipe.
         /// </summary>
         public GatherPipe()
-            : base(((ISideEffectPipe<S, Object, IEnumerable<S>>)((ISideEffectPipe<S, S, IEnumerable<S>>) new AggregatorPipe<S>(new List<S>()))))
+            : base(((ISideEffectPipe<S, S, IEnumerable<S>>)((ISideEffectPipe<S, S, IEnumerable<S>>) new AggregatorPipe<S>(new List<S>()))))
         { }
 
         #endregion
