@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Styx by Vanaheimr</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Styx</h1>
+        <p>Styx is both a lazy and an event-based data flow framework for .NET and Mono.</p>
+        <p class="view"><a href="https://github.com/Vanaheimr/Styx">View the Project on GitHub <small>Vanaheimr/Styx</small></a></p>
+        <ul>
+          <li><a href="https://github.com/Vanaheimr/Styx/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/Vanaheimr/Styx/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/Vanaheimr/Styx">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <p><img src="/Vanaheimr/Styx/raw/master/artwork/styx_small.png" alt="Styx logo"></p>
+
+<p><a href="http://github.com/Vanaheimr/Styx">Styx</a> is the foundation of a graph-based data flow framework for any kind of data processing.
+It is used heavily within <a href="http://github.com/Vanaheimr/Balder">Balder</a> a data flow framework for
+<a href="http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph">property graph models</a> on .NET/Mono.
+A process graph is composed of a set of process vertices connected to one another by a set of communication edges.
+Styx supports the splitting, merging, transformation and concurrent processing of data from input to output. It comes in three flavors:</p>
+
+<h4>Usage</h4>
+
+<h5>Pipes</h5>
+
+<p>The <strong>Pipes</strong> subproject is a lazy data flow framework.<br><img src="/Vanaheimr/Styx/raw/master/artwork/pipes_small.png" alt="Pipes visualization"></p>
+
+<pre><code>var List = new List&lt;Int32&gt;() { 0, 1, 2, 2, 3, 4, 4, 5, 6, 2, 7, 8, 9, 1 }.
+    DuplicateFilter().
+    RangeFilter(2, 7).
+    Skip(2).
+    RandomFilter(0.25).
+    ToList();
+</code></pre>
+
+<h5>Arrows</h5>
+
+<p>The <strong>Arrows</strong> subproject is an event-based data flow framework.<br><img src="/Vanaheimr/Styx/raw/master/artwork/arrows_small.png" alt="Arrows visualization"></p>
+
+<h5>Sensors</h5>
+
+<p>The <strong>Sensors</strong> subproject is an data source framework for all kinds of data emitting objects.<br><img src="/Vanaheimr/Styx/raw/master/artwork/sensors_small.png" alt="Sensors visualization"></p>
+
+<p>The following code will create an instance of a sensor producing a sinus wave. This could be used as a mockup for a voltage or current sensoring application - even when the frequency is very low here ;)<br>
+The <strong>WithTimestamp</strong> extension method will modify the output of the sensor to include the timestamp when the 'measurement' took place.<br>
+The <strong>ToActiveSensor</strong> extension method will transform the sensor from an lazy sensor to an event-sending sensor.<br>
+The <strong>SkipArrow</strong> extension method will skip the first event.<br>
+The <strong>ActionArrow</strong> extention method will call the given delegate for every received arrow/event.    </p>
+
+<pre><code>new SinusSensor("/dev/sinus") {
+    Frequency            = 0.05,
+    Amplitude            = 240,
+    MeasurementIntervall = TimeSpan.FromSeconds(1)
+}.
+WithTimestamp().
+ToActiveSensor(Autostart: true).
+SkipArrow(1).
+ActionArrow(measurement =&gt; {
+    Console.WriteLine(measurement.Timestamp + "\t" + measurement.Value);
+});
+</code></pre>
+
+<p>You will see the current timestamp and value of a slow sinus wave on the console output.</p>
+
+<h4>Help and Documentation</h4>
+
+<p>Additional help and much more examples can be found in the <a href="http://github.com/Vanaheimr/Styx/wiki">Wiki</a>.<br>
+News and updates can also be found on twitter by following: <a href="http://www.twitter.com/ahzf">@ahzf</a>.</p>
+
+<h4>Installation</h4>
+
+<p>The installation of Styx is very straightforward.<br>
+Just check out or download its sources and all its dependencies:</p>
+
+<ul>
+<li>
+<a href="http://www.github.com/Vanaheimr/Illias">Illias Commons</a> for common .NET tools.</li>
+<li>
+<a href="http://www.nunit.org/">NUnit</a> for unit tests.</li>
+</ul><h4>License and your contribution</h4>
+
+<p><a href="http://github.com/Vanaheimr/Styx">Styx</a> is released under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a>. For details see the <a href="/Vanaheimr/Styx/blob/master/LICENSE">LICENSE</a> file.<br>
+To suggest a feature, report a bug or general discussion: <a href="http://github.com/Vanaheimr/Styx/issues">http://github.com/Vanaheimr/Styx/issues</a><br>
+If you want to help or contribute source code to this project, please use the same license.<br>
+The coding standards can be found by reading the code ;)</p>
+
+<h4>Acknowledgments</h4>
+
+<p>Styx is a reimplementation of the <a href="http://github.com/tinkerpop/pipes">Pipes</a> library for Java provided by <a href="http://tinkerpop.com">Tinkerpop</a>.<br>
+Please read the <a href="/Vanaheimr/Styx/blob/master/NOTICE">NOTICE</a> file for further credits.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/Vanaheimr">Vanaheimr</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
