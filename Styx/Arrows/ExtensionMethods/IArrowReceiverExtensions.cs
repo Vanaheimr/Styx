@@ -42,7 +42,7 @@ namespace de.ahzf.Styx
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
         public static Boolean ReceiveMessage<TMessage>(this IArrowReceiver<TMessage> ArrowReceiver, TMessage Message)
         {
-            return ArrowReceiver.ReceiveMessage(new Object(), Message);
+            return ArrowReceiver.ReceiveMessage(null, Message);
         }
 
         #endregion

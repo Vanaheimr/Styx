@@ -25,6 +25,7 @@ using System.Collections.Generic;
 namespace de.ahzf.Styx
 {
 
+
     #region AbstractArrow<TIn, TOut>
 
     /// <summary>
@@ -202,8 +203,13 @@ namespace de.ahzf.Styx
                 // Will return true if the message should be forwarded.
                 if (ProcessMessage(MessageIn, out MessageOut))
                 {
+
                     if (OnMessageAvailable != null)
-                        OnMessageAvailable(this, MessageOut);
+                        if (Sender != null)
+                            OnMessageAvailable(Sender, MessageOut);
+                        else
+                            OnMessageAvailable(this, MessageOut);
+
                 }
 
                 return true;
