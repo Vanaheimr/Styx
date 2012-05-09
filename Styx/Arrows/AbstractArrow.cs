@@ -25,9 +25,6 @@ using System.Collections.Generic;
 namespace de.ahzf.Styx
 {
 
-
-    #region AbstractArrow<TIn, TOut>
-
     /// <summary>
     /// An AbstractArrow provides most of the functionality that is repeated
     /// in every instance of an Arrow. Any subclass of AbstractPipe should simply
@@ -74,9 +71,9 @@ namespace de.ahzf.Styx
         #endregion
 
 		#region Constructor(s)
-		
-		#region AbstractPipe()
-		
+
+        #region AbstractArrow()
+
         /// <summary>
         /// Creates a new AbstractArrow.
         /// </summary>
@@ -287,7 +284,5 @@ namespace de.ahzf.Styx
         #endregion
 
     }
-
-    #endregion
 
 }
