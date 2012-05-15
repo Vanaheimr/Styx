@@ -18,7 +18,7 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 
 #endregion
 
@@ -31,17 +31,22 @@ namespace de.ahzf.Styx
     public interface IArrow : IDisposable
     {
 
+        /// <summary>
+        /// Turns the recording of the message delivery path ON or OFF.
+        /// </summary>
+        Boolean RecordMessagePath { get; set; }
+
+        /// <summary>
+        /// Returns the message path.
+        /// </summary>
+        IEnumerable Path { get; }
+
+        /// <summary>
+        /// Signal the completion of the message delivery.
+        /// </summary>
+        /// <param name="Sender">The sender of the completion signal.</param>
+        void Complete(Object Sender);
+
     }
-
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
-    { }
 
 }

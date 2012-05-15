@@ -18,30 +18,24 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Styx
 {
 
-    /// <summary>
-    /// The common interface for any Arrow implementation.
-    /// </summary>
-    public interface IArrow : IDisposable
+    public interface IArrowReceiver
     {
 
+        /// <summary>
+        /// Accepts a message of type TIn from a sender for further processing
+        /// and delivery to the subscribers.
+        /// </summary>
+        /// <param name="Sender">The sender of the message.</param>
+        /// <param name="MessageIn">The message.</param>
+        /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
+        Boolean ReceiveMessage(Object Sender, Object MessageIn);
+
     }
-
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
-    { }
 
 }

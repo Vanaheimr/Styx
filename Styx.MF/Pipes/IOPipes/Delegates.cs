@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+using System.IO;
 
 #endregion
 
@@ -26,22 +26,10 @@ namespace de.ahzf.Styx
 {
 
     /// <summary>
-    /// The common interface for any Arrow implementation.
+    /// A delegate to filter files based on their FileInfo.
     /// </summary>
-    public interface IArrow : IDisposable
-    {
-
-    }
-
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
-    { }
+    /// <param name="myFileInfo">The FileInfo of a given file.</param>
+    /// <returns>true to filter (ignore) the file, else false.</returns>
+    public delegate Boolean FileFilter(FileInfo myFileInfo);
 
 }

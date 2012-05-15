@@ -15,33 +15,14 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace de.ahzf.Styx
 {
 
     /// <summary>
-    /// The common interface for any Arrow implementation.
+    /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
+    /// some of the messages/objects instead of emitting everything.
     /// </summary>
-    public interface IArrow : IDisposable
-    {
-
-    }
-
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
+    public interface IFilterArrow : IArrow
     { }
 
 }

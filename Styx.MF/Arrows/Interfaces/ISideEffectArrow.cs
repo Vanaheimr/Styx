@@ -18,30 +18,28 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Styx
 {
 
+    #region ISideEffectArrow
+
     /// <summary>
-    /// The common interface for any Arrow implementation.
+    /// This SideEffectArrow will produce a side effect which can
+    /// be retrieved by the SideEffect property.
     /// </summary>
-    public interface IArrow : IDisposable
+    public interface ISideEffectArrow : IArrow
     {
+
+        /// <summary>
+        /// The SideEffect produced by this Arrow.
+        /// </summary>
+        Object SideEffect { get; }
 
     }
 
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
-    { }
+    #endregion
 
 }

@@ -24,36 +24,28 @@ using System;
 namespace de.ahzf.Styx
 {
 
-    public interface IArrowReceiver
-    {
-
-        /// <summary>
-        /// Accepts a message of type TIn from a sender for further processing
-        /// and delivery to the subscribers.
-        /// </summary>
-        /// <param name="Sender">The sender of the message.</param>
-        /// <param name="MessageIn">The message.</param>
-        /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        Boolean ReceiveMessage(Object Sender, Object MessageIn);
-
-    }
-
-
     /// <summary>
-    /// The common interface for any Arrow implementation accepting messages of type TIn.
+    /// Extension methods for the IArrowReceiver interface.
     /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    public interface IArrowReceiver<in TIn>
+    public static class IArrowReceiverExtensions
     {
+
+        #region ReceiveMsg(this ArrowReceiver, Message)
 
         /// <summary>
         /// Accepts a message of type TIn from a sender for further processing
         /// and delivery to the subscribers.
         /// </summary>
-        /// <param name="Sender">The sender of the message.</param>
-        /// <param name="MessageIn">The message.</param>
+        /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
+        /// <param name="ArrowReceiver">The receiver of the message.</param>
+        /// <param name="Message">The message.</param>
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        Boolean ReceiveMessage(Object Sender, TIn MessageIn);
+        public static Boolean ReceiveMessage<TMessage>(this IArrowReceiver<TMessage> ArrowReceiver, TMessage Message)
+        {
+            return ArrowReceiver.ReceiveMessage(null, Message);
+        }
+
+        #endregion
 
     }
 

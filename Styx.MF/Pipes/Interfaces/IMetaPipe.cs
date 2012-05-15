@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
+/*
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,23 +25,33 @@ using System.Collections.Generic;
 namespace de.ahzf.Styx
 {
 
+    #region IMetaPipe
+
     /// <summary>
-    /// The common interface for any Arrow implementation.
+    /// A MetaPipe is a pipe that "wraps" some collection of pipes.
     /// </summary>
-    public interface IArrow : IDisposable
+    public interface IMetaPipe : IDisposable
+    { }
+
+    #endregion
+
+    #region IMetaPipe<in S, out E>
+
+    /// <summary>
+    /// A MetaPipe is a pipe that "wraps" some collection of pipes.
+    /// </summary>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public interface IMetaPipe<in S, out E> : IPipe<S, E>, IMetaPipe
     {
+
+        /// <summary>
+        /// A list of all wrapped pipes
+        /// </summary>
+        IEnumerable<IPipe> Pipes { get; }
 
     }
 
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
-    { }
+    #endregion
 
 }

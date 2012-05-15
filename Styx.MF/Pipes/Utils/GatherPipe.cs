@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,22 +26,27 @@ namespace de.ahzf.Styx
 {
 
     /// <summary>
-    /// The common interface for any Arrow implementation.
+    /// GatherPipe 
     /// </summary>
-    public interface IArrow : IDisposable
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    public class GatherPipe<S> : SideEffectCapPipe<S, IEnumerable<S>>
     {
 
+        #region Constructor(s)
+
+        #region GatherPipe()
+
+        /// <summary>
+        /// Creates a new GatherPipe.
+        /// </summary>
+        public GatherPipe()
+            : base(((ISideEffectPipe<S, S, IEnumerable<S>>)((ISideEffectPipe<S, S, IEnumerable<S>>) new AggregatorPipe<S>(new List<S>()))))
+        { }
+
+        #endregion
+
+        #endregion
+
     }
-
-
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
-    { }
 
 }

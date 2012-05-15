@@ -59,9 +59,9 @@
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\FuncFilterArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\SameValueFilterArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\IArrowReceiverExtensions.cs" />
-    <Compile Include="Arrows\Interfaces\IArrow.cs" />
-    <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
-    <Compile Include="Arrows\Interfaces\IArrowSender.cs" />
+    <Compile Include="Arrows\Interfaces\IArrowReceiverT.cs" />
+    <Compile Include="Arrows\Interfaces\IArrowSenderT.cs" />
+    <Compile Include="Arrows\Interfaces\IArrowT.cs" />
     <Compile Include="IEnumeratorExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SideEffectArrows\AggregatorArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SideEffectArrows\CountArrowExtensions.cs" />
@@ -158,6 +158,7 @@
     <Compile Include="Sensors\Interfaces\IActiveSensor.cs" />
     <Compile Include="Sensors\Interfaces\ISensor.cs" />
     <Compile Include="Sensors\AbstractSensor.cs" />
+    <Compile Include="Sensors\Interfaces\ISensorT.cs" />
     <Compile Include="Sensors\PerformanceCounters\AbstractPerformanceCounterSensor.cs" />
     <Compile Include="Sensors\PerformanceCounters\NetworkInterfaceCounters\NetworkInterfaceCounter.cs" />
     <Compile Include="Sensors\PerformanceCounters\NetworkInterfaceCounters\NetworkInterfaceSensor.cs" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <None Include="Arrows\Interfaces\ArrowClassDiagram.cd" />
     <None Include="Pipes\Interfaces\PipesClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>

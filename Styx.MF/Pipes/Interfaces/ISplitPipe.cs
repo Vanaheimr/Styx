@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2011-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
+/*
+ * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -25,23 +26,27 @@ using System.Collections.Generic;
 namespace de.ahzf.Styx
 {
 
-    /// <summary>
-    /// The common interface for any Arrow implementation.
-    /// </summary>
-    public interface IArrow : IDisposable
-    {
-
-    }
-
+    #region ISplitPipe
 
     /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
+    /// A SplitPipe consumes objects of type S and emits objects of type E1 and E2.
     /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
+    public interface ISplitPipe : IDisposable
     { }
+
+    #endregion
+
+    #region ISplitPipe<in S, out E1, out E2>
+
+    /// <summary>
+    /// A SplitPipe consumes objects of type S and emits objects of type E1 and E2.
+    /// </summary>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E1">The type of the first emitting objects.</typeparam>
+    /// <typeparam name="E2">The type of the second emitting objects.</typeparam>
+    public interface ISplitPipe<in S, out E1, out E2> : ISplitPipe
+	{ }
+
+    #endregion
 
 }

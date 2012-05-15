@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-using System;
 namespace de.ahzf.Styx
 {
 
@@ -35,45 +34,19 @@ namespace de.ahzf.Styx
         /// <summary>
         /// An event for message delivery.
         /// </summary>
-        //event MessageRecipient<Object> OnMessageAvailable;
+        event MessageRecipient OnMessageAvailable;
 
         /// <summary>
         /// Sends messages/objects from this Arrow to the given recipients.
         /// </summary>
         /// <param name="Recipients">The recipients of the processed messages.</param>
-        //void SendTo(params MessageRecipient<Object>[] Recipients);
+        void SendTo(params MessageRecipient[] Recipients);
 
         /// <summary>
         /// Sends messages/objects from this Arrow to the given recipients.
         /// </summary>
         /// <param name="Recipients">The recipients of the processed messages.</param>
-    //    void SendTo(params IArrowReceiver<Object>[] Recipients);
-
-    }
-
-    /// <summary>
-    /// The common interface for any Arrow implementation sending messages of type TOut.
-    /// </summary>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrowSender<TOut>
-    {
-
-        /// <summary>
-        /// An event for message delivery.
-        /// </summary>
-        event MessageRecipient<TOut> OnMessageAvailable;
-
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        void SendTo(params MessageRecipient<TOut>[] Recipients);
-
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        void SendTo(params IArrowReceiver<TOut>[] Recipients);
+        void SendTo(params IArrowReceiver[] Recipients);
 
     }
 
