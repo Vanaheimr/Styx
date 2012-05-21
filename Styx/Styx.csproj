@@ -48,6 +48,7 @@
     <Compile Include="Arrows\Arrows\SideEffectArrows\MinMaxArrow.cs" />
     <Compile Include="Arrows\Arrows\SideEffectArrows\StdDevSideEffectArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\ActionArrow.cs" />
+    <Compile Include="Arrows\Arrows\ArrowObject.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\FuncArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\IdentityArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\SkipArrow.cs" />

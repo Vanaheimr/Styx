@@ -175,7 +175,7 @@ namespace de.ahzf.Styx
         #endregion
 
 
-        #region (protected) ReceiveMessage(Sender, Message)
+        #region (protected) NotifyRecipients(Sender, Message)
 
         /// <summary>
         /// Accepts a message of type S from a sender for further processing
@@ -184,7 +184,7 @@ namespace de.ahzf.Styx
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        protected Boolean ReceiveMessage(Object Sender, TMessage Message)
+        protected Boolean NotifyRecipients(Object Sender, TMessage Message)
         {
 
             try
