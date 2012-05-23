@@ -73,7 +73,6 @@
     <Compile Include="Arrows\ExtensionMethods\SimpleArrows\IdentityArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SimpleArrows\SkipArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\SimpleArrows\StdDevArrowExtensions.cs" />
-    <Compile Include="Arrows\Interfaces\Delegates.cs" />
     <Compile Include="Arrows\Interfaces\IFilterArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISideEffectArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISniper.cs" />

@@ -24,6 +24,11 @@ using System;
 namespace de.ahzf.Styx
 {
 
+    #region IArrowReceiver
+
+    /// <summary>
+    /// The common IArrowReceiver interface
+    /// </summary>
     public interface IArrowReceiver
     {
 
@@ -38,6 +43,9 @@ namespace de.ahzf.Styx
 
     }
 
+    #endregion
+
+    #region IArrowReceiver<in TIn>
 
     /// <summary>
     /// The common interface for any Arrow implementation accepting messages of type TIn.
@@ -56,5 +64,7 @@ namespace de.ahzf.Styx
         Boolean ReceiveMessage(dynamic Sender, TIn MessageIn);
 
     }
+
+    #endregion
 
 }

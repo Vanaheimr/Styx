@@ -18,21 +18,23 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
 namespace de.ahzf.Styx
 {
 
+    #region IArrow
+
     /// <summary>
     /// The common interface for any Arrow implementation.
     /// </summary>
     public interface IArrow : IDisposable
-    {
+    { }
 
-    }
+    #endregion
 
+    #region IArrow<in TIn, TOut>
 
     /// <summary>
     /// The generic interface for any Arrow implementation.
@@ -43,5 +45,7 @@ namespace de.ahzf.Styx
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
     public interface IArrow<in TIn, TOut> : IArrowSender<TOut>, IArrowReceiver<TIn>, IArrow
     { }
+
+    #endregion
 
 }

@@ -15,9 +15,60 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace de.ahzf.Styx
 {
 
+    // Delegates
+
+    #region MessageRecipient
+
+    /// <summary>
+    /// A delegate for delivering messages.
+    /// </summary>
+    /// <typeparam name="TMessage">The type of the message/object.</typeparam>
+    /// <param name="Sender">The sender of the message.</param>
+    /// <param name="Message">The message.</param>
+    /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
+    public delegate Boolean MessageRecipient<TMessage>(dynamic Sender, TMessage Message);
+
+    #endregion
+
+    #region CompletionRecipient
+
+    /// <summary>
+    /// A delegate for signaling the completion of a message delivery.
+    /// </summary>
+    /// <param name="Sender">The sender of the completion signal.</param>
+    /// <returns>True if the completion message was accepted; False otherwise.</returns>
+    public delegate void CompletionRecipient(dynamic Sender);
+
+    #endregion
+
+    #region ExceptionRecipient
+
+    /// <summary>
+    /// A delegate for signaling an exception.
+    /// </summary>
+    /// <param name="Sender">The sender of the message.</param>
+    /// <param name="Exception">An exception.</param>
+    public delegate void ExceptionRecipient(dynamic Sender, Exception Exception);
+
+    #endregion
+
+
+    // Interfaces
+
+    #region IArrowSender
+
+    /// <summary>
+    /// The common IArrowSender interface
+    /// </summary>
     public interface IArrowSender
     {
 
@@ -32,6 +83,10 @@ namespace de.ahzf.Styx
         event ExceptionRecipient  OnError;
 
     }
+
+    #endregion
+
+    #region IArrowSender<TOut>
 
     /// <summary>
     /// The common interface for any Arrow implementation sending messages of type TOut.
@@ -58,5 +113,7 @@ namespace de.ahzf.Styx
         void SendTo(params IArrowReceiver<TOut>[] Recipients);
 
     }
+
+    #endregion
 
 }
