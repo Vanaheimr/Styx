@@ -26,6 +26,67 @@ using de.ahzf.Styx;
 namespace de.ahzf.Styx.Sensors.Active
 {
 
+    // Delegates
+
+    #region SensorIsStartingEventHandler
+
+    /// <summary>
+    /// An event handler used whenever an active sensor is
+    /// starting its measurements.
+    /// </summary>
+    /// <typeparam name="TId">The type of the unique identification.</typeparam>
+    /// <param name="Sensor">The sensor sending this event.</param>
+    public delegate void SensorIsStartingEventHandler<TId>(IActiveSensor<TId> Sensor)
+
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable;
+
+    #endregion
+
+    #region SensorStartedEventHandler
+
+    /// <summary>
+    /// An event handler used whenever an active sensor
+    /// started its measurements.
+    /// </summary>
+    /// <typeparam name="TId">The type of the unique identification.</typeparam>
+    /// <param name="Sensor">The sensor sending this event.</param>
+    public delegate void SensorStartedEventHandler<TId>(IActiveSensor<TId> Sensor)
+
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable;
+
+    #endregion
+
+    #region SensorIsStoppingEventHandler
+
+    /// <summary>
+    /// An event handler used whenever an active sensor is
+    /// stopping its measurements.
+    /// </summary>
+    /// <typeparam name="TId">The type of the unique identification.</typeparam>
+    /// <param name="Sensor">The sensor sending this event.</param>
+    public delegate void SensorIsStoppingEventHandler<TId>(IActiveSensor<TId> Sensor)
+
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable;
+
+    #endregion
+
+    #region SensorStoppedEventHandler
+
+    /// <summary>
+    /// An event handler used whenever an active sensor has
+    /// stopped its measurements.
+    /// </summary>
+    /// <typeparam name="TId">The type of the unique identification.</typeparam>
+    /// <param name="Sensor">The sensor sending this event.</param>
+    public delegate void SensorStoppedEventHandler<TId>(IActiveSensor<TId> Sensor)
+
+        where TId : IEquatable<TId>, IComparable<TId>, IComparable;
+
+    #endregion
+
+
+    // Interfaces
+
     #region IActiveSensor
 
     /// <summary>
@@ -41,18 +102,11 @@ namespace de.ahzf.Styx.Sensors.Active
         /// <returns>True if succeeded; false otherwise.</returns>
         Boolean StartMeasurements();
 
-        event SensorIsStartingEventHandler OnSensorStart;
-        event SensorStartedEventHandler OnSensorStarted;
-
-
         /// <summary>
         /// Stop sensor measurements.
         /// </summary>
         /// <returns>True if succeeded; false otherwise.</returns>
         Boolean StopMeasurements();
-
-        event SensorIsStoppingEventHandler OnSensorStop;
-        event SensorStoppedEventHandler OnSensorStopped;
 
     }
 
@@ -63,11 +117,23 @@ namespace de.ahzf.Styx.Sensors.Active
     /// <summary>
     /// The common generic IActiveSensor interface.
     /// </summary>
-    public interface IActiveSensor<TId> : ISensor<TId>
+    /// <typeparam name="TId">The type of the unique identification.</typeparam>
+    public interface IActiveSensor<TId> : ISensor<TId>,
+                                          IActiveSensor
 
         where TId : IEquatable<TId>, IComparable<TId>, IComparable
 
-    { }
+    {
+
+
+        event SensorIsStartingEventHandler<TId> OnSensorStarting;
+        event SensorStartedEventHandler<TId> OnSensorStarted;
+
+
+        event SensorIsStoppingEventHandler<TId> OnSensorStopping;
+        event SensorStoppedEventHandler<TId> OnSensorStopped;
+    
+    }
 
     #endregion
 

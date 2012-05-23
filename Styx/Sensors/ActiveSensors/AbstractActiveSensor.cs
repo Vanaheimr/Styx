@@ -50,21 +50,21 @@ namespace de.ahzf.Styx.Sensors.Active
 
         #region Events
 
-        #region OnSensorStart / SensorIsStarting()
+        #region OnSensorStarting / SensorIsStarting()
 
         /// <summary>
         /// An event that listeners can use to be notified whenever
         /// the sensor starts the OnNewDataAvailable service.
         /// </summary>
-        public event SensorIsStartingEventHandler OnSensorStart;
+        public event SensorIsStartingEventHandler<TId> OnSensorStarting;
 
         /// <summary>
-        /// Notify all OnSensorStart event listeners.
+        /// Notify all OnSensorStarting event listeners.
         /// </summary>
         internal void SensorIsStarting()
         {
-            if (OnSensorStart != null)
-                OnSensorStart(this);
+            if (OnSensorStarting != null)
+                OnSensorStarting(this);
         }
 
         #endregion
@@ -75,7 +75,7 @@ namespace de.ahzf.Styx.Sensors.Active
         /// An event that listeners can use to be notified whenever the
         /// sensor finished to start the OnNewDataAvailable service.
         /// </summary>
-        public event SensorStartedEventHandler OnSensorStarted;
+        public event SensorStartedEventHandler<TId> OnSensorStarted;
 
         /// <summary>
         /// Notify all OnSensorStarted event listeners.
@@ -88,21 +88,21 @@ namespace de.ahzf.Styx.Sensors.Active
 
         #endregion
 
-        #region OnSensorStop / SensorIsStopping()
+        #region OnSensorStopping / SensorIsStopping()
 
         /// <summary>
         /// An event that listeners can use to be notified whenever
         /// the sensor stops the OnNewDataAvailable service.
         /// </summary>
-        public event SensorIsStoppingEventHandler OnSensorStop;
+        public event SensorIsStoppingEventHandler<TId> OnSensorStopping;
 
         /// <summary>
-        /// Notify all OnSensorStop event listeners.
+        /// Notify all SensorIsStopping event listeners.
         /// </summary>
         internal void SensorIsStopping()
         {
-            if (OnSensorStop != null)
-                OnSensorStop(this);
+            if (OnSensorStopping != null)
+                OnSensorStopping(this);
         }
 
         #endregion
@@ -113,7 +113,7 @@ namespace de.ahzf.Styx.Sensors.Active
         /// An event that listeners can use to be notified whenever the
         /// sensor finished to stop the OnNewDataAvailable service.
         /// </summary>
-        public event SensorStoppedEventHandler OnSensorStopped;
+        public event SensorStoppedEventHandler<TId> OnSensorStopped;
 
         /// <summary>
         /// Notify all OnSensorStopped event listeners.
