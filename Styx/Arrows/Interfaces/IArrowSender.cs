@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-using System;
 namespace de.ahzf.Styx
 {
 
@@ -30,24 +29,7 @@ namespace de.ahzf.Styx
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        event ExceptionRecipient OnError;
-
-        /// <summary>
-        /// An event for message delivery.
-        /// </summary>
-        //event MessageRecipient<Object> OnMessageAvailable;
-
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        //void SendTo(params MessageRecipient<Object>[] Recipients);
-
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-    //    void SendTo(params IArrowReceiver<Object>[] Recipients);
+        event ExceptionRecipient  OnError;
 
     }
 

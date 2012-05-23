@@ -34,7 +34,7 @@ namespace de.ahzf.Styx
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        Boolean ReceiveMessage(Object Sender, Object MessageIn);
+        Boolean ReceiveMessage(dynamic Sender, Object MessageIn);
 
     }
 
@@ -53,7 +53,7 @@ namespace de.ahzf.Styx
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        Boolean ReceiveMessage(Object Sender, TIn MessageIn);
+        Boolean ReceiveMessage(dynamic Sender, TIn MessageIn);
 
     }
 
