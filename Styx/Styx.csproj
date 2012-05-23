@@ -154,7 +154,6 @@
     <Compile Include="Sensors\ExtensionMethods\IEnumerableExtensions.cs" />
     <Compile Include="Sensors\ExtensionMethods\IEnumeratorExtensions.cs" />
     <Compile Include="Sensors\ExtensionMethods\ISensorExtensions.cs" />
-    <Compile Include="Sensors\Interfaces\Delegates.cs" />
     <Compile Include="Sensors\Interfaces\IActiveSensor.cs" />
     <Compile Include="Sensors\Interfaces\ISensor.cs" />
     <Compile Include="Sensors\AbstractSensor.cs" />

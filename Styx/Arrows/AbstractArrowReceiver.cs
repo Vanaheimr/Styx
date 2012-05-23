@@ -87,8 +87,7 @@ namespace de.ahzf.Styx
         /// </summary>
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
-        /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        public abstract Boolean ReceiveMessage(Object Sender, TMessage MessageIn);
+        public abstract void ReceiveMessage(Object Sender, TMessage MessageIn);
 
         #endregion
 

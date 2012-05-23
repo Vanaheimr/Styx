@@ -39,10 +39,9 @@ namespace de.ahzf.Styx
         /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
         /// <param name="ArrowReceiver">The receiver of the message.</param>
         /// <param name="Message">The message.</param>
-        /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        public static Boolean ReceiveMessage<TMessage>(this IArrowReceiver<TMessage> ArrowReceiver, TMessage Message)
+        public static void ReceiveMessage<TMessage>(this IArrowReceiver<TMessage> ArrowReceiver, TMessage Message)
         {
-            return ArrowReceiver.ReceiveMessage(null, Message);
+            ArrowReceiver.ReceiveMessage(null, Message);
         }
 
         #endregion

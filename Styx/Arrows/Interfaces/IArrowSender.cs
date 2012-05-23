@@ -34,8 +34,7 @@ namespace de.ahzf.Styx
     /// <typeparam name="TMessage">The type of the message/object.</typeparam>
     /// <param name="Sender">The sender of the message.</param>
     /// <param name="Message">The message.</param>
-    /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-    public delegate Boolean MessageRecipient<TMessage>(dynamic Sender, TMessage Message);
+    public delegate void MessageRecipient<TMessage>(dynamic Sender, TMessage Message);
 
     #endregion
 

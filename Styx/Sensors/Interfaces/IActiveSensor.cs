@@ -150,15 +150,7 @@ namespace de.ahzf.Styx.Sensors.Active
 
         where TId : IEquatable<TId>, IComparable<TId>, IComparable
 
-    {
-
-        ///// <summary>
-        ///// An event that clients can use to be notified whenever
-        ///// new sensor data is available.
-        ///// </summary>
-        //event MessageRecipient<TValue> OnMessageAvailable;
-
-    }
+    { }
 
     #endregion
 

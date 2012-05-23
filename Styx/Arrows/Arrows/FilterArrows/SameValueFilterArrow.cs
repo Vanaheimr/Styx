@@ -30,8 +30,11 @@ namespace de.ahzf.Styx
     /// consecutive identical messages twice.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class SameValueFilterArrow<TMessage> : AbstractArrow<TMessage, TMessage>, IFilterArrow<TMessage>
+    public class SameValueFilterArrow<TMessage> : AbstractArrow<TMessage, TMessage>,
+                                                  IFilterArrow<TMessage>
+
         where TMessage : IEquatable<TMessage>
+
     {
 
         #region Properties

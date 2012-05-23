@@ -188,8 +188,7 @@ namespace de.ahzf.Styx
         /// </summary>
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
-        /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        public Boolean ReceiveMessage(Object Sender, TIn MessageIn)
+        public void ReceiveMessage(Object Sender, TIn MessageIn)
         {
 
             TOut MessageOut;
@@ -209,7 +208,7 @@ namespace de.ahzf.Styx
 
                 }
 
-                return true;
+                return;
 
             }
             catch (Exception e)
@@ -219,8 +218,6 @@ namespace de.ahzf.Styx
             }
 
             MessageOut = default(TOut);
-
-            return false;
 
         }
 
