@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Arrows\AbstractArrow.cs" />
     <Compile Include="Arrows\AbstractSideEffectArrow.cs" />
+    <Compile Include="Arrows\Arrows\Combiners\CombineArrow.cs" />
     <Compile Include="Arrows\Arrows\FilterArrows\BandFilterArrow.cs" />
     <Compile Include="Arrows\Arrows\FilterArrows\DuplicateFilterArrow.cs" />
     <Compile Include="Arrows\Arrows\FilterArrows\FuncFilterArrow.cs" />
