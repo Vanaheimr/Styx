@@ -18,6 +18,11 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+using System.Diagnostics;
 
 #endregion
 
@@ -29,27 +34,50 @@ namespace de.ahzf.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public class FuncArrow<TIn, TOut> : AbstractArrow<TIn, TOut>
+    public class ConcurrentFuncArrow<TIn, TOut> : AbstractArrowSender<TOut>, IArrow<TIn, TOut>
     {
 
         #region Data
 
         /// <summary>
+        /// A blocking collection as inter-thread message pipeline.
+        /// </summary>
+        private readonly BlockingCollection<TIn> BlockingCollection;
+
+        /// <summary>
         /// A delegate for transforming incoming messages into outgoing messages.
         /// </summary>
-        protected readonly Func<TIn, TOut> MessageProcessor;
+        private readonly Func<TIn, TOut> MessageProcessor;
+
+        /// <summary>
+        /// The internal arrow sender task.
+        /// </summary>
+        private readonly Task ArrowSenderTask;
+
+        #endregion
+
+        #region Properties
+
+        #region MaxQueueSize
+
+        /// <summary>
+        /// The maximum number of queued messages.
+        /// </summary>
+        public UInt32 MaxQueueSize { get; set; }
+
+        #endregion
 
         #endregion
 
         #region Constructor(s)
 
-        #region FuncArrow(MessageProcessor)
+        #region ConcurrentFuncArrow(MessageProcessor)
 
         /// <summary>
         /// An arrow transforming incoming messages into outgoing messages.
         /// </summary>
         /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
-        public FuncArrow(Func<TIn, TOut> MessageProcessor)
+        public ConcurrentFuncArrow(Func<TIn, TOut> MessageProcessor)
         {
 
             #region Initial checks
@@ -58,14 +86,32 @@ namespace de.ahzf.Vanaheimr.Styx
                 throw new ArgumentNullException("MessageProcessor", "The given 'MessageProcessor' delegate must not be null!");
 
             #endregion
+            
+            this.MessageProcessor   = MessageProcessor;
+            this.BlockingCollection = new BlockingCollection<TIn>();
+            this.MaxQueueSize       = 1000;
 
-            this.MessageProcessor = MessageProcessor;
+            this.ArrowSenderTask    = Task.Factory.StartNew(() => {
+
+                var Enumerator = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
+
+                while (!BlockingCollection.IsCompleted)
+                {
+
+                    // Both will block until something is available!
+                    Enumerator.MoveNext();
+
+                    base.NotifyRecipients(this, MessageProcessor(Enumerator.Current));
+
+                }
+                
+            });
 
         }
 
         #endregion
 
-        #region FuncArrow(MessageProcessor, MessageRecipients.Recipient, params MessageRecipients.Recipients)
+        #region ConcurrentFuncArrow(MessageProcessor, MessageRecipients.Recipient, params MessageRecipients.Recipients)
 
         /// <summary>
         /// An arrow transforming incoming messages into outgoing messages.
@@ -73,7 +119,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
         /// <param name="Recipient">A recipient of the processed messages.</param>
         /// <param name="Recipients">Further recipients of the processed messages.</param>
-        public FuncArrow(Func<TIn, TOut> MessageProcessor, MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
+        public ConcurrentFuncArrow(Func<TIn, TOut> MessageProcessor, MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
             : this(MessageProcessor)
         {
             if (Recipient  != null) SendTo(Recipient);
@@ -82,7 +128,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
         #endregion
 
-        #region FuncArrow(MessageProcessor, IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
+        #region ConcurrentFuncArrow(MessageProcessor, IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
 
         /// <summary>
         /// An arrow transforming incoming messages into outgoing messages.
@@ -90,7 +136,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
         /// <param name="Recipient">A recipient of the processed messages.</param>
         /// <param name="Recipients">Further recipients of the processed messages.</param>
-        public FuncArrow(Func<TIn, TOut> MessageProcessor, IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
+        public ConcurrentFuncArrow(Func<TIn, TOut> MessageProcessor, IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
             : this(MessageProcessor)
         {
             if (Recipient  != null) SendTo(Recipient);
@@ -101,17 +147,18 @@ namespace de.ahzf.Vanaheimr.Styx
 
         #endregion
 
-        #region ProcessMessage(MessageIn, out MessageOut)
+
+        #region ReceiveMessage(Sender, MessageIn)
 
         /// <summary>
-        /// Process the incoming message and return an outgoing message.
+        /// Accepts a message of type S from a sender for further processing
+        /// and delivery to the subscribers.
         /// </summary>
-        /// <param name="MessageIn">The incoming message.</param>
-        /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut)
+        /// <param name="Sender">The sender of the message.</param>
+        /// <param name="MessageIn">The message.</param>
+        public void ReceiveMessage(Object Sender, TIn MessageIn)
         {
-            MessageOut = MessageProcessor(MessageIn);
-            return true;
+            BlockingCollection.Add(MessageIn);
         }
 
         #endregion

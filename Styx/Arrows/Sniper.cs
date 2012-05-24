@@ -44,6 +44,8 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         private readonly IEnumerator<TOut> IEnumerator;
 
+        private readonly Func<TOut> Func;
+
         #endregion
 
         #region Properties
@@ -179,7 +181,9 @@ namespace de.ahzf.Vanaheimr.Styx
             if (this.IEnumerator == null)
                 throw new ArgumentNullException("IEnumerable.GetEnumerator() must not be null!");
 
-            this.InitialDelay = InitialDelay;
+            this.InitialDelay            = InitialDelay;
+            this.Intervall               = TimeSpan.FromSeconds(10);
+            this.ThrottlingSleepDuration = 1000;
 
             if (Autostart)
                 StartToFire(StartAsTask);
@@ -286,8 +290,10 @@ namespace de.ahzf.Vanaheimr.Styx
 
             #endregion
             
-            this.IEnumerator  = IEnumerator;
-            this.InitialDelay = InitialDelay;
+            this.IEnumerator             = IEnumerator;
+            this.InitialDelay            = InitialDelay;
+            this.Intervall               = TimeSpan.FromSeconds(10);
+            this.ThrottlingSleepDuration = 1000;
 
             if (Autostart)
                 StartToFire(StartAsTask);
@@ -370,6 +376,43 @@ namespace de.ahzf.Vanaheimr.Styx
 
         #endregion
 
+
+        #region Sniper(Func, Autostart = false, StartAsTask = false, InitialDelay = 0)
+
+        /// <summary>
+        /// The Sniper fetches messages/objects from the given IEnumerable
+        /// and sends them to the recipients.
+        /// </summary>
+        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="StartAsTask">Start the sniper within its own task.</param>
+        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
+        public Sniper(Func<TOut>         Func,
+                      Boolean            Autostart    = false,
+                      Boolean            StartAsTask  = false,
+                      Nullable<TimeSpan> InitialDelay = null)
+        {
+
+            #region Initial Checks
+
+            if (Func == null)
+                throw new ArgumentNullException("The given Func must not be null!");
+
+            #endregion
+            
+            this.Func                    = Func;
+            this.InitialDelay            = InitialDelay;
+            this.Intervall               = TimeSpan.FromSeconds(10);
+            this.ThrottlingSleepDuration = 1000;
+
+            if (Autostart)
+                StartToFire(StartAsTask);
+
+        }
+
+        #endregion
+
+
         #endregion
 
 
@@ -424,9 +467,12 @@ namespace de.ahzf.Vanaheimr.Styx
         public Task AsTask(TaskCreationOptions TaskCreationOption = TaskCreationOptions.AttachedToParent)
         {
 
-            FireCancellationTokenSource = new CancellationTokenSource();
-            FireCancellationToken       = FireCancellationTokenSource.Token;
-            FireTask                    = new Task(StartFireing, FireCancellationToken, TaskCreationOption);
+            if (FireTask == null)
+            {
+                FireCancellationTokenSource = new CancellationTokenSource();
+                FireCancellationToken       = FireCancellationTokenSource.Token;
+                FireTask                    = new Task(StartFireing, FireCancellationToken, TaskCreationOption);
+            }
 
             return FireTask;
 
@@ -445,26 +491,43 @@ namespace de.ahzf.Vanaheimr.Styx
             try
             {
 
-                if (IsTask)
+                if (IsTask && InitialDelay != null && InitialDelay.HasValue)
                     Thread.Sleep(InitialDelay.Value);
 
-                if (OnMessageAvailable != null)
+                if (IEnumerator != null)
                 {
-                    if (IEnumerator != null)
+                    while (IEnumerator.MoveNext())
                     {
-                        while (IEnumerator.MoveNext())
-                        {
                             
+                        if (OnMessageAvailable != null)
                             OnMessageAvailable(this, IEnumerator.Current);
                             
-                            // Sleep if we are in throttling mode
-                            while (LastFireTime + Intervall > DateTime.Now)
-                                Thread.Sleep(ThrottlingSleepDuration);
+                        // Sleep if we are in throttling mode
+                        while (LastFireTime + Intervall > DateTime.Now)
+                            Thread.Sleep(ThrottlingSleepDuration);
 
-                            LastFireTime = DateTime.Now;
+                        LastFireTime = DateTime.Now;
 
-                        }
                     }
+                }
+
+                else if (Func != null)
+                {
+
+                    while (true)
+                    {
+
+                        if (OnMessageAvailable != null)
+                            OnMessageAvailable(this, Func());
+
+                        // Sleep if we are in throttling mode
+                        while (LastFireTime + Intervall > DateTime.Now)
+                            Thread.Sleep(ThrottlingSleepDuration);
+
+                        LastFireTime = DateTime.Now;
+
+                    }
+
                 }
 
                 if (OnCompleted != null)

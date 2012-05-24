@@ -55,6 +55,9 @@
     <Compile Include="Arrows\Arrows\SimpleArrows\StdDevArrow.cs" />
     <Compile Include="Arrows\AbstractArrowReceiver.cs" />
     <Compile Include="Arrows\AbstractArrowSender.cs" />
+    <Compile Include="Arrows\Arrows\SplitAndCombineArrows\CombineArrow.cs" />
+    <Compile Include="Arrows\Arrows\SimpleArrows\ConcurrentFuncArrow.cs" />
+    <Compile Include="Arrows\Arrows\SplitAndCombineArrows\ConcurrentCombineArrow.cs" />
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\BandFilterArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\DuplicateFilterArrowExtensions.cs" />
     <Compile Include="Arrows\ExtensionMethods\FilterArrows\FuncFilterArrowExtensions.cs" />
