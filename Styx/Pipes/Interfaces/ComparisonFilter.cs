@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace de.ahzf.Styx
+namespace de.ahzf.Vanaheimr.Styx
 {
 
     /// <summary>

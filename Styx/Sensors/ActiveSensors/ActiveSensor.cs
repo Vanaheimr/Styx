@@ -19,11 +19,11 @@
 
 using System;
 using System.Collections.Generic;
-using de.ahzf.Styx;
+using de.ahzf.Vanaheimr.Styx;
 
 #endregion
 
-namespace de.ahzf.Styx.Sensors.Active
+namespace de.ahzf.Vanaheimr.Styx.Sensors.Active
 {
 
     #region ActiveSensor<TId, TValue>

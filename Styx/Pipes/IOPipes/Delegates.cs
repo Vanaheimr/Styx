@@ -22,7 +22,7 @@ using System.IO;
 
 #endregion
 
-namespace de.ahzf.Styx
+namespace de.ahzf.Vanaheimr.Styx
 {
 
     /// <summary>

@@ -22,7 +22,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace de.ahzf.Styx.Sensors.PerformanceCounters.NetworkInterfaceCounters
+namespace de.ahzf.Vanaheimr.Styx.Sensors.PerformanceCounters.NetworkInterfaceCounters
 {
 
     public class NetworkInterfaceCounter : IComparable, IComparable<NetworkInterfaceCounter>, IEquatable<NetworkInterfaceCounter>

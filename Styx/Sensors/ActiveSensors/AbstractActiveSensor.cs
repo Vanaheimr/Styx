@@ -21,11 +21,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using de.ahzf.Styx;
+
+using de.ahzf.Vanaheimr.Styx;
 
 #endregion
 
-namespace de.ahzf.Styx.Sensors.Active
+namespace de.ahzf.Vanaheimr.Styx.Sensors.Active
 {
 
     /// <summary>

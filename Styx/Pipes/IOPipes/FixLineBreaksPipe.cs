@@ -26,7 +26,7 @@ using de.ahzf.Illias.Commons;
 
 #endregion
 
-namespace de.ahzf.Styx
+namespace de.ahzf.Vanaheimr.Styx
 {
 
     public class FixLineBreaksPipe : AbstractPipe<String, String>

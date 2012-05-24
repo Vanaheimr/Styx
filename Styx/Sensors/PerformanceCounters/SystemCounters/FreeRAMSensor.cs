@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.ahzf.Styx.Sensors.PerformanceCounters.SystemCounters
+namespace de.ahzf.Vanaheimr.Styx.Sensors.PerformanceCounters.SystemCounters
 {
 
     #region FreeRAMSensor

@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Styx.UnitTests.Enumerators
+namespace de.ahzf.Vanaheimr.Styx.UnitTests.Enumerators
 {
 
     [TestFixture]

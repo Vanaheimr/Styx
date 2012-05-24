@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Styx
+namespace de.ahzf.Vanaheimr.Styx
 {
 
     public class ReadTextStreamPipe : AbstractPipe<Stream, String>

@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Styx
+namespace de.ahzf.Vanaheimr.Styx
 {
     
     /// <summary>

@@ -24,7 +24,7 @@ using de.ahzf.Illias.Commons;
 
 #endregion
 
-namespace de.ahzf.Styx.Sensors
+namespace de.ahzf.Vanaheimr.Styx.Sensors
 {
 
     #region ISensor
