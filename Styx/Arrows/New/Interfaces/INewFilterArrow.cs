@@ -24,7 +24,7 @@ namespace de.ahzf.Vanaheimr.Styx
     /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
     /// some of the messages/objects instead of emitting everything.
     /// </summary>
-    public interface IFilterArrow : IArrow
+    public interface INewFilterArrow : INewArrow
     { }
 
     #endregion
@@ -36,7 +36,7 @@ namespace de.ahzf.Vanaheimr.Styx
     /// some of the messages/objects instead of emitting everything.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
-    public interface IFilterArrow<TMessage> : IFilterArrow, IArrow<TMessage, TMessage>
+    public interface INewFilterArrow<TMessage> : INewFilterArrow, INewArrow<TMessage, TMessage>
     { }
 
     #endregion
