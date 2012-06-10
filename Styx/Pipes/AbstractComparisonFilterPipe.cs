@@ -43,7 +43,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// The filter used for comparing two objects.
         /// </summary>
-        protected readonly ComparisonFilter _Filter;
+        protected readonly ComparisonFilter ComparisonFilter;
 
         #endregion
 
@@ -54,10 +54,10 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// Creates a new AbstractComparisonFilterPipe using the given filter.
         /// </summary>
-        /// <param name="myFilter">The filter used for comparing two objects.</param>
-        public AbstractComparisonFilterPipe(ComparisonFilter myFilter)
+        /// <param name="ComparisonFilter">The filter used for comparing two objects.</param>
+        public AbstractComparisonFilterPipe(ComparisonFilter ComparisonFilter)
         {
-            _Filter = myFilter;
+            this.ComparisonFilter = ComparisonFilter;
         }
 
         #endregion
@@ -70,44 +70,44 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// Compares two objects.
         /// </summary>
-        /// <param name="myLeftObject">The left object.</param>
-        /// <param name="myRightObject">The right object.</param>
+        /// <param name="LeftObject">The left object.</param>
+        /// <param name="RightObject">The right object.</param>
         /// <returns>A match based on the defined filter.</returns>
-        public Boolean CompareObjects(T myLeftObject, T myRightObject)
+        public Boolean CompareObjects(T LeftObject, T RightObject)
         {
 
-            switch (_Filter)
+            switch (ComparisonFilter)
             {
 
                 case ComparisonFilter.EQUAL:
-                    if (null == myLeftObject)
-                        return myRightObject == null;
-                    return myLeftObject.Equals(myRightObject);
+                    if (null == LeftObject)
+                        return RightObject == null;
+                    return LeftObject.Equals(RightObject);
 
                 case ComparisonFilter.NOT_EQUAL:
-                    if (null == myLeftObject)
-                        return myRightObject != null;
-                    return !myLeftObject.Equals(myRightObject);
+                    if (null == LeftObject)
+                        return RightObject != null;
+                    return !LeftObject.Equals(RightObject);
 
                 case ComparisonFilter.GREATER_THAN:
-                    if (null == myLeftObject || myRightObject == null)
+                    if (null == LeftObject || RightObject == null)
                         return true;
-                    return myLeftObject.CompareTo(myRightObject) == 1;
+                    return LeftObject.CompareTo(RightObject) == 1;
 
                 case ComparisonFilter.LESS_THAN:
-                    if (null == myLeftObject || myRightObject == null)
+                    if (null == LeftObject || RightObject == null)
                         return true;
-                    return myLeftObject.CompareTo(myRightObject) == -1;
+                    return LeftObject.CompareTo(RightObject) == -1;
 
                 case ComparisonFilter.GREATER_THAN_EQUAL:
-                    if (null == myLeftObject || myRightObject == null)
+                    if (null == LeftObject || RightObject == null)
                         return true;
-                    return myLeftObject.CompareTo(myRightObject) >= 0;
+                    return LeftObject.CompareTo(RightObject) >= 0;
 
                 case ComparisonFilter.LESS_THAN_EQUAL:
-                    if (null == myLeftObject || myRightObject == null)
+                    if (null == LeftObject || RightObject == null)
                         return true;
-                    return myLeftObject.CompareTo(myRightObject) <= 0;
+                    return LeftObject.CompareTo(RightObject) <= 0;
 
                 default:
                     throw new Exception("Invalid state as no valid filter had been provided!");
@@ -126,7 +126,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _Filter + ">";
+            return base.ToString() + "<" + ComparisonFilter + ">";
         }
 
         #endregion

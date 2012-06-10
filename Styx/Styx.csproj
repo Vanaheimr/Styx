@@ -91,6 +91,7 @@
     <Compile Include="Arrows\Interfaces\ISideEffectArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISniper.cs" />
     <Compile Include="Arrows\Sniper.cs" />
+    <Compile Include="Pipes\AbstractFilterPipe.cs" />
     <Compile Include="Pipes\ExtensionMethods\CSVPipeExtensions.cs" />
     <Compile Include="Pipes\ExtensionMethods\IOPipeExtensions.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
