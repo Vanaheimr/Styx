@@ -43,15 +43,30 @@ namespace de.ahzf.Vanaheimr.Styx
 		
 		#region Constructor(s)
 
-        #region HistoryEnumerator(myIEnumerator)
+        #region HistoryEnumerator(IEnumerator)
 
         /// <summary>
-        /// Creates a new HistoryEnumerator based on the given myIEnumerator.
+        /// Creates a new HistoryEnumerator based on the given enumerator.
         /// </summary>
-        /// <param name="myIEnumerator">The enumerator to be wrapped.</param>
-        public HistoryEnumerator(IEnumerator<T> myIEnumerator)
+        /// <param name="IEnumerator">The enumerator to be wrapped.</param>
+        public HistoryEnumerator(IEnumerator<T> IEnumerator)
         {
-            _InternalEnumerator = myIEnumerator;
+            _InternalEnumerator = IEnumerator;
+            _Last               = default(T);
+            _FirstMove          = true;
+	    }
+
+        #endregion
+
+        #region HistoryEnumerator(IEnumerable)
+
+        /// <summary>
+        /// Creates a new HistoryEnumerator based on the given enumerable.
+        /// </summary>
+        /// <param name="IEnumerable">The enumerable to be wrapped.</param>
+        public HistoryEnumerator(IEnumerable<T> IEnumerable)
+        {
+            _InternalEnumerator = IEnumerable.GetEnumerator();
             _Last               = default(T);
             _FirstMove          = true;
 	    }

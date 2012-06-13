@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -109,7 +110,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource(S SourceElement)
         {
-            _InternalEnumerator = new HistoryEnumerator<S>(new List<S>() { SourceElement }.GetEnumerator());
+            _InternalEnumerator = new HistoryEnumerator<S>(new S[1] { SourceElement });
         }
 
         #endregion
