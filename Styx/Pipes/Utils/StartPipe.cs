@@ -42,13 +42,13 @@ namespace de.ahzf.Vanaheimr.Styx
         {
 
             if (Object is IEnumerator<S>)
-                _InternalEnumerator = (IEnumerator<S>) Object;
+                _InputEnumerator = (IEnumerator<S>) Object;
 
             else if (Object is IEnumerable<S>)
-                _InternalEnumerator = ((IEnumerable<S>) Object).GetEnumerator();
+                _InputEnumerator = ((IEnumerable<S>) Object).GetEnumerator();
 
             else if (Object is S)
-                _InternalEnumerator = (new List<S>() { (S) Object }).GetEnumerator();
+                _InputEnumerator = (new List<S>() { (S) Object }).GetEnumerator();
 
             else
                 throw new ArgumentException("Could not use the given Object!");
@@ -73,12 +73,12 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator.MoveNext())
+            if (_InputEnumerator.MoveNext())
             {
-                _CurrentElement = _InternalEnumerator.Current;
+                _CurrentElement = _InputEnumerator.Current;
                 return true;
             }
 

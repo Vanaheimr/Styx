@@ -44,12 +44,12 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator.MoveNext())
+            if (_InputEnumerator.MoveNext())
             {
-                _CurrentElement = (UInt64) _InternalEnumerator.Current.Length;
+                _CurrentElement = (UInt64) _InputEnumerator.Current.Length;
 				return true;
             }
 

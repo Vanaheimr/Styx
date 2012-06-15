@@ -75,7 +75,7 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             if (_Finished)
@@ -89,7 +89,7 @@ namespace de.ahzf.Vanaheimr.Styx
             while (true)
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
                     
                     if (_Counter == _Maximum)

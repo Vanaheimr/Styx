@@ -107,15 +107,15 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
                 if (Bias >= Random.NextDouble())
                 {
-                    _CurrentElement = _InternalEnumerator.Current;
+                    _CurrentElement = _InputEnumerator.Current;
                     return true;
                 }
 

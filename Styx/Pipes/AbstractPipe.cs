@@ -44,13 +44,13 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// The internal enumerator of the collection.
         /// </summary>
-		protected IEnumerator<S> _InternalEnumerator;
+		protected IEnumerator<S> _InputEnumerator;
 
 
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
-	    protected E              _CurrentElement;
+	    protected E _CurrentElement;
 		
 		#endregion
 		
@@ -110,7 +110,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource(S SourceElement)
         {
-            _InternalEnumerator = new HistoryEnumerator<S>(new S[1] { SourceElement });
+            _InputEnumerator = new HistoryEnumerator<S>(new S[1] { SourceElement });
         }
 
         #endregion
@@ -137,9 +137,9 @@ namespace de.ahzf.Vanaheimr.Styx
                 throw new ArgumentNullException("IEnumerator must not be null!");
 
             if (IEnumerator is IEndPipe<S>)
-                _InternalEnumerator = IEnumerator;
+                _InputEnumerator = IEnumerator;
             else
-                _InternalEnumerator = new HistoryEnumerator<S>(IEnumerator);
+                _InputEnumerator = new HistoryEnumerator<S>(IEnumerator);
 
         }
 
@@ -247,7 +247,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public virtual void Reset()
 		{
-            _InternalEnumerator.Reset();
+            _InputEnumerator.Reset();
 		}
 
         #endregion
@@ -259,7 +259,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public virtual void Dispose()
 		{
-            _InternalEnumerator.Dispose();
+            _InputEnumerator.Dispose();
 		}
 
         #endregion
@@ -302,17 +302,17 @@ namespace de.ahzf.Vanaheimr.Styx
             get
             {
 
-                if (_InternalEnumerator is IPipe)
-                    return ((IPipe) _InternalEnumerator).Path;
+                if (_InputEnumerator is IPipe)
+                    return ((IPipe) _InputEnumerator).Path;
 
-                else if (_InternalEnumerator is IHistoryEnumerator)
+                else if (_InputEnumerator is IHistoryEnumerator)
                 {
 
                     var _List = new List<Object>();
-                    var _Last = ((IHistoryEnumerator) _InternalEnumerator).Last;
+                    var _Last = ((IHistoryEnumerator) _InputEnumerator).Last;
 
                     if (_Last == null)
-                        _List.Add(_InternalEnumerator.Current);
+                        _List.Add(_InputEnumerator.Current);
                     else
                         _List.Add(_Last);
 
@@ -320,8 +320,8 @@ namespace de.ahzf.Vanaheimr.Styx
 
                 }
 
-                else if (_InternalEnumerator is ISingleEnumerator)
-                    return new List<Object>() { ((ISingleEnumerator) _InternalEnumerator).Current };
+                else if (_InputEnumerator is ISingleEnumerator)
+                    return new List<Object>() { ((ISingleEnumerator) _InputEnumerator).Current };
 
                 else
                     return new List<Object>();
@@ -340,7 +340,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return this.GetType().Name;
+            return this.GetType().Name + "<" + _InputEnumerator.Current + ">";
         }
 
         #endregion

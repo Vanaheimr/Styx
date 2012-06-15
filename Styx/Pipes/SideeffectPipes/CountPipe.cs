@@ -67,12 +67,12 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator.MoveNext())
+            if (_InputEnumerator.MoveNext())
             {
-                _CurrentElement = _InternalEnumerator.Current;
+                _CurrentElement = _InputEnumerator.Current;
                 Interlocked.Increment(ref _SideEffect);
                 return true;
             }

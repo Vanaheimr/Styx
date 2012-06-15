@@ -208,7 +208,7 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             #region Process the key array
@@ -222,7 +222,7 @@ namespace de.ahzf.Vanaheimr.Styx
                     if (KeysInterator == null)
                     {
 
-                        if (_InternalEnumerator.MoveNext())
+                        if (_InputEnumerator.MoveNext())
                             KeysInterator = Keys.ToList().GetEnumerator();
 
                         else
@@ -233,7 +233,7 @@ namespace de.ahzf.Vanaheimr.Styx
                     if (KeysInterator.MoveNext())
                     {
 
-                        if (_InternalEnumerator.Current.TryGetProperty(KeysInterator.Current, out _CurrentElement))
+                        if (_InputEnumerator.Current.TryGetProperty(KeysInterator.Current, out _CurrentElement))
                             return true;
 
                     }
@@ -257,8 +257,8 @@ namespace de.ahzf.Vanaheimr.Styx
                     if (KeyValueInterator == null)
                     {
 
-                        if (_InternalEnumerator.MoveNext())
-                            KeyValueInterator = _InternalEnumerator.Current.GetEnumerator();
+                        if (_InputEnumerator.MoveNext())
+                            KeyValueInterator = _InputEnumerator.Current.GetEnumerator();
 
                         else
                             return false;

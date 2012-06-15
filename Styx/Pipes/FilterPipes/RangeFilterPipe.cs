@@ -115,10 +115,10 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
                 Counter++;
@@ -126,7 +126,7 @@ namespace de.ahzf.Vanaheimr.Styx
                 if ((Low  == -1 || Counter >= Low) &&
                     (High == -1 || Counter <= High))
                 {
-                    _CurrentElement = _InternalEnumerator.Current;
+                    _CurrentElement = _InputEnumerator.Current;
                     return true;
                 }
 

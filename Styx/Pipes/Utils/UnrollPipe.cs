@@ -72,7 +72,7 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             while (true)
@@ -84,9 +84,9 @@ namespace de.ahzf.Vanaheimr.Styx
                     return true;
                 }
                 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
-                    _TempIterator = _InternalEnumerator.Current.GetEnumerator();
+                    _TempIterator = _InputEnumerator.Current.GetEnumerator();
                 }
 
                 else

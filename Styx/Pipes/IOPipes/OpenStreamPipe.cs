@@ -106,16 +106,16 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
 #if SILVERLIGHT
                 _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize);
 #else
-                _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32)_BufferSize, _FileOptions);
+                _CurrentElement = new FileStream(_InputEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32)_BufferSize, _FileOptions);
 #endif
                 return true;
 
@@ -135,7 +135,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _InputEnumerator.Current + ">";
         }
 
         #endregion

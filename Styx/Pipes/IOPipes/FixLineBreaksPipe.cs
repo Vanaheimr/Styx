@@ -127,33 +127,33 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
-                if (this.StartOfNewLineRegExpr.IsMatch(_InternalEnumerator.Current))
+                if (this.StartOfNewLineRegExpr.IsMatch(_InputEnumerator.Current))
                 {
 
                     if (this.IgnoreFirstLineMatch)
                     {
                         this.IgnoreFirstLineMatch = false;
-                        this.FixedLine.Append(_InternalEnumerator.Current).Append(this.NewLineSeperator);
+                        this.FixedLine.Append(_InputEnumerator.Current).Append(this.NewLineSeperator);
                     }
 
                     else
                     {
                         _CurrentElement = this.FixedLine.ToString();
                         this.FixedLine.Clear();
-                        this.FixedLine.Append(_InternalEnumerator.Current).Append(this.NewLineSeperator);
+                        this.FixedLine.Append(_InputEnumerator.Current).Append(this.NewLineSeperator);
                         return true;
                     }
 
                 }
 
                 else
-                    this.FixedLine.Append(_InternalEnumerator.Current).Append(this.NewLineSeperator);
+                    this.FixedLine.Append(_InputEnumerator.Current).Append(this.NewLineSeperator);
 
             }
 
@@ -171,7 +171,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _InputEnumerator.Current + ">";
         }
 
         #endregion

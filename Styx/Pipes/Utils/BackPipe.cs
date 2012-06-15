@@ -76,7 +76,7 @@ namespace de.ahzf.Vanaheimr.Styx
         {
             this.IPipe          = IPipe;
             this.Steps          = Steps;
-            _InternalEnumerator = IPipe.GetEnumerator();
+            _InputEnumerator = IPipe.GetEnumerator();
         }
 
         #endregion
@@ -97,10 +97,10 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
                 _ReturnPosition = this.Path.Count - 2 - (Int32) Steps;

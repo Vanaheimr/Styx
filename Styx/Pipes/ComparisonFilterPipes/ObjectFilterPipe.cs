@@ -72,16 +72,16 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             while (true)
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
 
-                    var _S = _InternalEnumerator.Current;
+                    var _S = _InputEnumerator.Current;
 
                     if (!CompareObjects(_S, _Object))
                     {

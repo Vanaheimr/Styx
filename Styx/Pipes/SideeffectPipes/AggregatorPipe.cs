@@ -84,11 +84,11 @@ namespace de.ahzf.Vanaheimr.Styx
             if (_AggregateEnumerator == null)
             {
 
-                if (_InternalEnumerator == null)
+                if (_InputEnumerator == null)
                     return false;
 
-                while (_InternalEnumerator.MoveNext())
-                    _SideEffect.Add(_InternalEnumerator.Current);
+                while (_InputEnumerator.MoveNext())
+                    _SideEffect.Add(_InputEnumerator.Current);
 
                 _AggregateEnumerator = _SideEffect.GetEnumerator();
 

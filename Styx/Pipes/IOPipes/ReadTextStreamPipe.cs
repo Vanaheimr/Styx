@@ -65,19 +65,19 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             if (_StreamReader == null)
             {
 
-                while (_InternalEnumerator.MoveNext())
+                while (_InputEnumerator.MoveNext())
                 {
 
-                    if (_InternalEnumerator.Current != null)
+                    if (_InputEnumerator.Current != null)
                         continue;
 
-                    _StreamReader = new StreamReader(_InternalEnumerator.Current);
+                    _StreamReader = new StreamReader(_InputEnumerator.Current);
                     break;
 
                 }
@@ -124,7 +124,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _InputEnumerator.Current + ">";
         }
 
         #endregion

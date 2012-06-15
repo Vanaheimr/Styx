@@ -86,7 +86,7 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             while (true)
@@ -112,13 +112,13 @@ namespace de.ahzf.Vanaheimr.Styx
                     
                 }
 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
 
                     try
                     {
 
-                        _TempIterator = new DirectoryInfo(_InternalEnumerator.Current).
+                        _TempIterator = new DirectoryInfo(_InputEnumerator.Current).
                                                           EnumerateFiles(_SearchPattern, _SearchOption).
                                                           GetEnumerator();
 
@@ -147,7 +147,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _InputEnumerator.Current + ">";
         }
 
         #endregion

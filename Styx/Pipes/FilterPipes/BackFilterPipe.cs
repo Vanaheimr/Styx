@@ -79,17 +79,17 @@ namespace de.ahzf.Vanaheimr.Styx
         {
             this.IPipe = IPipe;
             this.Steps = Steps;
-            _InternalEnumerator = IPipe.GetEnumerator();
+            _InputEnumerator = IPipe.GetEnumerator();
         }
 
         
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
                 var aa = this.Path;

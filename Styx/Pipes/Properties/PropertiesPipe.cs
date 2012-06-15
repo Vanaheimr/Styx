@@ -208,7 +208,7 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             #region Process the key array
@@ -216,12 +216,12 @@ namespace de.ahzf.Vanaheimr.Styx
             if (Keys != null)
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
 
                     _CurrentElement = (from   Key
                                        in     Keys
-                                       select _InternalEnumerator.Current.GetProperty(Key)).ToList();
+                                       select _InputEnumerator.Current.GetProperty(Key)).ToList();
 
                     return true;
 
@@ -238,11 +238,11 @@ namespace de.ahzf.Vanaheimr.Styx
             else
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
 
                     _CurrentElement = from   KeyValuePair
-                                      in     _InternalEnumerator.Current
+                                      in     _InputEnumerator.Current
                                       where  KeyValueFilter(KeyValuePair.Key, KeyValuePair.Value)
                                       select KeyValuePair.Value;
 

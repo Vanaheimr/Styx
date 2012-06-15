@@ -111,20 +111,20 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.Current.TryGetProperty(Key, out ActualValue))
+                if (_InputEnumerator.Current.TryGetProperty(Key, out ActualValue))
                 {
 
-                    if (_InternalEnumerator.Current.TryGetProperty(Key, out ActualValue))
+                    if (_InputEnumerator.Current.TryGetProperty(Key, out ActualValue))
                     {
                         if (ComparisonFilter(ActualValue))
                         {
-                            _CurrentElement = _InternalEnumerator.Current;
+                            _CurrentElement = _InputEnumerator.Current;
                             return true;
                         }
                     }
@@ -213,13 +213,13 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
-                if (_InternalEnumerator.Current.TryGetProperty(Key, out ActualValue))
+                if (_InputEnumerator.Current.TryGetProperty(Key, out ActualValue))
                 {
 
                     try
@@ -227,7 +227,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
                         if (ComparisonFilter((TCast) (Object) ActualValue))
                         {
-                            _CurrentElement = _InternalEnumerator.Current;
+                            _CurrentElement = _InputEnumerator.Current;
                             return true;
                         }
 

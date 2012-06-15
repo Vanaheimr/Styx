@@ -47,15 +47,15 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator is IPipe)
+            if (_InputEnumerator is IPipe)
             {
                 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
-                    _CurrentElement = ((IPipe) _InternalEnumerator).Path;
+                    _CurrentElement = ((IPipe) _InputEnumerator).Path;
                     return true;
                 }
                 

@@ -47,13 +47,13 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            while (_InternalEnumerator.MoveNext())
+            while (_InputEnumerator.MoveNext())
             {
 
-                var _InternalPipe = _InternalEnumerator as IPipe;
+                var _InternalPipe = _InputEnumerator as IPipe;
 
                 if (_InternalPipe != null)
                 {
@@ -77,7 +77,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
                     if (_DoReturn)
                     {
-                        _CurrentElement = _InternalEnumerator.Current;
+                        _CurrentElement = _InputEnumerator.Current;
                         return true;
                     }
 
@@ -85,7 +85,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
                 else
                 {
-                    _CurrentElement = _InternalEnumerator.Current;
+                    _CurrentElement = _InputEnumerator.Current;
                     return true;
                 }
 

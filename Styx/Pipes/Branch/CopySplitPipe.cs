@@ -66,7 +66,7 @@ namespace de.ahzf.Vanaheimr.Styx
             public override Boolean MoveNext()
             {
 
-                if (_InternalEnumerator == null || _Queue == null)
+                if (_InputEnumerator == null || _Queue == null)
                     return false;
 
                 while (true)
@@ -74,9 +74,9 @@ namespace de.ahzf.Vanaheimr.Styx
 
                     if (!_Queue.Any())
                     {
-                        if (_InternalEnumerator.MoveNext())
+                        if (_InputEnumerator.MoveNext())
                         {
-                            _CurrentElement = _InternalEnumerator.Current;
+                            _CurrentElement = _InputEnumerator.Current;
                             return true;
                         }
                     }
@@ -168,10 +168,10 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
-            if (_InternalEnumerator.MoveNext())
+            if (_InputEnumerator.MoveNext())
             {
                 
                 foreach(var _Expandable in _PipeStarts)

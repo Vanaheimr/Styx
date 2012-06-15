@@ -106,17 +106,17 @@ namespace de.ahzf.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InternalEnumerator == null)
+            if (_InputEnumerator == null)
                 return false;
 
             while (true)
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (_InputEnumerator.MoveNext())
                 {
 
                     // Remove leading and trailing whitespaces
-                    _CurrentLine = _InternalEnumerator.Current.Trim();
+                    _CurrentLine = _InputEnumerator.Current.Trim();
 
                     // Ignore empty lines
                     if (_CurrentLine == null | _CurrentLine == "")
@@ -172,7 +172,7 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InternalEnumerator.Current + ">";
+            return base.ToString() + "<" + _InputEnumerator.Current + ">";
         }
 
         #endregion
