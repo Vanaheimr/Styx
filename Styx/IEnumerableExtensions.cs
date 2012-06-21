@@ -82,6 +82,31 @@ namespace de.ahzf.Vanaheimr.Styx
 
 #endif
 
+        #region When(this Object)
+
+        /// <summary>
+        /// Return the given object, when the condition delegate returns true.
+        /// Otherwise return default(T).
+        /// </summary>
+        /// <typeparam name="T">The type of the object.</typeparam>
+        /// <param name="Object">An object.</param>
+        /// <param name="ConditionDelegate">A delegate for checking some condition.</param>
+        /// <returns>The object if the condition is true; default(T) otherwise.</returns>
+        public static T When<T>(this T Object, Func<T, Boolean> ConditionDelegate)
+        {
+
+            if (ConditionDelegate == null)
+                throw new ArgumentNullException("ConditionDelegate", "The ConditionDelegate must not be null!");
+
+            if (ConditionDelegate(Object))
+                return Object;
+
+            return default(T);
+
+        }
+
+        #endregion
+
     }
 
 }
