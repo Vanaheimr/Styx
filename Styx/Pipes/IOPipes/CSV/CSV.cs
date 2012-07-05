@@ -45,10 +45,10 @@ namespace de.ahzf.Vanaheimr.Styx
             if (StreamReader == null)
                 throw new ArgumentNullException("StreamReader", "StreamReader must not be null!");
 
-            String _Line;
+            String CurrentLine;
 
-            while ((_Line = StreamReader.ReadLine()) != null)
-                yield return _Line;
+            while ((CurrentLine = StreamReader.ReadLine()) != null)
+                yield return CurrentLine;
 
         }
 

@@ -115,7 +115,7 @@ namespace de.ahzf.Vanaheimr.Styx
 #if SILVERLIGHT
                 _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize);
 #else
-                _CurrentElement = new FileStream(_InputEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32)_BufferSize, _FileOptions);
+                _CurrentElement = new FileStream(_InputEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize, _FileOptions);
 #endif
                 return true;
 
