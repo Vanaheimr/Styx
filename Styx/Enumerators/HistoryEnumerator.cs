@@ -157,7 +157,7 @@ namespace de.ahzf.Vanaheimr.Styx
         public void Reset()
 		{
             //_InternalEnumerator.Reset();
-            _Last = default(T);
+            _Last   = default(T);
 		}
 
         #endregion
