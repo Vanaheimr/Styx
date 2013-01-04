@@ -197,7 +197,7 @@
     <None Include="Pipes\Interfaces\PipesClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
+    <ProjectReference Include="..\libs\Illias\Commons\Commons.csproj">
       <Project>{16C85DF8-5DE6-4A9F-9FC7-7CA5B0440DF3}</Project>
       <Name>Commons</Name>
     </ProjectReference>
