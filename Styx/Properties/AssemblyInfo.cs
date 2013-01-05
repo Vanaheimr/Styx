@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ahzf.de")]
 [assembly: AssemblyProduct("Styx")]
-[assembly: AssemblyCopyright("Copyright © Achim Friedland 2010-2012")]
+[assembly: AssemblyCopyright("Copyright © Achim Friedland 2010-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
