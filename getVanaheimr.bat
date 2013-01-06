@@ -8,7 +8,7 @@ if [ ! -d Vanaheimr ]; then
 
 	if [ "$MSYSTEM" == "MINGW32" ]; then
 		echo "Assuming a windows system";
-		echo "As administrator please run: mklink /D Vanaheimr ../";
+		echo "As administrator please run: mklink /D Vanaheimr ..";
 		echo "Afterwards plase re-run this script...";
 		exit 1;
 	else
@@ -17,7 +17,7 @@ if [ ! -d Vanaheimr ]; then
 	fi;
 	
 else
-	echo "Vanaheimr found..."
+	echo "Vanaheimr found...";
 fi;
 
 cd ..
