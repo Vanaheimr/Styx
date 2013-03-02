@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2013, Achim 'ahzf' Friedland <achim@graph-database.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
@@ -18,61 +18,60 @@
 #region Usings
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.UnitTests.util
+namespace de.ahzf.Vanaheimr.Styx.UnitTests.FilterPipes
 {
 
     [TestFixture]
-    public class ScatterPipeTests
+    public class FutureFilterPipeTest
     {
 
-        #region testScatterPipe()
+        #region testBasicFutureFilter()
 
         [Test]
-        public void testScatterPipe()
+        public void testBasicFutureFilter()
         {
 
-            var _Scatter = new ScatterPipe<Int32, Int32>();
-            _Scatter.SetSourceCollection(new List<Int32>() { 1, 2, 3 });
+            var _Names	= new List<String>() { "marko", "povel", "peter", "josh" };
+            var _Pipe1	= new FutureFilterPipe<String>(new IdentityPipe<String>());
+            _Pipe1.SetSourceCollection(_Names);
 
             var _Counter = 0;
-            while (_Scatter.MoveNext())
+            while (_Pipe1.MoveNext())
             {
-                var _Object = _Scatter.Current;
-                Assert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3));
                 _Counter++;
             }
 
-            Assert.AreEqual(3, _Counter);
+            Assert.AreEqual(4, _Counter);
 
         }
 
         #endregion
 
-        #region testScatterPipeComplex()
+        #region testAdvancedFutureFilter()
 
         [Test]
-        public void testScatterPipeComplex()
+        public void testAdvancedFutureFilter()
         {
 
-            var _Scatter = new ScatterPipe<Object, Int32>();
-            _Scatter.SetSourceCollection(new List<Object>() { 1, 2, new List<Object>() { 3, 4 }, 5, 6 });
+            var _Names = new List<String>() { "marko", "povel", "peter", "josh" };
+            var _Pipe  = new FutureFilterPipe<String>(new CollectionFilterPipe<String>(new List<String>() { "marko", "povel" }, ComparisonFilter.EQUAL));
+            _Pipe.SetSourceCollection(_Names);
 
             var _Counter = 0;
-            while (_Scatter.MoveNext())
+            while (_Pipe.MoveNext())
             {
-                var _Object = _Scatter.Current;
-                Assert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3) || _Object.Equals(4) || _Object.Equals(5) || _Object.Equals(6));
                 _Counter++;
+                var _Name = _Pipe.Current;
+                Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
             }
 
-            Assert.AreEqual(6, _Counter);
+            Assert.AreEqual(2, _Counter);
 
         }
 

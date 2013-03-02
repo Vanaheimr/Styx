@@ -50,6 +50,15 @@
     <Compile Include="Enumerators\ExpandableIteratorTests.cs" />
     <Compile Include="Enumerators\MultiIteratorTests.cs" />
     <Compile Include="Enumerators\SingleEnumeratorTests.cs" />
+    <Compile Include="FromBalder\AbstractPipeTest.cs" />
+    <Compile Include="FromBalder\FilterPipes\AndFilterPipeTest.cs" />
+    <Compile Include="FromBalder\FilterPipes\DuplicateFilterPipeTest.cs" />
+    <Compile Include="FromBalder\FilterPipes\FutureFilterPipeTest.cs" />
+    <Compile Include="FromBalder\FilterPipes\OrFilterPipeTest.cs" />
+    <Compile Include="FromBalder\FilterPipes\RandomFilterPipeTest.cs" />
+    <Compile Include="FromBalder\FilterPipes\UniquePathFilterPipeTest.cs" />
+    <Compile Include="FromBalder\Utils\GatherPipeTest.cs" />
+    <Compile Include="FromBalder\Utils\PathPipeTest.cs" />
     <Compile Include="Pipes\Branch\CopySplitPipeTests.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipeTests.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipeTests.cs" />
