@@ -30,18 +30,18 @@ namespace de.ahzf.Vanaheimr.Styx
     /// However, it will remember what was last returned out of the IEnumerator.
     /// </summary>
     /// <typeparam name="T">The type of the stored elements.</typeparam>
-	public class HistoryEnumerator<T> : IHistoryEnumerator, IEnumerator<T>
-	{
-		
-		#region Data
-		
-	    private readonly IEnumerator<T> _InternalEnumerator;
-	    private          T              _Last;
+    public class HistoryEnumerator<T> : IHistoryEnumerator, IEnumerator<T>
+    {
+        
+        #region Data
+        
+        private readonly IEnumerator<T> _InternalEnumerator;
+        private          T              _Last;
         private          Boolean        _FirstMove;
-	
-		#endregion
-		
-		#region Constructor(s)
+    
+        #endregion
+        
+        #region Constructor(s)
 
         #region HistoryEnumerator(IEnumerator)
 
@@ -54,7 +54,7 @@ namespace de.ahzf.Vanaheimr.Styx
             _InternalEnumerator = IEnumerator;
             _Last               = default(T);
             _FirstMove          = true;
-	    }
+        }
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace de.ahzf.Vanaheimr.Styx
             _InternalEnumerator = IEnumerable.GetEnumerator();
             _Last               = default(T);
             _FirstMove          = true;
-	    }
+        }
 
         #endregion
 
@@ -81,24 +81,24 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// Return the current element of the internal IEnumertor.
         /// </summary>
-		public T Current
-		{
-			get
-			{
-				return _InternalEnumerator.Current;
-			}
-		}
+        public T Current
+        {
+            get
+            {
+                return _InternalEnumerator.Current;
+            }
+        }
 
         /// <summary>
         /// Return the current element of the internal IEnumertor.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return _InternalEnumerator.Current;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -134,17 +134,17 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Advances the enumerator to the next element of the collection.
         /// </summary>
         /// <returns>True if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
-		public Boolean MoveNext()
-		{
+        public Boolean MoveNext()
+        {
 
             if (!_FirstMove)
                 _Last = _InternalEnumerator.Current;
             else
                 _FirstMove = false;
 
-			return _InternalEnumerator.MoveNext();
+            return _InternalEnumerator.MoveNext();
 
-		}
+        }
 
         #endregion
 
@@ -155,10 +155,10 @@ namespace de.ahzf.Vanaheimr.Styx
         /// before the first element in the collection.
         /// </summary>
         public void Reset()
-		{
+        {
             //_InternalEnumerator.Reset();
             _Last   = default(T);
-		}
+        }
 
         #endregion
 
@@ -174,7 +174,7 @@ namespace de.ahzf.Vanaheimr.Styx
         }
 
         #endregion
-	
-	}
+    
+    }
 
 }

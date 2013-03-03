@@ -37,34 +37,34 @@ namespace de.ahzf.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S, E> : IPipe<S, E>
-	{
-		
-		#region Data
-		
+    {
+        
+        #region Data
+        
         /// <summary>
         /// The internal enumerator of the collection.
         /// </summary>
-		protected IEnumerator<S> _InputEnumerator;
+        protected IEnumerator<S> _InputEnumerator;
 
 
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
-	    protected E _CurrentElement;
-		
-		#endregion
-		
-		#region Constructor(s)
-		
-		#region AbstractPipe()
-		
+        protected E _CurrentElement;
+        
+        #endregion
+        
+        #region Constructor(s)
+        
+        #region AbstractPipe()
+        
         /// <summary>
         /// Creates a AbstractPipe pipe.
         /// </summary>
-		public AbstractPipe()
-		{ }
-		
-		#endregion
+        public AbstractPipe()
+        { }
+        
+        #endregion
 
         #region AbstractPipe(IEnumerator, IEnumerable)
 
@@ -89,8 +89,8 @@ namespace de.ahzf.Vanaheimr.Styx
         }
 
         #endregion
-		
-		#endregion
+        
+        #endregion
 
 
         #region SetSource(SourceElement)
@@ -122,9 +122,9 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
         void IStartPipe.SetSource(IEnumerator IEnumerator)
-		{
+        {
             SetSource((IEnumerator<S>) IEnumerator);
-	    }
+        }
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
@@ -161,14 +161,14 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
         public virtual void SetSourceCollection(IEnumerable<S> IEnumerable)
-		{
+        {
 
             if (IEnumerable == null)
                 throw new ArgumentNullException("IEnumerable must not be null!");
 
-	        SetSource(IEnumerable.GetEnumerator());
+            SetSource(IEnumerable.GetEnumerator());
 
-	    }
+        }
 
         #endregion
 
@@ -205,23 +205,23 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public E Current
-		{
-			get
-			{
+        {
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -246,9 +246,9 @@ namespace de.ahzf.Vanaheimr.Styx
         /// before the first element in the collection.
         /// </summary>
         public virtual void Reset()
-		{
+        {
             _InputEnumerator.Reset();
-		}
+        }
 
         #endregion
 
@@ -258,9 +258,9 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Disposes this pipe.
         /// </summary>
         public virtual void Dispose()
-		{
+        {
             _InputEnumerator.Dispose();
-		}
+        }
 
         #endregion
 
@@ -282,7 +282,7 @@ namespace de.ahzf.Vanaheimr.Styx
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)	        
+                // todo: why is size == 0 required (Pangloss?)            
                 if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
                     _PathElements.Add(_CurrentElement);
 
@@ -297,7 +297,7 @@ namespace de.ahzf.Vanaheimr.Styx
         #region PathToHere
 
         private List<Object> PathToHere
-		{
+        {
 
             get
             {
@@ -328,7 +328,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
             }
 
-		}
+        }
 
         #endregion
 
@@ -360,14 +360,14 @@ namespace de.ahzf.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, E> : IPipe<S1, S2, E>
-	{
-		
-		#region Data
-		
+    {
+        
+        #region Data
+        
         /// <summary>
         /// The internal enumerator of the first collection.
         /// </summary>
-		protected IEnumerator<S1> _InternalEnumerator1;
+        protected IEnumerator<S1> _InternalEnumerator1;
 
 
         /// <summary>
@@ -379,21 +379,21 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
-	    protected E _CurrentElement;
-		
-		#endregion
-		
-		#region Constructor(s)
-		
-		#region AbstractPipe()
-		
+        protected E _CurrentElement;
+        
+        #endregion
+        
+        #region Constructor(s)
+        
+        #region AbstractPipe()
+        
         /// <summary>
         /// Creates a new abstract pipe.
         /// </summary>
-		public AbstractPipe()
-		{ }
-		
-		#endregion
+        public AbstractPipe()
+        { }
+        
+        #endregion
 
         #region AbstractPipe(IEnumerator1, IEnumerator2)
 
@@ -426,8 +426,8 @@ namespace de.ahzf.Vanaheimr.Styx
         }
 
         #endregion
-		
-		#endregion
+        
+        #endregion
 
 
         #region SetSource(SourceElement)
@@ -490,17 +490,17 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
         public virtual void SetSource1(IEnumerator<S1> IEnumerator)
-		{
+        {
 
             if (IEnumerator == null)
                 throw new ArgumentNullException("IEnumerator must not be null!");
 
-	        if (IEnumerator is IEndPipe<S1>)
-	            _InternalEnumerator1 = IEnumerator;
-	        else
-	            _InternalEnumerator1 = new HistoryEnumerator<S1>(IEnumerator);
+            if (IEnumerator is IEndPipe<S1>)
+                _InternalEnumerator1 = IEnumerator;
+            else
+                _InternalEnumerator1 = new HistoryEnumerator<S1>(IEnumerator);
 
-	    }
+        }
 
         #endregion
 
@@ -533,9 +533,9 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable as element source.</param>
         public virtual void SetSourceCollection(IEnumerable IEnumerable)
-		{
+        {
             SetSourceCollection((IEnumerable<S1>) IEnumerable);
-	    }
+        }
 
         #endregion
 
@@ -608,23 +608,23 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public E Current
-		{
-			get
-			{
+        {
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -649,10 +649,10 @@ namespace de.ahzf.Vanaheimr.Styx
         /// is before the first element in the collections.
         /// </summary>
         public virtual void Reset()
-		{
+        {
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
-		}
+        }
 
         #endregion
 
@@ -662,10 +662,10 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Disposes this pipe.
         /// </summary>
         public virtual void Dispose()
-		{
+        {
             _InternalEnumerator1.Dispose();
             _InternalEnumerator2.Dispose();
-		}
+        }
 
         #endregion
 
@@ -687,7 +687,7 @@ namespace de.ahzf.Vanaheimr.Styx
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)	        
+                // todo: why is size == 0 required (Pangloss?)            
                 if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
                     _PathElements.Add(_CurrentElement);
 
@@ -702,7 +702,7 @@ namespace de.ahzf.Vanaheimr.Styx
         #region PathToHere
 
         private List<Object> PathToHere
-		{
+        {
 
             get
             {
@@ -735,7 +735,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
             }
 
-		}
+        }
 
         #endregion
 
@@ -768,14 +768,14 @@ namespace de.ahzf.Vanaheimr.Styx
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, S3, E> : IPipe<S1, S2, S3, E>
-	{
-		
-		#region Data
-		
+    {
+        
+        #region Data
+        
         /// <summary>
         /// The internal enumerator of the first collection.
         /// </summary>
-		protected IEnumerator<S1> _InternalEnumerator1;
+        protected IEnumerator<S1> _InternalEnumerator1;
 
 
         /// <summary>
@@ -793,21 +793,21 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
-	    protected E _CurrentElement;
-		
-		#endregion
-		
-		#region Constructor(s)
-		
-		#region AbstractPipe()
-		
+        protected E _CurrentElement;
+        
+        #endregion
+        
+        #region Constructor(s)
+        
+        #region AbstractPipe()
+        
         /// <summary>
         /// Creates a new abstract pipe.
         /// </summary>
-		public AbstractPipe()
-		{ }
-		
-		#endregion
+        public AbstractPipe()
+        { }
+        
+        #endregion
 
         #region AbstractPipe(IEnumerator1, IEnumerator2, IEnumerator3)
 
@@ -844,8 +844,8 @@ namespace de.ahzf.Vanaheimr.Styx
         }
 
         #endregion
-		
-		#endregion
+        
+        #endregion
 
 
         #region SetSource(SourceElement)
@@ -998,14 +998,14 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
         public virtual void SetSourceCollection1(IEnumerable<S1> IEnumerable)
-		{
+        {
 
             if (IEnumerable == null)
                 throw new ArgumentNullException("IEnumerable must not be null!");
 
-	        SetSource1(IEnumerable.GetEnumerator());
+            SetSource1(IEnumerable.GetEnumerator());
 
-	    }
+        }
 
         #endregion
 
@@ -1078,23 +1078,23 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public E Current
-		{
-			get
-			{
+        {
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -1119,11 +1119,11 @@ namespace de.ahzf.Vanaheimr.Styx
         /// is before the first element in the collections.
         /// </summary>
         public virtual void Reset()
-		{
+        {
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
             _InternalEnumerator3.Reset();
-		}
+        }
 
         #endregion
 
@@ -1133,11 +1133,11 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Disposes this pipe.
         /// </summary>
         public virtual void Dispose()
-		{
+        {
             _InternalEnumerator1.Dispose();
             _InternalEnumerator2.Dispose();
             _InternalEnumerator3.Dispose();
-		}
+        }
 
         #endregion
 
@@ -1159,7 +1159,7 @@ namespace de.ahzf.Vanaheimr.Styx
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)	        
+                // todo: why is size == 0 required (Pangloss?)            
                 if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
                     _PathElements.Add(_CurrentElement);
 
@@ -1174,7 +1174,7 @@ namespace de.ahzf.Vanaheimr.Styx
         #region PathToHere
 
         private List<Object> PathToHere
-		{
+        {
 
             get
             {
@@ -1207,7 +1207,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
             }
 
-		}
+        }
 
         #endregion
 
@@ -1241,14 +1241,14 @@ namespace de.ahzf.Vanaheimr.Styx
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, S3, S4, E> : IPipe<S1, S2, S3, S4, E>
-	{
-		
-		#region Data
-		
+    {
+        
+        #region Data
+        
         /// <summary>
         /// The internal enumerator of the first collection.
         /// </summary>
-		protected IEnumerator<S1> _InternalEnumerator1;
+        protected IEnumerator<S1> _InternalEnumerator1;
 
 
         /// <summary>
@@ -1272,21 +1272,21 @@ namespace de.ahzf.Vanaheimr.Styx
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
-	    protected E _CurrentElement;
-		
-		#endregion
-		
-		#region Constructor(s)
-		
-		#region AbstractPipe()
-		
+        protected E _CurrentElement;
+        
+        #endregion
+        
+        #region Constructor(s)
+        
+        #region AbstractPipe()
+        
         /// <summary>
         /// Creates a new abstract pipe.
         /// </summary>
-		public AbstractPipe()
-		{ }
-		
-		#endregion
+        public AbstractPipe()
+        { }
+        
+        #endregion
 
         #region AbstractPipe(IEnumerator1, IEnumerator2, IEnumerator3, IEnumerator4)
 
@@ -1327,8 +1327,8 @@ namespace de.ahzf.Vanaheimr.Styx
         }
 
         #endregion
-		
-		#endregion
+        
+        #endregion
 
 
         #region SetSource(SourceElement)
@@ -1515,14 +1515,14 @@ namespace de.ahzf.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
         public virtual void SetSourceCollection1(IEnumerable<S1> IEnumerable)
-		{
+        {
 
             if (IEnumerable == null)
                 throw new ArgumentNullException("IEnumerable must not be null!");
 
-	        SetSource1(IEnumerable.GetEnumerator());
+            SetSource1(IEnumerable.GetEnumerator());
 
-	    }
+        }
 
         #endregion
 
@@ -1613,23 +1613,23 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public E Current
-		{
-			get
-			{
+        {
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return _CurrentElement;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -1654,12 +1654,12 @@ namespace de.ahzf.Vanaheimr.Styx
         /// is before the first element in the collections.
         /// </summary>
         public virtual void Reset()
-		{
+        {
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
             _InternalEnumerator3.Reset();
             _InternalEnumerator4.Reset();
-		}
+        }
 
         #endregion
 
@@ -1669,12 +1669,12 @@ namespace de.ahzf.Vanaheimr.Styx
         /// Disposes this pipe.
         /// </summary>
         public virtual void Dispose()
-		{
+        {
             _InternalEnumerator1.Dispose();
             _InternalEnumerator2.Dispose();
             _InternalEnumerator3.Dispose();
             _InternalEnumerator4.Dispose();
-		}
+        }
 
         #endregion
 
@@ -1696,7 +1696,7 @@ namespace de.ahzf.Vanaheimr.Styx
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)	        
+                // todo: why is size == 0 required (Pangloss?)            
                 if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
                     _PathElements.Add(_CurrentElement);
 
@@ -1711,7 +1711,7 @@ namespace de.ahzf.Vanaheimr.Styx
         #region PathToHere
 
         private List<Object> PathToHere
-		{
+        {
 
             get
             {
@@ -1744,7 +1744,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
             }
 
-		}
+        }
 
         #endregion
 
@@ -2303,7 +2303,7 @@ namespace de.ahzf.Vanaheimr.Styx
                 var _Size = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)	        
+                // todo: why is size == 0 required (Pangloss?)            
                 if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
                     _PathElements.Add(_CurrentElement);
 
