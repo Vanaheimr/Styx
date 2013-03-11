@@ -26,7 +26,7 @@ using eu.Vanaheimr.Styx.UnitTests;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Balder.UnitTests.FilterPipes
+namespace eu.Vanaheimr.Balder.UnitTests.FilterPipes
 {
 
     [TestFixture]
