@@ -22,7 +22,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.PerformanceCounters.ProcessCounters
+namespace eu.Vanaheimr.Styx.Sensors.PerformanceCounters.ProcessCounters
 {
 
     #region ProcessWorkingSetSensor

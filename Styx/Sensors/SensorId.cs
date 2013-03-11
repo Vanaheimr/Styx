@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors
+namespace eu.Vanaheimr.Styx.Sensors
 {
 
     /// <summary>

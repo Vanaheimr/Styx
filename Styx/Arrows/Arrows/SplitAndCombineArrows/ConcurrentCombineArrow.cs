@@ -26,7 +26,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     /// <summary>

@@ -24,7 +24,7 @@ using System.Collections.Concurrent;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     public static class ToIEnumerableExtention

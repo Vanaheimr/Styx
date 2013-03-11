@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 
-using de.ahzf.Vanaheimr.Styx;
+using eu.Vanaheimr.Styx;
 
 using NUnit.Framework;
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     #region AbstractSideEffectArrow<TIn, TOut, TSideeffect>

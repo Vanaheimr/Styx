@@ -21,14 +21,14 @@ using System;
 using System.Linq;
 using System.Diagnostics;
 
-using de.ahzf.Vanaheimr.Styx;
-using de.ahzf.Vanaheimr.Styx.Sensors.Simple;
+using eu.Vanaheimr.Styx;
+using eu.Vanaheimr.Styx.Sensors.Simple;
 
 using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.UnitTests
+namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 {
 
     /// <summary>

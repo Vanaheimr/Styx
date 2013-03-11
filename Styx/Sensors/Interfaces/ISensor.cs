@@ -20,11 +20,11 @@
 using System;
 using System.Collections.Generic;
 
-using de.ahzf.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors
+namespace eu.Vanaheimr.Styx.Sensors
 {
 
     #region ISensor

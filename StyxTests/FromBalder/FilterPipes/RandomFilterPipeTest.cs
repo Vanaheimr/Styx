@@ -19,10 +19,10 @@
 
 using System;
 
-using de.ahzf.Vanaheimr.Styx;
+using eu.Vanaheimr.Styx;
 
 using NUnit.Framework;
-using de.ahzf.Vanaheimr.Styx.UnitTests;
+using eu.Vanaheimr.Styx.UnitTests;
 
 #endregion
 

@@ -21,11 +21,11 @@ using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
-using de.ahzf.Vanaheimr.Styx.Sensors;
+using eu.Vanaheimr.Styx.Sensors;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.UnitTests
+namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 {
 
     /// <summary>

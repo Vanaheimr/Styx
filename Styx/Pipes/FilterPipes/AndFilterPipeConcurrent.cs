@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Concurrent
+namespace eu.Vanaheimr.Styx.Concurrent
 {
 
     /// <summary>

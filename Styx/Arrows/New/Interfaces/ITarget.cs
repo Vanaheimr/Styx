@@ -18,11 +18,11 @@
 #region Usings
 
 using System;
-using de.ahzf.Illias.Commons.Votes;
+using eu.Vanaheimr.Illias.Commons.Votes;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     public interface ITarget

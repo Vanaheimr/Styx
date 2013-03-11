@@ -22,7 +22,7 @@ using System.Threading;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.Simple
+namespace eu.Vanaheimr.Styx.Sensors.Simple
 {
 
     #region CounterSensor

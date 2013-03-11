@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.Active
+namespace eu.Vanaheimr.Styx.Sensors.Active
 {
 
     #region Sensor<TId, TValue>

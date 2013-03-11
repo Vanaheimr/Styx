@@ -20,12 +20,12 @@
 using System;
 using System.Collections.Generic;
 
-using de.ahzf.Vanaheimr.Styx;
-using de.ahzf.Illias.Commons;
+using eu.Vanaheimr.Styx;
+using eu.Vanaheimr.Illias.Commons;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.Active
+namespace eu.Vanaheimr.Styx.Sensors.Active
 {
 
     /// <summary>

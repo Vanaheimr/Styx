@@ -21,11 +21,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using de.ahzf.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.Active
+namespace eu.Vanaheimr.Styx.Sensors.Active
 {
 
     #region TimestampedSensor<TId, TValue>

@@ -25,7 +25,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     /// <summary>

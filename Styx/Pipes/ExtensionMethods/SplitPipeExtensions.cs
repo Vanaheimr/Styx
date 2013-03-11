@@ -23,7 +23,7 @@ using System.IO;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     public static class SplitPipeExtensions

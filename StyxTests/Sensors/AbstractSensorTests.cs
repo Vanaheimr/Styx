@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.UnitTests
+namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 {
 
     #region DummySensor for testing the AbstractSensor<TId, TValue> class

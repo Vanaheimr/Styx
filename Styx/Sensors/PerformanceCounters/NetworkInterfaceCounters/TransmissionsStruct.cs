@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.PerformanceCounters.NetworkInterfaceCounters
+namespace eu.Vanaheimr.Styx.Sensors.PerformanceCounters.NetworkInterfaceCounters
 {
 
     /// <summary>

@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx.Sensors.Active
+namespace eu.Vanaheimr.Styx.Sensors.Active
 {
 
     #region ActiveRandomSensor
