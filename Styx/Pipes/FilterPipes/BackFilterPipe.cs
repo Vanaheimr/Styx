@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 #endregion
@@ -93,7 +94,7 @@ namespace eu.Vanaheimr.Styx
             {
 
                 var aa = this.Path;
-                var bb = this.Path[this.Path.Count - 2 - (Int32) Steps];
+                var bb = this.Path.ToList()[this.Path.Count() - 2 - (Int32) Steps];
 
                 //_CurrentElement = _InternalEnumerator.Current;
                 _CurrentElement = (S) bb;

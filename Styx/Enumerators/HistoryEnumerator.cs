@@ -32,15 +32,15 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="T">The type of the stored elements.</typeparam>
     public class HistoryEnumerator<T> : IHistoryEnumerator, IEnumerator<T>
     {
-        
+
         #region Data
-        
-        private readonly IEnumerator<T> _InternalEnumerator;
-        private          T              _Last;
-        private          Boolean        _FirstMove;
-    
+
+        private readonly IEnumerator<T>  _InternalEnumerator;
+        private          T               _Last;
+        private          Boolean         _FirstMove, _Finished;
+
         #endregion
-        
+
         #region Constructor(s)
 
         #region HistoryEnumerator(IEnumerator)
@@ -51,9 +51,10 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerator">The enumerator to be wrapped.</param>
         public HistoryEnumerator(IEnumerator<T> IEnumerator)
         {
-            _InternalEnumerator = IEnumerator;
-            _Last               = default(T);
-            _FirstMove          = true;
+            _InternalEnumerator  = IEnumerator;
+            _Last                = default(T);
+            _FirstMove           = true;
+            _Finished            = false;
         }
 
         #endregion
@@ -66,9 +67,10 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerable">The enumerable to be wrapped.</param>
         public HistoryEnumerator(IEnumerable<T> IEnumerable)
         {
-            _InternalEnumerator = IEnumerable.GetEnumerator();
-            _Last               = default(T);
-            _FirstMove          = true;
+            _InternalEnumerator  = IEnumerable.GetEnumerator();
+            _Last                = default(T);
+            _FirstMove           = true;
+            _Finished            = false;
         }
 
         #endregion
@@ -137,12 +139,29 @@ namespace eu.Vanaheimr.Styx
         public Boolean MoveNext()
         {
 
-            if (!_FirstMove)
-                _Last = _InternalEnumerator.Current;
-            else
-                _FirstMove = false;
+            //if (_Finished)
+            //    return false;
 
-            return _InternalEnumerator.MoveNext();
+            if (_FirstMove)
+            {
+
+                if (_InternalEnumerator.MoveNext())
+                {
+                    _Last       = _InternalEnumerator.Current;
+                    _FirstMove  = false;
+                    return true;
+                }
+
+                return false;
+
+            }
+
+            var result = _InternalEnumerator.MoveNext();
+
+            if (!result)
+                _Finished = true;
+
+            return result;
 
         }
 
@@ -174,7 +193,7 @@ namespace eu.Vanaheimr.Styx
         }
 
         #endregion
-    
+
     }
 
 }

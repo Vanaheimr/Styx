@@ -38,9 +38,9 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S, E> : IPipe<S, E>
     {
-        
+
         #region Data
-        
+
         /// <summary>
         /// The internal enumerator of the collection.
         /// </summary>
@@ -51,19 +51,19 @@ namespace eu.Vanaheimr.Styx
         /// The internal current element in the collection.
         /// </summary>
         protected E _CurrentElement;
-        
+
         #endregion
-        
+
         #region Constructor(s)
-        
+
         #region AbstractPipe()
-        
+
         /// <summary>
         /// Creates a AbstractPipe pipe.
         /// </summary>
         public AbstractPipe()
         { }
-        
+
         #endregion
 
         #region AbstractPipe(IEnumerator, IEnumerable)
@@ -89,7 +89,7 @@ namespace eu.Vanaheimr.Styx
         }
 
         #endregion
-        
+
         #endregion
 
 
@@ -216,7 +216,7 @@ namespace eu.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         Object System.Collections.IEnumerator.Current
-        {    
+        {
             get
             {
                 return _CurrentElement;
@@ -272,14 +272,14 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual List<Object> Path
+        public virtual IEnumerable<Object> Path
         {
 
             get
             {
 
-                var _PathElements = PathToHere;
-                var _Size         = _PathElements.Count;
+                var _PathElements = PathToHere.ToList();
+                var _Size         = _PathElements.Count();
 
                 // do not repeat filters as they dup the object
                 // todo: why is size == 0 required (Pangloss?)            
@@ -296,7 +296,7 @@ namespace eu.Vanaheimr.Styx
 
         #region PathToHere
 
-        private List<Object> PathToHere
+        private IEnumerable<Object> PathToHere
         {
 
             get
@@ -312,7 +312,11 @@ namespace eu.Vanaheimr.Styx
                     var _Last = ((IHistoryEnumerator) _InputEnumerator).Last;
 
                     if (_Last == null)
+                    {
+                        //if (_InputEnumerator.MoveNext())
+                        _InputEnumerator.MoveNext();
                         _List.Add(_InputEnumerator.Current);
+                    }
                     else
                         _List.Add(_Last);
 
@@ -340,7 +344,11 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return this.GetType().Name + "<" + _InputEnumerator.Current + ">";
+
+            return (_InputEnumerator != null)
+                        ? this.GetType().Name + "<" + _InputEnumerator.Current + ">"
+                        : this.GetType().Name;
+
         }
 
         #endregion
@@ -361,9 +369,9 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, E> : IPipe<S1, S2, E>
     {
-        
+
         #region Data
-        
+
         /// <summary>
         /// The internal enumerator of the first collection.
         /// </summary>
@@ -380,9 +388,9 @@ namespace eu.Vanaheimr.Styx
         /// The internal current element in the collection.
         /// </summary>
         protected E _CurrentElement;
-        
+
         #endregion
-        
+
         #region Constructor(s)
         
         #region AbstractPipe()
@@ -677,13 +685,13 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual List<Object> Path
+        public virtual IEnumerable<Object> Path
         {
 
             get
             {
 
-                var _PathElements = PathToHere;
+                var _PathElements = PathToHere.ToList();
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
@@ -701,7 +709,7 @@ namespace eu.Vanaheimr.Styx
 
         #region PathToHere
 
-        private List<Object> PathToHere
+        private IEnumerable<Object> PathToHere
         {
 
             get
@@ -769,9 +777,9 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, S3, E> : IPipe<S1, S2, S3, E>
     {
-        
+
         #region Data
-        
+
         /// <summary>
         /// The internal enumerator of the first collection.
         /// </summary>
@@ -794,9 +802,9 @@ namespace eu.Vanaheimr.Styx
         /// The internal current element in the collection.
         /// </summary>
         protected E _CurrentElement;
-        
+
         #endregion
-        
+
         #region Constructor(s)
         
         #region AbstractPipe()
@@ -1149,13 +1157,13 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual List<Object> Path
+        public virtual IEnumerable<Object> Path
         {
 
             get
             {
 
-                var _PathElements = PathToHere;
+                var _PathElements = PathToHere.ToList();
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
@@ -1173,7 +1181,7 @@ namespace eu.Vanaheimr.Styx
 
         #region PathToHere
 
-        private List<Object> PathToHere
+        private IEnumerable<Object> PathToHere
         {
 
             get
@@ -1686,13 +1694,13 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual List<Object> Path
+        public virtual IEnumerable<Object> Path
         {
 
             get
             {
 
-                var _PathElements = PathToHere;
+                var _PathElements = PathToHere.ToList();
                 var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
@@ -1710,7 +1718,7 @@ namespace eu.Vanaheimr.Styx
 
         #region PathToHere
 
-        private List<Object> PathToHere
+        private IEnumerable<Object> PathToHere
         {
 
             get
@@ -2293,14 +2301,14 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual List<Object> Path
+        public virtual IEnumerable<Object> Path
         {
 
             get
             {
 
-                var _PathElements = PathToHere;
-                var _Size = _PathElements.Count;
+                var _PathElements = PathToHere.ToList();
+                var _Size         = _PathElements.Count;
 
                 // do not repeat filters as they dup the object
                 // todo: why is size == 0 required (Pangloss?)            
@@ -2317,7 +2325,7 @@ namespace eu.Vanaheimr.Styx
 
         #region PathToHere
 
-        private List<Object> PathToHere
+        private IEnumerable<Object> PathToHere
         {
 
             get

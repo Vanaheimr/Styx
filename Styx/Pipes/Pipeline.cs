@@ -40,18 +40,18 @@ namespace eu.Vanaheimr.Styx
     #endregion
 
     /// <summary>
-	/// A Pipeline is a linear composite of Pipes.
-	/// Pipeline takes a List of Pipes and joins them according to their order as specified by their location in the List.
-	/// It is important to ensure that the provided ordered Pipes can connect together.
-	/// That is, that the output of the n-1 Pipe is the same as the input to n Pipe.
-	/// Once all provided Pipes are composed, a Pipeline can be treated like any other Pipe.
-	/// </summary>
+    /// A Pipeline is a linear composite of Pipes.
+    /// Pipeline takes a List of Pipes and joins them according to their order as specified by their location in the List.
+    /// It is important to ensure that the provided ordered Pipes can connect together.
+    /// That is, that the output of the n-1 Pipe is the same as the input to n Pipe.
+    /// Once all provided Pipes are composed, a Pipeline can be treated like any other Pipe.
+    /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-	public class Pipeline<S, E> : IPipe<S, E>
-	{
+    public class Pipeline<S, E> : IPipe<S, E>
+    {
 
-		#region Data
+        #region Data
 
         private IPipe[]                           _Pipes;
         private IStartPipe<S>                     _StartPipe;
@@ -63,22 +63,22 @@ namespace eu.Vanaheimr.Styx
 
         private IEnumerator<S>                    _InternalEnumerator;
         private E                                 _CurrentElement;
-	
-		#endregion
-		
-		#region Constructor(s)
-		
-		#region Pipeline()
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region Pipeline()
 
         /// <summary>
         /// Constructs a pipeline from the provided pipes.
         /// </summary>
-	    public Pipeline()
-		{
+        public Pipeline()
+        {
             _PipelineString = null;
-		}
-		
-		#endregion
+        }
+
+        #endregion
 
         #region Pipeline(PipelineDefinition)
 
@@ -121,10 +121,10 @@ namespace eu.Vanaheimr.Styx
         {
             SetPipes(IPipes);
         }
-		
+
         #endregion
-		
-		#endregion
+
+        #endregion
 
 
         #region SetPipes(IPipes)
@@ -163,7 +163,7 @@ namespace eu.Vanaheimr.Styx
 
             if (_EndPipe == null)
                 throw new ArgumentException("The last Pipe must implement 'IEndPipe<" + typeof(E) + ">', but '" + IPipes[_Length - 1].GetType() + "' was provided!");
-			
+
             _PipeNames.Add(_StartPipe.ToString());
 
             Type[] _GenericArguments = null;
@@ -203,11 +203,11 @@ namespace eu.Vanaheimr.Styx
 
             if (_InternalEnumerator != null)
                 IPipes[0].SetSource(_InternalEnumerator);
-			
+
             _PipelineString = _PipeNames.ToString();
-		
+
         }
-		
+
         #endregion
 
 
@@ -463,13 +463,13 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-	    public List<Object> Path
-		{
+        public IEnumerable<Object> Path
+        {
             get
             {
                 return _EndPipe.Path;
             }
-	    }
+        }
 
         #endregion
 

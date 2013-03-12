@@ -25,6 +25,22 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx
 {
 
+    public static class PathPipeExtentions
+    {
+
+        public static IEnumerable<IEnumerable<Object>> Paths<S>(this IEndPipe<S> EndPipe)
+        {
+
+            var pp = new PathPipe<S>();
+            pp.SetSourceCollection(EndPipe);
+
+            return pp;
+
+        }
+
+    }
+
+
     /// <summary>
     /// Emits the path that the traverser has taken up to this object.
     /// In other words, it uses the Path property of the previous pipe
@@ -52,17 +68,17 @@ namespace eu.Vanaheimr.Styx
 
             if (_InputEnumerator is IPipe)
             {
-                
+
                 if (_InputEnumerator.MoveNext())
                 {
                     _CurrentElement = ((IPipe) _InputEnumerator).Path;
                     return true;
                 }
-                
+
                 return false;
 
             }
-            
+
             else
                 throw new NoSuchElementException("The source of this pipe was not a pipe!");
 

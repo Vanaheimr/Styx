@@ -40,7 +40,7 @@ namespace eu.Vanaheimr.Styx
         /// Returns the path traversed to arrive at the current result of the pipe.
         /// </summary> 
         /// <returns>A List of all of the objects traversed for the current iterator position of the pipe.</returns>
-        List<Object> Path { get; }
+        IEnumerable<Object> Path { get; }
 
     }
 

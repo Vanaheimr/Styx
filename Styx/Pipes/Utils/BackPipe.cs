@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 #endregion
@@ -103,14 +104,14 @@ namespace eu.Vanaheimr.Styx
             while (_InputEnumerator.MoveNext())
             {
 
-                _ReturnPosition = this.Path.Count - 2 - (Int32) Steps;
+                _ReturnPosition = this.Path.Count() - 2 - (Int32) Steps;
 
                 if (_ReturnPosition < 0)
                     throw new Exception("The path is shorter than the given number of steps!");
 
                 try
                 {
-                    _CurrentElement = (S) this.Path[_ReturnPosition];
+                    _CurrentElement = (S) this.Path.ElementAt(_ReturnPosition);
                 }
                 catch (Exception)
                 {

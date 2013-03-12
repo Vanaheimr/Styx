@@ -31,15 +31,15 @@ namespace eu.Vanaheimr.Styx
     /// single objects are manipulated at a time.
     /// </summary>
     /// <typeparam name="T">The type of the stored element.</typeparam>
-	public class SingleEnumerator<T> : ISingleEnumerator, IEnumerator<T>
+    public class SingleEnumerator<T> : ISingleEnumerator, IEnumerator<T>
     {
 
         #region Data
 
         private readonly T                     _Element;
         private          SingleEnumeratorState _InternalState;
-	
-		#endregion
+    
+        #endregion
 
         #region Enum SingleEnumeratorState
 
@@ -68,7 +68,7 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-		#region Constructor(s)
+        #region Constructor(s)
 
         #region SingleEnumerator(myElement)
 
@@ -92,34 +92,34 @@ namespace eu.Vanaheimr.Styx
         /// <summary>
         /// Return the current element of the current IEnumertor&lt;T&gt;.
         /// </summary>
-		public T Current
-		{
-			get
-			{
+        public T Current
+        {
+            get
+            {
 
                 if (_InternalState == SingleEnumeratorState.AT)
                     return _Element;
 
                 throw new InvalidOperationException();
                 
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Return the current element of the internal IEnumertor.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
 
                 if (_InternalState == SingleEnumeratorState.AT)
                     return _Element;
 
                 throw new InvalidOperationException();
 
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Return the current element of the internal ISingleEnumerator.
@@ -145,8 +145,8 @@ namespace eu.Vanaheimr.Styx
         /// Advances the enumerator to the next element of the collection.
         /// </summary>
         /// <returns>True if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
-		public Boolean MoveNext()
-		{
+        public Boolean MoveNext()
+        {
 
             switch (_InternalState)
             {
@@ -166,7 +166,7 @@ namespace eu.Vanaheimr.Styx
 
             return false;
 
-		}
+        }
 
         #endregion
 
@@ -177,9 +177,9 @@ namespace eu.Vanaheimr.Styx
         /// before the first element in the collection.
         /// </summary>
         public void Reset()
-		{
+        {
             _InternalState = SingleEnumeratorState.BEFORE;
-		}
+        }
 
         #endregion
 

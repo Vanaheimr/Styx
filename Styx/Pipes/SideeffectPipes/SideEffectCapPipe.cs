@@ -18,8 +18,9 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 
 #endregion
 
@@ -144,12 +145,12 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public new List<Object> Path
+        public new IEnumerable<Object> Path
         {
             get
             {
 
-                var _List = _PipeToCap.Path;
+                var _List = _PipeToCap.Path.ToList();
                 _List.Add(this._CurrentElement);
 
                 return _List;

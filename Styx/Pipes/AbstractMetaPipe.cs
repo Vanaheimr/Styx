@@ -37,29 +37,29 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractMetaPipe<S, E> : IMetaPipe<S, E>
-	{
-		
-		#region Data
+    {
+        
+        #region Data
 
         private readonly IPipe[]       InternalPipes;
 
         private readonly IStartPipe<S> StartPipe;
 
         private readonly IEndPipe<E>   EndPipe;
-		
-		#endregion
-		
-		#region Constructor(s)
+        
+        #endregion
+        
+        #region Constructor(s)
 
         #region AbstractMetaPipe()
 
         /// <summary>
         /// Creates a AbstractPipe pipe.
         /// </summary>
-		public AbstractMetaPipe()
-		{ }
-		
-		#endregion
+        public AbstractMetaPipe()
+        { }
+        
+        #endregion
 
         #region AbstractMetaPipe(InternalPipes, IEnumerator, IEnumerable)
 
@@ -110,8 +110,8 @@ namespace eu.Vanaheimr.Styx
         }
 
         #endregion
-		
-		#endregion
+        
+        #endregion
 
 
         #region SetSource(SourceElement)
@@ -213,23 +213,23 @@ namespace eu.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public virtual E Current
-		{
-			get
-			{
+        {
+            get
+            {
                 return EndPipe.Current;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return EndPipe.Current;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -258,10 +258,10 @@ namespace eu.Vanaheimr.Styx
         /// before the first element in the collection.
         /// </summary>
         public virtual void Reset()
-		{
+        {
             foreach (var pipe in InternalPipes)
                 pipe.Reset();
-		}
+        }
 
         #endregion
 
@@ -271,10 +271,10 @@ namespace eu.Vanaheimr.Styx
         /// Disposes this pipe.
         /// </summary>
         public virtual void Dispose()
-		{
+        {
             foreach (var pipe in InternalPipes)
                 pipe.Dispose();
-		}
+        }
 
         #endregion
 
@@ -286,7 +286,7 @@ namespace eu.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual List<Object> Path
+        public virtual IEnumerable<Object> Path
         {
 
             get
@@ -300,15 +300,15 @@ namespace eu.Vanaheimr.Styx
 
         #region PathToHere
 
-        private List<Object> PathToHere
-		{
+        private IEnumerable<Object> PathToHere
+        {
 
             get
             {
                 throw new NotImplementedException();
             }
 
-		}
+        }
 
         #endregion
 
