@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.ahzf.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     /// <summary>
@@ -51,7 +51,7 @@ namespace de.ahzf.Vanaheimr.Styx
 
         public CombineArrow(IArrowSender<TIn1> ArrowSender1, IArrowSender<TIn2> ArrowSender2, Func<TIn1, TIn2, TOut> MessageProcessor)
         {
-            
+
             this.ArrowSender1     = ArrowSender1;
             this.ArrowSender2     = ArrowSender2;
 

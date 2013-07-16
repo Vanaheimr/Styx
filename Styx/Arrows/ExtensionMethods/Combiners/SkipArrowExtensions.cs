@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.ahzf.Styx
+namespace eu.Vanaheimr.Styx
 {
 
     /// <summary>
