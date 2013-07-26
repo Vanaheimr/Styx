@@ -28,14 +28,16 @@ namespace eu.Vanaheimr.Styx
     public static class NewFuncArrowExtention
     {
 
-        public static INotification<TOut> NewFuncArrow<TIn, TOut>(this INotification<TIn> In, Func<TIn, TOut> MessageProcessor)
+        public static NewFuncArrow<TIn, TOut> NewFuncArrow<TIn, TOut>(this INotification<TIn> In,
+                                                                      Func<TIn, TOut> MessageProcessor)
         {
             var a = new NewFuncArrow<TIn, TOut>(MessageProcessor);
             In.SendTo(a);
             return a;
         }
 
-        public static INotification<TOut> NewFuncArrow<TIn1, TIn2, TOut>(this INotification<TIn1, TIn2> In, Func<TIn1, TIn2, TOut> MessageProcessor)
+        public static NewFuncArrow<TIn1, TIn2, TOut> NewFuncArrow<TIn1, TIn2, TOut>(this INotification<TIn1, TIn2> In,
+                                                                                    Func<TIn1, TIn2, TOut> MessageProcessor)
         {
             var a = new NewFuncArrow<TIn1, TIn2, TOut>(MessageProcessor);
             In.SendTo(a);
@@ -54,25 +56,26 @@ namespace eu.Vanaheimr.Styx
 
         #region Data
 
-        private readonly Func<TIn, TOut> _MessageProcessor;
+        private readonly Func<TIn,       TOut>       MessageProcessor;
+        private readonly Func<Exception, Exception>  OnError;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FuncFilter(MessageProcessor)
+        #region NewFuncArrow(MessageProcessor)
 
         /// <summary>
         /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
         /// </summary>
-        /// <param name="Func">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        public NewFuncArrow(Func<TIn, TOut> MessageProcessor)
+        public NewFuncArrow(Func<TIn, TOut> MessageProcessor,
+                            Func<Exception, Exception> OnError = null)
         {
 
             if (MessageProcessor == null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
-            _MessageProcessor = MessageProcessor;
+            this.MessageProcessor = MessageProcessor;
 
         }
 
@@ -89,8 +92,20 @@ namespace eu.Vanaheimr.Styx
         /// <param name="MessageOut">The outgoing message.</param>
         protected override Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut)
         {
-            MessageOut = _MessageProcessor(MessageIn);
-            return true;
+
+            try
+            {
+                MessageOut = this.MessageProcessor(MessageIn);
+                return true;
+            }
+            catch (Exception e)
+            {
+                if (OnError != null)
+                    throw OnError(e);
+                else
+                    throw e;
+            }
+
         }
 
         #endregion
