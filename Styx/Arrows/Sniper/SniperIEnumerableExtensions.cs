@@ -29,7 +29,7 @@ namespace eu.Vanaheimr.Styx
     /// <summary>
     /// A class of specialized IEnumerable extension methods.
     /// </summary>
-    public static class IEnumerableExtensions
+    public static class SniperIEnumerableExtensions
     {
 
         #region MapEach(this IEnumerable, Func)

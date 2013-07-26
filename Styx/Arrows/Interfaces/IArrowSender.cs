@@ -28,35 +28,35 @@ namespace eu.Vanaheimr.Styx
 
     #region MessageRecipient
 
-    /// <summary>
-    /// A delegate for delivering messages.
-    /// </summary>
-    /// <typeparam name="TMessage">The type of the message/object.</typeparam>
-    /// <param name="Sender">The sender of the message.</param>
-    /// <param name="Message">The message.</param>
-    public delegate void MessageRecipient<TMessage>(dynamic Sender, TMessage Message);
+    ///// <summary>
+    ///// A delegate for delivering messages.
+    ///// </summary>
+    ///// <typeparam name="TMessage">The type of the message/object.</typeparam>
+    ///// <param name="Sender">The sender of the message.</param>
+    ///// <param name="Message">The message.</param>
+    //public delegate void MessageRecipient<TMessage>(dynamic Sender, TMessage Message);
 
     #endregion
 
     #region CompletionRecipient
 
-    /// <summary>
-    /// A delegate for signaling the completion of a message delivery.
-    /// </summary>
-    /// <param name="Sender">The sender of the completion signal.</param>
-    /// <returns>True if the completion message was accepted; False otherwise.</returns>
-    public delegate void CompletionRecipient(dynamic Sender);
+    ///// <summary>
+    ///// A delegate for signaling the completion of a message delivery.
+    ///// </summary>
+    ///// <param name="Sender">The sender of the completion signal.</param>
+    ///// <returns>True if the completion message was accepted; False otherwise.</returns>
+    //public delegate void CompletionRecipient(dynamic Sender);
 
     #endregion
 
     #region ExceptionRecipient
 
-    /// <summary>
-    /// A delegate for signaling an exception.
-    /// </summary>
-    /// <param name="Sender">The sender of the message.</param>
-    /// <param name="Exception">An exception.</param>
-    public delegate void ExceptionRecipient(dynamic Sender, Exception Exception);
+    ///// <summary>
+    ///// A delegate for signaling an exception.
+    ///// </summary>
+    ///// <param name="Sender">The sender of the message.</param>
+    ///// <param name="Exception">An exception.</param>
+    //public delegate void ExceptionRecipient(dynamic Sender, Exception Exception);
 
     #endregion
 
@@ -65,53 +65,53 @@ namespace eu.Vanaheimr.Styx
 
     #region IArrowSender
 
-    /// <summary>
-    /// The common IArrowSender interface
-    /// </summary>
-    public interface IArrowSender
-    {
+    ///// <summary>
+    ///// The common IArrowSender interface
+    ///// </summary>
+    //public interface IArrowSender
+    //{
 
-        /// <summary>
-        /// An event for signaling the completion of a message delivery.
-        /// </summary>
-        event CompletionRecipient OnCompleted;
+    //    /// <summary>
+    //    /// An event for signaling the completion of a message delivery.
+    //    /// </summary>
+    //    event CompletionRecipient OnCompleted;
 
-        /// <summary>
-        /// An event for signaling an exception.
-        /// </summary>
-        event ExceptionRecipient  OnError;
+    //    /// <summary>
+    //    /// An event for signaling an exception.
+    //    /// </summary>
+    //    event ExceptionRecipient  OnError;
 
-    }
+    //}
 
     #endregion
 
     #region IArrowSender<TOut>
 
-    /// <summary>
-    /// The common interface for any Arrow implementation sending messages of type TOut.
-    /// </summary>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface IArrowSender<TOut>
-    {
+    ///// <summary>
+    ///// The common interface for any Arrow implementation sending messages of type TOut.
+    ///// </summary>
+    ///// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    //public interface IArrowSender<TOut>
+    //{
 
-        /// <summary>
-        /// An event for message delivery.
-        /// </summary>
-        event MessageRecipient<TOut> OnMessageAvailable;
+    //    /// <summary>
+    //    /// An event for message delivery.
+    //    /// </summary>
+    //    event MessageRecipient<TOut> OnMessageAvailable;
 
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        void SendTo(params MessageRecipient<TOut>[] Recipients);
+    //    /// <summary>
+    //    /// Sends messages/objects from this Arrow to the given recipients.
+    //    /// </summary>
+    //    /// <param name="Recipients">The recipients of the processed messages.</param>
+    //    void SendTo(params MessageRecipient<TOut>[] Recipients);
 
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        void SendTo(params IArrowReceiver<TOut>[] Recipients);
+    //    /// <summary>
+    //    /// Sends messages/objects from this Arrow to the given recipients.
+    //    /// </summary>
+    //    /// <param name="Recipients">The recipients of the processed messages.</param>
+    //    void SendTo(params IArrowReceiver<TOut>[] Recipients);
 
-    }
+    //}
 
     #endregion
 

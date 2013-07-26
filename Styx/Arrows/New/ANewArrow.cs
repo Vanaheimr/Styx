@@ -29,7 +29,7 @@ namespace eu.Vanaheimr.Styx
     /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public abstract class ANewArrow<TIn, TOut> : ITarget<TIn>, INotification<TOut>
+    public abstract class ANewArrow<TIn, TOut> : IArrowReceiver<TIn>, INotification<TOut>
     {
 
         #region Events
@@ -66,7 +66,7 @@ namespace eu.Vanaheimr.Styx
         #endregion
 
 
-        public void ProcessNotification(TIn Message)
+        public void ProcessArrow(TIn Message)
         {
 
             TOut MessageOut = default(TOut);

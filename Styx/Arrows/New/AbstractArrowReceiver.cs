@@ -32,37 +32,9 @@ namespace eu.Vanaheimr.Styx
     /// An Arrow accepts/consumes messages/objects of type TIn and emits
     /// messages/objects of type TOut via an event.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
-    public abstract class AbstractArrowReceiver<TMessage> : IArrowReceiver<TMessage>
+    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
+    public abstract class AbstractArrowReceiver<TIn> : IArrowReceiver<TIn>
     {
-
-        #region Events
-
-        /// <summary>
-        /// An event for signaling the completion of a message delivery.
-        /// </summary>
-        public event CompletionRecipient OnCompleted;
-
-        /// <summary>
-        /// An event for signaling an exception.
-        /// </summary>
-        public event ExceptionRecipient OnError;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Turns the recording of the message delivery path ON or OFF.
-        /// </summary>
-        public Boolean RecordMessagePath { get; set; }
-
-        /// <summary>
-        /// Returns the message path.
-        /// </summary>
-        public IEnumerable<Object> Path { get; protected set;  }
-
-        #endregion
 
         #region Constructor(s)
 
@@ -79,39 +51,43 @@ namespace eu.Vanaheimr.Styx
         #endregion
 
 
-        #region (abstract) ReceiveMessage(Sender, MessageIn)
+        #region (abstract) ProcessArrow(MessageIn)
 
         /// <summary>
         /// Accepts a message of type S from a sender for further processing
         /// and delivery to the subscribers.
         /// </summary>
-        /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
-        public abstract void ReceiveMessage(Object Sender, TMessage MessageIn);
+        public abstract void ProcessArrow(TIn MessageIn);
 
         #endregion
 
-        #region Complete(Sender)
+        #region ProcessCompleted(Sender, Message = null)
 
         /// <summary>
         /// Signale the completion of the message delivery.
         /// </summary>
         /// <param name="Sender">The sender of the completion signal.</param>
-        public void Complete(Object Sender)
+        /// <param name="Message">The message.</param>
+        public void ProcessCompleted(dynamic Sender, String Message = null)
         {
-            try
-            {
-                if (OnCompleted != null)
-                    OnCompleted(this);
-            }
-            catch (Exception e)
-            {
-                if (OnError != null)
-                    OnError(this, e);
-            }
+            //try
+            //{
+            //    if (OnCompleted != null)
+            //        OnCompleted(this);
+            //}
+            //catch (Exception e)
+            //{
+            //    if (OnError != null)
+            //        OnError(this, e);
+            //}
         }
 
         #endregion
+
+        public void ProcessError(dynamic Sender, Exception ExceptionMessage)
+        {
+        }
 
 
         #region Dispose()

@@ -37,64 +37,29 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arrows\AbstractArrow.cs" />
-    <Compile Include="Arrows\AbstractSideEffectArrow.cs" />
-    <Compile Include="Arrows\Arrows\FilterArrows\BandFilterArrow.cs" />
-    <Compile Include="Arrows\Arrows\FilterArrows\DuplicateFilterArrow.cs" />
-    <Compile Include="Arrows\Arrows\FilterArrows\FuncFilterArrow.cs" />
-    <Compile Include="Arrows\Arrows\FilterArrows\SameValueFilterArrow.cs" />
+    <Compile Include="Arrows\New\AbstractArrowReceiver.cs" />
+    <Compile Include="Arrows\New\AbstractArrowSender.cs" />
     <Compile Include="Arrows\New\ANewArrow.cs" />
     <Compile Include="Arrows\New\AsTask.cs" />
+    <Compile Include="Arrows\New\Interfaces\IVotingTarget.cs" />
     <Compile Include="Arrows\New\NewConcurrentFuncArrow.cs" />
     <Compile Include="Arrows\New\ToIEnumerable.cs" />
     <Compile Include="Arrows\New\NewFuncArrow.cs" />
     <Compile Include="Arrows\New\Interfaces\INotification.cs" />
-    <Compile Include="Arrows\New\Interfaces\ITarget.cs" />
+    <Compile Include="Arrows\New\Interfaces\IArrowReceiver.cs" />
     <Compile Include="Arrows\New\FuncFilter.cs" />
     <Compile Include="Arrows\New\Interfaces\INewArrow.cs" />
     <Compile Include="Arrows\New\Interfaces\INewFilterArrow.cs" />
     <Compile Include="Arrows\New\Interfaces\INotificator.cs" />
-    <Compile Include="Arrows\Arrows\SideEffectArrows\AggregatorArrow.cs" />
-    <Compile Include="Arrows\Arrows\SideEffectArrows\CountArrow.cs" />
-    <Compile Include="Arrows\Arrows\SideEffectArrows\MinMaxArrow.cs" />
-    <Compile Include="Arrows\Arrows\SideEffectArrows\StdDevSideEffectArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\ActionArrow.cs" />
-    <Compile Include="Arrows\Arrows\ArrowObject.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\FuncArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\IdentityArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\SkipArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\StdDevArrow.cs" />
-    <Compile Include="Arrows\AbstractArrowReceiver.cs" />
-    <Compile Include="Arrows\AbstractArrowSender.cs" />
-    <Compile Include="Arrows\Arrows\SplitAndCombineArrows\CombineArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\ConcurrentFuncArrow.cs" />
-    <Compile Include="Arrows\Arrows\SplitAndCombineArrows\ConcurrentCombineArrow.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\FilterArrows\BandFilterArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\FilterArrows\DuplicateFilterArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\FilterArrows\FuncFilterArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\FilterArrows\SameValueFilterArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\IArrowReceiverExtensions.cs" />
-    <Compile Include="Arrows\Interfaces\IArrow.cs" />
+    <Compile Include="Arrows\New\Interfaces\IArrow.cs" />
     <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
     <Compile Include="Arrows\Interfaces\IArrowSender.cs" />
-    <Compile Include="IEnumeratorExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SideEffectArrows\AggregatorArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SideEffectArrows\CountArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SideEffectArrows\MinMaxArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SideEffectArrows\StdDevSideEffectArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SimpleArrows\ActionArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SimpleArrows\FuncArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SimpleArrows\IdentityArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SimpleArrows\SkipArrowExtensions.cs" />
-    <Compile Include="Arrows\Arrows\ExtensionMethods\SimpleArrows\StdDevArrowExtensions.cs" />
-    <Compile Include="Arrows\Interfaces\IFilterArrow.cs" />
-    <Compile Include="Arrows\Interfaces\ISideEffectArrow.cs" />
-    <Compile Include="Arrows\Interfaces\ISniper.cs" />
-    <Compile Include="Arrows\Sniper.cs" />
+    <Compile Include="Arrows\New\Interfaces\IFilterArrow.cs" />
+    <Compile Include="Arrows\New\Interfaces\ISideEffectArrow.cs" />
+    <Compile Include="Arrows\New\Interfaces\ISniper.cs" />
     <Compile Include="Pipes\AbstractFilterPipe.cs" />
     <Compile Include="Pipes\ExtensionMethods\CSVPipeExtensions.cs" />
     <Compile Include="Pipes\ExtensionMethods\IOPipeExtensions.cs" />
-    <Compile Include="IEnumerableExtensions.cs" />
     <Compile Include="Enumerators\ISingleEnumerator.cs" />
     <Compile Include="Enumerators\IHistoryEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
@@ -166,31 +131,6 @@
     <Compile Include="Pipes\FilterPipes\AndFilterPipeConcurrent.cs" />
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sensors\ActiveSensors\AbstractActiveSensor.cs" />
-    <Compile Include="Sensors\ActiveSensors\ActiveRandomSensor.cs" />
-    <Compile Include="Sensors\ActiveSensors\ActiveSensor.cs" />
-    <Compile Include="Sensors\ExtensionMethods\IEnumerableExtensions.cs" />
-    <Compile Include="Sensors\ExtensionMethods\IEnumeratorExtensions.cs" />
-    <Compile Include="Sensors\ExtensionMethods\ISensorExtensions.cs" />
-    <Compile Include="Sensors\Interfaces\IActiveSensor.cs" />
-    <Compile Include="Sensors\Interfaces\ISensor.cs" />
-    <Compile Include="Sensors\AbstractSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\AbstractPerformanceCounterSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\NetworkInterfaceCounters\NetworkInterfaceCounter.cs" />
-    <Compile Include="Sensors\PerformanceCounters\NetworkInterfaceCounters\NetworkInterfaceSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\NetworkInterfaceCounters\TransmissionsSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\NetworkInterfaceCounters\TransmissionsStruct.cs" />
-    <Compile Include="Sensors\PerformanceCounters\ProcessCounters\ProcessProcessorTimeSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\ProcessCounters\ProcessWorkingSetSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\ProcessorCounters\ProcessorTotalTimeSensor.cs" />
-    <Compile Include="Sensors\PerformanceCounters\SystemCounters\FreeRAMSensor.cs" />
-    <Compile Include="Sensors\Sensor.cs" />
-    <Compile Include="Sensors\SensorId.cs" />
-    <Compile Include="Sensors\SimpleSensors\CounterSensor.cs" />
-    <Compile Include="Sensors\SimpleSensors\RandomSensor.cs" />
-    <Compile Include="Sensors\SimpleSensors\SinusSensor.cs" />
-    <Compile Include="Sensors\SimpleSensors\TimestampSensor.cs" />
-    <Compile Include="Sensors\TimestampedSensor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -201,5 +141,8 @@
       <Project>{16C85DF8-5DE6-4A9F-9FC7-7CA5B0440DF3}</Project>
       <Name>Commons</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Arrows\Sniper\" />
   </ItemGroup>
 </Project>

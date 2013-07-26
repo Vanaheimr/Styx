@@ -47,7 +47,7 @@ namespace eu.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public class NewConcurrentFuncArrow<TIn, TOut> : ITarget<TIn>, INotification<TOut>
+    public class NewConcurrentFuncArrow<TIn, TOut> : IArrowReceiver<TIn>, INotification<TOut>
     {
 
         #region Data
@@ -154,7 +154,7 @@ namespace eu.Vanaheimr.Styx
         //#endregion
 
 
-        public void ProcessNotification(TIn Message)
+        public void ProcessArrow(TIn Message)
         {
             BlockingCollection.Add(Message);
         }

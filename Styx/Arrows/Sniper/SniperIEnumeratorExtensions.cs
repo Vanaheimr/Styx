@@ -28,7 +28,7 @@ namespace eu.Vanaheimr.Styx
     /// <summary>
     /// Extension methods for the IEnumerator interface.
     /// </summary>
-    public static class IEnumeratorExtensions
+    public static class SniperIEnumeratorExtensions
     {
 
 #if SILVERLIGHT

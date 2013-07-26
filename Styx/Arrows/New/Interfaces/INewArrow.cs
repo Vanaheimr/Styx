@@ -43,7 +43,7 @@ namespace eu.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface INewArrow<TIn, in TOut> : INotification<TIn>, ITarget<TOut>, INewArrow
+    public interface INewArrow<TIn, in TOut> : INotification<TIn>, IArrowReceiver<TOut>, INewArrow
     { }
 
     #endregion

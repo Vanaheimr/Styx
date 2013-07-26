@@ -118,7 +118,7 @@ namespace eu.Vanaheimr.Styx
     /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class NewFuncArrow<TIn1, TIn2, TOut> : ITarget<TIn1, TIn2>, INotification<TOut>
+    public class NewFuncArrow<TIn1, TIn2, TOut> : IArrowReceiver<TIn1, TIn2>, INotification<TOut>
     {
 
         #region Data
@@ -166,7 +166,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         /// <param name="MessageIn1">The first incoming message.</param>
         /// <param name="MessageIn2">The second incoming message.</param>
-        public void ProcessNotification(TIn1 MessageIn1, TIn2 MessageIn2)
+        public void ProcessArrow(TIn1 MessageIn1, TIn2 MessageIn2)
         {
 
             if (OnNotification != null)

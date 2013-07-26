@@ -28,37 +28,37 @@ namespace eu.Vanaheimr.Styx
     public static class INotificationExtentions
     {
 
-        public static void SendTo<T>(this INotification<T> INotification, ITarget<T> Target)
+        public static void SendTo<T>(this INotification<T> INotification, IArrowReceiver<T> Target)
         {
-            INotification.OnNotification += Target.ProcessNotification;
+            INotification.OnNotification += Target.ProcessArrow;
             INotification.OnError        += Target.ProcessError;
             INotification.OnCompleted    += Target.ProcessCompleted;
         }
 
-        public static void SendTo<T1, T2>(this INotification<T1, T2> INotification, ITarget<T1, T2> Target)
+        public static void SendTo<T1, T2>(this INotification<T1, T2> INotification, IArrowReceiver<T1, T2> Target)
         {
-            INotification.OnNotification += Target.ProcessNotification;
+            INotification.OnNotification += Target.ProcessArrow;
             INotification.OnError        += Target.ProcessError;
             INotification.OnCompleted    += Target.ProcessCompleted;
         }
 
-        public static void SendTo<T1, T2, T3>(this INotification<T1, T2, T3> INotification, ITarget<T1, T2, T3> Target)
+        public static void SendTo<T1, T2, T3>(this INotification<T1, T2, T3> INotification, IArrowReceiver<T1, T2, T3> Target)
         {
-            INotification.OnNotification += Target.ProcessNotification;
+            INotification.OnNotification += Target.ProcessArrow;
             INotification.OnError        += Target.ProcessError;
             INotification.OnCompleted    += Target.ProcessCompleted;
         }
 
-        public static void SendTo<T1, T2, T3, T4>(this INotification<T1, T2, T3, T4> INotification, ITarget<T1, T2, T3, T4> Target)
+        public static void SendTo<T1, T2, T3, T4>(this INotification<T1, T2, T3, T4> INotification, IArrowReceiver<T1, T2, T3, T4> Target)
         {
-            INotification.OnNotification += Target.ProcessNotification;
+            INotification.OnNotification += Target.ProcessArrow;
             INotification.OnError        += Target.ProcessError;
             INotification.OnCompleted    += Target.ProcessCompleted;
         }
 
-        public static void SendTo<T1, T2, T3, T4, T5>(this INotification<T1, T2, T3, T4, T5> INotification, ITarget<T1, T2, T3, T4, T5> Target)
+        public static void SendTo<T1, T2, T3, T4, T5>(this INotification<T1, T2, T3, T4, T5> INotification, IArrowReceiver<T1, T2, T3, T4, T5> Target)
         {
-            INotification.OnNotification += Target.ProcessNotification;
+            INotification.OnNotification += Target.ProcessArrow;
             INotification.OnError        += Target.ProcessError;
             INotification.OnCompleted    += Target.ProcessCompleted;
         }
@@ -81,13 +81,32 @@ namespace eu.Vanaheimr.Styx
     public delegate void CompletedEventHandler(dynamic Sender, String Message);
 
 
+    #region INotification
 
+    /// <summary>
+    /// The interface for object providing a notification service.
+    /// </summary>
     public interface INotification
     {
-        event ExceptionEventHandler OnError;
+
+        /// <summary>
+        /// An event for signaling the completion of a message delivery.
+        /// </summary>
         event CompletedEventHandler OnCompleted;
+
+        /// <summary>
+        /// An event for signaling an exception.
+        /// </summary>
+        event ExceptionEventHandler OnError;
+
     }
 
+    #endregion
+
+    /// <summary>
+    /// The interface for object providing a single message notification service.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface INotification<T> : INotification
     {
         event NotificationEventHandler<T> OnNotification;

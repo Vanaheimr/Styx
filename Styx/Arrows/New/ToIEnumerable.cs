@@ -42,7 +42,7 @@ namespace eu.Vanaheimr.Styx
     /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class ToIEnumerable<TMessage> : ITarget<TMessage>, IEnumerable<TMessage>, IEnumerator<TMessage>
+    public class ToIEnumerable<TMessage> : IArrowReceiver<TMessage>, IEnumerable<TMessage>, IEnumerator<TMessage>
     {
 
         #region Data
@@ -94,7 +94,7 @@ namespace eu.Vanaheimr.Styx
         #endregion
 
 
-        public void ProcessNotification(TMessage Message)
+        public void ProcessArrow(TMessage Message)
         {
             BlockingCollection.Add(Message);
         }
