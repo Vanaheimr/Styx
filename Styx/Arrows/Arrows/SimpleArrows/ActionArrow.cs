@@ -24,6 +24,18 @@ using System;
 namespace eu.Vanaheimr.Styx
 {
 
+
+    public static class ActionArrowExtensions
+    {
+
+        public static ActionArrow<TMessage> Call<TMessage>(this IArrowSender<TMessage>  ArrowSender,
+                                                           Action<TMessage>             MessageProcessor)
+        {
+            return new ActionArrow<TMessage>(MessageProcessor, ArrowSender);
+        }
+
+    }
+
     /// <summary>
     /// The ActionArrow is much like the IdentityArrow, but calls
     /// an Action &lt;S&gt; on every accepted message/object before
@@ -41,15 +53,17 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region ActionArrow(Action)
-
         /// <summary>
         /// The ActionArrow is much like the IdentityArrow, but calls
         /// an Action &lt;S&gt; on every accepted message/object before
         /// forwarding it.
         /// </summary>
         /// <param name="Action">An Action &lt;S&gt; to invoke on every accepted message/object before forwarding it.</param>
-        public ActionArrow(Action<TMessage> Action)
+        public ActionArrow(Action<TMessage>        Action,
+                           IArrowSender<TMessage>  ArrowSender = null)
+
+            : base(ArrowSender)
+
         {
 
             if (Action == null)
@@ -58,54 +72,6 @@ namespace eu.Vanaheimr.Styx
             this.Action = Action;
 
         }
-
-        #endregion
-
-        #region ActionArrow(Action, MessageRecipient.Recipient, params MessageRecipient.Recipients)
-
-        /// <summary>
-        /// The ActionArrow is much like the IdentityArrow, but calls
-        /// an Action &lt;S&gt; on every accepted message/object before
-        /// forwarding it.
-        /// </summary>
-        /// <param name="Action">An Action &lt;S&gt; to invoke on every accepted message/object before forwarding it.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public ActionArrow(Action<TMessage> Action, MessageRecipient<TMessage> Recipient, params MessageRecipient<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        {
-
-            if (Action == null)
-                throw new ArgumentNullException("The given Action<TIn> must not be null!");
-
-            this.Action = Action;
-
-        }
-
-        #endregion
-
-        #region ActionArrow(Action, IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// The ActionArrow is much like the IdentityArrow, but calls
-        /// an Action &lt;S&gt; on every accepted message/object before
-        /// forwarding it.
-        /// </summary>
-        /// <param name="Action">An Action &lt;S&gt; to invoke on every accepted message/object before forwarding it.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public ActionArrow(Action<TMessage> Action, IArrowReceiver<TMessage> Recipient, params IArrowReceiver<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        {
-
-            if (Action == null)
-                throw new ArgumentNullException("The given Action<TIn> must not be null!");
-
-            this.Action = Action;
-
-        }
-
-        #endregion
 
         #endregion
 

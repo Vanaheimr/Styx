@@ -24,45 +24,130 @@ using System;
 namespace eu.Vanaheimr.Styx
 {
 
-    //#region IArrowReceiver
+    #region IArrowReceiver
 
-    ///// <summary>
-    ///// The common IArrowReceiver interface
-    ///// </summary>
-    //public interface IArrowReceiver
-    //{
+    /// <summary>
+    /// The interface for arrow targets.
+    /// </summary>
+    public interface IArrowReceiver
+    {
 
-    //    /// <summary>
-    //    /// Accepts a message of type TIn from a sender for further processing
-    //    /// and delivery to the subscribers.
-    //    /// </summary>
-    //    /// <param name="Sender">The sender of the message.</param>
-    //    /// <param name="MessageIn">The message.</param>
-    //    void ReceiveMessage(dynamic Sender, Object MessageIn);
+        /// <summary>
+        /// An error occured at the arrow sender.
+        /// </summary>
+        /// <param name="Sender">The sender of this error message.</param>
+        /// <param name="ExceptionMessage">The exception leading to this error.</param>
+        void ProcessError(dynamic Sender, Exception ExceptionMessage);
 
-    //}
+        /// <summary>
+        /// Dispose the arrow, as no more data will be send.
+        /// </summary>
+        /// <param name="Sender">The sender of this completed message.</param>
+        /// <param name="Message">An optional completion message.</param>
+        void ProcessCompleted(dynamic Sender, String Message = null);
 
-    //#endregion
+    }
 
-    //#region IArrowReceiver<in TIn>
+    #endregion
 
-    ///// <summary>
-    ///// The common interface for any Arrow implementation accepting messages of type TIn.
-    ///// </summary>
-    ///// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    //public interface IArrowReceiver<in TIn>
-    //{
+    #region IArrowReceiver<in T>
 
-    //    /// <summary>
-    //    /// Accepts a message of type TIn from a sender for further processing
-    //    /// and delivery to the subscribers.
-    //    /// </summary>
-    //    /// <param name="Sender">The sender of the message.</param>
-    //    /// <param name="MessageIn">The message.</param>
-    //    void ReceiveMessage(dynamic Sender, TIn MessageIn);
+    /// <summary>
+    /// The interface for arrow targets accepting a single message.
+    /// </summary>
+    public interface IArrowReceiver<in T> : IArrowReceiver
+    {
 
-    //}
+        /// <summary>
+        /// Accept a single message.
+        /// </summary>
+        /// <param name="Message">The message.</param>
+        void ProcessArrow(T Message);
 
-    //#endregion
+    }
+
+    #endregion
+
+    #region IArrowReceiver<in T1, in T2>
+
+    /// <summary>
+    /// The interface for arrow targets accepting two messages.
+    /// </summary>
+    public interface IArrowReceiver<in T1, in T2> : IArrowReceiver
+    {
+
+        /// <summary>
+        /// Accept two messages.
+        /// </summary>
+        /// <param name="Message1">The first message.</param>
+        /// <param name="Message2">The second message.</param>
+        void ProcessArrow(T1 Message1, T2 Message2);
+
+    }
+
+    #endregion
+
+    #region IArrowReceiver<in T1, in T2, in T3>
+
+    /// <summary>
+    /// The interface for arrow targets accepting three messages.
+    /// </summary>
+    public interface IArrowReceiver<in T1, in T2, in T3> : IArrowReceiver
+    {
+
+        /// <summary>
+        /// Accept three messages.
+        /// </summary>
+        /// <param name="Message1">The first message.</param>
+        /// <param name="Message2">The second message.</param>
+        /// <param name="Message3">The third message.</param>
+        void ProcessArrow(T1 Message1, T2 Message2, T3 Message3);
+
+    }
+
+    #endregion
+
+    #region IArrowReceiver<in T1, in T2, in T3, in T4>
+
+    /// <summary>
+    /// The interface for arrow targets accepting four messages.
+    /// </summary>
+    public interface IArrowReceiver<in T1, in T2, in T3, in T4> : IArrowReceiver
+    {
+
+        /// <summary>
+        /// Accept four messages.
+        /// </summary>
+        /// <param name="Message1">The first message.</param>
+        /// <param name="Message2">The second message.</param>
+        /// <param name="Message3">The third message.</param>
+        /// <param name="Message4">The fourth message.</param>
+        void ProcessArrow(T1 Message1, T2 Message2, T3 Message3, T4 Message4);
+
+    }
+
+    #endregion
+
+    #region IArrowReceiver<in T1, in T2, in T3, in T4, in T5>
+
+    /// <summary>
+    /// The interface for arrow targets accepting five messages.
+    /// </summary>
+    public interface IArrowReceiver<in T1, in T2, in T3, in T4, in T5> : IArrowReceiver
+    {
+
+        /// <summary>
+        /// Accept five messages.
+        /// </summary>
+        /// <param name="Message1">The first message.</param>
+        /// <param name="Message2">The second message.</param>
+        /// <param name="Message3">The third message.</param>
+        /// <param name="Message4">The fourth message.</param>
+        /// <param name="Message5">The fifth message.</param>
+        void ProcessArrow(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
+
+    }
+
+    #endregion
 
 }

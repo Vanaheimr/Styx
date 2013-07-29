@@ -18,34 +18,36 @@
 #region Usings
 
 using System;
+using eu.Vanaheimr.Illias.Commons.Votes;
 
 #endregion
 
 namespace eu.Vanaheimr.Styx
 {
 
-    #region IArrow
+    public interface IVotingSender<T, V> : IArrowSender<T>
+    {
+        event VotingEventHandler<T, V> OnVoting;
+    }
 
-    /// <summary>
-    /// The common interface for any Arrow implementation.
-    /// </summary>
-    public interface INewArrow : IDisposable
-    { }
+    public interface IVotingSender<T1, T2, V> : IArrowSender<T1, T2>
+    {
+        event VotingEventHandler<T1, T2, V> OnVoting;
+    }
 
-    #endregion
+    public interface IVotingSender<T1, T2, T3, V> : IArrowSender<T1, T2, T3>
+    {
+        event VotingEventHandler<T1, T2, T3, V> OnVoting;
+    }
 
-    #region IArrow<in TIn, TOut>
+    public interface IVotingSender<T1, T2, T3, T4, V> : IArrowSender<T1, T2, T3, T4>
+    {
+        event VotingEventHandler<T1, T2, T3, T4, V> OnVoting;
+    }
 
-    /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
-    /// </summary>
-    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
-    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface INewArrow<TIn, in TOut> : INotification<TIn>, IArrowReceiver<TOut>, INewArrow
-    { }
-
-    #endregion
+    public interface IVotingSender<T1, T2, T3, T4, T5, V> : IArrowSender<T1, T2, T3, T4, T5>
+    {
+        event VotingEventHandler<T1, T2, T3, T4, T5, V> OnVoting;
+    }
 
 }

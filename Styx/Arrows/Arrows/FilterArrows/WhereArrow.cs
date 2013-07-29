@@ -25,51 +25,57 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx
 {
 
-    public static class FuncFilterExtention
+    /// <summary>
+    /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
+    /// </summary>
+    public static class FuncFilterArrowExtensions
     {
 
-        public static INotification<TMessage> NFilter<TMessage>(this INotification<TMessage> In, Func<TMessage, Boolean> FilterFunc)
+        /// <summary>
+        /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
+        /// </summary>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        /// <param name="FilterFunc">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
+        public static WhereArrow<TMessage> Where<TMessage>(this IArrowSender<TMessage>  ArrowSender,
+                                                           Func<TMessage, Boolean>      Include)
         {
-            var a = new FuncFilter<TMessage>(FilterFunc);
-            In.SendTo(a);
-            return a;
+            return new WhereArrow<TMessage>(Include, ArrowSender);
         }
 
     }
-
 
     /// <summary>
     /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class FuncFilter<TMessage> : ANewArrow<TMessage, TMessage>
+    public class WhereArrow<TMessage> : AbstractArrow<TMessage, TMessage>, IFilterArrow<TMessage>
     {
 
         #region Data
 
-        private readonly Func<TMessage, Boolean> _FilterFunc;
+        private readonly Func<TMessage, Boolean> Include;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FuncFilter()
-
         /// <summary>
         /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
         /// </summary>
         /// <param name="FilterFunc">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        public FuncFilter(Func<TMessage, Boolean> FilterFunc)
+        public WhereArrow(Func<TMessage, Boolean>  Include,
+                          IArrowSender<TMessage>   Source = null)
+
+            : base(Source)
+
         {
 
-            if (FilterFunc == null)
-                throw new ArgumentNullException("The given FilterFunc must not be null!");
+            if (Include == null)
+                throw new ArgumentNullException("The given MessageFilter must not be null!");
 
-            _FilterFunc = FilterFunc;
+            this.Include = Include;
 
         }
-
-        #endregion
 
         #endregion
 
@@ -83,7 +89,7 @@ namespace eu.Vanaheimr.Styx
         protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
         {
 
-            if (_FilterFunc(MessageIn))
+            if (!Include(MessageIn))
             {
                 MessageOut = MessageIn;
                 return true;

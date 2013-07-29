@@ -15,28 +15,35 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace eu.Vanaheimr.Styx
 {
 
-    #region IFilterArrow
+    #region IArrow
 
     /// <summary>
-    /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
-    /// some of the messages/objects instead of emitting everything.
+    /// The common interface for any Arrow implementation.
     /// </summary>
-    public interface INewFilterArrow : INewArrow
+    public interface IArrow : IArrowSender, IArrowReceiver, IDisposable
     { }
 
     #endregion
 
-    #region IFilterArrow<TMessage>
+    #region IArrow<in TIn, TOut>
 
     /// <summary>
-    /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
-    /// some of the messages/objects instead of emitting everything.
+    /// The generic interface for any Arrow implementation.
+    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
+    /// of type E via an event.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
-    public interface INewFilterArrow<TMessage> : INewFilterArrow, INewArrow<TMessage, TMessage>
+    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public interface IArrow<in TIn, TOut> : IArrowReceiver<TIn>, IArrowSender<TOut>, IArrow
     { }
 
     #endregion

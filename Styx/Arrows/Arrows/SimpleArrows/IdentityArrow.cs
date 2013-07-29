@@ -47,36 +47,6 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region IdentityArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
-        /// <summary>
-        /// The IdentityArrow is the most basic arrow.
-        /// It simply sends the incoming message to the recipients without any processing.
-        /// This arrow is useful in various test case situations.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public IdentityArrow(MessageRecipient<TMessage> Recipient, params MessageRecipient<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
-
-        #region IdentityArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// The IdentityArrow is the most basic arrow.
-        /// It simply sends the incoming message to the recipients without any processing.
-        /// This arrow is useful in various test case situations.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public IdentityArrow(IArrowReceiver<TMessage> Recipient, params IArrowReceiver<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
-
         #endregion
 
         #region ProcessMessage(MessageIn, out MessageOut)

@@ -33,7 +33,7 @@ namespace eu.Vanaheimr.Styx
     /// messages/objects of type TOut via an event.
     /// </summary>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public abstract class AbstractArrowSender<TOut> : INotification<TOut>
+    public abstract class AbstractArrowSender<TOut> : IArrowSender<TOut>
     {
 
         #region Events

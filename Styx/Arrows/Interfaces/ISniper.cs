@@ -34,7 +34,7 @@ namespace eu.Vanaheimr.Styx
     /// The common interface for any Arrow implementations sending messages of type E.
     /// </summary>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public interface ISniper<TOut> : INotification<TOut>
+    public interface ISniper<TOut> : IArrowSender<TOut>
     {
 
         #region Properties

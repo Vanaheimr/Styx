@@ -33,7 +33,7 @@ namespace eu.Vanaheimr.Styx
     public static class ConcurrentFuncArrowExtentions
     {
 
-        public static NewConcurrentFuncArrow<TIn, TOut> ConcurrentFunc<TIn, TOut>(this INotification<TIn> In, Func<TIn, TOut> FilterFunc)
+        public static NewConcurrentFuncArrow<TIn, TOut> ConcurrentFunc<TIn, TOut>(this IArrowSender<TIn> In, Func<TIn, TOut> FilterFunc)
         {
             var a = new NewConcurrentFuncArrow<TIn, TOut>(FilterFunc);
             In.SendTo(a);
@@ -47,7 +47,7 @@ namespace eu.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public class NewConcurrentFuncArrow<TIn, TOut> : IArrowReceiver<TIn>, INotification<TOut>
+    public class NewConcurrentFuncArrow<TIn, TOut> : IArrowReceiver<TIn>, IArrowSender<TOut>
     {
 
         #region Data

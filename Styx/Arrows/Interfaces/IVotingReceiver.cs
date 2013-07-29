@@ -26,27 +26,27 @@ using eu.Vanaheimr.Illias.Commons.Votes;
 namespace eu.Vanaheimr.Styx
 {
 
-    public interface IVotingTarget<in T, V> : IArrowReceiver
+    public interface IVotingReceiver<in T, V> : IArrowReceiver
     {
         V ProcessVoting(T Message, IVote<V> Vote);
     }
 
-    public interface IVotingTarget<in T1, in T2, V> : IArrowReceiver<T1, T2>
+    public interface IVotingReceiver<in T1, in T2, V> : IArrowReceiver<T1, T2>
     {
         V ProcessVoting(T1 Message1, T2 Message2, IVote<V> Vote);
     }
 
-    public interface IVotingTarget<in T1, in T2, in T3, V> : IArrowReceiver<T1, T2, T3>
+    public interface IVotingReceiver<in T1, in T2, in T3, V> : IArrowReceiver<T1, T2, T3>
     {
         V ProcessVoting(T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote);
     }
 
-    public interface IVotingTarget<in T1, in T2, in T3, in T4, V> : IArrowReceiver<T1, T2, T3, T4>
+    public interface IVotingReceiver<in T1, in T2, in T3, in T4, V> : IArrowReceiver<T1, T2, T3, T4>
     {
         V ProcessVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, IVote<V> Vote);
     }
 
-    public interface IVotingTarget<in T1, in T2, in T3, in T4, in T5, V> : IArrowReceiver<T1, T2, T3, T4, T5>
+    public interface IVotingReceiver<in T1, in T2, in T3, in T4, in T5, V> : IArrowReceiver<T1, T2, T3, T4, T5>
     {
         V ProcessVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, IVote<V> Vote);
     }

@@ -24,7 +24,7 @@ namespace eu.Vanaheimr.Styx
     /// This SideEffectArrow will produce a side effect which can
     /// be retrieved by the SideEffect property.
     /// </summary>
-    public interface ISideEffectArrow<in TIn, TOut, out T> : IArrow<TIn, TOut>
+    public interface ISideEffectArrow<TIn, TOut, out T> : IArrow<TIn, TOut>
     {
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace eu.Vanaheimr.Styx
     /// This SideEffectArrow will produce two side effects which can
     /// be retrieved by the SideEffect properties.
     /// </summary>
-    public interface ISideEffectArrow<in TIn, TOut, out T1, out T2> : IArrow<TIn, TOut>
+    public interface ISideEffectArrow<TIn, TOut, out T1, out T2> : IArrow<TIn, TOut>
     {
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace eu.Vanaheimr.Styx
     /// This SideEffectArrow will produce three side effects which can
     /// be retrieved by the SideEffect properties.
     /// </summary>
-    public interface ISideEffectArrow<in TIn, TOut, out T1, out T2, out T3> : IArrow<TIn, TOut>
+    public interface ISideEffectArrow<TIn, TOut, out T1, out T2, out T3> : IArrow<TIn, TOut>
     {
 
         /// <summary>

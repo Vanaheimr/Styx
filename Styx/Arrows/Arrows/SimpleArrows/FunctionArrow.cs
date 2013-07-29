@@ -25,33 +25,30 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx
 {
 
-    public static class NewFuncArrowExtention
+    public static class FunctionArrowExtentions
     {
 
-        public static NewFuncArrow<TIn, TOut> NewFuncArrow<TIn, TOut>(this INotification<TIn> In,
-                                                                      Func<TIn, TOut> MessageProcessor)
+        public static FunctionArrow<TIn, TOut> Call<TIn, TOut>(this IArrowSender<TIn>      Source,
+                                                               Func<TIn, TOut>             MessageProcessor,
+                                                               Func<Exception, Exception>  OnError = null)
         {
-            var a = new NewFuncArrow<TIn, TOut>(MessageProcessor);
-            In.SendTo(a);
-            return a;
+            return new FunctionArrow<TIn, TOut>(MessageProcessor, OnError, Source);
         }
 
-        public static NewFuncArrow<TIn1, TIn2, TOut> NewFuncArrow<TIn1, TIn2, TOut>(this INotification<TIn1, TIn2> In,
-                                                                                    Func<TIn1, TIn2, TOut> MessageProcessor)
+        public static NewFuncArrow<TIn1, TIn2, TOut> NewFuncArrow<TIn1, TIn2, TOut>(this IArrowSender<TIn1, TIn2>  Source,
+                                                                                    Func<TIn1, TIn2, TOut>         MessageProcessor,
+                                                                                    Func<Exception, Exception>     OnError = null)
         {
-            var a = new NewFuncArrow<TIn1, TIn2, TOut>(MessageProcessor);
-            In.SendTo(a);
-            return a;
+            return new NewFuncArrow<TIn1, TIn2, TOut>(MessageProcessor, OnError, Source);
         }
 
     }
 
 
     /// <summary>
-    /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
+    /// Transform the message of every incoming arrow by the given delegate.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class NewFuncArrow<TIn, TOut> : ANewArrow<TIn, TOut>
+    public class FunctionArrow<TIn, TOut> : AbstractArrow<TIn, TOut>
     {
 
         #region Data
@@ -63,23 +60,25 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region NewFuncArrow(MessageProcessor)
-
         /// <summary>
-        /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
+        /// Create a new FunctionArrow transforming the message of every
+        /// incoming arrow by the given delegate.
         /// </summary>
-        public NewFuncArrow(Func<TIn, TOut> MessageProcessor,
-                            Func<Exception, Exception> OnError = null)
+        public FunctionArrow(Func<TIn, TOut>             MessageProcessor,
+                             Func<Exception, Exception>  OnError = null,
+                             IArrowSender<TIn>           ArrowSender  = null)
+
+            : base(ArrowSender)
+
         {
 
             if (MessageProcessor == null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
-            this.MessageProcessor = MessageProcessor;
+            this.MessageProcessor  = MessageProcessor;
+            this.OnError           = OnError;
 
         }
-
-        #endregion
 
         #endregion
 
@@ -118,12 +117,13 @@ namespace eu.Vanaheimr.Styx
     /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class NewFuncArrow<TIn1, TIn2, TOut> : IArrowReceiver<TIn1, TIn2>, INotification<TOut>
+    public class NewFuncArrow<TIn1, TIn2, TOut> : IArrowReceiver<TIn1, TIn2>, IArrowSender<TOut>
     {
 
         #region Data
 
-        private readonly Func<TIn1, TIn2, TOut> _MessageProcessor;
+        private readonly Func<TIn1, TIn2, TOut> MessageProcessor;
+        private readonly Func<Exception, Exception> OnErrorD;
 
         #endregion
 
@@ -139,23 +139,26 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region FuncFilter(MessageProcessor)
-
         /// <summary>
         /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
         /// </summary>
         /// <param name="Func">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        public NewFuncArrow(Func<TIn1, TIn2, TOut> MessageProcessor)
+        public NewFuncArrow(Func<TIn1, TIn2, TOut>      MessageProcessor,
+                            Func<Exception, Exception>  OnError = null,
+                            IArrowSender<TIn1, TIn2>   Source  = null)
+
         {
 
             if (MessageProcessor == null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
-            _MessageProcessor = MessageProcessor;
+            this.MessageProcessor  = MessageProcessor;
+            this.OnErrorD          = OnError;
+
+            if (Source != null)
+                Source.SendTo(this);
 
         }
-
-        #endregion
 
         #endregion
 
@@ -170,7 +173,7 @@ namespace eu.Vanaheimr.Styx
         {
 
             if (OnNotification != null)
-                OnNotification(_MessageProcessor(MessageIn1, MessageIn2));
+                OnNotification(MessageProcessor(MessageIn1, MessageIn2));
 
         }
 

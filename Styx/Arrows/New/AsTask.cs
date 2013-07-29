@@ -30,7 +30,7 @@ namespace eu.Vanaheimr.Styx
     public static class AsTaskArrowExtentions
     {
 
-        public static AsTaskArrow<TIn> AsTask<TIn>(this INotification<TIn> In, Action<TIn> MessageProcessor)
+        public static AsTaskArrow<TIn> AsTask<TIn>(this IArrowSender<TIn> In, Action<TIn> MessageProcessor)
         {
             var a = new AsTaskArrow<TIn>(MessageProcessor);
             In.SendTo(a);

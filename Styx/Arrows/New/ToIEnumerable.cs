@@ -30,7 +30,7 @@ namespace eu.Vanaheimr.Styx
     public static class ToIEnumerableExtention
     {
 
-        public static IEnumerable<TMessage> ToIEnumerable<TMessage>(this INotification<TMessage> INotification)
+        public static IEnumerable<TMessage> ToIEnumerable<TMessage>(this IArrowSender<TMessage> INotification)
         {
             return new ToIEnumerable<TMessage>(INotification);
         }
@@ -78,7 +78,7 @@ namespace eu.Vanaheimr.Styx
         /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
         /// </summary>
         /// <param name="Func">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        internal ToIEnumerable(INotification<TMessage> INotification)
+        internal ToIEnumerable(IArrowSender<TMessage> INotification)
         {
 
             if (INotification != null)

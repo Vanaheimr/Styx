@@ -25,33 +25,42 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx
 {
 
+    #region AbstractArrow<TIn, TOut>
+
     /// <summary>
-    /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
+    /// An AbstractArrow provides most of the functionality that is repeated
+    /// in every instance of an Arrow. Any subclass of AbstractPipe should simply
+    /// implement ProcessMessage(MessageIn, out MessageOut).
+    /// An Arrow accepts/consumes messages/objects of type TIn and emits
+    /// messages/objects of type TOut via an event.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public abstract class ANewArrow<TIn, TOut> : IArrowReceiver<TIn>, INotification<TOut>
+    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public abstract class AbstractArrow<TIn, TOut> : IArrow<TIn, TOut>
     {
 
         #region Events
 
-        public event NotificationEventHandler<TOut> OnNotification;
+        public event NotificationEventHandler<TOut>  OnNotification;
 
-        public event ExceptionEventHandler OnError;
+        public event ExceptionEventHandler           OnError;
 
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler           OnCompleted;
 
         #endregion
 
         #region Constructor(s)
 
-        #region ANewArrow()
+        public AbstractArrow(IArrowSender<TIn> ArrowSender = null)
+        {
 
-        public ANewArrow()
-        { }
+            if (ArrowSender != null)
+                ArrowSender.SendTo(this);
+
+        }
 
         #endregion
 
-        #endregion
 
         #region (abstract) ProcessMessage(MessageIn, out MessageOut)
 
@@ -73,24 +82,35 @@ namespace eu.Vanaheimr.Styx
 
             if (ProcessMessage(Message, out MessageOut))
             {
-                if (OnNotification != null)
-                    OnNotification(MessageOut);
+                var OnNotificationLocal = OnNotification;
+                if (OnNotificationLocal != null)
+                    OnNotificationLocal(MessageOut);
             }
 
         }
 
         public void ProcessError(dynamic Sender, Exception ExceptionMessage)
         {
-            if (OnError != null)
-                OnError(this, ExceptionMessage);
+            var OnErrorLocal = OnError;
+            if (OnErrorLocal != null)
+                OnErrorLocal(this, ExceptionMessage);
         }
 
         public void ProcessCompleted(dynamic Sender, String Message)
         {
-            if (OnCompleted != null)
-                OnCompleted(this, Message);
+            var OnCompletedLocal = OnCompleted;
+            if (OnCompletedLocal != null)
+                OnCompletedLocal(this, Message);
+        }
+
+
+
+        public void Dispose()
+        {
         }
 
     }
+
+    #endregion
 
 }

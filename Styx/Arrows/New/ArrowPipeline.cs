@@ -18,7 +18,7 @@
 namespace eu.Vanaheimr.Styx
 {
 
-    public delegate INotification<TOut> ArrowPipeline<TIn, TOut>(INotification<TIn> INotification);
+    public delegate IArrowSender<TOut> ArrowPipeline<TIn, TOut>(IArrowSender<TIn> INotification);
 
 
     public static partial class Pipeline
@@ -30,8 +30,8 @@ namespace eu.Vanaheimr.Styx
             return Pipeline;
         }
 
-        public static INotification<TOut>
-            AddPipeline<TIn, TOut>(this INotification<TIn>   In,
+        public static IArrowSender<TOut>
+            AddPipeline<TIn, TOut>(this IArrowSender<TIn>   In,
                                    ArrowPipeline<TIn, TOut>  Pipeline)
         {
             return Pipeline(In);
