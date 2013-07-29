@@ -41,6 +41,8 @@
     <Compile Include="Arrows\New\AbstractArrowSender.cs" />
     <Compile Include="Arrows\New\ANewArrow.cs" />
     <Compile Include="Arrows\New\AsTask.cs" />
+    <Compile Include="Arrows\New\ArrowPipeline.cs" />
+    <Compile Include="Arrows\New\IdentityArrow.cs" />
     <Compile Include="Arrows\New\Interfaces\IVotingTarget.cs" />
     <Compile Include="Arrows\New\NewConcurrentFuncArrow.cs" />
     <Compile Include="Arrows\New\ToIEnumerable.cs" />
