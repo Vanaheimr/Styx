@@ -35,60 +35,26 @@ namespace eu.Vanaheimr.Styx
 
         #region Data
 
-        private readonly UInt32 NumberOfMessagesToSkip;
-        private Int64 Counter;
+        private readonly UInt32  NumberOfMessagesToSkip;
+        private          Int64   Counter;
 
         #endregion
 
         #region Constructor(s)
 
-        #region SkipArrow(NumberOfMessagesToSkip)
-
         /// <summary>
         /// The SkipArrow simply sends the incoming message to the recipients
         /// without any processing, but skips the first n messages.
         /// </summary>
         /// <param name="NumberOfMessagesToSkip">The number of messages to skip.</param>
-        public SkipArrow(UInt32 NumberOfMessagesToSkip)
+        public SkipArrow(UInt32                  NumberOfMessagesToSkip,
+                         IArrowSender<TMessage>  ArrowSender = null)
+
+            : base(ArrowSender)
+
         {
             this.NumberOfMessagesToSkip = NumberOfMessagesToSkip;
         }
-
-        #endregion
-
-        #region SkipArrow(NumberOfMessagesToSkip, MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
-        /// <summary>
-        /// The SkipArrow simply sends the incoming message to the recipients
-        /// without any processing, but skips the first n messages.
-        /// </summary>
-        /// <param name="NumberOfMessagesToSkip">The number of messages to skip.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public SkipArrow(UInt32 NumberOfMessagesToSkip, MessageRecipient<TMessage> Recipient, params MessageRecipient<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        {
-            this.NumberOfMessagesToSkip = NumberOfMessagesToSkip;
-        }
-
-        #endregion
-
-        #region SkipArrow(NumberOfMessagesToSkip, IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// The SkipArrow simply sends the incoming message to the recipients
-        /// without any processing, but skips the first n messages.
-        /// </summary>
-        /// <param name="NumberOfMessagesToSkip">The number of messages to skip.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public SkipArrow(UInt32 NumberOfMessagesToSkip, IArrowReceiver<TMessage> Recipient, params IArrowReceiver<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        {
-            this.NumberOfMessagesToSkip = NumberOfMessagesToSkip;
-        }
-
-        #endregion
 
         #endregion
 

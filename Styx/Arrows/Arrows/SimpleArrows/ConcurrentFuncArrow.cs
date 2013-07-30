@@ -68,8 +68,6 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region ConcurrentFuncArrow(MessageProcessor)
-
         /// <summary>
         /// An arrow transforming incoming messages into outgoing messages.
         /// </summary>
@@ -83,7 +81,7 @@ namespace eu.Vanaheimr.Styx
                 throw new ArgumentNullException("MessageProcessor", "The given 'MessageProcessor' delegate must not be null!");
 
             #endregion
-            
+
             this.MessageProcessor   = MessageProcessor;
             this.BlockingCollection = new BlockingCollection<TIn>();
             this.MaxQueueSize       = 1000;
@@ -101,51 +99,15 @@ namespace eu.Vanaheimr.Styx
                     base.NotifyRecipients(this, MessageProcessor(Enumerator.Current));
 
                 }
-                
+
             });
 
         }
 
         #endregion
 
-        #region ConcurrentFuncArrow(MessageProcessor, MessageRecipients.Recipient, params MessageRecipients.Recipients)
 
-        /// <summary>
-        /// An arrow transforming incoming messages into outgoing messages.
-        /// </summary>
-        /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">Further recipients of the processed messages.</param>
-        public ConcurrentFuncArrow(Func<TIn, TOut> MessageProcessor, MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
-            : this(MessageProcessor)
-        {
-            if (Recipient  != null) SendTo(Recipient);
-            if (Recipients != null) SendTo(Recipients);
-        }
-
-        #endregion
-
-        #region ConcurrentFuncArrow(MessageProcessor, IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// An arrow transforming incoming messages into outgoing messages.
-        /// </summary>
-        /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">Further recipients of the processed messages.</param>
-        public ConcurrentFuncArrow(Func<TIn, TOut> MessageProcessor, IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
-            : this(MessageProcessor)
-        {
-            if (Recipient  != null) SendTo(Recipient);
-            if (Recipients != null) SendTo(Recipients);
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region ReceiveMessage(Sender, MessageIn)
+        #region ProcessArrow(Sender, MessageIn)
 
         /// <summary>
         /// Accepts a message of type S from a sender for further processing
@@ -153,12 +115,24 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
-        public void ReceiveMessage(Object Sender, TIn MessageIn)
+        public void ProcessArrow(TIn MessageIn)
         {
             BlockingCollection.Add(MessageIn);
         }
 
         #endregion
+
+
+
+        public void ProcessError(dynamic Sender, Exception ExceptionMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ProcessCompleted(dynamic Sender, string Message = null)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 

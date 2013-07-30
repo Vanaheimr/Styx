@@ -35,17 +35,16 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region IdentityArrow()
-
         /// <summary>
         /// The IdentityArrow is the most basic arrow.
         /// It simply sends the incoming message to the recipients without any processing.
         /// This arrow is useful in various test case situations.
         /// </summary>
-        public IdentityArrow()
-        { }
+        public IdentityArrow(IArrowSender<TMessage> ArrowSender = null)
 
-        #endregion
+            : base(ArrowSender)
+
+        { }
 
         #endregion
 

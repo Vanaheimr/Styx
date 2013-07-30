@@ -39,7 +39,10 @@
   <ItemGroup>
     <Compile Include="Arrows\Arrows\FilterArrows\WhereArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\ActionArrow.cs" />
+    <Compile Include="Arrows\Arrows\SimpleArrows\ConcurrentFuncArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\IdentityArrow.cs" />
+    <Compile Include="Arrows\Arrows\SimpleArrows\SkipArrow.cs" />
+    <Compile Include="Arrows\Arrows\SimpleArrows\StdDevArrow.cs" />
     <Compile Include="Arrows\Interfaces\IVotingSender.cs" />
     <Compile Include="Arrows\New\AbstractArrowReceiver.cs" />
     <Compile Include="Arrows\New\AbstractArrowSender.cs" />
