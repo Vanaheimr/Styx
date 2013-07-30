@@ -42,7 +42,7 @@
     <Compile Include="Arrows\Arrows\SimpleArrows\ConcurrentFuncArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\IdentityArrow.cs" />
     <Compile Include="Arrows\Arrows\SimpleArrows\SkipArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\StdDevArrow.cs" />
+    <Compile Include="Arrows\Arrows\SimpleArrows\StatisticsArrow.cs" />
     <Compile Include="Arrows\Interfaces\IVotingSender.cs" />
     <Compile Include="Arrows\New\AbstractArrowReceiver.cs" />
     <Compile Include="Arrows\New\AbstractArrowSender.cs" />
@@ -148,6 +148,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Arrows\Arrows\SideEffectArrows\" />
     <Folder Include="Arrows\Sniper\" />
   </ItemGroup>
 </Project>
