@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
@@ -32,29 +32,33 @@ namespace eu.Vanaheimr.Styx
     /// An Arrow accepts/consumes messages/objects of type TIn and emits
     /// messages/objects of type TOut via an event.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the emitted messages/objects.</typeparam>
-    public abstract class AbstractArrowSender<TMessage> : IArrowSender<TMessage>
-	{
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public abstract class AbstractArrowSender<TOut> : IArrowSender<TOut>
+    {
 
         #region Events
 
         /// <summary>
         /// An event for message delivery.
         /// </summary>
-        public event MessageRecipient<TMessage> OnMessageAvailable;
+        //public event MessageRecipient<TMessage> OnMessageAvailable;
+
+        public event NotificationEventHandler<TOut> OnNotification;
 
         /// <summary>
         /// An event for signaling the completion of a message delivery.
         /// </summary>
-        public event CompletionRecipient OnCompleted;
+        //public event CompletionRecipient OnCompleted;
+        public event CompletedEventHandler OnCompleted;
 
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        public event ExceptionRecipient OnError;
+        //public event ExceptionRecipient OnError;
+        public event ExceptionEventHandler OnException;
 
         #endregion
-        
+
         #region Properties
 
         /// <summary>
@@ -69,108 +73,71 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-		#region Constructor(s)
+        #region Constructor(s)
 
         #region AbstractArrowSender()
 
         /// <summary>
         /// Creates a new AbstractArrowSender.
         /// </summary>
-		public AbstractArrowSender()
-		{ }
-		
-		#endregion
+        public AbstractArrowSender()
+        { }
+
+        #endregion
 
         #region AbstractArrowSender(MessageRecipients.Recipient, params MessageRecipients.Recipients)
 
-        /// <summary>
-        /// Creates a new AbstractArrow and adds the given recipients
-        /// to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractArrowSender(MessageRecipient<TMessage> Recipient, params MessageRecipient<TMessage>[] Recipients)
-        {
+        ///// <summary>
+        ///// Creates a new AbstractArrow and adds the given recipients
+        ///// to the list of message recipients.
+        ///// </summary>
+        ///// <param name="Recipient">A recipient of the processed messages.</param>
+        ///// <param name="Recipients">The recipients of the processed messages.</param>
+        //public AbstractArrowSender(MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
+        //{
 
-            lock (this)
-            {
-                
-                if (Recipient != null)
-                    this.OnMessageAvailable += Recipient;
+        //    lock (this)
+        //    {
 
-                if (Recipients != null)
-                    foreach (var _Recipient in Recipients)
-                        this.OnMessageAvailable += _Recipient;
+        //        if (Recipient != null)
+        //            this.OnMessageAvailable += Recipient;
 
-            }
+        //        if (Recipients != null)
+        //            foreach (var _Recipient in Recipients)
+        //                this.OnMessageAvailable += _Recipient;
 
-        }
+        //    }
+
+        //}
 
         #endregion
 
         #region AbstractArrowSender(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
 
-        /// <summary>
-        /// Creates a new AbstractArrow and adds the given recipients
-        /// to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractArrowSender(IArrowReceiver<TMessage> Recipient, params IArrowReceiver<TMessage>[] Recipients)
-        {
+        ///// <summary>
+        ///// Creates a new AbstractArrow and adds the given recipients
+        ///// to the list of message recipients.
+        ///// </summary>
+        ///// <param name="Recipient">A recipient of the processed messages.</param>
+        ///// <param name="Recipients">The recipients of the processed messages.</param>
+        //public AbstractArrowSender(IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
+        //{
 
-            lock (this)
-            {
+        //    lock (this)
+        //    {
 
-                if (Recipient != null)
-                    this.OnMessageAvailable += Recipient.ReceiveMessage;
+        //        if (Recipient != null)
+        //            this.OnMessageAvailable += Recipient.ReceiveMessage;
 
-                if (Recipients != null)
-                    foreach (var _Recipient in Recipients)
-                        this.OnMessageAvailable += _Recipient.ReceiveMessage;
+        //        if (Recipients != null)
+        //            foreach (var _Recipient in Recipients)
+        //                this.OnMessageAvailable += _Recipient.ReceiveMessage;
 
-            }
+        //    }
 
-        }
-
-        #endregion
+        //}
 
         #endregion
-
-
-        #region SendTo(MessageRecipient.Recipients)
-
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public void SendTo(params MessageRecipient<TMessage>[] Recipients)
-        {
-            lock (this)
-            {
-                if (Recipients != null)
-                    foreach (var _Recipient in Recipients)
-                        this.OnMessageAvailable += _Recipient;
-            }
-        }
-
-        #endregion
-
-        #region SendTo(IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// Sends messages/objects from this Arrow to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public void SendTo(params IArrowReceiver<TMessage>[] Recipients)
-        {
-            lock (this)
-            {
-                if (Recipients != null)
-                    foreach (var _Recipient in Recipients)
-                        this.OnMessageAvailable += _Recipient.ReceiveMessage;
-            }
-        }
 
         #endregion
 
@@ -184,25 +151,24 @@ namespace eu.Vanaheimr.Styx
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        protected Boolean NotifyRecipients(Object Sender, TMessage Message)
+        protected Boolean NotifyRecipients(Object Sender, TOut Message)
         {
 
             try
             {
 
-                if (OnMessageAvailable != null)
-                    if (Sender != null)
-                        OnMessageAvailable(Sender, Message);
-                    else
-                        OnMessageAvailable(this, Message);
+                var OnNotificationLocal = OnNotification;
+
+                if (OnNotificationLocal != null)
+                    OnNotificationLocal(Message);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                if (OnError != null)
-                    OnError(this, e);
+                if (OnException != null)
+                    OnException(this, e);
             }
 
             return false;
@@ -218,17 +184,17 @@ namespace eu.Vanaheimr.Styx
         /// Signale the completion of the message delivery.
         /// </summary>
         /// <param name="Sender">The sender of the completion signal.</param>
-        public void Complete(Object Sender)
+        public void Complete(Object Sender, String Message = null)
         {
             try
             {
                 if (OnCompleted != null)
-                    OnCompleted(this);
+                    OnCompleted(this, Message);
             }
             catch (Exception e)
             {
-                if (OnError != null)
-                    OnError(this, e);
+                if (OnException != null)
+                    OnException(this, e);
             }
         }
 
@@ -241,7 +207,7 @@ namespace eu.Vanaheimr.Styx
         /// Disposes this pipe.
         /// </summary>
         public virtual void Dispose()
-		{ }
+        { }
 
         #endregion
 

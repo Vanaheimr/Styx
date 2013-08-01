@@ -35,7 +35,7 @@ namespace eu.Vanaheimr.Styx.Arrows
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public abstract class AbstractArrow<TIn, TOut> : AbstractArrowReceiver<TIn>, IArrow<TIn, TOut>
+    public abstract class AbstractConcurrentArrow<TIn, TOut> : AbstractConcurrentArrowReceiver<TIn>, IArrow<TIn, TOut>
     {
 
         #region Events
@@ -50,12 +50,14 @@ namespace eu.Vanaheimr.Styx.Arrows
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new abstract arrow.
+        /// Create a new abstract concurrent arrow.
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public AbstractArrow(IArrowSender<TIn> ArrowSender = null)
+        /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
+        public AbstractConcurrentArrow(UInt32             MaxQueueSize = 1000,
+                                       IArrowSender<TIn>  ArrowSender  = null)
 
-            : base(ArrowSender)
+            : base(MaxQueueSize, ArrowSender)
 
         { }
 
@@ -75,13 +77,13 @@ namespace eu.Vanaheimr.Styx.Arrows
         #endregion
 
 
-        #region ProcessArrow(Message)
+        #region ProcessArrowConcurrently(Message)
 
         /// <summary>
         /// Process the incoming arrow.
         /// </summary>
         /// <param name="Message">The message of the arrow.</param>
-        public override void ProcessArrow(TIn Message)
+        protected override void ProcessArrowConcurrently(TIn Message)
         {
 
             TOut MessageOut;

@@ -22,8 +22,15 @@ using eu.Vanaheimr.Illias.Commons.Votes;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
+
+    public delegate void VotingEventHandler<T, V>(T Message, IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, V>(T1 Message1, T2 Message2, IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, V>(T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, T4, V>(T1 Message1, T2 Message2, T3 Message3, T4 Message4, IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, T4, T5, V>(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, IVote<V> Vote);
+
 
     public interface IVotingSender<T, V> : IArrowSender<T>
     {

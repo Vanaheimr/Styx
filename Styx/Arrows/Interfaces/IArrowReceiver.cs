@@ -21,29 +21,30 @@ using System;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     #region IArrowReceiver
 
     /// <summary>
-    /// The interface for arrow targets.
+    /// The general interface for everything which
+    /// acts as an arrow target.
     /// </summary>
     public interface IArrowReceiver
     {
 
         /// <summary>
-        /// An error occured at the arrow sender.
+        /// An exception occured at the arrow sender.
         /// </summary>
-        /// <param name="Sender">The sender of this error message.</param>
-        /// <param name="ExceptionMessage">The exception leading to this error.</param>
-        void ProcessError(dynamic Sender, Exception ExceptionMessage);
+        /// <param name="Sender">The sender of this exception.</param>
+        /// <param name="Exception">The occured exception.</param>
+        void ProcessException(dynamic Sender, Exception ExceptionMessage);
 
         /// <summary>
-        /// Dispose the arrow, as no more data will be send.
+        /// The sender of the arrows signaled not to send any more arrows.
         /// </summary>
-        /// <param name="Sender">The sender of this completed message.</param>
-        /// <param name="Message">An optional completion message.</param>
+        /// <param name="Sender">The sender of this arrow.</param>
+        /// <param name="Message">An optional message.</param>
         void ProcessCompleted(dynamic Sender, String Message = null);
 
     }
@@ -71,13 +72,14 @@ namespace eu.Vanaheimr.Styx
     #region IArrowReceiver<in T1, in T2>
 
     /// <summary>
-    /// The interface for arrow targets accepting two messages.
+    /// The interface for targets accepting
+    /// arrows having two messages.
     /// </summary>
     public interface IArrowReceiver<in T1, in T2> : IArrowReceiver
     {
 
         /// <summary>
-        /// Accept two messages.
+        /// Accept an arrow having two messages.
         /// </summary>
         /// <param name="Message1">The first message.</param>
         /// <param name="Message2">The second message.</param>
@@ -90,13 +92,14 @@ namespace eu.Vanaheimr.Styx
     #region IArrowReceiver<in T1, in T2, in T3>
 
     /// <summary>
-    /// The interface for arrow targets accepting three messages.
+    /// The interface for targets accepting
+    /// arrows having three messages.
     /// </summary>
     public interface IArrowReceiver<in T1, in T2, in T3> : IArrowReceiver
     {
 
         /// <summary>
-        /// Accept three messages.
+        /// Accept an arrow having three messages.
         /// </summary>
         /// <param name="Message1">The first message.</param>
         /// <param name="Message2">The second message.</param>
@@ -110,13 +113,14 @@ namespace eu.Vanaheimr.Styx
     #region IArrowReceiver<in T1, in T2, in T3, in T4>
 
     /// <summary>
-    /// The interface for arrow targets accepting four messages.
+    /// The interface for targets accepting
+    /// arrows having four messages.
     /// </summary>
     public interface IArrowReceiver<in T1, in T2, in T3, in T4> : IArrowReceiver
     {
 
         /// <summary>
-        /// Accept four messages.
+        /// Accept an arrow having four messages.
         /// </summary>
         /// <param name="Message1">The first message.</param>
         /// <param name="Message2">The second message.</param>
@@ -131,13 +135,14 @@ namespace eu.Vanaheimr.Styx
     #region IArrowReceiver<in T1, in T2, in T3, in T4, in T5>
 
     /// <summary>
-    /// The interface for arrow targets accepting five messages.
+    /// The interface for targets accepting
+    /// arrows having five messages.
     /// </summary>
     public interface IArrowReceiver<in T1, in T2, in T3, in T4, in T5> : IArrowReceiver
     {
 
         /// <summary>
-        /// Accept five messages.
+        /// Accept an arrow having five messages.
         /// </summary>
         /// <param name="Message1">The first message.</param>
         /// <param name="Message2">The second message.</param>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     #region IFilterArrow

@@ -21,13 +21,13 @@ using System;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     #region IArrow
 
     /// <summary>
-    /// The common interface for any Arrow implementation.
+    /// The common interface for any Styx arrow implementation.
     /// </summary>
     public interface IArrow : IArrowSender, IArrowReceiver, IDisposable
     { }
@@ -37,9 +37,9 @@ namespace eu.Vanaheimr.Styx
     #region IArrow<in TIn, TOut>
 
     /// <summary>
-    /// The generic interface for any Arrow implementation.
-    /// An Arrow accepts/consumes messages/objects of type S and emits messages/objects
-    /// of type E via an event.
+    /// The generic interface for any Styx arrow implementation.
+    /// An arrow accepts/consumes messages/objects of type TIn and emits
+    /// messages/objects of type TOut via an event.
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>

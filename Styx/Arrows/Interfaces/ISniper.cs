@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     // Attention: TIn and TOutput reversed ;)

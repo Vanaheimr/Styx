@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     #region AbstractSideEffectArrow<TIn, TOut, TSideeffect>
@@ -28,7 +28,8 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
     /// <typeparam name="TSideeffect">The type of the sideeffect.</typeparam>
-    public abstract class AbstractSideEffectArrow<TIn, TOut, TSideeffect> : AbstractArrow<TIn, TOut>, ISideEffectArrow<TIn, TOut, TSideeffect>
+    public abstract class AbstractSideEffectArrow<TIn, TOut, TSideeffect> : AbstractArrow<TIn, TOut>,
+                                                                            ISideEffectArrow<TIn, TOut, TSideeffect>
     {
 
         #region Properties
@@ -66,43 +67,15 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AbstractSideEffectArrow()
-
         /// <summary>
         /// Creates a new AbstractSideEffectArrow.
         /// </summary>
-		public AbstractSideEffectArrow()
-		{ }
-		
-		#endregion
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        public AbstractSideEffectArrow(IArrowSender<TIn> ArrowSender = null)
 
-        #region AbstractSideEffectArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
+            : base(ArrowSender)
 
-        /// <summary>
-        /// Creates a new AbstractSideEffectArrow and adds the given
-        /// recipients to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractSideEffectArrow(MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
-            : base(Recipient, Recipients)
         { }
-
-        #endregion
-
-        #region AbstractSideEffectArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// Creates a new AbstractSideEffectArrow and adds the given
-        /// recipients to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractSideEffectArrow(IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
 
         #endregion
 
@@ -121,7 +94,8 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    public abstract class AbstractSideEffectArrow<TIn, TOut, T1, T2> : AbstractArrow<TIn, TOut>, ISideEffectArrow<TIn, TOut, T1, T2>
+    public abstract class AbstractSideEffectArrow<TIn, TOut, T1, T2> : AbstractArrow<TIn, TOut>,
+                                                                       ISideEffectArrow<TIn, TOut, T1, T2>
     {
 
         #region Properties
@@ -188,43 +162,14 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AbstractSideEffectArrow()
-
         /// <summary>
         /// Creates a new AbstractSideEffectArrow.
         /// </summary>
-		public AbstractSideEffectArrow()
-		{ }
-		
-		#endregion
+        public AbstractSideEffectArrow(IArrowSender<TIn> ArrowSender = null)
 
-        #region AbstractSideEffectArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
+            : base(ArrowSender)
 
-        /// <summary>
-        /// Creates a new AbstractSideEffectArrow and adds the given
-        /// recipients to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractSideEffectArrow(MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
-            : base(Recipient, Recipients)
         { }
-
-        #endregion
-
-        #region AbstractSideEffectArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// Creates a new AbstractSideEffectArrow and adds the given
-        /// recipients to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractSideEffectArrow(IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
 
         #endregion
 
@@ -244,7 +189,8 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
     /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
-    public abstract class AbstractSideEffectArrow<TIn, TOut, T1, T2, T3> : AbstractArrow<TIn, TOut>, ISideEffectArrow<TIn, TOut, T1, T2, T3>
+    public abstract class AbstractSideEffectArrow<TIn, TOut, T1, T2, T3> : AbstractArrow<TIn, TOut>,
+                                                                           ISideEffectArrow<TIn, TOut, T1, T2, T3>
     {
 
         #region Properties
@@ -340,43 +286,14 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AbstractSideEffectArrow()
-
         /// <summary>
         /// Creates a new AbstractSideEffectArrow.
         /// </summary>
-        public AbstractSideEffectArrow()
+        public AbstractSideEffectArrow(IArrowSender<TIn> ArrowSender = null)
+
+            : base(ArrowSender)
+
         { }
-
-        #endregion
-
-        #region AbstractSideEffectArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
-        /// <summary>
-        /// Creates a new AbstractSideEffectArrow and adds the given
-        /// recipients to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractSideEffectArrow(MessageRecipient<TOut> Recipient, params MessageRecipient<TOut>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
-
-        #region AbstractSideEffectArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// Creates a new AbstractSideEffectArrow and adds the given
-        /// recipients to the list of message recipients.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public AbstractSideEffectArrow(IArrowReceiver<TOut> Recipient, params IArrowReceiver<TOut>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
 
         #endregion
 

@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{3949790D-8591-4101-9E4D-CE7A758E7409}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>de.ahzf.Styx</RootNamespace>
+    <RootNamespace>eu.Vanaheimr.Styx</RootNamespace>
     <AssemblyName>Styx</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
@@ -37,28 +37,35 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arrows\Arrows\FilterArrows\WhereArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\ActionArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\ConcurrentFuncArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\IdentityArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\SkipArrow.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\StatisticsArrow.cs" />
+    <Compile Include="Arrows\SimpleArrows\ArrowObject.cs" />
+    <Compile Include="Arrows\Combiners\CombineArrow.cs" />
+    <Compile Include="Arrows\FilterArrows\BandFilter.cs" />
+    <Compile Include="Arrows\FilterArrows\Where.cs" />
+    <Compile Include="Arrows\SimpleArrows\Count.cs" />
+    <Compile Include="Arrows\SideEffectArrows\MinMaxSideEffect.cs" />
+    <Compile Include="Arrows\SimpleArrows\Action.cs" />
+    <Compile Include="Arrows\SimpleArrows\IdentityArrow.cs" />
+    <Compile Include="Arrows\FilterArrows\SkipArrow.cs" />
+    <Compile Include="Arrows\SideEffectArrows\StatisticsArrow.cs" />
+    <Compile Include="Arrows\SimpleArrows\UnfoldArrow.cs" />
+    <Compile Include="Arrows\Combiners\ConcurrentCombineArrow.cs" />
     <Compile Include="Arrows\Interfaces\IVotingSender.cs" />
-    <Compile Include="Arrows\New\AbstractArrowReceiver.cs" />
-    <Compile Include="Arrows\New\AbstractArrowSender.cs" />
-    <Compile Include="Arrows\New\AbstractArrow.cs" />
-    <Compile Include="Arrows\New\AsTask.cs" />
-    <Compile Include="Arrows\New\ArrowPipeline.cs" />
+    <Compile Include="Arrows\AbstractArrowReceiver.cs" />
+    <Compile Include="Arrows\AbstractArrowSender.cs" />
+    <Compile Include="Arrows\AbstractArrow.cs" />
+    <Compile Include="Arrows\AbstractSideEffectArrow.cs" />
+    <Compile Include="Arrows\SimpleArrows\ConcurrentAction.cs" />
+    <Compile Include="Arrows\ArrowPipeline.cs" />
     <Compile Include="Arrows\Interfaces\IVotingReceiver.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\NewConcurrentFuncArrow.cs" />
-    <Compile Include="Arrows\New\ToIEnumerable.cs" />
-    <Compile Include="Arrows\Arrows\SimpleArrows\FunctionArrow.cs" />
+    <Compile Include="Arrows\SimpleArrows\ConcurrentFunction.cs" />
+    <Compile Include="Arrows\AbstractConcurrentArrowReceiver.cs" />
+    <Compile Include="Arrows\AbstractConcurrentArrow.cs" />
+    <Compile Include="Arrows\AbstractFilterArrow.cs" />
+    <Compile Include="Arrows\Combiners\ToIEnumerable.cs" />
+    <Compile Include="Arrows\SimpleArrows\Function.cs" />
     <Compile Include="Arrows\Interfaces\IArrowSender.cs" />
     <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
     <Compile Include="Arrows\Interfaces\IArrow.cs" />
-    <Compile Include="Arrows\Interfaces\old\INotificator.cs" />
-    <Compile Include="Arrows\Interfaces\old\IArrowReceiver.cs" />
-    <Compile Include="Arrows\Interfaces\old\IArrowSender.cs" />
     <Compile Include="Arrows\Interfaces\IFilterArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISideEffectArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISniper.cs" />
@@ -113,7 +120,7 @@
     <Compile Include="Pipes\Interfaces\IStartPipe.cs" />
     <Compile Include="Pipes\Interfaces\IEndPipe.cs" />
     <Compile Include="Pipes\Interfaces\IPipe.cs" />
-    <Compile Include="PipeHelper.cs" />
+    <Compile Include="Pipes\PipeHelper.cs" />
     <Compile Include="Enumerators\HistoryEnumerator.cs" />
     <Compile Include="Pipes\Pipeline.cs" />
     <Compile Include="Pipes\SimplePipes\IdentityPipe.cs" />
@@ -148,7 +155,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Arrows\Arrows\SideEffectArrows\" />
     <Folder Include="Arrows\Sniper\" />
+    <Folder Include="Arrows\SplitArrows\" />
   </ItemGroup>
 </Project>

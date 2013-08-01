@@ -23,7 +23,7 @@ using eu.Vanaheimr.Illias.Commons.Votes;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     public interface IVotingReceiver<in T, V> : IArrowReceiver

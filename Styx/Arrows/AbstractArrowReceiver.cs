@@ -22,93 +22,114 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// An AbstractArrow provides most of the functionality that is repeated
-    /// in every instance of an Arrow. Any subclass of AbstractPipe should simply
-    /// implement ProcessMessage(MessageIn, out MessageOut).
-    /// An Arrow accepts/consumes messages/objects of type TIn and emits
-    /// messages/objects of type TOut via an event.
+    /// An AbstractArrowReceiver provides most of the functionality that is repeated
+    /// in every instance of an ArrowReceiver. Any subclass of AbstractArrowReceiver
+    /// should simply implement ProcessArrow(MessageIn).
+    /// An arrow accepts/consumes messages/objects of type TIn.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
-    public abstract class AbstractArrowReceiver<TMessage> : IArrowReceiver<TMessage>
+    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
+    public abstract class AbstractArrowReceiver<TIn> : IArrowReceiver<TIn>
     {
 
         #region Events
 
         /// <summary>
-        /// An event for signaling the completion of a message delivery.
+        /// An event called whenever an exception occured at this arrow.
         /// </summary>
-        public event CompletionRecipient OnCompleted;
+        public event ExceptionEventHandler OnException;
 
         /// <summary>
-        /// An event for signaling an exception.
+        /// An event called whenever this arrow will no longer send any messages.
         /// </summary>
-        public event ExceptionRecipient OnError;
-
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// Turns the recording of the message delivery path ON or OFF.
-        /// </summary>
-        public Boolean RecordMessagePath { get; set; }
-
-        /// <summary>
-        /// Returns the message path.
-        /// </summary>
-        public IEnumerable<Object> Path { get; protected set;  }
+        public event CompletedEventHandler OnCompleted;
 
         #endregion
 
         #region Constructor(s)
 
-        #region AbstractArrowReceiver()
-
         /// <summary>
-        /// Creates a new AbstractArrowReceiver.
+        /// Creates a new abstract arrow receiver.
         /// </summary>
-        public AbstractArrowReceiver()
-        { }
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        public AbstractArrowReceiver(IArrowSender<TIn> ArrowSender = null)
+        {
+            if (ArrowSender != null)
+                ArrowSender.SendTo(this);
+        }
 
         #endregion
 
-        #endregion
 
-
-        #region (abstract) ReceiveMessage(Sender, MessageIn)
+        #region (abstract) ProcessArrow(MessageIn)
 
         /// <summary>
         /// Accepts a message of type S from a sender for further processing
         /// and delivery to the subscribers.
         /// </summary>
-        /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
-        public abstract void ReceiveMessage(Object Sender, TMessage MessageIn);
+        public abstract void ProcessArrow(TIn MessageIn);
 
         #endregion
 
-        #region Complete(Sender)
+        #region ProcessException(Sender, Exception)
 
         /// <summary>
-        /// Signale the completion of the message delivery.
+        /// Process an occured exception.
         /// </summary>
-        /// <param name="Sender">The sender of the completion signal.</param>
-        public void Complete(Object Sender)
+        /// <param name="Sender">The sender of this exception.</param>
+        /// <param name="Exception">The occured exception.</param>
+        public void ProcessException(dynamic Sender, Exception Exception)
         {
+
             try
             {
-                if (OnCompleted != null)
-                    OnCompleted(this);
+
+                var OnErrorLocal = OnException;
+
+                if (OnErrorLocal != null)
+                    OnErrorLocal(this, Exception);
+
+            }
+            catch (Exception)
+            { }
+
+        }
+
+        #endregion
+
+        #region ProcessCompleted(Sender, Message = null)
+
+        /// <summary>
+        /// The sender of the arrows signaled not to send any more arrows.
+        /// </summary>
+        /// <param name="Sender">The sender of the completed message.</param>
+        /// <param name="Message">An optional message.</param>
+        public void ProcessCompleted(dynamic Sender, String Message = null)
+        {
+
+            try
+            {
+
+                var OnCompletedLocal = OnCompleted;
+
+                if (OnCompletedLocal != null)
+                    OnCompletedLocal(this);
+
             }
             catch (Exception e)
             {
-                if (OnError != null)
-                    OnError(this, e);
+
+                var OnExceptionLocal = OnException;
+
+                if (OnExceptionLocal != null)
+                    OnExceptionLocal(this, e);
+
             }
+
         }
 
         #endregion
@@ -121,18 +142,6 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public virtual void Dispose()
         { }
-
-        #endregion
-
-        #region ToString()
-
-        /// <summary>
-        /// A string representation of this object.
-        /// </summary>
-        public override String ToString()
-        {
-            return this.GetType().Name;
-        }
 
         #endregion
 
