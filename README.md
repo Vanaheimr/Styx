@@ -1,4 +1,4 @@
-![Styx logo](/Vanaheimr/Styx/raw/master/artwork/styx_small.png)
+![Styx logo](/artwork/styx_small.png)
 
 [Styx](http://github.com/Vanaheimr/Styx) is the foundation of a graph-based data flow framework for any kind of data processing.
 It is used heavily within [Balder](http://github.com/Vanaheimr/Balder) a data flow framework for
@@ -11,7 +11,7 @@ Styx supports the splitting, merging, transformation and concurrent processing o
 
 ##### Pipes
 The **Pipes** subproject is a lazy data flow framework.    
-![Pipes visualization](/Vanaheimr/Styx/raw/master/artwork/pipes_small.png)
+![Pipes visualization](/artwork/pipes_small.png)
 
     var List = new List<Int32>() { 0, 1, 2, 2, 3, 4, 4, 5, 6, 2, 7, 8, 9, 1 }.
         DuplicateFilter().
@@ -23,13 +23,13 @@ The **Pipes** subproject is a lazy data flow framework.
 ##### Arrows
 
 The **Arrows** subproject is an event-based data flow framework.    
-![Arrows visualization](/Vanaheimr/Styx/raw/master/artwork/arrows_small.png)
+![Arrows visualization](/artwork/arrows_small.png)
 
 
 ##### Sensors
 
 The **Sensors** subproject is an data source framework for all kinds of data emitting objects.    
-  ![Sensors visualization](/Vanaheimr/Styx/raw/master/artwork/sensors_small.png)
+  ![Sensors visualization](/artwork/sensors_small.png)
 
 The following code will create an instance of a sensor producing a sinus wave. This could be used as a mockup for a voltage or current sensoring application - even when the frequency is very low here ;)    
 The **WithTimestamp** extension method will modify the output of the sensor to include the timestamp when the 'measurement' took place.    
