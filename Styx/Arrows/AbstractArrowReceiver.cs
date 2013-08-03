@@ -35,6 +35,24 @@ namespace eu.Vanaheimr.Styx.Arrows
     public abstract class AbstractArrowReceiver<TIn> : IArrowReceiver<TIn>
     {
 
+        #region Properties
+
+        #region IsCompleted
+
+        private Boolean _IsCompleted = false;
+
+        public Boolean IsComplicated
+        {
+            get
+            {
+                return _IsCompleted;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         #region Events
 
         /// <summary>
@@ -57,8 +75,12 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
         public AbstractArrowReceiver(IArrowSender<TIn> ArrowSender = null)
         {
+
+            this._IsCompleted = false;
+
             if (ArrowSender != null)
                 ArrowSender.SendTo(this);
+
         }
 
         #endregion
@@ -111,13 +133,18 @@ namespace eu.Vanaheimr.Styx.Arrows
         public void ProcessCompleted(dynamic Sender, String Message = null)
         {
 
+            if (_IsCompleted == true)
+                return;
+
             try
             {
+
+                _IsCompleted = true;
 
                 var OnCompletedLocal = OnCompleted;
 
                 if (OnCompletedLocal != null)
-                    OnCompletedLocal(this);
+                    OnCompletedLocal(this, Message);
 
             }
             catch (Exception e)

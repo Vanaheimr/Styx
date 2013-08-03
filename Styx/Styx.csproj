@@ -37,7 +37,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arrows\SimpleArrows\ArrowObject.cs" />
+    <Compile Include="Arrows\ArrowObject.cs" />
     <Compile Include="Arrows\Combiners\CombineArrow.cs" />
     <Compile Include="Arrows\FilterArrows\BandFilter.cs" />
     <Compile Include="Arrows\FilterArrows\Where.cs" />
@@ -61,7 +61,7 @@
     <Compile Include="Arrows\AbstractConcurrentArrowReceiver.cs" />
     <Compile Include="Arrows\AbstractConcurrentArrow.cs" />
     <Compile Include="Arrows\AbstractFilterArrow.cs" />
-    <Compile Include="Arrows\Combiners\ToIEnumerable.cs" />
+    <Compile Include="Arrows\SimpleArrows\ArrowSink.cs" />
     <Compile Include="Arrows\SimpleArrows\Function.cs" />
     <Compile Include="Arrows\Interfaces\IArrowSender.cs" />
     <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
@@ -69,6 +69,7 @@
     <Compile Include="Arrows\Interfaces\IFilterArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISideEffectArrow.cs" />
     <Compile Include="Arrows\Interfaces\ISniper.cs" />
+    <Compile Include="Arrows\Sniper.cs" />
     <Compile Include="Pipes\AbstractFilterPipe.cs" />
     <Compile Include="Pipes\ExtensionMethods\CSVPipeExtensions.cs" />
     <Compile Include="Pipes\ExtensionMethods\IOPipeExtensions.cs" />
@@ -155,7 +156,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Arrows\Sniper\" />
     <Folder Include="Arrows\SplitArrows\" />
   </ItemGroup>
 </Project>

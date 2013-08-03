@@ -26,8 +26,66 @@ using System.Threading;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace eu.Vanaheimr.Styx.Arrows
 {
+
+    /// <summary>
+    /// A class of specialized IEnumerable extension methods.
+    /// </summary>
+    public static class SniperExtensions
+    {
+
+#if SILVERLIGHT
+
+        // todo!
+
+#else
+
+        #region ToSniper(this IEnumerable, Autostart = false, StartAsTask = false, InitialDelay = null)
+
+        /// <summary>
+        /// Creates a new Sniper fireing the content of the given IEnumerable.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of the emitted messages/objects.</typeparam>
+        /// <param name="IEnumerable">An enumeration of messages/objects to send.</param>
+        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="StartAsTask">Start the sniper within its own task.</param>
+        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
+        public static Sniper<TMessage> ToSniper<TMessage>(this IEnumerable<TMessage>  IEnumerable,
+                                                          Boolean                     Autostart     = false,
+                                                          Boolean                     StartAsTask   = false,
+                                                          Nullable<TimeSpan>          InitialDelay  = null)
+        {
+            return new Sniper<TMessage>(IEnumerable, Autostart, StartAsTask, InitialDelay);
+        }
+
+        #endregion
+
+        #region ToSniper(this IEnumerator, Autostart = false, StartAsTask = false, InitialDelay = null)
+
+        /// <summary>
+        /// Creates a new Sniper fireing the content of the given IEnumerable.
+        /// </summary>
+        /// <typeparam name="TMessage">The type of the emitted messages/objects.</typeparam>
+        /// <param name="IEnumerator">An enumerator of messages/objects to send.</param>
+        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="StartAsTask">Start the sniper within its own task.</param>
+        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
+        /// <returns>A new Sniper.</returns>
+        public static Sniper<TMessage> ToSniper<TMessage>(this IEnumerator<TMessage>  IEnumerator,
+                                                          Boolean                     Autostart     = false,
+                                                          Boolean                     StartAsTask   = false,
+                                                          Nullable<TimeSpan>          InitialDelay  = null)
+        {
+            return new Sniper<TMessage>(IEnumerator, Autostart, StartAsTask, InitialDelay);
+        }
+
+        #endregion
+
+#endif
+
+    }
+
 
     /// <summary>
     /// The Sniper fetches messages/objects from a pipe, an IEnumerable or
@@ -134,20 +192,11 @@ namespace eu.Vanaheimr.Styx
 
         #region Events
 
-        /// <summary>
-        /// An event for message delivery.
-        /// </summary>
-        public event MessageRecipient<TOut> OnMessageAvailable;
+        public event NotificationEventHandler<TOut> OnNotification;
 
-        /// <summary>
-        /// An event for signaling the completion of a message delivery.
-        /// </summary>
-        public event CompletionRecipient OnCompleted;
+        public event CompletedEventHandler OnCompleted;
 
-        /// <summary>
-        /// An event for signaling an exception.
-        /// </summary>
-        public event ExceptionRecipient OnError;
+        public event ExceptionEventHandler OnException;
 
         #endregion
 
@@ -192,81 +241,6 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region Sniper(IEnumerable, MessageRecipient.Recipient, Autostart = false, StartAsTask = false, InitialDelay = 0)
-
-        /// <summary>
-        /// The Sniper fetches messages/objects from the given IEnumerable
-        /// and sends them to the recipients.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
-        /// <param name="StartAsTask">Start the sniper within its own task.</param>
-        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(IEnumerable<TOut>      IEnumerable,
-                      MessageRecipient<TOut> Recipient,
-                      Boolean                Autostart    = false,
-                      Boolean                StartAsTask  = false,
-                      Nullable<TimeSpan>     InitialDelay = null)
-
-            : this(IEnumerable, Autostart, StartAsTask, InitialDelay)
-
-        {
-
-            #region Initial Checks
-
-            if (Recipient == null)
-                throw new ArgumentNullException("The given Recipient must not be null!");
-
-            #endregion
-
-            lock (this)
-            {
-                this.OnMessageAvailable += Recipient;
-            }
-
-        }
-
-        #endregion
-
-        #region Sniper(IEnumerable, IArrowReceiver.Recipient, Autostart = false, StartAsTask = false, InitialDelay = 0)
-
-        /// <summary>
-        /// The Sniper fetches messages/objects from the given IEnumerable
-        /// and sends them to the recipients.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
-        /// <param name="StartAsTask">Start the sniper within its own task.</param>
-        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(IEnumerable<TOut>    IEnumerable,
-                      IArrowReceiver<TOut> Recipient,
-                      Boolean              Autostart    = false,
-                      Boolean              StartAsTask  = false,
-                      Nullable<TimeSpan>   InitialDelay = null)
-
-            : this(IEnumerable, Autostart, StartAsTask, InitialDelay)
-
-        {
-
-            #region Initial Checks
-
-            if (Recipient == null)
-                throw new ArgumentNullException("The given Recipient must not be null!");
-
-            #endregion
-
-            lock (this)
-            {
-                this.OnMessageAvailable += Recipient.ReceiveMessage;
-            }
-
-        }
-
-        #endregion
-
-
         #region Sniper(IEnumerator, Autostart = false, StartAsTask = false, InitialDelay = 0)
 
         /// <summary>
@@ -302,81 +276,6 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region Sniper(IEnumerator, MessageRecipient.Recipient, Autostart = false, StartAsTask = false, InitialDelay = 0)
-
-        /// <summary>
-        /// The Sniper fetches messages/objects from the given IEnumerator
-        /// and sends them to the recipients.
-        /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
-        /// <param name="StartAsTask">Start the sniper within its own task.</param>
-        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(IEnumerator<TOut>      IEnumerator,
-                      MessageRecipient<TOut> Recipient,
-                      Boolean                Autostart    = false,
-                      Boolean                StartAsTask  = false,
-                      Nullable<TimeSpan>     InitialDelay = null)
-
-            : this(IEnumerator, Autostart, StartAsTask, InitialDelay)
-
-        {
-
-            #region Initial Checks
-
-            if (Recipient == null)
-                throw new ArgumentNullException("The given Recipient must not be null!");
-
-            #endregion
-
-            lock (this)
-            {
-                this.OnMessageAvailable += Recipient;
-            }
-
-        }
-
-        #endregion
-
-        #region Sniper(IEnumerator, IArrowReceiver.Recipient, Autostart = false, StartAsTask = false, InitialDelay = 0)
-
-        /// <summary>
-        /// The Sniper fetches messages/objects from the given IEnumerator
-        /// and sends them to the recipients.
-        /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
-        /// <param name="StartAsTask">Start the sniper within its own task.</param>
-        /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(IEnumerator<TOut>    IEnumerator,
-                      IArrowReceiver<TOut> Recipient,
-                      Boolean              Autostart    = false,
-                      Boolean              StartAsTask  = false,
-                      Nullable<TimeSpan>   InitialDelay = null)
-
-            : this(IEnumerator, Autostart, StartAsTask, InitialDelay)
-
-        {
-
-            #region Initial Checks
-
-            if (Recipient == null)
-                throw new ArgumentNullException("The given Recipient must not be null!");
-
-            #endregion
-
-            lock (this)
-            {
-                this.OnMessageAvailable += Recipient.ReceiveMessage;
-            }
-
-        }
-
-        #endregion
-
-
         #region Sniper(Func, Autostart = false, StartAsTask = false, InitialDelay = 0)
 
         /// <summary>
@@ -411,48 +310,6 @@ namespace eu.Vanaheimr.Styx
         }
 
         #endregion
-
-
-        #endregion
-
-
-        #region SendTo(MessageRecipient.Recipients)
-
-        /// <summary>
-        /// Sends messages/objects to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public void SendTo(params MessageRecipient<TOut>[] Recipients)
-        {
-            lock (this)
-            {
-                if (Recipients != null)
-                {
-                    foreach (var _Recipient in Recipients)
-                        this.OnMessageAvailable += _Recipient;
-                }
-            }
-        }
-
-        #endregion
-
-        #region SendTo(IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// Sends messages/objects to the given recipients.
-        /// </summary>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public void SendTo(params IArrowReceiver<TOut>[] Recipients)
-        {
-            lock (this)
-            {
-                if (Recipients != null)
-                {
-                    foreach (var _Recipient in Recipients)
-                        this.OnMessageAvailable += _Recipient.ReceiveMessage;
-                }
-            }
-        }
 
         #endregion
 
@@ -498,10 +355,10 @@ namespace eu.Vanaheimr.Styx
                 {
                     while (IEnumerator.MoveNext())
                     {
-                            
-                        if (OnMessageAvailable != null)
-                            OnMessageAvailable(this, IEnumerator.Current);
-                            
+
+                        if (OnNotification != null)
+                            OnNotification(IEnumerator.Current);
+
                         // Sleep if we are in throttling mode
                         while (LastFireTime + Intervall > DateTime.Now)
                             Thread.Sleep(ThrottlingSleepDuration);
@@ -517,8 +374,8 @@ namespace eu.Vanaheimr.Styx
                     while (true)
                     {
 
-                        if (OnMessageAvailable != null)
-                            OnMessageAvailable(this, Func());
+                        if (OnNotification != null)
+                            OnNotification(Func());
 
                         // Sleep if we are in throttling mode
                         while (LastFireTime + Intervall > DateTime.Now)
@@ -537,8 +394,8 @@ namespace eu.Vanaheimr.Styx
 
             catch (Exception e)
             {
-                if (OnError != null)
-                    OnError(this, e);
+                if (OnException != null)
+                    OnException(this, e);
             }
 
         }

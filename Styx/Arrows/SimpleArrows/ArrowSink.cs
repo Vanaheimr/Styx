@@ -32,7 +32,7 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         public static IEnumerable<TMessage> ToIEnumerable<TMessage>(this IArrowSender<TMessage> INotification)
         {
-            return new ToIEnumerable<TMessage>(INotification);
+            return new ArrowSink<TMessage>(INotification);
         }
 
     }
@@ -41,8 +41,8 @@ namespace eu.Vanaheimr.Styx.Arrows
     /// <summary>
     /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
     /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
-    public class ToIEnumerable<TMessage> : IArrowReceiver<TMessage>, IEnumerable<TMessage>, IEnumerator<TMessage>
+    /// <typeparam name="TIn">The type of the consuming and emitting messages/objects.</typeparam>
+    public class ArrowSink<TIn> : IArrowReceiver<TIn>, IEnumerable<TIn>, IEnumerator<TIn>
     {
 
         #region Data
@@ -50,42 +50,42 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <summary>
         /// A blocking collection as inter-thread message pipeline.
         /// </summary>
-        private readonly BlockingCollection<TMessage> BlockingCollection;
+        private readonly BlockingCollection<TIn> BlockingCollection;
 
-        private readonly IEnumerator<TMessage> _InternalEnumerator;
+        private readonly IEnumerator<TIn> _InternalEnumerator;
 
         #endregion
 
         #region Constructor(s)
 
-        #region ToIEnumerable()
+        #region ArrowSink()
 
         /// <summary>
         /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
         /// </summary>
         /// <param name="Func">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        public ToIEnumerable()
+        public ArrowSink()
         {
-            this.BlockingCollection = new BlockingCollection<TMessage>();
-            this._InternalEnumerator = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
+            this.BlockingCollection   = new BlockingCollection<TIn>();
+            this._InternalEnumerator  = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
         }
 
         #endregion
 
-        #region (internal) ToIEnumerable(INotification)
+        #region (internal) ArrowSink(INotification)
 
         /// <summary>
         /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
         /// </summary>
         /// <param name="Func">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        internal ToIEnumerable(IArrowSender<TMessage> INotification)
+        internal ArrowSink(IArrowSender<TIn> INotification)
         {
 
             if (INotification != null)
                 INotification.SendTo(this);
 
-            this.BlockingCollection = new BlockingCollection<TMessage>();
-            this._InternalEnumerator = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
+            this.BlockingCollection   = new BlockingCollection<TIn>();
+            this._InternalEnumerator  = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
 
         }
 
@@ -94,7 +94,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         #endregion
 
 
-        public void ProcessArrow(TMessage Message)
+        public void ProcessArrow(TIn Message)
         {
             BlockingCollection.Add(Message);
         }
@@ -119,7 +119,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <returns>
         /// A IEnumerator&lt;E&gt; that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<TMessage> GetEnumerator()
+        public IEnumerator<TIn> GetEnumerator()
         {
             return _InternalEnumerator;
         }
@@ -142,7 +142,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-        public TMessage Current
+        public TIn Current
         {
             get
             {

@@ -50,15 +50,15 @@
     <Compile Include="Enumerators\ExpandableIteratorTests.cs" />
     <Compile Include="Enumerators\MultiIteratorTests.cs" />
     <Compile Include="Enumerators\SingleEnumeratorTests.cs" />
-    <Compile Include="FromBalder\AbstractPipeTest.cs" />
-    <Compile Include="FromBalder\FilterPipes\AndFilterPipeTest.cs" />
-    <Compile Include="FromBalder\FilterPipes\DuplicateFilterPipeTest.cs" />
-    <Compile Include="FromBalder\FilterPipes\FutureFilterPipeTest.cs" />
-    <Compile Include="FromBalder\FilterPipes\OrFilterPipeTest.cs" />
-    <Compile Include="FromBalder\FilterPipes\RandomFilterPipeTest.cs" />
-    <Compile Include="FromBalder\FilterPipes\UniquePathFilterPipeTest.cs" />
-    <Compile Include="FromBalder\Utils\GatherPipeTest.cs" />
-    <Compile Include="FromBalder\Utils\PathPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\AbstractPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\FilterPipes\AndFilterPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\FilterPipes\DuplicateFilterPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\FilterPipes\FutureFilterPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\FilterPipes\OrFilterPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\FilterPipes\RandomFilterPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\FilterPipes\UniquePathFilterPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\Utils\GatherPipeTest.cs" />
+    <Compile Include="Pipes\FromBalder\Utils\PathPipeTest.cs" />
     <Compile Include="Pipes\Branch\CopySplitPipeTests.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\AbstractComparisonFilterPipeTests.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipeTests.cs" />
@@ -77,9 +77,6 @@
     <Compile Include="Pipes\Utils\HasNextPipeTests.cs" />
     <Compile Include="Pipes\Utils\ScatterPipeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sensors\AbstractSensorTests.cs" />
-    <Compile Include="Sensors\SensorIdTests.cs" />
-    <Compile Include="Sensors\SimpleSensorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
@@ -92,7 +89,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ExtensionMethods\" />
+    <Folder Include="Arrows\" />
+    <Folder Include="Sensors\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
