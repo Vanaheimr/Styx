@@ -43,13 +43,13 @@
     <Compile Include="Arrows\FilterArrows\Where.cs" />
     <Compile Include="Arrows\SideEffectArrows\Calc.cs" />
     <Compile Include="Arrows\SimpleArrows\ConcurrentMap.cs" />
-    <Compile Include="Arrows\SimpleArrows\Map.cs" />
     <Compile Include="Arrows\SimpleArrows\Count.cs" />
     <Compile Include="Arrows\SideEffectArrows\MinMaxSideEffect.cs" />
     <Compile Include="Arrows\SimpleArrows\Action.cs" />
     <Compile Include="Arrows\SimpleArrows\Identity.cs" />
     <Compile Include="Arrows\FilterArrows\SkipArrow.cs" />
     <Compile Include="Arrows\SideEffectArrows\StatisticsArrow.cs" />
+    <Compile Include="Arrows\SimpleArrows\Map.cs" />
     <Compile Include="Arrows\SimpleArrows\UnfoldArrow.cs" />
     <Compile Include="Arrows\Combiners\ConcurrentCombineArrow.cs" />
     <Compile Include="Arrows\Interfaces\IVotingSender.cs" />
@@ -65,11 +65,6 @@
     <Compile Include="Arrows\AbstractConcurrentArrow.cs" />
     <Compile Include="Arrows\AbstractFilterArrow.cs" />
     <Compile Include="Arrows\SimpleArrows\ArrowSink.cs" />
-<<<<<<< HEAD
-    <Compile Include="Arrows\SimpleArrows\Select.cs" />
-=======
-    <Compile Include="Arrows\SimpleArrows\Map.cs" />
->>>>>>> origin/HEAD
     <Compile Include="Arrows\Interfaces\IArrowSender.cs" />
     <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
     <Compile Include="Arrows\Interfaces\IArrow.cs" />
