@@ -24,9 +24,8 @@ using System;
 namespace eu.Vanaheimr.Styx.Arrows
 {
 
-        /// <summary>
-    /// The MinMaxArrow produces two side effects which keep
-    /// track of the Min and Max values of S.
+    /// <summary>
+    /// Extention methods for the MinMaxArrow.
     /// </summary>
     public static class MinMaxArrowExtensions
     {

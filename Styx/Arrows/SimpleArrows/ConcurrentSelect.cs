@@ -30,12 +30,12 @@ namespace eu.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the ConcurrentFunctionArrow&lt;TIn, TOut&gt;.
+    /// Extention methods for the ConcurrentSelectArrow.
     /// </summary>
-    public static class ConcurrentFuncArrowExtentions
+    public static partial class ConcurrentSelectArrowExtentions
     {
 
-        #region CallConcurrently<TIn, TOut>(this ArrowSender, MessageProcessor,  MaxQueueSize = 1000)
+        #region ConcurrentSelect<TIn, TOut>(this ArrowSender, MessageProcessor,  MaxQueueSize = 1000)
 
         /// <summary>
         /// A concurrent arrow transforming incoming messages into outgoing messages.
@@ -45,11 +45,11 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
         /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
         /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
-        public static ConcurrentFunctionArrow<TIn, TOut> CallConcurrently<TIn, TOut>(this IArrowSender<TIn>  ArrowSender,
-                                                                                     Func<TIn, TOut>         MessageProcessor,
-                                                                                     UInt32                  MaxQueueSize = 1000)
+        public static ConcurrentSelectArrow<TIn, TOut> ConcurrentSelect<TIn, TOut>(this IArrowSender<TIn>  ArrowSender,
+                                                                                   Func<TIn, TOut>         MessageProcessor,
+                                                                                   UInt32                  MaxQueueSize = 1000)
         {
-            return new ConcurrentFunctionArrow<TIn, TOut>(MessageProcessor, MaxQueueSize, ArrowSender);
+            return new ConcurrentSelectArrow<TIn, TOut>(MessageProcessor, MaxQueueSize, ArrowSender);
         }
 
         #endregion
@@ -62,7 +62,7 @@ namespace eu.Vanaheimr.Styx.Arrows
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    public class ConcurrentFunctionArrow<TIn, TOut> : AbstractConcurrentArrow<TIn, TOut>
+    public class ConcurrentSelectArrow<TIn, TOut> : AbstractConcurrentArrow<TIn, TOut>
     {
 
         #region Data
@@ -79,7 +79,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
         /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public ConcurrentFunctionArrow(Func<TIn, TOut>    MessageProcessor,
+        public ConcurrentSelectArrow(Func<TIn, TOut>    MessageProcessor,
                                        UInt32             MaxQueueSize  = 1000,
                                        IArrowSender<TIn>  ArrowSender   = null)
 

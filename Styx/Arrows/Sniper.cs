@@ -224,7 +224,7 @@ namespace eu.Vanaheimr.Styx.Arrows
                 throw new ArgumentNullException("The given IEnumerable must not be null!");
 
             #endregion
-            
+
             this.IEnumerator = IEnumerable.GetEnumerator();
 
             if (this.IEnumerator == null)
@@ -263,7 +263,7 @@ namespace eu.Vanaheimr.Styx.Arrows
                 throw new ArgumentNullException("The given IEnumerator must not be null!");
 
             #endregion
-            
+
             this.IEnumerator             = IEnumerator;
             this.InitialDelay            = InitialDelay;
             this.Intervall               = TimeSpan.FromSeconds(10);
@@ -344,6 +344,8 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// </summary>
         private void StartFireing()
         {
+
+            // if already runnning => return
 
             try
             {

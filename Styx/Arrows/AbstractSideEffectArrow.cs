@@ -27,9 +27,9 @@ namespace eu.Vanaheimr.Styx.Arrows
     /// </summary>
     /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
     /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
-    /// <typeparam name="TSideeffect">The type of the sideeffect.</typeparam>
-    public abstract class AbstractSideEffectArrow<TIn, TOut, TSideeffect> : AbstractArrow<TIn, TOut>,
-                                                                            ISideEffectArrow<TIn, TOut, TSideeffect>
+    /// <typeparam name="TSideEffect">The type of the sideeffect.</typeparam>
+    public abstract class AbstractSideEffectArrow<TIn, TOut, TSideEffect> : AbstractArrow<TIn, TOut>,
+                                                                            ISideEffectArrow<TIn, TOut, TSideEffect>
     {
 
         #region Properties
@@ -41,12 +41,12 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected TSideeffect _SideEffect;
+        protected TSideEffect _SideEffect;
 
         /// <summary>
         /// The SideEffect produced by this Arrow.
         /// </summary>
-        public TSideeffect SideEffect
+        public TSideEffect SideEffect
         {
 
             get
