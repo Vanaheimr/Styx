@@ -25,16 +25,316 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx.Arrows
 {
 
-    public static partial class SelectArrowExtentions
+    /// <summary>
+    /// Extention methods for the MapArrow.
+    /// </summary>
+    public static class MapArrowExtentions
     {
 
-        public static SelectArrow<TIn, TOut> Map<TIn, TOut>(this IArrowSender<TIn>      Source,
-                                                            Func<TIn, TOut>             MessageProcessor,
-                                                            Func<Exception, Exception>  OnError = null)
+        #region Map<TIn, TOut>
+
+        /// <summary>
+        /// Transform the message of every incoming arrow by the given delegate.
+        /// </summary>
+        /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
+        /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        /// <param name="MessageProcessor">A delegate to transform an incoming message into an outgoing message.</param>
+        /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
+        public static MapArrow<TIn, TOut> Map<TIn, TOut>(this IArrowSender<TIn>      ArrowSender,
+                                                         Func<TIn, TOut>             MessageProcessor,
+                                                         Func<Exception, Exception>  OnError = null)
         {
-            return new SelectArrow<TIn, TOut>(MessageProcessor, OnError, Source);
+            return new MapArrow<TIn, TOut>(MessageProcessor, OnError, ArrowSender);
+        }
+
+        #endregion
+
+        #region Map<TIn1, TIn2, TOut>
+
+        /// <summary>
+        /// Transform both messages of every incoming arrow by the given delegate.
+        /// </summary>
+        /// <typeparam name="TIn1">The first type of the consuming messages/objects.</typeparam>
+        /// <typeparam name="TIn2">The second type of the consuming messages/objects.</typeparam>
+        /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        /// <param name="MessageProcessor">A delegate to transform two incoming messages into an outgoing message.</param>
+        /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
+        public static MapArrow<TIn1, TIn2, TOut> Map<TIn1, TIn2, TOut>(this IArrowSender<TIn1, TIn2>  ArrowSender,
+                                                                       Func<TIn1, TIn2, TOut>         MessageProcessor,
+                                                                       Func<Exception, Exception>     OnError = null)
+        {
+            return new MapArrow<TIn1, TIn2, TOut>(MessageProcessor, OnError, ArrowSender);
+        }
+
+        #endregion
+
+        #region Map<TIn1, TIn2, TIn3, TOut>
+
+        /// <summary>
+        /// Transform three messages of every incoming arrow by the given delegate.
+        /// </summary>
+        /// <typeparam name="TIn1">The first type of the consuming messages/objects.</typeparam>
+        /// <typeparam name="TIn2">The second type of the consuming messages/objects.</typeparam>
+        /// <typeparam name="TIn3">The third type of the consuming messages/objects.</typeparam>
+        /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        /// <param name="MessageProcessor">A delegate to transform two incoming messages into an outgoing message.</param>
+        /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
+        public static MapArrow<TIn1, TIn2, TIn3, TOut> Map<TIn1, TIn2, TIn3, TOut>(this IArrowSender<TIn1, TIn2, TIn3>  ArrowSender,
+                                                                                   Func<TIn1, TIn2, TIn3, TOut>         MessageProcessor,
+                                                                                   Func<Exception, Exception>           OnError = null)
+        {
+            return new MapArrow<TIn1, TIn2, TIn3, TOut>(MessageProcessor, OnError, ArrowSender);
+        }
+
+        #endregion
+
+    }
+
+    #region MapArrow<TIn, TOut>
+
+    /// <summary>
+    /// Transform the message of every incoming arrow by the given delegate.
+    /// </summary>
+    /// <typeparam name="TIn">The type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public class MapArrow<TIn, TOut> : AbstractArrow<TIn, TOut>
+    {
+
+        #region Data
+
+        private readonly Func<TIn,       TOut>       MessageProcessor;
+        private readonly Func<Exception, Exception>  OnError;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new MapArrow transforming the message of every
+        /// incoming arrow by the given delegate.
+        /// </summary>
+        /// <param name="MessageProcessor">A delegate to transform an incoming message into an outgoing message.</param>
+        /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        public MapArrow(Func<TIn, TOut>             MessageProcessor,
+                        Func<Exception, Exception>  OnError      = null,
+                        IArrowSender<TIn>           ArrowSender  = null)
+
+            : base(ArrowSender)
+
+        {
+
+            if (MessageProcessor == null)
+                throw new ArgumentNullException("The given delegate must not be null!");
+
+            this.MessageProcessor  = MessageProcessor;
+            this.OnError           = (OnError != null) ? OnError : e => e;
+
+        }
+
+        #endregion
+
+        #region (protected) ProcessMessage(MessageIn, out MessageOut)
+
+        /// <summary>
+        /// Process the incoming message and return an outgoing message.
+        /// </summary>
+        /// <param name="MessageIn">The incoming message.</param>
+        /// <param name="MessageOut">The outgoing message.</param>
+        protected override Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut)
+        {
+            // Try-Catch will be done within AbstractArrow.ProcessArrow(MessageIn)
+            MessageOut = MessageProcessor(MessageIn);
+            return true;
+        }
+
+        #endregion
+
+    }
+
+    #endregion
+
+    #region MapArrow<TIn1, TIn2, TOut>
+
+    /// <summary>
+    /// Transform both messages of every incoming arrow by the given delegate.
+    /// </summary>
+    /// <typeparam name="TIn1">The first type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TIn2">The second type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public class MapArrow<TIn1, TIn2, TOut> : IArrowReceiver<TIn1, TIn2>, IArrowSender<TOut>
+    {
+
+        #region Data
+
+        private readonly Func<TIn1, TIn2, TOut>      MessageProcessor;
+        private readonly Func<Exception, Exception>  OnError;
+
+        #endregion
+
+        #region Events
+
+        public event NotificationEventHandler<TOut> OnNotification;
+
+        public event ExceptionEventHandler OnException;
+
+        public event CompletedEventHandler OnCompleted;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new MapArrow transforming two messages of
+        /// every incoming arrow by the given delegate.
+        /// </summary>
+        /// <param name="MessageProcessor">A delegate to transform two incoming messages into an outgoing message.</param>
+        /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        public MapArrow(Func<TIn1, TIn2, TOut>      MessageProcessor,
+                        Func<Exception, Exception>  OnError      = null,
+                        IArrowSender<TIn1, TIn2>    ArrowSender  = null)
+
+        {
+
+            if (MessageProcessor == null)
+                throw new ArgumentNullException("The given delegate must not be null!");
+
+            this.MessageProcessor  = MessageProcessor;
+            this.OnError           = (OnError != null) ? OnError : e => e;
+
+            if (ArrowSender != null)
+                ArrowSender.SendTo(this);
+
+        }
+
+        #endregion
+
+        #region ProcessArrow(MessageIn1, MessageIn2)
+
+        /// <summary>
+        /// Process the incoming messages and send an outgoing message.
+        /// </summary>
+        /// <param name="MessageIn1">The first incoming message.</param>
+        /// <param name="MessageIn2">The second incoming message.</param>
+        public void ProcessArrow(TIn1 MessageIn1, TIn2 MessageIn2)
+        {
+
+            if (OnNotification != null)
+                OnNotification(MessageProcessor(MessageIn1, MessageIn2));
+
+        }
+
+        #endregion
+
+        public void ProcessException(dynamic Sender, Exception ExceptionMessage)
+        {
+            if (OnException != null)
+                OnException(this, ExceptionMessage);
+        }
+
+        public void ProcessCompleted(dynamic Sender, String Message)
+        {
+            if (OnCompleted != null)
+                OnCompleted(this, Message);
         }
 
     }
+
+    #endregion
+
+    #region MapArrow<TIn1, TIn2, TIn3, TOut>
+
+    /// <summary>
+    /// Transform three messages of every incoming arrow by the given delegate.
+    /// </summary>
+    /// <typeparam name="TIn1">The first type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TIn2">The second type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TIn3">The third type of the consuming messages/objects.</typeparam>
+    /// <typeparam name="TOut">The type of the emitted messages/objects.</typeparam>
+    public class MapArrow<TIn1, TIn2, TIn3, TOut> : IArrowReceiver<TIn1, TIn2, TIn3>, IArrowSender<TOut>
+    {
+
+        #region Data
+
+        private readonly Func<TIn1, TIn2, TIn3, TOut>  MessageProcessor;
+        private readonly Func<Exception, Exception>    OnError;
+
+        #endregion
+
+        #region Events
+
+        public event NotificationEventHandler<TOut> OnNotification;
+
+        public event ExceptionEventHandler OnException;
+
+        public event CompletedEventHandler OnCompleted;
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new MapArrow transforming three messages of
+        /// every incoming arrow by the given delegate.
+        /// </summary>
+        /// <param name="MessageProcessor">A delegate to transform three incoming messages into an outgoing message.</param>
+        /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
+        /// <param name="ArrowSender">The sender of the messages/objects.</param>
+        public MapArrow(Func<TIn1, TIn2, TIn3, TOut>    MessageProcessor,
+                        Func<Exception, Exception>      OnError      = null,
+                        IArrowSender<TIn1, TIn2, TIn3>  ArrowSender  = null)
+
+        {
+
+            if (MessageProcessor == null)
+                throw new ArgumentNullException("The given delegate must not be null!");
+
+            this.MessageProcessor  = MessageProcessor;
+            this.OnError           = (OnError != null) ? OnError : e => e;
+
+            if (ArrowSender != null)
+                ArrowSender.SendTo(this);
+
+        }
+
+        #endregion
+
+        #region ProcessArrow(MessageIn1, MessageIn2, MessageIn3)
+
+        /// <summary>
+        /// Process the incoming messages and send an outgoing message.
+        /// </summary>
+        /// <param name="MessageIn1">The first incoming message.</param>
+        /// <param name="MessageIn2">The second incoming message.</param>
+        /// <param name="MessageIn3">The third incoming message.</param>
+        public void ProcessArrow(TIn1 MessageIn1, TIn2 MessageIn2, TIn3 MessageIn3)
+        {
+
+            if (OnNotification != null)
+                OnNotification(MessageProcessor(MessageIn1, MessageIn2, MessageIn3));
+
+        }
+
+        #endregion
+
+        public void ProcessException(dynamic Sender, Exception ExceptionMessage)
+        {
+            if (OnException != null)
+                OnException(this, ExceptionMessage);
+        }
+
+        public void ProcessCompleted(dynamic Sender, String Message)
+        {
+            if (OnCompleted != null)
+                OnCompleted(this, Message);
+        }
+
+    }
+
+    #endregion
 
 }

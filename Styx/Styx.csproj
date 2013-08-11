@@ -65,7 +65,11 @@
     <Compile Include="Arrows\AbstractConcurrentArrow.cs" />
     <Compile Include="Arrows\AbstractFilterArrow.cs" />
     <Compile Include="Arrows\SimpleArrows\ArrowSink.cs" />
+<<<<<<< HEAD
     <Compile Include="Arrows\SimpleArrows\Select.cs" />
+=======
+    <Compile Include="Arrows\SimpleArrows\Map.cs" />
+>>>>>>> origin/HEAD
     <Compile Include="Arrows\Interfaces\IArrowSender.cs" />
     <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
     <Compile Include="Arrows\Interfaces\IArrow.cs" />

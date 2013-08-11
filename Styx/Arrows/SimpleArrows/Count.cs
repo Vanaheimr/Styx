@@ -25,7 +25,6 @@ using System.Threading;
 namespace eu.Vanaheimr.Styx.Arrows
 {
 
-    
     /// <summary>
     /// The CountArrow produces a side effect that is the total
     /// number of messages/objects that have passed through it.
