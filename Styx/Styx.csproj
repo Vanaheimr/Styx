@@ -41,6 +41,9 @@
     <Compile Include="Arrows\Combiners\CombineArrow.cs" />
     <Compile Include="Arrows\FilterArrows\BandFilter.cs" />
     <Compile Include="Arrows\FilterArrows\Where.cs" />
+    <Compile Include="Arrows\Notificator.cs" />
+    <Compile Include="Arrows\Interfaces\IVotingNotificator.cs" />
+    <Compile Include="Arrows\Interfaces\INotificator.cs" />
     <Compile Include="Arrows\SideEffectArrows\Calc.cs" />
     <Compile Include="Arrows\SimpleArrows\ConcurrentMap.cs" />
     <Compile Include="Arrows\SimpleArrows\Count.cs" />
