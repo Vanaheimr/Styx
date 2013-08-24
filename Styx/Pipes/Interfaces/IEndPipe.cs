@@ -54,7 +54,7 @@ namespace eu.Vanaheimr.Styx
     /// consume elements, but e.g. might receive them via network.
     /// </summary>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IEndPipe<out E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
+    public interface IEndPipe<E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
     { }
 
     #endregion

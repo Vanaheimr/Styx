@@ -48,7 +48,7 @@ namespace eu.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S, out E>
+    public interface IPipe<S, E>
         : IStartPipe<S>,
           IEndPipe<E>,
           IPipe
@@ -66,7 +66,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, out E>
+    public interface IPipe<S1, S2, E>
         : IStartPipe<S1, S2>,
           IEndPipe<E>,
           IPipe
@@ -85,7 +85,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, in S3, out E>
+    public interface IPipe<S1, S2, S3, E>
         : IStartPipe<S1, S2, S3>,
           IEndPipe<E>,
           IPipe
@@ -105,7 +105,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, in S3, in S4, out E>
+    public interface IPipe<S1, S2, S3, S4, E>
         : IStartPipe<S1, S2, S3, S4>,
           IEndPipe<E>,
           IPipe
@@ -126,7 +126,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     /// <typeparam name="S5">The type of the fifth consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IPipe<in S1, in S2, in S3, in S4, in S5, out E>
+    public interface IPipe<S1, S2, S3, S4, S5, E>
         : IStartPipe<S1, S2, S3, S4, S5>,
           IEndPipe<E>,
           IPipe

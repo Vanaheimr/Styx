@@ -33,13 +33,13 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         public event CompletedEventHandler OnCompleted;
 
-        public void SignalError(dynamic Sender, Exception Exception)
+        public void SignalError(Object Sender, Exception Exception)
         {
             if (this.OnException != null)
                 this.OnException(Sender, Exception);
         }
 
-        public void SignalCompleted(dynamic Sender, String Message)
+        public void SignalCompleted(Object Sender, String Message)
         {
             if (this.OnCompleted != null)
                 this.OnCompleted(Sender, Message);

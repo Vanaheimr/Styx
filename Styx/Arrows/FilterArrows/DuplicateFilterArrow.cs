@@ -17,6 +17,7 @@
 
 #region Usings
 
+using eu.Vanaheimr.Illias.Commons.Collections;
 using System;
 using System.Collections.Generic;
 
@@ -44,8 +45,6 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Constructor(s)
 
-        #region DuplicateFilterArrow()
-
         /// <summary>
         /// The DuplicateFilterArrow will not allow a duplicate object to pass through it.
         /// This is accomplished by the Arrow maintaining an internal HashSet that is used
@@ -57,46 +56,6 @@ namespace eu.Vanaheimr.Styx.Arrows
         {
             _HistorySet = new HashSet<TMessage>();
         }
-
-        #endregion
-
-        #region DuplicateFilterArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
-        /// <summary>
-        /// The DuplicateFilterArrow will not allow a duplicate object to pass through it.
-        /// This is accomplished by the Arrow maintaining an internal HashSet that is used
-        /// to store a history of previously seen objects.
-        /// Thus, the more unique objects that pass through this Arrow, the slower it
-        /// becomes as a log_2 index is checked for every object.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public DuplicateFilterArrow(MessageRecipient<TMessage> Recipient, params MessageRecipient<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        {
-            _HistorySet = new HashSet<TMessage>();
-        }
-
-        #endregion
-
-        #region DuplicateFilterArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// The DuplicateFilterArrow will not allow a duplicate object to pass through it.
-        /// This is accomplished by the Arrow maintaining an internal HashSet that is used
-        /// to store a history of previously seen objects.
-        /// Thus, the more unique objects that pass through this Arrow, the slower it
-        /// becomes as a log_2 index is checked for every object.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public DuplicateFilterArrow(IArrowReceiver<TMessage> Recipient, params IArrowReceiver<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        {
-            _HistorySet = new HashSet<TMessage>();
-        }
-
-        #endregion
 
         #endregion
 

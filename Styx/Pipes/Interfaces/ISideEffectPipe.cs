@@ -44,7 +44,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
-    public interface ISideEffectPipe<in S, out E, out T> : ISideEffectPipe, IPipe<S, E>
+    public interface ISideEffectPipe<S, E, out T> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    public interface ISideEffectPipe<in S, out E, out T1, out T2> : ISideEffectPipe, IPipe<S, E>
+    public interface ISideEffectPipe<S, E, out T1, out T2> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
     /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
-    public interface ISideEffectPipe<in S, out E, out T1, out T2, out T3> : ISideEffectPipe, IPipe<S, E>
+    public interface ISideEffectPipe<S, E, out T1, out T2, out T3> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>

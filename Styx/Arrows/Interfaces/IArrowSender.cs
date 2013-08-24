@@ -31,8 +31,8 @@ namespace eu.Vanaheimr.Styx.Arrows
     public delegate void NotificationEventHandler<T1, T2, T3, T4>(T1 Message1, T2 Message2, T3 Message3, T4 Message4);
     public delegate void NotificationEventHandler<T1, T2, T3, T4, T5>(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
 
-    public delegate void ExceptionEventHandler(dynamic Sender, Exception Exception);
-    public delegate void CompletedEventHandler(dynamic Sender, String Message = null);
+    public delegate void ExceptionEventHandler(Object Sender, Exception Exception);
+    public delegate void CompletedEventHandler(Object Sender, String    Message = null);
 
 
     #region IArrowSenderExtentions

@@ -20,6 +20,7 @@
 using System;
 
 using eu.Vanaheimr.Styx;
+using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 

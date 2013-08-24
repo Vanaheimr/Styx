@@ -68,7 +68,7 @@ namespace eu.Vanaheimr.Styx
     /// emit elements, but e.g. might send them via network.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    public interface IStartPipe<in S> : IStartPipe
+    public interface IStartPipe<S> : IStartPipe
     {
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace eu.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
-    public interface IStartPipe<in S1, in S2> : IStartPipe
+    public interface IStartPipe<S1, S2> : IStartPipe
     {
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
-    public interface IStartPipe<in S1, in S2, in S3> : IStartPipe
+    public interface IStartPipe<S1, S2, S3> : IStartPipe
     {
 
         /// <summary>
@@ -232,7 +232,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
-    public interface IStartPipe<in S1, in S2, in S3, in S4> : IStartPipe
+    public interface IStartPipe<S1, S2, S3, S4> : IStartPipe
     {
 
         /// <summary>
@@ -325,7 +325,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     /// <typeparam name="S5">The type of the fifth consuming objects.</typeparam>
-    public interface IStartPipe<in S1, in S2, in S3, in S4, in S5> : IStartPipe
+    public interface IStartPipe<S1, S2, S3, S4, S5> : IStartPipe
     {
 
         /// <summary>

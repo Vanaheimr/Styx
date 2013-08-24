@@ -96,8 +96,6 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Constructor(s)
 
-        #region StdDevSideEffectArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
         /// <summary>
         /// The StdDevSideEffectArrow produces a side effect that
         /// is the sliding standard deviation and the average of
@@ -105,38 +103,6 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// </summary>
         public StdDevSideEffectArrow()
         { }
-
-        #endregion
-
-        #region StdDevSideEffectArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
-        /// <summary>
-        /// The StdDevSideEffectArrow produces a side effect that
-        /// is the sliding standard deviation and the average of
-        /// messages/objects that have passed through it.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public StdDevSideEffectArrow(MessageRecipient<Double> Recipient, params MessageRecipient<Double>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
-
-        #region StdDevSideEffectArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// The StdDevSideEffectArrow produces a side effect that
-        /// is the sliding standard deviation and the average of
-        /// messages/objects that have passed through it.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public StdDevSideEffectArrow(IArrowReceiver<Double> Recipient, params IArrowReceiver<Double>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
 
         #endregion
 

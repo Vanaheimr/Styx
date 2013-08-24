@@ -42,7 +42,7 @@ namespace eu.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IMetaPipe<in S, out E> : IPipe<S, E>, IMetaPipe
+    public interface IMetaPipe<S, E> : IPipe<S, E>, IMetaPipe
     {
 
         /// <summary>

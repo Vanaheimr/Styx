@@ -73,34 +73,6 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        #region SameValueFilterArrow(MessageRecipients.Recipient, params MessageRecipients.Recipients)
-
-        /// <summary>
-        /// The SameValueFilterArrow will not allow to send two
-        /// consecutive identical messages twice.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public SameValueFilterArrow(MessageRecipient<TMessage> Recipient, params MessageRecipient<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
-
-        #region SameValueFilterArrow(IArrowReceiver.Recipient, params IArrowReceiver.Recipients)
-
-        /// <summary>
-        /// The SameValueFilterArrow will not allow to send two
-        /// consecutive identical messages twice.
-        /// </summary>
-        /// <param name="Recipient">A recipient of the processed messages.</param>
-        /// <param name="Recipients">The recipients of the processed messages.</param>
-        public SameValueFilterArrow(IArrowReceiver<TMessage> Recipient, params IArrowReceiver<TMessage>[] Recipients)
-            : base(Recipient, Recipients)
-        { }
-
-        #endregion
-
         #endregion
 
         #region ProcessMessage(MessageIn, out MessageOut)

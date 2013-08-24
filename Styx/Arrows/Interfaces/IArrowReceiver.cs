@@ -38,14 +38,14 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        void ProcessException(dynamic Sender, Exception ExceptionMessage);
+        void ProcessException(Object Sender, Exception ExceptionMessage);
 
         /// <summary>
         /// The sender of the arrows signaled not to send any more arrows.
         /// </summary>
         /// <param name="Sender">The sender of this arrow.</param>
         /// <param name="Message">An optional message.</param>
-        void ProcessCompleted(dynamic Sender, String Message = null);
+        void ProcessCompleted(Object Sender, String Message = null);
 
     }
 

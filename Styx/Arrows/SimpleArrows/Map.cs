@@ -230,13 +230,13 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        public void ProcessException(dynamic Sender, Exception ExceptionMessage)
+        public void ProcessException(Object Sender, Exception ExceptionMessage)
         {
             if (OnException != null)
                 OnException(this, ExceptionMessage);
         }
 
-        public void ProcessCompleted(dynamic Sender, String Message)
+        public void ProcessCompleted(Object Sender, String Message)
         {
             if (OnCompleted != null)
                 OnCompleted(this, Message);
@@ -321,13 +321,13 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        public void ProcessException(dynamic Sender, Exception ExceptionMessage)
+        public void ProcessException(Object Sender, Exception ExceptionMessage)
         {
             if (OnException != null)
                 OnException(this, ExceptionMessage);
         }
 
-        public void ProcessCompleted(dynamic Sender, String Message)
+        public void ProcessCompleted(Object Sender, String Message)
         {
             if (OnCompleted != null)
                 OnCompleted(this, Message);

@@ -104,7 +104,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        public void ProcessException(dynamic Sender, Exception Exception)
+        public void ProcessException(Object Sender, Exception Exception)
         {
 
             try
@@ -130,7 +130,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="Sender">The sender of the completed message.</param>
         /// <param name="Message">An optional message.</param>
-        public void ProcessCompleted(dynamic Sender, String Message = null)
+        public void ProcessCompleted(Object Sender, String Message = null)
         {
 
             if (_IsCompleted == true)
