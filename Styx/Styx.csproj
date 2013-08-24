@@ -5,7 +5,7 @@
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1AB3E38C-BB35-46EA-BD11-27B53614BC5A}</ProjectGuid>
+    <ProjectGuid>{3949790D-8591-4101-9E4D-CE7A758E7409}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Styx2</RootNamespace>
