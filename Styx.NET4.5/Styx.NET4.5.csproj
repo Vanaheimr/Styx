@@ -76,7 +76,7 @@
       <Name>Commons</Name>
     </ProjectReference>
     <ProjectReference Include="..\Styx\Styx.csproj">
-      <Project>{1ab3e38c-bb35-46ea-bd11-27b53614bc5a}</Project>
+      <Project>{3949790d-8591-4101-9e4d-ce7a758e7409}</Project>
       <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
