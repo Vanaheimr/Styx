@@ -142,7 +142,7 @@ namespace eu.Vanaheimr.Styx.Arrows
             if (VoteCreator == null)
                 throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
 
-            this.VoteCreator = VoteCreator;
+            this.VoteCreator  = VoteCreator;
             this.DefaultValue = DefaultValue;
 
         }
@@ -154,6 +154,17 @@ namespace eu.Vanaheimr.Styx.Arrows
                 return DefaultValue;
 
             var Vote = VoteCreator();
+            this.OnVoting(Message1, Message2, Vote);
+            return Vote.Result;
+
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, IVote<V> Vote)
+        {
+
+            if (this.OnVoting == null)
+                return Vote.Result;
+
             this.OnVoting(Message1, Message2, Vote);
             return Vote.Result;
 

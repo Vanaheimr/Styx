@@ -33,6 +33,7 @@ namespace eu.Vanaheimr.Styx.Arrows
     public interface IVotingNotificator<T1, T2, V> : INotificator<T1, T2>, IVotingSender<T1, T2, V>
     {
         V SendVoting(T1 Message1, T2 Message2);
+        V SendVoting(T1 Message1, T2 Message2, IVote<V> Vote);
     }
 
     public interface IVotingNotificator<T1, T2, T3, V> : INotificator<T1, T2, T3>, IVotingSender<T1, T2, T3, V>
