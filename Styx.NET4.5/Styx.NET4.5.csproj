@@ -73,7 +73,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
       <Project>{d3b1af79-161f-4299-8b14-133286d635b8}</Project>
-      <Name>Commons</Name>
+      <Name>Commons %28Dependencies\Commons\Commons%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Styx\Styx.csproj">
       <Project>{3949790d-8591-4101-9e4d-ce7a758e7409}</Project>
