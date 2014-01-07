@@ -140,7 +140,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
       <Project>{d3b1af79-161f-4299-8b14-133286d635b8}</Project>
-      <Name>Commons %28Dependencies\Commons\Commons%29</Name>
+      <Name>Commons</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
