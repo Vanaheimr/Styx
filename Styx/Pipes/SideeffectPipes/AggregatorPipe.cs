@@ -57,9 +57,9 @@ namespace eu.Vanaheimr.Styx
         public AggregatorPipe(ICollection<S> ICollection = null)
         {
             if (ICollection == null)
-                _SideEffect = new List<S>();
+                InternalSideEffect = new List<S>();
             else
-                _SideEffect = ICollection;
+                InternalSideEffect = ICollection;
         }
 
         #endregion
@@ -84,13 +84,13 @@ namespace eu.Vanaheimr.Styx
             if (_AggregateEnumerator == null)
             {
 
-                if (_InputEnumerator == null)
+                if (SourcePipe == null)
                     return false;
 
-                while (_InputEnumerator.MoveNext())
-                    _SideEffect.Add(_InputEnumerator.Current);
+                while (SourcePipe.MoveNext())
+                    InternalSideEffect.Add(SourcePipe.Current);
 
-                _AggregateEnumerator = _SideEffect.GetEnumerator();
+                _AggregateEnumerator = InternalSideEffect.GetEnumerator();
 
             }
 

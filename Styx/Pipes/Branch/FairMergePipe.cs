@@ -31,12 +31,12 @@ namespace eu.Vanaheimr.Styx
     /// emit the objects of its internal pipes.
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
-    public class FairMergePipe<S> : AbstractPipe<S, S>, IMetaPipe<S, S>
+    public class FairMergePipe<S> : AbstractPipe<S, S>//, IMetaPipe<S, S>
     {
 
         #region Data
 
-        private IEnumerable<IPipe> _Pipes;
+        private IEnumerable<IEndPipe<S>> _Pipes;
         Int32 current = 0;
         Int32 total;
 
@@ -49,7 +49,7 @@ namespace eu.Vanaheimr.Styx
         /// <summary>
         /// Creates a new FairMergePipe based on the given Pipes.
         /// </summary>
-        public FairMergePipe(IEnumerable<IPipe> Pipes)
+        public FairMergePipe(IEnumerable<IEndPipe<S>> Pipes)
         {
             this._Pipes = Pipes;
             this.total  = Pipes.Count();
@@ -62,7 +62,7 @@ namespace eu.Vanaheimr.Styx
         /// <summary>
         /// Creates a new FairMergePipe based on the given Pipes.
         /// </summary>
-        public FairMergePipe(params IPipe[] Pipes)
+        public FairMergePipe(params IEndPipe<S>[] Pipes)
         {
             this._Pipes = Pipes;
             this.total  = Pipes.Count();
@@ -86,7 +86,7 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             Int32 _Counter = 0;
@@ -100,14 +100,14 @@ namespace eu.Vanaheimr.Styx
 
                 if (_CurrentPipe.MoveNext())
                 {
-                    _CurrentElement = _InputEnumerator.Current;
+                    _CurrentElement = SourcePipe.Current;
                     this.current = (this.current + 1) % this.total;
                     return true;
                 }
-                
+
                 else if (_Counter == this.total)
                     throw new NoSuchElementException();
-                
+
                 else
                     this.current = (this.current + 1) % this.total;
 
@@ -123,7 +123,7 @@ namespace eu.Vanaheimr.Styx
         /// <summary>
         /// A MetaPipe is a pipe that "wraps" some collection of pipes.
         /// </summary>
-        public IEnumerable<IPipe> Pipes
+        public IEnumerable<IEndPipe<S>> Pipes
         {
             get
             {
@@ -138,7 +138,7 @@ namespace eu.Vanaheimr.Styx
         /// <summary>
         /// A pipe may maintain state. Reset is used to remove state.
         /// </summary>
-        public override void Reset()
+        public override IEndPipe<S> Reset()
         {
 
             foreach (var _Pipe in _Pipes)
@@ -147,6 +147,8 @@ namespace eu.Vanaheimr.Styx
             }
 
             base.Reset();
+
+            return this;
 
         }
 

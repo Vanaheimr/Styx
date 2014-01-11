@@ -44,12 +44,12 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            if (_InputEnumerator.MoveNext())
+            if (SourcePipe.MoveNext())
             {
-                _CurrentElement = (UInt64) _InputEnumerator.Current.Length;
+                _CurrentElement = (UInt64) SourcePipe.Current.Length;
 				return true;
             }
 

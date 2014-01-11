@@ -26,29 +26,18 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx
 {
 
-    /// <summary>
-    /// The DuplicateFilterPipe will not allow a duplicate object to pass through it.
-    /// This is accomplished by the Pipe maintaining an internal HashSet that is used
-    /// to store a history of previously seen objects.
-    /// Thus, the more unique objects that pass through this Pipe, the slower it
-    /// becomes as a log_2 index is checked for every object.
-    /// </summary>
-    public static class DuplicateFilterPipeExtensions
+    public static class DistinctPipeExtensions
     {
 
-        #region DuplicateFilter(this IEnumerable)
-
         /// <summary>
-        /// The DuplicateFilter will filter duplicate entries from the enumeration.
+        /// The DistinctPipe will filter duplicate entries from the enumeration.
         /// </summary>
-        /// <param name="IEnumerable">An enumeration of objects of type S.</param>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-        public static DuplicateFilterPipe<S> DuplicateFilter<S>(this IEnumerable<S> IEnumerable)
+        public static DistinctPipe<S> Distinct<S>(this IEndPipe<S>      SourcePipe,
+                                                  IEqualityComparer<S>  EqualityComparer = null)
         {
-            return new DuplicateFilterPipe<S>(IEnumerable);
+            return new DistinctPipe<S>(SourcePipe, EqualityComparer);
         }
-
-        #endregion
 
     }
     
@@ -60,31 +49,28 @@ namespace eu.Vanaheimr.Styx
     /// becomes as a log_2 index is checked for every object.
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public class DuplicateFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    public class DistinctPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
     {
 
         #region Data
 
-        /// <summary>
-        /// The internal hashset used as a history of values.
-        /// </summary>
-        private readonly HashSet<S> _HistorySet;
+        private readonly IEqualityComparer<S>  EqualityComparer;
+        private readonly HashSet<S>            ValueHistory;
 
         #endregion
 
         #region Constructor(s)
 
-        #region DuplicateFilterPipe(IEnumerable = null, IEnumerator = null)
+        #region DistinctPipe(SourcePipe, EqualityComparer = null)
 
         /// <summary>
-        /// Creates a new DuplicateFilterPipe.
+        /// Creates a new DistinctPipe.
         /// </summary>
-        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
-        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
-        public DuplicateFilterPipe(IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        public DistinctPipe(IEndPipe<S> SourcePipe, IEqualityComparer<S> EqualityComparer = null)
+            : base(SourcePipe)
         {
-            _HistorySet = new HashSet<S>();
+            this.EqualityComparer  = (EqualityComparer != null) ? EqualityComparer : EqualityComparer<S>.Default;
+            this.ValueHistory      = new HashSet<S>();
         }
 
         #endregion
@@ -104,17 +90,17 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
-                _CurrentElement = _InputEnumerator.Current;
+                _CurrentElement = SourcePipe.Current;
 
-                if (!_HistorySet.Contains(_CurrentElement))
+                if (!ValueHistory.Contains(_CurrentElement))
                 {
-                    _HistorySet.Add(_CurrentElement);
+                    ValueHistory.Add(_CurrentElement);
                     return true;
                 }
 

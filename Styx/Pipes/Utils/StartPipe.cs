@@ -41,17 +41,17 @@ namespace eu.Vanaheimr.Styx
         public StartPipe(Object Object)
         {
 
-            if (Object is IEnumerator<S>)
-                _InputEnumerator = (IEnumerator<S>) Object;
+            //if (Object is IEnumerator<S>)
+            //    _InputEnumerator = (IEnumerator<S>) Object;
 
-            else if (Object is IEnumerable<S>)
-                _InputEnumerator = ((IEnumerable<S>) Object).GetEnumerator();
+            //else if (Object is IEnumerable<S>)
+            //    _InputEnumerator = ((IEnumerable<S>) Object).GetEnumerator();
 
-            else if (Object is S)
-                _InputEnumerator = (new List<S>() { (S) Object }).GetEnumerator();
+            //else if (Object is S)
+            //    _InputEnumerator = (new List<S>() { (S) Object }).GetEnumerator();
 
-            else
-                throw new ArgumentException("Could not use the given Object!");
+            //else
+            //    throw new ArgumentException("Could not use the given Object!");
 
         }
 
@@ -73,12 +73,12 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            if (_InputEnumerator.MoveNext())
+            if (SourcePipe.MoveNext())
             {
-                _CurrentElement = _InputEnumerator.Current;
+                _CurrentElement = SourcePipe.Current;
                 return true;
             }
 

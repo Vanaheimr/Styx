@@ -39,32 +39,12 @@ namespace eu.Vanaheimr.Styx
         /// <param name="SearchOption">Include or do not include subdirectories.</param>
         /// <param name="FileFilter">A delegate for filtering the found files.</param>
         /// <returns>An enumeration of file infos.</returns>
-        public static IEnumerable<FileInfo> FileFilterPipe(this IEnumerable<String> IEnumerable,
+        public static IEnumerable<FileInfo> FileFilterPipe(this IEndPipe<String>  SourcePipe,
                                                                 String              SearchPattern = "*",
                                                                 SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
                                                                 FileFilter          FileFilter    = null)
         {
-            return new FileFilterPipe(SearchPattern, SearchOption, FileFilter, IEnumerable, null);
-        }
-
-        #endregion
-
-        #region FileFilterPipe(this IEnumerator, SearchPattern = "*", SearchOption = TopDirectoryOnly, FileFilter = null)
-
-        /// <summary>
-        /// Scans the given directories for files matching the given filters.
-        /// </summary>
-        /// <param name="IEnumerator">An enumerator of directories.</param>
-        /// <param name="SearchPattern">A simple search pattern like "*.jpg".</param>
-        /// <param name="SearchOption">Include or do not include subdirectories.</param>
-        /// <param name="FileFilter">A delegate for filtering the found files.</param>
-        /// <returns>An enumeration of file infos.</returns>
-        public static IEnumerable<FileInfo> FileFilterPipe(this IEnumerator<String> IEnumerator,
-                                                                String              SearchPattern = "*",
-                                                                SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
-                                                                FileFilter          FileFilter    = null)
-        {
-            return new FileFilterPipe(SearchPattern, SearchOption, FileFilter, null, IEnumerator);
+            return new FileFilterPipe(SourcePipe, SearchPattern, SearchOption, FileFilter).AsEnumerable();
         }
 
         #endregion

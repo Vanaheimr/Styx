@@ -43,7 +43,7 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region FixLineBreaksPipe(StartOfNewLineRegExpr, NewLineSeperator, IEnumerable = null, IEnumerator = null)
+        #region FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExpr, NewLineSeperator, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Sometimes there are unwanted new line characters within CSV files.
@@ -54,8 +54,12 @@ namespace eu.Vanaheimr.Styx
         /// <param name="NewLineSeperator">The new line seperator between the prior dangling lines.</param>
         /// <param name="IEnumerable">An enumeration of lines.</param>
         /// <param name="IEnumerator">An enumerator of lines.</param>
-        public FixLineBreaksPipe(Regex StartOfNewLineRegExpr, String NewLineSeperator, IEnumerable<String> IEnumerable = null, IEnumerator<String> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        public FixLineBreaksPipe(IEndPipe<String>  SourcePipe,
+                                 Regex             StartOfNewLineRegExpr,
+                                 String            NewLineSeperator)
+
+            : base(SourcePipe)
+
         {
 
             #region Initial checks
@@ -88,8 +92,12 @@ namespace eu.Vanaheimr.Styx
         /// <param name="NewLineSeperator">The new line seperator between the prior dangling lines.</param>
         /// <param name="IEnumerable">An enumeration of lines.</param>
         /// <param name="IEnumerator">An enumerator of lines.</param>
-        public FixLineBreaksPipe(String StartOfNewLineRegExprString, String NewLineSeperator, IEnumerable<String> IEnumerable = null, IEnumerator<String> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        public FixLineBreaksPipe(IEndPipe<String>  SourcePipe,
+                                 String            StartOfNewLineRegExprString,
+                                 String            NewLineSeperator)
+
+            : base(SourcePipe)
+
         {
 
             #region Initial checks
@@ -127,33 +135,33 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
-                if (this.StartOfNewLineRegExpr.IsMatch(_InputEnumerator.Current))
+                if (this.StartOfNewLineRegExpr.IsMatch(SourcePipe.Current))
                 {
 
                     if (this.IgnoreFirstLineMatch)
                     {
                         this.IgnoreFirstLineMatch = false;
-                        this.FixedLine.Append(_InputEnumerator.Current).Append(this.NewLineSeperator);
+                        this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeperator);
                     }
 
                     else
                     {
                         _CurrentElement = this.FixedLine.ToString();
                         this.FixedLine.Clear();
-                        this.FixedLine.Append(_InputEnumerator.Current).Append(this.NewLineSeperator);
+                        this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeperator);
                         return true;
                     }
 
                 }
 
                 else
-                    this.FixedLine.Append(_InputEnumerator.Current).Append(this.NewLineSeperator);
+                    this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeperator);
 
             }
 
@@ -171,7 +179,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InputEnumerator.Current + ">";
+            return base.ToString() + "<" + SourcePipe.Current + ">";
         }
 
         #endregion

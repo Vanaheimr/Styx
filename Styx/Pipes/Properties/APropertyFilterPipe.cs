@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 
+using eu.Vanaheimr.Illias.Commons;
 using eu.Vanaheimr.Illias.Commons.Collections;
 
 #endregion
@@ -48,10 +49,8 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="TValue">The type of the values.</typeparam>
     /// <typeparam name="S">The type of the objects to filter.</typeparam>
     public abstract class APropertyFilterPipe<TKey, TValue, S> : AbstractFilterPipe<S>
-
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         where S    : IReadOnlyProperties<TKey, TValue>
-
     {
 
         #region Data
@@ -64,33 +63,76 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region APropertyFilterPipe(Key, ComparisonFilter, IEnumerable, IEnumerator)
+        #region APropertyFilterPipe(SourcePipe, Key, ComparisonFilter)
 
         /// <summary>
-        /// Creates a new PropertyFilterPipe.
+        /// Creates a new property filter pipe.
         /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="ComparisonFilter">The comparison filter to use.</param>
-        /// <param name="IEnumerable">An IEnumerable&lt;...&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;...&gt; as element source.</param>
-        public APropertyFilterPipe(TKey                     Key,
-                                   ComparisonFilter<TValue> ComparisonFilter,
-                                   IEnumerable<S>           IEnumerable,
-                                   IEnumerator<S>           IEnumerator)
+        public APropertyFilterPipe(IEndPipe<S>               SourcePipe,
+                                   TKey                      Key,
+                                   ComparisonFilter<TValue>  ComparisonFilter)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourcePipe)
 
         {
 
-            #region Initial checks
+            ComparisonFilter.CheckNull("ComparisonFilter");
 
-            if (ComparisonFilter == null)
-                throw new ArgumentNullException("ComparisonFilter", "The given ComparisonFilter delegate must not be null!");
+            this.Key               = Key;
+            this.ComparisonFilter  = ComparisonFilter;
 
-            #endregion
+        }
 
-            this.Key              = Key;
-            this.ComparisonFilter = ComparisonFilter;
+        #endregion
+
+        #region APropertyFilterPipe(SourceEnumerator, Key, ComparisonFilter)
+
+        /// <summary>
+        /// Creates a new property filter pipe.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        /// <param name="Key">The property key.</param>
+        /// <param name="ComparisonFilter">The comparison filter to use.</param>
+        public APropertyFilterPipe(IEnumerator<S>            SourceEnumerator,
+                                   TKey                      Key,
+                                   ComparisonFilter<TValue>  ComparisonFilter)
+
+            : base(SourceEnumerator)
+
+        {
+
+            ComparisonFilter.CheckNull("ComparisonFilter");
+
+            this.Key               = Key;
+            this.ComparisonFilter  = ComparisonFilter;
+
+        }
+
+        #endregion
+
+        #region APropertyFilterPipe(SourceEnumerable, Key, ComparisonFilter)
+
+        /// <summary>
+        /// Creates a new property filter pipe.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        /// <param name="Key">The property key.</param>
+        /// <param name="ComparisonFilter">The comparison filter to use.</param>
+        public APropertyFilterPipe(IEnumerable<S>            SourceEnumerable,
+                                   TKey                      Key,
+                                   ComparisonFilter<TValue>  ComparisonFilter)
+
+            : base(SourceEnumerable)
+
+        {
+
+            ComparisonFilter.CheckNull("ComparisonFilter");
+
+            this.Key               = Key;
+            this.ComparisonFilter  = ComparisonFilter;
 
         }
 
@@ -111,20 +153,20 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
-                if (_InputEnumerator.Current.TryGetProperty(Key, out ActualValue))
+                if (SourcePipe.Current.TryGetProperty(Key, out ActualValue))
                 {
 
-                    if (_InputEnumerator.Current.TryGetProperty(Key, out ActualValue))
+                    if (SourcePipe.Current.TryGetProperty(Key, out ActualValue))
                     {
                         if (ComparisonFilter(ActualValue))
                         {
-                            _CurrentElement = _InputEnumerator.Current;
+                            _CurrentElement = SourcePipe.Current;
                             return true;
                         }
                     }
@@ -152,7 +194,6 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="TValue">The type of the values.</typeparam>
     /// <typeparam name="S">The type of the objects to filter.</typeparam>
     public abstract class APropertyFilterPipe<TKey, TValue, TCast, S> : AbstractFilterPipe<S>
-
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         where S    : IReadOnlyProperties<TKey, TValue>
     {
@@ -167,21 +208,20 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region APropertyFilterPipe(Key, ComparisonFilter, IEnumerable, IEnumerator)
+        #region APropertyFilterPipe(SourcePipe, Key, ComparisonFilter)
 
         /// <summary>
         /// Creates a new PropertyFilterPipe.
         /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="ComparisonFilter">The comparison filter to use.</param>
-        /// <param name="IEnumerable">An IEnumerable&lt;...&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;...&gt; as element source.</param>
-        public APropertyFilterPipe(TKey Key,
-                                   ComparisonFilter<TCast> ComparisonFilter,
-                                   IEnumerable<S> IEnumerable,
-                                   IEnumerator<S> IEnumerator)
+        public APropertyFilterPipe(IEndPipe<S>              SourcePipe,
+                                   TKey                     Key,
+                                   ComparisonFilter<TCast>  ComparisonFilter)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourcePipe)
+
         {
 
             #region Initial checks
@@ -213,13 +253,13 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
-                if (_InputEnumerator.Current.TryGetProperty(Key, out ActualValue))
+                if (SourcePipe.Current.TryGetProperty(Key, out ActualValue))
                 {
 
                     try
@@ -227,7 +267,7 @@ namespace eu.Vanaheimr.Styx
 
                         if (ComparisonFilter((TCast) (Object) ActualValue))
                         {
-                            _CurrentElement = _InputEnumerator.Current;
+                            _CurrentElement = SourcePipe.Current;
                             return true;
                         }
 

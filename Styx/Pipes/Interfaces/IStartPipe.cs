@@ -31,32 +31,11 @@ namespace eu.Vanaheimr.Styx
     /// <summary>
     /// An interface for the element consuming part of a pipe.
     /// Pipes implementing just this interface do not neccessarily
-    /// emit elements, but e.g. might send them via network.
+    /// also emit elements, but e.g. might send them via network
+    /// or write them to disk.
     /// </summary>
     public interface IStartPipe
-    {
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        void SetSource(Object SourceElement);
-
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator as input.
-        /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator as element source.</param>
-        void SetSource(IEnumerator IEnumerator);
-
-
-        /// <summary>
-        /// Set the elements emitted from the given IEnumerable as input.
-        /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable as element source.</param>
-        void SetSourceCollection(IEnumerable IEnumerable);
-
-    }
+    { }
 
     #endregion
 
@@ -72,23 +51,28 @@ namespace eu.Vanaheimr.Styx
     {
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         void SetSource(S SourceElement);
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
+        /// Set the given pipe as element source.
         /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        void SetSource(IEnumerator<S> IEnumerator);
-
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        void SetSource(IEndPipe<S> SourcePipe);
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
+        /// Set the given enumerator as element source.
         /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        void SetSourceCollection(IEnumerable<S> IEnumerable);
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        void SetSource(IEnumerator<S> SourceEnumerator);
+
+        /// <summary>
+        /// Set the given enumerable as element source.
+        /// </summary> 
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        void SetSource(IEnumerable<S> SourceEnumerable);
 
     }
 
@@ -107,42 +91,55 @@ namespace eu.Vanaheimr.Styx
     {
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as first element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         void SetSource1(S1 SourceElement);
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as second element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         void SetSource2(S2 SourceElement);
 
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
+        /// Set the given pipe as first element source.
         /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
-        void SetSource1(IEnumerator<S1> IEnumerator);
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        void SetSource1(IEndPipe<S1> SourcePipe);
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
+        /// Set the given pipe as second element source.
         /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
-        void SetSource2(IEnumerator<S2> IEnumerator);
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        void SetSource2(IEndPipe<S2> SourcePipe);
 
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
+        /// Set the given enumerator as first element source.
         /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        void SetSourceCollection1(IEnumerable<S1> IEnumerable);
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        void SetSource1(IEnumerator<S1> SourceEnumerator);
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
+        /// Set the given enumerator as second element source.
         /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        void SetSourceCollection2(IEnumerable<S2> IEnumerable);
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        void SetSource2(IEnumerator<S2> SourceEnumerator);
+
+
+        /// <summary>
+        /// Set the given enumerable as first element source.
+        /// </summary> 
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        void SetSource1(IEnumerable<S1> SourceEnumerable);
+
+        /// <summary>
+        /// Set the given enumerable as second element source.
+        /// </summary> 
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        void SetSource2(IEnumerable<S2> SourceEnumerable);
 
     }
 
@@ -162,60 +159,79 @@ namespace eu.Vanaheimr.Styx
     {
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as first element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         void SetSource1(S1 SourceElement);
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as second element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         void SetSource2(S2 SourceElement);
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as third element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         void SetSource3(S3 SourceElement);
 
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
+        /// Set the given pipe as first element source.
         /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        void SetSource1(IEndPipe<S1> SourcePipe);
+
+        /// <summary>
+        /// Set the given pipe as second element source.
+        /// </summary> 
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        void SetSource2(IEndPipe<S2> SourcePipe);
+
+        /// <summary>
+        /// Set the given pipe as third element source.
+        /// </summary> 
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        void SetSource3(IEndPipe<S3> SourcePipe);
+
+
+        /// <summary>
+        /// Set the given enumerator as first element source.
+        /// </summary> 
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
         void SetSource1(IEnumerator<S1> IEnumerator);
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
+        /// Set the given enumerator as second element source.
         /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
         void SetSource2(IEnumerator<S2> IEnumerator);
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S3&gt; as input.
+        /// Set the given enumerator as third element source.
         /// </summary> 
-        /// <param name="IEnumerator">An IEnumerator&lt;S3&gt; as element source.</param>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
         void SetSource3(IEnumerator<S3> IEnumerator);
 
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
+        /// Set the given enumerable as first element source.
         /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        void SetSourceCollection1(IEnumerable<S1> IEnumerable);
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        void SetSource1(IEnumerable<S1> IEnumerable);
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
+        /// Set the given enumerable as second element source.
         /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        void SetSourceCollection2(IEnumerable<S2> IEnumerable);
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        void SetSource2(IEnumerable<S2> IEnumerable);
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S3&gt; as input.
+        /// Set the given enumerable as third element source.
         /// </summary> 
-        /// <param name="IEnumerable">An IEnumerable&lt;S3&gt; as element source.</param>
-        void SetSourceCollection3(IEnumerable<S3> IEnumerable);
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        void SetSource3(IEnumerable<S3> IEnumerable);
 
     }
 

@@ -40,66 +40,436 @@ namespace eu.Vanaheimr.Styx
 
         #region Properties
 
-        /// <summary>
-        /// The SideEffect produced by this Pipe.
-        /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
-        /// </summary>
-        protected T _SideEffect;
+        #region SideEffect
 
         /// <summary>
-        /// The SideEffect produced by this Pipe.
+        /// The internal side effect produced by this pipe.
+        /// Use this reference for operations like:
+        /// Interlocked.Increment(ref InternalSideEffect);
+        /// </summary>
+        protected T InternalSideEffect;
+
+        /// <summary>
+        /// The side effect produced by this pipe.
         /// </summary>
         public T SideEffect
         {
-            
+
             get
             {
-                return _SideEffect;
+                return InternalSideEffect;
             }
 
             protected set
             {
-                _SideEffect = value;
+                InternalSideEffect = value;
             }
 
         }
 
         #endregion
 
+        #endregion
+
         #region Constructor(s)
 
-        #region AbstractSideEffectPipe()
+        #region (protected) AbstractSideEffectPipe()
 
         /// <summary>
-        /// Creates a new AbstractSideEffectPipe.
+        /// Creates an new abstract side effect pipe.
         /// </summary>
-		public AbstractSideEffectPipe()
-		{ }
-		
-		#endregion
-
-        #region AbstractSideEffectPipe(IEnumerator, IEnumerable)
-
-        /// <summary>
-        /// Creates a new AbstractSideEffectPipe using the elements
-        /// emitted by the given IEnumerator as input.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public AbstractSideEffectPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
-            : base(IEnumerable, IEnumerator)
+        protected AbstractSideEffectPipe()
         { }
 
         #endregion
-		
-		#endregion
+
+        #region AbstractSideEffectPipe(SourceElement, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given single value as element source.
+        /// </summary>
+        /// <param name="SourceElement">A single value as element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(S  SourceElement,
+                                      T  SideEffect)
+
+            : base(SourceElement)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourcePipe, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given pipe as element source.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEndPipe<S>  SourcePipe,
+                                      T            SideEffect)
+
+            : base(SourcePipe)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceEnumerator, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEnumerator<S>  SourceEnumerator,
+                                      T               SideEffect)
+
+            : base(SourceEnumerator)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceEnumerable, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEnumerable<S>  SourceEnumerable,
+                                      T               SideEffect)
+
+            : base(SourceEnumerable)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #endregion
 
     }
 
     #endregion
 
-    #region AbstractSideEffectPipe<S, E, T1, T2>
+    #region AbstractSideEffectPipe<S1, S2, E, T>
+
+    /// <summary>
+    /// An AbstractSideEffectPipe provides the same functionality as the 
+    /// AbstractPipe, but produces a side effect which can be retrieved
+    /// by the SideEffect property.
+    /// </summary>
+    /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="T">The type of the sideeffect.</typeparam>
+    public abstract class AbstractSideEffectPipe<S1, S2, E, T> : AbstractPipe<S1, S2, E>, ISideEffectPipe<S1, S2, E, T>
+    {
+
+        #region Properties
+
+        #region SideEffect
+
+        /// <summary>
+        /// The internal side effect produced by this pipe.
+        /// Use this reference for operations like:
+        /// Interlocked.Increment(ref InternalSideEffect);
+        /// </summary>
+        protected T InternalSideEffect;
+
+        /// <summary>
+        /// The side effect produced by this pipe.
+        /// </summary>
+        public T SideEffect
+        {
+
+            get
+            {
+                return InternalSideEffect;
+            }
+
+            protected set
+            {
+                InternalSideEffect = value;
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region (protected) AbstractSideEffectPipe()
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe.
+        /// </summary>
+        protected AbstractSideEffectPipe()
+        { }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceElement1, SourceElement2, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given single values as element sources.
+        /// </summary>
+        /// <param name="SourceElement1">A single value as first element source.</param>
+        /// <param name="SourceElement2">A single value as second element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(S1  SourceElement1,
+                                      S2  SourceElement2,
+                                      T   SideEffect)
+
+            : base(SourceElement1, SourceElement2)
+
+        {
+
+            this.SideEffect = SideEffect;
+
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourcePipe1, SourcePipe2, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given pipes as element sources.
+        /// </summary>
+        /// <param name="SourcePipe1">A pipe as first element source.</param>
+        /// <param name="SourcePipe2">A pipe as second element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEndPipe<S1>  SourcePipe1,
+                                      IEndPipe<S2>  SourcePipe2,
+                                      T             SideEffect)
+
+            : base(SourcePipe1, SourcePipe2)
+
+        {
+
+            this.SideEffect = SideEffect;
+
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceEnumerator1, SourceEnumerator2, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerators as element sources.
+        /// </summary>
+        /// <param name="SourceEnumerator1">An enumerator as first element source.</param>
+        /// <param name="SourceEnumerator2">An enumerator as second element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEnumerator<S1>  SourceEnumerator1,
+                                      IEnumerator<S2>  SourceEnumerator2,
+                                      T                SideEffect)
+
+            : base(SourceEnumerator1, SourceEnumerator2)
+
+        {
+
+            this.SideEffect = SideEffect;
+
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceEnumerable1, SourceEnumerable2, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerables as element sources.
+        /// </summary>
+        /// <param name="SourceEnumerable1">An enumerable as element source.</param>
+        /// <param name="SourceEnumerable2">An enumerable as element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEnumerable<S1>  SourceEnumerable1,
+                                      IEnumerable<S2>  SourceEnumerable2,
+                                      T                SideEffect)
+
+            : base(SourceEnumerable1, SourceEnumerable2)
+
+        {
+
+            this.SideEffect = SideEffect;
+
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+
+    #endregion
+
+    #region AbstractSideEffectPipe<S1, S2, S3, E, T>
+
+    /// <summary>
+    /// An AbstractSideEffectPipe provides the same functionality as the 
+    /// AbstractPipe, but produces a side effect which can be retrieved
+    /// by the SideEffect property.
+    /// </summary>
+    /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
+    /// <typeparam name="S3">The type of the second consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="T">The type of the sideeffect.</typeparam>
+    public abstract class AbstractSideEffectPipe<S1, S2, S3, E, T> : AbstractPipe<S1, S2, S3, E>, ISideEffectPipe<S1, S2, S3, E, T>
+    {
+
+        #region Properties
+
+        #region SideEffect
+
+        /// <summary>
+        /// The internal side effect produced by this pipe.
+        /// Use this reference for operations like:
+        /// Interlocked.Increment(ref InternalSideEffect);
+        /// </summary>
+        protected T InternalSideEffect;
+
+        /// <summary>
+        /// The side effect produced by this pipe.
+        /// </summary>
+        public T SideEffect
+        {
+
+            get
+            {
+                return InternalSideEffect;
+            }
+
+            protected set
+            {
+                InternalSideEffect = value;
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region (protected) AbstractSideEffectPipe()
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe.
+        /// </summary>
+        protected AbstractSideEffectPipe()
+        { }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceElement1, SourceElement2, SourceElement3, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given single values as element sources.
+        /// </summary>
+        /// <param name="SourceElement1">A single value as first element source.</param>
+        /// <param name="SourceElement2">A single value as second element source.</param>
+        /// <param name="SourceElement3">A single value as third element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(S1  SourceElement1,
+                                      S2  SourceElement2,
+                                      S3  SourceElement3,
+                                      T   SideEffect)
+
+            : base(SourceElement1, SourceElement2, SourceElement3)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourcePipe1, SourcePipe2, SourcePipe3, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given pipes as element sources.
+        /// </summary>
+        /// <param name="SourcePipe1">A pipe as first element source.</param>
+        /// <param name="SourcePipe2">A pipe as second element source.</param>
+        /// <param name="SourcePipe3">A pipe as third element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEndPipe<S1>  SourcePipe1,
+                                      IEndPipe<S2>  SourcePipe2,
+                                      IEndPipe<S3>  SourcePipe3,
+                                      T             SideEffect)
+
+            : base(SourcePipe1, SourcePipe2, SourcePipe3)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceEnumerator1, SourceEnumerator2, SourceEnumerator3, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerators as element sources.
+        /// </summary>
+        /// <param name="SourceEnumerator1">An enumerator as first element source.</param>
+        /// <param name="SourceEnumerator2">An enumerator as second element source.</param>
+        /// <param name="SourceEnumerator3">An enumerator as third element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEnumerator<S1>  SourceEnumerator1,
+                                      IEnumerator<S2>  SourceEnumerator2,
+                                      IEnumerator<S3>  SourceEnumerator3,
+                                      T                SideEffect)
+
+            : base(SourceEnumerator1, SourceEnumerator2, SourceEnumerator3)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #region AbstractSideEffectPipe(SourceEnumerable1, SourceEnumerable2, SourceEnumerable3, SideEffect)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerables as element sources.
+        /// </summary>
+        /// <param name="SourceEnumerable1">An enumerable as first element source.</param>
+        /// <param name="SourceEnumerable2">An enumerable as second element source.</param>
+        /// <param name="SourceEnumerable3">An enumerable as third element source.</param>
+        /// <param name="SideEffect">The initial value of the side effect.</param>
+        public AbstractSideEffectPipe(IEnumerable<S1>  SourceEnumerable1,
+                                      IEnumerable<S2>  SourceEnumerable2,
+                                      IEnumerable<S3>  SourceEnumerable3,
+                                      T                SideEffect)
+
+            : base(SourceEnumerable1, SourceEnumerable2, SourceEnumerable3)
+
+        {
+            this.SideEffect = SideEffect;
+        }
+
+        #endregion
+
+        #endregion
+
+    }
+
+    #endregion
+
+
+    #region AbstractTwoSideEffectsPipe<S, E, T1, T2>
 
     /// <summary>
     /// An AbstractSideEffectPipe provides the same functionality as the 
@@ -110,7 +480,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    public abstract class AbstractSideEffectPipe<S, E, T1, T2> : AbstractPipe<S, E>, ISideEffectPipe<S, E, T1, T2>
+    public abstract class AbstractTwoSideEffectsPipe<S, E, T1, T2> : AbstractPipe<S, E>, ITwoSideEffectsPipe<S, E, T1, T2>
     {
 
         #region Properties
@@ -118,26 +488,26 @@ namespace eu.Vanaheimr.Styx
         #region SideEffect1
 
         /// <summary>
-        /// The SideEffect produced by this Pipe.
+        /// The first side effect produced by this pipe.
         /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
+        /// Interlocked.Increment(ref InternalSideEffect1);
         /// </summary>
-        protected T1 _SideEffect1;
+        protected T1 InternalSideEffect1;
 
         /// <summary>
-        /// The first SideEffect produced by this Pipe.
+        /// The first side effect produced by this pipe.
         /// </summary>
         public T1 SideEffect1
         {
 
             get
             {
-                return _SideEffect1;
+                return InternalSideEffect1;
             }
 
             protected set
             {
-                _SideEffect1 = value;
+                InternalSideEffect1 = value;
             }
 
         }
@@ -147,26 +517,26 @@ namespace eu.Vanaheimr.Styx
         #region SideEffect2
 
         /// <summary>
-        /// The SideEffect produced by this Pipe.
+        /// The second side effect produced by this pipe.
         /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
+        /// Interlocked.Increment(ref InternalSideEffect2);
         /// </summary>
-        protected T2 _SideEffect2;
+        protected T2 InternalSideEffect2;
 
         /// <summary>
-        /// The second SideEffect produced by this Pipe.
+        /// The second side effect produced by this pipe.
         /// </summary>
         public T2 SideEffect2
         {
 
             get
             {
-                return _SideEffect2;
+                return InternalSideEffect2;
             }
 
             protected set
             {
-                _SideEffect2 = value;
+                InternalSideEffect2 = value;
             }
 
         }
@@ -177,37 +547,117 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AbstractSideEffectPipe()
+        #region (protected) AbstractTwoSideEffectsPipe()
 
         /// <summary>
-        /// Creates a new AbstractSideEffectPipe.
+        /// Creates an new abstract side effect pipe.
         /// </summary>
-		public AbstractSideEffectPipe()
-		{ }
-		
-		#endregion
-
-        #region AbstractSideEffectPipe(IEnumerator, IEnumerable)
-
-        /// <summary>
-        /// Creates a new AbstractSideEffectPipe using the elements
-        /// emitted by the given IEnumerator as input.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public AbstractSideEffectPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
-            : base(IEnumerable, IEnumerator)
+        protected AbstractTwoSideEffectsPipe()
         { }
 
         #endregion
-		
-		#endregion
+
+        #region AbstractTwoSideEffectsPipe(SourceElement, SideEffect1, SideEffect2)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given single value as element source.
+        /// </summary>
+        /// <param name="SourceElement">A single value as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        public AbstractTwoSideEffectsPipe(S   SourceElement,
+                                          T1  SideEffect1,
+                                          T2  SideEffect2)
+
+            : base(SourceElement)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+
+        }
+
+        #endregion
+
+        #region AbstractTwoSideEffectsPipe(SourcePipe, SideEffect1, SideEffect2)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given pipe as element source.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        public AbstractTwoSideEffectsPipe(IEndPipe<S>  SourcePipe,
+                                          T1           SideEffect1,
+                                          T2           SideEffect2)
+
+            : base(SourcePipe)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+
+        }
+
+
+        #endregion
+
+        #region AbstractTwoSideEffectsPipe(SourceEnumerator, SideEffect1, SideEffect2)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        public AbstractTwoSideEffectsPipe(IEnumerator<S>  SourceEnumerator,
+                                          T1              SideEffect1,
+                                          T2              SideEffect2)
+
+            : base(SourceEnumerator)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+
+        }
+
+
+        #endregion
+
+        #region AbstractTwoSideEffectsPipe(SourceEnumerable, SideEffect1, SideEffect2)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        public AbstractTwoSideEffectsPipe(IEnumerable<S>  SourceEnumerable,
+                                          T1              SideEffect1,
+                                          T2              SideEffect2)
+
+            : base(SourceEnumerable)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+
+        }
+
+        #endregion
+
+        #endregion
 
     }
 
     #endregion
 
-    #region AbstractSideEffectPipe<S, E, T1, T2, T3>
+    #region AbstractThreeSideEffectsPipe<S, E, T1, T2, T3>
 
     /// <summary>
     /// An AbstractSideEffectPipe provides the same functionality as the 
@@ -219,7 +669,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
     /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
-    public abstract class AbstractSideEffectPipe<S, E, T1, T2, T3> : AbstractPipe<S, E>, ISideEffectPipe<S, E, T1, T2, T3>
+    public abstract class AbstractThreeSideEffectsPipe<S, E, T1, T2, T3> : AbstractPipe<S, E>, IThreeSideEffectsPipe<S, E, T1, T2, T3>
     {
 
         #region Properties
@@ -227,26 +677,26 @@ namespace eu.Vanaheimr.Styx
         #region SideEffect1
 
         /// <summary>
-        /// The first SideEffect produced by this Pipe.
+        /// The first side effect produced by this pipe.
         /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
+        /// Interlocked.Increment(ref InternalSideEffect1);
         /// </summary>
-        protected T1 _SideEffect1;
+        protected T1 InternalSideEffect1;
 
         /// <summary>
-        /// The first SideEffect produced by this Pipe.
+        /// The first side effect produced by this pipe.
         /// </summary>
         public T1 SideEffect1
         {
 
             get
             {
-                return _SideEffect1;
+                return InternalSideEffect1;
             }
 
             protected set
             {
-                _SideEffect1 = value;
+                InternalSideEffect1 = value;
             }
 
         }
@@ -256,26 +706,26 @@ namespace eu.Vanaheimr.Styx
         #region SideEffect2
 
         /// <summary>
-        /// The second SideEffect produced by this Pipe.
+        /// The second side effect produced by this pipe.
         /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
+        /// Interlocked.Increment(ref InternalSideEffect2);
         /// </summary>
-        protected T2 _SideEffect2;
+        protected T2 InternalSideEffect2;
 
         /// <summary>
-        /// The second SideEffect produced by this Pipe.
+        /// The second side effect produced by this pipe.
         /// </summary>
         public T2 SideEffect2
         {
 
             get
             {
-                return _SideEffect2;
+                return InternalSideEffect2;
             }
 
             protected set
             {
-                _SideEffect2 = value;
+                InternalSideEffect2 = value;
             }
 
         }
@@ -285,26 +735,26 @@ namespace eu.Vanaheimr.Styx
         #region SideEffect3
 
         /// <summary>
-        /// The third SideEffect produced by this Pipe.
+        /// The third side effect produced by this pipe.
         /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
+        /// Interlocked.Increment(ref InternalSideEffect3);
         /// </summary>
-        protected T3 _SideEffect3;
+        protected T3 InternalSideEffect3;
 
         /// <summary>
-        /// The third SideEffect produced by this Pipe.
+        /// The third side effect produced by this pipe.
         /// </summary>
         public T3 SideEffect3
         {
 
             get
             {
-                return _SideEffect3;
+                return InternalSideEffect3;
             }
 
             protected set
             {
-                _SideEffect3 = value;
+                InternalSideEffect3 = value;
             }
 
         }
@@ -315,27 +765,119 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AbstractSideEffectPipe()
+        #region (protected) AbstractThreeSideEffectsPipe()
 
         /// <summary>
-        /// Creates a new AbstractSideEffectPipe.
+        /// Creates an new abstract side effect pipe.
         /// </summary>
-        public AbstractSideEffectPipe()
+        protected AbstractThreeSideEffectsPipe()
         { }
 
         #endregion
 
-        #region AbstractSideEffectPipe(IEnumerator, IEnumerable)
+        #region AbstractThreeSideEffectsPipe(SourceElement, SideEffect1, SideEffect2, SideEffect3)
 
         /// <summary>
-        /// Creates a new AbstractSideEffectPipe using the elements
-        /// emitted by the given IEnumerator as input.
+        /// Creates an new abstract side effect pipe using the given single value as element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public AbstractSideEffectPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
-            : base(IEnumerable, IEnumerator)
-        { }
+        /// <param name="SourceElement">A single value as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        /// <param name="SideEffect3">The initial value of the third side effect.</param>
+        public AbstractThreeSideEffectsPipe(S   SourceElement,
+                                            T1  SideEffect1,
+                                            T2  SideEffect2,
+                                            T3  SideEffect3)
+
+            : base(SourceElement)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+            this.SideEffect3 = SideEffect3;
+
+        }
+
+        #endregion
+
+        #region AbstractThreeSideEffectsPipe(SourcePipe, SideEffect1, SideEffect2, SideEffect3)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given pipe as element source.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        /// <param name="SideEffect3">The initial value of the third side effect.</param>
+        public AbstractThreeSideEffectsPipe(IEndPipe<S>  SourcePipe,
+                                            T1           SideEffect1,
+                                            T2           SideEffect2,
+                                            T3           SideEffect3)
+
+            : base(SourcePipe)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+            this.SideEffect3 = SideEffect3;
+
+        }
+
+
+        #endregion
+
+        #region AbstractThreeSideEffectsPipe(SourceEnumerator, SideEffect1, SideEffect2, SideEffect3)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        /// <param name="SideEffect3">The initial value of the third side effect.</param>
+        public AbstractThreeSideEffectsPipe(IEnumerator<S>  SourceEnumerator,
+                                            T1              SideEffect1,
+                                            T2              SideEffect2,
+                                            T3              SideEffect3)
+
+            : base(SourceEnumerator)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+            this.SideEffect3 = SideEffect3;
+
+        }
+
+
+        #endregion
+
+        #region AbstractThreeSideEffectsPipe(SourceEnumerable, SideEffect1, SideEffect2, SideEffect3)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        /// <param name="SideEffect1">The initial value of the first side effect.</param>
+        /// <param name="SideEffect2">The initial value of the second side effect.</param>
+        /// <param name="SideEffect3">The initial value of the third side effect.</param>
+        public AbstractThreeSideEffectsPipe(IEnumerable<S>  SourceEnumerable,
+                                            T1              SideEffect1,
+                                            T2              SideEffect2,
+                                            T3              SideEffect3)
+
+            : base(SourceEnumerable)
+
+        {
+
+            this.SideEffect1 = SideEffect1;
+            this.SideEffect2 = SideEffect2;
+            this.SideEffect3 = SideEffect3;
+
+        }
 
         #endregion
 

@@ -22,6 +22,8 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
+using eu.Vanaheimr.Illias.Commons;
+
 #endregion
 
 namespace eu.Vanaheimr.Styx
@@ -42,13 +44,12 @@ namespace eu.Vanaheimr.Styx
         #region Data
 
         /// <summary>
-        /// The internal enumerator of the collection.
+        /// The source pipe.
         /// </summary>
-        protected IEnumerator<S> _InputEnumerator;
-
+        protected IEndPipe<S> SourcePipe;
 
         /// <summary>
-        /// The internal current element in the collection.
+        /// The current element in the pipe.
         /// </summary>
         protected E _CurrentElement;
 
@@ -56,35 +57,79 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AbstractPipe()
+        #region (protected) AbstractPipe()
 
         /// <summary>
-        /// Creates a AbstractPipe pipe.
+        /// Creates an abstract pipe.
         /// </summary>
-        public AbstractPipe()
+        protected AbstractPipe()
         { }
 
         #endregion
 
-        #region AbstractPipe(IEnumerator, IEnumerable)
+        #region AbstractPipe(SourceElement)
 
         /// <summary>
-        /// Creates a new AbstractPipe using the elements emitted
-        /// by the given IEnumerator as input.
+        /// Creates an new abstract pipe using the given single value as element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public AbstractPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
+        /// <param name="SourceElement">A single value as element source.</param>
+        public AbstractPipe(S SourceElement)
         {
 
-            if (IEnumerator != null && IEnumerable != null)
-                throw new ArgumentException("Please decide between IEnumerator and IEnumerable!");
+            SourceElement.CheckNull("SourceElement");
 
-            if (IEnumerable != null)
-                SetSourceCollection(IEnumerable);
+            this.SourcePipe = new IEnumerator2IEndPipe<S>((new List<S>() { SourceElement }).GetEnumerator());
 
-            if (IEnumerator != null)
-                SetSource(IEnumerator);
+        }
+
+        #endregion
+
+        #region AbstractPipe(SourcePipe)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given pipe as element source.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public AbstractPipe(IEndPipe<S> SourcePipe)
+        {
+
+            SourcePipe.CheckNull("SourcePipe");
+
+            this.SourcePipe = SourcePipe;
+
+        }
+
+        #endregion
+
+        #region AbstractPipe(SourceEnumerator)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public AbstractPipe(IEnumerator<S> SourceEnumerator)
+        {
+
+            SourceEnumerator.CheckNull("SourceEnumerator");
+
+            this.SourcePipe = new IEnumerator2IEndPipe<S>(SourceEnumerator);
+
+        }
+
+        #endregion
+
+        #region AbstractPipe(SourceEnumerable)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public AbstractPipe(IEnumerable<S> SourceEnumerable)
+        {
+
+            SourceEnumerable.CheckNull("SourceEnumerable");
+
+            this.SourcePipe = new IEnumerator2IEndPipe<S>(SourceEnumerable.GetEnumerator());
 
         }
 
@@ -96,77 +141,66 @@ namespace eu.Vanaheimr.Styx
         #region SetSource(SourceElement)
 
         /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        void IStartPipe.SetSource(Object SourceElement)
-        {
-            SetSource((S) SourceElement);
-        }
-
-        /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource(S SourceElement)
         {
-            _InputEnumerator = new HistoryEnumerator<S>(new S[1] { SourceElement });
-        }
 
-        #endregion
+            SourceElement.CheckNull("SourceElement");
 
-        #region SetSource(IEnumerator)
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
-        /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        void IStartPipe.SetSource(IEnumerator IEnumerator)
-        {
-            SetSource((IEnumerator<S>) IEnumerator);
-        }
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
-        /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public virtual void SetSource(IEnumerator<S> IEnumerator)
-        {
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("IEnumerator must not be null!");
-
-            if (IEnumerator is IEndPipe<S>)
-                _InputEnumerator = IEnumerator;
-            else
-                _InputEnumerator = new HistoryEnumerator<S>(IEnumerator);
+            this.SourcePipe = new IEnumerator2IEndPipe<S>((new List<S>() { SourceElement }).GetEnumerator());
 
         }
 
         #endregion
 
-        #region SetSourceCollection(IEnumerable)
+        #region SetSource(SourcePipe)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable as input.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable as element source.</param>
-        void IStartPipe.SetSourceCollection(IEnumerable IEnumerable)
+        /// Set the given pipe as element source.
+        /// </summary> 
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public virtual void SetSource(IEndPipe<S> SourcePipe)
         {
-            SetSourceCollection((IEnumerable<S>) IEnumerable);
+
+            SourcePipe.CheckNull("SourcePipe");
+
+            this.SourcePipe = SourcePipe;
+
         }
 
+        #endregion
+
+        #region SetSource(SourceEnumerator)
+
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S&gt; as input.
-        /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public virtual void SetSourceCollection(IEnumerable<S> IEnumerable)
+        /// Set the given enumerator as element source.
+        /// </summary> 
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public virtual void SetSource(IEnumerator<S> SourceEnumerator)
         {
 
-            if (IEnumerable == null)
-                throw new ArgumentNullException("IEnumerable must not be null!");
+            SourceEnumerator.CheckNull("SourceEnumerator");
 
-            SetSource(IEnumerable.GetEnumerator());
+            this.SourcePipe = new IEnumerator2IEndPipe<S>(SourceEnumerator);
+
+        }
+
+        #endregion
+
+        #region SetSource(SourceEnumerable)
+
+        /// <summary>
+        /// Set the given enumerable as element source.
+        /// </summary> 
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public virtual void SetSource(IEnumerable<S> SourceEnumerable)
+        {
+
+            SourceEnumerable.CheckNull("SourceEnumerable");
+
+            this.SourcePipe = new IEnumerator2IEndPipe<S>(SourceEnumerable.GetEnumerator());
 
         }
 
@@ -176,25 +210,14 @@ namespace eu.Vanaheimr.Styx
         #region GetEnumerator()
 
         /// <summary>
-        /// Returns an enumerator that iterates through the collection.
+        /// Returns an enumerator that iterates through the pipe.
         /// </summary>
         /// <returns>
-        /// A IEnumerator&lt;E&gt; that can be used to iterate through the collection.
+        /// A IEnumerator&lt;E&gt; that can be used to iterate through the pipe.
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return this;
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A IEnumerator that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this;
+            return new IEndPipe2IEnumerator<E>(this);
         }
 
         #endregion
@@ -202,20 +225,9 @@ namespace eu.Vanaheimr.Styx
         #region Current
 
         /// <summary>
-        /// Gets the current element in the collection.
+        /// Return the current element in the pipe.
         /// </summary>
         public E Current
-        {
-            get
-            {
-                return _CurrentElement;
-            }
-        }
-
-        /// <summary>
-        /// Gets the current element in the collection.
-        /// </summary>
-        Object System.Collections.IEnumerator.Current
         {
             get
             {
@@ -228,12 +240,12 @@ namespace eu.Vanaheimr.Styx
         #region MoveNext()
 
         /// <summary>
-        /// Advances the enumerator to the next element of the collection.
+        /// Advances the enumerator to the next element of the pipe.
         /// </summary>
         /// <returns>
         /// True if the enumerator was successfully advanced to the next
         /// element; false if the enumerator has passed the end of the
-        /// collection.
+        /// pipe.
         /// </returns>
         public abstract Boolean MoveNext();
 
@@ -243,11 +255,17 @@ namespace eu.Vanaheimr.Styx
 
         /// <summary>
         /// Sets the enumerator to its initial position, which is
-        /// before the first element in the collection.
+        /// before the first element in the pipe. If the pipe has
+        /// no internal state the pipe will just call Reset() on
+        /// its source pipe.
         /// </summary>
-        public virtual void Reset()
+        public virtual IEndPipe<E> Reset()
         {
-            _InputEnumerator.Reset();
+
+            SourcePipe.Reset();
+
+            return this;
+
         }
 
         #endregion
@@ -259,7 +277,8 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public virtual void Dispose()
         {
-            _InputEnumerator.Dispose();
+            if (SourcePipe != null)
+                SourcePipe.Dispose();
         }
 
         #endregion
@@ -282,7 +301,7 @@ namespace eu.Vanaheimr.Styx
                 var _Size         = _PathElements.Count();
 
                 // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)            
+                // todo: why is size == 0 required (Pangloss?)
                 if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
                     _PathElements.Add(_CurrentElement);
 
@@ -302,20 +321,20 @@ namespace eu.Vanaheimr.Styx
             get
             {
 
-                if (_InputEnumerator is IPipe)
-                    return ((IPipe) _InputEnumerator).Path;
+                if (SourcePipe is IPipe)
+                    return ((IPipe) SourcePipe).Path;
 
-                else if (_InputEnumerator is IHistoryEnumerator)
+                else if (SourcePipe is IHistoryEnumerator)
                 {
 
                     var _List = new List<Object>();
-                    var _Last = ((IHistoryEnumerator) _InputEnumerator).Last;
+                    var _Last = ((IHistoryEnumerator) SourcePipe).Last;
 
                     if (_Last == null)
                     {
                         //if (_InputEnumerator.MoveNext())
-                        _InputEnumerator.MoveNext();
-                        _List.Add(_InputEnumerator.Current);
+                        SourcePipe.MoveNext();
+                        _List.Add(SourcePipe.Current);
                     }
                     else
                         _List.Add(_Last);
@@ -324,8 +343,8 @@ namespace eu.Vanaheimr.Styx
 
                 }
 
-                else if (_InputEnumerator is ISingleEnumerator)
-                    return new List<Object>() { ((ISingleEnumerator) _InputEnumerator).Current };
+                else if (SourcePipe is ISingleEnumerator)
+                    return new List<Object>() { ((ISingleEnumerator) SourcePipe).Current };
 
                 else
                     return new List<Object>();
@@ -345,8 +364,8 @@ namespace eu.Vanaheimr.Styx
         public override String ToString()
         {
 
-            return (_InputEnumerator != null)
-                        ? this.GetType().Name + "<" + _InputEnumerator.Current + ">"
+            return (SourcePipe != null)
+                        ? this.GetType().Name + "<" + SourcePipe.Current + ">"
                         : this.GetType().Name;
 
         }
@@ -373,93 +392,131 @@ namespace eu.Vanaheimr.Styx
         #region Data
 
         /// <summary>
-        /// The internal enumerator of the first collection.
+        /// The first source pipe.
         /// </summary>
-        protected IEnumerator<S1> _InternalEnumerator1;
-
+        protected IEndPipe<S1> SourcePipe1;
 
         /// <summary>
-        /// The internal enumerator of the second collection.
+        /// The second source pipe.
         /// </summary>
-        protected IEnumerator<S2> _InternalEnumerator2;
-
+        protected IEndPipe<S2> SourcePipe2;
 
         /// <summary>
-        /// The internal current element in the collection.
+        /// The current element in the pipe.
         /// </summary>
         protected E _CurrentElement;
 
         #endregion
 
         #region Constructor(s)
-        
-        #region AbstractPipe()
-        
+
+        #region (protected) AbstractPipe()
+
         /// <summary>
         /// Creates a new abstract pipe.
         /// </summary>
-        public AbstractPipe()
+        protected AbstractPipe()
         { }
-        
+
         #endregion
 
-        #region AbstractPipe(IEnumerator1, IEnumerator2)
+        #region AbstractPipe(SourceElement1, SourceElement2)
 
         /// <summary>
-        /// Creates a new abstract pipe using the elements emitted
-        /// by the given IEnumerators as input.
+        /// Creates an new abstract pipe using the given single values as element sources.
         /// </summary>
-        /// <param name="IEnumerator1">An IEnumerator&lt;S1&gt; as element source.</param>
-        /// <param name="IEnumerator2">An IEnumerator&lt;S2&gt; as element source.</param>
-        public AbstractPipe(IEnumerator<S1> IEnumerator1, IEnumerator<S2> IEnumerator2)
+        /// <param name="SourceElement1">A single value as first element source.</param>
+        /// <param name="SourceElement2">A single value as second element source.</param>
+        public AbstractPipe(S1  SourceElement1,
+                            S2  SourceElement2)
         {
-            SetSource1(IEnumerator1);
-            SetSource2(IEnumerator2);
+
+            SourceElement1.CheckNull("SourceElement1");
+            SourceElement2.CheckNull("SourceElement2");
+
+            this.SourcePipe1 = new IEnumerator2IEndPipe<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
+            this.SourcePipe2 = new IEnumerator2IEndPipe<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
+
         }
 
         #endregion
 
-        #region AbstractPipe(IEnumerable1, IEnumerable2)
+        #region AbstractPipe(SourcePipe1, SourcePipe2)
 
         /// <summary>
-        /// Creates a new abstract pipe using the elements emitted
-        /// by the given IEnumerables as input.
+        /// Creates an new abstract pipe using the given pipes as element sources.
         /// </summary>
-        /// <param name="IEnumerable1">An IEnumerable&lt;S1&gt; as element source.</param>
-        /// <param name="IEnumerable2">An IEnumerable&lt;S2&gt; as element source.</param>
-        public AbstractPipe(IEnumerable<S1> IEnumerable1, IEnumerable<S2> IEnumerable2)
-        {   
-            SetSourceCollection1(IEnumerable1);
-            SetSourceCollection2(IEnumerable2);
-        }
-
-        #endregion
-        
-        #endregion
-
-
-        #region SetSource(SourceElement)
-
-        /// <summary>
-        /// Set the given element as source.
-        /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        public virtual void SetSource(Object SourceElement)
+        /// <param name="SourcePipe1">A pipe as first element source.</param>
+        /// <param name="SourcePipe2">A pipe as second element source.</param>
+        public AbstractPipe(IEndPipe<S1>  SourcePipe1,
+                            IEndPipe<S2>  SourcePipe2)
         {
-            SetSource1((S1) SourceElement);
+
+            SourcePipe1.CheckNull("SourcePipe1");
+            SourcePipe2.CheckNull("SourcePipe2");
+
+            this.SourcePipe1 = SourcePipe1;
+            this.SourcePipe2 = SourcePipe2;
+
         }
 
         #endregion
+
+        #region AbstractPipe(SourceEnumerator1, SourceEnumerator2)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given enumerators as element sources.
+        /// </summary>
+        /// <param name="SourceEnumerator1">An enumerator as first element source.</param>
+        /// <param name="SourceEnumerator2">An enumerator as second element source.</param>
+        public AbstractPipe(IEnumerator<S1>  SourceEnumerator1,
+                            IEnumerator<S2>  SourceEnumerator2)
+        {
+
+            SourceEnumerator1.CheckNull("SourceEnumerator1");
+            SourceEnumerator2.CheckNull("SourceEnumerator2");
+
+            this.SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerator1);
+            this.SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerator2);
+
+        }
+
+        #endregion
+
+        #region AbstractPipe(SourceEnumerable1, SourceEnumerable2)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given enumerables as element sources.
+        /// </summary> 
+        /// <param name="SourceEnumerable1">An enumerable as first element source.</param>
+        /// <param name="SourceEnumerable2">An enumerable as second element source.</param>
+        public AbstractPipe(IEnumerable<S1>  SourceEnumerable1,
+                            IEnumerable<S2>  SourceEnumerable2)
+        {
+
+            SourceEnumerable1.CheckNull("SourceEnumerable1");
+            SourceEnumerable2.CheckNull("SourceEnumerable2");
+
+            this.SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerable1.GetEnumerator());
+            this.SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerable2.GetEnumerator());
+
+        }
+
+        #endregion
+
+        #endregion
+
 
         #region SetSource1(SourceElement)
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as first element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource1(S1 SourceElement)
         {
-            _InternalEnumerator1 = new HistoryEnumerator<S1>(new List<S1>() { SourceElement }.GetEnumerator());
+            SourceElement.CheckNull("SourceElement");
+            SourcePipe1 = new IEnumerator2IEndPipe<S1>((new List<S1>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -467,118 +524,100 @@ namespace eu.Vanaheimr.Styx
         #region SetSource2(SourceElement)
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as second element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource2(S2 SourceElement)
         {
-            _InternalEnumerator2 = new HistoryEnumerator<S2>(new List<S2>() { SourceElement }.GetEnumerator());
+            SourceElement.CheckNull("SourceElement");
+            SourcePipe2 = new IEnumerator2IEndPipe<S2>((new List<S2>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
 
 
-        #region SetSource(IEnumerator)
+        #region SetSource1(SourcePipe)
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator as input.
+        /// Set the given pipe as first element source.
         /// </summary>
-        /// <param name="IEnumerator">An IEnumerator as element source.</param>
-        public virtual void SetSource(IEnumerator IEnumerator)
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public virtual void SetSource1(IEndPipe<S1> SourcePipe)
         {
-            SetSource1((IEnumerator<S1>) IEnumerator);
+            SourcePipe.CheckNull("SourcePipe");
+            SourcePipe1 = SourcePipe;
         }
 
         #endregion
 
-        #region SetSource1(IEnumerator)
+        #region SetSource2(SourcePipe)
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
+        /// Set the given pipe as second element source.
         /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
-        public virtual void SetSource1(IEnumerator<S1> IEnumerator)
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public virtual void SetSource2(IEndPipe<S2> SourcePipe)
         {
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("IEnumerator must not be null!");
-
-            if (IEnumerator is IEndPipe<S1>)
-                _InternalEnumerator1 = IEnumerator;
-            else
-                _InternalEnumerator1 = new HistoryEnumerator<S1>(IEnumerator);
-
-        }
-
-        #endregion
-
-        #region SetSource2(IEnumerator)
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
-        /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
-        public virtual void SetSource2(IEnumerator<S2> IEnumerator)
-        {
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("IEnumerator must not be null!");
-
-            if (IEnumerator is IEndPipe<S2>)
-                _InternalEnumerator2 = IEnumerator;
-            else
-                _InternalEnumerator2 = new HistoryEnumerator<S2>(IEnumerator);
-
+            SourcePipe.CheckNull("SourcePipe");
+            SourcePipe2 = SourcePipe;
         }
 
         #endregion
 
 
-        #region SetSourceCollection(IEnumerable)
+        #region SetSource1(SourceEnumerator)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable as input.
+        /// Set the given enumerator as first element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable as element source.</param>
-        public virtual void SetSourceCollection(IEnumerable IEnumerable)
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public virtual void SetSource1(IEnumerator<S1> SourceEnumerator)
         {
-            SetSourceCollection((IEnumerable<S1>) IEnumerable);
+            SourceEnumerator.CheckNull("SourceEnumerator");
+            SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerator);
         }
 
         #endregion
 
-        #region SetSourceCollection1(IEnumerable)
+        #region SetSource2(SourceEnumerator)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
+        /// Set the given enumerator as second element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        public virtual void SetSourceCollection1(IEnumerable<S1> IEnumerable)
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public virtual void SetSource2(IEnumerator<S2> SourceEnumerator)
         {
-
-            if (IEnumerable == null)
-                throw new ArgumentNullException("IEnumerable must not be null!");
-
-            SetSource1(IEnumerable.GetEnumerator());
-
+            SourceEnumerator.CheckNull("SourceEnumerator");
+            SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerator);
         }
 
         #endregion
 
-        #region SetSourceCollection2(IEnumerable)
+
+        #region SetSource1(SourceEnumerable)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
+        /// Set the given enumerable as first element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        public virtual void SetSourceCollection2(IEnumerable<S2> IEnumerable)
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public virtual void SetSource1(IEnumerable<S1> SourceEnumerable)
         {
+            SourceEnumerable.CheckNull("SourceEnumerable");
+            SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerable.GetEnumerator());
+        }
 
-            if (IEnumerable == null)
-                throw new ArgumentNullException("IEnumerable must not be null!");
+        #endregion
 
-            SetSource2(IEnumerable.GetEnumerator());
+        #region SetSource2(SourceEnumerable)
 
+        /// <summary>
+        /// Set the given enumerable as second element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public virtual void SetSource2(IEnumerable<S2> SourceEnumerable)
+        {
+            SourceEnumerable.CheckNull("SourceEnumerable");
+            SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -594,18 +633,7 @@ namespace eu.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return this;
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A IEnumerator that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this;
+            return new IEndPipe2IEnumerator<E>(this);
         }
 
         #endregion
@@ -617,17 +645,6 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public E Current
         {
-            get
-            {
-                return _CurrentElement;
-            }
-        }
-
-        /// <summary>
-        /// Gets the current element in the collection.
-        /// </summary>
-        Object System.Collections.IEnumerator.Current
-        {    
             get
             {
                 return _CurrentElement;
@@ -656,10 +673,14 @@ namespace eu.Vanaheimr.Styx
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public virtual void Reset()
+        public virtual IEndPipe<E> Reset()
         {
-            _InternalEnumerator1.Reset();
-            _InternalEnumerator2.Reset();
+
+            SourcePipe1.Reset();
+            SourcePipe2.Reset();
+
+            return this;
+
         }
 
         #endregion
@@ -671,8 +692,8 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public virtual void Dispose()
         {
-            _InternalEnumerator1.Dispose();
-            _InternalEnumerator2.Dispose();
+            SourcePipe1.Dispose();
+            SourcePipe2.Dispose();
         }
 
         #endregion
@@ -781,103 +802,152 @@ namespace eu.Vanaheimr.Styx
         #region Data
 
         /// <summary>
-        /// The internal enumerator of the first collection.
+        /// The first source pipe.
         /// </summary>
-        protected IEnumerator<S1> _InternalEnumerator1;
-
+        protected IEndPipe<S1> SourcePipe1;
 
         /// <summary>
-        /// The internal enumerator of the second collection.
+        /// The second source pipe.
         /// </summary>
-        protected IEnumerator<S2> _InternalEnumerator2;
-
+        protected IEndPipe<S2> SourcePipe2;
 
         /// <summary>
-        /// The internal enumerator of the third collection.
+        /// The third source pipe.
         /// </summary>
-        protected IEnumerator<S3> _InternalEnumerator3;
-
+        protected IEndPipe<S3> SourcePipe3;
 
         /// <summary>
-        /// The internal current element in the collection.
+        /// The current element in the pipe.
         /// </summary>
         protected E _CurrentElement;
 
         #endregion
 
         #region Constructor(s)
-        
-        #region AbstractPipe()
-        
+
+        #region (protected) AbstractPipe()
+
         /// <summary>
         /// Creates a new abstract pipe.
         /// </summary>
-        public AbstractPipe()
+        protected AbstractPipe()
         { }
-        
+
         #endregion
 
-        #region AbstractPipe(IEnumerator1, IEnumerator2, IEnumerator3)
+        #region AbstractPipe(SourceElement1, SourceElement2, SourceElement3)
 
         /// <summary>
-        /// Creates a new abstract pipe using the elements emitted
-        /// by the given IEnumerators as input.
+        /// Creates an new abstract pipe using the given single values as element sources.
         /// </summary>
-        /// <param name="IEnumerator1">An IEnumerator&lt;S1&gt; as element source.</param>
-        /// <param name="IEnumerator2">An IEnumerator&lt;S2&gt; as element source.</param>
-        /// <param name="IEnumerator3">An IEnumerator&lt;S3&gt; as element source.</param>
-        public AbstractPipe(IEnumerator<S1> IEnumerator1, IEnumerator<S2> IEnumerator2, IEnumerator<S3> IEnumerator3)
+        /// <param name="SourceElement1">A single value as first element source.</param>
+        /// <param name="SourceElement2">A single value as second element source.</param>
+        /// <param name="SourceElement3">A single value as third element source.</param>
+        public AbstractPipe(S1  SourceElement1,
+                            S2  SourceElement2,
+                            S3  SourceElement3)
         {
-            SetSource1(IEnumerator1);
-            SetSource2(IEnumerator2);
-            SetSource3(IEnumerator3);
+
+            SourceElement1.CheckNull("SourceElement1");
+            SourceElement2.CheckNull("SourceElement2");
+            SourceElement3.CheckNull("SourceElement3");
+
+            this.SourcePipe1 = new IEnumerator2IEndPipe<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
+            this.SourcePipe2 = new IEnumerator2IEndPipe<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
+            this.SourcePipe3 = new IEnumerator2IEndPipe<S3>((new List<S3>() { SourceElement3 }).GetEnumerator());
+
         }
 
         #endregion
 
-        #region AbstractPipe(IEnumerable1, IEnumerable2, IEnumerable3)
+        #region AbstractPipe(SourcePipe1, SourcePipe2, SourcePipe3)
 
         /// <summary>
-        /// Creates a new abstract pipe using the elements emitted
-        /// by the given IEnumerables as input.
+        /// Creates an new abstract pipe using the given pipes as element sources.
         /// </summary>
-        /// <param name="IEnumerable1">An IEnumerable&lt;S1&gt; as element source.</param>
-        /// <param name="IEnumerable2">An IEnumerable&lt;S2&gt; as element source.</param>
-        /// <param name="IEnumerable3">An IEnumerable&lt;S3&gt; as element source.</param>
-        public AbstractPipe(IEnumerable<S1> IEnumerable1, IEnumerable<S2> IEnumerable2, IEnumerable<S3> IEnumerable3)
+        /// <param name="SourcePipe1">A pipe as first element source.</param>
+        /// <param name="SourcePipe2">A pipe as second element source.</param>
+        /// <param name="SourcePipe3">A pipe as third element source.</param>
+        public AbstractPipe(IEndPipe<S1>  SourcePipe1,
+                            IEndPipe<S2>  SourcePipe2,
+                            IEndPipe<S3>  SourcePipe3)
         {
-            SetSourceCollection1(IEnumerable1);
-            SetSourceCollection2(IEnumerable2);
-            SetSourceCollection3(IEnumerable3);
+
+            SourcePipe1.CheckNull("SourcePipe1");
+            SourcePipe2.CheckNull("SourcePipe2");
+            SourcePipe3.CheckNull("SourcePipe3");
+
+            this.SourcePipe1 = SourcePipe1;
+            this.SourcePipe2 = SourcePipe2;
+            this.SourcePipe3 = SourcePipe3;
+
         }
 
         #endregion
-        
-        #endregion
 
-
-        #region SetSource(SourceElement)
+        #region AbstractPipe(SourceEnumerator1, SourceEnumerator2, SourceEnumerator3)
 
         /// <summary>
-        /// Set the given element as source.
+        /// Creates an new abstract pipe using the given enumerators as element sources.
         /// </summary>
-        /// <param name="SourceElement">A single source element.</param>
-        public virtual void SetSource(Object SourceElement)
+        /// <param name="SourceEnumerator1">An enumerator as first element source.</param>
+        /// <param name="SourceEnumerator2">An enumerator as second element source.</param>
+        /// <param name="SourceEnumerator3">An enumerator as third element source.</param>
+        public AbstractPipe(IEnumerator<S1>  SourceEnumerator1,
+                            IEnumerator<S2>  SourceEnumerator2,
+                            IEnumerator<S3>  SourceEnumerator3)
         {
-            SetSource1((S1) SourceElement);
+
+            SourceEnumerator1.CheckNull("SourceEnumerator1");
+            SourceEnumerator2.CheckNull("SourceEnumerator2");
+            SourceEnumerator3.CheckNull("SourceEnumerator3");
+
+            this.SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerator1);
+            this.SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerator2);
+            this.SourcePipe3 = new IEnumerator2IEndPipe<S3>(SourceEnumerator3);
+
         }
 
         #endregion
+
+        #region AbstractPipe(SourceEnumerable1, SourceEnumerable2, SourceEnumerable3)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given enumerables as element sources.
+        /// </summary> 
+        /// <param name="SourceEnumerable1">An enumerable as first element source.</param>
+        /// <param name="SourceEnumerable2">An enumerable as second element source.</param>
+        /// <param name="SourceEnumerable3">An enumerable as third element source.</param>
+        public AbstractPipe(IEnumerable<S1>  SourceEnumerable1,
+                            IEnumerable<S2>  SourceEnumerable2,
+                            IEnumerable<S3>  SourceEnumerable3)
+        {
+
+            SourceEnumerable1.CheckNull("SourceEnumerable1");
+            SourceEnumerable2.CheckNull("SourceEnumerable2");
+            SourceEnumerable3.CheckNull("SourceEnumerable3");
+
+            this.SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerable1.GetEnumerator());
+            this.SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerable2.GetEnumerator());
+            this.SourcePipe3 = new IEnumerator2IEndPipe<S3>(SourceEnumerable3.GetEnumerator());
+
+        }
+
+        #endregion
+
+        #endregion
+
 
         #region SetSource1(SourceElement)
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as first element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource1(S1 SourceElement)
         {
-            _InternalEnumerator1 = new HistoryEnumerator<S1>(new List<S1>() { SourceElement }.GetEnumerator());
+            SourceElement.CheckNull("SourceElement");
+            SourcePipe1 = new IEnumerator2IEndPipe<S1>((new List<S1>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -885,170 +955,156 @@ namespace eu.Vanaheimr.Styx
         #region SetSource2(SourceElement)
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as second element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource2(S2 SourceElement)
         {
-            _InternalEnumerator2 = new HistoryEnumerator<S2>(new List<S2>() { SourceElement }.GetEnumerator());
+            SourceElement.CheckNull("SourceElement");
+            SourcePipe2 = new IEnumerator2IEndPipe<S2>((new List<S2>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
-        
+
         #region SetSource3(SourceElement)
 
         /// <summary>
-        /// Set the given element as source.
+        /// Set the given single value as third element source.
         /// </summary>
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource3(S3 SourceElement)
         {
-            _InternalEnumerator3 = new HistoryEnumerator<S3>(new List<S3>() { SourceElement }.GetEnumerator());
+            SourceElement.CheckNull("SourceElement");
+            SourcePipe3 = new IEnumerator2IEndPipe<S3>((new List<S3>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
 
 
-        #region SetSource(IEnumerator)
+        #region SetSource1(SourcePipe)
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator as input.
+        /// Set the given pipe as first element source.
         /// </summary>
-        /// <param name="IEnumerator">An IEnumerator as element source.</param>
-        public virtual void SetSource(IEnumerator IEnumerator)
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public virtual void SetSource1(IEndPipe<S1> SourcePipe)
         {
-            SetSource1((IEnumerator<S1>) IEnumerator);
+            SourcePipe.CheckNull("SourcePipe");
+            SourcePipe1 = SourcePipe;
         }
 
         #endregion
 
-        #region SetSource1(IEnumerator)
+        #region SetSource2(SourcePipe)
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S1&gt; as input.
+        /// Set the given pipe as second element source.
         /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S1&gt; as element source.</param>
-        public virtual void SetSource1(IEnumerator<S1> IEnumerator)
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public virtual void SetSource2(IEndPipe<S2> SourcePipe)
         {
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("IEnumerator must not be null!");
-
-            if (IEnumerator is IEndPipe<S1>)
-                _InternalEnumerator1 = IEnumerator;
-            else
-                _InternalEnumerator1 = new HistoryEnumerator<S1>(IEnumerator);
-
+            SourcePipe.CheckNull("SourcePipe");
+            SourcePipe2 = SourcePipe;
         }
 
         #endregion
 
-        #region SetSource2(IEnumerator)
+        #region SetSource3(SourcePipe)
 
         /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S2&gt; as input.
+        /// Set the given pipe as third element source.
         /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S2&gt; as element source.</param>
-        public virtual void SetSource2(IEnumerator<S2> IEnumerator)
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public virtual void SetSource3(IEndPipe<S3> SourcePipe)
         {
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("IEnumerator must not be null!");
-
-            if (IEnumerator is IEndPipe<S2>)
-                _InternalEnumerator2 = IEnumerator;
-            else
-                _InternalEnumerator2 = new HistoryEnumerator<S2>(IEnumerator);
-
-        }
-
-        #endregion
-
-        #region SetSource3(IEnumerator)
-
-        /// <summary>
-        /// Set the elements emitted by the given IEnumerator&lt;S3&gt; as input.
-        /// </summary>
-        /// <param name="IEnumerator">An IEnumerator&lt;S3&gt; as element source.</param>
-        public virtual void SetSource3(IEnumerator<S3> IEnumerator)
-        {
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("IEnumerator must not be null!");
-
-            if (IEnumerator is IEndPipe<S3>)
-                _InternalEnumerator3 = IEnumerator;
-            else
-                _InternalEnumerator3 = new HistoryEnumerator<S3>(IEnumerator);
-
+            SourcePipe.CheckNull("SourcePipe");
+            SourcePipe3 = SourcePipe;
         }
 
         #endregion
 
 
-        #region SetSourceCollection(IEnumerable)
+        #region SetSource1(SourceEnumerator)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable as input.
+        /// Set the given enumerator as first element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable as element source.</param>
-        public virtual void SetSourceCollection(IEnumerable IEnumerable)
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public virtual void SetSource1(IEnumerator<S1> SourceEnumerator)
         {
-            SetSourceCollection1((IEnumerable<S1>) IEnumerable);
+            SourceEnumerator.CheckNull("SourceEnumerator");
+            SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerator);
         }
 
         #endregion
 
-        #region SetSourceCollection1(IEnumerable)
+        #region SetSource2(SourceEnumerator)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S1&gt; as input.
+        /// Set the given enumerator as second element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S1&gt; as element source.</param>
-        public virtual void SetSourceCollection1(IEnumerable<S1> IEnumerable)
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public virtual void SetSource2(IEnumerator<S2> SourceEnumerator)
         {
-
-            if (IEnumerable == null)
-                throw new ArgumentNullException("IEnumerable must not be null!");
-
-            SetSource1(IEnumerable.GetEnumerator());
-
+            SourceEnumerator.CheckNull("SourceEnumerator");
+            SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerator);
         }
 
         #endregion
 
-        #region SetSourceCollection2(IEnumerable)
+        #region SetSource3(SourceEnumerator)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S2&gt; as input.
+        /// Set the given enumerator as second element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S2&gt; as element source.</param>
-        public virtual void SetSourceCollection2(IEnumerable<S2> IEnumerable)
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public virtual void SetSource3(IEnumerator<S3> SourceEnumerator)
         {
-
-            if (IEnumerable == null)
-                throw new ArgumentNullException("IEnumerable must not be null!");
-
-            SetSource2(IEnumerable.GetEnumerator());
-
+            SourceEnumerator.CheckNull("SourceEnumerator");
+            SourcePipe3 = new IEnumerator2IEndPipe<S3>(SourceEnumerator);
         }
 
         #endregion
 
-        #region SetSourceCollection3(IEnumerable)
+
+        #region SetSource1(SourceEnumerable)
 
         /// <summary>
-        /// Set the elements emitted from the given IEnumerable&lt;S3&gt; as input.
+        /// Set the given enumerable as first element source.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S3&gt; as element source.</param>
-        public virtual void SetSourceCollection3(IEnumerable<S3> IEnumerable)
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public virtual void SetSource1(IEnumerable<S1> SourceEnumerable)
         {
+            SourceEnumerable.CheckNull("SourceEnumerable");
+            SourcePipe1 = new IEnumerator2IEndPipe<S1>(SourceEnumerable.GetEnumerator());
+        }
 
-            if (IEnumerable == null)
-                throw new ArgumentNullException("IEnumerable must not be null!");
+        #endregion
 
-            SetSource3(IEnumerable.GetEnumerator());
+        #region SetSource2(SourceEnumerable)
 
+        /// <summary>
+        /// Set the given enumerable as second element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public virtual void SetSource2(IEnumerable<S2> SourceEnumerable)
+        {
+            SourceEnumerable.CheckNull("SourceEnumerable");
+            SourcePipe2 = new IEnumerator2IEndPipe<S2>(SourceEnumerable.GetEnumerator());
+        }
+
+        #endregion
+
+        #region SetSource3(SourceEnumerable)
+
+        /// <summary>
+        /// Set the given enumerable as second element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public virtual void SetSource3(IEnumerable<S3> SourceEnumerable)
+        {
+            SourceEnumerable.CheckNull("SourceEnumerable");
+            SourcePipe3 = new IEnumerator2IEndPipe<S3>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -1064,18 +1120,7 @@ namespace eu.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return this;
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A IEnumerator that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this;
+            return new IEndPipe2IEnumerator<E>(this);
         }
 
         #endregion
@@ -1087,17 +1132,6 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public E Current
         {
-            get
-            {
-                return _CurrentElement;
-            }
-        }
-
-        /// <summary>
-        /// Gets the current element in the collection.
-        /// </summary>
-        Object System.Collections.IEnumerator.Current
-        {    
             get
             {
                 return _CurrentElement;
@@ -1126,11 +1160,15 @@ namespace eu.Vanaheimr.Styx
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public virtual void Reset()
+        public virtual IEndPipe<E> Reset()
         {
-            _InternalEnumerator1.Reset();
-            _InternalEnumerator2.Reset();
-            _InternalEnumerator3.Reset();
+
+            SourcePipe1.Reset();
+            SourcePipe2.Reset();
+            SourcePipe3.Reset();
+
+            return this;
+
         }
 
         #endregion
@@ -1142,9 +1180,9 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public virtual void Dispose()
         {
-            _InternalEnumerator1.Dispose();
-            _InternalEnumerator2.Dispose();
-            _InternalEnumerator3.Dispose();
+            SourcePipe1.Dispose();
+            SourcePipe2.Dispose();
+            SourcePipe3.Dispose();
         }
 
         #endregion
@@ -1250,9 +1288,9 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, S3, S4, E> : IPipe<S1, S2, S3, S4, E>
     {
-        
+
         #region Data
-        
+
         /// <summary>
         /// The internal enumerator of the first collection.
         /// </summary>
@@ -1281,11 +1319,11 @@ namespace eu.Vanaheimr.Styx
         /// The internal current element in the collection.
         /// </summary>
         protected E _CurrentElement;
-        
+
         #endregion
-        
+
         #region Constructor(s)
-        
+
         #region AbstractPipe()
         
         /// <summary>
@@ -1335,7 +1373,7 @@ namespace eu.Vanaheimr.Styx
         }
 
         #endregion
-        
+
         #endregion
 
 
@@ -1515,7 +1553,7 @@ namespace eu.Vanaheimr.Styx
         }
 
         #endregion
-        
+
         #region SetSourceCollection1(IEnumerable)
 
         /// <summary>
@@ -1599,18 +1637,7 @@ namespace eu.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return this;
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A IEnumerator that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this;
+            return new IEndPipe2IEnumerator<E>(this);
         }
 
         #endregion
@@ -1622,17 +1649,6 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public E Current
         {
-            get
-            {
-                return _CurrentElement;
-            }
-        }
-
-        /// <summary>
-        /// Gets the current element in the collection.
-        /// </summary>
-        Object System.Collections.IEnumerator.Current
-        {    
             get
             {
                 return _CurrentElement;
@@ -1661,12 +1677,16 @@ namespace eu.Vanaheimr.Styx
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public virtual void Reset()
+        public virtual IEndPipe<E> Reset()
         {
+
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
             _InternalEnumerator3.Reset();
             _InternalEnumerator4.Reset();
+
+            return this;
+
         }
 
         #endregion
@@ -2204,18 +2224,7 @@ namespace eu.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return this;
-        }
-
-        /// <summary>
-        /// Returns an enumerator that iterates through the collection.
-        /// </summary>
-        /// <returns>
-        /// A IEnumerator that can be used to iterate through the collection.
-        /// </returns>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this;
+            return new IEndPipe2IEnumerator<E>(this);
         }
 
         #endregion
@@ -2226,17 +2235,6 @@ namespace eu.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public E Current
-        {
-            get
-            {
-                return _CurrentElement;
-            }
-        }
-
-        /// <summary>
-        /// Gets the current element in the collection.
-        /// </summary>
-        Object System.Collections.IEnumerator.Current
         {
             get
             {
@@ -2266,13 +2264,17 @@ namespace eu.Vanaheimr.Styx
         /// Sets the enumerators to their initial positions, which
         /// is before the first element in the collections.
         /// </summary>
-        public virtual void Reset()
+        public virtual IEndPipe<E> Reset()
         {
+
             _InternalEnumerator1.Reset();
             _InternalEnumerator2.Reset();
             _InternalEnumerator3.Reset();
             _InternalEnumerator4.Reset();
             _InternalEnumerator5.Reset();
+
+            return this;
+
         }
 
         #endregion

@@ -30,7 +30,7 @@ namespace eu.Vanaheimr.Styx
     /// track of the Min and Max values of S.
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
-    public class MinMaxPipe<S> : AbstractSideEffectPipe<S, S, S, S>
+    public class MinMaxPipe<S> : AbstractTwoSideEffectsPipe<S, S, S, S>
         where S: IComparable, IComparable<S>, IEquatable<S>
     {
 
@@ -45,7 +45,7 @@ namespace eu.Vanaheimr.Styx
         {
             get
             {
-                return _SideEffect1;
+                return InternalSideEffect1;
             }
         }
 
@@ -60,7 +60,7 @@ namespace eu.Vanaheimr.Styx
         {
             get
             {
-                return _SideEffect2;
+                return InternalSideEffect2;
             }
         }
 
@@ -70,18 +70,17 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region MinMaxFilter<S>(Min, Max, IEnumerable = null, IEnumerator = null)
+        #region MinMaxFilter<S>(SourcePipe, Min, Max)
 
         /// <summary>
         /// The MinMaxPipe produces two side effects which keep
         /// track of the Min and Max values of S.
         /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="Min">The initial minimum.</param>
         /// <param name="Max">The initial maximum.</param>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;Double&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;Double&gt; as element source.</param>
-        public MinMaxPipe(S Min, S Max, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        public MinMaxPipe(IEndPipe<S> SourcePipe, S Min, S Max)
+            : base(SourcePipe, Min, Max)
         {
             this.SideEffect1 = Min;
             this.SideEffect2 = Max;
@@ -105,13 +104,13 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            if (_InputEnumerator.MoveNext())
+            if (SourcePipe.MoveNext())
             {
 
-                _CurrentElement = _InputEnumerator.Current;
+                _CurrentElement = SourcePipe.Current;
 
                 if (Min.CompareTo(_CurrentElement) > 0)
                     SideEffect1 = _CurrentElement;

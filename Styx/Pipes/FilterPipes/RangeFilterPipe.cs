@@ -46,16 +46,16 @@ namespace eu.Vanaheimr.Styx
         /// <param name="High">The maximum value.</param>
         /// <param name="IEnumerable">An enumeration of objects of type S.</param>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-        public static RangeFilterPipe<S> RangeFilter<S>(this IEnumerable<S> IEnumerable, Int32 Low, Int32 High)
+        public static RangeFilterPipe<S> RangeFilter<S>(this IEndPipe<S> SourcePipe, Int32 Low, Int32 High)
         {
-            return new RangeFilterPipe<S>(Low, High, IEnumerable);
+            return new RangeFilterPipe<S>(SourcePipe, Low, High);
         }
 
         #endregion
 
     }
 
-    
+
     /// <summary>
     /// The RangeFilterPipe will only allow a sequential subset of its incoming
     /// objects to be emitted to its output. This pipe can be provided -1 for
@@ -76,7 +76,7 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region RangeFilterPipe(Low, High, IEnumerable = null, IEnumerator = null)
+        #region RangeFilterPipe(SourcePipe, Low, High)
 
         /// <summary>
         /// Creates a new RangeFilterPipe.
@@ -85,8 +85,8 @@ namespace eu.Vanaheimr.Styx
         /// <param name="High">The maximum value.</param>
         /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
         /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
-        public RangeFilterPipe(Int32 Low, Int32 High, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        public RangeFilterPipe(IEndPipe<S> SourcePipe, Int32 Low, Int32 High)
+            : base(SourcePipe)
         {
 
             if (Low > -1 && High > -1 && Low >= High)
@@ -115,10 +115,10 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
                 Counter++;
@@ -126,7 +126,7 @@ namespace eu.Vanaheimr.Styx
                 if ((Low  == -1 || Counter >= Low) &&
                     (High == -1 || Counter <= High))
                 {
-                    _CurrentElement = _InputEnumerator.Current;
+                    _CurrentElement = SourcePipe.Current;
                     return true;
                 }
 

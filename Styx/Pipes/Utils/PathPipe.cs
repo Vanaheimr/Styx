@@ -28,15 +28,14 @@ namespace eu.Vanaheimr.Styx
     public static class PathPipeExtentions
     {
 
-        public static IEnumerable<IEnumerable<Object>> Paths<S>(this IEndPipe<S> EndPipe)
-        {
+        //public static IEnumerable<IEnumerable<Object>> Paths<S>(this IEndPipe<S> EndPipe)
+        //{
 
-            var pp = new PathPipe<S>();
-            pp.SetSourceCollection(EndPipe);
+        //    var pp = new PathPipe<S>();
+        //    pp.SetSourceCollection(EndPipe.ToList());
+        //    return pp.ToList();
 
-            return pp;
-
-        }
+        //}
 
     }
 
@@ -49,6 +48,18 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class PathPipe<S> : AbstractPipe<S, IEnumerable<Object>>, IEndPipe<IEnumerable<Object>>
     {
+
+        #region 
+
+        #region PathPipe(SourcePipe)
+
+        public PathPipe(IEndPipe<S> SourcePipe)
+            : base(SourcePipe)
+        { }
+
+        #endregion
+
+        #endregion
 
         #region MoveNext()
 
@@ -63,15 +74,15 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            if (_InputEnumerator is IPipe)
+            if (SourcePipe is IPipe)
             {
 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
-                    _CurrentElement = ((IPipe) _InputEnumerator).Path;
+                    _CurrentElement = ((IPipe) SourcePipe).Path;
                     return true;
                 }
 

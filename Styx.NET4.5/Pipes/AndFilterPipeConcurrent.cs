@@ -93,13 +93,13 @@ namespace eu.Vanaheimr.Styx.Concurrent
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
-                var _S                = _InputEnumerator.Current;
+                var _S                = SourcePipe.Current;
                 var _TaskCancellation = new CancellationTokenSource();
 //                    var _NumberOfTasks    = _Pipes.Count();
                     

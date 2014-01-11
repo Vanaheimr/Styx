@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 #endregion
@@ -33,7 +32,7 @@ namespace eu.Vanaheimr.Styx
     /// Pipes implementing just this interface do not neccessarily
     /// consume elements, but e.g. might receive them via network.
     /// </summary>
-    public interface IEndPipe : IEnumerator, IEnumerable, IDisposable
+    public interface IEndPipe : IDisposable
     {
 
         /// <summary>
@@ -54,8 +53,34 @@ namespace eu.Vanaheimr.Styx
     /// consume elements, but e.g. might receive them via network.
     /// </summary>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public interface IEndPipe<E> : IEndPipe, IEnumerator<E>, IEnumerable<E>
-    { }
+    public interface IEndPipe<E> : IEndPipe
+    {
+
+        /// <summary>
+        /// Return an enumerator to traverse this pipe.
+        /// </summary>
+        IEnumerator<E> GetEnumerator();
+
+        /// <summary>
+        /// Return the current element in the pipe.
+        /// </summary>
+        E Current { get; }
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the pipe.
+        /// </summary>
+        /// <returns></returns>
+        Boolean MoveNext();
+
+        /// <summary>
+        /// Sets the enumerator to its initial position, which is
+        /// before the first element in the pipe. If the pipe has
+        /// no internal state the pipe will just call Reset() on
+        /// its source pipe.
+        /// </summary>
+        IEndPipe<E> Reset();
+
+    }
 
     #endregion
 

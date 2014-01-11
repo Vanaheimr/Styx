@@ -59,9 +59,8 @@ namespace eu.Vanaheimr.Styx
         /// <param name="FileShare">A System.IO.FileShare constant that determines how the file will be shared by processes.</param>
         /// <param name="BufferSize">A positive System.Int32 value greater than 0 indicating the buffer size. For bufferSize values between one and eight, the actual buffer size is set to eight bytes.</param>
         /// <param name="FileOptions">A System.IO.FileOptions value that specifies additional file options.</param>
-        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
-        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
-        public OpenStreamPipe(FileMode              FileMode,
+        public OpenStreamPipe(IEndPipe<FileInfo>    SourcePipe,
+                              FileMode              FileMode,
                               FileAccess            FileAccess,
                               FileShare             FileShare,
                               UInt32                BufferSize,
@@ -71,7 +70,7 @@ namespace eu.Vanaheimr.Styx
                               IEnumerable<FileInfo> IEnumerable = null,
                               IEnumerator<FileInfo> IEnumerator = null)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourcePipe)
 
         {
 
@@ -106,16 +105,16 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
 #if SILVERLIGHT
                 _CurrentElement = new FileStream(_InternalEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize);
 #else
-                _CurrentElement = new FileStream(_InputEnumerator.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize, _FileOptions);
+                _CurrentElement = new FileStream(SourcePipe.Current.FullName, _FileMode, _FileAccess, _FileShare, (Int32) _BufferSize, _FileOptions);
 #endif
                 return true;
 
@@ -135,7 +134,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InputEnumerator.Current + ">";
+            return base.ToString() + "<" + SourcePipe.Current + ">";
         }
 
         #endregion

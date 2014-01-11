@@ -53,7 +53,7 @@ namespace eu.Vanaheimr.Styx
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
         {
-            return new PropertyPipe<TKey, TValue>(new IReadOnlyProperties<TKey, TValue>[1] { Properties }, Keys: Keys);
+            return new PropertyPipe<TKey, TValue>(Properties, Keys);
         }
 
         #endregion
@@ -68,13 +68,13 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerable">An enumeration of IReadOnlyProperties&lt;TKey, TValue&gt;.</param>
         /// <param name="Keys">An array of property keys.</param>
         /// <returns>The property values of the given property keys.</returns>
-        public static PropertyPipe<TKey, TValue> P<TKey, TValue>(this IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable,
-                                                                 params TKey[] Keys)
+        public static PropertyPipe<TKey, TValue> P<TKey, TValue>(this IEndPipe<IReadOnlyProperties<TKey, TValue>>  SourcePipe,
+                                                                 params TKey[]                                     Keys)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
         {
-            return new PropertyPipe<TKey, TValue>(IEnumerable, Keys: Keys);
+            return new PropertyPipe<TKey, TValue>(SourcePipe, Keys);
         }
 
         #endregion
@@ -95,7 +95,7 @@ namespace eu.Vanaheimr.Styx
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
-            return new PropertyPipe<TKey, TValue>(KeyValueFilter, new IReadOnlyProperties<TKey, TValue>[1] { Properties });
+            return new PropertyPipe<TKey, TValue>(Properties, KeyValueFilter);
         }
 
         #endregion
@@ -110,12 +110,12 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerable">An enumeration of IReadOnlyProperties&lt;TKey, TValue&gt;.</param>
         /// <param name="KeyValueFilter">An optional delegate for keyvalue filtering.</param>
         /// <returns>The property values of the given property keys.</returns>
-        public static PropertyPipe<TKey, TValue> P<TKey, TValue>(this IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable,
+        public static PropertyPipe<TKey, TValue> P<TKey, TValue>(this IEndPipe<IReadOnlyProperties<TKey, TValue>> SourcePipe,
                                                                  KeyValueFilter<TKey, TValue> KeyValueFilter)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
-            return new PropertyPipe<TKey, TValue>(KeyValueFilter, IEnumerable);
+            return new PropertyPipe<TKey, TValue>(SourcePipe, KeyValueFilter);
         }
 
         #endregion
@@ -151,7 +151,26 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region PropertyPipe(IEnumerable = null, IEnumerator = null, Keys)
+        #region PropertyPipe(SourceElement, Keys)
+
+        /// <summary>
+        /// Emits the property values of the given property keys (OR-logic).
+        /// </summary>
+        /// <param name="SourceElement">A single value as element source.</param>
+        /// <param name="Keys">The property keys.</param>
+        /// <returns>The property values of the given property keys.</returns>
+        public PropertyPipe(IReadOnlyProperties<TKey, TValue>  SourceElement,
+                            params TKey[]                      Keys)
+
+            : base(SourceElement)
+
+        {
+            this.Keys = Keys;
+        }
+
+        #endregion
+
+        #region PropertyPipe(SourcePipe, Keys)
 
         /// <summary>
         /// Emits the property values of the given property keys (OR-logic).
@@ -160,11 +179,10 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerator">An optional IEnumerator&lt;IIdentifier&lt;TId&gt;&gt; as element source.</param>
         /// <param name="Keys">The property keys.</param>
         /// <returns>The property values of the given property keys.</returns>
-        public PropertyPipe(IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable = null,
-                            IEnumerator<IReadOnlyProperties<TKey, TValue>> IEnumerator = null,
-                            params TKey[] Keys)
+        public PropertyPipe(IEndPipe<IReadOnlyProperties<TKey, TValue>>  SourcePipe,
+                            params TKey[]                                Keys)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourcePipe)
 
         {
             this.Keys = Keys;
@@ -172,7 +190,8 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region PropertyPipe(KeyValueFilter, IEnumerable = null, IEnumerator = null)
+
+        #region PropertyPipe(SourceElement, KeyValueFilter)
 
         /// <summary>
         /// Emits the property values filtered by the given keyvalue filter.
@@ -180,11 +199,29 @@ namespace eu.Vanaheimr.Styx
         /// <param name="KeyValueFilter">An optional delegate for keyvalue filtering.</param>
         /// <param name="IEnumerable">An optional IEnumerable&lt;...&gt; as element source.</param>
         /// <param name="IEnumerator">An optional IEnumerator&lt;...&gt; as element source.</param>
-        public PropertyPipe(KeyValueFilter<TKey, TValue>                   KeyValueFilter,
-                            IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable = null,
-                            IEnumerator<IReadOnlyProperties<TKey, TValue>> IEnumerator = null)
+        public PropertyPipe(IReadOnlyProperties<TKey, TValue>  SourceElement,
+                            KeyValueFilter<TKey, TValue>       KeyValueFilter)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourceElement)
+
+        {
+            this.KeyValueFilter = (KeyValueFilter != null) ? KeyValueFilter : (k, v) => true;
+        }
+
+        #endregion
+
+        #region PropertyPipe(SourcePipe, KeyValueFilter)
+
+        /// <summary>
+        /// Emits the property values filtered by the given keyvalue filter.
+        /// </summary>
+        /// <param name="KeyValueFilter">An optional delegate for keyvalue filtering.</param>
+        /// <param name="IEnumerable">An optional IEnumerable&lt;...&gt; as element source.</param>
+        /// <param name="IEnumerator">An optional IEnumerator&lt;...&gt; as element source.</param>
+        public PropertyPipe(IEndPipe<IReadOnlyProperties<TKey, TValue>>  SourcePipe,
+                            KeyValueFilter<TKey, TValue>                 KeyValueFilter)
+
+            : base(SourcePipe)
 
         {
             this.KeyValueFilter = (KeyValueFilter != null) ? KeyValueFilter : (k, v) => true;
@@ -208,7 +245,7 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             #region Process the key array
@@ -222,7 +259,7 @@ namespace eu.Vanaheimr.Styx
                     if (KeysInterator == null)
                     {
 
-                        if (_InputEnumerator.MoveNext())
+                        if (SourcePipe.MoveNext())
                             KeysInterator = Keys.ToList().GetEnumerator();
 
                         else
@@ -233,7 +270,7 @@ namespace eu.Vanaheimr.Styx
                     if (KeysInterator.MoveNext())
                     {
 
-                        if (_InputEnumerator.Current.TryGetProperty(KeysInterator.Current, out _CurrentElement))
+                        if (SourcePipe.Current.TryGetProperty(KeysInterator.Current, out _CurrentElement))
                             return true;
 
                     }
@@ -257,8 +294,8 @@ namespace eu.Vanaheimr.Styx
                     if (KeyValueInterator == null)
                     {
 
-                        if (_InputEnumerator.MoveNext())
-                            KeyValueInterator = _InputEnumerator.Current.GetEnumerator();
+                        if (SourcePipe.MoveNext())
+                            KeyValueInterator = SourcePipe.Current.GetEnumerator();
 
                         else
                             return false;

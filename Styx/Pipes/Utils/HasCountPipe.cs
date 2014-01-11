@@ -75,7 +75,7 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             if (_Finished)
@@ -89,7 +89,7 @@ namespace eu.Vanaheimr.Styx
             while (true)
             {
 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
                     
                     if (_Counter == _Maximum)
@@ -117,11 +117,12 @@ namespace eu.Vanaheimr.Styx
         #endregion
 
 
-        public override void Reset()
-        {            
+        public override IEndPipe<Boolean> Reset()
+        {
             base.Reset();
             _Counter  = 0;
             _Finished = false;
+            return this;
         }
 
 

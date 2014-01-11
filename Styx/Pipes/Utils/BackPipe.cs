@@ -75,9 +75,9 @@ namespace eu.Vanaheimr.Styx
 
         public BackPipe(IPipe<S, E> IPipe, UInt64 Steps = 1)
         {
-            this.IPipe          = IPipe;
-            this.Steps          = Steps;
-            _InputEnumerator = IPipe.GetEnumerator();
+            this.IPipe             = IPipe;
+            this.Steps             = Steps;
+            this.SourcePipe  = IPipe;
         }
 
         #endregion
@@ -98,10 +98,10 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
                 _ReturnPosition = this.Path.Count() - 2 - (Int32) Steps;

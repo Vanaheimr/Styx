@@ -47,11 +47,8 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerable"></param>
         /// <param name="IEnumerator"></param>
-        public UnrollPipe(IEnumerable<IEnumerable<S>> IEnumerable = null,
-                          IEnumerator<IEnumerable<S>> IEnumerator = null)
-
-            : base(IEnumerable, IEnumerator)
-
+        public UnrollPipe(IEndPipe<IEnumerable<S>> SourcePipe)
+            : base(SourcePipe)
         { }
 
         #endregion
@@ -72,7 +69,7 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             while (true)
@@ -84,9 +81,9 @@ namespace eu.Vanaheimr.Styx
                     return true;
                 }
                 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
-                    _TempIterator = _InputEnumerator.Current.GetEnumerator();
+                    _TempIterator = SourcePipe.Current.GetEnumerator();
                 }
 
                 else

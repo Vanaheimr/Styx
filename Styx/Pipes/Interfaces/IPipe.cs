@@ -52,7 +52,7 @@ namespace eu.Vanaheimr.Styx
         : IStartPipe<S>,
           IEndPipe<E>,
           IPipe
-	{ }
+    { }
 
     #endregion
 

@@ -36,28 +36,62 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="S">The type of the filtered objects.</typeparam>
     public abstract class AbstractFilterPipe<S> : AbstractPipe<S, S>,
                                                   IFilterPipe<S>
-	{
+    {
 
-		#region AbstractFilterPipe()
-		
-        /// <summary>
-        /// Creates a AbstractFilterPipe pipe.
-        /// </summary>
-		public AbstractFilterPipe()
-		{ }
-		
-		#endregion
-
-        #region AbstractFilterPipe(IEnumerator, IEnumerable)
+        #region (protected) AbstractFilterPipe()
 
         /// <summary>
-        /// Creates a new AbstractFilterPipe using the elements emitted
-        /// by the given IEnumerator as input.
+        /// Creates a new abstract filter pipe.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        public AbstractFilterPipe(IEnumerable<S> IEnumerable, IEnumerator<S> IEnumerator)
-            : base(IEnumerable, IEnumerator)
+        protected AbstractFilterPipe()
+        { }
+
+        #endregion
+
+        #region AbstractFilterPipe(SourceElement)
+
+        /// <summary>
+        /// Creates an new abstract filter pipe using the given single value as element source.
+        /// </summary>
+        /// <param name="SourceElement">A single value as element source.</param>
+        public AbstractFilterPipe(S SourceElement)
+            : base(SourceElement)
+        { }
+
+        #endregion
+
+        #region AbstractFilterPipe(SourcePipe)
+
+        /// <summary>
+        /// Creates an new abstract filter pipe using the given pipe as element source.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public AbstractFilterPipe(IEndPipe<S> SourcePipe)
+            : base(SourcePipe)
+        { }
+
+        #endregion
+
+        #region AbstractFilterPipe(SourceEnumerator)
+
+        /// <summary>
+        /// Creates an new abstract filter pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public AbstractFilterPipe(IEnumerator<S> SourceEnumerator)
+            : base(SourceEnumerator)
+        { }
+
+        #endregion
+
+        #region AbstractFilterPipe(SourceEnumerable)
+
+        /// <summary>
+        /// Creates an new abstract filter pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public AbstractFilterPipe(IEnumerable<S> SourceEnumerable)
+            : base(SourceEnumerable)
         { }
 
         #endregion

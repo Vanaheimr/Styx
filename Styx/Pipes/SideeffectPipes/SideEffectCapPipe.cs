@@ -89,13 +89,13 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region SetSourceCollection(IEnumerable)
+        #region SetSource(IEnumerable)
 
         /// <summary>
         /// Set the elements emitted by the given IEnumerator&lt;S&gt; as input.
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public override void SetSourceCollection(IEnumerable<S> IEnumerable)
+        public override void SetSource(IEnumerable<S> IEnumerable)
         {
             _PipeToCap.SetSource(IEnumerable.GetEnumerator());
         }

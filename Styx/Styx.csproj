@@ -91,14 +91,17 @@
     <Compile Include="Pipes\ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="Pipes\FilterPipes\AndFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\BackFilterPipe.cs" />
-    <Compile Include="Pipes\FilterPipes\DuplicateFilterPipe.cs" />
+    <Compile Include="Pipes\FilterPipes\ExceptPipe.cs" />
+    <Compile Include="Pipes\FilterPipes\DistinctPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FutureFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\OrFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\RandomFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\RangeFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
+    <Compile Include="Pipes\Helpers\IEnumerable.cs" />
     <Compile Include="Pipes\Interfaces\ComparisonFilter.cs" />
+    <Compile Include="Pipes\Interfaces\IEndPipeExtentions.cs" />
     <Compile Include="Pipes\Interfaces\IComparisonFilterPipe.cs" />
     <Compile Include="Pipes\Interfaces\IEndPipe.cs" />
     <Compile Include="Pipes\Interfaces\IFilterPipe.cs" />
@@ -107,7 +110,6 @@
     <Compile Include="Pipes\Interfaces\ISideEffectPipe.cs" />
     <Compile Include="Pipes\Interfaces\ISplitPipe.cs" />
     <Compile Include="Pipes\Interfaces\IStartPipe.cs" />
-    <Compile Include="Pipes\PipeHelper.cs" />
     <Compile Include="Pipes\Properties\APropertyFilterPipe.cs" />
     <Compile Include="Pipes\Properties\PropertiesPipe.cs" />
     <Compile Include="Pipes\Properties\PropertyPipe.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
-    <Compile Include="Pipes\SimplePipes\FuncPipe.cs" />
+    <Compile Include="Pipes\SimplePipes\SelectPipe.cs" />
     <Compile Include="Pipes\SimplePipes\IdentityPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToUpperPipe.cs" />

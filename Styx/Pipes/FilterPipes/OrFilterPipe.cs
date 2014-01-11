@@ -85,20 +85,20 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
                 foreach (var _Pipe in _Pipes)
                 {
 
-                    _Pipe.SetSource(new SingleEnumerator<S>(_InputEnumerator.Current));
+                    _Pipe.SetSource(new SingleEnumerator<S>(SourcePipe.Current));
 
                     if (_Pipe.MoveNext())
                     {
-                        _CurrentElement = _InputEnumerator.Current;
+                        _CurrentElement = SourcePipe.Current;
                         return true;
                     }
 

@@ -48,13 +48,13 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
-                var _InternalPipe = _InputEnumerator as IPipe;
+                var _InternalPipe = SourcePipe as IPipe;
 
                 if (_InternalPipe != null)
                 {
@@ -78,7 +78,7 @@ namespace eu.Vanaheimr.Styx
 
                     if (_DoReturn)
                     {
-                        _CurrentElement = _InputEnumerator.Current;
+                        _CurrentElement = SourcePipe.Current;
                         return true;
                     }
 
@@ -86,7 +86,7 @@ namespace eu.Vanaheimr.Styx
 
                 else
                 {
-                    _CurrentElement = _InputEnumerator.Current;
+                    _CurrentElement = SourcePipe.Current;
                     return true;
                 }
 

@@ -78,19 +78,19 @@ namespace eu.Vanaheimr.Styx
 
         public BackFilterPipe(IPipe<S, E> IPipe, UInt64 Steps = 1)
         {
-            this.IPipe = IPipe;
-            this.Steps = Steps;
-            _InputEnumerator = IPipe.GetEnumerator();
+            this.IPipe             = IPipe;
+            this.Steps             = Steps;
+            this.SourcePipe  = IPipe;
         }
 
         
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
                 var aa = this.Path;

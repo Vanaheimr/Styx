@@ -34,27 +34,27 @@ namespace eu.Vanaheimr.Styx
     public static class RandomFilterPipeExtensions
     {
 
-        #region RandomFilter(this IEnumerable)
+        #region RandomFilter(this SourcePipe, Bias, Random = null)
 
         /// <summary>
         /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
         /// For each passing object, a random number generator creates a double value between 0 and 1.
         /// If the randomly generated double is less than or equal the provided bias, then the object is allowed to pass.
         /// If the randomly generated double is greater than the provided bias, then the object is not allowed to pass.        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
-        /// <param name="IEnumerable">An enumeration of objects of type S.</param>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-        public static RandomFilterPipe<S> RandomFilter<S>(this IEnumerable<S> IEnumerable, Double Bias, Random Random = null)
+        public static RandomFilterPipe<S> RandomFilter<S>(this IEndPipe<S> SourcePipe, Double Bias, Random Random = null)
         {
-            return new RandomFilterPipe<S>(Bias, Random, IEnumerable);
+            return new RandomFilterPipe<S>(SourcePipe, Bias, Random);
         }
 
         #endregion
 
     }
 
-    
+
     /// <summary>
     /// The RandomFilterPipe filters out objects that pass through it using a biased coin.
     /// For each passing object, a random number generator creates a double value between 0 and 1.
@@ -74,20 +74,70 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region RandomFilterPipe(Bias, Random = null, IEnumerable = null, IEnumerator = null)
+        #region RandomFilterPipe(SourceElement, Bias, Random = null)
 
         /// <summary>
-        /// Creates a new RandomFilterPipe.
+        /// Creates an new random filter pipe using the given single value as element source.
         /// </summary>
+        /// <param name="SourceElement">A single value as element source.</param>
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
-        /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
-        /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
-        public RandomFilterPipe(Double Bias, Random Random = null, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        public RandomFilterPipe(S SourceElement, Double Bias, Random Random = null)
+            : base(SourceElement)
         {
-            this.Bias   = Bias;
-            this.Random = (Random == null) ? new Random() : Random;
+            this.Bias    = Bias;
+            this.Random  = (Random == null) ? new Random() : Random;
+        }
+
+        #endregion
+
+        #region RandomFilterPipe(SourcePipe, Bias, Random = null)
+
+        /// <summary>
+        /// Creates an new random filter pipe using the given pipe as element source.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="Bias">The bias.</param>
+        /// <param name="Random">An optional source of randomness.</param>
+        public RandomFilterPipe(IEndPipe<S> SourcePipe, Double Bias, Random Random = null)
+            : base(SourcePipe)
+        {
+            this.Bias    = Bias;
+            this.Random  = (Random == null) ? new Random() : Random;
+        }
+
+        #endregion
+
+        #region RandomFilterPipe(SourceEnumerator, Bias, Random = null)
+
+        /// <summary>
+        /// Creates an new random filter pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        /// <param name="Bias">The bias.</param>
+        /// <param name="Random">An optional source of randomness.</param>
+        public RandomFilterPipe(IEnumerator<S> SourceEnumerator, Double Bias, Random Random = null)
+            : base(SourceEnumerator)
+        {
+            this.Bias    = Bias;
+            this.Random  = (Random == null) ? new Random() : Random;
+        }
+
+        #endregion
+
+        #region RandomFilterPipe(SourceEnumerable, Bias, Random = null)
+
+        /// <summary>
+        /// Creates an new random filter pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        /// <param name="Bias">The bias.</param>
+        /// <param name="Random">An optional source of randomness.</param>
+        public RandomFilterPipe(IEnumerable<S> SourceEnumerable, Double Bias, Random Random = null)
+            : base(SourceEnumerable)
+        {
+            this.Bias    = Bias;
+            this.Random  = (Random == null) ? new Random() : Random;
         }
 
         #endregion
@@ -107,15 +157,15 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            while (_InputEnumerator.MoveNext())
+            while (SourcePipe.MoveNext())
             {
 
                 if (Bias >= Random.NextDouble())
                 {
-                    _CurrentElement = _InputEnumerator.Current;
+                    _CurrentElement = SourcePipe.Current;
                     return true;
                 }
 

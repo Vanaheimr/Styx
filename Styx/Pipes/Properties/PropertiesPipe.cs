@@ -53,12 +53,12 @@ namespace eu.Vanaheimr.Styx
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
         {
-            return new PropertiesPipe<TKey, TValue>(new IReadOnlyProperties<TKey, TValue>[1] { Properties }, Keys: Keys);
+            return new PropertiesPipe<TKey, TValue>(Properties, Keys: Keys);
         }
 
         #endregion
 
-        #region Ps<TKey, TValue>(this IEnumerable<IReadOnlyProperties<...>>, Keys)
+        #region Ps<TKey, TValue>(this SourcePipe, Keys)
 
         /// <summary>
         /// Emits the property values of the given property keys (OR-logic).
@@ -68,13 +68,13 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerable">An enumeration of IReadOnlyProperties&lt;TKey, TValue&gt;.</param>
         /// <param name="Keys">An array of property keys.</param>
         /// <returns>The property values of the given property keys.</returns>
-        public static PropertiesPipe<TKey, TValue> Ps<TKey, TValue>(this IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable,
+        public static PropertiesPipe<TKey, TValue> Ps<TKey, TValue>(this IEndPipe<IReadOnlyProperties<TKey, TValue>> SourcePipe,
                                                                     params TKey[] Keys)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
         {
-            return new PropertiesPipe<TKey, TValue>(IEnumerable, Keys: Keys);
+            return new PropertiesPipe<TKey, TValue>(SourcePipe, Keys);
         }
 
         #endregion
@@ -95,12 +95,12 @@ namespace eu.Vanaheimr.Styx
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
-            return new PropertiesPipe<TKey, TValue>(KeyValueFilter, new IReadOnlyProperties<TKey, TValue>[1] { Properties });
+            return new PropertiesPipe<TKey, TValue>(Properties, KeyValueFilter);
         }
 
         #endregion
 
-        #region Ps<TKey, TValue>(this IEnumerable<IReadOnlyProperties<...>>, KeyValueFilter)
+        #region Ps<TKey, TValue>(this SourcePipe, KeyValueFilter)
 
         /// <summary>
         /// Emits the property values filtered by the given keyvalue filter.
@@ -110,12 +110,12 @@ namespace eu.Vanaheimr.Styx
         /// <param name="IEnumerable">An enumeration of IReadOnlyProperties&lt;TKey, TValue&gt;.</param>
         /// <param name="KeyValueFilter">An optional delegate for keyvalue filtering.</param>
         /// <returns>The property values of the given property keys.</returns>
-        public static PropertiesPipe<TKey, TValue> Ps<TKey, TValue>(this IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable,
+        public static PropertiesPipe<TKey, TValue> Ps<TKey, TValue>(this IEndPipe<IReadOnlyProperties<TKey, TValue>> SourcePipe,
                                                                     KeyValueFilter<TKey, TValue> KeyValueFilter)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
-            return new PropertiesPipe<TKey, TValue>(KeyValueFilter, IEnumerable);
+            return new PropertiesPipe<TKey, TValue>(SourcePipe, KeyValueFilter);
         }
 
         #endregion
@@ -151,20 +151,18 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region PropertiesPipe(IEnumerable = null, IEnumerator = null, Keys)
+        #region PropertiesPipe(SourceElement, Keys)
 
         /// <summary>
         /// Emits the property values of the given property keys (OR-logic).
         /// </summary>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;IIdentifier&lt;TId&gt;&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;IIdentifier&lt;TId&gt;&gt; as element source.</param>
+        /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="Keys">The property keys.</param>
         /// <returns>The property values of the given property keys.</returns>
-        public PropertiesPipe(IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable = null,
-                              IEnumerator<IReadOnlyProperties<TKey, TValue>> IEnumerator = null,
-                              params TKey[] Keys)
+        public PropertiesPipe(IReadOnlyProperties<TKey, TValue>  SourceElement,
+                              params TKey[]                      Keys)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourceElement)
 
         {
             this.Keys = Keys;
@@ -172,19 +170,55 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region PropertiesPipe(KeyValueFilter, IEnumerable = null, IEnumerator = null)
+        #region PropertiesPipe(SourcePipe, Keys)
+
+        /// <summary>
+        /// Emits the property values of the given property keys (OR-logic).
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="Keys">The property keys.</param>
+        /// <returns>The property values of the given property keys.</returns>
+        public PropertiesPipe(IEndPipe<IReadOnlyProperties<TKey, TValue>>  SourcePipe,
+                              params TKey[]                                Keys)
+
+            : base(SourcePipe)
+
+        {
+            this.Keys = Keys;
+        }
+
+        #endregion
+
+
+        #region PropertiesPipe(SourceElement, KeyValueFilter)
 
         /// <summary>
         /// Emits the property values filtered by the given keyvalue filter.
         /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="KeyValueFilter">An optional delegate for keyvalue filtering.</param>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;...&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;...&gt; as element source.</param>
-        public PropertiesPipe(KeyValueFilter<TKey, TValue>                   KeyValueFilter,
-                              IEnumerable<IReadOnlyProperties<TKey, TValue>> IEnumerable = null,
-                              IEnumerator<IReadOnlyProperties<TKey, TValue>> IEnumerator = null)
+        public PropertiesPipe(IReadOnlyProperties<TKey, TValue>  SourceElement,
+                              KeyValueFilter<TKey, TValue>       KeyValueFilter)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourceElement)
+
+        {
+            this.KeyValueFilter = (KeyValueFilter != null) ? KeyValueFilter : (k, v) => true;
+        }
+
+        #endregion
+
+        #region PropertiesPipe(SourcePipe, KeyValueFilter)
+
+        /// <summary>
+        /// Emits the property values filtered by the given keyvalue filter.
+        /// </summary>
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="KeyValueFilter">An optional delegate for keyvalue filtering.</param>
+        public PropertiesPipe(IEndPipe<IReadOnlyProperties<TKey, TValue>>  SourcePipe,
+                              KeyValueFilter<TKey, TValue>                 KeyValueFilter)
+
+            : base(SourcePipe)
 
         {
             this.KeyValueFilter = (KeyValueFilter != null) ? KeyValueFilter : (k, v) => true;
@@ -208,7 +242,7 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             #region Process the key array
@@ -216,12 +250,12 @@ namespace eu.Vanaheimr.Styx
             if (Keys != null)
             {
 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
 
                     _CurrentElement = (from   Key
                                        in     Keys
-                                       select _InputEnumerator.Current.GetProperty(Key)).ToList();
+                                       select SourcePipe.Current.GetProperty(Key)).ToList();
 
                     return true;
 
@@ -238,11 +272,11 @@ namespace eu.Vanaheimr.Styx
             else
             {
 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
 
                     _CurrentElement = from   KeyValuePair
-                                      in     _InputEnumerator.Current
+                                      in     SourcePipe.Current
                                       where  KeyValueFilter(KeyValuePair.Key, KeyValuePair.Value)
                                       select KeyValuePair.Value;
 

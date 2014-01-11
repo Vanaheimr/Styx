@@ -34,7 +34,7 @@ namespace eu.Vanaheimr.Styx
     /// The StdDevPipe produces a side effect that is the
     /// sliding standard deviation and the average of the input.
     /// </summary>
-    public class StdDevPipe : AbstractSideEffectPipe<Double, Double, Double, Double>
+    public class StdDevPipe : AbstractTwoSideEffectsPipe<Double, Double, Double, Double>
     {
 
         #region Data
@@ -47,20 +47,47 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region StdDevPipe()
+        #region StdDevPipe(SourceElement)
 
         /// <summary>
         /// Creates a new StdDevPipe calculating a side effect that is the
         /// sliding standard deviation and the average of the input.
         /// </summary>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;Double&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;Double&gt; as element source.</param>
-        public StdDevPipe(IEnumerable<Double> IEnumerable = null, IEnumerator<Double> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        public StdDevPipe(IEndPipe<Double> SourcePipe)
+            : base(SourcePipe, 0, 0)
         {
-            Counter    = 0;
-            Sum        = 0.0;
-            QuadratSum = 0.0;
+            this.Counter  = 0;
+        }
+
+        #endregion
+
+        #region StdDevPipe(SourceEnumerator)
+
+        /// <summary>
+        /// Creates a new StdDevPipe calculating a side effect that is the
+        /// sliding standard deviation and the average of the input.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public StdDevPipe(IEnumerator<Double> SourceEnumerator)
+            : base(SourceEnumerator, 0, 0)
+        {
+            this.Counter  = 0;
+        }
+
+        #endregion
+
+        #region StdDevPipe(SourceEnumerable)
+
+        /// <summary>
+        /// Creates a new StdDevPipe calculating a side effect that is the
+        /// sliding standard deviation and the average of the input.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        public StdDevPipe(IEnumerable<Double> SourceEnumerable)
+            : base(SourceEnumerable, 0, 0)
+        {
+            this.Counter  = 0;
         }
 
         #endregion
@@ -72,7 +99,7 @@ namespace eu.Vanaheimr.Styx
 
         private Double AddToSum(Double Summand)
         {
-            
+
             Double _InitialValue, _NewLocalSum;
 
             do
@@ -104,7 +131,7 @@ namespace eu.Vanaheimr.Styx
 
         private Double AddToQuadratSum(Double Summand)
         {
-            
+
             Double _InitialValue, _NewLocalSum;
 
             do
@@ -146,23 +173,23 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            if (_InputEnumerator.MoveNext())
+            if (SourcePipe.MoveNext())
             {
 
-                _CurrentElement = _InputEnumerator.Current;
+                _CurrentElement = SourcePipe.Current;
                 var _Counter = Interlocked.Increment(ref Counter);
 
                 var _Sum = AddToSum(_CurrentElement);
-                _SideEffect1 = AddToQuadratSum(_CurrentElement) - (Math.Pow(_Sum, 2) / _Counter);
-                _SideEffect2 = _Sum / _Counter;
+                InternalSideEffect1 = AddToQuadratSum(_CurrentElement) - (Math.Pow(_Sum, 2) / _Counter);
+                InternalSideEffect2 = _Sum / _Counter;
 
                 if (Counter > 1 && Counter < 30)
-                    _SideEffect1 = _SideEffect1 / (_Counter - 1);  // corr. Var.
+                    InternalSideEffect1 = InternalSideEffect1 / (_Counter - 1);  // corr. Var.
                 else
-                    _SideEffect1 = _SideEffect1 / _Counter;
+                    InternalSideEffect1 = InternalSideEffect1 / _Counter;
 
                 return true;
 
@@ -182,7 +209,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<Counter: " + Counter + ", StdDev: " + _SideEffect1 + ", Average: " + _SideEffect2 + ">";
+            return base.ToString() + "<Counter: " + Counter + ", StdDev: " + InternalSideEffect1 + ", Average: " + InternalSideEffect2 + ">";
         }
 
         #endregion

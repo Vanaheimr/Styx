@@ -54,13 +54,14 @@ namespace eu.Vanaheimr.Styx
         /// <param name="FileFilter">A delegate for filtering the found files.</param>
         /// <param name="IEnumerable">An optional enumation of directories as element source.</param>
         /// <param name="IEnumerator">An optional enumerator of directories as element source.</param>
-        public FileFilterPipe(String              SearchPattern = "*",
+        public FileFilterPipe(IEndPipe<String>    SourcePipe,
+                              String              SearchPattern = "*",
                               SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
                               FileFilter          FileFilter    = null,
                               IEnumerable<String> IEnumerable   = null,
                               IEnumerator<String> IEnumerator   = null)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourcePipe)
 
         {
             _SearchPattern = SearchPattern;
@@ -86,7 +87,7 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             while (true)
@@ -112,13 +113,13 @@ namespace eu.Vanaheimr.Styx
                     
                 }
 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
 
                     try
                     {
 
-                        _TempIterator = new DirectoryInfo(_InputEnumerator.Current).
+                        _TempIterator = new DirectoryInfo(SourcePipe.Current).
                                                           EnumerateFiles(_SearchPattern, _SearchOption).
                                                           GetEnumerator();
 
@@ -147,7 +148,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InputEnumerator.Current + ">";
+            return base.ToString() + "<" + SourcePipe.Current + ">";
         }
 
         #endregion

@@ -35,24 +35,54 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region CountPipe()
+        #region CountPipe(SourcePipe, InitialCounterValue = 0)
 
         /// <summary>
-        /// Creates a new CountPipe.
+        /// Creates an new abstract side effect pipe using the given pipe as element source.
         /// </summary>
-        /// <param name="InitialValue">An optional initial value.</param>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;Double&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;Double&gt; as element source.</param>
-        public CountPipe(Int64 InitialValue = 0, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
-            : base(IEnumerable, IEnumerator)
-        {
-            _SideEffect = InitialValue;
-        }
+        /// <param name="SourcePipe">A pipe as element source.</param>
+        /// <param name="InitialCounterValue">An optional initial counter value.</param>
+        public CountPipe(IEndPipe<S>  SourcePipe,
+                         Int64        InitialCounterValue = 0)
+
+            : base(SourcePipe, InitialCounterValue)
+
+        { }
+
+        #endregion
+
+        #region CountPipe(SourceEnumerator, InitialCounterValue = 0)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerator as element source.
+        /// </summary>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        /// <param name="InitialCounterValue">An optional initial counter value.</param>
+        public CountPipe(IEnumerator<S>  SourceEnumerator,
+                         Int64           InitialCounterValue = 0)
+
+            : base(SourceEnumerator, InitialCounterValue)
+
+        { }
+
+        #endregion
+
+        #region CountPipe(SourceEnumerable, InitialCounterValue = 0)
+
+        /// <summary>
+        /// Creates an new abstract side effect pipe using the given enumerable as element source.
+        /// </summary>
+        /// <param name="SourceEnumerable">An enumerable as element source.</param>
+        /// <param name="InitialCounterValue">An optional initial counter value.</param>
+        public CountPipe(IEnumerable<S>  SourceEnumerable,
+                         Int64           InitialCounterValue = 0)
+
+            : base(SourceEnumerable, InitialCounterValue)
+        { }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -67,13 +97,13 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
-            if (_InputEnumerator.MoveNext())
+            if (SourcePipe.MoveNext())
             {
-                _CurrentElement = _InputEnumerator.Current;
-                Interlocked.Increment(ref _SideEffect);
+                _CurrentElement = SourcePipe.Current;
+                Interlocked.Increment(ref InternalSideEffect);
                 return true;
             }
 
@@ -83,7 +113,6 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-
         #region ToString()
 
         /// <summary>
@@ -91,7 +120,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _SideEffect + ">";
+            return base.ToString() + " <" + InternalSideEffect + ">";
         }
 
         #endregion

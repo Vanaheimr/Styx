@@ -27,28 +27,28 @@ namespace eu.Vanaheimr.Styx
     #region ISideEffectPipe
 
     /// <summary>
-    /// This SideEffectPipe will produce a side effect which can be
-    /// retrieved by the SideEffect property.
+    /// A side effect pipe will produce one or more side effects
+    /// which can be retrieved by the SideEffect properties.
     /// </summary>
     public interface ISideEffectPipe : IPipe, IDisposable
     { }
 
     #endregion
 
-    #region ISideEffectPipe<in S, out E, out T>
+    #region ISideEffectPipe<S, E, out T>
 
     /// <summary>
-    /// This SideEffectPipe will produce a side effect which can be
-    /// retrieved by the SideEffect property.
+    /// This side effect pipe produces a controlled side effect
+    /// which can be retrieved by the SideEffect property.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    /// <typeparam name="T">The type of the sideeffect.</typeparam>
+    /// <typeparam name="T">The type of the side effect.</typeparam>
     public interface ISideEffectPipe<S, E, out T> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
-        /// The SideEffect produced by this Pipe.
+        /// The side effect produced by this pipe.
         /// </summary>
         T SideEffect { get; }
 
@@ -56,26 +56,72 @@ namespace eu.Vanaheimr.Styx
 
     #endregion
 
-    #region ISideEffectPipe<in S, out E, out T1, out T2>
+    #region ISideEffectPipe<S1, S2, E, out T>
 
     /// <summary>
-    /// This SideEffectPipe will produce two side effects which can
-    /// be retrieved by the SideEffect properties.
+    /// This side effect pipe produces a controlled side effect
+    /// which can be retrieved by the SideEffect property.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
-    /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    public interface ISideEffectPipe<S, E, out T1, out T2> : ISideEffectPipe, IPipe<S, E>
+    /// <typeparam name="T">The type of the side effect.</typeparam>
+    public interface ISideEffectPipe<S1, S2, E, out T> : ISideEffectPipe, IPipe<S1, S2, E>
     {
 
         /// <summary>
-        /// The first SideEffect produced by this Pipe.
+        /// The side effect produced by this pipe.
+        /// </summary>
+        T SideEffect { get; }
+
+    }
+
+    #endregion
+
+    #region ISideEffectPipe<S1, S2, S3, E, out T>
+
+    /// <summary>
+    /// This side effect pipe produces a controlled side effect
+    /// which can be retrieved by the SideEffect property.
+    /// </summary>
+    /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
+    /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
+    /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="T">The type of the side effect.</typeparam>
+    public interface ISideEffectPipe<S1, S2, S3, E, out T> : ISideEffectPipe, IPipe<S1, S2, S3, E>
+    {
+
+        /// <summary>
+        /// The side effect produced by this pipe.
+        /// </summary>
+        T SideEffect { get; }
+
+    }
+
+    #endregion
+
+
+    #region ITwoSideEffectsPipe<S, E, out T1, out T2>
+
+    /// <summary>
+    /// This side effect pipe produces two controlled side effects
+    /// which can be retrieved by the SideEffect properties.
+    /// </summary>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    /// <typeparam name="T1">The type of the first side effect.</typeparam>
+    /// <typeparam name="T2">The type of the second side effect.</typeparam>
+    public interface ITwoSideEffectsPipe<S, E, out T1, out T2> : ISideEffectPipe, IPipe<S, E>
+    {
+
+        /// <summary>
+        /// The first side effect produced by this pipe.
         /// </summary>
         T1 SideEffect1 { get; }
 
         /// <summary>
-        /// The second SideEffect produced by this Pipe.
+        /// The second side effect produced by this pipe.
         /// </summary>
         T2 SideEffect2 { get; }
 
@@ -83,32 +129,32 @@ namespace eu.Vanaheimr.Styx
 
     #endregion
 
-    #region ISideEffectPipe<in S, out E, out T1, out T2, out T3>
+    #region ISideEffectPipe<S, E, out T1, out T2, out T3>
 
     /// <summary>
-    /// This SideEffectPipe will produce two side effects which can
-    /// be retrieved by the SideEffect properties.
+    /// This side effect pipe produces three controlled side effects
+    /// which can be retrieved by the SideEffect properties.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
-    /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
-    /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
-    public interface ISideEffectPipe<S, E, out T1, out T2, out T3> : ISideEffectPipe, IPipe<S, E>
+    /// <typeparam name="T1">The type of the first side effect.</typeparam>
+    /// <typeparam name="T2">The type of the second side effect.</typeparam>
+    /// <typeparam name="T3">The type of the third side effect.</typeparam>
+    public interface IThreeSideEffectsPipe<S, E, out T1, out T2, out T3> : ISideEffectPipe, IPipe<S, E>
     {
 
         /// <summary>
-        /// The first SideEffect produced by this Pipe.
+        /// The first side effect produced by this pipe.
         /// </summary>
         T1 SideEffect1 { get; }
 
         /// <summary>
-        /// The second SideEffect produced by this Pipe.
+        /// The second side effect produced by this pipe.
         /// </summary>
         T2 SideEffect2 { get; }
 
         /// <summary>
-        /// The third SideEffect produced by this Pipe.
+        /// The third side effect produced by this pipe.
         /// </summary>
         T3 SideEffect3 { get; }
 

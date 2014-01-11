@@ -51,7 +51,7 @@ namespace eu.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region CSVReaderPipe(IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
+        #region CSVReaderPipe(SourcePipe, IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false, TrimColumns = true)
 
         /// <summary>
         /// Splits a given strings into elements by a given sperator.
@@ -64,16 +64,15 @@ namespace eu.Vanaheimr.Styx
         /// <param name="TrimColumns">Remove leading and trailing whitespaces.</param>
         /// <param name="IEnumerable">An optional enumeration of strings as element source.</param>
         /// <param name="IEnumerator">An optional enumerator of strings as element source.</param>
-        public CSVReaderPipe(Regex               IgnoreLines                = null,
+        public CSVReaderPipe(IEndPipe<String>    SourcePipe,
+                             Regex               IgnoreLines                = null,
                              String[]            Seperators                 = null,
                              StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
                              UInt16?             ExpectedNumberOfColumns    = null,
                              Boolean             FailOnWrongNumberOfColumns = false,
-                             Boolean             TrimColumns                = true,
-                             IEnumerable<String> IEnumerable                = null,
-                             IEnumerator<String> IEnumerator                = null)
+                             Boolean             TrimColumns                = true)
 
-            : base(IEnumerable, IEnumerator)
+            : base(SourcePipe)
 
         {
 
@@ -106,17 +105,17 @@ namespace eu.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (_InputEnumerator == null)
+            if (SourcePipe == null)
                 return false;
 
             while (true)
             {
 
-                if (_InputEnumerator.MoveNext())
+                if (SourcePipe.MoveNext())
                 {
 
                     // Remove leading and trailing whitespaces
-                    _CurrentLine = _InputEnumerator.Current.Trim();
+                    _CurrentLine = SourcePipe.Current.Trim();
 
                     // Ignore empty lines
                     if (_CurrentLine == null | _CurrentLine == "")
@@ -172,7 +171,7 @@ namespace eu.Vanaheimr.Styx
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _InputEnumerator.Current + ">";
+            return base.ToString() + "<" + SourcePipe.Current + ">";
         }
 
         #endregion

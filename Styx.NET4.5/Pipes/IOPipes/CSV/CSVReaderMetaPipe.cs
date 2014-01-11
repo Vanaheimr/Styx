@@ -27,87 +27,87 @@ using System.Text.RegularExpressions;
 namespace eu.Vanaheimr.Styx
 {
 
-    /// <summary>
-    /// The CSVMetaPipe splits the lines of the found csv files into pieces.
-    /// </summary>
-    public class CSVReaderMetaPipe : AbstractMetaPipe<String, String[]>, IMetaPipe<String, String[]>
-    {
+//    /// <summary>
+//    /// The CSVMetaPipe splits the lines of the found csv files into pieces.
+//    /// </summary>
+//    public class CSVReaderMetaPipe : AbstractMetaPipe<String, String[]>, IMetaPipe<String, String[]>
+//    {
 
-        #region Constructor(s)
+//        #region Constructor(s)
 
-        #region CSVReaderMetaPipe(SearchPattern = "*", SearchOption = TopDirectoryOnly, FileFilter = null, IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
+//        #region CSVReaderMetaPipe(SearchPattern = "*", SearchOption = TopDirectoryOnly, FileFilter = null, IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
 
-        /// <summary>
-        /// The CSVMetaPipe splits the lines of the found csv files into pieces.
-        /// </summary>
-        /// <param name="SearchPattern">A simple search pattern like "*.jpg".</param>
-        /// <param name="SearchOption">Include or do not include subdirectories.</param>
-        /// <param name="FileFilter">A delegate for filtering the found files.</param>
-        /// <param name="IgnoreLines">A regular expression indicating which input strings should be ignored. Default: All lines starting with a '#'.</param>
-        /// <param name="Seperators">An array of string used to split the input strings.</param>
-        /// <param name="StringSplitOptions">Split options, e.g. remove empty entries.</param>
-        /// <param name="ExpectedNumberOfColumns">If the CSV file had a schema, a specific number of columns can be expected. If instead it is a list of values no such value can be expected.</param>
-        /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
-        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
-        public CSVReaderMetaPipe(// Parameters for the FileFilterPipe
-                                 String              SearchPattern              = "*",
-                                 SearchOption        SearchOption               = SearchOption.TopDirectoryOnly,
-                                 FileFilter          FileFilter                 = null,
-                                 // Parameters for the CSVPipe
-                                 Regex               IgnoreLines                = null,
-                                 String[]            Seperators                 = null,
-                                 StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
-                                 UInt16?             ExpectedNumberOfColumns    = null,
-                                 Boolean             FailOnWrongNumberOfColumns = false,
-                                 IEnumerable<String> IEnumerable                = null,
-                                 IEnumerator<String> IEnumerator                = null)
+//        /// <summary>
+//        /// The CSVMetaPipe splits the lines of the found csv files into pieces.
+//        /// </summary>
+//        /// <param name="SearchPattern">A simple search pattern like "*.jpg".</param>
+//        /// <param name="SearchOption">Include or do not include subdirectories.</param>
+//        /// <param name="FileFilter">A delegate for filtering the found files.</param>
+//        /// <param name="IgnoreLines">A regular expression indicating which input strings should be ignored. Default: All lines starting with a '#'.</param>
+//        /// <param name="Seperators">An array of string used to split the input strings.</param>
+//        /// <param name="StringSplitOptions">Split options, e.g. remove empty entries.</param>
+//        /// <param name="ExpectedNumberOfColumns">If the CSV file had a schema, a specific number of columns can be expected. If instead it is a list of values no such value can be expected.</param>
+//        /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
+//        /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
+//        /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
+//        public CSVReaderMetaPipe(// Parameters for the FileFilterPipe
+//                                 String              SearchPattern              = "*",
+//                                 SearchOption        SearchOption               = SearchOption.TopDirectoryOnly,
+//                                 FileFilter          FileFilter                 = null,
+//                                 // Parameters for the CSVPipe
+//                                 Regex               IgnoreLines                = null,
+//                                 String[]            Seperators                 = null,
+//                                 StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
+//                                 UInt16?             ExpectedNumberOfColumns    = null,
+//                                 Boolean             FailOnWrongNumberOfColumns = false,
+//                                 IEnumerable<String> IEnumerable                = null,
+//                                 IEnumerator<String> IEnumerator                = null)
 
-            : base(new List<IPipe>() {
+//            : base(new List<IPipe>() {
 
-                       new FileFilterPipe(
-                               SearchPattern: SearchPattern,
-                               SearchOption:  SearchOption,
-                               FileFilter:    FileFilter,
-                               IEnumerable:   IEnumerable),
+//                       new FileFilterPipe(
+//                               SearchPattern: SearchPattern,
+//                               SearchOption:  SearchOption,
+//                               FileFilter:    FileFilter,
+//                               IEnumerable:   IEnumerable),
 
-                       new OpenStreamPipe(
-                               FileMode.Open,
-                               FileAccess.Read,
-                               FileShare.Read,
-                               64000
-#if SILVERLIGHT
-                               ),
-#else
-                               , FileOptions.SequentialScan),
-#endif
+//                       new OpenStreamPipe(
+//                               FileMode.Open,
+//                               FileAccess.Read,
+//                               FileShare.Read,
+//                               64000
+//#if SILVERLIGHT
+//                               ),
+//#else
+//                               , FileOptions.SequentialScan),
+//#endif
 
-                       new FuncPipe<Stream, StreamReader>(
-                               (stream) => new StreamReader(stream)),
+//                       new FuncPipe<Stream, StreamReader>(
+//                               (stream) => new StreamReader(stream)),
 
-                       new FuncPipe<StreamReader, IEnumerable<String>>(
-                               (streamReader) => streamReader.GetLines()),
+//                       new FuncPipe<StreamReader, IEnumerable<String>>(
+//                               (streamReader) => streamReader.GetLines()),
 
-                       new UnrollPipe<String>(),
+//                       new UnrollPipe<String>(),
 
-                       new CSVReaderPipe(
-                               IgnoreLines:                IgnoreLines,
-                               Seperators:                 Seperators,
-                               StringSplitOptions:         StringSplitOptions,
-                               ExpectedNumberOfColumns:    ExpectedNumberOfColumns,
-                               FailOnWrongNumberOfColumns: FailOnWrongNumberOfColumns)
+//                       new CSVReaderPipe(
+//                               IgnoreLines:                IgnoreLines,
+//                               Seperators:                 Seperators,
+//                               StringSplitOptions:         StringSplitOptions,
+//                               ExpectedNumberOfColumns:    ExpectedNumberOfColumns,
+//                               FailOnWrongNumberOfColumns: FailOnWrongNumberOfColumns)
 
-                   }.ToArray(),
+//                   }.ToArray(),
 
-                   IEnumerable,
-                   IEnumerator)
+//                   IEnumerable,
+//                   IEnumerator)
                            
-        { }
+//        { }
 
-        #endregion
+//        #endregion
 
-        #endregion
+//        #endregion
 
-    }
+//    }
 
 }
