@@ -25,23 +25,34 @@ using System.Collections.Generic;
 namespace eu.Vanaheimr.Styx
 {
 
+    /// <summary>
+    /// Extention methods for select pipes.
+    /// </summary>
     public static class SelectPipeExtensions
     {
 
-        public static SelectPipe<S, E> Select<S, E>(this IEndPipe<S>  Pipe,
-                                                    Func<S, E>        Mapper)
+        #region Select(this SourcePipe, SelectDelegate)
+
+        public static SelectPipe<S, E> Select<S, E>(this IEndPipe<S>  SourcePipe,
+                                                         Func<S, E>   SelectDelegate)
         {
-            return new SelectPipe<S, E>(Pipe, Mapper);
+            return new SelectPipe<S, E>(SourcePipe, SelectDelegate);
         }
+
+        #endregion
+
+        #region Select(this SourcePipe, CountedSelectDelegate)
 
         /// <summary>
         /// Starts with 1!
         /// </summary>
-        public static SelectPipe<S, E> Select<S, E>(this IEndPipe<S>    Pipe,
-                                                    Func<S, UInt64, E>  CountedMapper)
+        public static SelectCountedPipe<S, E> Select<S, E>(this IEndPipe<S>    SourcePipe,
+                                                           Func<S, UInt64, E>  CountedSelectDelegate)
         {
-            return new SelectPipe<S, E>(Pipe, CountedMapper);
+            return new SelectCountedPipe<S, E>(SourcePipe, CountedSelectDelegate);
         }
+
+        #endregion
 
     }
 
@@ -49,8 +60,7 @@ namespace eu.Vanaheimr.Styx
     #region SelectPipe<S, E>
 
     /// <summary>
-    /// Converts the consuming objects to emitting objects
-    /// by calling a Func&lt;S, E&gt;.
+    /// Maps/converts the consuming objects to emitting objects.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
@@ -59,602 +69,198 @@ namespace eu.Vanaheimr.Styx
 
         #region Data
 
-        private readonly Func<Boolean>       MapperDelegate;
-        private readonly Func<S, E>          Mapper;
-        private readonly Func<S, UInt64, E>  CountedMapper;
-        private          UInt64              Counter;
+        private readonly Func<S, E>  SelectDelegate;
 
         #endregion
 
         #region Constructor(s)
 
-        #region SelectPipe(SourceValue, Mapper)
+        #region SelectPipe(SourceValue, SelectDelegate)
 
-        public SelectPipe(S            SourceValue,
-                          Func<S, E>   Mapper)
+        public SelectPipe(S           SourceValue,
+                          Func<S, E>  SelectDelegate)
 
             : base(SourceValue)
 
         {
-
-            this.Mapper = Mapper;
-
-            if (SourcePipe == null)
-                this.MapperDelegate = () => false;
-
-            if (Mapper == null)
-                this.MapperDelegate = () => false;
-
-            this.MapperDelegate = () => {
-
-                if (SourcePipe.MoveNext())
-                {
-                    _CurrentElement = Mapper(SourcePipe.Current);
-                    return true;
-                }
-
-                return false;
-
-            };
-
+            this.SelectDelegate  = SelectDelegate;
         }
 
         #endregion
 
-        #region SelectPipe(SourcePipe, Mapper)
+        #region SelectPipe(SourcePipe, SelectDelegate)
 
         public SelectPipe(IEndPipe<S>  SourcePipe,
-                          Func<S, E>   Mapper)
+                          Func<S, E>   SelectDelegate)
 
             : base(SourcePipe)
 
         {
-
-            this.Mapper = Mapper;
-
-            if (SourcePipe == null)
-                this.MapperDelegate = () => false;
-
-            if (Mapper == null)
-                this.MapperDelegate = () => false;
-
-            this.MapperDelegate = () => {
-
-                if (SourcePipe.MoveNext())
-                {
-                    _CurrentElement = Mapper(SourcePipe.Current);
-                    return true;
-                }
-
-                return false;
-
-            };
-
+            this.SelectDelegate  = SelectDelegate;
         }
 
         #endregion
 
-        #region SelectPipe(SourceEnumerator, Mapper)
+        #region SelectPipe(SourceEnumerator, SelectDelegate)
 
         public SelectPipe(IEnumerator<S>  SourceEnumerator,
-                          Func<S, E>      Mapper)
+                          Func<S, E>      SelectDelegate)
 
-            : this(new IEnumerator2IEndPipe<S>(SourceEnumerator), Mapper)
-
-        { }
-
-        #endregion
-
-        #region SelectPipe(SourceEnumerable, Mapper)
-
-        /// <summary>
-        /// Creates a new AbstractPipe using the elements emitted
-        /// by the given IEnumerable as input.
-        /// </summary>
-        /// <param name="SourceEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public SelectPipe(IEnumerable<S> SourceEnumerable, Func<S, E> Mapper)
-            : this(new IEnumerator2IEndPipe<S>(SourceEnumerable.GetEnumerator()), Mapper)
-        { }
-
-        #endregion
-
-
-        #region SelectPipe(SourceValue, CountedMapper)
-
-        public SelectPipe(S                   SourceValue,
-                          Func<S, UInt64, E>  CountedMapper)
-
-            : base(SourceValue)
+            : base(SourceEnumerator)
 
         {
+            this.SelectDelegate  = SelectDelegate;
+        }
 
-            this.CountedMapper  = CountedMapper;
-            this.Counter        = 1UL;
+        #endregion
+
+        #region SelectPipe(SourceEnumerable, SelectDelegate)
+
+        public SelectPipe(IEnumerable<S>  SourceEnumerable,
+                          Func<S, E>      SelectDelegate)
+
+            : base(SourceEnumerable)
+
+        {
+            this.SelectDelegate  = SelectDelegate;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region MoveNext()
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
+        public override Boolean MoveNext()
+        {
 
             if (SourcePipe == null)
-                this.MapperDelegate = () => false;
-
-            if (Mapper == null)
-                this.MapperDelegate = () => false;
-
-            this.MapperDelegate = () =>
-            {
-
-                if (SourcePipe.MoveNext())
-                {
-                    _CurrentElement = CountedMapper(SourcePipe.Current, Counter++);
-                    return true;
-                }
-
                 return false;
 
-            };
+            if (SourcePipe.MoveNext())
+            {
+
+                _CurrentElement = SelectDelegate(SourcePipe.Current);
+
+                return true;
+
+            }
+
+            return false;
 
         }
 
         #endregion
 
-        #region SelectPipe(SourcePipe, CountedMapper)
+    }
 
-        /// <summary>
-        /// Creates a new FuncPipe using the given Func&lt;S, E&gt;.
-        /// </summary>
-        public SelectPipe(IEndPipe<S>         SourcePipe,
-                          Func<S, UInt64, E>  CountedMapper)
+    #endregion
 
-            : base(SourcePipe)
+    #region SelectCountedPipe<S, E>
+
+    /// <summary>
+    /// Maps/converts the consuming objects to emitting objects.
+    /// </summary>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    /// <typeparam name="E">The type of the emitting objects.</typeparam>
+    public class SelectCountedPipe<S, E> : AbstractSideEffectPipe<S, E, UInt64>
+    {
+
+        #region Data
+
+        private readonly Func<S, UInt64, E>  CountedSelectDelegate;
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region SelectCountedPipe(SourceValue, CountedSelectDelegate)
+
+        public SelectCountedPipe(S                   SourceValue,
+                                 Func<S, UInt64, E>  CountedSelectDelegate)
+
+            : base(SourceValue, 0)
 
         {
+            this.CountedSelectDelegate  = CountedSelectDelegate;
+        }
 
-            this.CountedMapper  = CountedMapper;
-            this.Counter        = 1UL;
+        #endregion
+
+        #region SelectCountedPipe(SourcePipe, CountedSelectDelegate)
+
+        public SelectCountedPipe(IEndPipe<S>         SourcePipe,
+                                 Func<S, UInt64, E>  CountedSelectDelegate)
+
+            : base(SourcePipe, 0)
+
+        {
+            this.CountedSelectDelegate  = CountedSelectDelegate;
+        }
+
+        #endregion
+
+        #region SelectCountedPipe(SourceEnumerator, CountedSelectDelegate)
+
+        public SelectCountedPipe(IEnumerator<S>      SourceEnumerator,
+                                 Func<S, UInt64, E>  CountedSelectDelegate)
+
+            : base(SourceEnumerator, 0)
+
+        {
+            this.CountedSelectDelegate  = CountedSelectDelegate;
+        }
+
+        #endregion
+
+        #region SelectCountedPipe(SourceEnumerable, CountedSelectDelegate)
+
+        public SelectCountedPipe(IEnumerable<S>      SourceEnumerable,
+                                 Func<S, UInt64, E>  CountedSelectDelegate)
+
+            : base(SourceEnumerable, 0)
+
+        {
+            this.CountedSelectDelegate  = CountedSelectDelegate;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region MoveNext()
+
+        /// <summary>
+        /// Advances the enumerator to the next element of the collection.
+        /// </summary>
+        /// <returns>
+        /// True if the enumerator was successfully advanced to the next
+        /// element; false if the enumerator has passed the end of the
+        /// collection.
+        /// </returns>
+        public override Boolean MoveNext()
+        {
 
             if (SourcePipe == null)
-                this.MapperDelegate = () => false;
+                return false;
 
-            if (Mapper == null)
-                this.MapperDelegate = () => false;
-
-
-            this.MapperDelegate = () =>
+            if (SourcePipe.MoveNext())
             {
 
-                if (SourcePipe.MoveNext())
-                {
-                    _CurrentElement = CountedMapper(SourcePipe.Current, Counter++);
-                    return true;
-                }
+                _CurrentElement = CountedSelectDelegate(SourcePipe.Current,
+                                                        SideEffect++);
 
-                return false;
+                return true;
 
-            };
-
-        }
-
-        #endregion
-
-        #region SelectPipe(SourceEnumerator, CountedMapper)
-
-        public SelectPipe(IEnumerator<S>      SourceEnumerator,
-                          Func<S, UInt64, E>  CountedMapper)
-
-            : this(new IEnumerator2IEndPipe<S>(SourceEnumerator), CountedMapper)
-
-        { }
-
-        #endregion
-
-        #region SelectPipe(SourceEnumerable, CountedMapper)
-
-        /// <summary>
-        /// Creates a new AbstractPipe using the elements emitted
-        /// by the given IEnumerable as input.
-        /// </summary>
-        /// <param name="SourceEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        public SelectPipe(IEnumerable<S>      SourceEnumerable,
-                          Func<S, UInt64, E>  CountedMapper)
-
-            : this(new IEnumerator2IEndPipe<S>(SourceEnumerable.GetEnumerator()), CountedMapper)
-        { }
-
-        #endregion
-
-        #endregion
-
-        #region MoveNext()
-
-        /// <summary>
-        /// Advances the enumerator to the next element of the collection.
-        /// </summary>
-        /// <returns>
-        /// True if the enumerator was successfully advanced to the next
-        /// element; false if the enumerator has passed the end of the
-        /// collection.
-        /// </returns>
-        public override Boolean MoveNext()
-        {
-
-            return MapperDelegate();
-
-            //if (_SourceEnumerator == null)
-            //    return false;
-
-            //if (Mapper == null)
-            //    return false;
-
-            //if (_SourceEnumerator.MoveNext())
-            //{
-            //    _CurrentElement = Mapper(_SourceEnumerator.Current);
-            //    return true;
-            //}
-
-            //return false;
-
-        }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region FuncPipe<S1, S2, E>
-
-    /// <summary>
-    /// Converts the consuming objects to emitting objects
-    /// by calling a Func&lt;S1, S2, E&gt;.
-    /// </summary>
-    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class FuncPipe<S1, S2, E> : AbstractPipe<S1, S2, E>
-    {
-
-        #region Data
-
-        private readonly Func<S1, S2, E> Func;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region FuncPipe(Func)
-
-        /// <summary>
-        /// Creates a new FuncPipe using the elements emitted
-        /// by the given IEnumerables as input.
-        /// </summary>
-        /// <param name="Func">A Func&lt;S1, S2, E&gt; converting the consuming objects into emitting objects.</param>
-        /// <param name="IEnumerator1">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator2">An optional enumerator of directories as element source.</param>
-        public FuncPipe(Func<S1, S2, E> Func,
-                        IEnumerator<S1> IEnumerator1 = null,
-                        IEnumerator<S2> IEnumerator2 = null)
-        {
-
-            if (Func == null)
-                throw new ArgumentNullException("The given Func must not be null!");
-
-            this.Func = Func;
-
-            if (IEnumerator1 != null)
-                SetSource1(IEnumerator1);
-
-            if (IEnumerator2 != null)
-                SetSource2(IEnumerator2);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region MoveNext()
-
-        /// <summary>
-        /// Advances the enumerator to the next element of the collection.
-        /// </summary>
-        /// <returns>
-        /// True if the enumerator was successfully advanced to the next
-        /// element; false if the enumerator has passed the end of the
-        /// collection.
-        /// </returns>
-        public override Boolean MoveNext()
-        {
-
-            if (SourcePipe1 == null)
-                return false;
-
-            if (SourcePipe2 == null)
-                return false;
-
-            if (SourcePipe1.MoveNext())
-                if (SourcePipe2.MoveNext())
-                {
-                    _CurrentElement = Func(SourcePipe1.Current, SourcePipe2.Current);
-                    return true;
-                }
-
-            return false;
-
-        }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region FuncPipe<S1, S2, S3, E>
-
-    /// <summary>
-    /// Converts the consuming objects to emitting objects
-    /// by calling a Func&lt;S1, S2, S3, E&gt;.
-    /// </summary>
-    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S3">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class FuncPipe<S1, S2, S3, E> : AbstractPipe<S1, S2, S3, E>
-    {
-
-        #region Data
-
-        private Func<S1, S2, S3, E> Func;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region FuncPipe(Func)
-
-        /// <summary>
-        /// Creates a new FuncPipe using the elements emitted
-        /// by the given IEnumerables as input.
-        /// </summary>
-        /// <param name="Func">A Func&lt;S1, S2, S3, E&gt; converting the consuming objects into emitting objects.</param>
-        /// <param name="IEnumerator1">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator2">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator3">An optional enumerator of directories as element source.</param>
-        public FuncPipe(Func<S1, S2, S3, E> Func,
-                        IEnumerator<S1> IEnumerator1 = null,
-                        IEnumerator<S2> IEnumerator2 = null,
-                        IEnumerator<S3> IEnumerator3 = null)
-        {
-
-            if (Func == null)
-                throw new ArgumentNullException("The given Func must not be null!");
-
-            this.Func = Func;
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region MoveNext()
-
-        /// <summary>
-        /// Advances the enumerator to the next element of the collection.
-        /// </summary>
-        /// <returns>
-        /// True if the enumerator was successfully advanced to the next
-        /// element; false if the enumerator has passed the end of the
-        /// collection.
-        /// </returns>
-        public override Boolean MoveNext()
-        {
-
-            if (SourcePipe1 == null)
-                return false;
-
-            if (SourcePipe2 == null)
-                return false;
-
-            if (SourcePipe3 == null)
-                return false;
-
-            if (SourcePipe1.MoveNext())
-                if (SourcePipe2.MoveNext())
-                    if (SourcePipe3.MoveNext())
-                    {
-                        _CurrentElement = Func(SourcePipe1.Current, SourcePipe2.Current, SourcePipe3.Current);
-                        return true;
-                    }
-
-            return false;
-
-        }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region FuncPipe<S1, S2, S3, S4, E>
-
-    /// <summary>
-    /// Converts the consuming objects to emitting objects
-    /// by calling a Func&lt;S1, S2, S3, S4, E&gt;.
-    /// </summary>
-    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S3">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S4">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class FuncPipe<S1, S2, S3, S4, E> : AbstractPipe<S1, S2, S3, S4, E>
-    {
-
-        #region Data
-
-        private Func<S1, S2, S3, S4, E> Func;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region FuncPipe(Func)
-
-        /// <summary>
-        /// Creates a new FuncPipe using the elements emitted
-        /// by the given IEnumerables as input.
-        /// </summary>
-        /// <param name="Func">A Func&lt;S1, S2, S3, S4, E&gt; converting the consuming objects into emitting objects.</param>
-        /// <param name="IEnumerator1">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator2">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator3">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator4">An optional enumerator of directories as element source.</param>
-        public FuncPipe(Func<S1, S2, S3, S4, E> Func,
-                        IEnumerator<S1> IEnumerator1 = null,
-                        IEnumerator<S2> IEnumerator2 = null,
-                        IEnumerator<S3> IEnumerator3 = null,
-                        IEnumerator<S4> IEnumerator4 = null)
-        {
-
-            if (Func == null)
-                throw new ArgumentNullException("The given Func must not be null!");
-
-            this.Func = Func;
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region MoveNext()
-
-        /// <summary>
-        /// Advances the enumerator to the next element of the collection.
-        /// </summary>
-        /// <returns>
-        /// True if the enumerator was successfully advanced to the next
-        /// element; false if the enumerator has passed the end of the
-        /// collection.
-        /// </returns>
-        public override Boolean MoveNext()
-        {
-
-            if (_InternalEnumerator1 == null)
-                return false;
-
-            if (_InternalEnumerator2 == null)
-                return false;
-
-            if (_InternalEnumerator3 == null)
-                return false;
-
-            if (_InternalEnumerator4 == null)
-                return false;
-
-            if (_InternalEnumerator1.MoveNext())
-                if (_InternalEnumerator2.MoveNext())
-                    if (_InternalEnumerator3.MoveNext())
-                        if (_InternalEnumerator4.MoveNext())
-                        {
-                            _CurrentElement = Func(_InternalEnumerator1.Current, _InternalEnumerator2.Current, _InternalEnumerator3.Current, _InternalEnumerator4.Current);
-                            return true;
-                        }
-
-            return false;
-
-        }
-
-        #endregion
-
-    }
-
-    #endregion
-
-    #region FuncPipe<S1, S2, S3, S4, S5, E>
-
-    /// <summary>
-    /// Converts the consuming objects to emitting objects
-    /// by calling a Func&lt;S1, S2, S3, S4, E&gt;.
-    /// </summary>
-    /// <typeparam name="S1">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S2">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S3">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S4">The type of the consuming objects.</typeparam>
-    /// <typeparam name="S5">The type of the consuming objects.</typeparam>
-    /// <typeparam name="E">The type of the emitting objects.</typeparam>
-    public class FuncPipe<S1, S2, S3, S4, S5, E> : AbstractPipe<S1, S2, S3, S4, S5, E>
-    {
-
-        #region Data
-
-        private Func<S1, S2, S3, S4, E> Func;
-
-        #endregion
-
-        #region Constructor(s)
-
-        #region FuncPipe(Func)
-
-        /// <summary>
-        /// Creates a new FuncPipe using the elements emitted
-        /// by the given IEnumerables as input.
-        /// </summary>
-        /// <param name="Func">A Func&lt;S1, S2, S3, S4, E&gt; converting the consuming objects into emitting objects.</param>
-        /// <param name="IEnumerator1">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator2">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator3">An optional enumerator of directories as element source.</param>
-        /// <param name="IEnumerator4">An optional enumerator of directories as element source.</param>
-        public FuncPipe(Func<S1, S2, S3, S4, E> Func,
-                        IEnumerator<S1> IEnumerator1 = null,
-                        IEnumerator<S2> IEnumerator2 = null,
-                        IEnumerator<S3> IEnumerator3 = null,
-                        IEnumerator<S4> IEnumerator4 = null)
-        {
-
-            if (Func == null)
-                throw new ArgumentNullException("The given Func must not be null!");
-
-            this.Func = Func;
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region MoveNext()
-
-        /// <summary>
-        /// Advances the enumerator to the next element of the collection.
-        /// </summary>
-        /// <returns>
-        /// True if the enumerator was successfully advanced to the next
-        /// element; false if the enumerator has passed the end of the
-        /// collection.
-        /// </returns>
-        public override Boolean MoveNext()
-        {
-
-            if (_InternalEnumerator1 == null)
-                return false;
-
-            if (_InternalEnumerator2 == null)
-                return false;
-
-            if (_InternalEnumerator3 == null)
-                return false;
-
-            if (_InternalEnumerator4 == null)
-                return false;
-
-            if (_InternalEnumerator1.MoveNext())
-                if (_InternalEnumerator2.MoveNext())
-                    if (_InternalEnumerator3.MoveNext())
-                        if (_InternalEnumerator4.MoveNext())
-                        {
-                            _CurrentElement = Func(_InternalEnumerator1.Current, _InternalEnumerator2.Current, _InternalEnumerator3.Current, _InternalEnumerator4.Current);
-                            return true;
-                        }
+            }
 
             return false;
 

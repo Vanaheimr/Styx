@@ -48,7 +48,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
     /// <typeparam name="S">The type of the objects to filter.</typeparam>
-    public abstract class APropertyFilterPipe<TKey, TValue, S> : AbstractFilterPipe<S>
+    public abstract class APropertyFilterPipe<TKey, TValue, S> : AbstractPipe<S, S>, IFilterPipe<S>
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         where S    : IReadOnlyProperties<TKey, TValue>
     {
@@ -193,7 +193,7 @@ namespace eu.Vanaheimr.Styx
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
     /// <typeparam name="S">The type of the objects to filter.</typeparam>
-    public abstract class APropertyFilterPipe<TKey, TValue, TCast, S> : AbstractFilterPipe<S>
+    public abstract class APropertyFilterPipe<TKey, TValue, TCast, S> : AbstractPipe<S, S>, IFilterPipe<S>
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         where S    : IReadOnlyProperties<TKey, TValue>
     {

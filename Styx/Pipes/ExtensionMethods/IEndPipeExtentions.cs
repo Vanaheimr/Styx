@@ -69,33 +69,6 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region ++Concat<T>(FirstPipe, params OtherPipes)
-
-        //public static IEnumerable<T> Concat<T>(this   IEndPipe<T>    FirstPipe,
-        //                                       params IEndPipe<T>[]  OtherPipes)
-        //{
-
-        //    if (FirstPipe == null)
-        //        yield break;
-
-        //    foreach (T Item in FirstPipe)
-        //        yield return Item;
-
-        //    foreach (var Pipe in OtherPipes)
-        //    {
-
-        //        if (Pipe == null)
-        //            continue;
-
-        //        foreach (var Item in Pipe)
-        //            yield return Item;
-
-        //    }
-
-        //}
-
-        #endregion
-
         #region Contains<T>(this Pipe, Value, Comparer = null)
 
         public static Boolean Contains<T>(this IEndPipe<T>      Pipe,
@@ -224,19 +197,19 @@ namespace eu.Vanaheimr.Styx
 
         // Join
 
-        #region Last<T>(this Pipe, Include = null, DefaultValue = default(T))
+        #region Last<T>(this SourcePipe, Include = null, DefaultValue = default(T))
 
-        public static T Last<T>(this IEndPipe<T>  Pipe,
+        public static T Last<T>(this IEndPipe<T>  SourcePipe,
                                 Func<T, Boolean>  Include       = null,
                                 T                 DefaultValue  = default(T))
         {
 
-            if (Pipe == null)
+            if (SourcePipe == null)
                 return DefaultValue;
 
             T Value = DefaultValue;
 
-            foreach (var Item in Pipe)
+            foreach (var Item in SourcePipe)
                 if (Include(Item))
                     Value = Item;
 
@@ -336,7 +309,7 @@ namespace eu.Vanaheimr.Styx
 
         #region ++Skip
 
-        //public static IEnumerable<T> Skip<T>(this IEndPipe<T> source, UInt64 count)
+        //public static IEnumerable<T> Skip<T>(this IEndPipe<T> SourcePipe, UInt64 count)
         //{
 
         //    var enumerator = source.GetEnumerator();
@@ -452,7 +425,7 @@ namespace eu.Vanaheimr.Styx
 
         // ThenBy
 
-        #region ToArray(this SourcePipe, ResetPipe = false)
+        #region ToArray(this SourcePipe, ResetPipeBefore = true, ResetPipeAfter = true)
 
         /// <summary>
         /// Copies the elements of the given pipe into a new array.
@@ -461,12 +434,16 @@ namespace eu.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="ResetPipe">Reset the pipe after operation.</param>
         public static T[] ToArray<T>(this IEndPipe<T>  SourcePipe,
-                                     Boolean           ResetPipe = false)
+                                     Boolean           ResetPipeBefore  = true,
+                                     Boolean           ResetPipeAfter   = true)
         {
 
             new List<String>().ToArray();
             var Values = new T[8];
             var Size   = 0;
+
+            if (ResetPipeBefore)
+                SourcePipe.Reset();
 
             foreach (var Item in SourcePipe)
             {
@@ -481,7 +458,7 @@ namespace eu.Vanaheimr.Styx
             if (Size != Values.Length)
                 Array.Resize(ref Values, Size);
 
-            if (ResetPipe)
+            if (ResetPipeAfter)
                 SourcePipe.Reset();
 
             return Values;
@@ -490,13 +467,14 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region ToDictionary
+        #region ToDictionary(this SourcePipe, KeySelector, ValueSelector, Comparer = null, ResetPipeBefore = true, ResetPipeAfter = true)
 
         public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEndPipe<T>         SourcePipe,
                                                                              Func<T, TKey>            KeySelector,
                                                                              Func<T, TValue>          ValueSelector,
-                                                                             IEqualityComparer<TKey>  Comparer   = null,
-                                                                             Boolean                  ResetPipe  = false)
+                                                                             IEqualityComparer<TKey>  Comparer         = null,
+                                                                             Boolean                  ResetPipeBefore  = true,
+                                                                             Boolean                  ResetPipeAfter   = true)
         {
 
             if (Comparer == null)
@@ -504,11 +482,14 @@ namespace eu.Vanaheimr.Styx
 
             var Dictionary = new Dictionary<TKey, TValue>(Comparer);
 
+            if (ResetPipeBefore)
+                SourcePipe.Reset();
+
             foreach (var Item in SourcePipe)
                 Dictionary.Add(KeySelector  (Item),
                                ValueSelector(Item));
 
-            if (ResetPipe)
+            if (ResetPipeAfter)
                 SourcePipe.Reset();
 
             return Dictionary;
@@ -517,18 +498,22 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region ToList
+        #region ToList(this SourcePipe, ResetPipeBefore = true, ResetPipeAfter = true)
 
         public static List<T> ToList<T>(this IEndPipe<T>  SourcePipe,
-                                        Boolean           ResetPipe  = false)
+                                        Boolean           ResetPipeBefore  = true,
+                                        Boolean           ResetPipeAfter   = true)
         {
 
             var List = new List<T>();
 
+            if (ResetPipeBefore)
+                SourcePipe.Reset();
+
             foreach (var Item in SourcePipe)
                 List.Add(Item);
 
-            if (ResetPipe)
+            if (ResetPipeAfter)
                 SourcePipe.Reset();
 
             return List;
@@ -601,54 +586,6 @@ namespace eu.Vanaheimr.Styx
         //}
 
         #endregion
-
-        #region ++Zip
-
-        //public static IEnumerable<T> Zip<T1, T2, T>(this IEndPipe<T1> first,
-        //                                                 IEndPipe<T2> second,
-        //                                            Func<T1, T2, T> selector)
-        //{
-
-        //    using (IEnumerator<T1> first_enumerator = first.GetEnumerator())
-        //    {
-        //        using (IEnumerator<T2> second_enumerator = second.GetEnumerator())
-        //        {
-
-        //            while (first_enumerator.MoveNext() && second_enumerator.MoveNext())
-        //            {
-        //                yield return selector(first_enumerator.Current, second_enumerator.Current);
-        //            }
-        //        }
-        //    }
-
-        //}
-
-        #endregion
-
-        #region ++Where
-
-        //public static IEnumerable<TSource> Where<TSource>(this IEndPipe<TSource> source, Func<TSource, bool> predicate)
-        //{
-        //    foreach (TSource element in source)
-        //        if (predicate(element))
-        //            yield return element;
-        //}
-
-        //public static IEnumerable<TSource> Where<TSource>(this IEndPipe<TSource> source, Func<TSource, UInt64, bool> predicate)
-        //{
-
-        //    var counter = 1UL;
-        //    foreach (TSource element in source)
-        //    {
-        //        if (predicate(element, counter))
-        //            yield return element;
-        //        counter++;
-        //    }
-
-        //}
-
-        #endregion
-
 
 
         // Additionals...

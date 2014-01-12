@@ -78,7 +78,6 @@
     <Compile Include="Enumerators\SingleEnumerator.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Pipes\AbstractComparisonFilterPipe.cs" />
-    <Compile Include="Pipes\AbstractFilterPipe.cs" />
     <Compile Include="Pipes\AbstractMetaPipe.cs" />
     <Compile Include="Pipes\AbstractPipe.cs" />
     <Compile Include="Pipes\AbstractSideEffectPipe.cs" />
@@ -99,9 +98,11 @@
     <Compile Include="Pipes\FilterPipes\RandomFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\RangeFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
-    <Compile Include="Pipes\Helpers\IEnumerable.cs" />
+    <Compile Include="Pipes\Helpers\IEndPipeAdaptor.cs" />
+    <Compile Include="Pipes\Helpers\IEndPipe2IEnumerator.cs" />
+    <Compile Include="Pipes\Helpers\IEndPipe2IEnumerable.cs" />
     <Compile Include="Pipes\Interfaces\ComparisonFilter.cs" />
-    <Compile Include="Pipes\Interfaces\IEndPipeExtentions.cs" />
+    <Compile Include="Pipes\ExtensionMethods\IEndPipeExtentions.cs" />
     <Compile Include="Pipes\Interfaces\IComparisonFilterPipe.cs" />
     <Compile Include="Pipes\Interfaces\IEndPipe.cs" />
     <Compile Include="Pipes\Interfaces\IFilterPipe.cs" />
@@ -120,6 +121,9 @@
     <Compile Include="Pipes\SideeffectPipes\SideEffectCapPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
+    <Compile Include="Pipes\SimplePipes\ConcatPipe.cs" />
+    <Compile Include="Pipes\SimplePipes\WherePipe.cs" />
+    <Compile Include="Pipes\SimplePipes\ZipPipe.cs" />
     <Compile Include="Pipes\SimplePipes\SelectPipe.cs" />
     <Compile Include="Pipes\SimplePipes\IdentityPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
