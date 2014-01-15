@@ -18,8 +18,6 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
 
 #endregion
 
@@ -27,15 +25,15 @@ namespace eu.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extention methods for select pipes.
+    /// Extention methods for concat pipes.
     /// </summary>
-    public static class Select23PipeExtensions
+    public static class ConcatPipeExtensions
     {
 
         #region Concat(this FirstPipe, params OtherPipes)
 
-        public static ConcatPipe<S> Select<S, E>(this IEndPipe<S> FirstPipe,
-                                                 params IEndPipe<S>[] OtherPipes)
+        public static ConcatPipe<S> Concat<S>(this IEndPipe<S>      FirstPipe,
+                                              params IEndPipe<S>[]  OtherPipes)
         {
             return new ConcatPipe<S>(FirstPipe, OtherPipes);
         }

@@ -92,7 +92,6 @@
     <Compile Include="Pipes\FilterPipes\BackFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\ExceptPipe.cs" />
     <Compile Include="Pipes\FilterPipes\DistinctPipe.cs" />
-    <Compile Include="Pipes\FilterPipes\FuncFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\FutureFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\OrFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\RandomFilterPipe.cs" />
@@ -122,8 +121,10 @@
     <Compile Include="Pipes\SimplePipes\ActionPipe.cs" />
     <Compile Include="Pipes\SimplePipes\CharacterCountPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ConcatPipe.cs" />
-    <Compile Include="Pipes\SimplePipes\WherePipe.cs" />
-    <Compile Include="Pipes\SimplePipes\ZipPipe.cs" />
+    <Compile Include="Pipes\SimplePipes\ZipTuplePipe.cs" />
+    <Compile Include="Pipes\SimplePipes\EventPipe.cs" />
+    <Compile Include="Pipes\FilterPipes\WherePipe.cs" />
+    <Compile Include="Pipes\SimplePipes\ZipMergePipe.cs" />
     <Compile Include="Pipes\SimplePipes\SelectPipe.cs" />
     <Compile Include="Pipes\SimplePipes\IdentityPipe.cs" />
     <Compile Include="Pipes\SimplePipes\ToLowerPipe.cs" />
@@ -134,7 +135,6 @@
     <Compile Include="Pipes\Utils\HasNextPipe.cs" />
     <Compile Include="Pipes\Utils\PathPipe.cs" />
     <Compile Include="Pipes\Utils\ScatterPipe.cs" />
-    <Compile Include="Pipes\Utils\StartPipe.cs" />
     <Compile Include="Pipes\Utils\UnrollPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SilverlightTools.cs" />

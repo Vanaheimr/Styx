@@ -18,48 +18,42 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
 namespace eu.Vanaheimr.Styx
 {
 
+    public delegate void PipeEvent<S>(S Value);
+
     /// <summary>
-    /// Filters the consuming objects by calling a Func&lt;S, Boolean&gt;.
+    /// The EventPipe is much like the IdentityPipe, but calls
+    /// an evnet for every consuming object.
     /// </summary>
-    /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
-    public class FuncFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+    /// <typeparam name="S">The type of the consuming objects.</typeparam>
+    public class EventPipe<S> : AbstractPipe<S, S>
     {
 
         #region Data
 
-        private readonly Func<S, Boolean> _FilterFunc;
+        public event PipeEvent<S> Event;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FuncFilterPipe(FilterFunc)
+        #region EventPipe(Delegate)
 
         /// <summary>
-        /// Creates a new FuncFilterPipe using the given Func&lt;S, E&gt;.
+        /// Creates a new ActionPipe using the given Action&lt;S&gt;.
         /// </summary>
-        /// <param name="FilterFunc">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
-        public FuncFilterPipe(Func<S, Boolean> FilterFunc)
-        {
-
-            if (FilterFunc == null)
-                throw new ArgumentNullException("The given FilterFunc must not be null!");
-
-            _FilterFunc = FilterFunc;
-
-        }
+        /// <param name="Delegate">An Action&lt;S&gt; to be called on every consuming object.</param>
+        public EventPipe()
+        { }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -77,14 +71,16 @@ namespace eu.Vanaheimr.Styx
             if (SourcePipe == null)
                 return false;
 
-            while (SourcePipe.MoveNext())
+            if (SourcePipe.MoveNext())
             {
 
-                if (!_FilterFunc(SourcePipe.Current))
-                {
-                    _CurrentElement = SourcePipe.Current;
-                    return true;
-                }
+                _CurrentElement = SourcePipe.Current;
+
+                var EventLocal = Event;
+                if (EventLocal != null)
+                    EventLocal(_CurrentElement);
+
+                return true;
 
             }
 

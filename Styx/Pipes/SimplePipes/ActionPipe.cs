@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -27,8 +26,7 @@ namespace eu.Vanaheimr.Styx
 
     /// <summary>
     /// The ActionPipe is much like the IdentityPipe, but calls
-    /// an Action &lt;S&gt; on every consuming object before
-    /// returing them.
+    /// a delegate for every consuming object.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class ActionPipe<S> : AbstractPipe<S, S>
@@ -36,32 +34,26 @@ namespace eu.Vanaheimr.Styx
 
         #region Data
 
-        private Action<S> _Action;
+        private Action<S> Delegate;
 
         #endregion
 
         #region Constructor(s)
 
-        #region ActionPipe(myAction)
+        #region ActionPipe(Delegate)
 
         /// <summary>
         /// Creates a new ActionPipe using the given Action&lt;S&gt;.
         /// </summary>
-        /// <param name="myAction">An Action&lt;S&gt; to be called on every consuming object.</param>
-        public ActionPipe(Action<S> myAction)
+        /// <param name="Delegate">An Action&lt;S&gt; to be called on every consuming object.</param>
+        public ActionPipe(Action<S> Delegate)
         {
-
-            if (myAction == null)
-                throw new ArgumentNullException("myAction must not be null!");
-
-            _Action = myAction;
-
+            this.Delegate  = Delegate;
         }
 
         #endregion
 
         #endregion
-
 
         #region MoveNext()
 
@@ -81,9 +73,14 @@ namespace eu.Vanaheimr.Styx
 
             if (SourcePipe.MoveNext())
             {
+
                 _CurrentElement = SourcePipe.Current;
-                _Action(_CurrentElement);
+
+                if (Delegate != null)
+                    Delegate(_CurrentElement);
+
                 return true;
+
             }
 
             return false;
