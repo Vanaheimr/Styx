@@ -425,7 +425,7 @@ namespace eu.Vanaheimr.Styx
 
         // ThenBy
 
-        #region ToArray(this SourcePipe, ResetPipeBefore = true, ResetPipeAfter = true)
+        #region ToArray(this SourcePipe, ResetPipeBefore = false, ResetPipeAfter = false)
 
         /// <summary>
         /// Copies the elements of the given pipe into a new array.
@@ -434,8 +434,8 @@ namespace eu.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="ResetPipe">Reset the pipe after operation.</param>
         public static T[] ToArray<T>(this IEndPipe<T>  SourcePipe,
-                                     Boolean           ResetPipeBefore  = true,
-                                     Boolean           ResetPipeAfter   = true)
+                                     Boolean           ResetPipeBefore  = false,
+                                     Boolean           ResetPipeAfter   = false)
         {
 
             new List<String>().ToArray();
@@ -467,14 +467,14 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region ToDictionary(this SourcePipe, KeySelector, ValueSelector, Comparer = null, ResetPipeBefore = true, ResetPipeAfter = true)
+        #region ToDictionary(this SourcePipe, KeySelector, ValueSelector, Comparer = null, ResetPipeBefore = false, ResetPipeAfter = false)
 
         public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEndPipe<T>         SourcePipe,
                                                                              Func<T, TKey>            KeySelector,
                                                                              Func<T, TValue>          ValueSelector,
                                                                              IEqualityComparer<TKey>  Comparer         = null,
-                                                                             Boolean                  ResetPipeBefore  = true,
-                                                                             Boolean                  ResetPipeAfter   = true)
+                                                                             Boolean                  ResetPipeBefore  = false,
+                                                                             Boolean                  ResetPipeAfter   = false)
         {
 
             if (Comparer == null)
@@ -498,11 +498,11 @@ namespace eu.Vanaheimr.Styx
 
         #endregion
 
-        #region ToList(this SourcePipe, ResetPipeBefore = true, ResetPipeAfter = true)
+        #region ToList(this SourcePipe, ResetPipeBefore = false, ResetPipeAfter = false)
 
         public static List<T> ToList<T>(this IEndPipe<T>  SourcePipe,
-                                        Boolean           ResetPipeBefore  = true,
-                                        Boolean           ResetPipeAfter   = true)
+                                        Boolean           ResetPipeBefore  = false,
+                                        Boolean           ResetPipeAfter   = false)
         {
 
             var List = new List<T>();
