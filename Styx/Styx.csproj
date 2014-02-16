@@ -42,6 +42,8 @@
     <Compile Include="Arrows\AbstractArrowSender.cs" />
     <Compile Include="Arrows\AbstractFilterArrow.cs" />
     <Compile Include="Arrows\AbstractSideEffectArrow.cs" />
+    <Compile Include="Arrows\Applications\LoggerDelegate.cs" />
+    <Compile Include="Arrows\Applications\LogLevel.cs" />
     <Compile Include="Arrows\ArrowObject.cs" />
     <Compile Include="Arrows\ArrowPipeline.cs" />
     <Compile Include="Arrows\Combiners\ThrottleCollect.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Arrows\SimpleArrows\Action.cs" />
     <Compile Include="Arrows\SimpleArrows\Count.cs" />
     <Compile Include="Arrows\SimpleArrows\Identity.cs" />
+    <Compile Include="Arrows\Applications\Logger.cs" />
     <Compile Include="Arrows\SimpleArrows\Map.cs" />
     <Compile Include="Arrows\SimpleArrows\UnfoldArrow.cs" />
     <Compile Include="Enumerators\ExpandableEnumerator.cs" />
