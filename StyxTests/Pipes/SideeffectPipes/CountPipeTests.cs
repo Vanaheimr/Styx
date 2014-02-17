@@ -38,8 +38,7 @@ namespace eu.Vanaheimr.Styx.UnitTests.SideeffectPipes
         {
 
             var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            var _Pipe = new CountPipe<String>();
-            _Pipe.SetSourceCollection(_List);
+            var _Pipe = new CountPipe<String>(_List);
 
             var _Counter = 0UL;
             while (_Pipe.MoveNext())
@@ -63,8 +62,7 @@ namespace eu.Vanaheimr.Styx.UnitTests.SideeffectPipes
         {
 
             var _List = new List<String>();
-            var _Pipe = new CountPipe<String>();
-            _Pipe.SetSourceCollection(_List);
+            var _Pipe = new CountPipe<String>(_List);
 
             while (_Pipe.MoveNext())
             { }

@@ -29,58 +29,58 @@ namespace eu.Vanaheimr.Styx.UnitTests.FilterPipes
 
     [TestFixture]
     public class CollectionFilterPipeTests
-	{
-		
-		#region testBasicCollectionFilterEquals()
+    {
+        
+        #region testBasicCollectionFilterEquals()
 
         [Test]
         public void testBasicCollectionFilterEquals()
-        {	
+        {    
 
-			var _Names 		= new List<String>() { "marko", "marko", "peter", "josh", "pavel", "marko" };
-	        var _Collection = new HashSet<String>() { "marko", "pavel" };
-	        var _Pipe1 		= new CollectionFilterPipe<String>(_Collection, ComparisonFilter.NOT_EQUAL);
-	        _Pipe1.SetSourceCollection(_Names);
-			
-	        var _Counter = 0;
-	        while (_Pipe1.MoveNext())
-			{
-	            _Counter++;
-	            var _Name = _Pipe1.Current;
-	            Assert.IsTrue(_Name.Equals("marko") || _Name.Equals("pavel"));
-	        }
-	        
-			Assert.AreEqual(4, _Counter);
+            //var _Names       = new List<String>() { "marko", "marko", "peter", "josh", "pavel", "marko" };
+            //var _Collection  = new HashSet<String>() { "marko", "pavel" };
+            //var _Pipe1       = new CollectionFilterPipe<String>(_Collection, ComparisonFilter.NOT_EQUAL);
+            //_Pipe1.SetSourceCollection(_Names);
+            
+            //var _Counter = 0;
+            //while (_Pipe1.MoveNext())
+            //{
+            //    _Counter++;
+            //    var _Name = _Pipe1.Current;
+            //    Assert.IsTrue(_Name.Equals("marko") || _Name.Equals("pavel"));
+            //}
+            
+            //Assert.AreEqual(4, _Counter);
 
-		}
+        }
 
         #endregion
-		
-		#region testBasicCollectionFilterNotEquals()
+        
+        #region testBasicCollectionFilterNotEquals()
 
         [Test]
         public void testBasicCollectionFilterNotEquals()
-        {	
+        {    
 
-			var _Names 		= new List<String>() { "marko", "marko", "peter", "josh", "pavel", "marko" };
-	        var _Collection = new HashSet<String>() { "marko", "pavel" };
-	        var _Pipe1 		= new CollectionFilterPipe<String>(_Collection, ComparisonFilter.EQUAL);
-	        _Pipe1.SetSourceCollection(_Names);
-			
-	        var _Counter = 0;
-	        while (_Pipe1.MoveNext())
-			{
-	            _Counter++;
-	            var _Name = _Pipe1.Current;
-	            Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
-	        }
-	        
-			Assert.AreEqual(2, _Counter);
+            //var _Names         = new List<String>() { "marko", "marko", "peter", "josh", "pavel", "marko" };
+            //var _Collection = new HashSet<String>() { "marko", "pavel" };
+            //var _Pipe1         = new CollectionFilterPipe<String>(_Collection, ComparisonFilter.EQUAL);
+            //_Pipe1.SetSourceCollection(_Names);
+            
+            //var _Counter = 0;
+            //while (_Pipe1.MoveNext())
+            //{
+            //    _Counter++;
+            //    var _Name = _Pipe1.Current;
+            //    Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
+            //}
+            
+            //Assert.AreEqual(2, _Counter);
 
-		}
+        }
 
         #endregion
-		
-	}
-	
+        
+    }
+    
 }
