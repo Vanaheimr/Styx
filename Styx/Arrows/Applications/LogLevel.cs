@@ -26,6 +26,7 @@ namespace eu.Vanaheimr.Styx.Arrows
 
     public enum LogLevel
     {
+        DEBUG,
         INFO,
         WARNING,
         ERROR,
