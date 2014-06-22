@@ -192,11 +192,13 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Events
 
+        public event StartedEventHandler OnStarted;
+
         public event NotificationEventHandler<TOut> OnNotification;
 
         public event CompletedEventHandler OnCompleted;
 
-        public event ExceptionEventHandler OnException;
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
 
         #endregion
 
@@ -347,6 +349,11 @@ namespace eu.Vanaheimr.Styx.Arrows
 
             // if already runnning => return
 
+            var OnStartedLocal = OnStarted;
+
+            if (OnStartedLocal != null)
+                OnStartedLocal(this, DateTime.Now);
+
             try
             {
 
@@ -389,15 +396,21 @@ namespace eu.Vanaheimr.Styx.Arrows
 
                 }
 
-                if (OnCompleted != null)
-                    OnCompleted(this);
+                var OnCompletedLocal = OnCompleted;
+
+                if (OnCompletedLocal != null)
+                    OnCompletedLocal(this, DateTime.Now);
 
             }
 
             catch (Exception e)
             {
-                if (OnException != null)
-                    OnException(this, e);
+
+                var OnExceptionOccuredLocal = OnExceptionOccured;
+
+                if (OnExceptionOccuredLocal != null)
+                    OnExceptionOccuredLocal(this, DateTime.Now, e);
+
             }
 
         }
@@ -415,13 +428,16 @@ namespace eu.Vanaheimr.Styx.Arrows
 
             if (StartAsTask)
             {
+
                 if (FireTask != null)
                     FireTask.Start();
+
                 else
                 {
                     FireTask = AsTask();
                     FireTask.Start();
                 }
+
             }
 
             else

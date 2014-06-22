@@ -37,6 +37,20 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Properties
 
+        #region WasStarted
+
+        private Boolean _WasStarted = false;
+
+        public Boolean WasStarted
+        {
+            get
+            {
+                return _WasStarted;
+            }
+        }
+
+        #endregion
+
         #region IsCompleted
 
         private Boolean _IsCompleted = false;
@@ -56,9 +70,14 @@ namespace eu.Vanaheimr.Styx.Arrows
         #region Events
 
         /// <summary>
+        /// An event called whenever this arrow started to send messages.
+        /// </summary>
+        public event StartedEventHandler OnStarted;
+
+        /// <summary>
         /// An event called whenever an exception occured at this arrow.
         /// </summary>
-        public event ExceptionEventHandler OnException;
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
 
         /// <summary>
         /// An event called whenever this arrow will no longer send any messages.
@@ -76,7 +95,8 @@ namespace eu.Vanaheimr.Styx.Arrows
         public AbstractArrowReceiver(IArrowSender<TIn> ArrowSender = null)
         {
 
-            this._IsCompleted = false;
+            this._WasStarted   = false;
+            this._IsCompleted  = false;
 
             if (ArrowSender != null)
                 ArrowSender.SendTo(this);
@@ -97,23 +117,64 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        #region ProcessException(Sender, Exception)
+
+        #region ProcessStarted(Sender, Timestamp, Message = null)
+
+        /// <summary>
+        /// The sender of the arrows signaled to start sending arrows.
+        /// </summary>
+        /// <param name="Sender">The sender of the started message.</param>
+        /// <param name="Timestamp">The timestamp of the start.</param>
+        /// <param name="Message">An optional message.</param>
+        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message = null)
+        {
+
+            if (_WasStarted == true)
+                return;
+
+            try
+            {
+
+                _WasStarted = true;
+
+                var OnStartedLocal = OnStarted;
+
+                if (OnStartedLocal != null)
+                    OnStartedLocal(this, Timestamp, Message);
+
+            }
+            catch (Exception e)
+            {
+
+                var OnExceptionLocal = OnExceptionOccured;
+
+                if (OnExceptionLocal != null)
+                    OnExceptionLocal(this, DateTime.Now, e);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ProcessException(Sender, Timestamp, Exception)
 
         /// <summary>
         /// Process an occured exception.
         /// </summary>
         /// <param name="Sender">The sender of this exception.</param>
+        /// <param name="Timestamp">The timestamp of the exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        public void ProcessException(Object Sender, Exception Exception)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception Exception)
         {
 
             try
             {
 
-                var OnErrorLocal = OnException;
+                var OnErrorLocal = OnExceptionOccured;
 
                 if (OnErrorLocal != null)
-                    OnErrorLocal(this, Exception);
+                    OnErrorLocal(this, Timestamp, Exception);
 
             }
             catch (Exception)
@@ -123,14 +184,15 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        #region ProcessCompleted(Sender, Message = null)
+        #region ProcessCompleted(Sender, Timestamp, Message = null)
 
         /// <summary>
         /// The sender of the arrows signaled not to send any more arrows.
         /// </summary>
         /// <param name="Sender">The sender of the completed message.</param>
+        /// <param name="Timestamp">The timestamp of the shutdown.</param>
         /// <param name="Message">An optional message.</param>
-        public void ProcessCompleted(Object Sender, String Message = null)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message = null)
         {
 
             if (_IsCompleted == true)
@@ -144,16 +206,16 @@ namespace eu.Vanaheimr.Styx.Arrows
                 var OnCompletedLocal = OnCompleted;
 
                 if (OnCompletedLocal != null)
-                    OnCompletedLocal(this, Message);
+                    OnCompletedLocal(this, Timestamp, Message);
 
             }
             catch (Exception e)
             {
 
-                var OnExceptionLocal = OnException;
+                var OnExceptionLocal = OnExceptionOccured;
 
                 if (OnExceptionLocal != null)
-                    OnExceptionLocal(this, e);
+                    OnExceptionLocal(this, DateTime.Now, e);
 
             }
 

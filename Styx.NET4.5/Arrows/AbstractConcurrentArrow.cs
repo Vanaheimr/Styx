@@ -104,7 +104,7 @@ namespace eu.Vanaheimr.Styx.Arrows
             }
             catch (Exception e)
             {
-                base.ProcessException(this, e);
+                base.ProcessExceptionOccured(this, DateTime.Now, e);
             }
 
         }

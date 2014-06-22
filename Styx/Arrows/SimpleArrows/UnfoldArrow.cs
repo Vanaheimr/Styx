@@ -51,9 +51,11 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Events
 
+        public event StartedEventHandler OnStarted;
+
         public event NotificationEventHandler<T> OnNotification;
 
-        public event ExceptionEventHandler OnException;
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
 
         public event CompletedEventHandler OnCompleted;
 
@@ -74,27 +76,46 @@ namespace eu.Vanaheimr.Styx.Arrows
         #endregion
 
 
+
+        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message)
+        {
+
+            var OnStartedLocal = OnStarted;
+
+            if (OnStartedLocal != null)
+                OnStartedLocal(this, Timestamp, Message);
+
+        }
+
         public void ProcessArrow(IEnumerable<T> Messages)
         {
 
-            foreach (var Message in Messages)
-            {
-                if (OnNotification != null)
-                    OnNotification(Message);
-            }
+            var OnNotificationLocal = OnNotification;
+
+            if (OnNotificationLocal != null)
+                foreach (var Message in Messages)
+                    OnNotificationLocal(Message);
 
         }
 
-        public void ProcessException(Object Sender, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage)
         {
-            if (OnException != null)
-                OnException(this, ExceptionMessage);
+
+            var OnExceptionOccuredLocal = OnExceptionOccured;
+
+            if (OnExceptionOccuredLocal != null)
+                OnExceptionOccuredLocal(this, Timestamp, ExceptionMessage);
+
         }
 
-        public void ProcessCompleted(Object Sender, String Message)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message)
         {
+
+            var OnCompletedLocal = OnCompleted;
+
             if (OnCompleted != null)
-                OnCompleted(this, Message);
+                OnCompleted(this, Timestamp, Message);
+
         }
 
     }

@@ -29,20 +29,40 @@ namespace eu.Vanaheimr.Styx.Arrows
     public abstract class ANotificator : IArrowSender
     {
 
-        public event ExceptionEventHandler OnException;
+        public event StartedEventHandler OnStarted;
+
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
 
         public event CompletedEventHandler OnCompleted;
 
-        public void SignalError(Object Sender, Exception Exception)
+        public void SignalStarted(Object Sender, DateTime Timestamp, String Message)
         {
-            if (this.OnException != null)
-                this.OnException(Sender, Exception);
+
+            var OnStartedLocal = OnStarted;
+
+            if (OnStartedLocal != null)
+                OnStartedLocal(Sender, Timestamp, Message);
+
         }
 
-        public void SignalCompleted(Object Sender, String Message)
+        public void SignalError(Object Sender, DateTime Timestamp, Exception Exception)
         {
-            if (this.OnCompleted != null)
-                this.OnCompleted(Sender, Message);
+
+            var OnExceptionOccuredLocal = OnExceptionOccured;
+
+            if (OnExceptionOccuredLocal != null)
+                OnExceptionOccuredLocal(Sender, Timestamp, Exception);
+
+        }
+
+        public void SignalCompleted(Object Sender, DateTime Timestamp, String Message)
+        {
+
+            var OnCompletedLocal = OnCompleted;
+
+            if (OnCompletedLocal != null)
+                OnCompletedLocal(Sender, Timestamp, Message);
+
         }
 
     }

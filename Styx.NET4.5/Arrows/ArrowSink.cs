@@ -99,12 +99,12 @@ namespace eu.Vanaheimr.Styx.Arrows
             BlockingCollection.Add(Message);
         }
 
-        public void ProcessException(dynamic Sender, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(dynamic Sender, DateTime Timestamp, Exception ExceptionMessage)
         {
             BlockingCollection.CompleteAdding();
         }
 
-        public void ProcessCompleted(dynamic Sender, String Message)
+        public void ProcessCompleted(dynamic Sender, DateTime Timestamp, String Message)
         {
             BlockingCollection.CompleteAdding();
         }

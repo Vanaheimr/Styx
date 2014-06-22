@@ -39,23 +39,24 @@ namespace eu.Vanaheimr.Styx.Arrows
         #region Events
 
         /// <summary>
-        /// An event for message delivery.
+        /// An event for signaling the start of a message delivery.
         /// </summary>
-        //public event MessageRecipient<TMessage> OnMessageAvailable;
-
-        public event NotificationEventHandler<TOut> OnNotification;
+        public event StartedEventHandler OnStarted;
 
         /// <summary>
-        /// An event for signaling the completion of a message delivery.
+        /// An event for message delivery.
         /// </summary>
-        //public event CompletionRecipient OnCompleted;
-        public event CompletedEventHandler OnCompleted;
+        public event NotificationEventHandler<TOut> OnNotification;
 
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        //public event ExceptionRecipient OnError;
-        public event ExceptionEventHandler OnException;
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
+
+        /// <summary>
+        /// An event for signaling the completion of a message delivery.
+        /// </summary>
+        public event CompletedEventHandler OnCompleted;
 
         #endregion
 
@@ -167,8 +168,8 @@ namespace eu.Vanaheimr.Styx.Arrows
             }
             catch (Exception e)
             {
-                if (OnException != null)
-                    OnException(this, e);
+                if (OnExceptionOccured != null)
+                    OnExceptionOccured(this, DateTime.Now, e);
             }
 
             return false;
@@ -184,17 +185,19 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// Signale the completion of the message delivery.
         /// </summary>
         /// <param name="Sender">The sender of the completion signal.</param>
-        public void Complete(Object Sender, String Message = null)
+        /// <param name="Timestamp">The timestamp of the shutdown.</param>
+        /// <param name="Message">An optional shutdown message.</param>
+        public void Complete(Object Sender, DateTime Timestamp, String Message = null)
         {
             try
             {
                 if (OnCompleted != null)
-                    OnCompleted(this, Message);
+                    OnCompleted(this, Timestamp, Message);
             }
             catch (Exception e)
             {
-                if (OnException != null)
-                    OnException(this, e);
+                if (OnExceptionOccured != null)
+                    OnExceptionOccured(this, Timestamp, e);
             }
         }
 

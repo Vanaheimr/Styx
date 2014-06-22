@@ -177,9 +177,11 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Events
 
+        public event StartedEventHandler OnStarted;
+
         public event NotificationEventHandler<TOut> OnNotification;
 
-        public event ExceptionEventHandler OnException;
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
 
         public event CompletedEventHandler OnCompleted;
 
@@ -213,6 +215,17 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
+
+        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message)
+        {
+
+            var OnStartedLocal = OnStarted;
+
+            if (OnStartedLocal != null)
+                OnStartedLocal(this, Timestamp, Message);
+
+        }
+
         #region ProcessArrow(MessageIn1, MessageIn2)
 
         /// <summary>
@@ -230,16 +243,24 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        public void ProcessException(Object Sender, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage)
         {
-            if (OnException != null)
-                OnException(this, ExceptionMessage);
+
+            var OnExceptionOccuredLocal = OnExceptionOccured;
+
+            if (OnExceptionOccuredLocal != null)
+                OnExceptionOccuredLocal(this, Timestamp, ExceptionMessage);
+
         }
 
-        public void ProcessCompleted(Object Sender, String Message)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message)
         {
-            if (OnCompleted != null)
-                OnCompleted(this, Message);
+
+            var OnCompletedLocal = OnCompleted;
+
+            if (OnCompletedLocal != null)
+                OnCompletedLocal(this, Timestamp, Message);
+
         }
 
     }
@@ -267,9 +288,11 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Events
 
+        public event StartedEventHandler OnStarted;
+
         public event NotificationEventHandler<TOut> OnNotification;
 
-        public event ExceptionEventHandler OnException;
+        public event ExceptionOccuredEventHandler OnExceptionOccured;
 
         public event CompletedEventHandler OnCompleted;
 
@@ -303,6 +326,17 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
+
+        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message)
+        {
+
+            var OnStartedLocal = OnStarted;
+
+            if (OnStartedLocal != null)
+                OnStartedLocal(this, Timestamp, Message);
+
+        }
+
         #region ProcessArrow(MessageIn1, MessageIn2, MessageIn3)
 
         /// <summary>
@@ -321,16 +355,24 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        public void ProcessException(Object Sender, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage)
         {
-            if (OnException != null)
-                OnException(this, ExceptionMessage);
+
+            var OnExceptionOccuredLocal = OnExceptionOccured;
+
+            if (OnExceptionOccuredLocal != null)
+                OnExceptionOccuredLocal(this, Timestamp, ExceptionMessage);
+
         }
 
-        public void ProcessCompleted(Object Sender, String Message)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message)
         {
-            if (OnCompleted != null)
-                OnCompleted(this, Message);
+
+            var OnCompletedLocal = OnCompleted;
+
+            if (OnCompletedLocal != null)
+                OnCompletedLocal(this, Timestamp, Message);
+
         }
 
     }
