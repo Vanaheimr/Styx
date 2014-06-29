@@ -54,6 +54,10 @@
     <Compile Include="Arrows\FilterArrows\Take.cs" />
     <Compile Include="Arrows\FilterArrows\Throttle.cs" />
     <Compile Include="Arrows\FilterArrows\Where.cs" />
+    <Compile Include="Arrows\Interfaces\IArrowSenderExtentions.cs" />
+    <Compile Include="Arrows\Interfaces\IBoomerangSenderExtentions.cs" />
+    <Compile Include="Arrows\Interfaces\IBoomerangReceiver.cs" />
+    <Compile Include="Arrows\Interfaces\IBoomerangSender.cs" />
     <Compile Include="Arrows\Interfaces\IArrow.cs" />
     <Compile Include="Arrows\Interfaces\IArrowReceiver.cs" />
     <Compile Include="Arrows\Interfaces\IArrowSender.cs" />

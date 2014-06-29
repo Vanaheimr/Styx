@@ -18,70 +18,26 @@
 #region Usings
 
 using System;
-using eu.Vanaheimr.Illias.Commons.Votes;
 
 #endregion
 
 namespace eu.Vanaheimr.Styx.Arrows
 {
 
-    public delegate void NotificationEventHandler<T>                  (T Message);
-    public delegate void NotificationEventHandler<T1, T2>             (T1 Message1, T2 Message2);
-    public delegate void NotificationEventHandler<T1, T2, T3>         (T1 Message1, T2 Message2, T3 Message3);
-    public delegate void NotificationEventHandler<T1, T2, T3, T4>     (T1 Message1, T2 Message2, T3 Message3, T4 Message4);
-    public delegate void NotificationEventHandler<T1, T2, T3, T4, T5> (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
+    #region Delegates
 
-    public delegate void StartedEventHandler                          (Object Sender, DateTime Timestamp, String    Message = null);
-    public delegate void ExceptionOccuredEventHandler                 (Object Sender, DateTime Timestamp, Exception Exception);
-    public delegate void CompletedEventHandler                        (Object Sender, DateTime Timestamp, String    Message = null);
+    public delegate void    NotificationEventHandler<T>                  (T Message);
+    public delegate void    NotificationEventHandler<T1, T2>             (T1 Message1, T2 Message2);
+    public delegate void    NotificationEventHandler<T1, T2, T3>         (T1 Message1, T2 Message2, T3 Message3);
+    public delegate void    NotificationEventHandler<T1, T2, T3, T4>     (T1 Message1, T2 Message2, T3 Message3, T4 Message4);
+    public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5> (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
 
-
-    #region IArrowSenderExtentions
-
-    /// <summary>
-    /// Extentions for the IArrowSender interface.
-    /// </summary>
-    public static class IArrowSenderExtentions
-    {
-
-        public static void SendTo<T>(this IArrowSender<T> INotification, IArrowReceiver<T> Target)
-        {
-            INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
-            INotification.OnCompleted           += Target.ProcessCompleted;
-        }
-
-        public static void SendTo<T1, T2>(this IArrowSender<T1, T2> INotification, IArrowReceiver<T1, T2> Target)
-        {
-            INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
-            INotification.OnCompleted           += Target.ProcessCompleted;
-        }
-
-        public static void SendTo<T1, T2, T3>(this IArrowSender<T1, T2, T3> INotification, IArrowReceiver<T1, T2, T3> Target)
-        {
-            INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
-            INotification.OnCompleted           += Target.ProcessCompleted;
-        }
-
-        public static void SendTo<T1, T2, T3, T4>(this IArrowSender<T1, T2, T3, T4> INotification, IArrowReceiver<T1, T2, T3, T4> Target)
-        {
-            INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
-            INotification.OnCompleted           += Target.ProcessCompleted;
-        }
-
-        public static void SendTo<T1, T2, T3, T4, T5>(this IArrowSender<T1, T2, T3, T4, T5> INotification, IArrowReceiver<T1, T2, T3, T4, T5> Target)
-        {
-            INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
-            INotification.OnCompleted           += Target.ProcessCompleted;
-        }
-
-    }
+    public delegate void    StartedEventHandler                          (Object Sender, DateTime Timestamp, String    Message = null);
+    public delegate void    ExceptionOccuredEventHandler                 (Object Sender, DateTime Timestamp, Exception Exception);
+    public delegate void    CompletedEventHandler                        (Object Sender, DateTime Timestamp, String    Message = null);
 
     #endregion
+
 
     #region IArrowSender
 
