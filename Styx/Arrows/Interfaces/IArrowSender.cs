@@ -50,17 +50,17 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event for signaling the start of a message delivery.
         /// </summary>
-        event StartedEventHandler OnStarted;
+        event StartedEventHandler           OnStarted;
 
         /// <summary>
         /// An event for signaling the completion of a message delivery.
         /// </summary>
-        event CompletedEventHandler OnCompleted;
+        event CompletedEventHandler         OnCompleted;
 
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        event ExceptionOccuredEventHandler OnExceptionOccured;
+        event ExceptionOccuredEventHandler  OnExceptionOccured;
 
     }
 
