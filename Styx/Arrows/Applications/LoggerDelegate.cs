@@ -32,4 +32,14 @@ namespace eu.Vanaheimr.Styx.Arrows
     /// <param name="Arguments">The message arguments.</param>
     public delegate void LoggerDelegate(DateTime Timestamp, LogLevel LogLevel, params Object[] Arguments);
 
+
+    /// <summary>
+    /// A delegate called whenever the data processor has something to say.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the message.</param>
+    /// <param name="LogLevel">The log level of the message.</param>
+    /// <param name="Arguments">The message arguments.</param>
+    public delegate void LoggerDelegate<TEnum>(DateTime Timestamp, TEnum Topic, params Object[] Arguments)
+        where TEnum : struct, IComparable, IFormattable, IConvertible;
+
 }

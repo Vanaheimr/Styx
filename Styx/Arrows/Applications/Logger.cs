@@ -18,6 +18,9 @@
 #region Usings
 
 using System;
+using System.Linq;
+
+using eu.Vanaheimr.Illias.Commons;
 
 #endregion
 
@@ -43,10 +46,39 @@ namespace eu.Vanaheimr.Styx.Arrows
         public void Log(DateTime Timestamp, LogLevel LogLevel, params Object[] Arguments)
         {
 
-            var Message = String.Concat(Timestamp, " - ", String.Concat(Arguments));
+            var OnOutputLocal = OnOutput;
+            if (OnOutputLocal != null)
+                OnOutputLocal(Timestamp, LogLevel, Arguments);
 
-            if (OnOutput != null)
-                OnOutput(Timestamp, LogLevel, Message);
+        }
+
+        #endregion
+
+    }
+
+    public class Logger<TEnum>
+        where TEnum : struct, IComparable, IFormattable, IConvertible
+    {
+
+        public event LoggerDelegate<TEnum> OnOutput;
+
+        #region Log(LogLevel, params Arguments)
+
+        public void Log(TEnum Topic, params Object[] Arguments)
+        {
+            Log(DateTime.Now, Topic, Arguments);
+        }
+
+        #endregion
+
+        #region Log(Timestamp, Topic, params Arguments)
+
+        public void Log(DateTime Timestamp, TEnum Topic, params Object[] Arguments)
+        {
+
+            var OnOutputLocal = OnOutput;
+            if (OnOutputLocal != null)
+                OnOutputLocal(Timestamp, Topic, Arguments);//.Select(v => v.ToString()).AggregateOrDefault((a, b) => a + ", " + b, String.Empty));
 
         }
 
