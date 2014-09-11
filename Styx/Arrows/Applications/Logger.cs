@@ -56,7 +56,7 @@ namespace eu.Vanaheimr.Styx.Arrows
 
     }
 
-    public class Logger<TEnum>
+    public class Logger<TEnum> : ILogger<TEnum>
         where TEnum : struct, IComparable, IFormattable, IConvertible
     {
 

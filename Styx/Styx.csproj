@@ -42,6 +42,7 @@
     <Compile Include="Arrows\AbstractArrowSender.cs" />
     <Compile Include="Arrows\AbstractFilterArrow.cs" />
     <Compile Include="Arrows\AbstractSideEffectArrow.cs" />
+    <Compile Include="Arrows\Applications\ILogger.cs" />
     <Compile Include="Arrows\Applications\LoggerDelegate.cs" />
     <Compile Include="Arrows\Applications\LogLevel.cs" />
     <Compile Include="Arrows\ArrowObject.cs" />

@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Arrows\AbstractConcurrentArrow.cs" />
     <Compile Include="Arrows\AbstractConcurrentArrowReceiver.cs" />
+    <Compile Include="Arrows\Applications\FileLogger.cs" />
     <Compile Include="Arrows\ArrowSink.cs" />
     <Compile Include="Arrows\CombineArrow.cs" />
     <Compile Include="Arrows\ConcurrentAction.cs" />
