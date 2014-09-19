@@ -8,7 +8,7 @@
     <ProjectGuid>{3949790D-8591-4101-9E4D-CE7A758E7409}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>eu.Vanaheimr.Styx</RootNamespace>
+    <RootNamespace>org.GraphDefined.Vanaheimr.Styx</RootNamespace>
     <AssemblyName>Vanaheimr.Styx</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Profile104</TargetFrameworkProfile>
@@ -23,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Vanaheimr.Styx.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -152,9 +154,9 @@
     <Folder Include="Arrows\SplitArrows\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
-      <Project>{d3b1af79-161f-4299-8b14-133286d635b8}</Project>
-      <Name>Commons</Name>
+    <ProjectReference Include="..\..\Illias\Illias\Illias.csproj">
+      <Project>{e156f18d-d41c-4529-9bcc-9962e6ee25da}</Project>
+      <Name>Illias</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

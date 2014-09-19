@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>

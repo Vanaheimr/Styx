@@ -24,7 +24,7 @@
 
 //#endregion
 
-//namespace eu.Vanaheimr.Styx
+//namespace org.GraphDefined.Vanaheimr.Styx
 //{
 
 //    #region AbstractMetaPipe<S, E>

@@ -19,11 +19,11 @@
 
 using System;
 
-using eu.Vanaheimr.Illias.Commons.Votes;
+using org.GraphDefined.Vanaheimr.Illias.Votes;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Arrows
+namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     public interface IVotingReceiver<in T, V> : IArrowReceiver

@@ -17,13 +17,13 @@
 
 #region Usings
 
-using eu.Vanaheimr.Illias.Commons.Collections;
+using org.GraphDefined.Vanaheimr.Illias.Collections;
 using System;
 using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     public static class DistinctPipeExtensions
@@ -55,7 +55,7 @@ namespace eu.Vanaheimr.Styx
         #region Data
 
         private readonly IEqualityComparer<S>  EqualityComparer;
-        private readonly HashSet<S>            ValueHistory;
+        private readonly HashedSet<S>          ValueHistory;
 
         #endregion
 
@@ -70,7 +70,7 @@ namespace eu.Vanaheimr.Styx
             : base(SourcePipe)
         {
             this.EqualityComparer  = (EqualityComparer != null) ? EqualityComparer : EqualityComparer<S>.Default;
-            this.ValueHistory      = new HashSet<S>();
+            this.ValueHistory      = new HashedSet<S>();
         }
 
         #endregion

@@ -22,11 +22,11 @@ using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using eu.Vanaheimr.Illias.Commons;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     public class FixLineBreaksPipe : AbstractPipe<String, String>

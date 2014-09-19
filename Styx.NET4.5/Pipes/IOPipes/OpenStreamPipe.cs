@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>

@@ -25,7 +25,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
