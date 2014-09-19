@@ -25,7 +25,7 @@
 
 //#endregion
 
-//namespace eu.Vanaheimr.Styx.UnitTests.FilterPipes
+//namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
 //{
 
 //    [TestFixture]

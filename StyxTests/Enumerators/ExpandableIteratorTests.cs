@@ -24,7 +24,7 @@ using NUnit.Framework;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.UnitTests.Enumerators
+namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Enumerators
 {
 
     [TestFixture]

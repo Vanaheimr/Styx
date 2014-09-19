@@ -20,13 +20,13 @@
 using System;
 using System.Collections.Generic;
 
-using eu.Vanaheimr.Styx;
+using org.GraphDefined.Vanaheimr.Styx;
 
 using NUnit.Framework;
 
 #endregion
 
-namespace eu.Vanaheimr.Balder.UnitTests.FilterPipes
+namespace org.GraphDefined.Vanaheimr.Balder.UnitTests.FilterPipes
 {
 
     [TestFixture]

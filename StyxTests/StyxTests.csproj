@@ -86,17 +86,9 @@
     <Folder Include="Sensors\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Illias\Commons.NET4.5\Commons.NET4.5.csproj">
-      <Project>{ccc826d7-9ac7-4ce6-82f8-b835168eba35}</Project>
-      <Name>Commons.NET4.5</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Illias\CommonsTests\CommonsTests.csproj">
       <Project>{02a5f706-a9ac-46be-a428-ea6f990d8e21}</Project>
       <Name>CommonsTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
-      <Project>{d3b1af79-161f-4299-8b14-133286d635b8}</Project>
-      <Name>Commons</Name>
     </ProjectReference>
     <ProjectReference Include="..\Styx.NET4.5\Styx.NET4.5.csproj">
       <Project>{af76ecc0-2ca5-4cff-9e1e-ff5478c4b6e4}</Project>
