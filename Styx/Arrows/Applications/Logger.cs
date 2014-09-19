@@ -78,7 +78,7 @@ namespace eu.Vanaheimr.Styx.Arrows
 
             var OnOutputLocal = OnOutput;
             if (OnOutputLocal != null)
-                OnOutputLocal(Timestamp, Topic, Arguments);//.Select(v => v.ToString()).AggregateOrDefault((a, b) => a + ", " + b, String.Empty));
+                OnOutputLocal(Timestamp, Topic, Arguments);
 
         }
 
