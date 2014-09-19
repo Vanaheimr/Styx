@@ -17,13 +17,13 @@
 
 #region Usings
 
-using eu.Vanaheimr.Illias.Commons.Collections;
+using org.GraphDefined.Vanaheimr.Illias.Collections;
 using System;
 using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace eu.Vanaheimr.Styx
                 if (_InternalPipe != null)
                 {
 
-                    var _TmpSet     = new HashSet<Object>();
+                    var _TmpSet     = new HashedSet<Object>();
                     var _DoReturn   = true;
 
                     foreach (var _Object in _InternalPipe.Path)

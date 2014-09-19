@@ -17,13 +17,13 @@
 
 #region Usings
 
-using eu.Vanaheimr.Illias.Commons.Collections;
+using org.GraphDefined.Vanaheimr.Illias.Collections;
 using System;
 using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Arrows
+namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace eu.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private readonly HashSet<TMessage> _HistorySet;
+        private readonly HashedSet<TMessage> _HistorySet;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace eu.Vanaheimr.Styx.Arrows
         /// </summary>
         public DuplicateFilterArrow()
         {
-            _HistorySet = new HashSet<TMessage>();
+            _HistorySet = new HashedSet<TMessage>();
         }
 
         #endregion

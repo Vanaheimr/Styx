@@ -22,7 +22,7 @@ using System.Threading;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Arrows
+namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>

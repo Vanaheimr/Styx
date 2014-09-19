@@ -15,30 +15,28 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+using System.IO;
+using System.Linq;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
-    #region IFilterArrow
+    public interface ILogger<TEnum>
+        where TEnum : struct, IComparable, IFormattable, IConvertible
 
-    /// <summary>
-    /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
-    /// some of the messages/objects instead of emitting everything.
-    /// </summary>
-    public interface IFilterArrow : IArrow
-    { }
+    {
 
-    #endregion
+        void Log(                    TEnum Topics, params Object[] Arguments);
 
-    #region IFilterArrow<TMessage>
+        void Log(DateTime Timestamp, TEnum Topics, params Object[] Arguments);
 
-    /// <summary>
-    /// A FilterArrow is much like the IdentityArrow, but may or may not filter 
-    /// some of the messages/objects instead of emitting everything.
-    /// </summary>
-    /// <typeparam name="TMessage">The type of the consuming messages/objects.</typeparam>
-    public interface IFilterArrow<TMessage> : IFilterArrow, IArrow<TMessage, TMessage>
-    { }
-
-    #endregion
+    }
 
 }

@@ -20,11 +20,11 @@
 using System;
 using System.Linq;
 
-using eu.Vanaheimr.Illias.Commons;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Arrows
+namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     public class Logger
@@ -56,7 +56,7 @@ namespace eu.Vanaheimr.Styx.Arrows
 
     }
 
-    public class Logger<TEnum>
+    public class Logger<TEnum> : ILogger<TEnum>
         where TEnum : struct, IComparable, IFormattable, IConvertible
     {
 

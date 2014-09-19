@@ -22,11 +22,11 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-using eu.Vanaheimr.Illias.Commons;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     #region AbstractPipe<S, E>

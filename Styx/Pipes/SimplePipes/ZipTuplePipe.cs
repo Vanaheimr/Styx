@@ -20,11 +20,11 @@
 using System;
 using System.Collections.Generic;
 
-using eu.Vanaheimr.Illias.Commons.Collections;
+using org.GraphDefined.Vanaheimr.Illias.Collections;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx
+namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>

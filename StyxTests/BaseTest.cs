@@ -22,7 +22,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.UnitTests
+namespace org.GraphDefined.Vanaheimr.Styx.UnitTests
 {
     
     public static class BaseTest

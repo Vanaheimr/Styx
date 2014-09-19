@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Arrows
+namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     // Attention: TIn and TOutput reversed ;)

@@ -24,7 +24,7 @@ using System.Collections.Concurrent;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Arrows
+namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     public static class ToIEnumerableExtention
