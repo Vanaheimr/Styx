@@ -37,7 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public static ZipTuplePipe<S1, S2> Zip<S1, S2>(this IEndPipe<S1>                 SourcePipe1,
                                                             IEndPipe<S2>                 SourcePipe2,
-                                                            Func<S1, S2, Tuple<S1, S2>>  ZipDelegate)
+                                                            Func<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>> ZipDelegate)
         {
             return new ZipTuplePipe<S1, S2>(SourcePipe1, SourcePipe2, ZipDelegate);
         }
@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         public static ZipTuplePipe<S1, S2> Zip<S1, S2>(this IEndPipe<S1>                         SourcePipe1,
                                                             IEndPipe<S2>                         SourcePipe2,
-                                                            Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                                                            Func<S1, S2, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>> CountedZipDelegate)
         {
             return new ZipTuplePipe<S1, S2>(SourcePipe1, SourcePipe2, CountedZipDelegate);
         }
@@ -64,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ZipTuplePipe<S1, S2, S3> Zip<S1, S2, S3>(this IEndPipe<S1>                     SourcePipe1,
                                                                     IEndPipe<S2>                     SourcePipe2,
                                                                     IEndPipe<S3>                     SourcePipe3,
-                                                                    Func<S1, S2, S3, Tuple<S1, S2>>  ZipDelegate)
+                                                                    Func<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>> ZipDelegate)
         {
             return new ZipTuplePipe<S1, S2, S3>(SourcePipe1, SourcePipe2, SourcePipe3, ZipDelegate);
         }
@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ZipTuplePipe<S1, S2, S3> Zip<S1, S2, S3>(this IEndPipe<S1>                             SourcePipe1,
                                                                     IEndPipe<S2>                             SourcePipe2,
                                                                     IEndPipe<S3>                             SourcePipe3,
-                                                                    Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                                                                    Func<S1, S2, S3, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>> CountedZipDelegate)
         {
             return new ZipTuplePipe<S1, S2, S3>(SourcePipe1, SourcePipe2, SourcePipe3, CountedZipDelegate);
         }
@@ -96,14 +96,14 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S1">The type of the consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the consuming objects.</typeparam>
-    public class ZipTuplePipe<S1, S2> : AbstractPipe<S1, S2, Tuple<S1, S2>>
+    public class ZipTuplePipe<S1, S2> : AbstractPipe<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>
     {
 
         #region Data
 
         private readonly Func<Boolean>                        ProcessingDelegate;
-        private readonly Func<S1, S2, Tuple<S1, S2>>          ZipDelegate;
-        private readonly Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate;
+        private readonly Func<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>> ZipDelegate;
+        private readonly Func<S1, S2, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>> CountedZipDelegate;
         private          UInt64                               Counter;
 
         #endregion
@@ -114,7 +114,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(S1                           SourceValue1,
                             S2                           SourceValue2,
-                            Func<S1, S2, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourceValue1, SourceValue2)
 
@@ -131,7 +131,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(IEndPipe<S1>                 SourcePipe1,
                             IEndPipe<S2>                 SourcePipe2,
-                            Func<S1, S2, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourcePipe1, SourcePipe2)
 
@@ -148,7 +148,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(IEnumerator<S1>              SourceEnumerator1,
                             IEnumerator<S2>              SourceEnumerator2,
-                            Func<S1, S2, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourceEnumerator1, SourceEnumerator2)
 
@@ -165,7 +165,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(IEnumerable<S1>              SourceEnumerable1,
                             IEnumerable<S2>              SourceEnumerable2,
-                            Func<S1, S2, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourceEnumerable1, SourceEnumerable2)
 
@@ -183,7 +183,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(S1                                   SourceValue1,
                             S2                                   SourceValue2,
-                            Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourceValue1, SourceValue2)
 
@@ -200,7 +200,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(IEndPipe<S1>                         SourcePipe1,
                             IEndPipe<S2>                         SourcePipe2,
-                            Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourcePipe1, SourcePipe2)
 
@@ -217,7 +217,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(IEnumerator<S1>                      SourceEnumerator1,
                             IEnumerator<S2>                      SourceEnumerator2,
-                            Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourceEnumerator1, SourceEnumerator2)
 
@@ -234,7 +234,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public ZipTuplePipe(IEnumerable<S1>                      SourceEnumerable1,
                             IEnumerable<S2>                      SourceEnumerable2,
-                            Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourceEnumerable1, SourceEnumerable2)
 
@@ -329,14 +329,14 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S1">The type of the consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the consuming objects.</typeparam>
-    public class ZipTuplePipe<S1, S2, S3> : AbstractPipe<S1, S2, S3, Tuple<S1, S2>>
+    public class ZipTuplePipe<S1, S2, S3> : AbstractPipe<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>
     {
 
         #region Data
 
         private readonly Func<Boolean>                            ProcessingDelegate;
-        private readonly Func<S1, S2, S3, Tuple<S1, S2>>          ZipDelegate;
-        private readonly Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate;
+        private readonly Func<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>          ZipDelegate;
+        private readonly Func<S1, S2, S3, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate;
         private          UInt64                                   Counter;
 
         #endregion
@@ -348,7 +348,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(S1                               SourceValue1,
                             S2                               SourceValue2,
                             S3                               SourceValue3,
-                            Func<S1, S2, S3, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourceValue1, SourceValue2, SourceValue3)
 
@@ -366,7 +366,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(IEndPipe<S1>                     SourcePipe1,
                             IEndPipe<S2>                     SourcePipe2,
                             IEndPipe<S3>                     SourcePipe3,
-                            Func<S1, S2, S3, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourcePipe1, SourcePipe2, SourcePipe3)
 
@@ -384,7 +384,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(IEnumerator<S1>                  SourceEnumerator1,
                             IEnumerator<S2>                  SourceEnumerator2,
                             IEnumerator<S3>                  SourceEnumerator3,
-                            Func<S1, S2, S3, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourceEnumerator1, SourceEnumerator2, SourceEnumerator3)
 
@@ -402,7 +402,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(IEnumerable<S1>                  SourceEnumerable1,
                             IEnumerable<S2>                  SourceEnumerable2,
                             IEnumerable<S3>                  SourceEnumerable3,
-                            Func<S1, S2, S3, Tuple<S1, S2>>  ZipDelegate)
+                            Func<S1, S2, S3, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  ZipDelegate)
 
             : base(SourceEnumerable1, SourceEnumerable2, SourceEnumerable3)
 
@@ -421,7 +421,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(S1                                       SourceValue1,
                             S2                                       SourceValue2,
                             S3                                       SourceValue3,
-                            Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, S3, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourceValue1, SourceValue2, SourceValue3)
 
@@ -439,7 +439,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(IEndPipe<S1>                             SourcePipe1,
                             IEndPipe<S2>                             SourcePipe2,
                             IEndPipe<S3>                             SourcePipe3,
-                            Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, S3, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourcePipe1, SourcePipe2, SourcePipe3)
 
@@ -457,7 +457,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(IEnumerator<S1>                          SourceEnumerator1,
                             IEnumerator<S2>                          SourceEnumerator2,
                             IEnumerator<S3>                          SourceEnumerator3,
-                            Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, S3, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourceEnumerator1, SourceEnumerator2, SourceEnumerator3)
 
@@ -475,7 +475,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ZipTuplePipe(IEnumerable<S1>                          SourceEnumerable1,
                             IEnumerable<S2>                          SourceEnumerable2,
                             IEnumerable<S3>                          SourceEnumerable3,
-                            Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+                            Func<S1, S2, S3, UInt64, org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<S1, S2>>  CountedZipDelegate)
 
             : base(SourceEnumerable1, SourceEnumerable2, SourceEnumerable3)
 
