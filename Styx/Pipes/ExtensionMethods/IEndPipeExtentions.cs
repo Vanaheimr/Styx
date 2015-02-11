@@ -32,6 +32,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public static class IEEnumerableExtentions
     {
 
+        //ToDo: A lot!
+
         #region Any<T>(this Pipe)
 
         public static Boolean Any<T>(this IEndPipe<T>  Pipe)
@@ -115,7 +117,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             var Counter = 0UL;
 
-            if (Include == null)
+            if (Include != null)
             {
                 foreach (var Item in Pipe)
                     if (Include(Item))
@@ -586,6 +588,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         //}
 
         #endregion
+
+        // Where
 
 
         // Additionals...
