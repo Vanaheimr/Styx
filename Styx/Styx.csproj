@@ -102,6 +102,7 @@
     <Compile Include="Pipes\Branch\SplitPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipe.cs" />
+    <Compile Include="Pipes\ToDos.cs" />
     <Compile Include="Pipes\ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="Pipes\FilterPipes\AndFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\BackFilterPipe.cs" />

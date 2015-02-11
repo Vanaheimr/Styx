@@ -29,40 +29,154 @@ using org.GraphDefined.Vanaheimr.Illias.Collections;
 namespace org.GraphDefined.Vanaheimr.Styx
 {
 
-    public static class IEEnumerableExtentions
+    /// <summary>
+    /// Extentions methods for the IEndPipe interface.
+    /// </summary>
+    public static partial class IEndPipeExtentions
     {
 
-        //ToDo: A lot!
+        // Anything which maps from IEndPipe to something unlike IEndPipe...
 
-        #region Any<T>(this Pipe)
+        #region Aggregate<T>(this SourcePipe, AggreationDelegate, DefaultValue = default(T))
 
-        public static Boolean Any<T>(this IEndPipe<T>  Pipe)
+        /// <summary>
+        /// Safely aggregates the items emitted by the given pipe. If the pipe is null
+        /// or has no elements the default value will be returned.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="AggreationDelegate">The delegate to aggregate the items emitted by the pipe.</param>
+        /// <param name="DefaultValue">The default value to return for an empty pipe.</param>
+        public static T Aggregate<T>(this IEndPipe<T> SourcePipe,
+                                     Func<T, T, T>    AggreationDelegate,
+                                     T                DefaultValue = default(T))
         {
 
-            //ToDo: Will not happen! But perhaps we have some pipes which know
-            //      their number of elements!
-            var collection = Pipe as ICollection<T>;
-            if (collection != null)
-                return collection.Count > 0;
+            #region Initial checks
 
-            if (Pipe == null)
-                return false;
+            if (SourcePipe == null)
+                return DefaultValue;
 
-            using (var enumerator = Pipe)//.GetEnumerator())
-                return enumerator.MoveNext();
+            if (AggreationDelegate == null)
+                throw new ArgumentNullException("AggreationDelegate");
+
+            #endregion
+
+            using (var Enumerator = SourcePipe.GetEnumerator())
+            {
+
+                if (!Enumerator.MoveNext())
+                    return DefaultValue;
+
+                T Aggregated = Enumerator.Current;
+
+                while (Enumerator.MoveNext())
+                    Aggregated = AggreationDelegate(Aggregated, Enumerator.Current);
+
+                return Aggregated;
+
+            }
 
         }
 
         #endregion
 
-        #region Any<T>(this Pipe, Include)
+        #region Aggregate<T>(this SourcePipe, Prefix, Map, Reduce, Suffix, DefaultT = default(T))
 
-        public static Boolean Any<T>(this IEndPipe<T>  Pipe,
-                                     Func<T, Boolean>  Include)
+        /// <summary>
+        /// Safely aggregates the items emitted by the given pipe. If the pipe is null
+        /// or has no elements the default value will be returned.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="DefaultValue">The default value to return for an empty pipe.</param>
+        public static T Aggregate<T>(this IEndPipe<T>  SourcePipe,
+                                     T                 Prefix,
+                                     Func<T, T>        Map,
+                                     Func<T, T, T>     Reduce,
+                                     T                 Suffix,
+                                     T                 DefaultValue = default(T))
         {
 
-            foreach (var Item in Pipe)
-                if (Include(Item))
+            if (SourcePipe == null)
+                return DefaultValue;
+
+            try
+            {
+                return Reduce(Reduce(Prefix, SourcePipe.Select(Item => Map(Item)).Aggregate(Reduce)), Suffix);
+            }
+            catch (Exception e)
+            {
+                return DefaultValue;
+            }
+
+        }
+
+        #endregion
+
+        #region All<T>(this SourcePipe, IncludeFilter)
+
+        /// <summary>
+        /// Determines whether all items of a pipe satisfy a condition.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
+        /// <returns>True if every item of the pipe passes the specified filter, or if the pipe is empty; otherwise, false.</returns>
+        public static Boolean All<T>(this IEndPipe<T> SourcePipe, Func<T, Boolean> IncludeFilter)
+        {
+
+            if (SourcePipe == null)
+                return true;
+
+            foreach (var Item in SourcePipe)
+                if (!IncludeFilter(Item))
+                    return false;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region Any<T>(this SourcePipe)
+
+        /// <summary>
+        /// Determines whether a pipe emits any items.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <returns>True if the pipe emits any items; otherwise, false.</returns>
+        public static Boolean Any<T>(this IEndPipe<T> SourcePipe)
+        {
+
+            if (SourcePipe == null)
+                return false;
+
+            using (var Enumerator = SourcePipe)
+                return Enumerator.MoveNext();
+
+        }
+
+        #endregion
+
+        #region Any<T>(this SourcePipe, IncludeFilter)
+
+        /// <summary>
+        /// Determines whether any item emitted by a pipe satisfies a condition.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
+        /// <returns>True if the pipe emits any matching items; otherwise, false.</returns>
+        public static Boolean Any<T>(this IEndPipe<T> SourcePipe, Func<T, Boolean> IncludeFilter)
+        {
+
+            if (SourcePipe == null)
+                return false;
+
+            foreach (var Item in SourcePipe)
+                if (IncludeFilter(Item))
                     return true;
 
             return false;
@@ -71,27 +185,30 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        #region Contains<T>(this Pipe, Value, Comparer = null)
+        #region Contains<T>(this SourcePipe, Value, ValueComparer = null)
 
-        public static Boolean Contains<T>(this IEndPipe<T>      Pipe,
+        /// <summary>
+        /// Determines whether a pipe emits the specified element by
+        /// using the default equality comparer.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="Value">The value to locate in the pipe.</param>
+        /// <param name="ValueComparer">An equality comparer to compare values.</param>
+        /// <returns>True if the pipe contains an item that has the specified value; otherwise, false.</returns>
+        public static Boolean Contains<T>(this IEndPipe<T>      SourcePipe,
                                           T                     Value,
-                                          IEqualityComparer<T>  Comparer = null)
+                                          IEqualityComparer<T>  ValueComparer = null)
         {
 
-            if (Pipe == null)
+            if (SourcePipe == null)
                 return false;
 
-            //ToDo: Will not happen! But perhaps we have some pipes
-            //      which know their elements!
-            var collection = Pipe as ICollection<T>;
-            if (collection != null)
-                return collection.Contains(Value);
+            if (ValueComparer == null)
+                ValueComparer = EqualityComparer<T>.Default;
 
-            if (Comparer == null)
-                Comparer = EqualityComparer<T>.Default;
-
-            foreach (var Item in Pipe)
-                if (Comparer.Equals(Item, Value))
+            foreach (var Item in SourcePipe)
+                if (ValueComparer.Equals(Item, Value))
                     return true;
 
             return false;
@@ -100,33 +217,31 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        #region Count<T>(this Pipe, Include = null)
+        #region Count<T>(this SourcePipe, IncludeFilter = null)
 
-        public static UInt64 Count<T>(this IEndPipe<T>  Pipe,
-                                      Func<T, Boolean>  Include = null)
+        /// <summary>
+        /// Returns the number of items in the given pipe satisfying an optional condition.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
+        public static UInt64 Count<T>(this IEndPipe<T>  SourcePipe,
+                                      Func<T, Boolean>  IncludeFilter = null)
         {
 
-            if (Pipe == null)
+            if (SourcePipe == null)
                 return 0UL;
-
-            //ToDo: Will not happen! But perhaps we have some pipes which know
-            //      their number of elements!
-            var collection = Pipe as ICollection<T>;
-            if (Include == null && collection != null)
-                return (UInt64) collection.Count;
 
             var Counter = 0UL;
 
-            if (Include != null)
-            {
-                foreach (var Item in Pipe)
-                    if (Include(Item))
-                        Counter++;
-            }
+            if (IncludeFilter == null)
+                foreach (var Item in SourcePipe)
+                    Counter++;
 
             else
-                foreach (var Item in Pipe)
-                    Counter++;
+                foreach (var Item in SourcePipe)
+                    if (IncludeFilter(Item))
+                        Counter++;
 
             return Counter;
 
@@ -134,22 +249,30 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        #region First<T>(this Pipe, Include = null, DefaultValue = default(T))
+        #region FirstOrDefault<T>(this SourcePipe, IncludeFilter = null, DefaultValue = default(T))
 
-        public static T First<T>(this IEndPipe<T>  Pipe,
-                                 Func<T, Boolean>  Include       = null,
-                                 T                 DefaultValue  = default(T))
+        /// <summary>
+        /// Returns the first item of the given pipe that satisfies a condition
+        /// or the given default value if no such item was found.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
+        /// <param name="DefaultValue">A default value.</param>
+        public static T FirstOrDefault<T>(this IEndPipe<T>  SourcePipe,
+                                          Func<T, Boolean>  IncludeFilter  = null,
+                                          T                 DefaultValue   = default(T))
         {
 
-            if (Pipe == null)
+            if (SourcePipe == null)
                 return DefaultValue;
 
-            if (Include == null)
-                foreach (var Item in Pipe)
+            if (IncludeFilter == null)
+                foreach (var Item in SourcePipe)
                     return Item;
 
-            foreach (var Item in Pipe)
-                if (Include(Item))
+            foreach (var Item in SourcePipe)
+                if (IncludeFilter(Item))
                     return Item;
 
             return DefaultValue;
@@ -158,52 +281,19 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        // GroupBy
+        #region LastOrDefault<T>(this SourcePipe, IncludeFilter = null, DefaultValue = default(T))
 
-        // GroupJoin
-
-        #region ++Intersect(this FirstPipe, SecondPipe, Comparer = null)
-
-        //public static IEnumerable<T> Intersect<T>(this IEndPipe<T>      FirstPipe,
-        //                                               IEndPipe<T>      SecondPipe,
-        //                                          IEqualityComparer<T>  Comparer = null)
-        //{
-
-        //    if (FirstPipe == null || SecondPipe == null)
-        //        yield break;
-
-        //    if (Comparer == null)
-        //        Comparer = EqualityComparer<T>.Default;
-
-        //    var ValueSet = new HashSet<T>(Comparer);
-
-        //    foreach (var Item in SecondPipe)
-        //        ValueSet.Add(Item);
-
-        //    // If an element occures multiple time in FirstPipe
-        //    // it will be returned just once (implicit FirstPipe.Distinct())
-        //    foreach (var Item in FirstPipe)
-        //    {
-
-        //        if (ValueSet.Remove(Item))
-        //            yield return Item;
-
-        //        if (ValueSet.Count == 0)
-        //            yield break;
-
-        //    }
-
-        //}
-
-        #endregion
-
-        // Join
-
-        #region Last<T>(this SourcePipe, Include = null, DefaultValue = default(T))
-
-        public static T Last<T>(this IEndPipe<T>  SourcePipe,
-                                Func<T, Boolean>  Include       = null,
-                                T                 DefaultValue  = default(T))
+        /// <summary>
+        /// Returns the last item of the given pipe that satisfies a condition
+        /// or the given default value if no such item was found.
+        /// </summary>
+        /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
+        /// <param name="SourcePipe">A pipe.</param>
+        /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
+        /// <param name="DefaultValue">A default value.</param>
+        public static T LastOrDefault<T>(this IEndPipe<T>  SourcePipe,
+                                         Func<T, Boolean>  IncludeFilter  = null,
+                                         T                 DefaultValue   = default(T))
         {
 
             if (SourcePipe == null)
@@ -212,7 +302,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             T Value = DefaultValue;
 
             foreach (var Item in SourcePipe)
-                if (Include(Item))
+                if (IncludeFilter(Item))
                     Value = Item;
 
             return Value;
@@ -221,211 +311,36 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        // Min, Max
+        #region SequenceEqual
 
-        #region ++OfType
-
-        //public static IEnumerable<T2> OfType<T1, T2>(this IEndPipe<T1> Pipe)
-        //{
-
-        //    foreach (var Item in Pipe)
-        //        if (Item is T2)
-        //            yield return (T2) (Object) Item;
-
-        //}
-
-        #endregion
-
-        // OrderBy
-
-        // Range
-
-        #region ++Repeat
-
-        //public static IEnumerable<T> Repeat<T>(T Element, UInt64 Count)
-        //{
-
-        //    for (var i = 0UL; i < Count; i++)
-        //        yield return Element;
-
-        //}
-
-        #endregion
-
-        #region ++Reverse
-
-        //public static IEnumerable<T> Reverse<T>(this IEndPipe<T> Pipe)
-        //{
-
-        //    var array = Pipe.ToArray();
-
-        //    for (var i = array.Length - 1; i >= 0; i--)
-        //        yield return array[i];
-
-        //}
-
-        #endregion
-
-        #region ++SelectMany
-
-        public static IEnumerable<E> SelectMany<S, E>(this IEndPipe<S>         source,
-                                                      Func<S, IEnumerable<E>>  selector)
+        public static Boolean SequenceEqual<T>(this IEndPipe<T>      first,
+                                               IEndPipe<T>           second,
+                                               IEqualityComparer<T>  comparer = null)
         {
-            foreach (var element in source)
-                foreach (var item in selector(element))
-                    yield return item;
-        }
 
-        public static IEnumerable<E> SelectMany<S, E>(this IEndPipe<S> source,
-                                                      Func<S, UInt64, IEnumerable<E>> selector)
-        {
-            var counter = 1UL;
-            foreach (var element in source)
+            if (comparer == null)
+                comparer = EqualityComparer<T>.Default;
+
+            using (IEnumerator<T> first_enumerator = first.GetEnumerator(),
+                    second_enumerator = second.GetEnumerator())
             {
-                foreach (var item in selector(element, counter))
-                    yield return item;
-                counter++;
+
+                while (first_enumerator.MoveNext())
+                {
+                    if (!second_enumerator.MoveNext())
+                        return false;
+
+                    if (!comparer.Equals(first_enumerator.Current, second_enumerator.Current))
+                        return false;
+                }
+
+                return !second_enumerator.MoveNext();
+
             }
-        }
 
-        public static IEnumerable<E> SelectMany<S, TCollection, E>(this IEndPipe<S> source,
-                                                                   Func<S, IEnumerable<TCollection>> collectionSelector,
-                                                                   Func<S, TCollection, E> selector)
-        {
-            foreach (S element in source)
-                foreach (TCollection collection in collectionSelector(element))
-                    yield return selector(element, collection);
-        }
-
-        public static IEnumerable<E> SelectMany<S, TCollection, E>(this IEndPipe<S> source,
-                                                                   Func<S, UInt64, IEnumerable<TCollection>> collectionSelector,
-                                                                   Func<S, TCollection, E> selector)
-        {
-            var counter = 1UL;
-            foreach (S element in source)
-                foreach (TCollection collection in collectionSelector(element, counter++))
-                    yield return selector(element, collection);
         }
 
         #endregion
-
-        #region ++Skip
-
-        //public static IEnumerable<T> Skip<T>(this IEndPipe<T> SourcePipe, UInt64 count)
-        //{
-
-        //    var enumerator = source.GetEnumerator();
-
-        //    try
-        //    {
-
-        //        while (count-- > 0)
-        //            if (!enumerator.MoveNext())
-        //                yield break;
-
-        //        while (enumerator.MoveNext())
-        //            yield return enumerator.Current;
-
-        //    }
-        //    finally
-        //    {
-        //        enumerator.Dispose();
-        //    }
-
-        //}
-
-        #endregion
-
-        #region ++SkipWhile
-
-        //public static IEnumerable<TSource> SkipWhile<TSource>(this IEndPipe<TSource> source, Func<TSource, bool> predicate)
-        //{
-        //    bool yield = false;
-
-        //    foreach (TSource element in source)
-        //    {
-        //        if (yield)
-        //            yield return element;
-        //        else
-        //            if (!predicate(element))
-        //            {
-        //                yield return element;
-        //                yield = true;
-        //            }
-        //    }
-        //}
-
-        //public static IEnumerable<TSource> SkipWhile<TSource>(this IEndPipe<TSource> source, Func<TSource, int, bool> predicate)
-        //{
-        //    int counter = 0;
-        //    bool yield = false;
-
-        //    foreach (TSource element in source)
-        //    {
-        //        if (yield)
-        //            yield return element;
-        //        else
-        //            if (!predicate(element, counter))
-        //            {
-        //                yield return element;
-        //                yield = true;
-        //            }
-        //        counter++;
-        //    }
-        //}
-
-        #endregion
-
-        // Sum
-
-        #region ++Take
-
-        //public static IEnumerable<TSource> Take<TSource>(this IEndPipe<TSource> source, int count)
-        //{
-        //   if (count <= 0)
-        //        yield break;
-
-        //    int counter = 0;
-        //    foreach (TSource element in source)
-        //    {
-        //        yield return element;
-
-        //        if (++counter == count)
-        //            yield break;
-        //    }
-        //}
-
-        #endregion
-
-        #region ++TakeWhile
-
-        //public static IEnumerable<TSource> TakeWhile<TSource>(this IEndPipe<TSource> source, Func<TSource, bool> predicate)
-        //{
-        //    foreach (var element in source)
-        //    {
-        //        if (!predicate(element))
-        //            yield break;
-
-        //        yield return element;
-        //    }
-        //}
-
-        //public static IEnumerable<TSource> TakeWhile<TSource>(this IEndPipe<TSource> source, Func<TSource, int, bool> predicate)
-        //{
-        //    int counter = 0;
-        //    foreach (var element in source)
-        //    {
-        //        if (!predicate(element, counter))
-        //            yield break;
-
-        //        yield return element;
-        //        counter++;
-        //    }
-        //}
-
-        #endregion
-
-        // ThenBy
 
         #region ToArray(this SourcePipe, ResetPipeBefore = false, ResetPipeAfter = false)
 
@@ -524,202 +439,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        // ToLookup
-
-        #region SequenceEqual
-
-        public static bool SequenceEqual<T>(this IEndPipe<T> first,
-                                                 IEndPipe<T> second,
-                                            IEqualityComparer<T> comparer = null)
-        {
-
-            if (comparer == null)
-                comparer = EqualityComparer<T>.Default;
-
-            using (IEnumerator<T> first_enumerator = first.GetEnumerator(),
-                    second_enumerator = second.GetEnumerator())
-            {
-
-                while (first_enumerator.MoveNext())
-                {
-                    if (!second_enumerator.MoveNext())
-                        return false;
-
-                    if (!comparer.Equals(first_enumerator.Current, second_enumerator.Current))
-                        return false;
-                }
-
-                return !second_enumerator.MoveNext();
-
-            }
-
-        }
-
-        #endregion
-
-        #region ++Union
-
-        //public static IEnumerable<TSource> Union<TSource>(this IEndPipe<TSource> first,
-        //                                                       IEndPipe<TSource> second,
-        //                                                  IEqualityComparer<TSource> comparer = null)
-        //{
-
-        //    if (comparer == null)
-        //        comparer = EqualityComparer<TSource>.Default;
-
-        //    var items = new HashSet<TSource>(comparer);
-        //    foreach (var element in first)
-        //    {
-        //        if (!items.Contains(element))
-        //        {
-        //            items.Add(element);
-        //            yield return element;
-        //        }
-        //    }
-
-        //    foreach (var element in second)
-        //    {
-        //        if (!items.Contains(element))
-        //        {
-        //            items.Add(element);
-        //            yield return element;
-        //        }
-        //    }
-        //}
-
-        #endregion
-
-        #region Where
-
-        #region Where<TSource>(this SourcePipe, Predicate)
-
-        public static IEnumerable<TSource> Where<TSource>(this IEndPipe<TSource> SourcePipe, Func<TSource, Boolean> Predicate)
-        {
-
-            #region Initial checks
-
-            if (SourcePipe == null)
-                throw new ArgumentNullException("SourcePipe");
-
-            if (Predicate == null)
-                throw new ArgumentNullException("Predicate");
-
-            #endregion
-
-            foreach (var Item in SourcePipe)
-                if (Predicate(Item))
-                    yield return Item;
-
-        }
-
-        #endregion
-
-        #region Where<TSource>(this SourcePipe, CountedPredicate)
-
-        public static IEnumerable<TSource> Where<TSource>(this IEndPipe<TSource> SourcePipe, Func<TSource, UInt64, Boolean> CountedPredicate)
-        {
-
-            #region Initial checks
-
-            if (SourcePipe == null)
-                throw new ArgumentNullException("Source");
-
-            if (CountedPredicate == null)
-                throw new ArgumentNullException("Predicate");
-
-            #endregion
-
-            var Counter = 0UL;
-
-            foreach (var Item in SourcePipe)
-            {
-
-                if (CountedPredicate(Item, Counter))
-                    yield return Item;
-
-                Counter++;
-
-            }
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        // Additionals...
-
-        #region Aggregate(this SourcePipe, AggreationDelegate, DefaultT = default(T))
-
-        /// <summary>
-        /// Safely aggregates the given enumeration. If the enumeration is null
-        /// or has no elements the default value will be returned.
-        /// </summary>
-        /// <typeparam name="T">The type of the enumeration.</typeparam>
-        /// <param name="IEnumerable">An enumeration.</param>
-        /// <param name="AggreationDelegate">The delegate to aggregate the given enumeration.</param>
-        /// <param name="DefaultT">The default value to return for an empty enumeration.</param>
-        public static T Aggregate<T>(this IEndPipe<T> SourcePipe,
-                                     Func<T, T, T>    AggreationDelegate,
-                                     T                DefaultT = default(T))
-        {
-
-            if (SourcePipe == null)
-                return DefaultT;
-
-            //if (!IEnumerable.Any())
-            //    return DefaultT;
-            try
-            {
-                return SourcePipe.AsEnumerable().Aggregate(AggreationDelegate);
-            }
-            catch (Exception e)
-            {
-                return DefaultT;
-            }
-
-        }
-
-        #endregion
-
-        #region Aggregate(this SourcePipe, AggreationDelegate, DefaultT = default(T))
-
-        /// <summary>
-        /// Safely aggregates the given enumeration. If the enumeration is null
-        /// or has no elements the default value will be returned.
-        /// </summary>
-        /// <typeparam name="T">The type of the enumeration.</typeparam>
-        /// <param name="IEnumerable">An enumeration.</param>
-        /// <param name="AggreationDelegate">The delegate to aggregate the given enumeration.</param>
-        /// <param name="DefaultT">The default value to return for an empty enumeration.</param>
-        public static T Aggregate<T>(this IEndPipe<T>  SourcePipe,
-                                     T                 Prefix,
-                                     Func<T, T>        Map,
-                                     Func<T, T, T>     Reduce,
-                                     T                 Suffix,
-                                     T                 DefaultValue = default(T))
-        {
-
-            if (SourcePipe == null)
-                return DefaultValue;
-
-            var _Array = SourcePipe.Select(i => Map(i)).ToArray();
-
-            //if (!IEnumerable.Any())
-            //    return DefaultT;
-            try
-            {
-                return Reduce(Reduce(Prefix, _Array.Aggregate(Reduce)), Suffix);
-            }
-            catch (Exception e)
-            {
-                return DefaultValue;
-            }
-
-        }
-
-        #endregion
 
     }
 

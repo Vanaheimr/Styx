@@ -27,7 +27,6 @@ using System.Collections.Generic;
 namespace org.GraphDefined.Vanaheimr.Styx
 {
 
-
     public static partial class IEndPipeExtentions
     {
 
