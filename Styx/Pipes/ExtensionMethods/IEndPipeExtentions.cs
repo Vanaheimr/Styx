@@ -589,7 +589,63 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        // Where
+        #region Where
+
+        #region Where<TSource>(this SourcePipe, Predicate)
+
+        public static IEnumerable<TSource> Where<TSource>(this IEndPipe<TSource> SourcePipe, Func<TSource, Boolean> Predicate)
+        {
+
+            #region Initial checks
+
+            if (SourcePipe == null)
+                throw new ArgumentNullException("SourcePipe");
+
+            if (Predicate == null)
+                throw new ArgumentNullException("Predicate");
+
+            #endregion
+
+            foreach (var Item in SourcePipe)
+                if (Predicate(Item))
+                    yield return Item;
+
+        }
+
+        #endregion
+
+        #region Where<TSource>(this SourcePipe, CountedPredicate)
+
+        public static IEnumerable<TSource> Where<TSource>(this IEndPipe<TSource> SourcePipe, Func<TSource, UInt64, Boolean> CountedPredicate)
+        {
+
+            #region Initial checks
+
+            if (SourcePipe == null)
+                throw new ArgumentNullException("Source");
+
+            if (CountedPredicate == null)
+                throw new ArgumentNullException("Predicate");
+
+            #endregion
+
+            var Counter = 0UL;
+
+            foreach (var Item in SourcePipe)
+            {
+
+                if (CountedPredicate(Item, Counter))
+                    yield return Item;
+
+                Counter++;
+
+            }
+
+        }
+
+        #endregion
+
+        #endregion
 
 
         // Additionals...
