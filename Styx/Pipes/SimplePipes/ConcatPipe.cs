@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2014, Achim 'ahzf' Friedland <achim@graphdefined.org>
+ * Copyright (c) 2010-2015, Achim 'ahzf' Friedland <achim@graphdefined.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ConcatPipe(IEndPipe<S>           FirstPipe,
                           params IEndPipe<S>[]  OtherPipes)
 
-            : base(FirstPipe, new IEndPipeAdaptor<IEndPipe<S>>(OtherPipes))
+            : base(FirstPipe, new EndPipe<IEndPipe<S>>(OtherPipes))
 
         {
             this.CurrentPipe  = FirstPipe;

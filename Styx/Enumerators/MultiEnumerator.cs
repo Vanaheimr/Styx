@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2014, Achim 'ahzf' Friedland <achim@graphdefined.org>
+ * Copyright (c) 2010-2015, Achim 'ahzf' Friedland <achim@graphdefined.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,7 @@ using System.Collections.Generic;
 
 namespace org.GraphDefined.Vanaheimr.Styx
 {
-	
+
     /// <summary>
     /// A MultiEnumerator takes multiple IEnumerators in its constructor
     /// and makes them behave like a single enumerator.
@@ -32,43 +32,43 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// respect to the order of the enumerators passed into the constructor.
     /// </summary>
     /// <typeparam name="T">The type of the stored elements.</typeparam>
-	public class MultiEnumerator<T> : IEnumerator<T>
-	{
-		
-		#region Data
+    public class MultiEnumerator<T> : IEnumerator<T>
+    {
 
-        private readonly IEnumerator<IEnumerator<T>> _IEnumerators;
-        private          IEnumerator<T>              _CurrentEnumerator;
-	
-		#endregion
-		
-		#region Constructor(s)
+        #region Data
 
-        #region MultiEnumerator(myIEnumerators)
+        private readonly IEnumerator<IEnumerator<T>>  _AllEnumerators;
+        private          IEnumerator<T>               _CurrentEnumerator;
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region MultiEnumerator(Enumerators)
 
         /// <summary>
-        /// Creates a new MultiEnumerator based on the given myIEnumerators.
+        /// Creates a new MultiEnumerator based on the given Enumerators.
         /// </summary>
-        /// <param name="myIEnumerators">The enumerators to be wrapped.</param>
-        public MultiEnumerator(params IEnumerator<T>[] myIEnumerators)
-            : this(new List<IEnumerator<T>>(myIEnumerators))
+        /// <param name="Enumerators">The enumerators to be wrapped.</param>
+        public MultiEnumerator(params IEnumerator<T>[] Enumerators)
+            : this(new List<IEnumerator<T>>(Enumerators))
         { }
 
         #endregion
 
-        #region MultiEnumerator(myIEnumerators)
+        #region MultiEnumerator(Enumerators)
 
         /// <summary>
-        /// Creates a new MultiEnumerator based on the given myIEnumerators.
+        /// Creates a new MultiEnumerator based on the given Enumerators.
         /// </summary>
-        /// <param name="myIEnumerators">The enumerators to be wrapped.</param>
-        public MultiEnumerator(IEnumerable<IEnumerator<T>> myIEnumerators)
+        /// <param name="Enumerators">The enumerators to be wrapped.</param>
+        public MultiEnumerator(IEnumerable<IEnumerator<T>> Enumerators)
         {
-            
-            _IEnumerators = myIEnumerators.GetEnumerator();
 
-            if (_IEnumerators.MoveNext())
-                _CurrentEnumerator = _IEnumerators.Current;
+            _AllEnumerators = Enumerators.GetEnumerator();
+
+            if (_AllEnumerators.MoveNext())
+                _CurrentEnumerator = _AllEnumerators.Current;
 
         }
 
@@ -82,24 +82,24 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Return the current element of the current IEnumertor.
         /// </summary>
-		public T Current
-		{
-			get
-			{
+        public T Current
+        {
+            get
+            {
                 return _CurrentEnumerator.Current;
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Return the current element of the internal IEnumertor.
         /// </summary>
-		Object System.Collections.IEnumerator.Current
-		{	
-			get
-			{
+        Object System.Collections.IEnumerator.Current
+        {    
+            get
+            {
                 return _CurrentEnumerator.Current;
-			}
-		}
+            }
+        }
 
         #endregion
 
@@ -109,8 +109,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Advances the enumerator to the next element of the collection.
         /// </summary>
         /// <returns>True if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
-		public Boolean MoveNext()
-		{
+        public Boolean MoveNext()
+        {
 
             while (true)
             {
@@ -126,8 +126,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 {
 
                     // Move to the next enumerator
-                    if (_IEnumerators.MoveNext())
-                        _CurrentEnumerator = _IEnumerators.Current;
+                    if (_AllEnumerators.MoveNext())
+                        _CurrentEnumerator = _AllEnumerators.Current;
 
                     else
                         return false;
@@ -136,7 +136,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             }
 
-		}
+        }
 
         #endregion
 
@@ -147,9 +147,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// before the first element in the collection.
         /// </summary>
         public void Reset()
-		{
-            _IEnumerators.Reset();
-		}
+        {
+            _AllEnumerators.Reset();
+        }
 
         #endregion
 
@@ -163,7 +163,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         { }
 
         #endregion
-	
-	}
+
+    }
 
 }

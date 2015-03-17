@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010-2014, Achim 'ahzf' Friedland <achim@graphdefined.org>
+ * Copyright (c) 2010-2015, Achim 'ahzf' Friedland <achim@graphdefined.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceElement.CheckNull("SourceElement");
 
-            this.SourcePipe = new IEndPipeAdaptor<S>((new List<S>() { SourceElement }).GetEnumerator());
+            this.SourcePipe = EndPipe.Create(SourceElement);
 
         }
 
@@ -101,6 +101,23 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
+        #region AbstractPipe(SourceEnumeration)
+
+        /// <summary>
+        /// Creates an new abstract pipe using the given enumeration as element source.
+        /// </summary>
+        /// <param name="SourceEnumeration">An enumeration as element source.</param>
+        public AbstractPipe(IEnumerable<S> SourceEnumeration)
+        {
+
+            SourceEnumeration.CheckNull("SourceEnumerable");
+
+            this.SourcePipe = EndPipe.Create(SourceEnumeration);
+
+        }
+
+        #endregion
+
         #region AbstractPipe(SourceEnumerator)
 
         /// <summary>
@@ -112,24 +129,30 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceEnumerator.CheckNull("SourceEnumerator");
 
-            this.SourcePipe = new IEndPipeAdaptor<S>(SourceEnumerator);
+            this.SourcePipe = EndPipe.Create(SourceEnumerator);
 
         }
 
         #endregion
 
-        #region AbstractPipe(SourceEnumerable)
+        #region AbstractPipe(SourceEnumeration, SourceEnumerator)
 
         /// <summary>
         /// Creates an new abstract pipe using the given enumerable as element source.
         /// </summary>
-        /// <param name="SourceEnumerable">An enumerable as element source.</param>
-        public AbstractPipe(IEnumerable<S> SourceEnumerable)
+        /// <param name="SourceEnumerable">An enumeration as element source.</param>
+        /// <param name="SourceEnumerator">An enumerator as element source.</param>
+        public AbstractPipe(IEnumerable<S> SourceEnumeration, IEnumerator<S> SourceEnumerator)
         {
 
-            SourceEnumerable.CheckNull("SourceEnumerable");
+            if (SourceEnumeration == null && SourceEnumerator == null)
+                throw new ArgumentNullException("The given sources must not both be null!");
 
-            this.SourcePipe = new IEndPipeAdaptor<S>(SourceEnumerable.GetEnumerator());
+            if (SourceEnumeration != null)
+                this.SourcePipe = EndPipe.Create(SourceEnumeration);
+
+            if (SourceEnumerator != null)
+                this.SourcePipe = EndPipe.Create(SourceEnumerator);
 
         }
 
@@ -149,7 +172,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceElement.CheckNull("SourceElement");
 
-            this.SourcePipe = new IEndPipeAdaptor<S>((new List<S>() { SourceElement }).GetEnumerator());
+            this.SourcePipe = new EndPipe<S>((new List<S>() { SourceElement }).GetEnumerator());
 
         }
 
@@ -183,7 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceEnumerator.CheckNull("SourceEnumerator");
 
-            this.SourcePipe = new IEndPipeAdaptor<S>(SourceEnumerator);
+            this.SourcePipe = new EndPipe<S>(SourceEnumerator);
 
         }
 
@@ -200,7 +223,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceEnumerable.CheckNull("SourceEnumerable");
 
-            this.SourcePipe = new IEndPipeAdaptor<S>(SourceEnumerable.GetEnumerator());
+            this.SourcePipe = new EndPipe<S>(SourceEnumerable.GetEnumerator());
 
         }
 
@@ -217,7 +240,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return new IEndPipe2IEnumerator<E>(this);
+            return new EndPipeEnumerator<E>(this);
         }
 
         #endregion
@@ -291,21 +314,25 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// of the pipe. This is a list of all of the objects traversed for
         /// the current iterator position of the pipe.
         /// </summary>
-        public virtual IEnumerable<Object> Path
+        public IEnumerable<Object> Path
         {
 
             get
             {
 
-                var _PathElements = PathToHere.ToList();
-                var _Size         = _PathElements.Count();
+                if (SourcePipe is IEndPipe)
+                {
 
-                // do not repeat filters as they dup the object
-                // todo: why is size == 0 required (Pangloss?)
-                if (_Size == 0 || !_PathElements[_Size - 1].Equals(_CurrentElement))
-                    _PathElements.Add(_CurrentElement);
+                    var List = new List<Object>(SourcePipe.Path);
 
-                return _PathElements;
+                    if (!(this is IFilterPipe))
+                        List.Add(_CurrentElement);
+
+                    return List;
+
+                }
+
+                return new List<Object>() { _CurrentElement };
 
             }
 
@@ -313,16 +340,17 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #endregion
 
-        #region PathToHere
+        #region (private) PathToHere
 
+        [Obsolete]
         private IEnumerable<Object> PathToHere
         {
 
             get
             {
 
-                if (SourcePipe is IPipe)
-                    return ((IPipe) SourcePipe).Path;
+                if (SourcePipe is IEndPipe)
+                    return SourcePipe.Path;
 
                 else if (SourcePipe is IHistoryEnumerator)
                 {
@@ -434,8 +462,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
             SourceElement1.CheckNull("SourceElement1");
             SourceElement2.CheckNull("SourceElement2");
 
-            this.SourcePipe1 = new IEndPipeAdaptor<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
-            this.SourcePipe2 = new IEndPipeAdaptor<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
+            this.SourcePipe1 = new EndPipe<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
+            this.SourcePipe2 = new EndPipe<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
 
         }
 
@@ -476,8 +504,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
             SourceEnumerator1.CheckNull("SourceEnumerator1");
             SourceEnumerator2.CheckNull("SourceEnumerator2");
 
-            this.SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerator1);
-            this.SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerator2);
+            this.SourcePipe1 = new EndPipe<S1>(SourceEnumerator1);
+            this.SourcePipe2 = new EndPipe<S2>(SourceEnumerator2);
 
         }
 
@@ -497,8 +525,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
             SourceEnumerable1.CheckNull("SourceEnumerable1");
             SourceEnumerable2.CheckNull("SourceEnumerable2");
 
-            this.SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerable1.GetEnumerator());
-            this.SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerable2.GetEnumerator());
+            this.SourcePipe1 = new EndPipe<S1>(SourceEnumerable1.GetEnumerator());
+            this.SourcePipe2 = new EndPipe<S2>(SourceEnumerable2.GetEnumerator());
 
         }
 
@@ -516,7 +544,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource1(S1 SourceElement)
         {
             SourceElement.CheckNull("SourceElement");
-            SourcePipe1 = new IEndPipeAdaptor<S1>((new List<S1>() { SourceElement }).GetEnumerator());
+            SourcePipe1 = new EndPipe<S1>((new List<S1>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -530,7 +558,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource2(S2 SourceElement)
         {
             SourceElement.CheckNull("SourceElement");
-            SourcePipe2 = new IEndPipeAdaptor<S2>((new List<S2>() { SourceElement }).GetEnumerator());
+            SourcePipe2 = new EndPipe<S2>((new List<S2>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -574,7 +602,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource1(IEnumerator<S1> SourceEnumerator)
         {
             SourceEnumerator.CheckNull("SourceEnumerator");
-            SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerator);
+            SourcePipe1 = new EndPipe<S1>(SourceEnumerator);
         }
 
         #endregion
@@ -588,7 +616,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource2(IEnumerator<S2> SourceEnumerator)
         {
             SourceEnumerator.CheckNull("SourceEnumerator");
-            SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerator);
+            SourcePipe2 = new EndPipe<S2>(SourceEnumerator);
         }
 
         #endregion
@@ -603,7 +631,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource1(IEnumerable<S1> SourceEnumerable)
         {
             SourceEnumerable.CheckNull("SourceEnumerable");
-            SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerable.GetEnumerator());
+            SourcePipe1 = new EndPipe<S1>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -617,7 +645,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource2(IEnumerable<S2> SourceEnumerable)
         {
             SourceEnumerable.CheckNull("SourceEnumerable");
-            SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerable.GetEnumerator());
+            SourcePipe2 = new EndPipe<S2>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -633,7 +661,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return new IEndPipe2IEnumerator<E>(this);
+            return new EndPipeEnumerator<E>(this);
         }
 
         #endregion
@@ -852,9 +880,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
             SourceElement2.CheckNull("SourceElement2");
             SourceElement3.CheckNull("SourceElement3");
 
-            this.SourcePipe1 = new IEndPipeAdaptor<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
-            this.SourcePipe2 = new IEndPipeAdaptor<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
-            this.SourcePipe3 = new IEndPipeAdaptor<S3>((new List<S3>() { SourceElement3 }).GetEnumerator());
+            this.SourcePipe1 = new EndPipe<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
+            this.SourcePipe2 = new EndPipe<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
+            this.SourcePipe3 = new EndPipe<S3>((new List<S3>() { SourceElement3 }).GetEnumerator());
 
         }
 
@@ -902,9 +930,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
             SourceEnumerator2.CheckNull("SourceEnumerator2");
             SourceEnumerator3.CheckNull("SourceEnumerator3");
 
-            this.SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerator1);
-            this.SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerator2);
-            this.SourcePipe3 = new IEndPipeAdaptor<S3>(SourceEnumerator3);
+            this.SourcePipe1 = new EndPipe<S1>(SourceEnumerator1);
+            this.SourcePipe2 = new EndPipe<S2>(SourceEnumerator2);
+            this.SourcePipe3 = new EndPipe<S3>(SourceEnumerator3);
 
         }
 
@@ -927,9 +955,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
             SourceEnumerable2.CheckNull("SourceEnumerable2");
             SourceEnumerable3.CheckNull("SourceEnumerable3");
 
-            this.SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerable1.GetEnumerator());
-            this.SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerable2.GetEnumerator());
-            this.SourcePipe3 = new IEndPipeAdaptor<S3>(SourceEnumerable3.GetEnumerator());
+            this.SourcePipe1 = new EndPipe<S1>(SourceEnumerable1.GetEnumerator());
+            this.SourcePipe2 = new EndPipe<S2>(SourceEnumerable2.GetEnumerator());
+            this.SourcePipe3 = new EndPipe<S3>(SourceEnumerable3.GetEnumerator());
 
         }
 
@@ -947,7 +975,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource1(S1 SourceElement)
         {
             SourceElement.CheckNull("SourceElement");
-            SourcePipe1 = new IEndPipeAdaptor<S1>((new List<S1>() { SourceElement }).GetEnumerator());
+            SourcePipe1 = new EndPipe<S1>((new List<S1>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -961,7 +989,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource2(S2 SourceElement)
         {
             SourceElement.CheckNull("SourceElement");
-            SourcePipe2 = new IEndPipeAdaptor<S2>((new List<S2>() { SourceElement }).GetEnumerator());
+            SourcePipe2 = new EndPipe<S2>((new List<S2>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -975,7 +1003,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource3(S3 SourceElement)
         {
             SourceElement.CheckNull("SourceElement");
-            SourcePipe3 = new IEndPipeAdaptor<S3>((new List<S3>() { SourceElement }).GetEnumerator());
+            SourcePipe3 = new EndPipe<S3>((new List<S3>() { SourceElement }).GetEnumerator());
         }
 
         #endregion
@@ -1033,7 +1061,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource1(IEnumerator<S1> SourceEnumerator)
         {
             SourceEnumerator.CheckNull("SourceEnumerator");
-            SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerator);
+            SourcePipe1 = new EndPipe<S1>(SourceEnumerator);
         }
 
         #endregion
@@ -1047,7 +1075,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource2(IEnumerator<S2> SourceEnumerator)
         {
             SourceEnumerator.CheckNull("SourceEnumerator");
-            SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerator);
+            SourcePipe2 = new EndPipe<S2>(SourceEnumerator);
         }
 
         #endregion
@@ -1061,7 +1089,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource3(IEnumerator<S3> SourceEnumerator)
         {
             SourceEnumerator.CheckNull("SourceEnumerator");
-            SourcePipe3 = new IEndPipeAdaptor<S3>(SourceEnumerator);
+            SourcePipe3 = new EndPipe<S3>(SourceEnumerator);
         }
 
         #endregion
@@ -1076,7 +1104,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource1(IEnumerable<S1> SourceEnumerable)
         {
             SourceEnumerable.CheckNull("SourceEnumerable");
-            SourcePipe1 = new IEndPipeAdaptor<S1>(SourceEnumerable.GetEnumerator());
+            SourcePipe1 = new EndPipe<S1>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -1090,7 +1118,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource2(IEnumerable<S2> SourceEnumerable)
         {
             SourceEnumerable.CheckNull("SourceEnumerable");
-            SourcePipe2 = new IEndPipeAdaptor<S2>(SourceEnumerable.GetEnumerator());
+            SourcePipe2 = new EndPipe<S2>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -1104,7 +1132,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource3(IEnumerable<S3> SourceEnumerable)
         {
             SourceEnumerable.CheckNull("SourceEnumerable");
-            SourcePipe3 = new IEndPipeAdaptor<S3>(SourceEnumerable.GetEnumerator());
+            SourcePipe3 = new EndPipe<S3>(SourceEnumerable.GetEnumerator());
         }
 
         #endregion
@@ -1120,7 +1148,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </returns>
         public IEnumerator<E> GetEnumerator()
         {
-            return new IEndPipe2IEnumerator<E>(this);
+            return new EndPipeEnumerator<E>(this);
         }
 
         #endregion

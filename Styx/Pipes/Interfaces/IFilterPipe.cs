@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2014, Achim 'ahzf' Friedland <achim@graphdefined.org>
+ * Copyright (c) 2010-2015, Achim 'ahzf' Friedland <achim@graphdefined.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,8 +22,15 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// A FilterPipe is much like the IdentityPipe, but may or may not filter 
     /// some of the messages/objects instead of emitting everything.
     /// </summary>
+    public interface IFilterPipe
+    { }
+
+    /// <summary>
+    /// A FilterPipe is much like the IdentityPipe, but may or may not filter 
+    /// some of the messages/objects instead of emitting everything.
+    /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-    public interface IFilterPipe<S> : IPipe<S, S>
+    public interface IFilterPipe<S> : IPipe<S, S>, IFilterPipe
     { }
 
 }

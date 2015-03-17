@@ -103,7 +103,6 @@
     <Compile Include="Pipes\ComparisonFilterPipes\CollectionFilterPipe.cs" />
     <Compile Include="Pipes\ComparisonFilterPipes\ObjectFilterPipe.cs" />
     <Compile Include="Pipes\ToDos.cs" />
-    <Compile Include="Pipes\ExtensionMethods\SplitPipeExtensions.cs" />
     <Compile Include="Pipes\FilterPipes\AndFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\BackFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\ExceptPipe.cs" />
@@ -113,11 +112,11 @@
     <Compile Include="Pipes\FilterPipes\RandomFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\RangeFilterPipe.cs" />
     <Compile Include="Pipes\FilterPipes\UniquePathFilterPipe.cs" />
-    <Compile Include="Pipes\Helpers\IEndPipeAdaptor.cs" />
-    <Compile Include="Pipes\Helpers\IEndPipe2IEnumerator.cs" />
-    <Compile Include="Pipes\Helpers\IEndPipe2IEnumerable.cs" />
+    <Compile Include="Pipes\EndPipe.cs" />
+    <Compile Include="Pipes\Helpers\EndPipeEnumerator.cs" />
+    <Compile Include="Pipes\Helpers\EndPipeEnumerable.cs" />
     <Compile Include="Pipes\Interfaces\ComparisonFilter.cs" />
-    <Compile Include="Pipes\ExtensionMethods\IEndPipeExtentions.cs" />
+    <Compile Include="Pipes\Helpers\IEndPipeExtentions.cs" />
     <Compile Include="Pipes\Interfaces\IComparisonFilterPipe.cs" />
     <Compile Include="Pipes\Interfaces\IEndPipe.cs" />
     <Compile Include="Pipes\Interfaces\IFilterPipe.cs" />

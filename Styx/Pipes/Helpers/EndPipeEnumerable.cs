@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2014, Achim 'ahzf' Friedland <achim@graphdefined.org>
+ * Copyright (c) 2010-2015, Achim 'ahzf' Friedland <achim@graphdefined.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,19 +30,19 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public static partial class IEndPipeExtentions
     {
 
-        public static IEndPipe2IEnumerable<E> AsEnumerable<E>(this IEndPipe<E> EndPipe)
+        public static EndPipeEnumerable<E> AsEnumerable<E>(this IEndPipe<E> EndPipe)
         {
-            return new IEndPipe2IEnumerable<E>(EndPipe);
+            return new EndPipeEnumerable<E>(EndPipe);
         }
 
     }
 
-    public class IEndPipe2IEnumerable<E> : IEnumerable<E>
+    public class EndPipeEnumerable<E> : IEnumerable<E>
     {
 
         private readonly IEndPipe<E> EndPipe;
 
-        public IEndPipe2IEnumerable(IEndPipe<E> EndPipe)
+        public EndPipeEnumerable(IEndPipe<E> EndPipe)
         {
             this.EndPipe = EndPipe;
         }

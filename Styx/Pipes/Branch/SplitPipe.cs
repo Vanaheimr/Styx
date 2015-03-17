@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2014, Achim 'ahzf' Friedland <achim@graphdefined.org>
+ * Copyright (c) 2010-2015, Achim 'ahzf' Friedland <achim@graphdefined.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +25,39 @@ using System.Collections.Generic;
 
 namespace org.GraphDefined.Vanaheimr.Styx
 {
+
+    public static class SplitPipeExtensions
+    {
+
+        #region SplitPipeExtensions(this myIEnumerable, Ids, IEnumerable = null, IEnumerator = null)
+
+        /// <summary>
+        /// The SplitPipe either allows or disallows all
+        /// Edges that have the provided label.
+        /// </summary>
+        /// <param name="IEnumerable">A collection of objects implementing IPropertyEdge.</param>
+        public static SplitPipe<S> SplitPipe<S>(this IEnumerable<S> IEnumerable, Byte Ids)
+        {
+            return new SplitPipe<S>(Ids, IEnumerable);
+        }
+
+        #endregion
+
+        #region SplitPipeExtensions(this myIEnumerator, myLabel, myComparisonFilter)
+
+        /// <summary>
+        /// The LabelFilterPipe either allows or disallows all
+        /// Edges that have the provided label.
+        /// </summary>
+        /// <param name="IEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
+        public static SplitPipe<S> SplitPipe<S>(this IEnumerator<S> IEnumerator, Byte Ids)
+        {
+            return new SplitPipe<S>(Ids, null, IEnumerator);
+        }
+
+        #endregion
+
+    }
 
 
     public class Stub<S, E> : AbstractPipe<S, E>
