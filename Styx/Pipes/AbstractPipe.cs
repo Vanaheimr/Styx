@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceElement.CheckNull("SourceElement");
 
-            this.SourcePipe = EndPipe.Create(SourceElement);
+            this.SourcePipe = EndPipe.CreatePipe(SourceElement);
 
         }
 
@@ -112,7 +112,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceEnumeration.CheckNull("SourceEnumerable");
 
-            this.SourcePipe = EndPipe.Create(SourceEnumeration);
+            this.SourcePipe = EndPipe.CreatePipe(SourceEnumeration);
 
         }
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourceEnumerator.CheckNull("SourceEnumerator");
 
-            this.SourcePipe = EndPipe.Create(SourceEnumerator);
+            this.SourcePipe = EndPipe.CreatePipe(SourceEnumerator);
 
         }
 
@@ -149,10 +149,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 throw new ArgumentNullException("The given sources must not both be null!");
 
             if (SourceEnumeration != null)
-                this.SourcePipe = EndPipe.Create(SourceEnumeration);
+                this.SourcePipe = EndPipe.CreatePipe(SourceEnumeration);
 
             if (SourceEnumerator != null)
-                this.SourcePipe = EndPipe.Create(SourceEnumerator);
+                this.SourcePipe = EndPipe.CreatePipe(SourceEnumerator);
 
         }
 

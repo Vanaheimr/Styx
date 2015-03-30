@@ -56,7 +56,6 @@
     <Compile Include="Arrows\StdDevSideEffectArrow.cs" />
     <Compile Include="Pipes\AndFilterPipeConcurrent.cs" />
     <Compile Include="Pipes\IOPipes\CSV\CSV.cs" />
-    <Compile Include="Pipes\IOPipes\CSV\CSVPipeExtensions.cs" />
     <Compile Include="Pipes\IOPipes\CSV\CSVReaderMetaPipe.cs" />
     <Compile Include="Pipes\IOPipes\CSV\CSVReaderPipe.cs" />
     <Compile Include="Pipes\IOPipes\IOPipeExtensions.cs" />

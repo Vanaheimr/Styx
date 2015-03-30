@@ -33,46 +33,46 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public static class EndPipe
     {
 
-        #region Create<E>(this Element)
+        #region CreatePipe<E>(Element)
 
         /// <summary>
         /// Create a pipe emitting the given element.
         /// </summary>
-        /// <typeparam name="T">The type of the element.</typeparam>
+        /// <typeparam name="E">The type of the emitted element.</typeparam>
         /// <param name="Element">The single element within the pipe.</param>
         /// <returns>A pipe emitting the given element.</returns>
-        public static EndPipe<E> Create<E>(E Element)
+        public static EndPipe<E> CreatePipe<E>(E Element)
         {
             return new EndPipe<E>(new E[] { Element });
         }
 
         #endregion
 
-        #region Create<E>(this Enumeration)
+        #region CreatePipe<E>(this Enumeration)
 
         /// <summary>
         /// Create a pipe emitting all elements of the given enumeration.
         /// </summary>
-        /// <typeparam name="T">The type of the emitted elements.</typeparam>
+        /// <typeparam name="E">The type of the emitted elements.</typeparam>
         /// <param name="Enumeration">An enumeration of elements.</param>
         /// <returns>A pipe emitting the given enumeration of elements.</returns>
-        public static EndPipe<E> Create<E>(IEnumerable<E> Enumeration)
+        public static EndPipe<E> CreatePipe<E>(this IEnumerable<E> Enumeration)
         {
             return new EndPipe<E>(Enumeration.GetEnumerator());
         }
 
         #endregion
 
-        #region Create<E>(this Enumerator)
+        #region CreatePipe<E>(this Enumerator)
 
         /// <summary>
         /// Create a pipe emitting all elements emitted by the given enumerator.
         /// </summary>
-        /// <typeparam name="T">The type of the emitted elements.</typeparam>
+        /// <typeparam name="E">The type of the emitted elements.</typeparam>
         /// <param name="Enumerator">A enumerator emitting elements.</param>
         /// <returns>A pipe emitting the elements emitted by the given enumerator.</returns>
 
-        public static EndPipe<E> Create<E>(IEnumerator<E> Enumerator)
+        public static EndPipe<E> CreatePipe<E>(this IEnumerator<E> Enumerator)
         {
             return new EndPipe<E>(Enumerator);
         }
