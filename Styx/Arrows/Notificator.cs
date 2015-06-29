@@ -122,6 +122,17 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         }
 
+        public V SendVoting(T Message, IVote<V> Vote)
+        {
+
+            if (this.OnVoting == null)
+                return Vote.Result;
+
+            this.OnVoting(Message, Vote);
+            return Vote.Result;
+
+        }
+
     }
 
 
@@ -186,6 +197,75 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 return Vote.Result;
 
             this.OnVoting(Message1, Message2, Vote);
+            return Vote.Result;
+
+        }
+
+    }
+
+
+
+
+    public class Notificator<T1, T2, T3> : ANotificator, INotificator<T1, T2, T3>, IArrowSender<T1, T2, T3>
+    {
+
+        public event NotificationEventHandler<T1, T2, T3> OnNotification;
+
+        public void SendNotification(T1 Message1, T2 Message2, T3 Message3)
+        {
+            if (this.OnNotification != null)
+                this.OnNotification(Message1, Message2, Message3);
+        }
+
+    }
+
+    public class VotingNotificator<T1, T2, T3, V> : Notificator<T1, T2, T3>, IVotingNotificator<T1, T2, T3, V>, IVotingSender<T1, T2, T3, V>
+    {
+
+        #region Data
+
+        private readonly Func<IVote<V>> VoteCreator;
+        private readonly V              DefaultValue;
+
+        #endregion
+
+        #region Events
+
+        public event VotingEventHandler<T1, T2, T3, V> OnVoting;
+
+        #endregion
+
+
+        public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
+        {
+
+            if (VoteCreator == null)
+                throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
+
+            this.VoteCreator   = VoteCreator;
+            this.DefaultValue  = DefaultValue;
+
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3)
+        {
+
+            if (this.OnVoting == null)
+                return DefaultValue;
+
+            var Vote = VoteCreator();
+            this.OnVoting(Message1, Message2, Message3, Vote);
+            return Vote.Result;
+
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote)
+        {
+
+            if (this.OnVoting == null)
+                return Vote.Result;
+
+            this.OnVoting(Message1, Message2, Message3, Vote);
             return Vote.Result;
 
         }
