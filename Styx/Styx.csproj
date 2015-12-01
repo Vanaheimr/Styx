@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AF76ECC0-2CA5-4CFF-9E1E-FF5478C4B6E4}</ProjectGuid>
+    <ProjectGuid>{3949790D-8591-4101-9E4D-CE7A758E7409}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>org.GraphDefined.Vanaheimr.Styx</RootNamespace>

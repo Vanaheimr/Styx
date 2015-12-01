@@ -90,10 +90,6 @@
       <Project>{02a5f706-a9ac-46be-a428-ea6f990d8e21}</Project>
       <Name>CommonsTests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Styx.NET4.5\Styx.NET4.5.csproj">
-      <Project>{af76ecc0-2ca5-4cff-9e1e-ff5478c4b6e4}</Project>
-      <Name>Styx.NET4.5</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Styx\Styx.csproj">
       <Project>{3949790d-8591-4101-9e4d-ce7a758e7409}</Project>
       <Name>Styx</Name>
