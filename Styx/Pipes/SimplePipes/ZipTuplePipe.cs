@@ -20,8 +20,6 @@
 using System;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias.Collections;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Styx
