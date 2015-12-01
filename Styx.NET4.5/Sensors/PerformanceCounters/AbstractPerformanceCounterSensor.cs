@@ -22,7 +22,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Sensors.PerformanceCounters
+namespace org.GraphDefined.Vanaheimr.Styx.Sensors.PerformanceCounters
 {
 
     /// <summary>

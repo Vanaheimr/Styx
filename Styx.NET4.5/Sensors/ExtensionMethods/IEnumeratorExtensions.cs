@@ -19,11 +19,11 @@
 
 using System;
 using System.Collections.Generic;
-using eu.Vanaheimr.Styx;
+using org.GraphDefined.Vanaheimr.Styx;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Sensors.Active
+namespace org.GraphDefined.Vanaheimr.Styx.Sensors.Active
 {
 
     /// <summary>

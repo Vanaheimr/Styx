@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Sensors.PerformanceCounters.ProcessorCounters
+namespace org.GraphDefined.Vanaheimr.Styx.Sensors.PerformanceCounters.ProcessorCounters
 {
 
     #region ProcessorTotalTimeSensor

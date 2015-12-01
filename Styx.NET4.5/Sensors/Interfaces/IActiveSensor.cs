@@ -19,12 +19,12 @@
 
 using System;
 
-using eu.Vanaheimr.Styx;
-using eu.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Styx;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Sensors.Active
+namespace org.GraphDefined.Vanaheimr.Styx.Sensors.Active
 {
 
     // Delegates

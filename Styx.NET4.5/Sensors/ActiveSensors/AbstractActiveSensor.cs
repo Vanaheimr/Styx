@@ -22,11 +22,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using eu.Vanaheimr.Styx;
+using org.GraphDefined.Vanaheimr.Styx;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Sensors.Active
+namespace org.GraphDefined.Vanaheimr.Styx.Sensors.Active
 {
 
     /// <summary>

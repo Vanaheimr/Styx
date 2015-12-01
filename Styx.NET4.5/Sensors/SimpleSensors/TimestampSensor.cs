@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace eu.Vanaheimr.Styx.Sensors.Simple
+namespace org.GraphDefined.Vanaheimr.Styx.Sensors.Simple
 {
 
     #region TimestampSensor
