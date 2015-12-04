@@ -161,7 +161,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #endregion
 
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// A string representation of this pipe.

@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// Returns a string representation of this Arrow.

@@ -99,7 +99,7 @@
 //        #endregion
 
 
-//        #region ToString()
+//        #region (override) ToString()
 
 //        /// <summary>
 //        /// A string representation of this pipe.
