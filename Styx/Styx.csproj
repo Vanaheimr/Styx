@@ -185,7 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Illias\Illias\Illias.csproj">
-      <Project>{e156f18d-d41c-4529-9bcc-9962e6ee25da}</Project>
+      <Project>{23d37453-2d4e-4bd8-b40f-3e731fee7712}</Project>
       <Name>Illias</Name>
     </ProjectReference>
   </ItemGroup>
