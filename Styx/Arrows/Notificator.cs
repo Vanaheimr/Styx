@@ -19,6 +19,8 @@
 
 using System;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
+using System.Collections.Generic;
+using System.Threading;
 
 #endregion
 
@@ -39,7 +41,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         {
 
             var OnStartedLocal = OnStarted;
-
             if (OnStartedLocal != null)
                 OnStartedLocal(Sender, Timestamp, Message);
 
@@ -49,7 +50,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         {
 
             var OnExceptionOccuredLocal = OnExceptionOccured;
-
             if (OnExceptionOccuredLocal != null)
                 OnExceptionOccuredLocal(Sender, Timestamp, Exception);
 
@@ -59,7 +59,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         {
 
             var OnCompletedLocal = OnCompleted;
-
             if (OnCompletedLocal != null)
                 OnCompletedLocal(Sender, Timestamp, Message);
 
@@ -75,8 +74,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SendNotification(T Message)
         {
-            if (this.OnNotification != null)
-                this.OnNotification(Message);
+
+            var OnNotificationLocal = OnNotification;
+            if (OnNotificationLocal != null)
+                OnNotificationLocal(Message);
+
         }
 
     }
@@ -117,7 +119,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 return DefaultValue;
 
             var Vote = VoteCreator();
-            this.OnVoting(Message, Vote);
+
+            var OnVotingLocal = OnVoting;
+            if (OnVotingLocal != null)
+                OnVotingLocal(Message, Vote);
+
             return Vote.Result;
 
         }
@@ -128,7 +134,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             if (this.OnVoting == null)
                 return Vote.Result;
 
-            this.OnVoting(Message, Vote);
+            var OnVotingLocal = OnVoting;
+            if (OnVotingLocal != null)
+                OnVotingLocal(Message, Vote);
+
             return Vote.Result;
 
         }
@@ -143,8 +152,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SendNotification(T1 Message1, T2 Message2)
         {
-            if (this.OnNotification != null)
-                this.OnNotification(Message1, Message2);
+
+            var OnNotificationLocal = OnNotification;
+            if (OnNotificationLocal != null)
+                OnNotificationLocal(Message1, Message2);
+
         }
 
     }
@@ -185,7 +197,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 return DefaultValue;
 
             var Vote = VoteCreator();
-            this.OnVoting(Message1, Message2, Vote);
+
+            var OnVotingLocal = OnVoting;
+            if (OnVotingLocal != null)
+                OnVotingLocal(Message1, Message2, Vote);
+
             return Vote.Result;
 
         }
@@ -196,7 +212,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             if (this.OnVoting == null)
                 return Vote.Result;
 
-            this.OnVoting(Message1, Message2, Vote);
+            var OnVotingLocal = OnVoting;
+            if (OnVotingLocal != null)
+                OnVotingLocal(Message1, Message2, Vote);
+
             return Vote.Result;
 
         }
@@ -213,8 +232,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SendNotification(T1 Message1, T2 Message2, T3 Message3)
         {
-            if (this.OnNotification != null)
-                this.OnNotification(Message1, Message2, Message3);
+
+            var OnNotificationLocal = OnNotification;
+            if (OnNotificationLocal != null)
+                OnNotificationLocal(Message1, Message2, Message3);
+
         }
 
     }
@@ -240,7 +262,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         {
 
             if (VoteCreator == null)
-                throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
+                throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
 
             this.VoteCreator   = VoteCreator;
             this.DefaultValue  = DefaultValue;
@@ -254,7 +276,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 return DefaultValue;
 
             var Vote = VoteCreator();
-            this.OnVoting(Message1, Message2, Message3, Vote);
+
+            var OnVotingLocal = OnVoting;
+            if (OnVotingLocal != null)
+                OnVotingLocal(Message1, Message2, Message3, Vote);
+
             return Vote.Result;
 
         }
@@ -265,8 +291,74 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             if (this.OnVoting == null)
                 return Vote.Result;
 
-            this.OnVoting(Message1, Message2, Message3, Vote);
+            var OnVotingLocal = OnVoting;
+            if (OnVotingLocal != null)
+                OnVotingLocal(Message1, Message2, Message3, Vote);
+
             return Vote.Result;
+
+        }
+
+    }
+
+
+
+    public delegate void AggregatedNotificationEventHandler<T>(DateTime DateTime, T Message);
+
+    public class AggregatedNotificator<T>
+    {
+
+        #region Data
+
+        private Timer   UpdateEVSEStatusTimer;
+        private List<T> ListOfT;
+
+        #endregion
+
+        #region Events
+
+        public event AggregatedNotificationEventHandler<IEnumerable<T>>  OnNotification;
+
+        #endregion
+
+
+        public AggregatedNotificator()
+        {
+
+            UpdateEVSEStatusTimer = new Timer(SendNotification2);
+            ListOfT               = new List<T>();
+
+        }
+
+        public void SendNotification(DateTime Timestamp, T Message)
+        {
+
+            lock (ListOfT)
+            {
+                ListOfT.Add(Message);
+            }
+
+            UpdateEVSEStatusTimer.Change(5000, Timeout.Infinite);
+            Console.WriteLine(DateTime.Now + " something added!");
+
+        }
+
+        public void SendNotification2(Object Context)
+        {
+
+            UpdateEVSEStatusTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+            List<T> NewListOfT = null;
+
+            lock (ListOfT)
+            {
+                NewListOfT = new List<T>(ListOfT);
+                ListOfT.Clear();
+            }
+
+            var OnNotificationLocal = OnNotification;
+            if (OnNotificationLocal != null)
+                OnNotificationLocal(DateTime.Now, NewListOfT);
 
         }
 
