@@ -39,29 +39,17 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SignalStarted(Object Sender, DateTime Timestamp, String Message)
         {
-
-            var OnStartedLocal = OnStarted;
-            if (OnStartedLocal != null)
-                OnStartedLocal(Sender, Timestamp, Message);
-
+            OnStarted?.Invoke(Sender, Timestamp, Message);
         }
 
         public void SignalError(Object Sender, DateTime Timestamp, Exception Exception)
         {
-
-            var OnExceptionOccuredLocal = OnExceptionOccured;
-            if (OnExceptionOccuredLocal != null)
-                OnExceptionOccuredLocal(Sender, Timestamp, Exception);
-
+            OnExceptionOccured?.Invoke(Sender, Timestamp, Exception);
         }
 
         public void SignalCompleted(Object Sender, DateTime Timestamp, String Message)
         {
-
-            var OnCompletedLocal = OnCompleted;
-            if (OnCompletedLocal != null)
-                OnCompletedLocal(Sender, Timestamp, Message);
-
+            OnCompleted?.Invoke(Sender, Timestamp, Message);
         }
 
     }
@@ -74,11 +62,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SendNotification(T Message)
         {
-
-            var OnNotificationLocal = OnNotification;
-            if (OnNotificationLocal != null)
-                OnNotificationLocal(Message);
-
+            OnNotification?.Invoke(Message);
         }
 
     }
@@ -104,10 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
         {
 
-            if (VoteCreator == null)
-                throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
-
-            this.VoteCreator = VoteCreator;
+            this.VoteCreator  = VoteCreator ?? throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
             this.DefaultValue = DefaultValue;
 
         }
@@ -115,14 +96,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public V SendVoting(T Message)
         {
 
-            if (this.OnVoting == null)
+            if (OnVoting == null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            var OnVotingLocal = OnVoting;
-            if (OnVotingLocal != null)
-                OnVotingLocal(Message, Vote);
+            OnVoting?.Invoke(Message, Vote);
 
             return Vote.Result;
 
@@ -131,12 +110,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public V SendVoting(T Message, IVote<V> Vote)
         {
 
-            if (this.OnVoting == null)
+            if (OnVoting == null)
                 return Vote.Result;
 
-            var OnVotingLocal = OnVoting;
-            if (OnVotingLocal != null)
-                OnVotingLocal(Message, Vote);
+            OnVoting?.Invoke(Message, Vote);
 
             return Vote.Result;
 
@@ -153,9 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public void SendNotification(T1 Message1, T2 Message2)
         {
 
-            var OnNotificationLocal = OnNotification;
-            if (OnNotificationLocal != null)
-                OnNotificationLocal(Message1, Message2);
+            OnNotification?.Invoke(Message1, Message2);
 
         }
 
@@ -182,10 +157,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
         {
 
-            if (VoteCreator == null)
-                throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
-
-            this.VoteCreator  = VoteCreator;
+            this.VoteCreator  = VoteCreator ?? throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
             this.DefaultValue = DefaultValue;
 
         }
@@ -193,14 +165,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public V SendVoting(T1 Message1, T2 Message2)
         {
 
-            if (this.OnVoting == null)
+            if (OnVoting == null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            var OnVotingLocal = OnVoting;
-            if (OnVotingLocal != null)
-                OnVotingLocal(Message1, Message2, Vote);
+            OnVoting?.Invoke(Message1, Message2, Vote);
 
             return Vote.Result;
 
@@ -209,12 +179,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public V SendVoting(T1 Message1, T2 Message2, IVote<V> Vote)
         {
 
-            if (this.OnVoting == null)
+            if (OnVoting == null)
                 return Vote.Result;
 
-            var OnVotingLocal = OnVoting;
-            if (OnVotingLocal != null)
-                OnVotingLocal(Message1, Message2, Vote);
+            OnVoting?.Invoke(Message1, Message2, Vote);
 
             return Vote.Result;
 
@@ -232,11 +200,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SendNotification(T1 Message1, T2 Message2, T3 Message3)
         {
-
-            var OnNotificationLocal = OnNotification;
-            if (OnNotificationLocal != null)
-                OnNotificationLocal(Message1, Message2, Message3);
-
+            OnNotification?.Invoke(Message1, Message2, Message3);
         }
 
     }
@@ -260,26 +224,19 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
         {
-
-            if (VoteCreator == null)
-                throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
-
-            this.VoteCreator   = VoteCreator;
+            this.VoteCreator   = VoteCreator ?? throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
             this.DefaultValue  = DefaultValue;
-
         }
 
         public V SendVoting(T1 Message1, T2 Message2, T3 Message3)
         {
 
-            if (this.OnVoting == null)
+            if (OnVoting == null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            var OnVotingLocal = OnVoting;
-            if (OnVotingLocal != null)
-                OnVotingLocal(Message1, Message2, Message3, Vote);
+            OnVoting?.Invoke(Message1, Message2, Message3, Vote);
 
             return Vote.Result;
 
@@ -288,12 +245,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public V SendVoting(T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote)
         {
 
-            if (this.OnVoting == null)
+            if (OnVoting == null)
                 return Vote.Result;
 
-            var OnVotingLocal = OnVoting;
-            if (OnVotingLocal != null)
-                OnVotingLocal(Message1, Message2, Message3, Vote);
+            OnVoting?.Invoke(Message1, Message2, Message3, Vote);
 
             return Vote.Result;
 
@@ -356,9 +311,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 ListOfT.Clear();
             }
 
-            var OnNotificationLocal = OnNotification;
-            if (OnNotificationLocal != null)
-                OnNotificationLocal(DateTime.Now, NewListOfT);
+            OnNotification?.Invoke(DateTime.Now, NewListOfT);
 
         }
 
