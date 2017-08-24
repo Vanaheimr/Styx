@@ -88,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
         {
 
-            this.VoteCreator  = VoteCreator ?? throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
+            this.VoteCreator  = VoteCreator ?? throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
             this.DefaultValue = DefaultValue;
 
         }
@@ -157,7 +157,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
         {
 
-            this.VoteCreator  = VoteCreator ?? throw new ArgumentNullException("VoteCreator", "The given VoteCreator delegate must not be null!");
+            this.VoteCreator  = VoteCreator ?? throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
             this.DefaultValue = DefaultValue;
 
         }
