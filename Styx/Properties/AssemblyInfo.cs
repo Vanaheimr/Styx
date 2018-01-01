@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Styx.NET4.5")]
+[assembly: AssemblyTitle("Styx")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GraphDefined GmbH")]
-[assembly: AssemblyProduct("Styx.NET4.5")]
-[assembly: AssemblyCopyright("Copyright © 2010-2016 GraphDefined GmbH")]
+[assembly: AssemblyProduct("Styx")]
+[assembly: AssemblyCopyright("Copyright © 2010-2018 GraphDefined GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
