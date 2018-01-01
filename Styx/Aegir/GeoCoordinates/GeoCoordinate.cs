@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2017, Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2018, Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Aegir <http://www.github.com/Vanaheimr/Aegir>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

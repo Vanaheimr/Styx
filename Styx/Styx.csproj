@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -242,6 +246,7 @@
     <Compile Include="Illias\Votes\MajorityVote.cs" />
     <Compile Include="Illias\Votes\VetoVote.cs" />
     <Compile Include="Illias\WebLink.cs" />
+    <Compile Include="SecurityVisualization\DrunkenBishop.cs" />
     <Compile Include="Styx\Arrows\AbstractArrow.cs" />
     <Compile Include="Styx\Arrows\AbstractArrowReceiver.cs" />
     <Compile Include="Styx\Arrows\AbstractArrowSender.cs" />
