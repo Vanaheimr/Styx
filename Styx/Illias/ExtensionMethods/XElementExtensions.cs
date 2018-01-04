@@ -642,6 +642,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         // Map XML Value
 
+        #region MapValueOrNull(ParentXElement, XName)
+
+        public static String MapValueOrNull(this XElement  ParentXElement,
+                                            XName          XName)
+        {
+
+            if (ParentXElement == null || XName == null)
+                return null;
+
+            return ParentXElement?.Element(XName)?.Value;
+
+        }
+
+        #endregion
+
         #region MapValueOrNull(ParentXElement, XName, ValueMapper)
 
         public static T MapValueOrNull<T>(this XElement    ParentXElement,

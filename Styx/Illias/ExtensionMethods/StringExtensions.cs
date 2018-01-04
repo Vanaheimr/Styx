@@ -85,6 +85,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region WhenNullOrEmpty<T>(this GivenString, Default)
+
+        public static String WhenNullOrEmpty(this String  GivenString,
+                                             String       Default)
+        {
+
+            if (String.IsNullOrEmpty(GivenString))
+                return Default;
+
+            GivenString = GivenString.Trim();
+
+            if (String.IsNullOrEmpty(GivenString))
+                return Default;
+
+            return GivenString;
+
+        }
+
+        #endregion
+
         #region ToBase64(Text)
 
         public static String ToBase64(this String Text)
