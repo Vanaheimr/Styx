@@ -437,7 +437,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML)).
-                              Where (value => value != null);
+                              Where (value => !EqualityComparer<T>.Default.Equals(value, default(T)));
 
         }
 
@@ -460,7 +460,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML, OnException)).
-                              Where (value => value != null);
+                              Where (value => !EqualityComparer<T>.Default.Equals(value, default(T)));
 
         }
 
@@ -491,7 +491,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML)).
-                              Where (value => value != null);
+                              Where (value => !EqualityComparer<T>.Default.Equals(value, default(T)));
 
         }
 
@@ -518,7 +518,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML, OnException)).
-                              Where (value => value != null);
+                              Where (value => !EqualityComparer<T>.Default.Equals(value, default(T)));
 
         }
 
@@ -573,7 +573,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             return _XElements.Select(XML   => Mapper(XML, OnException)).
-                              Where (value => value != null);
+                              Where (value => !EqualityComparer<T>.Default.Equals(value, default(T)));
 
         }
 
@@ -632,7 +632,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new T[0];
 
 
-            return _XElements.Select(XML => Mapper(XML, OnException)).Where(v => v != null);
+            return _XElements.Select(XML => Mapper(XML, OnException)).Where(v => !EqualityComparer<T>.Default.Equals(v, default(T)));
 
         }
 

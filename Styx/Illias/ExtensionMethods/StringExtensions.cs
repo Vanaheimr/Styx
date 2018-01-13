@@ -40,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Indicates whether the given string is null or empty.
         /// </summary>
-        /// <param name="GivenString">The string.</param>
+        /// <param name="GivenString">A string.</param>
         public static Boolean IsNullOrEmpty(this String GivenString)
         {
 
@@ -58,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Indicates whether the given string is not null or empty.
         /// </summary>
-        /// <param name="GivenString">The string.</param>
+        /// <param name="GivenString">A string.</param>
         public static Boolean IsNotNullOrEmpty(this String GivenString)
         {
 
@@ -104,6 +104,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        #region IsNullOrWhiteSpace(GivenString)
+
+        /// <summary>
+        /// Indicates whether the given string is null, empty,
+        /// or consists only of white-space characters.
+        /// </summary>
+        /// <param name="GivenString">A string.</param>
+        public static Boolean IsNullOrWhiteSpace(this String GivenString)
+            => String.IsNullOrWhiteSpace(GivenString);
+
+        #endregion
+
 
         #region ToBase64(Text)
 
