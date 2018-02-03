@@ -226,7 +226,11 @@
     <Compile Include="Illias\Logging\Warning.cs" />
     <Compile Include="Illias\Partly.cs" />
     <Compile Include="Illias\StaticClasses\Loops.cs" />
+    <Compile Include="Illias\Time\ExceptionalPeriod.cs" />
+    <Compile Include="Illias\Time\HourMin.cs" />
     <Compile Include="Illias\Time\Measurement.cs" />
+    <Compile Include="Illias\Time\OpeningTimes.cs" />
+    <Compile Include="Illias\Time\RegularHours.cs" />
     <Compile Include="Illias\Time\StartEndDateTime.cs" />
     <Compile Include="Illias\Time\Time.cs" />
     <Compile Include="Illias\Time\TimeRange.cs" />
