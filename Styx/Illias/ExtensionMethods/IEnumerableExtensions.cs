@@ -468,7 +468,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region SkipTakeFilter(this Enumeration, Skip = 0, Take = 0)
+        #region SkipTakeFilter(this Enumeration, Skip = null, Take = null)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of roaming networks.
@@ -477,8 +477,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
         public static IEnumerable<T> SkipTakeFilter<T>(this IEnumerable<T>  Enumeration,
-                                                       UInt64               Skip  = 0,
-                                                       UInt64               Take  = 0)
+                                                       UInt64?              Skip  = null,
+                                                       UInt64?              Take  = null)
         {
 
             #region Initial checks
@@ -488,7 +488,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            if (Take == 0)
+            if (!Take.HasValue)
                 return Enumeration.Skip(Skip);
 
             return Enumeration.Skip(Skip).Take(Take);
@@ -529,8 +529,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-        
 
 
         #region CountIsAtLeast<T>(this myIEnumerable, myNumberOfElements)
