@@ -125,6 +125,7 @@
     <Compile Include="Illias\Entities\Mandatory.cs" />
     <Compile Include="Illias\Entities\OnPropertyChangedDelegate.cs" />
     <Compile Include="Illias\Entities\Optional.cs" />
+    <Compile Include="Illias\Entities\Phonenumber.cs" />
     <Compile Include="Illias\Exceptions\ExceptionHelpers.cs" />
     <Compile Include="Illias\ExtensionMethods\ByteExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\ConsoleExtensions.cs" />
