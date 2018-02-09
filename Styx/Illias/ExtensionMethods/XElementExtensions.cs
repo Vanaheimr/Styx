@@ -669,7 +669,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (ParentXElement == null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper    == null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -680,7 +680,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (_XElement == null)
                 return default(T);
 
-            if (_XElement.Value == null)
+            if (_XElement.Value.IsNullOrEmpty())
                 return default(T);
 
             return ValueMapper(_XElement.Value);
@@ -705,7 +705,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (ParentXElement == null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper    == null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -713,7 +713,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null || _XElement.Value == null)
+            if (_XElement == null || _XElement.Value.IsNullOrEmpty())
                 return new T?();
 
 
@@ -753,7 +753,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (ParentXElement == null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper    == null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -767,7 +767,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = _XWrapper.Element(XName);
 
-            if (_XElement == null || _XElement.Value == null)
+            if (_XElement == null || _XElement.Value.IsNullOrEmpty())
                 return new T?();
 
             return ValueMapper(_XElement.Value);
@@ -802,7 +802,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (_XElement.Value.IsNullOrEmpty())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -981,7 +981,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XWrapper.LocalName + "' > '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (_XElement.Value.IsNullOrEmpty())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XWrapper.LocalName + "' > '" + XName.LocalName + "' must not be null!");
@@ -1092,7 +1092,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (_XElement == null)
                 return DefaultValue;
 
-            if (_XElement.Value == null)
+            if (_XElement.Value.IsNullOrEmpty())
                 return DefaultValue;
 
             return ValueMapper(_XElement.Value);
@@ -1129,7 +1129,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = _XWrapper.Element(XName);
 
-            if (_XElement == null || _XElement.Value == null)
+            if (_XElement == null || _XElement.Value.IsNullOrEmpty())
                 return DefaultValue;
 
 
@@ -1208,7 +1208,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (_XElement == null)
                 return new Boolean?();
 
-            if (_XElement.Value == null)
+            if (_XElement.Value.IsNullOrEmpty())
                 return new Boolean?();
 
             switch (_XElement.Value)
