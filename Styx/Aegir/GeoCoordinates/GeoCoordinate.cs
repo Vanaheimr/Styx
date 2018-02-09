@@ -42,58 +42,58 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// The regular expression init string for matching decimal numbers.
         /// </summary>
-        public static String IsDecimal_RegExprString                  = "([0-9]+[\\.\\,]?[0-9]*)";
+        public const  String IsDecimal_RegExprString                  = "([0-9]+[\\.\\,]?[0-9]*)";
 
         /// <summary>
         /// The regular expression init string for matching signed decimal numbers.
         /// </summary>
-        public static String IsSignedDecimal_RegExprString            = "([-]?[0-9]+[\\.\\,]?[0-9]*)";
+        public const  String IsSignedDecimal_RegExprString            = "([-]?[0-9]+[\\.\\,]?[0-9]*)";
 
         /// <summary>
         /// The regular expression init string for matching comma seperators.
         /// </summary>
-        public static String MayBeSeperator_RegExprString             = "[\\s,;]+";
+        public const  String MayBeSeperator_RegExprString             = "[\\s,;]+";
 
         /// <summary>
         /// The regular expression init string for matching decimal geo positions/coordinates.
         /// </summary>
-        public static String IsDecimalGeoPosition_RegExprString       = IsDecimal_RegExprString + "[°]?[\\s]+([SN]?)" +
+        public const  String IsDecimalGeoPosition_RegExprString       = IsDecimal_RegExprString + "[°]?[\\s]+([SN]?)" +
                                                                         MayBeSeperator_RegExprString +
                                                                         IsDecimal_RegExprString + "[°]?[\\s]+([EWO]?)";
 
         /// <summary>
         /// The regular expression init string for matching signed decimal geo positions/coordinates.
         /// </summary>
-        public static String IsSignedDecimalGeoPosition_RegExprString = IsSignedDecimal_RegExprString + "[°]?" +
+        public const  String IsSignedDecimalGeoPosition_RegExprString = IsSignedDecimal_RegExprString + "[°]?" +
                                                                         MayBeSeperator_RegExprString +
                                                                         IsSignedDecimal_RegExprString + "[°]?";
 
         /// <summary>
         /// The regular expression init string for matching sexagesimal geo positions/coordinates.
         /// </summary>
-        public static String IsSexagesimalGeoPosition_RegExprString   = "([-]?[0-9])+°[\\s]+([0-9])+'[\\s]+([0-9]+[\\.\\,]?[0-9]*)''[\\s]+([SN]?)" +
+        public const  String IsSexagesimalGeoPosition_RegExprString   = "([-]?[0-9])+°[\\s]+([0-9])+'[\\s]+([0-9]+[\\.\\,]?[0-9]*)''[\\s]+([SN]?)" +
                                                                         MayBeSeperator_RegExprString +
                                                                         "([-]?[0-9])+°[\\s]+([0-9])+'[\\s]+([0-9]+[\\.\\,]?[0-9]*)''[\\s]+([EWO]?)";
 
         /// <summary>
         /// A regular expression for matching decimal geo positions/coordinates.
         /// </summary>
-        public static Regex  IsDecimalRegExpr                         = new Regex(IsDecimal_RegExprString);
+        public static readonly Regex  IsDecimalRegExpr                    = new Regex(IsDecimal_RegExprString);
 
         /// <summary>
         /// A regular expression for matching decimal geo positions/coordinates.
         /// </summary>
-        public static Regex  IsDecimalGeoPositionRegExpr              = new Regex(IsDecimalGeoPosition_RegExprString);
+        public static readonly Regex  IsDecimalGeoPositionRegExpr         = new Regex(IsDecimalGeoPosition_RegExprString);
 
         /// <summary>
         /// A regular expression for matching signed decimal geo positions/coordinates.
         /// </summary>
-        public static Regex  IsSignedDecimalGeoPositionRegExpr        = new Regex(IsSignedDecimalGeoPosition_RegExprString);
+        public static readonly Regex  IsSignedDecimalGeoPositionRegExpr   = new Regex(IsSignedDecimalGeoPosition_RegExprString);
 
         /// <summary>
         /// A regular expression for matching sexagesimal geo positions/coordinates.
         /// </summary>
-        public static Regex  IsSexagesimalGeoPositionRegExpr          = new Regex(IsSexagesimalGeoPosition_RegExprString);
+        public static readonly Regex  IsSexagesimalGeoPositionRegExpr     = new Regex(IsSexagesimalGeoPosition_RegExprString);
 
         #endregion
 
@@ -274,17 +274,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                        out GeoCoordinate  GeoCoordinate)
         {
 
-            Latitude  LatitudeValue;
-            Longitude LongitudeValue;
             GeoCoordinate = default(GeoCoordinate);
 
-            if (!Latitude. TryParse(LatitudeString,  out LatitudeValue))
+            if (!Latitude. TryParse(LatitudeString,  out Latitude  LatitudeValue))
                 return false;
 
-            if (!Longitude.TryParse(LongitudeString, out LongitudeValue))
+            if (!Longitude.TryParse(LongitudeString, out Longitude LongitudeValue))
                 return false;
 
             GeoCoordinate = new GeoCoordinate(LatitudeValue, LongitudeValue);
+
             return true;
 
         }
@@ -306,21 +305,21 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                        out GeoCoordinate  GeoCoordinate)
         {
 
-            Latitude  LatitudeValue;
-            Longitude LongitudeValue;
-            Altitude  AltitudeValue;
             GeoCoordinate = default(GeoCoordinate);
 
-            if (!Latitude. TryParse(LatitudeString,  out LatitudeValue))
+            if (!Latitude.      TryParse(LatitudeString,  out Latitude  LatitudeValue))
                 return false;
 
-            if (!Longitude.TryParse(LongitudeString, out LongitudeValue))
+            if (!Longitude.     TryParse(LongitudeString, out Longitude LongitudeValue))
                 return false;
 
-            if (!Aegir.Altitude.TryParse(AltitudeString, out AltitudeValue))
+            if (!Aegir.Altitude.TryParse(AltitudeString,  out Altitude  AltitudeValue))
                 return false;
 
-            GeoCoordinate = new GeoCoordinate(LatitudeValue, LongitudeValue, AltitudeValue);
+            GeoCoordinate = new GeoCoordinate(LatitudeValue,
+                                              LongitudeValue,
+                                              AltitudeValue);
+
             return true;
 
         }

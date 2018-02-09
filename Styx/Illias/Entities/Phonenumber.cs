@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -27,9 +28,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A phone number.
     /// </summary>
-    public struct Phonenumber : IId,
-                                IEquatable<Phonenumber>,
-                                IComparable<Phonenumber>
+    public struct PhoneNumber : IId,
+                                IEquatable<PhoneNumber>,
+                                IComparable<PhoneNumber>
     {
 
         #region Data
@@ -37,7 +38,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The internal identification.
         /// </summary>
-        private readonly String InternalId;
+        private readonly        String  InternalId;
+
+        /// <summary>
+        /// The regular expression init string for matching phone numbers.
+        /// </summary>
+        public static readonly  Regex   IsPhoneNumber_RegExprString  = new Regex("\\+?[0-9\\ \\-\\/]{5,30}");
 
         #endregion
 
@@ -57,7 +63,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new phone number based on the given string.
         /// </summary>
         /// <param name="String">The string representation of the phone number.</param>
-        private Phonenumber(String String)
+        private PhoneNumber(String String)
         {
             InternalId = String;
         }
@@ -71,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given string as a phone number.
         /// </summary>
         /// <param name="Text">A text representation of a phone number.</param>
-        public static Phonenumber Parse(String Text)
+        public static PhoneNumber Parse(String Text)
         {
 
             #region Initial checks
@@ -84,7 +90,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            return new Phonenumber(Text);
+            if (!TryParse(Text, out PhoneNumber _PhoneNumber))
+                throw new ArgumentException("The given text '" + Text + "' is not a valid phone number!");
+
+            return _PhoneNumber;
 
         }
 
@@ -96,13 +105,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given string as a phone number.
         /// </summary>
         /// <param name="Text">A text representation of a phone number.</param>
-        public static Phonenumber? TryParse(String Text)
+        public static PhoneNumber? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Phonenumber _PhoneNumber))
+            if (TryParse(Text, out PhoneNumber _PhoneNumber))
                 return _PhoneNumber;
 
-            return new Phonenumber?();
+            return new PhoneNumber?();
 
         }
 
@@ -115,7 +124,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of a phone number.</param>
         /// <param name="PhoneNumber">The parsed phone number.</param>
-        public static Boolean TryParse(String Text, out Phonenumber PhoneNumber)
+        public static Boolean TryParse(String Text, out PhoneNumber PhoneNumber)
         {
 
             #region Initial checks
@@ -130,14 +139,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                PhoneNumber = new Phonenumber(Text);
-                return true;
+
+                var Match = IsPhoneNumber_RegExprString.Match(Text);
+
+                if (Match.Success)
+                {
+                    PhoneNumber = new PhoneNumber(Text);
+                    return true;
+                }
+
             }
             catch (Exception)
-            {
-                PhoneNumber = default(Phonenumber);
-                return false;
-            }
+            { }
+
+            PhoneNumber = default(PhoneNumber);
+            return false;
 
         }
 
@@ -149,8 +165,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone a phone number.
         /// </summary>
 
-        public Phonenumber Clone
-            => new Phonenumber(new String(InternalId.ToCharArray()));
+        public PhoneNumber Clone
+            => new PhoneNumber(new String(InternalId.ToCharArray()));
 
         #endregion
 
@@ -165,7 +181,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Phonenumber PhoneNumber1, Phonenumber PhoneNumber2)
+        public static Boolean operator == (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -190,7 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Phonenumber PhoneNumber1, Phonenumber PhoneNumber2)
+        public static Boolean operator != (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
             => !(PhoneNumber1 == PhoneNumber2);
 
         #endregion
@@ -203,7 +219,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Phonenumber PhoneNumber1, Phonenumber PhoneNumber2)
+        public static Boolean operator < (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
         {
 
             if ((Object) PhoneNumber1 == null)
@@ -223,7 +239,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Phonenumber PhoneNumber1, Phonenumber PhoneNumber2)
+        public static Boolean operator <= (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
             => !(PhoneNumber1 > PhoneNumber2);
 
         #endregion
@@ -236,7 +252,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Phonenumber PhoneNumber1, Phonenumber PhoneNumber2)
+        public static Boolean operator > (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
         {
 
             if ((Object) PhoneNumber1 == null)
@@ -256,7 +272,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Phonenumber PhoneNumber1, Phonenumber PhoneNumber2)
+        public static Boolean operator >= (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
             => !(PhoneNumber1 < PhoneNumber2);
 
         #endregion
@@ -277,11 +293,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            if (!(Object is Phonenumber))
+            if (!(Object is PhoneNumber))
                 throw new ArgumentException("The given object is not a phone number!",
                                             nameof(Object));
 
-            return CompareTo((Phonenumber) Object);
+            return CompareTo((PhoneNumber) Object);
 
         }
 
@@ -293,7 +309,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="PhoneNumber">An object to compare with.</param>
-        public Int32 CompareTo(Phonenumber PhoneNumber)
+        public Int32 CompareTo(PhoneNumber PhoneNumber)
         {
 
             if ((Object) PhoneNumber == null)
@@ -322,10 +338,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object == null)
                 return false;
 
-            if (!(Object is Phonenumber))
+            if (!(Object is PhoneNumber))
                 return false;
 
-            return Equals((Phonenumber) Object);
+            return Equals((PhoneNumber) Object);
 
         }
 
@@ -338,7 +354,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="PhoneNumber">An phone number to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Phonenumber PhoneNumber)
+        public Boolean Equals(PhoneNumber PhoneNumber)
         {
 
             if ((Object) PhoneNumber == null)
