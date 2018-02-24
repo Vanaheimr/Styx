@@ -473,6 +473,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Return a JSON representation for the given enumeration of roaming networks.
         /// </summary>
+        /// <typeparam name="T">The type of the enumeration.</typeparam>
         /// <param name="Enumeration">An enumeration of roaming networks.</param>
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
@@ -488,10 +489,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            if (!Take.HasValue)
+            if (Skip.HasValue  &&  Take.HasValue)
+                return Enumeration.Skip(Skip).Take(Take);
+
+            if (!Skip.HasValue &&  Take.HasValue)
+                return Enumeration.Take(Take);
+
+            if ( Skip.HasValue && !Take.HasValue)
                 return Enumeration.Skip(Skip);
 
-            return Enumeration.Skip(Skip).Take(Take);
+            return Enumeration;
 
         }
 
