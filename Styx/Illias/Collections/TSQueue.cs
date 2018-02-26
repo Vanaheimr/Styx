@@ -154,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         public TSQueue(UInt64 MaxNumberOfElements = 500)
         {
 
-            this.MaxNumberOfElements  = Math.Max(MaxNumberOfElements, Int64.MaxValue);
+            this.MaxNumberOfElements  = Math.Min(MaxNumberOfElements, Int64.MaxValue);
 
         }
 
