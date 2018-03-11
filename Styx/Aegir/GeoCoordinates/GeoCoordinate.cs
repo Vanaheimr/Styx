@@ -177,11 +177,23 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate Create(Latitude   Latitude,
                                            Longitude  Longitude,
                                            Altitude?  Altitude = null)
-        {
 
-            return new GeoCoordinate(Latitude, Longitude, Altitude);
+            => new GeoCoordinate(Latitude, Longitude, Altitude);
 
-        }
+
+        /// <summary>
+        /// Create a new geographical coordinate or position on a map.
+        /// </summary>
+        /// <param name="Latitude">The Latitude (south to nord).</param>
+        /// <param name="Longitude">The Longitude (parallel to equator).</param>
+        /// <param name="Altitude">The (optional) Altitude.</param>
+        public static GeoCoordinate? Create(Latitude?   Latitude,
+                                            Longitude?  Longitude,
+                                            Altitude?   Altitude = null)
+
+            => Latitude.HasValue && Longitude.HasValue
+                   ? new GeoCoordinate(Latitude.Value, Longitude.Value, Altitude)
+                   : new GeoCoordinate?();
 
         #endregion
 

@@ -68,6 +68,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        public static Longitude? TryParse(Double Value)
+        {
+
+            if (TryParse(Value, out Longitude _Longitude))
+                return _Longitude;
+
+            return new Longitude?();
+
+        }
+
         public static Boolean TryParse(Double Value, out Longitude Longitude)
         {
 
@@ -94,6 +104,26 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Longitude Parse(String Value, NumberStyles NumberStyle, IFormatProvider FormatProvider)
             => Parse(Double.Parse(Value, NumberStyle, FormatProvider));
 
+
+        public static Longitude? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out Longitude _Longitude))
+                return _Longitude;
+
+            return new Longitude?();
+
+        }
+
+        public static Longitude? TryParse(String Text, Func<Double, Double> ValueMapper)
+        {
+
+            if (TryParse(Text, out Longitude _Longitude, ValueMapper))
+                return _Longitude;
+
+            return new Longitude?();
+
+        }
 
         public static Boolean TryParse(String Text, out Longitude Longitude, Func<Double, Double> ValueMapper = null)
         {

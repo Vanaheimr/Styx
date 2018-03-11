@@ -67,6 +67,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        public static Latitude? TryParse(Double Value)
+        {
+
+            if (TryParse(Value, out Latitude _Latitude))
+                return _Latitude;
+
+            return new Latitude?();
+
+        }
+
         public static Boolean TryParse(Double Value, out Latitude Latitude)
         {
 
@@ -93,6 +103,25 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Latitude Parse(String Value, NumberStyles NumberStyle, IFormatProvider FormatProvider)
             => Parse(Double.Parse(Value, NumberStyle, FormatProvider));
 
+        public static Latitude? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out Latitude _Latitude))
+                return _Latitude;
+
+            return new Latitude?();
+
+        }
+
+        public static Latitude? TryParse(String Text, Func<Double, Double> ValueMapper)
+        {
+
+            if (TryParse(Text, out Latitude _Latitude, ValueMapper))
+                return _Latitude;
+
+            return new Latitude?();
+
+        }
 
         public static Boolean TryParse(String Text, out Latitude Latitude, Func<Double, Double> ValueMapper = null)
         {
