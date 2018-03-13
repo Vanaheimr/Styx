@@ -479,8 +479,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Double DistanceTo(GeoCoordinate Target)
         {
 
-            var d_lng = this.Longitude.DistanceTo(Target.Longitude);
-            var d_lat = this.Latitude. DistanceTo(Target.Latitude);
+            var d_lng = Longitude.DistanceTo(Target.Longitude);
+            var d_lat = Latitude. DistanceTo(Target.Latitude);
 
             return Math.Sqrt(d_lng * d_lng + d_lat * d_lat);
 
@@ -493,19 +493,18 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Calculate the distance between two geo coordinates in kilometers.
         /// </summary>
-        /// <see cref="http://www.movable-type.co.uk/scripts/latlong.html"/>
-        /// <seealso cref="http://en.wikipedia.org/wiki/Haversine_formula"/>
+        /// <remarks>See also: http://www.movable-type.co.uk/scripts/latlong.html and http://en.wikipedia.org/wiki/Haversine_formula </remarks>
         /// <param name="Target">Another geo coordinate</param>
         /// <param name="EarthRadiusInKM">The currently accepted (WGS84) earth radius at the equator is 6378.137 km and 6356.752 km at the polar caps. For aviation purposes the FAI uses a radius of 6371.0 km.</param>
         public Double DistanceKM(GeoCoordinate Target, UInt32 EarthRadiusInKM = 6371)
         {
 
-            var dLat = (Target.Latitude.Value  - this.Latitude. Value).ToRadians();
-            var dLon = (Target.Longitude.Value - this.Longitude.Value).ToRadians();
+            var dLat = (Target.Latitude.Value  - Latitude. Value).ToRadians();
+            var dLon = (Target.Longitude.Value - Longitude.Value).ToRadians();
 
-            var a = Math.Sin(dLat / 2)                         * Math.Sin(dLat / 2) +
-                    Math.Cos(this.Latitude.Value.ToRadians()) * Math.Cos(Target.Latitude.Value.ToRadians()) *
-                    Math.Sin(dLon / 2)                         * Math.Sin(dLon / 2);
+            var a = Math.Sin(dLat / 2)                   * Math.Sin(dLat / 2) +
+                    Math.Cos(Latitude.Value.ToRadians()) * Math.Cos(Target.Latitude.Value.ToRadians()) *
+                    Math.Sin(dLon / 2)                   * Math.Sin(dLon / 2);
 
             // A (surprisingly marginal) performance improvement can be obtained,
             // of course, by factoring out the terms which get squared.
