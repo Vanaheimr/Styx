@@ -22,11 +22,97 @@ using System.Text.RegularExpressions;
 using System.Globalization;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
+
+    /// <summary>
+    /// JSON I/O.
+    /// </summary>
+    public static class GeoCoordinateExtentions
+    {
+
+        #region ToJSON(this GeoLocation)
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A geographical location.</param>
+        public static JObject ToJSON(this GeoCoordinate GeoLocation)
+        {
+
+            if (GeoLocation == default(GeoCoordinate))
+                return null;
+
+            return JSONObject.Create(
+                       GeoLocation.Projection != GravitationalModel.WGS84 ? new JProperty("projection", GeoLocation.Projection.ToString()) : null,
+                       new JProperty("lat", GeoLocation.Latitude. Value),
+                       new JProperty("lng", GeoLocation.Longitude.Value),
+                       GeoLocation.Altitude.HasValue                      ? new JProperty("alt",        GeoLocation.Altitude.Value.Value)  : null
+                   );
+
+        }
+
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A geographical location.</param>
+        public static JObject ToJSON(this GeoCoordinate? GeoLocation)
+            => GeoLocation?.ToJSON();
+
+        #endregion
+
+        #region ToJSON(this GeoLocation, JPropertyKey)
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A geographical location.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
+        public static JProperty ToJSON(this GeoCoordinate GeoLocation, String JPropertyKey)
+        {
+
+            if (GeoLocation == default(GeoCoordinate))
+                return null;
+
+            return new JProperty(JPropertyKey,
+                                 GeoLocation.ToJSON());
+
+        }
+
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A GeoLocation.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
+        public static JProperty ToJSON(this GeoCoordinate? GeoLocation, String JPropertyKey)
+        {
+
+            if (!GeoLocation.HasValue)
+                return null;
+
+            return new JProperty(JPropertyKey,
+                                 GeoLocation.Value.ToJSON());
+
+        }
+
+        #endregion
+
+
+        
+
+
+
+        public static Boolean TryParseGeoCoordinate(this String Text, out GeoCoordinate GeoLocation)
+            => GeoCoordinate.TryParseGeoCoordinate(JObject.Parse(Text), out GeoLocation);
+
+    }
+
 
     /// <summary>
     /// A geographical coordinate or position on a map.
@@ -468,6 +554,73 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
         #endregion
+
+
+        public static GeoCoordinate? ParseGeoCoordinate(String Text)
+            => ParseGeoCoordinate(JObject.Parse(Text));
+
+        public static Boolean ParseGeoCoordinate(String Text, out GeoCoordinate GeoCoordinate)
+            => TryParseGeoCoordinate(JObject.Parse(Text), out GeoCoordinate);
+
+        public static GeoCoordinate? ParseGeoCoordinate(JObject JSON)
+        {
+
+            var lat         = JSON?["lat"];
+            var lng         = JSON?["lng"];
+            var alt         = JSON?["alt"];
+            var projection  = JSON?["projection"];
+
+            if (lat != null && lng != null)
+            {
+
+                try
+                {
+
+                    return GeoCoordinate.Parse(lat.Value<String>(),
+                                               lng.Value<String>(),
+                                               alt.Value<String>());
+
+                }
+                catch (Exception)
+                { }
+
+            }
+
+            return null;
+
+        }
+
+        public static Boolean TryParseGeoCoordinate(JObject JSON, out GeoCoordinate GeoLocation)
+        {
+
+            var lat         = JSON["lat"];
+            var lng         = JSON["lng"];
+            var alt         = JSON["alt"];
+            var projection  = JSON["projection"];
+
+            if (lat != null && lng != null)
+            {
+
+                try
+                {
+
+                    GeoLocation = GeoCoordinate.Parse(lat. Value<Double>(),
+                                                      lng. Value<Double>(),
+                                                      alt?.Value<Double>());
+
+                    return true;
+
+                }
+                catch (Exception e)
+                {
+                }
+
+            }
+
+            GeoLocation = default(GeoCoordinate);
+            return false;
+
+        }
 
 
         #region DistanceTo(Target)

@@ -51,17 +51,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString  CountryName    { get; }
 
         /// <summary>
-        /// The ISO Alpha-2 Code of the country.
+        /// The ISO Alpha-2 code of the country.
         /// </summary>
         public String      Alpha2Code     { get; }
 
         /// <summary>
-        /// The ISO Alpha-3 Code of the country.
+        /// The ISO Alpha-3 code of the country.
         /// </summary>
         public String      Alpha3Code     { get; }
 
         /// <summary>
-        /// The ISO numeric code UN M49 Numerical Code of the country.
+        /// The ISO numeric code UN M49 numerical code of the country.
         /// </summary>
         public UInt16      NumericCode    { get; }
 
