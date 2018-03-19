@@ -21,11 +21,51 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+    public static partial class JSON_IO
+    {
+
+        #region ToJSON(this OpeningTimes)
+
+        public static JObject ToJSON(this OpeningTimes OpeningTimes)
+        {
+
+            var JO = new JObject();
+            //OpeningTimes.RegularHours.ForEach(rh => JO.Add(rh.Weekday.ToString(), new JObject(new JProperty("from", rh.Begin.ToString()), new JProperty("to", rh.End.ToString()))));
+            OpeningTimes.RegularOpenings.ForEach(rh => JO.Add(rh.DayOfWeek.ToString(), new JArray(rh.PeriodBegin.ToString(), rh.PeriodEnd.ToString())));
+            if (OpeningTimes.FreeText.IsNotNullOrEmpty())
+                JO.Add("Text", OpeningTimes.FreeText);
+
+            return (OpeningTimes != null)
+                       ? OpeningTimes.IsOpen24Hours
+                             ? new JObject()
+                             : JO
+                       : null;
+
+        }
+
+        #endregion
+
+        #region ToJSON(this OpeningTimes, JPropertyKey)
+
+        public static JProperty ToJSON(this OpeningTimes OpeningTimes, String JPropertyKey)
+
+            => OpeningTimes != null
+                   ? OpeningTimes.IsOpen24Hours
+                         ? new JProperty(JPropertyKey, "24/7")
+                         : new JProperty(JPropertyKey, OpeningTimes.ToJSON())
+                   : null;
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Opening times.
