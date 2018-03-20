@@ -58,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => OpeningTimes != null
                    ? OpeningTimes.IsOpen24Hours
-                         ? new JProperty(JPropertyKey, "24/7")
+                         ? new JProperty(JPropertyKey, OpeningTimes._24_7)
                          : new JProperty(JPropertyKey, OpeningTimes.ToJSON())
                    : null;
 
@@ -72,6 +72,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public class OpeningTimes : IEquatable<OpeningTimes>
     {
+
+        #region Data
+
+        /// <summary>
+        /// Open 24/7.
+        /// </summary>
+        public const String _24_7 = "24/7";
+
+        #endregion
 
         #region Properties
 
@@ -194,6 +203,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         // "opening_times": {
         //
         //     "regular_hours": [
@@ -294,19 +304,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static OpeningTimes FromFreeText(String   Text,
                                                 Boolean  IsOpen24Hours = true)
-        {
 
-            return new OpeningTimes(IsOpen24Hours, Text);
-
-        }
+            => new OpeningTimes(IsOpen24Hours, Text);
 
 
         public static OpeningTimes Parse(String Text)
         {
 
-            OpeningTimes _OpeningTimes = null;
-
-            if (TryParse(Text, out _OpeningTimes))
+            if (TryParse(Text, out OpeningTimes _OpeningTimes))
                 return _OpeningTimes;
 
             return null;
@@ -315,6 +320,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static Boolean TryParse(String Text, out OpeningTimes OpeningTimes)
         {
+
+            if (Text == _24_7)
+            {
+                OpeningTimes = new OpeningTimes(true);
+                return true;
+            }
 
             OpeningTimes = null;
 
@@ -589,9 +600,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return FreeText.GetHashCode();
-        }
+            => FreeText.GetHashCode();
 
         #endregion
 
@@ -601,9 +610,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return IsOpen24Hours ? "24 hours" : FreeText;
-        }
+            => IsOpen24Hours ? "24 hours" : FreeText;
 
         #endregion
 
