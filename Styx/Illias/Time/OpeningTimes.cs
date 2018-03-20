@@ -28,7 +28,7 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public static partial class JSON_IO
+    public static class OpeningTimesExtentions
     {
 
         #region ToJSON(this OpeningTimes)
@@ -193,6 +193,54 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
         #endregion
+
+        // "opening_times": {
+        //
+        //     "regular_hours": [
+        //       {
+        //         "weekday": 1,
+        //         "period_begin": "08:00",
+        //         "period_end":   "20:00"
+        //       },
+        //       {
+        //         "weekday": 2,
+        //         "period_begin": "08:00",
+        //         "period_end":   "20:00"
+        //       },
+        //       {
+        //         "weekday": 3,
+        //         "period_begin": "08:00",
+        //         "period_end":   "20:00"
+        //       },
+        //       {
+        //         "weekday": 4,
+        //         "period_begin": "08:00",
+        //         "period_end":   "20:00"
+        //       },
+        //       {
+        //         "weekday": 5,
+        //         "period_begin": "08:00",
+        //         "period_end":   "20:00"
+        //       }
+        //     ],
+        //
+        //     "twentyfourseven": false,
+        //
+        //     "exceptional_openings": [
+        //       {
+        //         "period_begin": "2014-06-21T09:00:00Z",
+        //         "period_end":   "2014-06-21T12:00:00Z"
+        //       }
+        //     ],
+        //
+        //     "exceptional_closings": [
+        //       {
+        //         "period_begin": "2014-06-24T00:00:00Z",
+        //         "period_end":   "2014-06-25T00:00:00Z"
+        //       }
+        //     ]
+        //
+        //   }
 
 
         public OpeningTimes SetRegularOpening(DayOfWeek  Weekday,

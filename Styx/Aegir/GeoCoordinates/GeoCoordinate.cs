@@ -109,7 +109,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
 
         public static Boolean TryParseGeoCoordinate(this String Text, out GeoCoordinate GeoLocation)
-            => GeoCoordinate.TryParseGeoCoordinate(JObject.Parse(Text), out GeoLocation);
+            => GeoCoordinate.TryParse(JObject.Parse(Text), out GeoLocation);
 
     }
 
@@ -435,9 +435,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate ParseString(String GeoString)
         {
 
-            GeoCoordinate GeoCoordinate;
-
-            if (TryParseString(GeoString, out GeoCoordinate))
+            if (TryParseString(GeoString, out GeoCoordinate GeoCoordinate))
                 return GeoCoordinate;
 
             return default(GeoCoordinate);
@@ -451,14 +449,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Parses the given string as a geo position/coordinate.
         /// </summary>
+        /// <typeparam name="T">The type of the return value.</typeparam>
         /// <param name="GeoString">A string to parse.</param>
         /// <returns>A new geo position or null.</returns>
         public static T ParseString<T>(String GeoString, Func<Latitude, Longitude, T> Processor)
         {
 
-            T _T = default(T);
-
-            if (TryParseString<T>(GeoString, Processor, out _T))
+            if (TryParseString(GeoString, Processor, out T _T))
                 return _T;
 
             return default(T);
@@ -476,11 +473,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoCoordinate">The parsed geo coordinate.</param>
         /// <returns>True if success, false otherwise</returns>
         public static Boolean TryParseString(String GeoString, out GeoCoordinate GeoCoordinate)
-        {
 
-            return TryParseString<GeoCoordinate>(GeoString, (lat, lng) => new GeoCoordinate(lat, lng), out GeoCoordinate);
-
-        }
+            => TryParseString(GeoString, (lat, lng) => new GeoCoordinate(lat, lng), out GeoCoordinate);
 
         #endregion
 
@@ -493,13 +487,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Processor">A delegate to process the parsed latitude and longitude.</param>
         /// <returns>True if success, false otherwise</returns>
         public static Boolean TryParseString(String GeoString, Action<Latitude, Longitude> Processor)
-        {
 
-            Boolean _Boolean;
-
-            return TryParseString<Boolean>(GeoString, (lat, lng) => { Processor(lat, lng); return true; }, out _Boolean);
-
-        }
+            => TryParseString(GeoString,
+                              (lat, lng) => {
+                                  Processor(lat, lng);
+                                  return true;
+                              },
+                              out Boolean _Boolean);
 
         #endregion
 
@@ -508,6 +502,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Attempts to parse the given string as a geo position/coordinate.
         /// </summary>
+        /// <typeparam name="T">The type of the return value.</typeparam>
         /// <param name="GeoString">A string to parse.</param>
         /// <param name="Processor">A delegate to process the parsed latitude and longitude.</param>
         /// <param name="Value">The processed value.</param>
@@ -556,41 +551,23 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        public static GeoCoordinate? ParseGeoCoordinate(String Text)
-            => ParseGeoCoordinate(JObject.Parse(Text));
+        public static GeoCoordinate? TryParseJSON(String Text)
+            => TryParse(JObject.Parse(Text));
 
-        public static Boolean ParseGeoCoordinate(String Text, out GeoCoordinate GeoCoordinate)
-            => TryParseGeoCoordinate(JObject.Parse(Text), out GeoCoordinate);
+        public static Boolean TryParseJSON(String Text, out GeoCoordinate GeoCoordinate)
+            => TryParse(JObject.Parse(Text), out GeoCoordinate);
 
-        public static GeoCoordinate? ParseGeoCoordinate(JObject JSON)
+        public static GeoCoordinate? TryParse(JObject JSON)
         {
 
-            var lat         = JSON?["lat"];
-            var lng         = JSON?["lng"];
-            var alt         = JSON?["alt"];
-            var projection  = JSON?["projection"];
+            if (TryParse(JSON, out GeoCoordinate _GeoCoordinate))
+                return _GeoCoordinate;
 
-            if (lat != null && lng != null)
-            {
-
-                try
-                {
-
-                    return GeoCoordinate.Parse(lat.Value<String>(),
-                                               lng.Value<String>(),
-                                               alt.Value<String>());
-
-                }
-                catch (Exception)
-                { }
-
-            }
-
-            return null;
+            return default(GeoCoordinate);
 
         }
 
-        public static Boolean TryParseGeoCoordinate(JObject JSON, out GeoCoordinate GeoLocation)
+        public static Boolean TryParse(JObject JSON, out GeoCoordinate GeoLocation)
         {
 
             var lat         = JSON["lat"];
@@ -604,9 +581,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 try
                 {
 
-                    GeoLocation = GeoCoordinate.Parse(lat. Value<Double>(),
-                                                      lng. Value<Double>(),
-                                                      alt?.Value<Double>());
+                    GeoLocation = Parse(lat. Value<Double>(),
+                                        lng. Value<Double>(),
+                                        alt?.Value<Double>());
 
                     return true;
 
