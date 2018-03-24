@@ -283,6 +283,50 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
+        #region fromLatLng(Latitude, Longitude, Altitude = null)
+
+        /// <summary>
+        /// Create a new geographical coordinate or position on a map.
+        /// </summary>
+        /// <param name="Latitude">The Latitude (south to nord).</param>
+        /// <param name="Longitude">The Longitude (parallel to equator).</param>
+        /// <param name="Altitude">The (optional) Altitude.</param>
+        public static GeoCoordinate fromLatLng(Double   Latitude,
+                                               Double   Longitude,
+                                               Double?  Altitude = null)
+
+            => new GeoCoordinate(
+                   Aegir.Latitude. Parse(Latitude),
+                   Aegir.Longitude.Parse(Longitude),
+                   Altitude.HasValue
+                       ? new Aegir.Altitude?(Aegir.Altitude.Parse(Altitude.Value))
+                       : null
+               );
+
+        #endregion
+
+        #region fromLngLat(Longitude, Latitude, Altitude = null)
+
+        /// <summary>
+        /// Create a new geographical coordinate or position on a map.
+        /// </summary>
+        /// <param name="Longitude">The Longitude (parallel to equator).</param>
+        /// <param name="Latitude">The Latitude (south to nord).</param>
+        /// <param name="Altitude">The (optional) Altitude.</param>
+        public static GeoCoordinate fromLngLat(Double   Longitude,
+                                               Double   Latitude,
+                                               Double?  Altitude = null)
+
+            => new GeoCoordinate(
+                   Aegir.Latitude. Parse(Latitude),
+                   Aegir.Longitude.Parse(Longitude),
+                   Altitude.HasValue
+                       ? new Aegir.Altitude?(Aegir.Altitude.Parse(Altitude.Value))
+                       : null
+               );
+
+        #endregion
+
 
         #region Parse   (LatitudeString, LongitudeString, AltitudeString = null)
 
