@@ -32,9 +32,66 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
+    /// JSON I/O.
+    /// </summary>
+    public static class GeoFenceExtentions
+    {
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A geographical location.</param>
+        public static JObject ToJSON(this GeoFence? GeoLocation)
+            => GeoLocation?.ToJSON();
+
+
+        #region ToJSON(this GeoLocation, JPropertyKey)
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A geographical location.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
+        public static JProperty ToJSON(this GeoFence GeoLocation, String JPropertyKey)
+        {
+
+            //if (GeoLocation == default(GeoFence))
+            //    return null;
+
+            return new JProperty(JPropertyKey,
+                                 GeoLocation.ToJSON());
+
+        }
+
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="GeoLocation">A GeoLocation.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
+        public static JProperty ToJSON(this GeoFence? GeoLocation, String JPropertyKey)
+        {
+
+            if (!GeoLocation.HasValue)
+                return null;
+
+            return new JProperty(JPropertyKey,
+                                 GeoLocation.Value.ToJSON());
+
+        }
+
+        #endregion
+
+
+        public static Boolean TryParseGeoFence(this String Text, out GeoFence GeoLocation)
+            => GeoFence.TryParse(JObject.Parse(Text), out GeoLocation);
+
+    }
+
+    /// <summary>
     /// A geo fenche.
     /// </summary>
-    public class GeoFence
+    public struct GeoFence
     {
 
         #region Properties
@@ -42,7 +99,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// An enumeration of geo coordinates.
         /// </summary>
-        public IEnumerable<GeoCoordinate>  GeoCoordinates    { get; }
+        public IEnumerable<GeoFence>  GeoFences    { get; }
 
         /// <summary>
         /// An optional geographical distance.
@@ -61,21 +118,84 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Create a new geo fence.
         /// </summary>
-        /// <param name="GeoCoordinates">An enumeration of geo coordinates.</param>
+        /// <param name="GeoFences">An enumeration of geo coordinates.</param>
         /// <param name="Distance">An optional geographical distance.</param>
         /// <param name="Description">An optional description.</param>
-        public GeoFence(IEnumerable<GeoCoordinate>  GeoCoordinates,
+        public GeoFence(IEnumerable<GeoFence>  GeoFences,
                         Meter?                      Distance,
-                        I18NString                  Description)
+                        I18NString                  Description = null)
         {
 
-            this.GeoCoordinates  = GeoCoordinates;
+            this.GeoFences       = GeoFences;
             this.Distance        = Distance;
             this.Description     = Description ?? new I18NString();
 
         }
 
         #endregion
+
+
+
+        public static Boolean TryParseJSON(String Text, out GeoFence GeoFence)
+            => TryParse(JObject.Parse(Text), out GeoFence);
+
+        public static Boolean TryParse(JObject JSON, out GeoFence GeoFence)
+        {
+
+            var type    = JSON["type"  ]?.Value<String>();
+            var radius  = JSON["radius"]?.Value<String>();
+
+            if (type != null && type == "circle" && radius.IsNeitherNullNorEmpty())
+            {
+
+                try
+                {
+
+                    GeoFence = new GeoFence(null,
+                                            Meter.Parse(radius));
+
+                    return true;
+
+                }
+                catch (Exception e)
+                {
+                }
+
+            }
+
+            GeoFence = default(GeoFence);
+            return false;
+
+        }
+
+
+        #region ToJSON()
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        public JObject ToJSON()
+        {
+
+            if ((GeoFences == null || !GeoFences.Any()) && Distance.HasValue)
+            {
+
+                return JSONObject.Create(
+
+                    new JProperty("type",    "circle"),
+                    new JProperty("radius",  Distance.ToString())
+
+                );
+
+            }
+
+            return JSONObject.Create();
+
+        }
+
+        #endregion
+
+
 
 
         #region GetHashCode()
@@ -88,7 +208,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             unchecked
             {
 
-                return GeoCoordinates.GetHashCode() * 5 ^
+                return GeoFences.GetHashCode() * 5 ^
 
                        (Distance.HasValue
                             ? Distance.Value.GetHashCode()
@@ -111,8 +231,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public override String ToString()
         {
 
-            if (GeoCoordinates.Count() == 1 && Distance.HasValue)
-                return String.Concat(GeoCoordinates.First(),
+            if (GeoFences.Count() == 1 && Distance.HasValue)
+                return String.Concat(GeoFences.First(),
                                      " with radius ",
                                      Distance.Value,
                                      "km",
@@ -120,8 +240,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                          ? "(" + Description.FirstText() + ")"
                                          : "");
 
-            if (GeoCoordinates.Count() > 1)
-                return GeoCoordinates.
+            if (GeoFences.Count() > 1)
+                return GeoFences.
                            Select(coordinate => coordinate.ToString()).
                            AggregateWith(", ");
 
@@ -133,29 +253,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        //#region ToJSON(IncludeHash = true)
-
-        ///// <summary>
-        ///// Return a JSON representation of this object.
-        ///// </summary>
-        ///// <param name="IncludeHash">Include the hash value of this object.</param>
-        //public override JObject ToJSON(Boolean IncludeHash = true)
-
-        //    => JSONObject.Create(
-
-        //           new JProperty("@id",          Id.         ToString()),
-        //           new JProperty("name",         Name.       ToJSON()),
-        //           new JProperty("description",  Description.ToJSON()),
-        //           new JProperty("isPublic",     IsPublic),
-        //           new JProperty("isDisabled",   IsDisabled),
-
-        //           IncludeHash
-        //               ? new JProperty("Hash",   CurrentCryptoHash)
-        //               : null
-
-        //       );
-
-        //#endregion
 
     }
 

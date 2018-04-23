@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value of the meter.
         /// </summary>
-        public Single  Value   { get; }
+        public Double  Value   { get; }
 
         #endregion
 
@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Create a new meter.
         /// </summary>
-        private Meter(Single Value)
+        private Meter(Double Value)
         {
             this.Value = Value;
         }
@@ -60,8 +60,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of a meter.</param>
         public static Meter Parse(String Text)
+        {
 
-            => new Meter(Single.Parse(Text));
+            if (Text.ToLower().EndsWith("km") && Double.TryParse(Text.Substring(0, Text.Length - 2), out Double _Meters))
+                return new Meter(_Meters * 1000);
+
+            if (Text.ToLower().EndsWith("m")  && Double.TryParse(Text.Substring(0, Text.Length - 1), out _Meters))
+                return new Meter(_Meters);
+
+            if (Double.TryParse(Text.Substring(0, Text.Length), out _Meters))
+                return new Meter(_Meters);
+
+            throw new ArgumentException("The given text '" + Text + "' is not a valid format!");
+
+        }
 
         #endregion
 
@@ -72,7 +84,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a meter.</param>
         public static Meter Parse(Single Number)
+            => new Meter(Number);
 
+
+        /// <summary>
+        /// Parse the given number as a meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a meter.</param>
+        public static Meter Parse(Double Number)
             => new Meter(Number);
 
         #endregion
@@ -126,6 +145,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
         }
+
+        /// <summary>
+        /// Parse the given number as a meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a meter.</param>
+        /// <param name="Meter">The parsed Meter.</param>
+        public static Boolean TryParse(Double Number, out Meter Meter)
+        {
+            try
+            {
+
+                Meter = new Meter(Number);
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                Meter = default(Meter);
+                return false;
+            }
+        }
+
 
         #endregion
 
