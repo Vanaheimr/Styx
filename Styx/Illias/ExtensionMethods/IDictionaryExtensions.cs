@@ -61,7 +61,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate msut not be null!", "KeyCreator");
+                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
 
             Dictionary.Add(KeyCreator(Value), Value);
 
@@ -102,7 +102,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate msut not be null!", "KeyCreator");
+                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
 
             var KeyValuePair = new KeyValuePair<K, V>(KeyCreator(Value), Value);
 
@@ -145,7 +145,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate msut not be null!", "KeyCreator");
+                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
 
             // Just call it once... as you never know what happens when you do it twice ;)!
             var Key = KeyCreator(Value);
@@ -188,11 +188,37 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate msut not be null!", "KeyCreator");
+                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
 
             Dictionary.Add(KeyCreator(Value), Value);
 
             return Value;
+
+        }
+
+        #endregion
+
+
+
+        #region TryGet(this Dictionary, Key)
+
+        /// <summary>
+        /// Try to get return the value for the given key.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the property key.</typeparam>
+        /// <typeparam name="TValue">The type of the property value.</typeparam>
+        /// <param name="Dictionary">A dictionary.</param>
+        /// <param name="Key">The property key.</param>
+        public static TValue TryGet<TKey, TValue>(this IDictionary<TKey, TValue> Dictionary, TKey Key)
+        {
+
+            if (Dictionary != null &&
+                Dictionary.TryGetValue(Key, out TValue Value))
+            {
+                return Value;
+            }
+
+            return default(TValue);
 
         }
 
