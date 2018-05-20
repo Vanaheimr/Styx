@@ -93,13 +93,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Id == null)
+            if (EqualityComparer<TId>.Default.Equals(Id, default(TId)))
                 throw new ArgumentNullException(nameof(Id), "The given Id must not be null!");
 
             #endregion
 
             this.Id           = Id;
-            this.DataSource   = DataSource;
+            this.DataSource   = (DataSource ?? "").Trim();
             this.LastChange   = DateTime.UtcNow;
             this.UserDefined  = new ConcurrentDictionary<String, Object>();
 
