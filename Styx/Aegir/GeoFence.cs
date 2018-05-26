@@ -50,16 +50,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Create a JSON representation of the given GeoLocation.
         /// </summary>
-        /// <param name="GeoLocation">A geographical location.</param>
+        /// <param name="GeoFence">A geographical location.</param>
         /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoFence GeoLocation, String JPropertyKey)
+        public static JProperty ToJSON(this GeoFence GeoFence, String JPropertyKey)
         {
 
             //if (GeoLocation == default(GeoFence))
             //    return null;
 
             return new JProperty(JPropertyKey,
-                                 GeoLocation.ToJSON());
+                                 GeoFence.ToJSON());
 
         }
 
