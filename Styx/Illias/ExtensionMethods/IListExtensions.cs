@@ -82,30 +82,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ReverseAndReturn(this List)
+        #region RemoveAndReturnElement(this Element)
 
         /// <summary>
-        /// Reverse and return the given list;
+        /// Remove and return an element of the given list;
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
-        public static IEnumerable<T> ReverseAndReturn<T>(this IList<T> List)
-        {
-            return List.Reverse();
-        }
-
-        #endregion
-
-
-        #region RemoveAndReturnFirst(this List)
-
-        /// <summary>
-        /// Remove and return first element of the given list;
-        /// </summary>
-        /// <param name="List">A list of elements.</param>
-        public static T RemoveAndReturnFirst<T>(this IList<T> List)
+        /// <param name="Element">An element of the given list.</param>
+        public static T RemoveAndReturnElement<T>(this IList<T>  List,
+                                                  T              Element)
         {
 
-            var Element = List.First();
             List.Remove(Element);
 
             return Element;
@@ -114,11 +102,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RemoveAndReturnLast(this List)
+        #region RemoveAndReturnFirst  (this List)
+
+        /// <summary>
+        /// Remove and return first element of the given list;
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="List">A list of elements.</param>
+        public static T RemoveAndReturnFirst<T>(this IList<T> List)
+        {
+
+            var Element = List[0];
+            List.Remove(Element);
+
+            return Element;
+
+        }
+
+        #endregion
+
+        #region RemoveAndReturnLast   (this List)
 
         /// <summary>
         /// Remove and return last element of the given list;
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
         public static T RemoveAndReturnLast<T>(this IList<T> List)
         {
@@ -133,12 +141,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-
         #region AddRangeAndReturnEnumeration(this List, Elements)
 
         /// <summary>
         /// Another way to add values to a list.
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
         /// <param name="Elements">The elements to be added to the list.</param>
         /// <returns>The added element.</returns>
@@ -153,7 +161,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
     }
 

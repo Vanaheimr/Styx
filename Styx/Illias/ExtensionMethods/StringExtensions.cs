@@ -292,7 +292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (String.IsNullOrEmpty())
                 return String;
 
-            return new String(String.ToCharArray().ReverseAndReturn().ToArray());
+            return new String(String.ToCharArray().Reverse().ToArray());
 
         }
 
