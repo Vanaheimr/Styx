@@ -132,6 +132,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region ToJSON(this Decimal, JPropertyKey)
+
+        /// <summary>
+        /// Create a Iso8601 representation of the given DateTime.
+        /// </summary>
+        /// <param name="Decimal">A decimal.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key.</param>
+        public static JProperty ToJSON(this Decimal Decimal, String JPropertyKey)
+
+            => new JProperty(JPropertyKey, Decimal.ToString());
+
+        #endregion
+
+
         #region ToJSON(this Timestamp, JPropertyKey)
 
         /// <summary>
