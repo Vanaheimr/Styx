@@ -161,16 +161,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Comment">An optional text/comment to describe the address.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        private Address(String                               Street,
-                        String                               HouseNumber,
-                        String                               FloorLevel,
-                        String                               PostalCode,
-                        String                               PostalCodeSub,
-                        I18NString                           City,
-                        Country                              Country,
-                        I18NString                           Comment      = null,
+        public Address(String                               Street,
+                       String                               HouseNumber,
+                       String                               FloorLevel,
+                       String                               PostalCode,
+                       String                               PostalCodeSub,
+                       I18NString                           City,
+                       Country                              Country,
+                       I18NString                           Comment      = null,
 
-                        IReadOnlyDictionary<String, Object>  CustomData   = null)
+                       IReadOnlyDictionary<String, Object>  CustomData   = null)
 
             : base(CustomData)
 
