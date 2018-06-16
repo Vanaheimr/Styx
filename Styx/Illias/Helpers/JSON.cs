@@ -76,9 +76,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JObjects">JSON objects.</param>
         public static JArray Create(params JObject[] JObjects)
-        {
-            return new JArray(JObjects.Where(jobject => jobject != null));
-        }
+
+            => new JArray(JObjects.Where(jobject => jobject != null));
 
         #endregion
 
@@ -89,9 +88,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JObjects">JSON objects.</param>
         public static JArray Create(IEnumerable<JObject> JObjects)
-        {
-            return new JArray(JObjects.Where(jobject => jobject != null));
-        }
+
+            => new JArray(JObjects.Where(jobject => jobject != null));
 
         #endregion
 
