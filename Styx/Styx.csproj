@@ -227,7 +227,7 @@
     <Compile Include="Illias\Ids\IIdGenerator.cs" />
     <Compile Include="Illias\Ids\IRevisionId.cs" />
     <Compile Include="Illias\Ids\RevisionId.cs" />
-    <Compile Include="Illias\Ids\SystemId.cs" />
+    <Compile Include="Illias\Ids\System_Id.cs" />
     <Compile Include="Illias\Label\ILabel.cs" />
     <Compile Include="Illias\Logging\Log.cs" />
     <Compile Include="Illias\Logging\Warning.cs" />

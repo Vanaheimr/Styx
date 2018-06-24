@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// A unique identification of the generating system,
         /// process or thread of this revision.
         /// </summary>
-        public SystemId SystemId { get; private set; }
+        public System_Id SystemId { get; private set; }
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Generates a RevisionId based on the actual timestamp and the given SystemId.
         /// </summary>
         /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
-        public RevisionId(SystemId SystemId)
+        public RevisionId(System_Id SystemId)
         {
             this.Timestamp = (UInt64) UniqueTimestamp.Ticks;
             this.SystemId  = SystemId;
@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Timestamp">A timestamp</param>
         /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
-        public RevisionId(UInt64 Timestamp, SystemId SystemId)
+        public RevisionId(UInt64 Timestamp, System_Id SystemId)
         {
             this.Timestamp = Timestamp;
             this.SystemId  = SystemId;
@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="DateTime">A DateTime object</param>
         /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
-        public RevisionId(DateTime DateTime, SystemId SystemId)
+        public RevisionId(DateTime DateTime, System_Id SystemId)
         {
             this.Timestamp = (UInt64)DateTime.Ticks;
             this.SystemId  = SystemId;
@@ -111,7 +111,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DateTimeString">A DateTime object as "yyyyddMM.HHmmss.fffffff"-formated string</param>
         /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
         /// <exception cref="System.FormatException"></exception>
-        public RevisionId(String DateTimeString, SystemId SystemId)
+        public RevisionId(String DateTimeString, System_Id SystemId)
         {
             try
             {
@@ -138,12 +138,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             try
-            {            
+            {
+
                 var __Timestamp = RevIdString.Remove(RevIdString.IndexOf("("));
                 var __SystemId  = RevIdString.Substring(__Timestamp.Length + 1, RevIdString.Length - __Timestamp.Length - 2);
 
-                this.Timestamp  = (UInt64)(DateTime.ParseExact(__Timestamp, "yyyyddMM.HHmmss.fffffff", null)).Ticks;
-                this.SystemId   = new SystemId(__SystemId);
+                this.Timestamp  = (UInt64) (DateTime.ParseExact(__Timestamp, "yyyyddMM.HHmmss.fffffff", null)).Ticks;
+                this.SystemId   = System_Id.Parse(__SystemId);
+
             }
             catch
             {
