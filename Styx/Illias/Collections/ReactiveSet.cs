@@ -29,6 +29,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A reactive set.
     /// </summary>
+    /// <typeparam name="T">The type of the elements.</typeparam>
     public class ReactiveSet<T> : IEnumerable<T>,
                                   IEquatable<ReactiveSet<T>>
     {
