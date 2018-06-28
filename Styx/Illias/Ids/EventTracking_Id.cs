@@ -96,9 +96,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of an event tracking identification.</param>
         public static EventTracking_Id Parse(String EventTrackingId)
-        {
-            return new EventTracking_Id(EventTrackingId);
-        }
+            => new EventTracking_Id(EventTrackingId);
 
         #endregion
 
