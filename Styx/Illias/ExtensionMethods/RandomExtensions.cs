@@ -50,31 +50,60 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetString(this Random, Length)
+        #region RandomString(this Random, Length)
 
         /// <summary>
-        /// Get random string of the given length.
+        /// Get random string [a-zA-Z1-9]{Length} (without 'I', 'l', 'O', '0') of the given length.
         /// </summary>
         /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The the length of the string.</param>
-        public static String GetString(this Random Random, UInt16 Length)
+        public static String RandomString(this Random Random, UInt16 Length)
         {
 
+            var tryAgain  = false;
             var ByteArray = new Byte[Length];
             Random.NextBytes(ByteArray);
 
-            for (var i = 0; i < ByteArray.Length; i++)
-                ByteArray[i] = (Byte) ((ByteArray[i] % 26) + (ByteArray[i] % 2 == 0 ? 65 : 97));
 
-            return Encoding.UTF8.GetString(ByteArray, 0, ByteArray.Length);
+            for (var i = 0; i < Length; i++)
+            {
+
+                do
+                {
+
+                    tryAgain = false;
+
+                    ByteArray[i] = (Byte) ((ByteArray[i] <= 85) // In 33% of all cases create 1-9!
+                                               ? (ByteArray[i] %  9) + 49                                  // create 1-9
+                                               : (ByteArray[i] % 26) + (ByteArray[i] % 2 == 0 ? 65 : 97)); // create A-Z or a-z
+
+                    if (ByteArray[i] == 0x49 || // I
+                        ByteArray[i] == 0x6C || // l
+                        ByteArray[i] == 0x4F) { // O
+
+                        ByteArray[i] = (Byte) Random.Next(256);
+                        tryAgain     = true;
+
+                    }
+
+                } while (tryAgain);
+
+            }
+
+            return Encoding.UTF8.GetString(ByteArray, 0, Length);
 
         }
 
         #endregion
 
-        #region RandomString(this Random, Length)
+        #region RandomNumberString(this Random, Length)
 
-        public static String RandomString(this Random Random, UInt16 Length)
+        /// <summary>
+        /// Get random number as string [0-9]{Length} of the given length.
+        /// </summary>
+        /// <param name="Random">The source of randomness.</param>
+        /// <param name="Length">The the length of the string.</param>
+        public static String RandomNumberString(this Random Random, UInt16 Length)
         {
 
             if (Random == null)
