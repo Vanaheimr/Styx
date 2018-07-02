@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Get random string [a-zA-Z1-9]{Length} (without 'I', 'l', 'O', '0') of the given length.
         /// </summary>
         /// <param name="Random">The source of randomness.</param>
-        /// <param name="Length">The the length of the string.</param>
+        /// <param name="Length">The expected length of the random string.</param>
         public static String RandomString(this Random Random, UInt16 Length)
         {
 
