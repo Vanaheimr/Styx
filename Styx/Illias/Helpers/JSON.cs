@@ -44,8 +44,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JProperties">JSON properties.</param>
         public static JObject Create(params JProperty[] JProperties)
+        {
 
-            => new JObject(JProperties.Where(jproperty => jproperty != null));
+            if (JProperties == null)
+                return new JObject();
+
+            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+
+            return data.Length > 0 ? new JObject(data) : new JObject();
+
+        }
 
         #endregion
 
@@ -56,8 +64,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JProperties">JSON properties.</param>
         public static JObject Create(IEnumerable<JProperty> JProperties)
+        {
 
-            => new JObject(JProperties.Where(jproperty => jproperty != null));
+            if (JProperties == null)
+                return new JObject();
+
+            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+
+            return data.Length > 0 ? new JObject(data) : new JObject();
+
+        }
 
         #endregion
 
@@ -76,8 +92,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JObjects">JSON objects.</param>
         public static JArray Create(params JObject[] JObjects)
+        {
 
-            => new JArray(JObjects.Where(jobject => jobject != null));
+            if (JObjects == null)
+                return new JArray();
+
+            var data = JObjects.Where(jobject => jobject != null).ToArray();
+
+            return data.Length > 0 ? new JArray(data) : new JArray();
+
+        }
 
         #endregion
 
@@ -88,8 +112,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JObjects">JSON objects.</param>
         public static JArray Create(IEnumerable<JObject> JObjects)
+        {
 
-            => new JArray(JObjects.Where(jobject => jobject != null));
+            if (JObjects == null)
+                return new JArray();
+
+            var data = JObjects.Where(jobject => jobject != null).ToArray();
+
+            return data.Length > 0 ? new JArray(data) : new JArray();
+
+        }
 
         #endregion
 
