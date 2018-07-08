@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Text;
 
 #endregion
 
@@ -48,9 +47,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DateTime">A DateTime object.</param>
         /// <returns>The seconds since 1. January 1970</returns>
         public static Int64 ToUnixTimestamp(this DateTime DateTime)
-        {
-            return (Int64)Math.Floor(DateTime.Subtract(UnixEpoch).TotalSeconds);
-        }
+
+            => (Int64) Math.Floor(DateTime.Subtract(UnixEpoch).TotalSeconds);
 
         #endregion
 
@@ -61,9 +59,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="UnixTimestamp">A UNIX timestamp (seconds since 1. January 1970)</param>
         public static DateTime FromUnixTimestamp(this Int64 UnixTimestamp)
-        {
-            return UnixEpoch.AddSeconds(UnixTimestamp);
-        }
+
+            => UnixEpoch.AddSeconds(UnixTimestamp);
 
         #endregion
 
@@ -109,9 +106,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DateTime">A DateTime object.</param>
         /// <returns>The DateTime formated as e.g. "Wed, 24 Nov 2016 09:44:55 GMT"</returns>
         public static String ToRfc1123(this DateTime DateTime)
-        {
-            return DateTime.ToUniversalTime().ToString("R");
-        }
+
+            => DateTime.ToUniversalTime().ToString("R");
 
         #endregion
 
