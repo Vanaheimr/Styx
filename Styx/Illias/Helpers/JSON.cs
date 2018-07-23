@@ -125,6 +125,47 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region Create(params JProperties)
+
+        /// <summary>
+        /// Create a JSON array using the given JSON properties, but filter null values.
+        /// </summary>
+        /// <param name="JProperties">JSON properties.</param>
+        public static JArray Create(params JProperty[] JProperties)
+        {
+
+            if (JProperties == null)
+                return new JArray();
+
+            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+
+            return data.Length > 0 ? new JArray(data) : new JArray();
+
+        }
+
+        #endregion
+
+        #region Create(JProperties)
+
+        /// <summary>
+        /// Create a JSON array using the given JSON properties, but filter null values.
+        /// </summary>
+        /// <param name="JProperties">JSON properties.</param>
+        public static JArray Create(IEnumerable<JProperty> JProperties)
+        {
+
+            if (JProperties == null)
+                return new JArray();
+
+            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+
+            return data.Length > 0 ? new JArray(data) : new JArray();
+
+        }
+
+        #endregion
+
     }
 
     /// <summary>
