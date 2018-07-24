@@ -37,6 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Another way to add an element to a list.
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
         /// <param name="Element">The element to be added to the list.</param>
         /// <returns>The changed list.</returns>
@@ -53,14 +54,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Another way to add an element to a list.
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
         /// <param name="Elements">Another list to be added to this list.</param>
         /// <returns>The changed list.</returns>
         public static IList<T> AddAndReturnList<T>(this IList<T> List, IEnumerable<T> Elements)
         {
-            var NewList = new List<T>(List);
-            NewList.AddRange(Elements);
-            return NewList;
+
+            foreach (var element in Elements)
+                List.Add(element);
+
+            return List;
+
         }
 
         #endregion
@@ -70,12 +75,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Another way to add an value to a list.
         /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
         /// <param name="Element">The element to be added to the list.</param>
         /// <returns>The added element.</returns>
         public static T AddAndReturnElement<T>(this IList<T> List, T Element)
         {
-            List.Add(Element);
+            List?.Add(Element);
             return Element;
         }
 
@@ -135,28 +141,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             List.Remove(Element);
 
             return Element;
-
-        }
-
-        #endregion
-
-
-        #region AddRangeAndReturnEnumeration(this List, Elements)
-
-        /// <summary>
-        /// Another way to add values to a list.
-        /// </summary>
-        /// <typeparam name="T">The type of the elements.</typeparam>
-        /// <param name="List">A list of elements.</param>
-        /// <param name="Elements">The elements to be added to the list.</param>
-        /// <returns>The added element.</returns>
-        public static IEnumerable<T> AddRangeAndReturnEnumeration<T>(this IList<T> List, IEnumerable<T> Elements)
-        {
-
-            foreach (var element in Elements)
-                List.Add(element);
-
-            return Elements;
 
         }
 
