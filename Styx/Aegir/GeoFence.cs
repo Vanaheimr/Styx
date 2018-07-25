@@ -99,17 +99,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// An enumeration of geo coordinates.
         /// </summary>
-        public IEnumerable<GeoFence>  GeoFences    { get; }
+        public IEnumerable<GeoFence>  GeoFences      { get; }
 
         /// <summary>
         /// An optional geographical distance.
         /// </summary>
-        public Meter?                      Distance          { get; }
+        public Meter?                 Distance       { get; }
 
         /// <summary>
         /// An optional description.
         /// </summary>
-        public I18NString                  Description       { get; }
+        public I18NString             Description    { get; }
 
         #endregion
 
@@ -122,13 +122,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Distance">An optional geographical distance.</param>
         /// <param name="Description">An optional description.</param>
         public GeoFence(IEnumerable<GeoFence>  GeoFences,
-                        Meter?                      Distance,
-                        I18NString                  Description = null)
+                        Meter?                 Distance,
+                        I18NString             Description = null)
         {
 
-            this.GeoFences       = GeoFences;
-            this.Distance        = Distance;
-            this.Description     = Description ?? new I18NString();
+            this.GeoFences    = GeoFences;
+            this.Distance     = Distance;
+            this.Description  = Description ?? new I18NString();
 
         }
 
@@ -177,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public JObject ToJSON()
         {
 
-            if ((GeoFences == null || !GeoFences.Any()) && Distance.HasValue)
+            if ((GeoFences?.Any() != true) && Distance.HasValue)
             {
 
                 return JSONObject.Create(
@@ -194,8 +194,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
         #endregion
-
-
 
 
         #region GetHashCode()
@@ -252,7 +250,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
         #endregion
-
 
     }
 

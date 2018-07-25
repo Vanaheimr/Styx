@@ -31,12 +31,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           IEquatable<Meter>
     {
 
-        #region Data
+        #region Properties
 
         /// <summary>
         /// The value of the meter.
         /// </summary>
-        public Double  Value   { get; }
+        public Double   Value          { get; }
+
+        /// <summary>
+        /// Value is km, not meters.
+        /// </summary>
+        public Boolean  IsKiloMeters   { get; }
 
         #endregion
 
@@ -45,9 +50,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Create a new meter.
         /// </summary>
-        private Meter(Double Value)
+        private Meter(Double   Value,
+                      Boolean  IsKiloMeters)
         {
-            this.Value = Value;
+
+            this.Value         = Value;
+            this.IsKiloMeters  = IsKiloMeters;
+
         }
 
         #endregion
@@ -63,13 +72,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Text.ToLower().EndsWith("km") && Double.TryParse(Text.Substring(0, Text.Length - 2), out Double _Meters))
-                return new Meter(_Meters * 1000);
+                return new Meter(_Meters, true);
 
             if (Text.ToLower().EndsWith("m")  && Double.TryParse(Text.Substring(0, Text.Length - 1), out _Meters))
-                return new Meter(_Meters);
+                return new Meter(_Meters, false);
 
-            if (Double.TryParse(Text.Substring(0, Text.Length), out _Meters))
-                return new Meter(_Meters);
+            if (Double.TryParse(Text, out _Meters))
+                return new Meter(_Meters, false);
 
             throw new ArgumentException("The given text '" + Text + "' is not a valid format!");
 
@@ -84,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a meter.</param>
         public static Meter Parse(Single Number)
-            => new Meter(Number);
+            => new Meter(Number, false);
 
 
         /// <summary>
@@ -92,7 +101,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a meter.</param>
         public static Meter Parse(Double Number)
-            => new Meter(Number);
+            => new Meter(Number, false);
 
         #endregion
 
@@ -105,19 +114,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Meter">The parsed Meter.</param>
         public static Boolean TryParse(String Text, out Meter Meter)
         {
+
             try
             {
 
-                Meter = new Meter(Single.Parse(Text));
+                if (Text.ToLower().EndsWith("km") && Double.TryParse(Text.Substring(0, Text.Length - 2), out Double _Meters))
+                    Meter = new Meter(_Meters, true);
 
-                return true;
+                if (Text.ToLower().EndsWith("m")  && Double.TryParse(Text.Substring(0, Text.Length - 1), out _Meters))
+                    Meter = new Meter(_Meters, false);
+
+                if (Double.TryParse(Text, out _Meters))
+                {
+                    Meter = new Meter(_Meters, false);
+                    return true;
+                }
 
             }
             catch (Exception)
-            {
-                Meter = default(Meter);
-                return false;
-            }
+            { }
+
+            Meter = default(Meter);
+            return false;
+
         }
 
         #endregion
@@ -134,7 +153,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(Number);
+                Meter = new Meter(Number, false);
 
                 return true;
 
@@ -156,7 +175,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(Number);
+                Meter = new Meter(Number, false);
 
                 return true;
 
@@ -177,7 +196,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone this Meter.
         /// </summary>
         public Meter Clone
-            => new Meter(Value);
+            => new Meter(Value, IsKiloMeters);
 
         #endregion
 
@@ -395,7 +414,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if ((Object) Meter == null)
                 return false;
 
-            return Value.Equals(Meter.Value);
+            return Value.       Equals(Meter.Value) &&
+                   IsKiloMeters.Equals(Meter.IsKiloMeters);
 
         }
 
@@ -410,7 +430,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => Value.GetHashCode();
+        {
+            unchecked
+            {
+
+                return Value.       GetHashCode() * 3 ^
+                       IsKiloMeters.GetHashCode();
+
+            }
+        }
 
         #endregion
 
@@ -420,7 +448,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => Value.ToString();
+
+            => Value.ToString() + (IsKiloMeters ? "km" : "m");
 
         #endregion
 
