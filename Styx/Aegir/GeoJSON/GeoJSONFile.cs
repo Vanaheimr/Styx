@@ -17,12 +17,11 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Collections.Generic;
+
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -35,28 +34,66 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public class GeoJSONFile
     {
 
-        private readonly Dictionary<String, Object> _Properties;
+        #region Data
 
-        public IEnumerable<KeyValuePair<String, Object>> Properties
+        private readonly Dictionary<String, String> _Properties;
+
+        private readonly List<GeoJSONFeature>       _Features;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// An enumeration of all geo json properties.
+        /// </summary>
+        public IEnumerable<KeyValuePair<String, String>> Properties
             => _Properties;
 
-        private List<GeoJSONFeature> _Features;
-
+        /// <summary>
+        /// An enumeration of all geo json features.
+        /// </summary>
         public IEnumerable<GeoJSONFeature> Features
             => _Features;
 
+        #endregion
 
-        private GeoJSONFile(JObject JSON)
+        #region Constructor(s)
+
+        private GeoJSONFile(Dictionary<String, String>   Properties,
+                            IEnumerable<GeoJSONFeature>  Features)
         {
 
-            this._Properties = new Dictionary<String, Object>();
+            this._Properties  = Properties ?? new Dictionary<String, String>();
+            this._Features    = Features != null ? new List<GeoJSONFeature>(Features) : new List<GeoJSONFeature>();
 
-            // "type": "FeatureCollection",
+        }
+
+        #endregion
+
+
+        #region Parse       (GeoJSON)
+
+        /// <summary>
+        /// Parse the given JSON as GeoJSON.
+        /// </summary>
+        /// <param name="GeoJSON">A valid GeoJSON JSON.</param>
+        public static GeoJSONFile Parse(JObject GeoJSON)
+        {
+
+            if (GeoJSON == null)
+                throw new ArgumentNullException(nameof(GeoJSON), "The given JSON must not be null!");
+
+            #region Parse properties...
+
+            var _Properties  = new Dictionary<String, String>();
+
+            // "type":      "FeatureCollection",
             // "generator": "overpass-turbo",
             // "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
             // "timestamp": "2016-02-06T01:14:02Z",
 
-            foreach (var property in JSON)
+            foreach (var property in GeoJSON)
             {
 
                 switch (property.Value.Type)
@@ -73,24 +110,68 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                         break;
 
                     default:
-                        _Properties.Add(property.Key, property.Value.Value<Object>());
+                        _Properties.Add(property.Key, property.Value.Value<String>());
                         break;
 
                 }
 
             }
 
-            var _features = JSON["features"] as JArray;
+            #endregion
 
-            if (_features != null)
-                _Features = _features.Select(feature => new GeoJSONFeature(feature as JObject)).ToList();
+            #region Parse features...
+
+            var _Features    = new List<GeoJSONFeature>();
+
+            if (GeoJSON["features"] is JArray features)
+            {
+                foreach (var feature in features)
+                {
+                    if (feature is JObject JSONFeature)
+                        _Features.Add(GeoJSONFeature.Parse(JSONFeature));
+                }
+            }
+
+            #endregion
+
+            return new GeoJSONFile(_Properties,
+                                   _Features);
 
         }
 
-        public static GeoJSONFile Load(String Path)
+        #endregion
+
+        #region LoadFromFile(GeoJSONFile)
+
+        /// <summary>
+        /// Read the given GeoJSON file.
+        /// </summary>
+        /// <param name="GeoJSONFile">The GeoJSON file name.</param>
+        public static GeoJSONFile LoadFromFile(String GeoJSONFile)
         {
-            return new GeoJSONFile(JObject.Parse(File.ReadAllText(Path)));
+
+            if (!File.Exists(GeoJSONFile))
+                throw new ArgumentException("The given GeoJSON file '" + GeoJSONFile + "' does not exists!", nameof(GeoJSONFile));
+
+            JObject GeoJSON = null;
+
+            try
+            {
+
+                GeoJSON = JObject.Parse(File.ReadAllText(GeoJSONFile));
+
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException("Could not parse the given GeoJSON file '" + GeoJSONFile + "'!", e);
+            }
+
+            return Parse(GeoJSON);
+
         }
+
+        #endregion
+
 
     }
 

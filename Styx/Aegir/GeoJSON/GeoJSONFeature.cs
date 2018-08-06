@@ -17,12 +17,10 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -35,38 +33,105 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public class GeoJSONFeature
     {
 
-        private readonly Dictionary<String, Object> _Properties;
+        #region Data
 
-        public IEnumerable<KeyValuePair<String, Object>> Properties
+        private readonly Dictionary<String, String> _Properties;
+
+        private readonly List<GeoCoordinate>        _GeoCoordinates;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// An enumeration of all geo json properties.
+        /// </summary>
+        public IEnumerable<KeyValuePair<String, String>>  Properties
             => _Properties;
 
-        public String Id   { get; }
-        public String Type { get; }
+        /// <summary>
+        /// The GeoJSON feature identification.
+        /// </summary>
+        public String                                     Id                { get; }
 
+        /// <summary>
+        /// The GeoJSON feature type.
+        /// </summary>
+        public String                                     Type              { get; }
 
-        public GeoJSONFeature(JObject JSON)
+        /// <summary>
+        /// The geo coordinates of this feature.
+        /// </summary>
+        public IEnumerable<GeoCoordinate>                 GeoCoordinates
+            => _GeoCoordinates;
+
+        #endregion
+
+        #region Constructor(s)
+
+        private GeoJSONFeature(String                      Id,
+                               String                      Type,
+                               Dictionary<String, String>  Properties,
+                               IEnumerable<GeoCoordinate>  GeoCoordinates)
         {
 
-            this.Id   = JSON["id"].  Value<String>();
-            this.Type = JSON["type"].Value<String>();
+            this.Id               = Id;
+            this.Type             = Type;
+            this._Properties      = Properties ?? new Dictionary<String, String>();
+            this._GeoCoordinates  = GeoCoordinates != null ? new List<GeoCoordinate>(GeoCoordinates) : new List<GeoCoordinate>();
+
+        }
+
+        #endregion
 
 
-            this._Properties = new Dictionary<String, Object>();
+        #region Parse(GeoJSON)
 
-            // "type": "FeatureCollection",
-            // "generator": "overpass-turbo",
-            // "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
-            // "timestamp": "2016-02-06T01:14:02Z",
+        /// <summary>
+        /// Parse the given JSON as GeoJSON.
+        /// </summary>
+        /// <param name="GeoJSON">A valid GeoJSON JSON.</param>
+        public static GeoJSONFeature Parse(JObject GeoJSON)
+        {
 
-            foreach (var token in JSON["properties"])
+            if (GeoJSON == null)
+                throw new ArgumentNullException(nameof(GeoJSON), "The given JSON must not be null!");
+
+            #region Parse properties...
+
+            var _Properties  = new Dictionary<String, String>();
+
+            // {
+            //
+            //    "type":  "Feature",
+            //    "id":    "node/265616096",
+            //
+            //    "properties": {
+            //      "@id":               "node/265616096",
+            //      "amenity":           "post_box",
+            //      "brand":             "Deutsche Post",
+            //      "collection_times":  "Mo-Fr 14:30,16:30; Sa 12:45",
+            //      "operator":          "Deutsche Post",
+            //      "ref":               "Löbdergraben, 07743 Jena"
+            //    },
+            //
+            //    "geometry": {
+            //      "type": "Point",
+            //      "coordinates": [
+            //        11.587241,
+            //        50.9268133
+            //      ]
+            //    }
+            //
+            // }
+
+            if (GeoJSON["properties"] is JObject propertiesJSON)
             {
 
-                var property = token as JProperty;
-
-                if (property != null)
+                foreach (var property in propertiesJSON)
                 {
 
-                    switch (property.Type)
+                    switch (property.Value.Type)
                     {
 
                         case JTokenType.Array:
@@ -80,7 +145,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                             break;
 
                         default:
-                            _Properties.Add(property.Name, property.Value.Value<Object>());
+                            _Properties.Add(property.Key, property.Value.Value<String>());
                             break;
 
                     }
@@ -89,7 +154,29 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             }
 
+            #endregion
+
+            #region Parse geometry...
+
+            var geoCoordinates = new List<GeoCoordinate>();
+
+            if (GeoJSON     ["geometry"]    is JObject geometryJSON &&
+                geometryJSON["coordinates"] is JArray  coordinatesJSON)
+            {
+                geoCoordinates.Add(GeoCoordinate.Parse(coordinatesJSON[1].Value<Double>(),
+                                                       coordinatesJSON[0].Value<Double>()));
+            }
+
+            #endregion
+
+            return new GeoJSONFeature(GeoJSON["id"  ]?.Value<String>(),
+                                      GeoJSON["type"]?.Value<String>(),
+                                      _Properties,
+                                      geoCoordinates);
+
         }
+
+        #endregion
 
 
     }

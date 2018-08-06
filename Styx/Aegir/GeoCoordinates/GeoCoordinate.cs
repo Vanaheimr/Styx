@@ -104,10 +104,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        
-
-
-
         public static Boolean TryParseGeoCoordinate(this String Text, out GeoCoordinate GeoLocation)
             => GeoCoordinate.TryParse(JObject.Parse(Text), out GeoLocation);
 

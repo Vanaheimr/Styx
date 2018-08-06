@@ -1170,6 +1170,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region ReverseAndReturn(this Enumeration)
+
+        /// <summary>
+        /// Reverse and return the given enumeration of elements;
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="Enumeration">An enumeration of elements.</param>
+        public static IEnumerable<T> ReverseAndReturn<T>(this IEnumerable<T> Enumeration)
+        {
+
+            var NewList = new List<T>(Enumeration);
+            NewList.Reverse();
+
+            return NewList;
+
+        }
+
+        #endregion
+
+
     }
 
 }
