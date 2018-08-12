@@ -73,9 +73,14 @@
     <Compile Include="Aegir\GeoCoordinates\TilesXY.cs" />
     <Compile Include="Aegir\GeoFence.cs" />
     <Compile Include="Aegir\GeoFormat.cs" />
+    <Compile Include="Aegir\GeoJSON\GeoJSONHelper.cs" />
+    <Compile Include="Aegir\GeoJSON\MultiPointFeature.cs" />
+    <Compile Include="Aegir\GeoJSON\LineStringFeature.cs" />
+    <Compile Include="Aegir\GeoJSON\PointFeature.cs" />
+    <Compile Include="Aegir\GeoJSON\MultiLineStringFeature.cs" />
+    <Compile Include="Aegir\GeoJSON\PolygonFeature.cs" />
+    <Compile Include="Aegir\GeoJSON\AGeoJSONFeature.cs" />
     <Compile Include="Aegir\GeoJSON\GeoJSON.cs" />
-    <Compile Include="Aegir\GeoJSON\GeoJSONFeature.cs" />
-    <Compile Include="Aegir\GeoJSON\GeoJSONFile.cs" />
     <Compile Include="Aegir\GeoObjects\GeoCircle.cs" />
     <Compile Include="Aegir\GeoObjects\GeoLine.cs" />
     <Compile Include="Aegir\GeoObjects\GeoTriangle.cs" />
