@@ -41,7 +41,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// An abstract entity.
     /// </summary>
     /// <typeparam name="TId">The type of the entity identification.</typeparam>
-    public abstract class AEntity<TId> : IEntity<TId>
+    /// <typeparam name="TDataSource">The type of the data source.</typeparam>
+    public abstract class AEntity<TId, TDataSource> : IEntity<TId>
         where TId : IId
     {
 
@@ -57,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The source of this information, e.g. an automatic importer.
         /// </summary>
         [Optional]
-        public String                                DataSource          { get; }
+        public TDataSource                           DataSource          { get; }
 
         /// <summary>
         /// A lookup for user-defined properties.
@@ -87,8 +88,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
-        protected AEntity(TId     Id,
-                          String  DataSource)
+        protected AEntity(TId          Id,
+                          TDataSource  DataSource)
         {
 
             #region Initial checks
@@ -99,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #endregion
 
             this.Id           = Id;
-            this.DataSource   = (DataSource ?? "").Trim();
+            this.DataSource   = DataSource;
             this.LastChange   = DateTime.UtcNow;
             this.UserDefined  = new ConcurrentDictionary<String, Object>();
 
@@ -227,11 +228,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PropertyName"></param>
         public void RemoveUserDefinedProperty(String PropertyName)
         {
-
-            Object Value;
-
-            UserDefined.TryRemove(PropertyName, out Value);
-
+            UserDefined.TryRemove(PropertyName, out Object Value);
         }
 
         #endregion
@@ -244,8 +241,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object obj)
         {
 
-            if (obj is AEntity<TId>)
-                return Id.CompareTo((AEntity<TId>) obj);
+            if (obj is AEntity<TId, TDataSource>)
+                return Id.CompareTo((AEntity<TId, TDataSource>) obj);
 
             if (obj is TId)
                 return Id.CompareTo((TId) obj);

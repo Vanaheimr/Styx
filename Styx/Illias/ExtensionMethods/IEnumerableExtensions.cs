@@ -1102,12 +1102,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToHashSet<T>(this Enumeration)
+        #region ToHashedSet<T>(this Enumeration)
 
-        public static HashedSet<T> ToHashSet<T>(this IEnumerable<T> Enumeration)
-        {
-            return new HashedSet<T>(Enumeration);
-        }
+        public static HashedSet<T> ToHashedSet<T>(this IEnumerable<T> Enumeration)
+            => new HashedSet<T>(Enumeration);
 
         #endregion
 

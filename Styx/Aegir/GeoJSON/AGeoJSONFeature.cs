@@ -75,6 +75,28 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
+        #region ContainsKey(Key)
+
+        public Object ContainsKey(String Key)
+            => _Properties.ContainsKey(Key);
+
+        #endregion
+
+        #region GetProperty(Key)
+
+        public Object GetProperty(String Key)
+        {
+
+            if (_Properties.TryGetValue(Key, out Object Value))
+                return Value;
+
+            return null;
+
+        }
+
+        #endregion
+
+
         #region ToString()
 
         /// <summary>
