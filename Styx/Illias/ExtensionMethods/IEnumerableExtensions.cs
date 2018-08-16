@@ -1102,6 +1102,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ToHashSet<T>(this Enumeration)
+
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> Enumeration)
+        {
+
+            if (Enumeration == null)
+                return new HashSet<T>();
+
+            var All = Enumeration.ToArray();
+
+            if (All.Length == 0)
+                return new HashSet<T>();
+
+            return new HashSet<T>(All);
+
+        }
+
+        #endregion
+
         #region ToHashedSet<T>(this Enumeration)
 
         public static HashedSet<T> ToHashedSet<T>(this IEnumerable<T> Enumeration)
