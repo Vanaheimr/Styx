@@ -99,17 +99,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// An enumeration of geo coordinates.
         /// </summary>
-        public IEnumerable<GeoFence>  GeoFences      { get; }
+        public IEnumerable<GeoCoordinate>  GeoCoordinates    { get; }
 
         /// <summary>
         /// An optional geographical distance.
         /// </summary>
-        public Meter?                 Distance       { get; }
+        public Meter?                      Distance          { get; }
 
         /// <summary>
         /// An optional description.
         /// </summary>
-        public I18NString             Description    { get; }
+        public I18NString                  Description       { get; }
 
         #endregion
 
@@ -118,17 +118,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Create a new geo fence.
         /// </summary>
-        /// <param name="GeoFences">An enumeration of geo coordinates.</param>
+        /// <param name="GeoCoordinates">An enumeration of geo coordinates.</param>
         /// <param name="Distance">An optional geographical distance.</param>
         /// <param name="Description">An optional description.</param>
-        public GeoFence(IEnumerable<GeoFence>  GeoFences,
-                        Meter?                 Distance,
-                        I18NString             Description = null)
+        public GeoFence(IEnumerable<GeoCoordinate>  GeoCoordinates,
+                        Meter?                      Distance,
+                        I18NString                  Description = null)
         {
 
-            this.GeoFences    = GeoFences;
-            this.Distance     = Distance;
-            this.Description  = Description ?? new I18NString();
+            this.GeoCoordinates  = GeoCoordinates;
+            this.Distance        = Distance;
+            this.Description     = Description ?? new I18NString();
 
         }
 
@@ -177,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public JObject ToJSON()
         {
 
-            if ((GeoFences?.Any() != true) && Distance.HasValue)
+            if ((GeoCoordinates?.Any() != true) && Distance.HasValue)
             {
 
                 return JSONObject.Create(
@@ -206,11 +206,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             unchecked
             {
 
-                return GeoFences.GetHashCode() * 5 ^
+                return GeoCoordinates.GetHashCode() * 5 ^
 
-                       (Distance.HasValue
-                            ? Distance.Value.GetHashCode()
-                            : 0) * 3 ^
+                       (Distance?.GetHashCode() ?? 0) * 3 ^
 
                        (Description.IsNullOrEmpty()
                             ? Description.GetHashCode()
@@ -229,8 +227,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public override String ToString()
         {
 
-            if (GeoFences.Count() == 1 && Distance.HasValue)
-                return String.Concat(GeoFences.First(),
+            if (GeoCoordinates.Count() == 1 && Distance.HasValue)
+                return String.Concat(GeoCoordinates.First(),
                                      " with radius ",
                                      Distance.Value,
                                      "km",
@@ -238,8 +236,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                          ? "(" + Description.FirstText() + ")"
                                          : "");
 
-            if (GeoFences.Count() > 1)
-                return GeoFences.
+            if (GeoCoordinates.Count() > 1)
+                return GeoCoordinates.
                            Select(coordinate => coordinate.ToString()).
                            AggregateWith(", ");
 
