@@ -18,10 +18,10 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+
 using Newtonsoft.Json.Linq;
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -523,12 +523,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             unchecked
             {
 
-                return Street.        GetHashCode() * 41 ^
-                       HouseNumber.   GetHashCode() * 37 ^
-                       FloorLevel.    GetHashCode() * 31 ^
-                       PostalCode.    GetHashCode() * 23 ^
-                       PostalCodeSub. GetHashCode() * 17 ^
-                       City.          GetHashCode() * 11 ^
+                return Street.        GetHashCode() * 17 ^
+                       HouseNumber.   GetHashCode() * 13 ^
+                       FloorLevel.    GetHashCode() * 11 ^
+                       PostalCode.    GetHashCode() *  7 ^
+                       PostalCodeSub. GetHashCode() *  5 ^
+                       City.          GetHashCode() *  3 ^
                        Country.       GetHashCode();
 
             }

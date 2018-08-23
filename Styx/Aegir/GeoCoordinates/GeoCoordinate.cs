@@ -693,8 +693,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Returns the midpoint between this point and the supplied point.
         /// </summary>
-        /// <see cref="http://www.movable-type.co.uk/scripts/latlong.html"/>
-        /// <seealso cref="http://mathforum.org/library/drmath/view/51822.html"/>
+        /// <remarks>
+        /// http://www.movable-type.co.uk/scripts/latlong.html
+        /// http://mathforum.org/library/drmath/view/51822.html
+        /// </remarks>
         /// <param name="Target">Anothre geo coordinate.</param>
         public GeoCoordinate MidPoint(GeoCoordinate Target)
         {
