@@ -148,6 +148,7 @@
     <Compile Include="Illias\ExtensionMethods\StringBuilderExtentions.cs" />
     <Compile Include="Illias\ExtensionMethods\StringExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\TaskExtentions.cs" />
+    <Compile Include="Illias\ExtensionMethods\JObjectExtentions.cs" />
     <Compile Include="Illias\ExtensionMethods\TypeExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\XElementExtensions.cs" />
     <Compile Include="Illias\Geometry\1D\Line1D.cs" />
