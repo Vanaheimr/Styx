@@ -87,6 +87,7 @@
     <Compile Include="Aegir\GeoObjects\GeoVector.cs" />
     <Compile Include="Aegir\Semantics.cs" />
     <Compile Include="Aegir\Tools\Polyfile2ShapeInfo.cs" />
+    <Compile Include="Illias\Access_Levels.cs" />
     <Compile Include="Illias\AutoDiscovery\AutoDiscovery.cs" />
     <Compile Include="Illias\AutoDiscovery\AutoDiscoveryException.cs" />
     <Compile Include="Illias\BooleanComment.cs" />
