@@ -277,6 +277,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception e)
             {
+                DebugX.Log("Parsing the given address failed!");
             }
 
             Address = null;
