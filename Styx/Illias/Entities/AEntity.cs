@@ -35,7 +35,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public interface IEntityClass<TClass> : IEquatable<TClass>,
                                             IComparable<TClass>,
                                             IComparable
-    { }
+    {
+
+
+        void CopyAllEdgesTo(TClass Enity);
+
+    }
 
     /// <summary>
     /// An abstract entity.
