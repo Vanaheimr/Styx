@@ -33,28 +33,70 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class ByteExtensions
     {
 
-        #region ToHexString(this ByteArray)
+        #region SubSequence(this ByteArray, StartIndex  = 0, Length = null)
 
         /// <summary>
         /// Converts an array of bytes into its hexadecimal string representation.
         /// </summary>
         /// <param name="ByteArray">An array of bytes.</param>
-        public static String ToHexString(this Byte[] ByteArray,
-                                         Boolean     ToLower = true)
+        /// <param name="StartIndex">The zero-based starting byte position of a subsequence in this instance.</param>
+        /// <param name="Length">The number of bytes in the subsequence.</param>
+        public static Byte[] SubSequence(this Byte[]  ByteArray,
+                                         UInt32       StartIndex,
+                                         UInt32?      Length = null)
         {
 
-            Byte b;
-            var  c = new Char[ByteArray.Length * 2];
+            if (ByteArray == null)
+                throw new ArgumentNullException(nameof(ByteArray), "The given byte array must not be null!");
 
-            for(Int32 y=0, x=0; y<ByteArray.Length; ++y, ++x)
+            var array = new Byte[Length ?? ByteArray.Length - StartIndex];
+
+            Array.Copy(ByteArray,
+                       StartIndex,
+                       array,
+                       0,
+                       Length ?? ByteArray.Length - StartIndex);
+
+            return array;
+
+        }
+
+        #endregion
+
+
+        #region ToHexString(this ByteArray, StartIndex  = 0, Length = null, ToLower = true)
+
+        /// <summary>
+        /// Converts an array of bytes into its hexadecimal string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
+        /// <param name="StartIndex">The zero-based starting byte position of a subsequence in this instance.</param>
+        /// <param name="Length">The number of bytes in the subsequence.</param>
+        /// <param name="ToLower">Whether to convert the resulting string to lower case.</param>
+        public static String ToHexString(this Byte[]  ByteArray,
+                                         UInt16       StartIndex  = 0,
+                                         UInt16?      Length      = null,
+                                         Boolean      ToLower     = true)
+        {
+
+            if (ByteArray == null)
+                throw new ArgumentNullException(nameof(ByteArray), "The given byte array must not be null!");
+
+            var length = Length ?? ByteArray.Length - StartIndex;
+
+            Byte _byte;
+            var  _char  = new Char[length * 2];
+            var  end    = StartIndex + length;
+
+            for (Int32 y= StartIndex, x= 0; y<end; ++y, ++x)
             {
-                b      = ((byte) (ByteArray[y] >> 4));
-                c[x]   =  (char) (b>9 ? b+0x37 : b+0x30);
-                b      = ((byte) (ByteArray[y] & 0xF));
-                c[++x] =  (char) (b>9 ? b+0x37 : b+0x30);
+                _byte      = (byte) (ByteArray[y] >> 4);
+                _char[x]   = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
+                _byte      = (byte) (ByteArray[y] & 0xF);
+                _char[++x] = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
             }
 
-            return ToLower ? new String(c).ToLower() : new String(c);
+            return ToLower ? new String(_char).ToLower() : new String(_char);
 
         }
 
@@ -73,6 +115,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (HexValue.IsNullOrEmpty())
                 return new Byte[0];
+
+            if (HexValue.Length % 2 == 1)
+                throw new ArgumentException("Wrong size of the input string!", nameof(HexValue));
 
             return Enumerable.Range(0, HexValue.Length).
                               Where (x => x % 2 == 0).
