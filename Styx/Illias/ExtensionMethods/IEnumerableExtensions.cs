@@ -1187,6 +1187,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Sum(Source, Selector)
+
+        /// <summary>
+        /// Computes the sum of the sequence of System.UInt64 values that are obtained by
+        /// invoking a transform function on each element of the input sequence.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of source.</typeparam>
+        /// <param name="Source">A sequence of values that are used to calculate a sum.</param>
+        /// <param name="Selector">A transform function to apply to each element.</param>
+        public static UInt64 Sum<TSource>(this IEnumerable<TSource>  Source,
+                                          Func<TSource, UInt64>      Selector)
+        {
+
+            if (Source == null || Selector == null)
+                return 0;
+
+            var sum = 0UL;
+
+            foreach (var item in Source)
+                sum += Selector(item);
+
+            return sum;
+
+        }
+
+        #endregion
+
+
         #region ReverseAndReturn(this Enumeration)
 
         /// <summary>
