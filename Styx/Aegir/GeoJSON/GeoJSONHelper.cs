@@ -17,11 +17,12 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Globalization;
+using System.Collections.Generic;
+
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -218,8 +219,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 foreach (var value in GeoCoordinates)
                 {
 
-                    lng = Double.Parse(value[0].Value<String>());
-                    lat = Double.Parse(value[1].Value<String>());
+                    lng = Double.Parse(value[0].Value<String>(), CultureInfo.InvariantCulture);
+                    lat = Double.Parse(value[1].Value<String>(), CultureInfo.InvariantCulture);
 
                     if (min_lat > lat) min_lat = lat;
                     if (max_lat < lat) max_lat = lat;
