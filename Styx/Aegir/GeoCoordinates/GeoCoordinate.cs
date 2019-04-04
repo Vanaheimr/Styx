@@ -30,6 +30,111 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
+    /// The distance metric.
+    /// </summary>
+    public enum DistanceMetricTypes
+    {
+
+        /// <summary>
+        /// Unknown distance metric.
+        /// </summary>
+        unkown,
+
+        /// <summary>
+        /// Air-line distance.
+        /// </summary>
+        air,
+
+        /// <summary>
+        /// Walking distance.
+        /// </summary>
+        foot,
+
+        /// <summary>
+        /// Distance via bikes.
+        /// </summary>
+        bike,
+
+        /// <summary>
+        /// Distance for (self-driving) cars.
+        /// </summary>
+        car
+
+    }
+
+        /// <summary>
+    /// An element with distance information.
+    /// </summary>
+    public class WithDistance<T>
+        where T: class
+    {
+
+        #region Properties
+
+        /// <summary>
+        /// An element.
+        /// </summary>
+        public T                    Element          { get; }
+
+        /// <summary>
+        /// The distance to the given element.
+        /// </summary>
+        public Double               Distance         { get; }
+
+        /// <summary>
+        /// The distance metric towards the given element.
+        /// </summary>
+        public DistanceMetricTypes  DistanceMetric   { get; }
+
+        /// <summary>
+        /// The expected time to reach the given element.
+        /// </summary>
+        public TimeSpan?            TravelTime       { get; }
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// An element with distance information.
+        /// </summary>
+        /// <param name="Element">An element.</param>
+        /// <param name="Distance">The distance to the given News.</param>
+        /// <param name="DistanceMetric">The distance metric towards the given News.</param>
+        /// <param name="TravelTime">The expected time to reach the given News.</param>
+        public WithDistance(T                     Element,
+                                Double                Distance,
+                                DistanceMetricTypes?  DistanceMetric  = null,
+                                TimeSpan?             TravelTime      = null)
+        {
+
+            this.Element         = Element  ?? throw new ArgumentNullException(nameof(Element), "The given element must not be null!");
+            this.Distance        = Distance;
+            this.DistanceMetric  = DistanceMetric ?? DistanceMetricTypes.air;
+            this.TravelTime      = TravelTime;
+
+        }
+
+        #endregion
+
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => String.Concat(Element, ", ",
+                             Distance, " meters via ",
+                             DistanceMetric,
+                             TravelTime.HasValue ? " (" + TravelTime.Value.TotalMinutes + " minutes)" : "");
+
+        #endregion
+
+    }
+
+    /// <summary>
     /// JSON I/O.
     /// </summary>
     public static class GeoCoordinateExtentions
