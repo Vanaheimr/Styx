@@ -384,7 +384,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region fromLatLng(Latitude, Longitude, Altitude = null)
+        #region FromLngLat(Latitude, Longitude, Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -392,7 +392,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude">The Latitude (south to nord).</param>
         /// <param name="Longitude">The Longitude (parallel to equator).</param>
         /// <param name="Altitude">The (optional) Altitude.</param>
-        public static GeoCoordinate fromLatLng(Double   Latitude,
+        public static GeoCoordinate FromLatLng(Double   Latitude,
                                                Double   Longitude,
                                                Double?  Altitude = null)
 
@@ -406,7 +406,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region fromLngLat(Longitude, Latitude, Altitude = null)
+        #region FromLngLat(Longitude, Latitude, Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -414,7 +414,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude">The Longitude (parallel to equator).</param>
         /// <param name="Latitude">The Latitude (south to nord).</param>
         /// <param name="Altitude">The (optional) Altitude.</param>
-        public static GeoCoordinate fromLngLat(Double   Longitude,
+        public static GeoCoordinate FromLngLat(Double   Longitude,
                                                Double   Latitude,
                                                Double?  Altitude = null)
 
