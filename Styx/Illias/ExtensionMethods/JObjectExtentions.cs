@@ -57,6 +57,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region IsJSONNullOrEmpty(this JSONToken)
+
+        /// <summary>
+        /// Checks whether the given JSON token is null or "null".
+        /// </summary>
+        /// <param name="JSONToken">A JSON token</param>
+        public static Boolean IsJSONNullOrEmpty(this JToken JSONToken)
+            => JSONToken == null || JSONToken.Value<String>().IsNullOrEmpty();
+
+        #endregion
+
     }
 
 }
