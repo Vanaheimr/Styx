@@ -19,7 +19,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -35,6 +37,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
     {
 
         #region Data
+
+        private const String MoneyRegExprString = "([^0-9]*)([\\s]*)([0-9]+[\\.\\,]?[0-9]*)([\\s]*)([^0-9]*)";
+
+        public static readonly Regex MoneyRegExpr = new Regex(MoneyRegExprString);
 
         private static readonly Char[] separator = new Char[] { ' ' };
 
@@ -104,6 +110,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Return the appropriate money for the given string.
+        /// </summary>
+        /// <param name="Text">The text-representation of the money value and ISO code or name of a currency.</param>
+        public static Money? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out Money mmmoney))
+                return mmmoney;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (static) TryParse(Text, out Money)
 
         /// <summary>
@@ -116,15 +140,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Money = default;
 
-            var parts = Text.Split(separator, 2, StringSplitOptions.None);
+            var Match = MoneyRegExpr.Match(Text);
 
-            if (parts.Length != 2)
+            if (!Match.Success)
                 return false;
 
-            if (!Decimal.TryParse     (parts[0], out Decimal  value))
+            if (!Decimal. TryParse(Match.Groups[3].Value.Replace(',', '.'),
+                                   NumberStyles.Number,
+                                   CultureInfo.InvariantCulture,
+                                   out Decimal value))
                 return false;
 
-            if (!Currency.TryParse(parts[1], out Currency currency))
+            if (!Currency.TryParse(Match.Groups[1].Value.IsNotNullOrEmpty()
+                                       ? Match.Groups[1].Value
+                                       : Match.Groups[5].Value,
+                                   out Currency currency))
                 return false;
 
             Money = new Money(value,

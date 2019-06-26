@@ -70,12 +70,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
-        #region (private) I18NString()
+        #region I18NString()
 
         /// <summary>
         /// Create a new internationalized (I18N) multilingual string.
         /// </summary>
-        private I18NString()
+        public I18NString()
         {
             this.I18NStrings = new Dictionary<Languages, String>();
         }
@@ -288,10 +288,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        public static Boolean TryParse(String Text, out I18NString I18NText)
+        public static Boolean TryParse<T>(String Text, out T I18NText)
+            where T : I18NString, new()
         {
 
-            I18NText = Empty;
+            I18NText = new T();
 
             if (Text.IsNullOrEmpty())
                 return false;
@@ -307,10 +308,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean TryParse(JObject jobject, out I18NString I18NText)
+        public static Boolean TryParse<T>(JObject jobject, out T I18NText)
+            where T : I18NString, new()
         {
 
-            I18NText = Empty;
+            I18NText = new T();
 
             if (jobject == null)
                 return true;

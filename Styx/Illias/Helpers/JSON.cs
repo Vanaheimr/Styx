@@ -362,16 +362,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryParseI18NString(this JObject, out I18NString)
 
-        public static Boolean TryParseI18NString(this JObject JObject, out I18NString I18NString)
+        public static Boolean TryParseI18NString(this JObject JObject, out I18NString i18NString)
         {
 
-            I18NString = I18NString.Empty;
+            i18NString = I18NString.Empty;
 
             try
             {
 
                 foreach (var jproperty in JObject)
-                    I18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
+                    i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
                                    jproperty.Value.Value<String>());
 
                 return true;
@@ -388,23 +388,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryParseI18NString(this JObject, PropertyKey, out I18NString)
 
-        public static Boolean TryParseI18NString(this JObject JObject, String PropertyKey, out I18NString I18NString)
+        public static Boolean TryParseI18NString(this JObject JObject, String PropertyKey, out I18NString i18NString)
         {
 
             if (PropertyKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            I18NString = I18NString.Empty;
-            var jobject = JObject[PropertyKey] as JObject;
+            i18NString = I18NString.Empty;
 
-            if (jobject == null)
+            if (!(JObject[PropertyKey] is JObject jobject))
                 throw new ArgumentException("The value of the given JSON property '" + PropertyKey + "' is not a JSON object!", nameof(JObject));
 
             try
             {
 
                 foreach (var jproperty in JObject)
-                    I18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
+                    i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
                                    jproperty.Value.Value<String>());
 
                 return true;
