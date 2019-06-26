@@ -1,5 +1,5 @@
 ﻿///*
-// * Copyright (c) 2010-2018 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+// * Copyright (c) 2010-2019 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
 // * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");

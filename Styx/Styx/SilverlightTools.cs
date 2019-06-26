@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2018 Achim 'ahzf' Friedland <code@ahzf.de>
+ * Copyright (c) 2010-2019 Achim 'ahzf' Friedland <code@ahzf.de>
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

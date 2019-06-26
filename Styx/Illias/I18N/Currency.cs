@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2018 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2019 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Illias <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 #endregion
 
@@ -35,73 +35,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Properties
 
-        #region ISOCode
-
-        private readonly String _ISOCode;
-
         /// <summary>
         /// The ISO code of the currency.
         /// </summary>
-        public String ISOCode
-        {
-            get
-            {
-                return _ISOCode;
-            }
-        }
-
-        #endregion
-
-        #region Numeric
-
-        private readonly UInt16 _Numeric;
+        public String                ISOCode      { get; }
 
         /// <summary>
         /// The numeric code of the currency.
         /// </summary>
-        public UInt16 Numeric
-        {
-            get
-            {
-                return _Numeric;
-            }
-        }
-
-        #endregion
-
-        #region Name
-
-        private readonly String _Name;
+        public UInt16                Numeric      { get; }
 
         /// <summary>
         /// The name of the currency.
         /// </summary>
-        public String Name
-        {
-            get
-            {
-                return _Name;
-            }
-        }
-
-        #endregion
-
-        #region Countries
-
-        private readonly IEnumerable<Country> _Countries;
+        public String                Name         { get; }
 
         /// <summary>
         /// Countries using this currency.
         /// </summary>
-        public IEnumerable<Country> Countries
-        {
-            get
-            {
-                return _Countries;
-            }
-        }
-
-        #endregion
+        public IEnumerable<Country>  Countries    { get; }
 
         #endregion
 
@@ -120,10 +72,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         params Country[]  Countries)
         {
 
-            this._ISOCode    = ISOCode;
-            this._Numeric    = Numeric;
-            this._Name       = Name;
-            this._Countries  = Countries;
+            this.ISOCode    = ISOCode;
+            this.Numeric    = Numeric;
+            this.Name       = Name;
+            this.Countries  = Countries;
 
         }
 
@@ -150,13 +102,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) ParseString(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Return the appropriate currency for the given string.
         /// </summary>
         /// <param name="Text">The ISO code or name of a currency.</param>
-        public static Currency ParseString(String Text)
+        public static Currency Parse(String Text)
         {
 
             return (from   _FieldInfo in typeof(Currency).GetFields()
@@ -169,7 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseEnum(myCode, out Currency)
+        #region (static) TryParse(Text, out Currency)
 
         /// <summary>
         /// Return the appropriate currency for the given string.
@@ -177,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Text">The ISO code or name of a currency.</param>
         /// <param name="Currency">The parsed Currency</param>
         /// <returns>true or false</returns>
-        public static Boolean TryParseEnum(String Text, out Currency Currency)
+        public static Boolean TryParse(String Text, out Currency Currency)
         {
 
             Currency = (from   _FieldInfo in typeof(Currency).GetFields()
@@ -197,7 +149,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Operator == (Currency1, Currency2)
 
-        public static Boolean operator ==(Currency Currency1, Currency Currency2)
+        /// <summary>
+        /// Compares two instances of this object for equality.
+        /// </summary>
+        /// <param name="Currency1">A currency object.</param>
+        /// <param name="Currency2">Another currency object.</param>
+        public static Boolean operator == (Currency Currency1, Currency Currency2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -216,10 +173,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Operator != (Currency1, Currency2)
 
-        public static Boolean operator !=(Currency Currency1, Currency Currency2)
-        {
-            return !(Currency1 == Currency2);
-        }
+        /// <summary>
+        /// Compares two instances of this object for inequality.
+        /// </summary>
+        /// <param name="Currency1">A currency object.</param>
+        /// <param name="Currency2">Another currency object.</param>
+        public static Boolean operator != (Currency Currency1, Currency Currency2)
+            => !(Currency1 == Currency2);
 
         #endregion
 
@@ -236,13 +196,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an Currency.
-            var Currency = Object as Currency;
-            if ((Object) Currency == null)
-                throw new ArgumentException("The given object is not a Currency!");
+            if (!(Object is Currency Currency))
+                throw new ArgumentException("The given object is not a currency!");
 
             return CompareTo(Currency);
 
@@ -259,18 +217,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Currency Currency)
         {
 
-            if ((Object) Currency == null)
+            if (Currency is null)
                 throw new ArgumentNullException("The given Currency must not be null!");
 
-            var Result = _ISOCode.CompareTo(Currency._ISOCode);
+            var c = ISOCode.CompareTo(Currency.ISOCode);
 
-            if (Result == 0)
-                Result = _Numeric.CompareTo(Currency._Numeric);
+            if (c == 0)
+                c = Numeric.CompareTo(Currency.Numeric);
 
-            if (Result == 0)
-                Result = _Name.   CompareTo(Currency._Name);
+            if (c == 0)
+                c = Name.   CompareTo(Currency.Name);
 
-            return Result;
+            return c;
 
         }
 
@@ -293,12 +251,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object == null)
                 return false;
 
-            // Check if the given object is an Currency.
-            var Currency = Object as Currency;
-            if ((Object) Currency == null)
+            if (!(Object is Currency Currency))
                 return false;
 
-            return this.Equals(Currency);
+            return Equals(Currency);
 
         }
 
@@ -307,26 +263,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Currency)
 
         /// <summary>
-        /// Compares two Currency for equality.
+        /// Compares two currencies for equality.
         /// </summary>
         /// <param name="Currency">An Currency to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Currency Currency)
         {
 
-            if ((Object) Currency == null)
+            if (Currency is null)
                 return false;
 
-            if (_ISOCode != Currency._ISOCode)
-                return false;
-
-            if (_Numeric != Currency._Numeric)
-                return false;
-
-            if (_Name    != Currency._Name)
-                return false;
-
-            return true;
+            return ISOCode == Currency.ISOCode &&
+                   Numeric == Currency.Numeric &&
+                   Name    == Currency.Name;
 
         }
 
@@ -344,7 +292,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return _ISOCode.GetHashCode() * 17 ^ _Numeric.GetHashCode() * 23 ^ _Name.GetHashCode();
+                return ISOCode.GetHashCode() * 17 ^
+                       Numeric.GetHashCode() * 23 ^
+                       Name.   GetHashCode();
             }
         }
 
@@ -356,9 +306,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat(_Name, " [", _ISOCode, " / ", _Numeric, "]");
-        }
+
+            => String.Concat(Name,
+                             " [", ISOCode, " / ", Numeric, "]");
 
         #endregion
 

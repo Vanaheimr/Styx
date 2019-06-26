@@ -23,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DocumentationFile>bin\Debug\Vanaheimr.Styx.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -221,6 +222,7 @@
     <Compile Include="Illias\Helpers\UInt32MinMax.cs" />
     <Compile Include="Illias\Helpers\UInt64MinMax.cs" />
     <Compile Include="Illias\I18N\Country.cs" />
+    <Compile Include="Illias\I18N\Money.cs" />
     <Compile Include="Illias\I18N\Currency.cs" />
     <Compile Include="Illias\I18N\I18NPair.cs" />
     <Compile Include="Illias\I18N\I18NString.cs" />

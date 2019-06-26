@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2018 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2019 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Illias <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -285,6 +286,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        public static Boolean TryParse(String Text, out I18NString I18NText)
+        {
+
+            I18NText = Empty;
+
+            if (Text.IsNullOrEmpty())
+                return false;
+
+            try
+            {
+                return TryParse(JObject.Parse(Text), out I18NText);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+
+        }
+
+        public static Boolean TryParse(JObject jobject, out I18NString I18NText)
+        {
+
+            I18NText = Empty;
+
+            if (jobject == null)
+                return true;
+
+            foreach (var jproperty in jobject)
+            {
+
+                try
+                {
+
+                    I18NText.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
+                                 jproperty.Value.Value<String>());
+
+                }
+                catch (Exception e)
+                {
+                    I18NText = null;
+                    return false;
+                }
+
+            }
+
+            return true;
+
+        }
+
+
 
 
         public Boolean Is(Languages  Language,
