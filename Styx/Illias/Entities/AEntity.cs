@@ -37,7 +37,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             IComparable
     {
 
-
         void CopyAllEdgesTo(TClass Enity);
 
     }
@@ -243,7 +242,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        public Int32 CompareTo(Object obj)
+        public virtual Int32 CompareTo(Object obj)
         {
 
             if (obj is AEntity<TId, TDataSource>)
@@ -256,10 +255,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public Int32 CompareTo(TId OtherId)
+        public virtual Int32 CompareTo(TId OtherId)
             => Id.CompareTo(OtherId);
 
-        public Boolean Equals(TId OtherId)
+        public virtual Boolean Equals(TId OtherId)
             => Id.Equals(OtherId);
 
     }
