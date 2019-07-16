@@ -143,6 +143,7 @@
     <Compile Include="Illias\ExtensionMethods\IEnumerableExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\IListExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\IntegerExtensions.cs" />
+    <Compile Include="Illias\ExtensionMethods\JSONExtentions.cs" />
     <Compile Include="Illias\ExtensionMethods\RandomExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\SecureStringExtensions.cs" />
     <Compile Include="Illias\ExtensionMethods\SilverlightExtensions.cs" />

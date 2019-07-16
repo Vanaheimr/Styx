@@ -34,28 +34,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class AddressExtentions
     {
 
-        #region ToJSON(this Address)
-
-        public static JObject ToJSON(this Address _Address)
-
-            => _Address != null
-                   ? JSONObject.Create(
-                         new JProperty("@context", "https://opendata.social/contexts/UsersAPI+json/address"),
-                         _Address.FloorLevel.   ToJSON("floorLevel"),
-                         _Address.HouseNumber.  ToJSON("houseNumber"),
-                         _Address.Street.       ToJSON("street"),
-                         _Address.PostalCode.   ToJSON("postalCode"),
-                         _Address.PostalCodeSub.ToJSON("postalCodeSub"),
-                         _Address.City.         ToJSON("city"),
-                         _Address.Country != null
-                              ? _Address.Country.Alpha3Code.ToJSON("country")
-                              : null,
-                         _Address.Comment.      ToJSON("comment")
-                     )
-                   : null;
-
-        #endregion
-
         #region ToJSON(this Address, JPropertyKey)
 
         public static JProperty ToJSON(this Address Address, String JPropertyKey)
@@ -72,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static JArray ToJSON(this IEnumerable<Address> Addresses)
 
             => Addresses?.Any() == true
-                   ? new JArray(Addresses.SafeSelect(ToJSON))
+                   ? new JArray(Addresses.SafeSelect(addr => addr.ToJSON()))
                    : null;
 
         #endregion
@@ -88,8 +66,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        public static Boolean TryParseAddress(this String Text, out Address Address)
-            => Address.TryParseJSON(JObject.Parse(Text), out Address);
+        //public static Boolean TryParseAddress(this String Text, out Address Address)
+        //    => Address.TryParseJSON(JObject.Parse(Text), out Address);
 
     }
 
@@ -101,6 +79,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            IComparable<Address>,
                            IComparable
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext  = "https://opendata.social/contexts/UsersAPI+json/address";
+
+        #endregion
 
         #region Properties
 
@@ -225,65 +212,230 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        public static Address Parse(String Text)
-        {
+        //public static Address Parse(String Text)
+        //{
 
-            if (TryParseJSON(JObject.Parse(Text), out Address _Address))
-                return _Address;
+        //    if (TryParseJSON(JObject.Parse(Text), out Address _Address))
+        //        return _Address;
 
-            return null;
+        //    return null;
 
-        }
+        //}
 
-        public static Address ParseAddressJSON(JObject JSONObject, String PropertyKey)
+        //public static Address ParseAddressJSON(JObject JSONObject, String PropertyKey)
+        //{
+
+        //    try
+        //    {
+
+        //        if (JSONObject[PropertyKey] is JObject JSON)
+        //            return Create(Country.Parse(JSON["country"    ]?.Value<String>()),
+        //                                        JSON["postalCode" ]?.Value<String>(),
+        //                                       (JSON["city"       ] as JObject)?.ParseI18NString(),
+        //                                        JSON["street"     ]?.Value<String>(),
+        //                                        JSON["houseNumber"]?.Value<String>(),
+        //                                        JSON["floorLevel" ]?.Value<String>(),
+        //                                       (JSON["comment"    ] as JObject)?.ParseI18NString());
+
+        //    }
+        //    catch (Exception)
+        //    { }
+
+        //    return null;
+
+        //}
+
+
+        #region ToJSON(...)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="IncludeCryptoHash">Include the crypto hash value of this object.</param>
+        public JObject ToJSON(Boolean Embedded           = false,
+                              Boolean IncludeCryptoHash  = true)
+
+            => JSONObject.Create(
+
+                   Embedded
+                       ? null
+                       : new JProperty("@context", JSONLDContext),
+
+                   FloorLevel.   ToJSON("floorLevel"),
+                   HouseNumber.  ToJSON("houseNumber"),
+                   Street.       ToJSON("street"),
+                   PostalCode.   ToJSON("postalCode"),
+                   PostalCodeSub.ToJSON("postalCodeSub"),
+                   City.         ToJSON("city"),
+                   Country != null
+                        ? Country.Alpha3Code.ToJSON("country")
+                        : null,
+                   Comment.      ToJSON("comment")
+
+                );
+
+        #endregion
+
+        #region (static) TryParseJSON(JSONObject, ..., out Address, out ErrorResponse)
+
+        public static Boolean TryParse(JObject      JSONObject,
+                                       out Address  Address,
+                                       out String   ErrorResponse)
         {
 
             try
             {
 
-                if (JSONObject[PropertyKey] is JObject JSON)
-                    return Create(Country.Parse(JSON["country"    ]?.Value<String>()),
-                                                JSON["postalCode" ]?.Value<String>(),
-                                               (JSON["city"       ] as JObject)?.ParseI18NString(),
-                                                JSON["street"     ]?.Value<String>(),
-                                                JSON["houseNumber"]?.Value<String>(),
-                                                JSON["floorLevel" ]?.Value<String>(),
-                                               (JSON["comment"    ] as JObject)?.ParseI18NString());
+                Address = null;
 
-            }
-            catch (Exception)
-            { }
+                if (JSONObject?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
 
-            return null;
+                #region Parse PrivacyLevel     [optional]
 
-        }
+                if (JSONObject.ParseOptional("country",
+                                             "country",
+                                             Country.TryParse,
+                                             out Country country,
+                                             out ErrorResponse))
+                {
 
-        public static Boolean TryParseJSON(JObject JSON, out Address Address)
-        {
+                    if (ErrorResponse != null)
+                        return false;
 
-            try
-            {
+                }
 
-                Address = Create(Country.Parse(JSON["country"]?.Value<String>()),
-                                 JSON["postalCode" ]?.Value<String>(),
-                                 (JSON["city"] as JObject)?.ParseI18NString(),
-                                 JSON["street"     ]?.Value<String>(),
-                                 JSON["houseNumber"]?.Value<String>(),
-                                 JSON["floorLevel" ]?.Value<String>(),
-                                (JSON["comment"    ] as JObject)?.ParseI18NString());
+                #endregion
 
+                #region Parse PostalCode       [optional]
+
+                if (JSONObject.ParseOptional("postalCode",
+                                             out String postalCode,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse postalCodeSub    [optional]
+
+                if (JSONObject.ParseOptional("postalCodeSub",
+                                             out String postalCodeSub,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse City             [optional]
+
+                if (JSONObject.ParseOptional("city",
+                                             "city",
+                                             out I18NString city,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse Street           [optional]
+
+                if (JSONObject.ParseOptional("postalCode",
+                                             out String street,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse HouseNumber      [optional]
+
+                if (JSONObject.ParseOptional("houseNumber",
+                                             out String houseNumber,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse FloorLevel       [optional]
+
+                if (JSONObject.ParseOptional("floorLevel",
+                                             out String floorLevel,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse Comment          [optional]
+
+                if (JSONObject.ParseOptional("comment",
+                                             "comment",
+                                             out I18NString comment,
+                                             out ErrorResponse))
+                {
+
+                    if (ErrorResponse != null)
+                        return false;
+
+                }
+
+                #endregion
+
+
+                Address = new Address(street,
+                                      houseNumber,
+                                      floorLevel,
+                                      postalCode,
+                                      postalCodeSub,
+                                      city,
+                                      country,
+                                      comment);
+
+
+                ErrorResponse = null;
                 return true;
 
             }
             catch (Exception e)
             {
-                DebugX.Log("Parsing the given address failed!");
+                ErrorResponse  = "Parsing the given address failed: " + e.Message;
+                Address        = null;
+                return false;
             }
 
-            Address = null;
-            return false;
-
         }
+
+        #endregion
 
 
         #region Operator overloading
