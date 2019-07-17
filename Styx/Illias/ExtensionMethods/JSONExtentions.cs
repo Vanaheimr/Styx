@@ -554,7 +554,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSONToken == null)
+            if (JSONToken == null || JSONToken.Type == JTokenType.Null)
             {
                 ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
                 return false;
@@ -1339,7 +1339,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 try
@@ -1464,7 +1464,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!Parser(JSONToken.Type == JTokenType.String
@@ -1517,7 +1517,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JObject JSON2))
@@ -1566,7 +1566,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JObject i18NJSON))
@@ -1634,7 +1634,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 var JSONValue = JSONToken?.Value<String>();
@@ -1694,7 +1694,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 try
@@ -1744,7 +1744,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 try
@@ -1796,7 +1796,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 JSONObject = JSONToken as JObject;
@@ -1843,7 +1843,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 JSONArray = JSONToken as JArray;
@@ -1891,7 +1891,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSONArray))
@@ -1983,7 +1983,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "properyKey": null -> will be ignored!
-                if (JSONToken == null)
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSONArray))
