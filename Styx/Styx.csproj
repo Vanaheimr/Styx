@@ -217,7 +217,6 @@
     <Compile Include="Illias\Helpers\ICustomDataBuilder.cs" />
     <Compile Include="Illias\Helpers\Int32MinMax.cs" />
     <Compile Include="Illias\Helpers\Int64MinMax.cs" />
-    <Compile Include="Illias\Helpers\JSON.cs" />
     <Compile Include="Illias\Helpers\JSON_IO.cs" />
     <Compile Include="Illias\Helpers\Range.cs" />
     <Compile Include="Illias\Helpers\UInt32MinMax.cs" />

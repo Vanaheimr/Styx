@@ -2018,6 +2018,306 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+
+
+
+        // Legacy
+
+        #region ParseI18NString(this JToken)
+
+        public static I18NString ParseI18NString(this JToken JToken)
+        {
+
+            var jobject = JToken as JObject;
+
+            if (jobject == null)
+                throw new ArgumentException("The given JSON token is not a JSON object!", nameof(JToken));
+
+            return jobject.ParseI18NString();
+
+        }
+
+        #endregion
+
+        #region ParseI18NString(this JObject)
+
+        public static I18NString ParseI18NString(this JObject JObject)
+        {
+
+            var i18NString = I18NString.Empty;
+
+            foreach (var jproperty in JObject)
+                i18NString.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
+                               jproperty.Value.Value<String>());
+
+            return i18NString;
+
+        }
+
+        #endregion
+
+        #region ParseI18NString(this JObject, PropertyKey)
+
+        public static I18NString ParseI18NString(this JObject JObject, String PropertyKey)
+        {
+
+            if (PropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+
+            var jobject = JObject[PropertyKey] as JObject;
+
+            if (jobject == null)
+                return I18NString.Empty;
+
+            var i18NString = I18NString.Empty;
+
+            foreach (var jproperty in jobject)
+                i18NString.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
+                               jproperty.Value.Value<String>());
+
+            return i18NString;
+
+        }
+
+        #endregion
+
+        #region TryParseI18NString(this JToken,  out I18NString)
+
+        public static Boolean TryParseI18NString(this JToken JToken, out I18NString I18NString)
+        {
+
+            var jobject = JToken as JObject;
+
+            if (jobject == null)
+            {
+                I18NString = null;
+                return false;
+            }
+
+            return jobject.TryParseI18NString(out I18NString);
+
+        }
+
+        #endregion
+
+        #region TryParseI18NString(this JObject, out I18NString)
+
+        public static Boolean TryParseI18NString(this JObject JObject, out I18NString i18NString)
+        {
+
+            i18NString = I18NString.Empty;
+
+            try
+            {
+
+                foreach (var jproperty in JObject)
+                    i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
+                                   jproperty.Value.Value<String>());
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region TryParseI18NString(this JObject, PropertyKey, out I18NString)
+
+        public static Boolean TryParseI18NString(this JObject JObject, String PropertyKey, out I18NString i18NString)
+        {
+
+            if (PropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+
+            i18NString = I18NString.Empty;
+
+            if (!(JObject[PropertyKey] is JObject jobject))
+                throw new ArgumentException("The value of the given JSON property '" + PropertyKey + "' is not a JSON object!", nameof(JObject));
+
+            try
+            {
+
+                foreach (var jproperty in JObject)
+                    i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
+                                   jproperty.Value.Value<String>());
+
+                return true;
+
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
+
+
+        #region ValueOrDefault(this ParentJObject, PropertyName, DefaultValue = null)
+
+        /// <summary>
+        /// Return the value of the JSON property or the given default value.
+        /// </summary>
+        /// <param name="ParentJObject">The JSON parent object.</param>
+        /// <param name="PropertyName">The property name to match.</param>
+        /// <param name="DefaultValue">A default value.</param>
+        public static JToken ValueOrDefault(this JObject  ParentJObject,
+                                            String        PropertyName,
+                                            String        DefaultValue = null)
+        {
+
+            #region Initial checks
+
+            if (ParentJObject == null)
+                return DefaultValue;
+
+            #endregion
+
+            JToken JSONValue = null;
+
+            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
+                return JSONValue;
+
+            return DefaultValue;
+
+        }
+
+        #endregion
+
+        #region ValueOrFail   (this ParentJObject, PropertyName, ExceptionMessage = null)
+
+        /// <summary>
+        /// Return the value of the JSON property or the given default value.
+        /// </summary>
+        /// <param name="ParentJObject">The JSON parent object.</param>
+        /// <param name="PropertyName">The property name to match.</param>
+        /// <param name="ExceptionMessage">An optional exception message.</param>
+        public static JToken ValueOrFail(this JObject  ParentJObject,
+                                         String        PropertyName,
+                                         String        ExceptionMessage = null)
+        {
+
+            #region Initial checks
+
+            if (ParentJObject == null)
+                throw new ArgumentNullException(nameof(ParentJObject),  "The given JSON object must not be null!");
+
+            #endregion
+
+            JToken JSONValue = null;
+
+            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
+                return JSONValue;
+
+            throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given JSON property does not exist!");
+
+        }
+
+        #endregion
+
+
+        #region MapValueOrDefault(ParentJObject, PropertyName, ValueMapper, DefaultValue = null)
+
+        /// <summary>
+        /// Return the mapped value of the JSON property or the given default value.
+        /// </summary>
+        /// <param name="ParentJObject">The JSON parent object.</param>
+        /// <param name="PropertyName">The property name to match.</param>
+        /// <param name="ValueMapper">A delegate to map the JSON property value.</param>
+        /// <param name="DefaultValue">A default value.</param>
+        public static T MapValueOrDefault<T>(this JObject     ParentJObject,
+                                             String           PropertyName,
+                                             Func<JToken, T>  ValueMapper,
+                                             T                DefaultValue = default(T))
+        {
+
+            #region Initial checks
+
+            if (ParentJObject == null)
+                return DefaultValue;
+
+            #endregion
+
+            JToken JSONValue;
+
+            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
+            {
+
+                try
+                {
+                    return ValueMapper(JSONValue);
+                }
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+                catch (Exception)
+#pragma warning restore RECS0022
+#pragma warning restore RCS1075
+                { }
+
+            }
+
+            return DefaultValue;
+
+        }
+
+        #endregion
+
+        #region MapValueOrFail   (ParentJObject, PropertyName, ValueMapper, ExceptionMessage = null)
+
+        /// <summary>
+        /// Return the mapped value of the JSON property or throw an exception
+        /// having the given optional message.
+        /// </summary>
+        /// <param name="ParentJObject">The JSON parent object.</param>
+        /// <param name="PropertyName">The property name to match.</param>
+        /// <param name="ValueMapper">A delegate to map the JSON property value.</param>
+        /// <param name="ExceptionMessage">An optional exception message.</param>
+        public static T MapValueOrFail<T>(this JObject     ParentJObject,
+                                          String           PropertyName,
+                                          Func<JToken, T>  ValueMapper,
+                                          String           ExceptionMessage = null)
+        {
+
+            #region Initial checks
+
+            if (ParentJObject == null)
+                throw new ArgumentNullException(nameof(ParentJObject),  "The given JSON object must not be null!");
+
+            if (ValueMapper == null)
+                throw new ArgumentNullException(nameof(ValueMapper),    "The given JSON value mapper delegate must not be null!");
+
+            #endregion
+
+            JToken JSONValue;
+
+            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
+            {
+
+                try
+                {
+                    return ValueMapper(JSONValue);
+                }
+                catch (Exception e)
+                {
+                    throw ExceptionMessage.IsNotNullOrEmpty() ? new Exception(ExceptionMessage) : e;
+                }
+
+            }
+
+            throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given JSON property does not exist!");
+
+        }
+
+        #endregion
+
+
+
     }
 
 }
