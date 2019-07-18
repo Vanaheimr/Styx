@@ -1212,7 +1212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            TOut = default(T);
+            TOut = default;
             return false;
 
         }
