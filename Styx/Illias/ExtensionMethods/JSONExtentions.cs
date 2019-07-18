@@ -1409,6 +1409,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "!";
                 }
 
+                Value = value;
                 return true;
 
             }
