@@ -1401,6 +1401,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
+                if (JSONToken.Type == JTokenType.Object && !JSONToken.HasValues)
+                    return false;
+
                 if (!Parser(JSONToken.Type == JTokenType.String
                                 ? JSONToken.Value<String>()
                                 : JSONToken.ToString(),

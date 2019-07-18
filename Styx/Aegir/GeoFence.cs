@@ -163,7 +163,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             }
 
-            GeoFence = default(GeoFence);
+            GeoFence = default;
             return false;
 
         }
