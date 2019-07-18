@@ -1366,7 +1366,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ParseOptionalStruct<TStruct?>(this JSON, PropertyName, PropertyDescription,                    Parser, out Value,              out ErrorResponse)
+        #region ParseOptionalStruct(this JSON, PropertyName, PropertyDescription,                    Parser, out Value,              out ErrorResponse)
 
         public static Boolean ParseOptionalStruct<TStruct>(this JObject        JSON,
                                                            String              PropertyName,
@@ -1379,7 +1379,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            Value = new TStruct?();
+            Value         = new TStruct?();
+            ErrorResponse = null;
 
             if (JSON == null)
             {
@@ -1393,42 +1394,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) && JSONToken != null)
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                var JSONValue = JSON[PropertyName];
-
-                if (JSONValue == null)
-                {
-                    ErrorResponse = null;
-                    return true;
-                }
-
-                if ((JSONToken as JObject)?.Count == 0)
-                {
-                    ErrorResponse = null;
-                    return true;
-                }
-
-                if ((JSONToken as JArray)?.Count == 0)
-                {
-                    ErrorResponse = null;
-                    return true;
-                }
-
-                if (!Parser(JSONValue.ToString().Trim(), out TStruct TValue))
-                {
-                    ErrorResponse =  "Unknown " + PropertyDescription + "!";
-                    Value         = new TStruct?();
+                // "properyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
+
+                if (!Parser(JSONToken.Type == JTokenType.String
+                                ? JSONToken.Value<String>()
+                                : JSONToken.ToString(),
+                            out TStruct value))
+                {
+                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "!";
                 }
 
-                Value = new TStruct?(TValue);
+                return true;
 
             }
 
-            ErrorResponse = null;
-            return true;
+            return false;
 
         }
 
@@ -1473,7 +1458,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             out Value))
                 {
 
-                    Value          = default(T);
+                    Value          = default;
                     ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "!";
 
                 }
