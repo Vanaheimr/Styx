@@ -156,7 +156,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Provider overloading
 
-        #region Provider == (DataLicenseId1, DataLicenseId2)
+        #region Operator == (DataLicenseId1, DataLicenseId2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -181,7 +181,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Provider != (DataLicenseId1, DataLicenseId2)
+        #region Operator != (DataLicenseId1, DataLicenseId2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -194,7 +194,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Provider <  (DataLicenseId1, DataLicenseId2)
+        #region Operator <  (DataLicenseId1, DataLicenseId2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -214,7 +214,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Provider <= (DataLicenseId1, DataLicenseId2)
+        #region Operator <= (DataLicenseId1, DataLicenseId2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -227,7 +227,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Provider >  (DataLicenseId1, DataLicenseId2)
+        #region Operator >  (DataLicenseId1, DataLicenseId2)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -247,7 +247,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Provider >= (DataLicenseId1, DataLicenseId2)
+        #region Operator >= (DataLicenseId1, DataLicenseId2)
 
         /// <summary>
         /// Compares two instances of this object.

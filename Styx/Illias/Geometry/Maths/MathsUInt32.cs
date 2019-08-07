@@ -43,18 +43,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
 
         #region Instance
 
-        private static readonly IMaths<UInt32> _Instance = new MathsUInt32();
-
         /// <summary>
         /// Return a singelton instance of this maths class.
         /// </summary>
-        public static IMaths<UInt32> Instance
-        {
-            get
-            {
-                return _Instance;
-            }
-        }
+        public static IMaths<UInt32> Instance { get; } = new MathsUInt32();
 
         #endregion
 
