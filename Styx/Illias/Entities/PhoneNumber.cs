@@ -50,6 +50,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Properties
 
         /// <summary>
+        /// Indicates whether this phone number is null or empty.
+        /// </summary>
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
+
+        /// <summary>
         /// The length of the phone number.
         /// </summary>
         public UInt64 Length

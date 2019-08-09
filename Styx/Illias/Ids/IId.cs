@@ -34,8 +34,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //int CompareTo(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
         //bool Equals(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
         //int GetHashCode();
-        //ulong Length { get; }
-        //string ToString();
+
+        UInt64  Length           { get; }
+        Boolean IsNullOrEmpty    { get; }
+
+        String  ToString();
 
     }
 
