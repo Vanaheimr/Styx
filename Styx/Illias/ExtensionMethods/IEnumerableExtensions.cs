@@ -923,7 +923,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Enumeration == null)
                 return DefaultValue;
 
-            var Array = Enumeration.Where(_ => !EqualityComparer<T>.Default.Equals(_, default(T))).ToArray();
+            var Array = Enumeration.Where(_ => !EqualityComparer<T>.Default.Equals(_, default)).ToArray();
 
             if (Array.Length == 0)
                 return DefaultValue;
