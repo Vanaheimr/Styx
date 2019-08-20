@@ -199,6 +199,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region RemoveAndReturnValue(this Dictionary, Key)
+
+        /// <summary>
+        /// Remove the key and value from the a dictionary and return the value.
+        /// </summary>
+        /// <param name="Dictionary">A dictionary.</param>
+        /// <param name="Key">The element key.</param>
+        /// <returns>The element value.</returns>
+        public static V RemoveAndReturnValue<K, V>(this IDictionary<K, V> Dictionary, K Key)
+        {
+
+            if (Dictionary.TryGetValue(Key, out V value))
+                return value;
+
+            return default;
+
+        }
+
+        #endregion
+
 
         #region TryGet(this Dictionary, Key)
 
