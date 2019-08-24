@@ -365,6 +365,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
+        public Boolean Matches(String Match)
+            => I18NStrings.Any(kvp => kvp.Value.Contains(Match));
+
 
         #region GetEnumerator()
 
