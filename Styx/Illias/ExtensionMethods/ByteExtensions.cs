@@ -116,6 +116,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (HexValue.IsNullOrEmpty())
                 return new Byte[0];
 
+            if (HexValue != null)
+                HexValue = HexValue.Trim();
+
             if (HexValue.Length % 2 == 1)
                 throw new ArgumentException("Wrong size of the input string!", nameof(HexValue));
 
