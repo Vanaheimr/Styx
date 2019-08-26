@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// The unique identification for tracking events (EventTrackingId).
     /// </summary>
-    public class EventTracking_Id : //IId,
+    public class EventTracking_Id : IId,
                                     IEquatable<EventTracking_Id>,
                                     IComparable<EventTracking_Id>
     {
@@ -37,41 +37,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String  _Id;
+        private readonly String InternalId;
 
         #endregion
 
         #region Properties
 
-        #region New
-
         /// <summary>
-        /// Generate a new unique event tracking identification.
+        /// Indicates whether this identification is null or empty.
         /// </summary>
-        public static EventTracking_Id New
-        {
-            get
-            {
-                return EventTracking_Id.Parse(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Length
+        public Boolean IsNullOrEmpty
+            => InternalId.IsNullOrEmpty();
 
         /// <summary>
-        /// Returns the length of the identification.
+        /// The length of the event tracking identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
-
-        #endregion
+            => (UInt64) InternalId.Length;
 
         #endregion
 
@@ -83,24 +65,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         private EventTracking_Id(String EventTrackingId)
         {
-            _Id  = EventTrackingId.Trim();
+            InternalId  = EventTrackingId;
         }
 
         #endregion
 
 
-        #region Parse(EVSEId)
+        #region (static) New
 
         /// <summary>
-        /// Parse the given string as an event tracking identification.
+        /// Generate a new unique event tracking identification.
         /// </summary>
-        /// <param name="Text">A text representation of an event tracking identification.</param>
-        public static EventTracking_Id Parse(String EventTrackingId)
-            => new EventTracking_Id(EventTrackingId);
+        public static EventTracking_Id New
+            => EventTracking_Id.Parse(Guid.NewGuid().ToString());
 
         #endregion
 
-        #region TryParse(Text, out EventTrackingId)
+        #region (static) Parse   (Text)
+
+        /// <summary>
+        /// Parse the given string as a service identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a service identification.</param>
+        public static EventTracking_Id Parse(String Text)
+        {
+
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The given text representation of an event tracking identification must not be null or empty!");
+
+            #endregion
+
+            if (TryParse(Text, out EventTracking_Id EventTrackingId))
+                return EventTrackingId;
+
+            throw new ArgumentException(nameof(Text), "The given text representation of an event tracking identification is invalid!");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out EventTrackingId)
 
         /// <summary>
         /// Parse the given string as an event tracking identification.
@@ -109,6 +118,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="EventTrackingId">The parsed event tracking identification.</param>
         public static Boolean TryParse(String Text, out EventTracking_Id EventTrackingId)
         {
+
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+            {
+                EventTrackingId = default;
+                return false;
+            }
+
+            #endregion
+
             try
             {
                 EventTrackingId = new EventTracking_Id(Text);
@@ -129,12 +152,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone an EventTrackingId.
         /// </summary>
         public EventTracking_Id Clone
-        {
-            get
-            {
-                return new EventTracking_Id(_Id);
-            }
-        }
+
+            => new EventTracking_Id(
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
@@ -261,8 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            var EventTrackingId = Object as EventTracking_Id;
-            if ((Object) EventTrackingId == null)
+            if (!(Object is EventTracking_Id EventTrackingId))
                 throw new ArgumentException("The given object is not an event tracking identification!");
 
             return CompareTo(EventTrackingId);
@@ -283,7 +303,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if ((Object) EventTrackingId == null)
                 throw new ArgumentNullException(nameof(EventTrackingId), "The given event tracking identification must not be null!");
 
-            return String.Compare(_Id, EventTrackingId._Id, StringComparison.Ordinal);
+            return String.Compare(InternalId, EventTrackingId.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -306,11 +326,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object == null)
                 return false;
 
-            var EventTrackingId = Object as EventTracking_Id;
-            if ((Object) EventTrackingId == null)
+            if (!(Object is EventTracking_Id EventTrackingId))
                 return false;
 
-            return this.Equals(EventTrackingId);
+            return Equals(EventTrackingId);
 
         }
 
@@ -326,10 +345,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(EventTracking_Id EventTrackingId)
         {
 
-            if ((Object) EventTrackingId == null)
+            if (EventTrackingId is null)
                 return false;
 
-            return _Id.Equals(EventTrackingId._Id);
+            return InternalId.Equals(EventTrackingId.InternalId, StringComparison.OrdinalIgnoreCase);
 
         }
 
@@ -344,7 +363,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-            => _Id.GetHashCode();
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -354,7 +373,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => _Id;
+            => InternalId;
 
         #endregion
 
