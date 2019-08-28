@@ -38,7 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     {
 
         /// <summary>
-        /// Create a JSON representation of the given GeoLocation.
+        /// Return a JSON representation of the given GeoLocation.
         /// </summary>
         /// <param name="GeoLocation">A geographical location.</param>
         public static JObject ToJSON(this GeoFence? GeoLocation)
@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region ToJSON(this GeoLocation, JPropertyKey)
 
         /// <summary>
-        /// Create a JSON representation of the given GeoLocation.
+        /// Return a JSON representation of the given GeoLocation.
         /// </summary>
         /// <param name="GeoFence">A geographical location.</param>
         /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
 
         /// <summary>
-        /// Create a JSON representation of the given GeoLocation.
+        /// Return a JSON representation of the given GeoLocation.
         /// </summary>
         /// <param name="GeoLocation">A GeoLocation.</param>
         /// <param name="JPropertyKey">The name of the JSON property key to use.</param>

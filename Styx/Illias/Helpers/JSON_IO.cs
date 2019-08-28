@@ -233,7 +233,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToJSON(this TimestampedT)
 
         /// <summary>
-        /// Create a JSON representation of the given timestamped value.
+        /// Return a JSON representation of the given timestamped value.
         /// </summary>
         /// <param name="TimestampedT">A timestamped value.</param>
         public static JObject ToJSON<T>(this Timestamped<T> TimestampedT)
@@ -249,7 +249,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToJSON(this I18NString)
 
         /// <summary>
-        /// Create a JSON representation of the given internationalized string.
+        /// Return a JSON representation of the given internationalized string.
         /// </summary>
         /// <param name="I18NString">An internationalized string.</param>
         public static JObject ToJSON(this I18NString I18NString)
@@ -267,7 +267,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToJSON(this I18NString, JPropertyKey)
 
         /// <summary>
-        /// Create a JSON representation of the given internationalized string.
+        /// Return a JSON representation of the given internationalized string.
         /// </summary>
         /// <param name="I18NString">An internationalized string.</param>
         /// <param name="JPropertyKey">The name of the JSON property key.</param>
@@ -287,7 +287,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToJSON(this Id, JPropertyKey)
 
         /// <summary>
-        /// Create a JSON representation of the given identificator.
+        /// Return a JSON representation of the given identificator.
         /// </summary>
         /// <param name="Id">An identificator.</param>
         /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
