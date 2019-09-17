@@ -356,7 +356,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 #region Parse Street           [optional]
 
-                if (JSONObject.ParseOptional("postalCode",
+                if (JSONObject.ParseOptional("street",
                                              out String street,
                                              out ErrorResponse))
                 {

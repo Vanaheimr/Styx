@@ -313,18 +313,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region Statics
-
-        /// <summary>
-        /// The zero coordinate.
-        /// </summary>
-        public static GeoCoordinate Zero
-
-            => new GeoCoordinate(Latitude. Parse(0),
-                                 Longitude.Parse(0));
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -353,7 +341,20 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        #region Create(Latitude, Longitude, Altitude = null)
+        #region (static) Zero
+
+        /// <summary>
+        /// The zero coordinate.
+        /// </summary>
+        public static GeoCoordinate Zero
+
+            => new GeoCoordinate(Latitude.Parse(0),
+                                 Longitude.Parse(0));
+
+        #endregion
+
+
+        #region Create    (Latitude,  Longitude, Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -384,7 +385,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region FromLngLat(Latitude, Longitude, Altitude = null)
+        #region FromLngLat(Latitude,  Longitude, Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -406,7 +407,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region FromLngLat(Longitude, Latitude, Altitude = null)
+        #region FromLngLat(Longitude, Latitude,  Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -570,7 +571,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        #region ParseString(GeoString)
+        #region ParseString   (GeoString)
 
         /// <summary>
         /// Parses the given string as a geo position/coordinate.
@@ -583,13 +584,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (TryParseString(GeoString, out GeoCoordinate GeoCoordinate))
                 return GeoCoordinate;
 
-            return default(GeoCoordinate);
+            return default;
 
         }
 
         #endregion
 
-        #region ParseString(GeoString, Processor)
+        #region ParseString   (GeoString, Processor)
 
         /// <summary>
         /// Parses the given string as a geo position/coordinate.
@@ -603,7 +604,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (TryParseString(GeoString, Processor, out T _T))
                 return _T;
 
-            return default(T);
+            return default;
 
         }
 
@@ -688,7 +689,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             }
 
-            Value = default(T);
+            Value = default;
             return false;
 
         }
