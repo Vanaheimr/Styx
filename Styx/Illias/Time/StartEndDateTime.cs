@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A structure to store a start and end time.
     /// </summary>
-    public struct StartEndDateTime
+    public class StartEndDateTime
     {
 
         #region Properties
@@ -40,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The end time.
         /// </summary>
-        public DateTime?  EndTime     { get; }
+        public DateTime?  EndTime     { get; set; }
 
         /// <summary>
         /// The duration.
@@ -67,7 +67,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #region Initial checks
 
             if (EndTime.HasValue && StartTime > EndTime)
-                throw new ArgumentException("The Starttime must not be after the Endtime!");
+                throw new ArgumentException("The start time must not be after the end time!");
 
             #endregion
 

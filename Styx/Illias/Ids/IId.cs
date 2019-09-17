@@ -25,6 +25,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
+    /// Extention methods for the Id interface.
+    /// </summary>
+    public static class IIdExtentions
+    {
+
+        /// <summary>
+        /// Determines whether the beginning of this string instance matches the specified string.
+        /// </summary>
+        /// <param name="Id">An identificator.</param>
+        /// <param name="Prefix"></param>
+        public static Boolean StartsWith(this IId Id, String Prefix)
+            => Id.ToString().StartsWith(Prefix);
+
+    }
+
+
+    /// <summary>
     /// The common interface of a datastructure used as an unique identification.
     /// </summary>
     public interface IId : IComparable
