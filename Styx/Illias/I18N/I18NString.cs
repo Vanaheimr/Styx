@@ -365,8 +365,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public Boolean Matches(String Match)
-            => I18NStrings.Any(kvp => kvp.Value.Contains(Match));
+        public Boolean Matches(String Match, Boolean IgnoreCase = false)
+
+            => I18NStrings.Any(kvp => IgnoreCase
+                                          ? kvp.Value.IndexOf(Match, StringComparison.OrdinalIgnoreCase) >= 0
+                                          : kvp.Value.IndexOf(Match) >= 0);
 
 
         #region GetEnumerator()
