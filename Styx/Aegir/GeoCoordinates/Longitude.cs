@@ -31,7 +31,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public struct Longitude : IEquatable<Longitude>,
                               IComparable<Longitude>,
                               IComparable
-
     {
 
         #region Properties
@@ -65,7 +64,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             return new Longitude(Value);
 
-
         }
 
         public static Longitude? TryParse(Double Value)
@@ -83,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             if (Value < -180 || Value > 180)
             {
-                Longitude = default(Longitude);
+                Longitude = default;
                 return false;
             }
 
@@ -139,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             catch (Exception)
             { }
 
-            Longitude = default(Longitude);
+            Longitude = default;
             return false;
 
         }
@@ -178,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             catch (Exception)
             { }
 
-            Longitude = default(Longitude);
+            Longitude = default;
             return false;
 
         }
@@ -415,7 +413,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Returns a string representation of the given object.
         /// </summary>
         public override String ToString()
-            => Value.ToString();
+
+            => Value.ToString(CultureInfo.InvariantCulture);
 
         #endregion
 
@@ -426,9 +425,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="FormatProvider">An object that supplies culture-specific formatting information.</param>
         public String ToString(IFormatProvider FormatProvider)
-        {
-            return this.Value.ToString(FormatProvider);
-        }
+
+            => Value.ToString(FormatProvider);
 
         #endregion
 
@@ -439,6 +437,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Format">A composite format string</param>
         public String ToString(String Format)
+
             => String.Format(Format, Value);
 
         #endregion
