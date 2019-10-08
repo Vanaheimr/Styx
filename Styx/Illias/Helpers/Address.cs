@@ -34,13 +34,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class AddressExtentions
     {
 
-        #region ToJSON(this Address, JPropertyKey)
+        #region ToJSON(this Address, JPropertyKey, Embedded  = false)
 
-        public static JProperty ToJSON(this Address Address, String JPropertyKey)
+        public static JProperty ToJSON(this Address  Address,
+                                       String        JPropertyKey,
+                                       Boolean       Embedded  = false)
 
             => Address != null
                    ? new JProperty(JPropertyKey,
-                                   Address.ToJSON())
+                                   Address.ToJSON(Embedded))
                    : null;
 
         #endregion
@@ -252,26 +254,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        /// <param name="IncludeCryptoHash">Include the crypto hash value of this object.</param>
-        public JObject ToJSON(Boolean Embedded           = false,
-                              Boolean IncludeCryptoHash  = true)
+        public JObject ToJSON(Boolean Embedded  = false)
 
             => JSONObject.Create(
 
-                   Embedded
-                       ? null
-                       : new JProperty("@context", JSONLDContext),
+                   !Embedded
+                       ? new JProperty("@context", JSONLDContext)
+                       : null,
 
-                   FloorLevel.   ToJSON("floorLevel"),
-                   HouseNumber.  ToJSON("houseNumber"),
-                   Street.       ToJSON("street"),
-                   PostalCode.   ToJSON("postalCode"),
-                   PostalCodeSub.ToJSON("postalCodeSub"),
-                   City.         ToJSON("city"),
-                   Country != null
-                        ? Country.Alpha3Code.ToJSON("country")
-                        : null,
-                   Comment.      ToJSON("comment")
+                   FloorLevel.         ToJSON("floorLevel"),
+                   HouseNumber.        ToJSON("houseNumber"),
+                   Street.             ToJSON("street"),
+                   PostalCode.         ToJSON("postalCode"),
+                   PostalCodeSub.      ToJSON("postalCodeSub"),
+                   City.               ToJSON("city"),
+                   Country?.Alpha3Code.ToJSON("country"),
+                   Comment.            ToJSON("comment")
 
                 );
 
