@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
         #region testActionPipeNull()
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
+        //[ExpectedException(typeof(ArgumentNullException))]
         public void testActionPipeNull()
         {
 

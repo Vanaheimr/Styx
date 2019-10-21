@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("StyxTests")]
+[assembly: AssemblyTitle("GraphDefined Vanaheimr Styx Unit Tests")]
 [assembly: AssemblyDescription("Unit tests for the styx dataflow framework.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ahzf.de")]
-[assembly: AssemblyProduct("StyxUnitTests")]
-[assembly: AssemblyCopyright("Copyright © 2010-2013 Achim Friedland")]
+[assembly: AssemblyCompany("GraphDefined GmbH")]
+[assembly: AssemblyProduct("Styx Unit Tests")]
+[assembly: AssemblyCopyright("Copyright © 2010-2019 GraphDefined GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
