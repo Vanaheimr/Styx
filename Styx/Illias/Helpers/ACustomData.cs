@@ -18,9 +18,8 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -35,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An optional dictionary of customer-specific data.
         /// </summary>
-        public IReadOnlyDictionary<String, Object>  CustomData   { get; }
+        public Dictionary<String, Object>  CustomData   { get; }
 
         #endregion
 
@@ -45,13 +44,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new data structure for customer specific data.
         /// </summary>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        protected ACustomData(IReadOnlyDictionary<String, Object> CustomData)
+        protected ACustomData(Dictionary<String, Object> CustomData)
         {
             this.CustomData = CustomData;
         }
 
+        /// <summary>
+        /// Create a new data structure for customer specific data.
+        /// </summary>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        protected ACustomData(IReadOnlyDictionary<String, Object> CustomData)
+        {
+            this.CustomData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+        }
+
+        /// <summary>
+        /// Create a new data structure for customer specific data.
+        /// </summary>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        protected ACustomData(IEnumerable<KeyValuePair<String, Object>> CustomData = null)
+        {
+            this.CustomData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+        }
+
         #endregion
 
+
+        public Boolean HasCustomData
+            => CustomData != null && CustomData.Count > 0;
 
         public Boolean IsDefined(String Key)
         {
@@ -194,88 +214,111 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-    }
 
 
-    public abstract class ACustomDataBuilder : ICustomDataBuilder
-    {
 
-        #region Properties
-
-        /// <summary>
-        /// All custom data.
-        /// </summary>
-        public Dictionary<String, Object>  CustomData   { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new data structure for customer specific data.
-        /// </summary>
-        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        protected ACustomDataBuilder(Dictionary<String, Object> CustomData = null)
-        {
-            this.CustomData  = CustomData ?? new Dictionary<String, Object>();
-        }
-
-        #endregion
-
-
-        public void AddCustomData(String  Key,
-                                  Object  Value)
-        {
-            CustomData.Add(Key, Value);
-        }
-
-        public Boolean IsDefined(String  Key)
-            => CustomData.ContainsKey(Key);
-
-        public Object GetCustomData(String  Key)
+        public abstract class Builder : ICustomDataBuilder
         {
 
-            if (CustomData.TryGetValue(Key, out Object _Value))
-                return _Value;
+            #region Properties
 
-            return null;
+            /// <summary>
+            /// All custom data.
+            /// </summary>
+            public Dictionary<String, Object>  CustomData   { get; }
 
-        }
+            #endregion
 
-        public T GetCustomDataAs<T>(String  Key)
-        {
+            #region Constructor(s)
 
-            if (CustomData.TryGetValue(Key, out Object _Value))
-                return (T) _Value;
-
-            return default(T);
-
-        }
-
-
-        public void IfDefined(String          Key,
-                              Action<Object>  ValueDelegate)
-        {
-
-            if (ValueDelegate == null)
-                return;
-
-            if (CustomData.TryGetValue(Key, out Object _Value))
-                ValueDelegate(_Value);
-
-        }
-
-        public void IfDefinedAs<T>(String     Key,
-                                   Action<T>  ValueDelegate)
-        {
-
-            if (ValueDelegate == null)
-                return;
-
-            if (CustomData.TryGetValue(Key, out Object _Value) &&
-                _Value is T)
+            /// <summary>
+            /// Create a new data structure for customer specific data.
+            /// </summary>
+            /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+            protected Builder(Dictionary<String, Object> CustomData = null)
             {
-                ValueDelegate((T)_Value);
+                this.CustomData  = CustomData ?? new Dictionary<String, Object>();
+            }
+
+            /// <summary>
+            /// Create a new data structure for customer specific data.
+            /// </summary>
+            /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+            protected Builder(IReadOnlyDictionary<String, Object> CustomData)
+            {
+                this.CustomData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+            }
+
+            /// <summary>
+            /// Create a new data structure for customer specific data.
+            /// </summary>
+            /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+            protected Builder(IEnumerable<KeyValuePair<String, Object>> CustomData = null)
+            {
+                this.CustomData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+            }
+
+            #endregion
+
+
+            public void AddCustomData(String  Key,
+                                      Object  Value)
+            {
+                CustomData.Add(Key, Value);
+            }
+
+            public Boolean HasCustomData
+                => CustomData != null && CustomData.Count > 0;
+
+            public Boolean IsDefined(String  Key)
+                => CustomData.ContainsKey(Key);
+
+            public Object GetCustomData(String  Key)
+            {
+
+                if (CustomData.TryGetValue(Key, out Object _Value))
+                    return _Value;
+
+                return null;
+
+            }
+
+            public T GetCustomDataAs<T>(String  Key)
+            {
+
+                if (CustomData.TryGetValue(Key, out Object _Value))
+                    return (T) _Value;
+
+                return default(T);
+
+            }
+
+
+            public void IfDefined(String          Key,
+                                  Action<Object>  ValueDelegate)
+            {
+
+                if (ValueDelegate == null)
+                    return;
+
+                if (CustomData.TryGetValue(Key, out Object _Value))
+                    ValueDelegate(_Value);
+
+            }
+
+            public void IfDefinedAs<T>(String     Key,
+                                       Action<T>  ValueDelegate)
+            {
+
+                if (ValueDelegate == null)
+                    return;
+
+                if (CustomData.TryGetValue(Key, out Object _Value) &&
+                    _Value is T)
+                {
+                    ValueDelegate((T)_Value);
+                }
+
             }
 
         }

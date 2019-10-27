@@ -150,16 +150,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Comment">An optional text/comment to describe the address.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public Address(String                               Street,
-                       String                               HouseNumber,
-                       String                               FloorLevel,
-                       String                               PostalCode,
-                       String                               PostalCodeSub,
-                       I18NString                           City,
-                       Country                              Country,
-                       I18NString                           Comment      = null,
+        public Address(String                      Street,
+                       String                      HouseNumber,
+                       String                      FloorLevel,
+                       String                      PostalCode,
+                       String                      PostalCodeSub,
+                       I18NString                  City,
+                       Country                     Country,
+                       I18NString                  Comment      = null,
 
-                       IReadOnlyDictionary<String, Object>  CustomData   = null)
+                       Dictionary<String, Object>  CustomData   = null)
 
             : base(CustomData)
 
@@ -192,14 +192,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="FloorLevel">The floor level.</param>
         /// <param name="Comment">A comment to this address.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public static Address Create(Country                              Country,
-                                     String                               PostalCode,
-                                     I18NString                           City,
-                                     String                               Street,
-                                     String                               HouseNumber,
-                                     String                               FloorLevel   = null,
-                                     I18NString                           Comment      = null,
-                                     IReadOnlyDictionary<String, Object>  CustomData   = null)
+        public static Address Create(Country                     Country,
+                                     String                      PostalCode,
+                                     I18NString                  City,
+                                     String                      Street,
+                                     String                      HouseNumber,
+                                     String                      FloorLevel   = null,
+                                     I18NString                  Comment      = null,
+                                     Dictionary<String, Object>  CustomData   = null)
 
 
             => new Address(Street,
