@@ -53,6 +53,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region TrimAll(this I18NText)
+
+        /// <summary>
+        /// Trim all texts.
+        /// </summary>
+        /// <param name="I18NText">A text.</param>
+        public static I18NString TrimAll(this I18NString I18NText)
+        {
+
+            if (I18NText == null)
+                return null;
+
+            return new I18NString(I18NText.Select(text => new I18NPair(
+                                                              text.Language,
+                                                              text.Text.Trim()
+                                                          )));
+
+        }
+
+        #endregion
+
         #region ToHTML(this I18NString)
 
         /// <summary>
