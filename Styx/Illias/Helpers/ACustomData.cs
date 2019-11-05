@@ -267,6 +267,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 CustomData.Add(Key, Value);
             }
 
+            public void SetCustomData(String  Key,
+                                      Object  Value)
+            {
+                lock (CustomData)
+                {
+
+                    if (!CustomData.ContainsKey(Key))
+                        CustomData.Add(Key, Value);
+
+                    else
+                        CustomData[Key] = Value;
+
+                }
+            }
+
             public Boolean HasCustomData
                 => CustomData != null && CustomData.Count > 0;
 
