@@ -36,6 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate Boolean TryParser        <TResult>(String  Input, out TResult arg);
     public delegate Boolean TryJObjectParser <TResult>(JObject Input, out TResult arg, out String ErrorResponse);
+    public delegate Boolean TryJObjectParser2<TResult>(JObject Input, out TResult arg);
 
     /// <summary>
     /// Extention methods to parse JSON.
@@ -1906,6 +1907,81 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         item = item.Trim();
 
                     if (item.IsNullOrEmpty())
+                    {
+                        ErrorResponse = "A given value within the array is null or empty!";
+                        return true;
+                    }
+
+                    if (Parser(item, out T itemT))
+                        HashSet.Add(itemT);
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptionalI18NHashSet(this JSON, PropertyName, PropertyDescription,                    Parser, out HashSet,                 out ErrorResponse)
+
+        public static Boolean ParseOptionalI18NHashSet<T>(this JObject          JSON,
+                                                          String                PropertyName,
+                                                          String                PropertyDescription,
+                                                          TryJObjectParser2<T>  Parser,
+                                                          out HashSet<T>        HashSet,
+                                                          out String            ErrorResponse)
+
+            where T: I18NString
+
+        {
+
+            HashSet        = null;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+
+                // "properyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!(JSONToken is JArray JSONArray))
+                {
+                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    return true;
+                }
+
+                JObject item = null;
+                HashSet = new HashSet<T>();
+
+                foreach (var element in JSONArray)
+                {
+
+                    if (element == null)
+                    {
+                        ErrorResponse = "A given value within the array is null!";
+                        return true;
+                    }
+
+                    item = element.Value<JObject>();
+                    if (item == null)
                     {
                         ErrorResponse = "A given value within the array is null or empty!";
                         return true;
