@@ -18,9 +18,7 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -38,11 +36,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private const String MoneyRegExprString = "([^0-9]*)([\\s]*)([0-9]+[\\.\\,]?[0-9]*)([\\s]*)([^0-9]*)";
+        private const          String  MoneyRegExprString  = "([^0-9]*)([\\s]*)([0-9]+[\\.\\,]?[0-9]*)([\\s]*)([^0-9]*)";
 
-        public static readonly Regex MoneyRegExpr = new Regex(MoneyRegExprString);
-
-        private static readonly Char[] separator = new Char[] { ' ' };
+        public static readonly Regex   MoneyRegExpr        = new Regex(MoneyRegExprString);
 
         #endregion
 
@@ -92,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Return the appropriate money for the given text-representation of money.
