@@ -1593,13 +1593,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseOptional<TEnum>(this JSON, PropertyName, PropertyDescription,                            out EnumValue,               out ErrorResponse)
+        #region ParseOptionalEnum   (this JSON, PropertyName, PropertyDescription,                            out EnumValue,               out ErrorResponse)
 
-        public static Boolean ParseOptional<TEnum>(this JObject  JSON,
-                                                   String        PropertyName,
-                                                   String        PropertyDescription,
-                                                   out TEnum?    EnumValue,
-                                                   out String    ErrorResponse)
+        public static Boolean ParseOptionalEnum<TEnum>(this JObject  JSON,
+                                                       String        PropertyName,
+                                                       String        PropertyDescription,
+                                                       out TEnum?    EnumValue,
+                                                       out String    ErrorResponse)
 
             where TEnum : struct
 
@@ -1632,6 +1632,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     ErrorResponse  = "Unknown " + PropertyDescription + "!";
                     EnumValue      = null;
+                    return false;
                 }
 
                 if (Enum.TryParse(JSONValue, true, out TEnum enumValue))
