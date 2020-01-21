@@ -402,13 +402,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<String> SubTokens(this String Text, UInt16 Length)
         {
 
-            var TextCharacterEnumerator  = Text.ToCharArray().GetEnumerator();
-            var Characters               = new List<Char>();
+            var TextCharacterEnumerator = Text.ToCharArray().ToList().GetEnumerator();
+            var Characters              = new List<Char>();
 
             while (TextCharacterEnumerator.MoveNext())
             {
 
-                Characters.Add((Char) TextCharacterEnumerator.Current);
+                Characters.Add(TextCharacterEnumerator.Current);
 
                 if (Characters.Count == Length)
                 {
@@ -417,6 +417,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
+
+            if (Characters.Count > 0)
+                yield return new String(Characters.ToArray());
 
         }
 
