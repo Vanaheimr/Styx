@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2019 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2020 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Illias <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,14 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="GivenString">A string.</param>
         public static Boolean IsNullOrEmpty(this String GivenString)
-        {
-
-            if (String.IsNullOrEmpty(GivenString))
-                return true;
-
-            return String.IsNullOrEmpty(GivenString.Trim());
-
-        }
+            => String.IsNullOrEmpty(GivenString?.Trim());
 
         #endregion
 
@@ -60,14 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="GivenString">A string.</param>
         public static Boolean IsNotNullOrEmpty(this String GivenString)
-        {
-
-            if (String.IsNullOrEmpty(GivenString))
-                return false;
-
-            return !String.IsNullOrEmpty(GivenString.Trim());
-
-        }
+            => !String.IsNullOrEmpty(GivenString?.Trim());
 
         #endregion
 
@@ -81,7 +67,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String IfNotNullOrEmpty(this String           GivenString,
                                               Func<String, String>  Mapper)
 
-            => !String.IsNullOrEmpty(GivenString) ? Mapper(GivenString) : GivenString;
+            => !String.IsNullOrEmpty(GivenString)
+                   ? Mapper(GivenString)
+                   : GivenString;
 
         #endregion
 
@@ -91,12 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String       Default)
         {
 
-            if (String.IsNullOrEmpty(GivenString))
-                return Default;
-
-            GivenString = GivenString.Trim();
-
-            if (String.IsNullOrEmpty(GivenString))
+            if (String.IsNullOrEmpty(GivenString?.Trim()))
                 return Default;
 
             return GivenString;

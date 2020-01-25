@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2019 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2020 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Illias <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,25 +28,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for internationalized (I18N) multilingual texts/strings.
+    /// Extention methods for internationalized (I18N) multi-language texts/strings.
     /// </summary>
     public static class I18NStringExtentions
     {
 
         /// <summary>
-        /// The multilingual string is empty.
+        /// The multi-language string is empty.
         /// </summary>
         public static Boolean IsNullOrEmpty(this I18NString Text)
             => Text == null || !Text.Any();
 
         /// <summary>
-        /// The multilingual string is neither null nor empty.
+        /// The multi-language string is neither null nor empty.
         /// </summary>
         public static Boolean IsNeitherNullNorEmpty(this I18NString Text)
             => Text != null && Text.Any();
 
         /// <summary>
-        /// Return the first string of a multilingual string.
+        /// Return the first string of a multi-language string.
         /// </summary>
         public static String FirstText(this I18NString Text)
             => Text.Any()
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     }
 
     /// <summary>
-    /// An internationalized (I18N) multilingual text/string.
+    /// An internationalized (I18N) multi-language text/string.
     /// </summary>
     public class I18NString : IEquatable<I18NString>,
                               IEnumerable<I18NPair>
@@ -73,7 +73,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region I18NString()
 
         /// <summary>
-        /// Create a new internationalized (I18N) multilingual string.
+        /// Create a new internationalized (I18N) multi-language string.
         /// </summary>
         public I18NString()
         {
@@ -85,7 +85,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region I18NString(Language, Text)
 
         /// <summary>
-        /// Create a new internationalized (I18N) multilingual string
+        /// Create a new internationalized (I18N) multi-language string
         /// based on the given language and string.
         /// </summary>
         /// <param name="Language">The internationalized (I18N) language.</param>
@@ -101,7 +101,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region I18NString(Texts)
 
         /// <summary>
-        /// Create a new internationalized (I18N) multilingual string
+        /// Create a new internationalized (I18N) multi-language string
         /// based on the given language and string pairs.
         /// </summary>
         public I18NString(KeyValuePair<Languages, String>[] Texts)
@@ -119,7 +119,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region I18NString(I18NPairs)
 
         /// <summary>
-        /// Create a new internationalized (I18N) multilingual string
+        /// Create a new internationalized (I18N) multi-language string
         /// based on the given I18N-pairs.
         /// </summary>
         public I18NString(IEnumerable<I18NPair> I18NPairs)
@@ -137,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region I18NString(params I18NPairs)
 
         /// <summary>
-        /// Create a new internationalized (I18N) multilingual string
+        /// Create a new internationalized (I18N) multi-language string
         /// based on the given I18N-pairs.
         /// </summary>
         public I18NString(params I18NPair[] I18NPairs)
@@ -158,7 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Create(Language, Text)
 
         /// <summary>
-        /// Create a new internationalized (I18N) multilingual string
+        /// Create a new internationalized (I18N) multi-language string
         /// based on the given language and string.
         /// </summary>
         /// <param name="Language">The internationalized (I18N) language.</param>
@@ -173,7 +173,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Empty
 
         /// <summary>
-        /// Create an empty internationalized (I18N) multilingual string.
+        /// Create an empty internationalized (I18N) multi-language string.
         /// </summary>
         public static I18NString Empty
             => new I18NString();
@@ -184,7 +184,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Add a new language-text-pair to the given
-        /// internationalized (I18N) multilingual string.
+        /// internationalized (I18N) multi-language string.
         /// </summary>
         /// <param name="Language">The internationalized (I18N) language.</param>
         /// <param name="Text">The internationalized (I18N) text.</param>
@@ -208,7 +208,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Add a new language-text-pair to the given
-        /// internationalized (I18N) multilingual string.
+        /// internationalized (I18N) multi-language string.
         /// </summary>
         /// <param name="I18NPair">The internationalized (I18N) text.</param>
         public I18NString Add(I18NPair I18NPair)
@@ -272,7 +272,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Remove(Language)
 
         /// <summary>
-        /// Remove the given language from the internationalized (I18N) multilingual text.
+        /// Remove the given language from the internationalized (I18N) multi-language text.
         /// </summary>
         /// <param name="Language">The internationalized (I18N) language.</param>
         public I18NString Remove(Languages Language)
