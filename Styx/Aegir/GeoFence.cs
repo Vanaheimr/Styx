@@ -118,6 +118,21 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Create a new geo fence.
         /// </summary>
+        /// <param name="Distance">A geographical distance.</param>
+        /// <param name="Description">An optional description.</param>
+        public GeoFence(Meter       Distance,
+                        I18NString  Description = null)
+        {
+
+            this.GeoCoordinates  = null;
+            this.Distance        = Distance;
+            this.Description     = Description ?? new I18NString();
+
+        }
+
+        /// <summary>
+        /// Create a new geo fence.
+        /// </summary>
         /// <param name="GeoCoordinates">An enumeration of geo coordinates.</param>
         /// <param name="Distance">An optional geographical distance.</param>
         /// <param name="Description">An optional description.</param>
@@ -125,6 +140,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                         Meter?                      Distance,
                         I18NString                  Description = null)
         {
+
+            if (GeoCoordinates == null || !GeoCoordinates.SafeAny())
+                throw new ArgumentNullException(nameof(GeoCoordinates), "The given geo coordinates must not be null or empty!");
 
             this.GeoCoordinates  = GeoCoordinates;
             this.Distance        = Distance;
