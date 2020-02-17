@@ -168,16 +168,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                 try
                 {
-
-                    GeoFence = new GeoFence(null,
-                                            Meter.Parse(radius));
-
+                    GeoFence = new GeoFence(Meter.Parse(radius));
                     return true;
-
                 }
-                catch (Exception e)
-                {
-                }
+                catch (Exception)
+                { }
 
             }
 
@@ -199,10 +194,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             {
 
                 return JSONObject.Create(
-
                     new JProperty("type",    "circle"),
                     new JProperty("radius",  Distance.ToString())
-
                 );
 
             }
