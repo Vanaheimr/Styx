@@ -1302,7 +1302,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                            XName            XWrapperName,
                                                            XName            XElementsName,
                                                            Func<String, T>  ValueMapper,
-                                                           T                DefaultValue = default(T))
+                                                           T                DefaultValue = default)
         {
 
             #region Initial checks
