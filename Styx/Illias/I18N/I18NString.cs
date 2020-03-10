@@ -288,6 +288,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public static I18NString Parse(JObject JSON)
+        {
+
+            if (TryParse(JSON, out I18NString I18NText))
+                return I18NText;
+
+            return Empty;
+
+        }
+
+
+        public static T Parse<T>(JObject JSON)
+            where T : I18NString, new()
+        {
+
+            if (TryParse(JSON, out T I18NText))
+                return I18NText;
+
+            return new T();
+
+        }
+
         public static Boolean TryParse<T>(String Text, out T I18NText)
             where T : I18NString, new()
         {
@@ -301,30 +323,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
                 return TryParse(JObject.Parse(Text), out I18NText);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
 
         }
 
-        public static Boolean TryParse<T>(JObject jobject, out T I18NText)
+        public static Boolean TryParse<T>(JObject JSON, out T I18NText)
             where T : I18NString, new()
         {
 
             I18NText = new T();
 
-            if (jobject == null)
+            if (JSON == null)
                 return true;
 
-            foreach (var jproperty in jobject)
+            foreach (var JSONProperty in JSON)
             {
 
                 try
                 {
 
-                    I18NText.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
-                                 jproperty.Value.Value<String>());
+                    I18NText.Add((Languages) Enum.Parse(typeof(Languages), JSONProperty.Key),
+                                 JSONProperty.Value.Value<String>());
 
                 }
                 catch (Exception e)
