@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An optional dictionary of customer-specific data.
         /// </summary>
-        public Dictionary<String, Object>  CustomData   { get; }
+        private Dictionary<String, Object>  InternalData   { get; }
 
         #endregion
 
@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         protected ACustomData(Dictionary<String, Object> CustomData)
         {
-            this.CustomData = CustomData;
+            this.InternalData = CustomData ?? new Dictionary<String, Object>();
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         protected ACustomData(IReadOnlyDictionary<String, Object> CustomData)
         {
-            this.CustomData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+            this.InternalData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
         }
 
         /// <summary>
@@ -64,38 +64,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         protected ACustomData(IEnumerable<KeyValuePair<String, Object>> CustomData = null)
         {
-            this.CustomData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+            this.InternalData = (CustomData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
         }
 
         #endregion
 
 
+        public IEnumerable<KeyValuePair<String, Object>> CustomData
+            => InternalData;
+
+
         public Boolean HasCustomData
-            => CustomData != null && CustomData.Count > 0;
+            => InternalData != null && InternalData.Count > 0;
 
         public Boolean IsDefined(String Key)
         {
 
-            if (CustomData == null)
+            if (InternalData == null)
                 return false;
 
             if (Key.IsNullOrEmpty())
                 return false;
 
-            return CustomData.TryGetValue(Key, out Object _Value);
+            return InternalData.TryGetValue(Key, out Object _Value);
 
         }
 
         public Boolean IsDefined(String Key, Object Value)
         {
 
-            if (CustomData == null)
+            if (InternalData == null)
                 return false;
 
             if (Key.IsNullOrEmpty())
                 return false;
 
-            if (CustomData.TryGetValue(Key, out Object _Value))
+            if (InternalData.TryGetValue(Key, out Object _Value))
                 return Value.Equals(_Value);
 
             return false;
@@ -105,10 +109,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Object GetCustomData(String Key)
         {
 
-            if (CustomData == null)
+            if (InternalData == null)
                 return null;
 
-            if (CustomData.TryGetValue(Key, out Object _Value))
+            if (InternalData.TryGetValue(Key, out Object _Value))
                 return _Value;
 
             return null;
@@ -118,13 +122,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public T GetCustomDataAs<T>(String Key)
         {
 
-            if (CustomData == null)
-                return default(T);
+            if (InternalData == null)
+                return default;
 
             try
             {
 
-                if (CustomData.TryGetValue(Key, out Object _Value))
+                if (InternalData.TryGetValue(Key, out Object _Value))
                     return (T) _Value;
 
             }
@@ -133,33 +137,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
             { }
 #pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
 
-            return default(T);
+            return default;
 
         }
 
         public Boolean TryGetCustomData(String Key, out Object Value)
         {
 
-            if (CustomData == null)
+            if (InternalData == null)
             {
                 Value = null;
                 return false;
             }
 
-            return CustomData.TryGetValue(Key, out Value);
+            return InternalData.TryGetValue(Key, out Value);
 
         }
 
         public Boolean TryGetCustomDataAs<T>(String Key, out T Value)
         {
 
-            if (CustomData != null)
+            if (InternalData != null)
             {
 
                 try
                 {
 
-                    if (CustomData.TryGetValue(Key, out Object _Value))
+                    if (InternalData.TryGetValue(Key, out Object _Value))
                     {
                         Value = (T)_Value;
                         return true;
@@ -173,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            Value = default(T);
+            Value = default;
             return false;
 
         }
@@ -183,9 +187,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               Action<Object>  ValueDelegate)
         {
 
-            if (CustomData    != null &&
+            if (InternalData    != null &&
                 ValueDelegate != null &&
-                CustomData.TryGetValue(Key, out Object Value))
+                InternalData.TryGetValue(Key, out Object Value))
             {
                 ValueDelegate(Value);
             }
@@ -196,9 +200,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                    Action<T>  ValueDelegate)
         {
 
-            if (CustomData    != null &&
+            if (InternalData    != null &&
                 ValueDelegate != null &&
-                CustomData.TryGetValue(Key, out Object Value))
+                InternalData.TryGetValue(Key, out Object Value))
             {
 
                 try
