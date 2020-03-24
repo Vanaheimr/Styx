@@ -22,6 +22,7 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -31,11 +32,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class WarningsExtentions
     {
 
-        public static Boolean IsNotNullOrEmpty(this Warning Warning)
-            => Warning != null && Warning.Text.IsNotNullOrEmpty();
+        public static Boolean IsNeitherNullNorEmpty(this Warning Warning)
+            => Warning != null && Warning.Text.IsNeitherNullNorEmpty();
 
         public static IList<Warning> AddAndReturnList(this IList<Warning>  Warnings,
-                                                      String               Text)
+                                                      I18NString           Text)
             => Warnings?.AddAndReturnList(Warning.Create(Text));
 
     }
@@ -43,28 +44,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public class Warning
     {
 
-        public String  Text      { get; }
-        public Object  Context   { get; }
+        public I18NString  Text      { get; }
+        public Object      Context   { get; }
 
-        private Warning(String  Text,
-                        Object  Context  = null)
+        private Warning(I18NString  Text,
+                        Object      Context  = null)
         {
 
-            this.Text     = Text?.Trim();
+            this.Text     = Text;
             this.Context  = Context;
 
         }
 
 
-        public static Warning Create(String  Text,
-                                     Object  Warning  = null)
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                   new JProperty("text",            Text.   ToJSON()),
+
+                   Context != null
+                       ? new JProperty("context",   Context.ToString())
+                       : null);
+
+
+        public static Warning Create(I18NString  Text,
+                                     Object      Warning  = null)
 
             => new Warning(Text,
                            Warning);
 
 
         public override String ToString()
-            => Text;
+            => Text.FirstText();
 
     }
 
