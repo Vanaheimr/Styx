@@ -30,35 +30,80 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// ISO 4217 currencies.
     /// </summary>
     /// <seealso cref="https://de.wikipedia.org/wiki/ISO_4217" />
-    public class Currency : IComparable, IComparable<Currency>, IEquatable<Currency>
+    public class Currency : IComparable,
+                            IComparable<Currency>,
+                            IEquatable<Currency>
     {
+
+        #region (enum) Symbol_Location
+
+        /// <summary>
+        /// The location of the currency symbol in relation to its numeric value.
+        /// </summary>
+        public enum Symbol_Location
+        {
+
+            /// <summary>
+            /// No symbol defined.
+            /// </summary>
+            NoSymbol,
+
+            /// <summary>
+            /// e.g. "15€"
+            /// </summary>
+            behind,
+
+            /// <summary>
+            /// e.g. "15 €"
+            /// </summary>
+            behindSpace,
+
+            /// <summary>
+            /// e.g. "$15"
+            /// </summary>
+            before,
+
+            /// <summary>
+            /// e.g. "$ 15"
+            /// </summary>
+            beforeSpace
+
+        }
+
+        #endregion
+
 
         #region Properties
 
         /// <summary>
         /// The ISO code of the currency.
         /// </summary>
-        public String                ISOCode      { get; }
+        public String                ISOCode           { get; }
 
         /// <summary>
         /// The numeric code of the currency.
         /// </summary>
-        public UInt16                Numeric      { get; }
+        public UInt16                Numeric           { get; }
 
         /// <summary>
         /// The symbol of the currency, e.g. '€' or '$'.
         /// </summary>
-        public String                Symbol       { get; }
+        public String                Symbol            { get; }
+
+        /// <summary>
+        /// The location of the currency symbol in relation to its numeric value.
+        /// </summary>
+        public Symbol_Location       SymbolLocation    { get; }
 
         /// <summary>
         /// The name of the currency.
         /// </summary>
-        public String                Name         { get; }
+        public String                Name              { get; }
 
         /// <summary>
         /// Countries using this currency.
         /// </summary>
-        public IEnumerable<Country>  Countries    { get; }
+        public IEnumerable<Country>  Countries         { get; }
 
         #endregion
 
@@ -70,20 +115,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ISOCode">The ISO code of the currency.</param>
         /// <param name="Numeric">The numeric code of the currency.</param>
         /// <param name="Symbol">The symbol of the currency, e.g. '€' or '$'.</param>
+        /// <param name="SymbolLocation">The location of the currency symbol in relation to its numeric value.</param>
         /// <param name="Name">The name of the currency.</param>
         /// <param name="Countries">Countries using this currency.</param>
-        public Currency(String            ISOCode,
+        public Currency(String            Name,
+                        String            ISOCode,
                         UInt16            Numeric,
                         String            Symbol,
-                        String            Name,
+                        Symbol_Location   SymbolLocation,
                         params Country[]  Countries)
         {
 
-            this.ISOCode    = ISOCode;
-            this.Numeric    = Numeric;
-            this.Symbol     = Symbol;
-            this.Name       = Name;
-            this.Countries  = Countries;
+            if (Name?.   Trim().IsNullOrEmpty() == true)
+                throw new ArgumentNullException(nameof(Name),     "The given name of the currency must not be null or empty!");
+
+            if (ISOCode?.Trim().IsNullOrEmpty() == true)
+                throw new ArgumentNullException(nameof(ISOCode),  "The given ISO code of the currency must not be null or empty!");
+
+            this.Name            = Name.   Trim();
+            this.ISOCode         = ISOCode.Trim();
+            this.Numeric         = Numeric;
+            this.Symbol          = Symbol?.Trim().IsNullOrEmpty() == false ? Symbol.Trim() : null;
+            this.SymbolLocation  = this.Symbol != null ? SymbolLocation : Symbol_Location.NoSymbol;
+            this.Countries       = Countries;
 
         }
 
@@ -92,21 +146,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region List of currencies...
 
-        public static readonly Currency CHF = new Currency("CHF", 756,  "", "Schweizer Franken", Country.Switzerland);
-        public static readonly Currency EUR = new Currency("EUR", 978, "€", "Euro",              Country.Belgium, Country.Germany,   Country.Estonia,  Country.Finland,  Country.Luxembourg,
-                                                                                                 Country.Greece,  Country.Ireland,   Country.Italy,    Country.Latvia,   Country.Montenegro,
-                                                                                                 Country.Malta,   Country.Austria,   Country.Portugal, Country.Slovakia, Country.VaticanState,
-                                                                                                 Country.Spain,   Country.Cyprus,    Country.Andorra,  Country.Monaco,   Country.Netherlands,
-                                                                                                 Country.France,  Country.SanMarino, Country.Slovenia, Country.Lithuania);
-        public static readonly Currency CZK = new Currency("CZK", 203,  "", "Kronen",            Country.CzechRepublic);
-        public static readonly Currency GBP = new Currency("GBP", 826,  "", "Pfund",             Country.UnitedKingdom);
-        public static readonly Currency HRK = new Currency("HRK", 191,  "", "Kuna",              Country.Croatia);
-        public static readonly Currency PLN = new Currency("PLN", 985,  "", "Zloty",             Country.Poland);
-        public static readonly Currency RON = new Currency("RON", 946,  "", "Leu",               Country.Romania);
-        public static readonly Currency RSD = new Currency("RSD", 941,  "", "Dinar",             Country.Serbia);
-        public static readonly Currency RUB = new Currency("RUB", 643,  "", "Rubel",             Country.RussianFederation);
-        public static readonly Currency SEK = new Currency("SEK", 752,  "", "Krone",             Country.Sweden);
-        public static readonly Currency USD = new Currency("USD", 840, "$", "US Dollar",         Country.UnitedStatesOfAmerica);
+        /// <summary>
+        /// Euro, €
+        /// </summary>
+        public static readonly Currency EUR = new Currency("Euro",              "EUR", 978, "€",   Symbol_Location.behind,   Country.Belgium, Country.Germany,   Country.Estonia,  Country.Finland,  Country.Luxembourg,
+                                                                                                                             Country.Greece,  Country.Ireland,   Country.Italy,    Country.Latvia,   Country.Montenegro,
+                                                                                                                             Country.Malta,   Country.Austria,   Country.Portugal, Country.Slovakia, Country.VaticanState,
+                                                                                                                             Country.Spain,   Country.Cyprus,    Country.Andorra,  Country.Monaco,   Country.Netherlands,
+                                                                                                                             Country.France,  Country.SanMarino, Country.Slovenia, Country.Lithuania);
+
+        /// <summary>
+        /// Schweizer Franken
+        /// </summary>
+        public static readonly Currency CHF = new Currency("Schweizer Franken", "CHF", 756,  null, Symbol_Location.NoSymbol, Country.Switzerland);
+
+        /// <summary>
+        /// US Dollar, $
+        /// </summary>
+        public static readonly Currency USD = new Currency("US Dollar",         "USD", 840, "$",   Symbol_Location.before,   Country.UnitedStatesOfAmerica);
+
+        public static readonly Currency CZK = new Currency("Kronen",            "CZK", 203,  null, Symbol_Location.NoSymbol, Country.CzechRepublic);
+        public static readonly Currency GBP = new Currency("Pfund",             "GBP", 826,  null, Symbol_Location.NoSymbol, Country.UnitedKingdom);
+        public static readonly Currency HRK = new Currency("Kuna",              "HRK", 191,  null, Symbol_Location.NoSymbol, Country.Croatia);
+        public static readonly Currency PLN = new Currency("Zloty",             "PLN", 985,  null, Symbol_Location.NoSymbol, Country.Poland);
+        public static readonly Currency RON = new Currency("Leu",               "RON", 946,  null, Symbol_Location.NoSymbol, Country.Romania);
+        public static readonly Currency RSD = new Currency("Dinar",             "RSD", 941,  null, Symbol_Location.NoSymbol, Country.Serbia);
+        public static readonly Currency RUB = new Currency("Rubel",             "RUB", 643,  null, Symbol_Location.NoSymbol, Country.RussianFederation);
+        public static readonly Currency SEK = new Currency("Krone",             "SEK", 752,  null, Symbol_Location.NoSymbol, Country.Sweden);
 
         #endregion
 
@@ -123,7 +189,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return (from   _FieldInfo in typeof(Currency).GetFields()
                     let    __Currency = _FieldInfo.GetValue(null) as Currency
                     where  __Currency != null
-                    where (__Currency.ISOCode == Text || __Currency.Name == Text)
+                    where  __Currency.ISOCode == Text || __Currency.Name == Text
                     select __Currency).FirstOrDefault();
 
         }
@@ -266,7 +332,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is Currency Currency))
@@ -310,8 +376,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return ISOCode.GetHashCode() * 17 ^
-                       Numeric.GetHashCode() * 23 ^
+                return ISOCode.GetHashCode() * 5 ^
+                       Numeric.GetHashCode() * 3 ^
                        Name.   GetHashCode();
             }
         }

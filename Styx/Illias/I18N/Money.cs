@@ -345,7 +345,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Value, " ", Currency);
+            => Currency.SymbolLocation switch {
+                Currency.Symbol_Location.before       => Currency.Symbol +       Value,
+                Currency.Symbol_Location.beforeSpace  => Currency.Symbol + " " + Value,
+                Currency.Symbol_Location.behind       => Value           +       Currency.Symbol,
+                Currency.Symbol_Location.behindSpace  => Value           + " " + Currency.Symbol,
+                _                                     => Value.ToString(),
+            };
 
         #endregion
 
