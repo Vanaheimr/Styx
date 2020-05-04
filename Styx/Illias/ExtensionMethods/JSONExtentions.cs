@@ -1410,7 +1410,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 : JSONToken.ToString(),
                             out TStruct value))
                 {
-                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "!";
+                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
                 }
 
                 Value = value;
@@ -1464,7 +1464,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
 
                     Value          = default;
-                    ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "!";
+                    ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
 
                 }
 
