@@ -53,6 +53,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    ? Text.First().Text
                    : null;
 
+        /// <summary>
+        /// Return the first string of a multi-language string.
+        /// </summary>
+        public static I18NString ToI18NString(this String  Text,
+                                              Languages    Language = Languages.eng)
+            => Text.IsNotNullOrEmpty()
+                   ? I18NString.Create(Language, Text)
+                   : null;
+
     }
 
     /// <summary>
