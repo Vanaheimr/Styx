@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return the first string of a multi-language string.
         /// </summary>
         public static String FirstText(this I18NString Text)
-            => Text.Any()
+            => Text != null && Text.Any()
                    ? Text.First().Text
                    : null;
 
