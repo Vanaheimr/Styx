@@ -479,7 +479,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ParseMandatoryEnum<TEnum>(this JSON, PropertyName, PropertyDescription,                               out EnumValue,              out ErrorResponse)
+        #region ParseMandatoryEnum<TEnum>(this JSON, PropertyName, PropertyDescription,                           out EnumValue,              out ErrorResponse)
 
         public static Boolean ParseMandatoryEnum<TEnum>(this JObject  JSON,
                                                         String        PropertyName,
@@ -931,6 +931,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out TimeSpan,               out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out TimeSpan  TimeSpan,
+                                             out String    ErrorResponse)
+
+        {
+
+            TimeSpan = TimeSpan.MinValue;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                TimeSpan = TimeSpan.FromSeconds(JSONToken.Value<UInt32>());
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out I18NText,               out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject    JSON,
@@ -1092,7 +1141,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                          out StringArray,                 out ErrorResponse)
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out StringArray,            out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject             JSON,
                                              String                   PropertyName,
