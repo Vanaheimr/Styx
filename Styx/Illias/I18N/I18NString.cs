@@ -297,6 +297,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public static I18NString Parse(String Text)
+        {
+
+            if (TryParse(Text, out I18NString I18NText))
+                return I18NText;
+
+            return Empty;
+
+        }
+
+
         public static I18NString Parse(JObject JSON)
         {
 

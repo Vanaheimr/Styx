@@ -346,7 +346,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Value == null)
                 return false;
 
-            if (Timestamp.Equals(Timestamped.Timestamp))
+            if (!Timestamp.Equals(Timestamped.Timestamp))
                 return false;
 
             return Value.Equals(Timestamped.Value);
