@@ -1528,6 +1528,188 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,            out ErrorResponse)
+
+        public static Boolean ParseMandatory<T>(this JObject         JSON,
+                                                String               PropertyName,
+                                                String               PropertyDescription,
+                                                TryJObjectParser<T>  TryJObjectParser,
+                                                out IEnumerable<T>   EnumerationOfT,
+                                                out String           ErrorResponse)
+        {
+
+            EnumerationOfT = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (!(JSONToken is JArray JArray))
+                {
+                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    return false;
+                }
+
+                var ListOfT = new List<T>();
+
+                foreach (var item in JArray)
+                {
+                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT))
+                        ListOfT.Add(ItemT);
+                }
+
+                EnumerationOfT = ListOfT;
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        public static Boolean ParseMandatory<T>(this JObject          JSON,
+                                                String                PropertyName,
+                                                String                PropertyDescription,
+                                                TryJObjectParser2<T>  TryJObjectParser,
+                                                out IEnumerable<T>    EnumerationOfT,
+                                                out String            ErrorResponse)
+        {
+
+            EnumerationOfT = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (!(JSONToken is JArray JArray))
+                {
+                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    return false;
+                }
+
+                var ListOfT = new List<T>();
+
+                foreach (var item in JArray)
+                {
+                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out String errorResponse))
+                        ListOfT.Add(ItemT);
+                }
+
+                EnumerationOfT = ListOfT;
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        public static Boolean ParseMandatory<T>(this JObject          JSON,
+                                                String                PropertyName,
+                                                String                PropertyDescription,
+                                                TryJObjectParser3<T>  TryJObjectParser,
+                                                out IEnumerable<T>    EnumerationOfT,
+                                                out String            ErrorResponse)
+        {
+
+            EnumerationOfT = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (!(JSONToken is JArray JArray))
+                {
+                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    return false;
+                }
+
+                var ListOfT = new List<T>();
+
+                foreach (var item in JArray)
+                {
+                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, null))
+                        ListOfT.Add(ItemT);
+                }
+
+                EnumerationOfT = ListOfT;
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+
 
         // Mandatory multiple values...
 
