@@ -740,10 +740,37 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             }
 
-            GeoLocation = default(GeoCoordinate);
+            GeoLocation = default;
             return false;
 
         }
+
+
+        #region ToJSON()
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        public JObject ToJSON()
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("lat",  Latitude. ToString()),
+                           new JProperty("lng",  Longitude.ToString()),
+
+                           Altitude.HasValue
+                               ? new JProperty("alt",  Altitude.ToString())
+                               : null
+
+                       );
+
+
+            return JSON;
+
+        }
+
+        #endregion
 
 
         #region DistanceTo(Target)
