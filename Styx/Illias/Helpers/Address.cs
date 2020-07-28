@@ -312,6 +312,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #region Parse PostalCode       [optional]
 
                 if (JSONObject.ParseOptional("postalCode",
+                                             "postal code",
                                              out String postalCode,
                                              out ErrorResponse))
                 {
@@ -326,6 +327,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #region Parse postalCodeSub    [optional]
 
                 if (JSONObject.ParseOptional("postalCodeSub",
+                                             "postal code sub",
                                              out String postalCodeSub,
                                              out ErrorResponse))
                 {
@@ -355,6 +357,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #region Parse Street           [optional]
 
                 if (JSONObject.ParseOptional("street",
+                                             "street",
                                              out String street,
                                              out ErrorResponse))
                 {
@@ -369,6 +372,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #region Parse HouseNumber      [optional]
 
                 if (JSONObject.ParseOptional("houseNumber",
+                                             "house number",
                                              out String houseNumber,
                                              out ErrorResponse))
                 {
@@ -383,6 +387,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #region Parse FloorLevel       [optional]
 
                 if (JSONObject.ParseOptional("floorLevel",
+                                             "floor level",
                                              out String floorLevel,
                                              out ErrorResponse))
                 {

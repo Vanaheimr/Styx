@@ -63,29 +63,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetString            (this JSON, PropertyName)
+        #region GetString            (this JSON, PropertyName, DefaultValue = default)
 
         public static String GetString(this JObject  JSON,
-                                       String        PropertyName)
+                                       String        PropertyName,
+                                       String        DefaultValue = default)
         {
 
-            if (JSON == null || PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-                return null;
+            PropertyName = PropertyName?.Trim();
 
-            return JSON[PropertyName]?.Value<String>();
+            if (JSON == null || PropertyName.IsNullOrEmpty())
+                return DefaultValue;
+
+            var value = JSON[PropertyName]?.Value<String>()?.Trim();
+
+            return value.IsNotNullOrEmpty()
+                       ? value
+                       : DefaultValue;
 
         }
 
         #endregion
 
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Text,                   out ErrorResponse)
+        #region ParseMandatoryText   (this JSON, PropertyName, PropertyDescription,                               out Text,                   out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out String    Text,
-                                             out String    ErrorResponse)
+        public static Boolean ParseMandatoryText(this JObject  JSON,
+                                                 String        PropertyName,
+                                                 String        PropertyDescription,
+                                                 out String    Text,
+                                                 out String    ErrorResponse)
         {
 
             Text = String.Empty;
@@ -123,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -134,17 +141,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory<T>    (this JSON, PropertyName, PropertyDescription,                   Mapper,     out Value,                  out ErrorResponse)
+        #region MapMandatory         (this JSON, PropertyName, PropertyDescription,                      Mapper,  out Value,                  out ErrorResponse)
 
-        public static Boolean ParseMandatory<T>(this JObject     JSON,
-                                                String           PropertyName,
-                                                String           PropertyDescription,
-                                                Func<String, T>  Mapper,
-                                                out T            Value,
-                                                out String       ErrorResponse)
+        public static Boolean MapMandatory<T>(this JObject     JSON,
+                                              String           PropertyName,
+                                              String           PropertyDescription,
+                                              Func<String, T>  Mapper,
+                                              out T            Value,
+                                              out String       ErrorResponse)
         {
 
-            Value = default(T);
+            Value = default;
 
             if (JSON == null)
             {
@@ -190,74 +197,74 @@ namespace org.GraphDefined.Vanaheimr.Illias
 #pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            Value          = default(T);
-            ErrorResponse  = "Invalid " + PropertyDescription ?? PropertyName + "!";
+            Value          = default;
+            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
             return false;
 
         }
 
-        public static Boolean ParseMandatory<T>(this JObject     JSON,
-                                                String           PropertyName,
-                                                String           PropertyDescription,
-                                                Func<String, T>  Mapper,
-                                                out T?           Value,
-                                                out String       ErrorResponse)
+//        public static Boolean ParseMandatory<T>(this JObject     JSON,
+//                                                String           PropertyName,
+//                                                String           PropertyDescription,
+//                                                Func<String, T>  Mapper,
+//                                                out T?           Value,
+//                                                out String       ErrorResponse)
 
-            where T : struct
+//            where T : struct
 
-        {
+//        {
 
-            Value = null;
+//            Value = null;
 
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
+//            if (JSON == null)
+//            {
+//                ErrorResponse = "Invalid JSON provided!";
+//                return false;
+//            }
 
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
+//            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+//            {
+//                ErrorResponse = "Invalid JSON property name provided!";
+//                return false;
+//            }
 
-            if (Mapper == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
+//            if (Mapper == null)
+//            {
+//                ErrorResponse = "Invalid mapper provided!";
+//                return false;
+//            }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
-                return false;
-            }
+//            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+//            {
+//                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+//                return false;
+//            }
 
-            try
-            {
+//            try
+//            {
 
-                var JSONValue = JSONToken?.Value<String>()?.Trim();
+//                var JSONValue = JSONToken?.Value<String>()?.Trim();
 
-                if (JSONValue.IsNeitherNullNorEmpty())
-                {
-                    Value          = Mapper(JSONValue);
-                    ErrorResponse  = null;
-                    return true;
-                }
+//                if (JSONValue.IsNeitherNullNorEmpty())
+//                {
+//                    Value          = Mapper(JSONValue);
+//                    ErrorResponse  = null;
+//                    return true;
+//                }
 
-            }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
-            { }
+//            }
+//#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+//#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+//            catch (Exception)
+//#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+//#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+//            { }
 
-            Value          = null;
-            ErrorResponse  = "Invalid " + PropertyDescription ?? PropertyName + "!";
-            return false;
+//            Value          = null;
+//            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+//            return false;
 
-        }
+//        }
 
         #endregion
 
@@ -308,64 +315,64 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid " + PropertyDescription ?? PropertyName + "!";
+            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
             return false;
 
         }
 
-        public static Boolean ParseMandatory<T>(this JObject  JSON,
-                                                String        PropertyName,
-                                                String        PropertyDescription,
-                                                TryParser<T>  TryParser,
-                                                out T?        Value,
-                                                out String    ErrorResponse)
+        //public static Boolean ParseMandatoryS<T>(this JObject  JSON,
+        //                                        String        PropertyName,
+        //                                        String        PropertyDescription,
+        //                                        TryParser<T>  TryParser,
+        //                                        out T?        Value,
+        //                                        out String    ErrorResponse)
 
-            where T : struct
+        //    where T : struct
 
-        {
+        //{
 
-            Value = null;
+        //    Value = null;
 
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
+        //    if (JSON == null)
+        //    {
+        //        ErrorResponse = "Invalid JSON provided!";
+        //        return false;
+        //    }
 
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
+        //    if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+        //    {
+        //        ErrorResponse = "Invalid JSON property name provided!";
+        //        return false;
+        //    }
 
-            if (TryParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
+        //    if (TryParser == null)
+        //    {
+        //        ErrorResponse = "Invalid mapper provided!";
+        //        return false;
+        //    }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
-                return false;
-            }
+        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    {
+        //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+        //        return false;
+        //    }
 
-            var JSONValue = JSONToken?.Value<String>()?.Trim();
+        //    var JSONValue = JSONToken?.Value<String>()?.Trim();
 
-            if (JSONValue.IsNeitherNullNorEmpty() &&
-                //!TryParser(JSONValue, out T _Value))
-                TryParser(JSONValue, out T _Value))
-            {
-                Value          = _Value;
-                ErrorResponse  = null;
-                return true;
-            }
+        //    if (JSONValue.IsNeitherNullNorEmpty() &&
+        //        //!TryParser(JSONValue, out T _Value))
+        //        TryParser(JSONValue, out T _Value))
+        //    {
+        //        Value          = _Value;
+        //        ErrorResponse  = null;
+        //        return true;
+        //    }
 
-            Value          = null;
-            ErrorResponse  = "Invalid " + PropertyDescription ?? PropertyName + "!";
-            return false;
+        //    Value          = null;
+        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    return false;
 
-        }
+        //}
 
         public static Boolean ParseMandatory<T>(this JObject  JSON,
                                                 String        PropertyName,
@@ -411,23 +418,75 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid " + PropertyDescription ?? PropertyName + "!";
+            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
             return false;
 
         }
 
-        public static Boolean ParseMandatory<T>(this JObject  JSON,
-                                                String        PropertyName,
-                                                String        PropertyDescription,
-                                                TryParser2<T> TryParser,
-                                                out T?        Value,
-                                                out String    ErrorResponse)
+        //public static Boolean ParseMandatory<T>(this JObject  JSON,
+        //                                        String        PropertyName,
+        //                                        String        PropertyDescription,
+        //                                        TryParser2<T> TryParser,
+        //                                        out T?        Value,
+        //                                        out String    ErrorResponse)
 
-            where T : struct
+        //    where T : struct
 
+        //{
+
+        //    Value = null;
+
+        //    if (JSON == null)
+        //    {
+        //        ErrorResponse = "Invalid JSON provided!";
+        //        return false;
+        //    }
+
+        //    if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+        //    {
+        //        ErrorResponse = "Invalid JSON property name provided!";
+        //        return false;
+        //    }
+
+        //    if (TryParser == null)
+        //    {
+        //        ErrorResponse = "Invalid mapper provided!";
+        //        return false;
+        //    }
+
+        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    {
+        //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+        //        return false;
+        //    }
+
+        //    var JSONValue = JSONToken?.Value<String>()?.Trim();
+
+        //    if (JSONValue.IsNeitherNullNorEmpty() &&
+        //        TryParser(JSONValue, out T value, out String errorResponse))
+        //    {
+        //        Value          = value;
+        //        ErrorResponse  = null;
+        //        return true;
+        //    }
+
+        //    Value          = null;
+        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    return false;
+
+        //}
+
+
+        public static Boolean ParseMandatory3<T>(this JObject         JSON,
+                                                String               PropertyName,
+                                                String               PropertyDescription,
+                                                TryParser3<T>        TryParser,
+                                                out T                Value,
+                                                out String           ErrorResponse,
+                                                OnExceptionDelegate  OnException)
         {
 
-            Value = null;
+            Value = default;
 
             if (JSON == null)
             {
@@ -456,408 +515,77 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var JSONValue = JSONToken?.Value<String>()?.Trim();
 
             if (JSONValue.IsNeitherNullNorEmpty() &&
-                TryParser(JSONValue, out T value, out String errorResponse))
+                TryParser(JSONValue, out Value, OnException))
             {
-                Value          = value;
-                ErrorResponse  = null;
+                ErrorResponse = null;
                 return true;
             }
 
-            Value          = null;
-            ErrorResponse  = "Invalid " + PropertyDescription ?? PropertyName + "!";
+            Value          = default;
+            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
             return false;
 
         }
 
-        #endregion
-
-        #region ParseMandatory<T>    (this JSON, PropertyName, PropertyDescription,                   TryJObjectParser,  out Value,                  out ErrorResponse)
-
-        public static Boolean ParseMandatory<T>(this JObject         JSON,
-                                                String               PropertyName,
-                                                String               PropertyDescription,
-                                                TryJObjectParser<T>  TryJObjectParser,
-                                                out T                Value,
-                                                out String           ErrorResponse)
-        {
-
-            Value = default;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (TryJObjectParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!(JSONToken is JObject JSONValue))
-            {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!TryJObjectParser(JSONValue, out T value))
-            {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
-                return false;
-            }
-
-            Value         = value;
-            ErrorResponse = null;
-            return true;
-
-        }
-
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
-                                                String                PropertyName,
-                                                String                PropertyDescription,
-                                                TryJObjectParser2<T>  TryJObjectParser,
-                                                out T                 Value,
-                                                out String            ErrorResponse)
-
-            where T : struct
-
-        {
-
-            Value = default;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (TryJObjectParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!(JSONToken is JObject JSONValue))
-            {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!TryJObjectParser(JSONValue, out T value, out String errorResponse))
-            {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
-                return false;
-            }
-
-            Value         = value;
-            ErrorResponse = null;
-            return true;
- 
-        }
-
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
-                                                String                PropertyName,
-                                                String                PropertyDescription,
-                                                TryJObjectParser3<T>  TryJObjectParser,
-                                                out T                 Value,
-                                                out String            ErrorResponse,
-                                                OnExceptionDelegate   OnException  = null)
-
-            where T : struct
-
-        {
-
-            Value = default;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (TryJObjectParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!(JSONToken is JObject JSONValue))
-            {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!TryJObjectParser(JSONValue, out T value, OnException))
-            {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
-                return false;
-            }
-
-            Value         = value;
-            ErrorResponse = null;
-            return true;
- 
-        }
-
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
-                                                String                PropertyName,
-                                                String                PropertyDescription,
-                                                TryJObjectParser<T>  TryJObjectParser,
-                                                out T?                Value,
-                                                out String            ErrorResponse)
-
-            where T : struct
-
-        {
-
-            Value = default;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (TryJObjectParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!(JSONToken is JObject JSONValue))
-            {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!TryJObjectParser(JSONValue, out T value))
-            {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
-                return false;
-            }
-
-            Value         = value;
-            ErrorResponse = null;
-            return true;
- 
-        }
-
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
-                                                String                PropertyName,
-                                                String                PropertyDescription,
-                                                TryJObjectParser2<T>  TryJObjectParser,
-                                                out T?                Value,
-                                                out String            ErrorResponse)
-
-            where T : struct
-
-        {
-
-            Value = default;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (TryJObjectParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!(JSONToken is JObject JSONValue))
-            {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!TryJObjectParser(JSONValue, out T value, out String errorResponse))
-            {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
-                return false;
-            }
-
-            Value         = value;
-            ErrorResponse = null;
-            return true;
- 
-        }
-
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
-                                                String                PropertyName,
-                                                String                PropertyDescription,
-                                                TryJObjectParser3<T>  TryJObjectParser,
-                                                out T?                Value,
-                                                out String            ErrorResponse,
-                                                OnExceptionDelegate   OnException  = null)
-
-            where T : struct
-
-        {
-
-            Value = default;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (TryJObjectParser == null)
-            {
-                ErrorResponse = "Invalid mapper provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!(JSONToken is JObject JSONValue))
-            {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
-                return false;
-            }
-
-            if (!TryJObjectParser(JSONValue, out T value, OnException))
-            {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
-                return false;
-            }
-
-            Value         = value;
-            ErrorResponse = null;
-            return true;
- 
-        }
-
+        //public static Boolean ParseMandatory<T>(this JObject         JSON,
+        //                                        String               PropertyName,
+        //                                        String               PropertyDescription,
+        //                                        TryParser3<T>        TryParser,
+        //                                        out T?               Value,
+        //                                        out String           ErrorResponse,
+        //                                        OnExceptionDelegate  OnException)
+
+        //    where T : struct
+
+        //{
+
+        //    Value = null;
+
+        //    if (JSON == null)
+        //    {
+        //        ErrorResponse = "Invalid JSON provided!";
+        //        return false;
+        //    }
+
+        //    if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+        //    {
+        //        ErrorResponse = "Invalid JSON property name provided!";
+        //        return false;
+        //    }
+
+        //    if (TryParser == null)
+        //    {
+        //        ErrorResponse = "Invalid mapper provided!";
+        //        return false;
+        //    }
+
+        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    {
+        //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+        //        return false;
+        //    }
+
+        //    var JSONValue = JSONToken?.Value<String>()?.Trim();
+
+        //    if (JSONValue.IsNeitherNullNorEmpty() &&
+        //        TryParser(JSONValue, out T value, OnException))
+        //    {
+        //        Value          = value;
+        //        ErrorResponse  = null;
+        //        return true;
+        //    }
+
+        //    Value          = null;
+        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    return false;
+
+        //}
 
         #endregion
 
 
-        #region ParseMandatoryEnum<TEnum>(this JSON, PropertyName, PropertyDescription,                           out EnumValue,              out ErrorResponse)
 
-        public static Boolean ParseMandatoryEnum<TEnum>(this JObject  JSON,
-                                                        String        PropertyName,
-                                                        String        PropertyDescription,
-                                                        out TEnum     EnumValue,
-                                                        out String    ErrorResponse)
-
-             where TEnum : struct
-
-        {
-
-            EnumValue = default(TEnum);
-
-            if (JSON == null)
-            {
-                ErrorResponse = "Invalid JSON provided!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
-                return false;
-            }
-
-            if (JSONToken == null ||
-                !Enum.TryParse(JSONToken.Value<String>(), true, out EnumValue))
-            {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
-                return false;
-            }
-
-            ErrorResponse = null;
-            return true;
-
-        }
-
-        #endregion
-
+        #region ParseMandatory...    (this JSON, PropertyName, PropertyDescription,                               out Numbers...,             out ErrorResponse)
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Boolean,                out ErrorResponse)
 
@@ -868,7 +596,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            BooleanValue = default(Boolean);
+            BooleanValue = default;
 
             if (JSON == null)
             {
@@ -890,7 +618,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (JSONToken == null || JSONToken.Type == JTokenType.Null)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -900,7 +628,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception e)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -911,7 +639,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Single,                 out ErrorResponse)
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Single/Double,          out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject  JSON,
                                              String        PropertyName,
@@ -920,7 +648,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            SingleValue = default(Single);
+            SingleValue = default;
 
             if (JSON == null)
             {
@@ -943,7 +671,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !Single.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out SingleValue))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -952,9 +680,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #endregion
-
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Double,                 out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject  JSON,
                                              String        PropertyName,
@@ -963,7 +688,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            DoubleValue = default(Double);
+            DoubleValue = default;
 
             if (JSON == null)
             {
@@ -986,7 +711,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !Double.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out DoubleValue))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1006,7 +731,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            DecimalValue = default(Decimal);
+            DecimalValue = default;
 
             if (JSON == null)
             {
@@ -1029,7 +754,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), out DecimalValue))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1040,16 +765,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Byte,                   out ErrorResponse)
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out (S)Byte,                out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject  JSON,
                                              String        PropertyName,
                                              String        PropertyDescription,
-                                             out Byte     ByteValue,
+                                             out Byte      ByteValue,
                                              out String    ErrorResponse)
         {
 
-            ByteValue = default(Byte);
+            ByteValue = default;
 
             if (JSON == null)
             {
@@ -1072,7 +797,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !Byte.TryParse(JSONToken.Value<String>(), out ByteValue))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1081,9 +806,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #endregion
-
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out SByte,                  out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject  JSON,
                                              String        PropertyName,
@@ -1092,7 +814,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            SByteValue = default(SByte);
+            SByteValue = default;
 
             if (JSON == null)
             {
@@ -1115,7 +837,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !SByte.TryParse(JSONToken.Value<String>(), out SByteValue))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1126,7 +848,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Int32,                  out ErrorResponse)
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out (U)Int32/64,            out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject  JSON,
                                              String        PropertyName,
@@ -1135,7 +857,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            Int32Value = default(Int32);
+            Int32Value = default;
 
             if (JSON == null)
             {
@@ -1158,7 +880,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !Int32.TryParse(JSONToken.Value<String>(), out Int32Value))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1167,9 +889,46 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Int64,                  out ErrorResponse)
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out UInt32    UInt32Value,
+                                             out String    ErrorResponse)
+        {
+
+            UInt32Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken == null ||
+                !UInt32.TryParse(JSONToken.Value<String>(), out UInt32Value))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
 
         public static Boolean ParseMandatory(this JObject  JSON,
                                              String        PropertyName,
@@ -1178,7 +937,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String    ErrorResponse)
         {
 
-            Int64Value = default(Int64);
+            Int64Value = default;
 
             if (JSON == null)
             {
@@ -1201,7 +960,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken == null ||
                 !Int64.TryParse(JSONToken.Value<String>(), out Int64Value))
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1209,6 +968,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return true;
 
         }
+
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out UInt64    UInt64Value,
+                                             out String    ErrorResponse)
+        {
+
+            UInt64Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken == null ||
+                !UInt64.TryParse(JSONToken.Value<String>(), out UInt64Value))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -1253,7 +1054,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1302,7 +1103,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1364,7 +1165,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 } catch (Exception)
                 {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
 
@@ -1377,6 +1178,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+        #region ParseMandatoryEnum   (this JSON, PropertyName, PropertyDescription,                               out EnumValue,              out ErrorResponse)
+
+        public static Boolean ParseMandatoryEnum<TEnum>(this JObject  JSON,
+                                                        String        PropertyName,
+                                                        String        PropertyDescription,
+                                                        out TEnum     EnumValue,
+                                                        out String    ErrorResponse)
+
+             where TEnum : struct
+
+        {
+
+            EnumValue = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken == null ||
+                !Enum.TryParse(JSONToken.Value<String>(), true, out EnumValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out JObject,                out ErrorResponse)
 
@@ -1415,7 +1263,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1463,7 +1311,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1474,16 +1322,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out StringArray,            out ErrorResponse)
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfStrings,   out ErrorResponse)
 
         public static Boolean ParseMandatory(this JObject             JSON,
                                              String                   PropertyName,
                                              String                   PropertyDescription,
-                                             out IEnumerable<String>  StringArray,
+                                             out IEnumerable<String>  EnumerationOfStrings,
                                              out String               ErrorResponse)
         {
 
-            StringArray = null;
+            EnumerationOfStrings = null;
 
             if (JSON == null)
             {
@@ -1508,16 +1356,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!(JSONToken is JArray JArray))
                 {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
 
-                StringArray = JArray.SafeSelect(item => item.Value<String>()).ToArray();
+                EnumerationOfStrings = JArray.SafeSelect(item => item.Value<String>()).ToArray();
 
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1528,14 +1376,465 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,            out ErrorResponse)
 
-        public static Boolean ParseMandatory<T>(this JObject         JSON,
-                                                String               PropertyName,
-                                                String               PropertyDescription,
-                                                TryJObjectParser<T>  TryJObjectParser,
-                                                out IEnumerable<T>   EnumerationOfT,
-                                                out String           ErrorResponse)
+        #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                   TryJObjectParser,  out Value,           out ErrorResponse)
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
+                                                    String               PropertyName,
+                                                    String               PropertyDescription,
+                                                    TryJObjectParser<T>  TryJObjectParser,
+                                                    out T                Value,
+                                                    out String           ErrorResponse)
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        public static Boolean ParseMandatoryJSON2<T>(this JObject         JSON,
+                                                    String                PropertyName,
+                                                    String                PropertyDescription,
+                                                    TryJObjectParser2<T>  TryJObjectParser,
+                                                    out T                 Value,
+                                                    out String            ErrorResponse)
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value, out string errrr))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        public static Boolean ParseMandatoryJSON2<T>(this JObject         JSON,
+                                                    String                PropertyName,
+                                                    String                PropertyDescription,
+                                                    TryJObjectParser3<T>  TryJObjectParser,
+                                                    out T                 Value,
+                                                    out String            ErrorResponse,
+                                                    OnExceptionDelegate   OnException  = null)
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value, OnException))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+
+
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
+                                                    String                PropertyName,
+                                                    String                PropertyDescription,
+                                                    TryJObjectParser2<T>  TryJObjectParser,
+                                                    out T                 Value,
+                                                    out String            ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value, out String errorResponse))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+ 
+        }
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
+                                                String                PropertyName,
+                                                String                PropertyDescription,
+                                                TryJObjectParser3<T>  TryJObjectParser,
+                                                out T                 Value,
+                                                out String            ErrorResponse,
+                                                OnExceptionDelegate   OnException  = null)
+
+        //    where T : struct
+
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value, OnException))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+ 
+        }
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
+                                                    String                PropertyName,
+                                                    String                PropertyDescription,
+                                                    TryJObjectParser<T>  TryJObjectParser,
+                                                    out T?                Value,
+                                                    out String            ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+ 
+        }
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
+                                                    String                PropertyName,
+                                                    String                PropertyDescription,
+                                                    TryJObjectParser2<T>  TryJObjectParser,
+                                                    out T?                Value,
+                                                    out String            ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value, out String errorResponse))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+ 
+        }
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
+                                                    String                PropertyName,
+                                                    String                PropertyDescription,
+                                                    TryJObjectParser3<T>  TryJObjectParser,
+                                                    out T?                Value,
+                                                    out String            ErrorResponse,
+                                                    OnExceptionDelegate   OnException  = null)
+
+            where T : struct
+
+        {
+
+            Value = default;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (TryJObjectParser == null)
+            {
+                ErrorResponse = "Invalid mapper provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!(JSONToken is JObject JSONValue))
+            {
+                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                return false;
+            }
+
+            if (!TryJObjectParser(JSONValue, out T value, OnException))
+            {
+                Value         = default;
+                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                return false;
+            }
+
+            Value         = value;
+            ErrorResponse = null;
+            return true;
+ 
+        }
+
+        #endregion
+
+        #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
+
+        public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
+                                                    String               PropertyName,
+                                                    String               PropertyDescription,
+                                                    TryJObjectParser<T>  TryJObjectParser,
+                                                    out IEnumerable<T>   EnumerationOfT,
+                                                    out String           ErrorResponse)
         {
 
             EnumerationOfT = null;
@@ -1563,7 +1862,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!(JSONToken is JArray JArray))
                 {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
 
@@ -1580,7 +1879,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1589,7 +1888,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
                                                 String                PropertyName,
                                                 String                PropertyDescription,
                                                 TryJObjectParser2<T>  TryJObjectParser,
@@ -1622,7 +1921,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!(JSONToken is JArray JArray))
                 {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
 
@@ -1639,7 +1938,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1648,7 +1947,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean ParseMandatory<T>(this JObject          JSON,
+        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
                                                 String                PropertyName,
                                                 String                PropertyDescription,
                                                 TryJObjectParser3<T>  TryJObjectParser,
@@ -1681,7 +1980,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!(JSONToken is JArray JArray))
                 {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
 
@@ -1698,7 +1997,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception)
             {
-                ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
             }
 
@@ -1752,7 +2051,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 PropertyName.IsNullOrEmpty() ||
                 Mapper == null)
             {
-                TOut = default(T);
+                TOut = default;
                 return false;
             }
 
@@ -1788,36 +2087,95 @@ namespace org.GraphDefined.Vanaheimr.Illias
         // Parse Optional
         // -------------------------------------------------------------------------------------------------------------------------------------
 
-        #region ParseOptional       (this JSON, PropertyName,                                                      out StringValue,        out ErrorResponse)
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out StringValue,            out ErrorResponse)
 
         public static Boolean ParseOptional(this JObject  JSON,
                                             String        PropertyName,
+                                            String        PropertyDescription,
                                             out String    StringValue,
                                             out String    ErrorResponse)
         {
 
-            StringValue    = String.Empty;
+            StringValue    = null;
             ErrorResponse  = null;
 
             if (JSON == null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
-                return false;
+                return true;
             }
 
             if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
             {
 
-                StringValue = JSONToken?.Value<String>();
+                try
+                {
+                    StringValue = JSONToken?.Value<String>();
+                }
+                catch (Exception)
+                {
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                }
 
-                // "properyKey": null -> will be ignored!
-                if (StringValue == null)
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional...    (this JSON, PropertyName, PropertyDescription,                               out Numbers...,             out ErrorResponse)
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Boolean,                out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Boolean?  BooleanValue,
+                                            out String    ErrorResponse)
+        {
+
+            BooleanValue   = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                try
+                {
+                    BooleanValue = JSONToken?.Value<Boolean>();
+                }
+                catch (Exception)
+                {
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                }
+
+                if (!BooleanValue.HasValue)
                     return false;
 
                 return true;
@@ -1830,17 +2188,464 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                                 out BooleanValue,       out ErrorResponse)
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Single/Double,          out ErrorResponse)
 
         public static Boolean ParseOptional(this JObject  JSON,
                                             String        PropertyName,
                                             String        PropertyDescription,
-                                            out Boolean?  BooleanValue,
+                                            out Single?   SingleValue,
                                             out String    ErrorResponse)
         {
 
-            BooleanValue   = new Boolean?();
+            SingleValue    = default;
             ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Single.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Single value))
+                    SingleValue = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Double?   DoubleValue,
+                                            out String    ErrorResponse)
+        {
+
+            DoubleValue    = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Double.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Double value))
+                    DoubleValue = value;
+
+                else
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Decimal,                out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Decimal?  DecimalValue,
+                                            out String    ErrorResponse)
+        {
+
+            DecimalValue   = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Decimal value))
+                    DecimalValue = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out (S)Byte,                out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Byte?     ByteValue,
+                                            out String    ErrorResponse)
+        {
+
+            ByteValue      = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Byte value))
+                    ByteValue = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out SByte?    SByteValue,
+                                            out String    ErrorResponse)
+        {
+
+            SByteValue     = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (SByte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out SByte value))
+                    SByteValue = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out (U)Int32/64,            out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Int32?    Int32Value,
+                                            out String    ErrorResponse)
+        {
+
+            Int32Value     = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Int32.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Int32 value))
+                    Int32Value = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out UInt32?   UInt32Value,
+                                            out String    ErrorResponse)
+        {
+
+            UInt32Value    = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (UInt32.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out UInt32 value))
+                    UInt32Value = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Int64?    Int64Value,
+                                            out String    ErrorResponse)
+        {
+
+            Int64Value     = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Int64.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Int64 value))
+                    Int64Value = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out UInt64?   UInt64Value,
+                                            out String    ErrorResponse)
+        {
+
+            UInt64Value    = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (UInt64.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out UInt64 value))
+                    UInt64Value = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region ParseOptionalStruct (this JSON, PropertyName, PropertyDescription,                    Parser(s), out Value,                  out ErrorResponse)
+
+        public static Boolean ParseOptionalStruct<TStruct>(this JObject        JSON,
+                                                           String              PropertyName,
+                                                           String              PropertyDescription,
+                                                           TryParser<TStruct>  Parser,
+                                                           out TStruct?        Value,
+                                                           out String          ErrorResponse)
+
+            where TStruct : struct
+
+        {
+
+            Value         = new TStruct?();
+            ErrorResponse = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (JSONToken.Type == JTokenType.Object && !JSONToken.HasValues)
+                    return false;
+
+                if (!Parser(JSONToken.Type == JTokenType.String
+                                ? JSONToken.Value<String>()
+                                : JSONToken.ToString(),
+                            out TStruct value))
+                {
+                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
+                }
+
+                Value = value;
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public static Boolean ParseOptionalStruct<TStruct>(this JObject         JSON,
+                                                           String               PropertyName,
+                                                           String               PropertyDescription,
+                                                           TryParser2<TStruct>  Parser,
+                                                           out TStruct?         Value,
+                                                           out String           ErrorResponse)
+
+            where TStruct : struct
+
+        {
+
+            Value         = new TStruct?();
+            ErrorResponse = null;
 
             if (JSON == null)
             {
@@ -1854,14 +2659,378 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
             {
 
-                BooleanValue = JSONToken?.Value<Boolean>();
-
-                // "properyKey": null -> will be ignored!
-                if (BooleanValue == null)
+                if (JSONToken.Type == JTokenType.Object && !JSONToken.HasValues)
                     return false;
+
+                if (!Parser(JSONToken.Type == JTokenType.String
+                                ? JSONToken.Value<String>()
+                                : JSONToken.ToString(),
+                            out TStruct value,
+                            out         ErrorResponse))
+                {
+                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
+                }
+
+                Value = value;
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptionalStruct<TStruct>(this JObject         JSON,
+                                                           String               PropertyName,
+                                                           String               PropertyDescription,
+                                                           TryParser3<TStruct>  Parser,
+                                                           out TStruct?         Value,
+                                                           out String           ErrorResponse,
+                                                           OnExceptionDelegate  OnException)
+
+            where TStruct : struct
+
+        {
+
+            Value         = new TStruct?();
+            ErrorResponse = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (JSONToken.Type == JTokenType.Object && !JSONToken.HasValues)
+                    return false;
+
+                if (!Parser(JSONToken.Type == JTokenType.String
+                                ? JSONToken.Value<String>()
+                                : JSONToken.ToString(),
+                            out TStruct value,
+                            OnException))
+                {
+                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
+                }
+
+                Value = value;
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptionalEnum   (this JSON, PropertyName, PropertyDescription,                            out EnumValue,               out ErrorResponse)
+
+        public static Boolean ParseOptionalEnum<TEnum>(this JObject  JSON,
+                                                       String        PropertyName,
+                                                       String        PropertyDescription,
+                                                       out TEnum?    EnumValue,
+                                                       out String    ErrorResponse)
+
+            where TEnum : struct
+
+        {
+
+            EnumValue      = null;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                var JSONValue = JSONToken?.Value<String>();
+                if (JSONValue == null)
+                {
+                    ErrorResponse  = "Unknown '" + (PropertyDescription ?? PropertyName) + "'!";
+                    EnumValue      = null;
+                    return false;
+                }
+
+                if (Enum.TryParse(JSONValue, true, out TEnum enumValue))
+                {
+                    EnumValue      = enumValue;
+                    ErrorResponse  = null;
+                }
+
+                else
+                {
+                    ErrorResponse  = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    EnumValue      = null;
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out Timestamp,               out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject   JSON,
+                                            String         PropertyName,
+                                            String         PropertyDescription,
+                                            out DateTime?  Timestamp,
+                                            out String     ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                try
+                {
+                    Timestamp = JSONToken.Value<DateTime>();
+                }
+                catch (Exception)
+                {
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out TimeSpan,                out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject   JSON,
+                                            String         PropertyName,
+                                            String         PropertyDescription,
+                                            out TimeSpan?  Timespan,
+                                            out String     ErrorResponse)
+        {
+
+            Timespan       = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                try
+                {
+                    Timespan = TimeSpan.FromSeconds(JSONToken.Value<UInt64>());
+                }
+                catch (Exception)
+                {
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out I18NText,                out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject    JSON,
+                                            String          PropertyName,
+                                            String          PropertyDescription,
+                                            out I18NString  I18NText,
+                                            out String      ErrorResponse)
+
+        {
+
+            I18NText       = I18NString.Empty;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (!(JSONToken is JObject i18NJSON))
+                {
+                    ErrorResponse = "JSON property '" + (PropertyDescription ?? PropertyName) + "' is not a I18N string!";
+                    return true;
+                }
+
+                foreach (var jproperty in i18NJSON)
+                {
+
+                    try
+                    {
+
+                        I18NText.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
+                                     jproperty.Value.Value<String>());
+
+                    }
+                    catch (Exception)
+                    {
+                        ErrorResponse = "Invalid I18N value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                        return true;
+                    }
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptionalI18N   (this JSON, PropertyName, PropertyDescription,                    Parser, out IEnumerableOfI18N,       out ErrorResponse)
+
+        public static Boolean ParseOptionalI18N<T>(this JObject         JSON,
+                                                   String               PropertyName,
+                                                   String               PropertyDescription,
+                                                   TryJObjectParser<T>  Parser,
+                                                   out IEnumerable<T>   IEnumerableOfI18N,
+                                                   out String           ErrorResponse)
+
+            where T: I18NString
+
+        {
+
+            IEnumerableOfI18N  = null;
+            ErrorResponse      = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (!(JSONToken is JArray JSONArray))
+                {
+                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    return true;
+                }
+
+                var List = new List<T>();
+
+                foreach (var element in JSONArray)
+                {
+
+                    if (element == null)
+                    {
+                        ErrorResponse = "A given value within the array is null!";
+                        return true;
+                    }
+
+                    var item = element.Value<JObject>();
+                    if (item == null)
+                    {
+                        ErrorResponse = "A given value within the array is null or empty!";
+                        return true;
+                    }
+
+                    if (Parser(item, out T itemT))
+                        List.Add(itemT);
+                    else
+                    {
+                        ErrorResponse = "A given value within the array is invalid!";
+                        return true;
+                    }
+
+                }
+
+                IEnumerableOfI18N = List;
 
                 return true;
 
@@ -1890,13 +3059,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON == null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
-                return false;
+                return true;
             }
 
             if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
             {
                 ErrorResponse = "Invalid JSON property name provided!";
-                return false;
+                return true;
             }
 
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
@@ -1944,13 +3113,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON == null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
-                return false;
+                return true;
             }
 
             if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
             {
                 ErrorResponse = "Invalid JSON property name provided!";
-                return false;
+                return true;
             }
 
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
@@ -1983,66 +3152,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-
-        #region ParseOptionalStruct(this JSON, PropertyName, PropertyDescription,                    Parser, out Value,              out ErrorResponse)
-
-        public static Boolean ParseOptionalStruct<TStruct>(this JObject        JSON,
-                                                           String              PropertyName,
-                                                           String              PropertyDescription,
-                                                           TryParser<TStruct>  Parser,
-                                                           out TStruct?        Value,
-                                                           out String          ErrorResponse)
-
-            where TStruct : struct
-
-        {
-
-            Value         = new TStruct?();
-            ErrorResponse = null;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "The given JSON object must not be null!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-
-                // "properyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
-                    return false;
-
-                if (JSONToken.Type == JTokenType.Object && !JSONToken.HasValues)
-                    return false;
-
-                if (!Parser(JSONToken.Type == JTokenType.String
-                                ? JSONToken.Value<String>()
-                                : JSONToken.ToString(),
-                            out TStruct value))
-                {
-                    ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
-                }
-
-                Value = value;
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-        #endregion
-
-
-        #region ParseOptional<T>        (this JSON, PropertyName, PropertyDescription,                    Parser, out Value,              out HTTPResponse)
+        #region ParseOptional<T>    (this JSON, PropertyName, PropertyDescription,                    Parser, out Value,                   out HTTPResponse)
 
         public static Boolean ParseOptional<T>(this JObject      JSON,
                                                String            PropertyName,
@@ -2052,7 +3162,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                out String        ErrorResponse)
         {
 
-            Value          = default(T);
+            Value          = default;
             ErrorResponse  = null;
 
             if (JSON == null)
@@ -2093,19 +3203,166 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #endregion
 
-        #region ParseOptional<T>        (this JSON, PropertyName, PropertyDescription,             JObjectParser, out Value,              out HTTPResponse)
+        public static Boolean ParseOptional<T>(this JObject      JSON,
+                                               String            PropertyName,
+                                               String            PropertyDescription,
+                                               TryParser2<T>     Parser,
+                                               out T             Value,
+                                               out String        ErrorResponse)
+        {
+
+            Value          = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+
+                // "properyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!Parser(JSONToken.Type == JTokenType.String
+                                ? JSONToken.Value<String>()
+                                : JSONToken.ToString(),
+                            out Value,
+                            out String ErrorResponse2))
+                {
+
+                    Value          = default;
+                    ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "': " + ErrorResponse2;
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
 
         public static Boolean ParseOptional<T>(this JObject         JSON,
                                                String               PropertyName,
                                                String               PropertyDescription,
-                                               TryJObjectParser2<T>  JObjectParser,
+                                               TryParser3<T>        Parser,
                                                out T                Value,
-                                               out String           ErrorResponse)
+                                               out String           ErrorResponse,
+                                               OnExceptionDelegate  OnException)
         {
 
-            Value          = default(T);
+            Value          = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+
+                // "properyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!Parser(JSONToken.Type == JTokenType.String
+                                ? JSONToken.Value<String>()
+                                : JSONToken.ToString(),
+                            out Value,
+                            OnException))
+                {
+
+                    Value          = default;
+                    ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptionalJSON   (this JSON, PropertyName, PropertyDescription,             JObjectParser, out Value,                   out HTTPResponse)
+
+        public static Boolean ParseOptionalJSON<T>(this JObject         JSON,
+                                                   String               PropertyName,
+                                                   String               PropertyDescription,
+                                                   TryJObjectParser<T>  JObjectParser,
+                                                   out T                Value,
+                                                   out String           ErrorResponse)
+        {
+
+            Value          = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+
+                // "properyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!(JSONToken is JObject JSON2))
+                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+
+                else if (!JObjectParser(JSON2, out Value))
+                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public static Boolean ParseOptionalJSON<T>(this JObject          JSON,
+                                                   String                PropertyName,
+                                                   String                PropertyDescription,
+                                                   TryJObjectParser2<T>  JObjectParser,
+                                                   out T                 Value,
+                                                   out String            ErrorResponse)
+        {
+
+            Value          = default;
             ErrorResponse  = null;
 
             if (JSON == null)
@@ -2141,20 +3398,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #endregion
-
-
-        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out I18NText,                out ErrorResponse)
-
-        public static Boolean ParseOptional(this JObject    JSON,
-                                            String          PropertyName,
-                                            String          PropertyDescription,
-                                            out I18NString  I18NText,
-                                            out String      ErrorResponse)
-
+        public static Boolean ParseOptionalJSON<T>(this JObject          JSON,
+                                                   String                PropertyName,
+                                                   String                PropertyDescription,
+                                                   TryJObjectParser3<T>  JObjectParser,
+                                                   out T                 Value,
+                                                   out String            ErrorResponse,
+                                                   OnExceptionDelegate   OnException)
         {
 
-            I18NText       = I18NString.Empty;
+            Value          = default;
             ErrorResponse  = null;
 
             if (JSON == null)
@@ -2176,194 +3429,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JObject i18NJSON))
-                {
-                    ErrorResponse = "Invalid " + PropertyDescription + "!";
-                    return true;
-                }
-
-                foreach (var jproperty in i18NJSON)
-                {
-
-                    try
-                    {
-
-                        I18NText.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
-                                     jproperty.Value.Value<String>());
-
-                    }
-                    catch (Exception)
-                    {
-                        ErrorResponse = "Invalid " + PropertyDescription + "!";
-                        return true;
-                    }
-
-                }
-
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region ParseOptionalEnum   (this JSON, PropertyName, PropertyDescription,                            out EnumValue,               out ErrorResponse)
-
-        public static Boolean ParseOptionalEnum<TEnum>(this JObject  JSON,
-                                                       String        PropertyName,
-                                                       String        PropertyDescription,
-                                                       out TEnum?    EnumValue,
-                                                       out String    ErrorResponse)
-
-            where TEnum : struct
-
-        {
-
-            EnumValue      = null;
-            ErrorResponse  = null;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "The given JSON object must not be null!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-
-                // "properyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
-                    return false;
-
-                var JSONValue = JSONToken?.Value<String>();
-                if (JSONValue == null)
-                {
-                    ErrorResponse  = "Unknown " + PropertyDescription + "!";
-                    EnumValue      = null;
-                    return false;
-                }
-
-                if (Enum.TryParse(JSONValue, true, out TEnum enumValue))
-                {
-                    EnumValue      = enumValue;
-                    ErrorResponse  = null;
-                }
-
-                else
-                {
+                if (!(JSONToken is JObject JSON2))
                     ErrorResponse  = "Invalid " + PropertyDescription + "!";
-                    EnumValue      = null;
-                }
 
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out Timestamp,               out ErrorResponse)
-
-        public static Boolean ParseOptional(this JObject   JSON,
-                                            String         PropertyName,
-                                            String         PropertyDescription,
-                                            out DateTime?  Timestamp,
-                                            out String     ErrorResponse)
-        {
-
-            Timestamp      = null;
-            ErrorResponse  = null;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "The given JSON object must not be null!";
-                return false;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return false;
-            }
-
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-
-                // "properyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
-                    return false;
-
-                try
-                {
-                    Timestamp = JSONToken.Value<DateTime>();
-                }
-                catch (Exception)
-                {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
-                }
-
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out TimeSpan,                out ErrorResponse)
-
-        public static Boolean ParseOptional(this JObject   JSON,
-                                            String         PropertyName,
-                                            String         PropertyDescription,
-                                            out TimeSpan?  Timespan,
-                                            out String     ErrorResponse)
-        {
-
-            Timespan       = null;
-            ErrorResponse  = null;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "The given JSON object must not be null!";
-                return true;
-            }
-
-            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return true;
-            }
-
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-
-                // "properyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
-                    return false;
-
-                try
-                {
-                    Timespan = TimeSpan.FromSeconds(JSONToken.Value<UInt32>());
-                }
-                catch (Exception)
-                {
-                    ErrorResponse = "Invalid " + PropertyDescription ?? PropertyName + "!";
-                    return false;
-                }
+                else if (!JObjectParser(JSON2, out Value, OnException))
+                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
 
                 return true;
 
@@ -2543,18 +3613,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #endregion
 
-        #region ParseOptionalI18NHashSet(this JSON, PropertyName, PropertyDescription,                    Parser, out HashSet,                 out ErrorResponse)
-
-        public static Boolean ParseOptionalI18NHashSet<T>(this JObject          JSON,
-                                                          String                PropertyName,
-                                                          String                PropertyDescription,
-                                                          TryJObjectParser<T>  Parser,
-                                                          out HashSet<T>        HashSet,
-                                                          out String            ErrorResponse)
-
-            where T: I18NString
+        public static Boolean ParseOptionalHashSet<T>(this JObject    JSON,
+                                                      String          PropertyName,
+                                                      String          PropertyDescription,
+                                                      TryParser2<T>    Parser,
+                                                      out HashSet<T>  HashSet,
+                                                      out String      ErrorResponse)
 
         {
 
@@ -2586,7 +3651,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return true;
                 }
 
-                JObject item = null;
+                var item = "";
                 HashSet = new HashSet<T>();
 
                 foreach (var element in JSONArray)
@@ -2598,14 +3663,91 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return true;
                     }
 
-                    item = element.Value<JObject>();
-                    if (item == null)
+                    item = element.Value<String>();
+                    if (item != null)
+                        item = item.Trim();
+
+                    if (item.IsNullOrEmpty())
                     {
                         ErrorResponse = "A given value within the array is null or empty!";
                         return true;
                     }
 
-                    if (Parser(item, out T itemT))
+                    if (Parser(item, out T itemT, out ErrorResponse))
+                        HashSet.Add(itemT);
+
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public static Boolean ParseOptionalHashSet<T>(this JObject         JSON,
+                                                      String               PropertyName,
+                                                      String               PropertyDescription,
+                                                      TryParser3<T>         Parser,
+                                                      out HashSet<T>       HashSet,
+                                                      out String           ErrorResponse,
+                                                      OnExceptionDelegate  OnException)
+
+        {
+
+            HashSet        = null;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty() || PropertyName.Trim().IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+
+                // "properyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!(JSONToken is JArray JSONArray))
+                {
+                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    return true;
+                }
+
+                var item = "";
+                HashSet = new HashSet<T>();
+
+                foreach (var element in JSONArray)
+                {
+
+                    if (element == null)
+                    {
+                        ErrorResponse = "A given value within the array is null!";
+                        return true;
+                    }
+
+                    item = element.Value<String>();
+                    if (item != null)
+                        item = item.Trim();
+
+                    if (item.IsNullOrEmpty())
+                    {
+                        ErrorResponse = "A given value within the array is null or empty!";
+                        return true;
+                    }
+
+                    if (Parser(item, out T itemT, OnException))
                         HashSet.Add(itemT);
 
                 }
@@ -2619,6 +3761,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
 
 
         #region GetOptional(this JSON, Key)
@@ -2643,6 +3786,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static Boolean GetOptional(this JObject             JSON,
                                           String                   PropertyName,
+                                          String                   PropertyDescription,
                                           out IEnumerable<String>  Values,
                                           out String               ErrorResponse)
         {
@@ -2671,7 +3815,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!(JSONToken is JArray JSONArray))
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = "The given property '" + (PropertyDescription ?? PropertyName) + "' is not a valid JSON array!";
                     return true;
                 }
 
@@ -2706,140 +3850,140 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         // Legacy
 
-        #region ParseI18NString(this JToken)
+        //#region ParseI18NString(this JToken)
 
-        public static I18NString ParseI18NString(this JToken JToken)
-        {
+        //public static I18NString ParseI18NString(this JToken JToken)
+        //{
 
-            var jobject = JToken as JObject;
+        //    var jobject = JToken as JObject;
 
-            if (jobject == null)
-                throw new ArgumentException("The given JSON token is not a JSON object!", nameof(JToken));
+        //    if (jobject == null)
+        //        throw new ArgumentException("The given JSON token is not a JSON object!", nameof(JToken));
 
-            return jobject.ParseI18NString();
+        //    return jobject.ParseI18NString();
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region ParseI18NString(this JObject)
+        //#region ParseI18NString(this JObject)
 
-        public static I18NString ParseI18NString(this JObject JObject)
-        {
+        //public static I18NString ParseI18NString(this JObject JObject)
+        //{
 
-            var i18NString = I18NString.Empty;
+        //    var i18NString = I18NString.Empty;
 
-            foreach (var jproperty in JObject)
-                i18NString.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
-                               jproperty.Value.Value<String>());
+        //    foreach (var jproperty in JObject)
+        //        i18NString.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
+        //                       jproperty.Value.Value<String>());
 
-            return i18NString;
+        //    return i18NString;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region ParseI18NString(this JObject, PropertyKey)
+        //#region ParseI18NString(this JObject, PropertyKey)
 
-        public static I18NString ParseI18NString(this JObject JObject, String PropertyKey)
-        {
+        //public static I18NString ParseI18NString(this JObject JObject, String PropertyKey)
+        //{
 
-            if (PropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+        //    if (PropertyKey.IsNullOrEmpty())
+        //        throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            var jobject = JObject[PropertyKey] as JObject;
+        //    var jobject = JObject[PropertyKey] as JObject;
 
-            if (jobject == null)
-                return I18NString.Empty;
+        //    if (jobject == null)
+        //        return I18NString.Empty;
 
-            var i18NString = I18NString.Empty;
+        //    var i18NString = I18NString.Empty;
 
-            foreach (var jproperty in jobject)
-                i18NString.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
-                               jproperty.Value.Value<String>());
+        //    foreach (var jproperty in jobject)
+        //        i18NString.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
+        //                       jproperty.Value.Value<String>());
 
-            return i18NString;
+        //    return i18NString;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region TryParseI18NString(this JToken,  out I18NString)
+        //#region TryParseI18NString(this JToken,  out I18NString)
 
-        public static Boolean TryParseI18NString(this JToken JToken, out I18NString I18NString)
-        {
+        //public static Boolean TryParseI18NString(this JToken JToken, out I18NString I18NString)
+        //{
 
-            var jobject = JToken as JObject;
+        //    var jobject = JToken as JObject;
 
-            if (jobject == null)
-            {
-                I18NString = null;
-                return false;
-            }
+        //    if (jobject == null)
+        //    {
+        //        I18NString = null;
+        //        return false;
+        //    }
 
-            return jobject.TryParseI18NString(out I18NString);
+        //    return jobject.TryParseI18NString(out I18NString);
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region TryParseI18NString(this JObject, out I18NString)
+        //#region TryParseI18NString(this JObject, out I18NString)
 
-        public static Boolean TryParseI18NString(this JObject JObject, out I18NString i18NString)
-        {
+        //public static Boolean TryParseI18NString(this JObject JObject, out I18NString i18NString)
+        //{
 
-            i18NString = I18NString.Empty;
+        //    i18NString = I18NString.Empty;
 
-            try
-            {
+        //    try
+        //    {
 
-                foreach (var jproperty in JObject)
-                    i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
-                                   jproperty.Value.Value<String>());
+        //        foreach (var jproperty in JObject)
+        //            i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
+        //                           jproperty.Value.Value<String>());
 
-                return true;
+        //        return true;
 
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region TryParseI18NString(this JObject, PropertyKey, out I18NString)
+        //#region TryParseI18NString(this JObject, PropertyKey, out I18NString)
 
-        public static Boolean TryParseI18NString(this JObject JObject, String PropertyKey, out I18NString i18NString)
-        {
+        //public static Boolean TryParseI18NString(this JObject JObject, String PropertyKey, out I18NString i18NString)
+        //{
 
-            if (PropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
+        //    if (PropertyKey.IsNullOrEmpty())
+        //        throw new ArgumentNullException(nameof(PropertyKey), "The given property key must not be null or empty!");
 
-            i18NString = I18NString.Empty;
+        //    i18NString = I18NString.Empty;
 
-            if (!(JObject[PropertyKey] is JObject jobject))
-                throw new ArgumentException("The value of the given JSON property '" + PropertyKey + "' is not a JSON object!", nameof(JObject));
+        //    if (!(JObject[PropertyKey] is JObject jobject))
+        //        throw new ArgumentException("The value of the given JSON property '" + PropertyKey + "' is not a JSON object!", nameof(JObject));
 
-            try
-            {
+        //    try
+        //    {
 
-                foreach (var jproperty in JObject)
-                    i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
-                                   jproperty.Value.Value<String>());
+        //        foreach (var jproperty in JObject)
+        //            i18NString.Add((Languages)Enum.Parse(typeof(Languages), jproperty.Key),
+        //                           jproperty.Value.Value<String>());
 
-                return true;
+        //        return true;
 
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return false;
+        //    }
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
 
         #region ValueOrDefault(this ParentJObject, PropertyName, DefaultValue = null)

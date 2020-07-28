@@ -15,8 +15,44 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+    public static class LanguagesExtentions
+    {
+
+        public static String AsText(this Languages Language)
+        {
+            switch (Language)
+            {
+
+                default:
+                    return Language.ToString();
+
+            }
+        }
+
+        public static Languages Parse(String Text)
+        {
+            switch (Text?.ToLower())
+            {
+
+                default:
+                    return (Languages) Enum.Parse(typeof(Languages), Text, true);
+
+            }
+        }
+
+
+    }
+
+
 
     /// <summary>
     /// ISO 639-3 codes for languages.
@@ -24,7 +60,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public enum Languages
     {
+
         unknown,
+
         bgn,
         deu,
         eng,
@@ -43,6 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         sk,
         gbr,
         heb
+
     }
 
     /// <summary>
@@ -51,7 +90,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public enum Languages1
     {
+
         unknown,
+
         be,
         de,
         en,
@@ -65,6 +106,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         sk,
         gb,
         it
+
     }
 
     // Or: https://gist.github.com/JamieMason/3748498

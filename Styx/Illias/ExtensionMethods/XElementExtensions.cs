@@ -336,13 +336,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (ParentXElement == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
             if (Mapper == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
@@ -350,7 +350,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (_XElement == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception(ExceptionMessage));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage));
                 else
                     throw new Exception(ExceptionMessage);
 
@@ -537,13 +537,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (ParentXElement == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
             if (Mapper == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
@@ -558,7 +558,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (OnException != null)
                 {
 
-                    OnException(DateTime.Now,
+                    OnException(DateTime.UtcNow,
                                 ParentXElement,
                                 new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                                   ? ExceptionMessage
@@ -593,13 +593,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (ParentXElement == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
             if (Mapper == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
@@ -609,7 +609,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (_XElement == null)
                 if (OnException != null)
-                    OnException(DateTime.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
+                    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 else
                     throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!");
 
@@ -617,7 +617,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (_XElements == null)
                 //if (OnException != null)
-                //    OnException(DateTime.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
+                //    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 //else
                 //    throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!");
                 return new T[0];
@@ -626,7 +626,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (__XElements.Length == 0)
                 //if (OnException != null)
-                //    OnException(DateTime.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
+                //    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 //else
                 //    throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given array of XML elements must not be empty!");
                 return new T[0];
@@ -866,7 +866,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now,
+                OnException?.Invoke(DateTime.UtcNow,
                                     _XElement,
                                     e);
 
@@ -928,7 +928,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now,
+                OnException?.Invoke(DateTime.UtcNow,
                                     _XElement,
                                     e);
 
@@ -996,7 +996,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.Now,
+                OnException?.Invoke(DateTime.UtcNow,
                                     _XElement,
                                     e);
 
@@ -1230,6 +1230,117 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        #region ParseTimestampOrFail(...)
+
+        public static DateTime ParseTimestampOrFail(this XElement        ParentXElement,
+                                                    XName                XName,
+                                                    OnExceptionDelegate  OnException       = null,
+                                                    String               ExceptionMessage  = null)
+        {
+
+            #region Initial checks
+
+            if (ParentXElement == null)
+                throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
+
+            #endregion
+
+
+            var _XElement = ParentXElement.Element(XName);
+
+            if (_XElement == null)
+                throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
+                                        ? ExceptionMessage
+                                        : "Missing XML element '" + XName.LocalName + "'!");
+
+            if (_XElement.Value == null)
+                throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
+                                        ? ExceptionMessage
+                                        : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
+
+            try
+            {
+
+                var Timestamp = DateTime.Parse(_XElement.Value);
+
+                if (Timestamp.Kind != DateTimeKind.Utc)
+                    Timestamp = Timestamp.ToUniversalTime();
+
+                return Timestamp;
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow,
+                                    _XElement,
+                                    e);
+
+                throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
+                                        ? ExceptionMessage
+                                        : "The XML element '" + XName.LocalName + "' is invalid!",
+                                    e);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ParseTimeSpanOrFail(...)
+
+        public static TimeSpan ParseTimeSpanOrFail(this XElement        ParentXElement,
+                                                   XName                XName,
+                                                   OnExceptionDelegate  OnException       = null,
+                                                   String               ExceptionMessage  = null)
+        {
+
+            #region Initial checks
+
+            if (ParentXElement == null)
+                throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
+
+            #endregion
+
+
+            var _XElement = ParentXElement.Element(XName);
+
+            if (_XElement == null)
+                throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
+                                        ? ExceptionMessage
+                                        : "Missing XML element '" + XName.LocalName + "'!");
+
+            if (_XElement.Value == null)
+                throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
+                                        ? ExceptionMessage
+                                        : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
+
+            try
+            {
+
+                return TimeSpan.FromSeconds(UInt32.Parse(_XElement.Value));
+
+            }
+            catch (Exception e)
+            {
+
+                OnException?.Invoke(DateTime.UtcNow,
+                                    _XElement,
+                                    e);
+
+                throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
+                                        ? ExceptionMessage
+                                        : "The XML element '" + XName.LocalName + "' is invalid!",
+                                    e);
+
+            }
+
+        }
+
+        #endregion
+
 
 
         // Map XML Values

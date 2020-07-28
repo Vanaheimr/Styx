@@ -227,7 +227,6 @@
     <Compile Include="Illias\I18N\Currency.cs" />
     <Compile Include="Illias\I18N\I18NPair.cs" />
     <Compile Include="Illias\I18N\I18NString.cs" />
-    <Compile Include="Illias\I18N\I18NTools.cs" />
     <Compile Include="Illias\I18N\JSONString.cs" />
     <Compile Include="Illias\I18N\Languages.cs" />
     <Compile Include="Illias\Ids\EventTracking_Id.cs" />

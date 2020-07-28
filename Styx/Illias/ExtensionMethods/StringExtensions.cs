@@ -364,7 +364,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text.</param>
         /// <param name="Length">The maximum length of the substring.</param>
-        public static String SubstringMax(this String Text, Int32 Length)
+        public static String SubstringMax(this String Text, UInt32 Length)
         {
 
             if (Text == null)
@@ -373,7 +373,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Text = Text.Trim();
 
             return Text.IsNotNullOrEmpty()
-                       ? Text.Substring(0, Math.Min(Text.Length, Length))
+                       ? Text.Substring(0, (Int32) Math.Min((UInt32) Text.Length, Length))
                        : Text;
 
         }
