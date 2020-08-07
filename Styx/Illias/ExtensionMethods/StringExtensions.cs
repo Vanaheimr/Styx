@@ -702,6 +702,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+
+        #region ContainsIgnoreCase(Strings, Text)
+
+        /// <summary>
+        /// Determines whether a sequence contains a specified element by using the case-insensitive equality comparer.
+        /// </summary>
+        /// <param name="Strings">An enumeration of strings.</param>
+        /// <param name="Text">The text to search for.</param>
+        public static Boolean ContainsIgnoreCase(this IEnumerable<String>  Strings,
+                                                 String                    Text)
+        {
+
+            if (Strings == null)
+                return false;
+
+            foreach (var text in Strings)
+            {
+                if (text.Equals(Text, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
     }
 
 }
