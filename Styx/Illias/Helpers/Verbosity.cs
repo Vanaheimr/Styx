@@ -24,6 +24,44 @@ using System;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    public static class VerbosityExtentions
+    {
+
+        public static Verbosity Parse(String Text)
+        {
+
+            switch (Text)
+            {
+
+                case "quiet":
+                    return Verbosity.quiet;
+
+                case "simple":
+                    return Verbosity.simple;
+
+                case "brief":
+                    return Verbosity.brief;
+
+                case "verbose":
+                    return Verbosity.verbose;
+
+                case "veryVerbose":
+                    return Verbosity.veryVerbose;
+
+                case "debug":
+                    return Verbosity.debug;
+
+                default:
+                    return Verbosity.normal;
+
+            }
+
+        }
+
+    }
+
+
+
     /// <summary>
     /// The verbosity.
     /// </summary>
