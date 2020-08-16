@@ -18,11 +18,12 @@
 #region Usings
 
 using System;
-using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Text.RegularExpressions;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -218,9 +219,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     /// <summary>
     /// A geographical coordinate or position on a map.
     /// </summary>
-    public struct GeoCoordinate : IGeoCoordinate,
-                                  IEquatable <GeoCoordinate>,
-                                  IComparable<GeoCoordinate>
+    public readonly struct GeoCoordinate : IGeoCoordinate,
+                                           IEquatable <GeoCoordinate>,
+                                           IComparable<GeoCoordinate>
 
     {
 
@@ -982,10 +983,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given Object must not be null!");
 
-            if (!(Object is GeoCoordinate))
+            if (!(Object is GeoCoordinate GeoCoordinate))
                 throw new ArgumentException("The given object is not a GeoCoordinate!", nameof(Object));
 
-            return CompareTo((GeoCoordinate) Object);
+            return CompareTo(GeoCoordinate);
 
         }
 
@@ -1022,16 +1023,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Object">Another geo coordinate.</param>
         /// <returns>True if both are equal; False otherwise.</returns>
-        public Boolean Equals(Object Object)
+        public override Boolean Equals(Object Object)
         {
 
             if (Object == null)
                 return false;
 
-            if (!(Object is GeoCoordinate))
+            if (!(Object is GeoCoordinate GeoCoordinate))
                 return false;
 
-            return Equals((GeoCoordinate) Object);
+            return Equals(GeoCoordinate);
 
         }
 

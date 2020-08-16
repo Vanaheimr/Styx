@@ -26,11 +26,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
-    /// A Longitude.
+    /// A geographical longitude.
     /// </summary>
-    public struct Longitude : IEquatable<Longitude>,
-                              IComparable<Longitude>,
-                              IComparable
+    public readonly struct Longitude : IEquatable<Longitude>,
+                                       IComparable<Longitude>,
+                                       IComparable
     {
 
         #region Properties
@@ -233,9 +233,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Longitude Longitude1, Longitude Longitude2)
-        {
-            return !(Longitude1 == Longitude2);
-        }
+            => !(Longitude1 == Longitude2);
 
         #endregion
 
@@ -271,9 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Longitude Longitude1, Longitude Longitude2)
-        {
-            return !(Longitude1 > Longitude2);
-        }
+            => !(Longitude1 > Longitude2);
 
         #endregion
 
@@ -309,9 +305,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Longitude Longitude1, Longitude Longitude2)
-        {
-            return !(Longitude1 < Longitude2);
-        }
+            => !(Longitude1 < Longitude2);
 
         #endregion
 
@@ -331,7 +325,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (Object == null)
                 throw new ArgumentNullException("The given Object must not be null!");
 
-            return CompareTo((Longitude) Object);
+            if (!(Object is Longitude Longitude))
+                throw new ArgumentException("The given object is not a longitude!", nameof(Object));
+
+            return CompareTo(Longitude);
 
         }
 
@@ -344,9 +341,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Longitude">Another longitude.</param>
         public Int32 CompareTo(Longitude Longitude)
-        {
-            return this.Value.CompareTo(Longitude.Value);
-        }
+
+            => Value.CompareTo(Longitude.Value);
 
         #endregion
 
@@ -366,15 +362,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             if (Object == null)
                 return false;
-            
-            try
-            {
-                return this.Equals((Longitude) Object);
-            }
-            catch (InvalidCastException)
-            {
+
+            if (!(Object is Longitude Longitude))
                 return false;
-            }
+
+            return Equals(Longitude);
 
         }
 
@@ -388,9 +380,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude">Another longitude.</param>
         /// <returns>True if both are equal; False otherwise.</returns>
         public Boolean Equals(Longitude Longitude)
-        {
-            return this.Value.Equals(Longitude.Value);
-        }
+
+            => Value.Equals(Longitude.Value);
 
         #endregion
 

@@ -26,11 +26,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
-    /// A latitude.
+    /// A geographical latitude.
     /// </summary>
-    public struct Latitude : IEquatable<Latitude>,
-                             IComparable<Latitude>,
-                             IComparable
+    public readonly struct Latitude : IEquatable<Latitude>,
+                                      IComparable<Latitude>,
+                                      IComparable
     {
 
         #region Properties
@@ -232,9 +232,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Latitude Latitude1, Latitude Latitude2)
-        {
-            return !(Latitude1 == Latitude2);
-        }
+            => !(Latitude1 == Latitude2);
 
         #endregion
 
@@ -270,9 +268,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Latitude Latitude1, Latitude Latitude2)
-        {
-            return !(Latitude1 > Latitude2);
-        }
+            => !(Latitude1 > Latitude2);
 
         #endregion
 
@@ -308,9 +304,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Latitude Latitude1, Latitude Latitude2)
-        {
-            return !(Latitude1 < Latitude2);
-        }
+            => !(Latitude1 < Latitude2);
 
         #endregion
 
@@ -330,7 +324,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (Object == null)
                 throw new ArgumentNullException("The given Object must not be null!");
 
-            return CompareTo((Latitude) Object);
+            if (!(Object is Latitude Latitude))
+                throw new ArgumentException("The given object is not a latitude!", nameof(Object));
+
+            return CompareTo(Latitude);
 
         }
 
@@ -343,9 +340,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Latitude">Another latitude.</param>
         public Int32 CompareTo(Latitude Latitude)
-        {
-            return this.Value.CompareTo(Latitude.Value);
-        }
+
+            => Value.CompareTo(Latitude.Value);
 
         #endregion
 
@@ -365,15 +361,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             if (Object == null)
                 return false;
-            
-            try
-            {
-                return this.Equals((Latitude) Object);
-            }
-            catch (InvalidCastException)
-            {
+
+            if (!(Object is Latitude Latitude))
                 return false;
-            }
+
+            return Equals(Latitude);
 
         }
 
@@ -387,9 +379,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude">Another latitude.</param>
         /// <returns>True if both are equal; False otherwise.</returns>
         public Boolean Equals(Latitude Latitude)
-        {
-            return this.Value.Equals(Latitude.Value);
-        }
+
+            => Value.Equals(Latitude.Value);
 
         #endregion
 
