@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class RandomExtensions
     {
 
-        #region GetBytes(this _Random, NumberOfBytes)
+        #region GetBytes          (this _Random, NumberOfBytes)
 
         /// <summary>
         /// Get an array of random bytes.
@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomString(this Random, Length)
+        #region RandomString      (this Random, Length)
 
         /// <summary>
         /// Get random string [a-zA-Z1-9]{Length} (without 'I', 'l', 'O', '0') of the given length.
@@ -91,6 +91,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             return Encoding.UTF8.GetString(ByteArray, 0, Length);
+
+        }
+
+        #endregion
+
+        #region RandomHexString   (this Random, Length)
+
+        /// <summary>
+        /// Get random string [A-F0-9]{Length} of the given length.
+        /// </summary>
+        /// <param name="Random">The source of randomness.</param>
+        /// <param name="Length">The expected length of the random string.</param>
+        public static String RandomHexString(this Random Random, UInt16 Length)
+        {
+
+            var byteArray = new Byte[Length / 2];
+            Random.NextBytes(byteArray);
+
+            return byteArray.ToHexString();
 
         }
 
