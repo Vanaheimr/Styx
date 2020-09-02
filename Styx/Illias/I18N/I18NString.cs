@@ -160,27 +160,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        //#region ToJSON(this I18NString)
 
-        ///// <summary>
-        ///// Convert the given internationalized (I18N) text/string to JSON.
-        ///// </summary>
-        ///// <param name="I18NString">An internationalized (I18N) text/string.</param>
-        //public static String ToJSON(this I18NString I18NString)
-        //{
+        #region ToJSON(this I18NString, JPropertyKey)
 
-        //    if (!I18NString.Any())
-        //        return "{ }";
+        /// <summary>
+        /// Return a JSON representation of the given internationalized string.
+        /// </summary>
+        /// <param name="I18NString">An internationalized string.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key.</param>
+        public static JProperty ToJSON(this I18NString I18NString, String JPropertyKey)
+        {
 
-        //    return "{" + Environment.NewLine +
-        //           I18NString.
-        //               Select(v => @"""" + v.Language + @""": """ + v.Text + @"""").
-        //               AggregateWith("," + Environment.NewLine) + Environment.NewLine +
-        //           "}";
+            if (I18NString == null || !I18NString.Any())
+                return null;
 
-        //}
+            return new JProperty(JPropertyKey, I18NString.ToJSON());
 
-        //#endregion
+        }
+
+        #endregion
 
     }
 
@@ -500,6 +498,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return true;
 
         }
+
+        #region ToJSON()
+
+        /// <summary>
+        /// Return a JSON representation of the given internationalized string.
+        /// </summary>
+        public JObject ToJSON()
+
+            => I18NStrings.Any()
+               ? new JObject(I18NStrings.SafeSelect(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
+               : new JObject();
+
+        #endregion
 
 
 

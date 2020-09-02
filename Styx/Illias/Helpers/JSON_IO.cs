@@ -246,44 +246,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToJSON(this I18NString)
-
-        /// <summary>
-        /// Return a JSON representation of the given internationalized string.
-        /// </summary>
-        /// <param name="I18NString">An internationalized string.</param>
-        public static JObject ToJSON(this I18NString I18NString)
-        {
-
-            if (I18NString == null || !I18NString.Any())
-                return new JObject();
-
-            return new JObject(I18NString.SafeSelect(i18n => new JProperty(i18n.Language.ToString(), i18n.Text)));
-
-        }
-
-        #endregion
-
-        #region ToJSON(this I18NString, JPropertyKey)
-
-        /// <summary>
-        /// Return a JSON representation of the given internationalized string.
-        /// </summary>
-        /// <param name="I18NString">An internationalized string.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key.</param>
-        public static JProperty ToJSON(this I18NString I18NString, String JPropertyKey)
-        {
-
-            if (I18NString == null || !I18NString.Any())
-                return null;
-
-            return new JProperty(JPropertyKey, I18NString.ToJSON());
-
-        }
-
-        #endregion
-
-
         #region ToJSON(this Id, JPropertyKey)
 
         /// <summary>
