@@ -378,9 +378,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             get
             {
 
-                String Text;
 
-                if (I18NStrings.TryGetValue(Language, out Text))
+                if (I18NStrings.TryGetValue(Language, out String Text))
                     return Text;
 
                 return String.Empty;
