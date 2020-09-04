@@ -126,16 +126,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         params Country[]  Countries)
         {
 
-            if (Name?.   Trim().IsNullOrEmpty() == true)
+            if (Name.   IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Name),     "The given name of the currency must not be null or empty!");
 
-            if (ISOCode?.Trim().IsNullOrEmpty() == true)
+            if (ISOCode.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(ISOCode),  "The given ISO code of the currency must not be null or empty!");
 
             this.Name            = Name.   Trim();
             this.ISOCode         = ISOCode.Trim();
             this.Numeric         = Numeric;
-            this.Symbol          = Symbol?.Trim().IsNullOrEmpty() == false ? Symbol.Trim() : null;
+            this.Symbol          = Symbol?.Trim();
             this.SymbolLocation  = this.Symbol != null ? SymbolLocation : Symbol_Location.NoSymbol;
             this.Countries       = Countries;
 

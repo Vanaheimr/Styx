@@ -52,10 +52,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //bool Equals(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
         //int GetHashCode();
 
-        UInt64  Length           { get; }
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
         Boolean IsNullOrEmpty    { get; }
 
-        String  ToString();
+        /// <summary>
+        /// The length of the identification.
+        /// </summary>
+        UInt64  Length           { get; }
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        String ToString();
 
     }
 
@@ -63,13 +73,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// The common interface of a datastructure used as an unique identification.
     /// </summary>
     public interface IId<T> : IId,
-                              IComparable<T>
+                              IComparable<T>,
+                              IEquatable<T>
     {
 
-        /// <summary>
-        /// The unique identification of the data structure.
-        /// </summary>
-        T Id { get; }
+        ///// <summary>
+        ///// The unique identification of the data structure.
+        ///// </summary>
+        //T Id { get; }
 
     }
 
