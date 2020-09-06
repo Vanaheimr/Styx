@@ -239,26 +239,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
+        public abstract Int32 CompareTo(Object obj);
 
 
+        //public virtual Int32 CompareTo(Object obj)
+        //{
 
-        public virtual Int32 CompareTo(Object obj)
-        {
+        //    if (obj is AEntity<TId, TDataSource>)
+        //        return Id.CompareTo((AEntity<TId, TDataSource>) obj);
 
-            if (obj is AEntity<TId, TDataSource>)
-                return Id.CompareTo((AEntity<TId, TDataSource>) obj);
+        //    if (obj is TId)
+        //        return Id.CompareTo((TId) obj);
 
-            if (obj is TId)
-                return Id.CompareTo((TId) obj);
+        //    return -1;
 
-            return -1;
+        //}
 
-        }
-
-        public virtual Int32 CompareTo(TId OtherId)
+        public Int32 CompareTo(TId OtherId)
             => Id.CompareTo(OtherId);
 
-        public virtual Boolean Equals(TId OtherId)
+        public Boolean Equals(TId OtherId)
             => Id.Equals(OtherId);
 
     }
