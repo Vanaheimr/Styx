@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -70,17 +71,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
     }
 
     /// <summary>
-    /// The common interface of a datastructure used as an unique identification.
+    /// The common interface of datastructures used as an unique identification.
     /// </summary>
     public interface IId<T> : IId,
                               IComparable<T>,
                               IEquatable<T>
     {
 
-        ///// <summary>
-        ///// The unique identification of the data structure.
-        ///// </summary>
-        //T Id { get; }
+    }
+
+    /// <summary>
+    /// The common interface of datastructures having an unique identification.
+    /// </summary>
+    public interface IHasId<TId> : IComparable<TId>,
+                                   IEquatable<TId>
+
+        where TId: IId
+
+    {
+
+        /// <summary>
+        /// The unique identification of the data structure.
+        /// </summary>
+        TId Id { get; }
+
+    }
+
+
+    /// <summary>
+    /// The common generic interface of an entity having one or multiple unique identification(s).
+    /// </summary>
+    /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
+    public interface IHasIds<TId> : IHasId<TId>
+
+        where TId : IId
+
+    {
+
+        /// <summary>
+        /// Auxilary unique identifications of this entity.
+        /// (Think of CNAMES in DNS, or brand names for companies)
+        /// </summary>
+        IEnumerable<TId> Ids    { get; }
 
     }
 
