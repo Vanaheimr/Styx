@@ -27,46 +27,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A structure to store a start and end time.
     /// </summary>
-    public struct TimeRange
+    public readonly struct TimeRange
     {
 
         #region Properties
 
-        #region StartTime
-
-        private readonly Time? _StartTime;
-
         /// <summary>
         /// The starting time.
         /// </summary>
-        public Time? StartTime
-        {
-            get
-            {
-                return _StartTime;
-            }
-        }
-
-        #endregion
-
-        #region EndTime
-
-        private readonly Time? _EndTime;
+        public Time?  StartTime    { get; }
 
         /// <summary>
         /// The ending time.
         /// </summary>
-        public Time? EndTime
-        {
-            get
-            {
-                return _EndTime;
-            }
-        }
+        public Time?  EndTime      { get; }
 
-        #endregion
-
-        #region Duration
 
         /// <summary>
         /// The duration of the time range.
@@ -76,15 +51,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             get
             {
 
-                if (_StartTime.HasValue && _EndTime.HasValue)
-                    return _EndTime.Value - _StartTime.Value;
+                if (StartTime.HasValue && EndTime.HasValue)
+                    return EndTime.Value - StartTime.Value;
 
                 return TimeSpan.Zero;
 
             }
         }
-
-        #endregion
 
         #endregion
 
@@ -106,8 +79,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            _StartTime  = StartTime;
-            _EndTime    = EndTime;
+            this.StartTime  = StartTime;
+            this.EndTime    = EndTime;
 
         }
 
@@ -155,7 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return _StartTime.GetHashCode() * 17 ^ _EndTime.GetHashCode();
+                return StartTime.GetHashCode() * 17 ^ EndTime.GetHashCode();
             }
         }
 
@@ -168,7 +141,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_StartTime.ToString(), " -> ", _EndTime.ToString());
+            return String.Concat(StartTime.ToString(), " -> ", EndTime.ToString());
         }
 
         #endregion

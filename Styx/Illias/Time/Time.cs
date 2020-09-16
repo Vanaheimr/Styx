@@ -27,61 +27,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A structure to store a simple time.
     /// </summary>
-    public struct Time
+    public readonly struct Time
     {
 
         #region Properties
 
-        #region Hour
-
-        private readonly Byte _Hour;
-
         /// <summary>
         /// The hour.
         /// </summary>
-        public Byte Hour
-        {
-            get
-            {
-                return _Hour;
-            }
-        }
-
-        #endregion
-
-        #region Minute
-
-        private readonly Byte _Minute;
+        public Byte   Hour      { get; }
 
         /// <summary>
         /// The minute.
         /// </summary>
-        public Byte Minute
-        {
-            get
-            {
-                return _Minute;
-            }
-        }
-
-        #endregion
-
-        #region Second
-
-        private readonly Byte? _Second;
+        public Byte   Minute    { get; }
 
         /// <summary>
         /// The second.
         /// </summary>
-        public Byte? Second
-        {
-            get
-            {
-                return _Second;
-            }
-        }
-
-        #endregion
+        public Byte?  Second    { get; }
 
         #endregion
 
@@ -101,19 +65,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #region Initial checks
 
             if (Hour > 23)
-                throw new ArgumentException("The value of the parameter is invalid!", "Hour");
+                throw new ArgumentException("The value of the parameter is invalid!", nameof(Hour));
 
             if (Minute > 59)
-                throw new ArgumentException("The value of the parameter is invalid!", "Minute");
+                throw new ArgumentException("The value of the parameter is invalid!", nameof(Minute));
 
             if (Second > 59)
-                throw new ArgumentException("The value of the parameter is invalid!", "Second");
+                throw new ArgumentException("The value of the parameter is invalid!", nameof(Second));
 
             #endregion
 
-            _Hour    = Hour;
-            _Minute  = Minute;
-            _Second  = Second;
+            this.Hour    = Hour;
+            this.Minute  = Minute;
+            this.Second  = Second;
 
         }
 
@@ -172,12 +136,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time Parse(String Text)
         {
 
-            Time Time;
+            if (TryParse(Text, out Time Time))
+                return Time;
 
-            if (!TryParse(Text, out Time))
-                throw new ArgumentException("Could not parse '" + Text + "' as a time.!");
-
-            return Time;
+            throw new ArgumentException("Could not parse the given text as a time.!");
 
         }
 
@@ -416,7 +378,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return _Hour.GetHashCode() * 23 ^ _Minute.GetHashCode() * 17 ^ _Second.GetHashCode();
+                return Hour.GetHashCode() * 23 ^ Minute.GetHashCode() * 17 ^ Second.GetHashCode();
             }
         }
 
@@ -430,10 +392,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override String ToString()
         {
 
-            if (_Second.HasValue)
-                return String.Concat(_Hour.ToString("D2"), ":", _Minute.ToString("D2"), ":", _Second.Value.ToString("D2"));
+            if (Second.HasValue)
+                return String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"), ":", Second.Value.ToString("D2"));
 
-            return String.Concat(_Hour.ToString("D2"), ":", _Minute.ToString("D2"));
+            return String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"));
 
         }
 
