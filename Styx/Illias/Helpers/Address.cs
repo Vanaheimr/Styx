@@ -259,7 +259,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => JSONObject.Create(
 
                    !Embedded
-                       ? new JProperty("@context", JSONLDContext)
+                       ? new JProperty("@context", JSONLDContext.ToString())
                        : null,
 
                    FloorLevel.         ToJSON("floorLevel"),

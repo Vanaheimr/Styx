@@ -83,8 +83,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// The common interface of datastructures having an unique identification.
     /// </summary>
-    public interface IHasId<TId> : IComparable<TId>,
-                                   IEquatable<TId>
+    public interface IHasId : IComparable
+    { }
+
+    /// <summary>
+    /// The common interface of datastructures having an unique identification.
+    /// </summary>
+    public interface IHasId<TId> : IHasId
+                                   //IComparable<TId>,
+                                   //IEquatable<TId>
 
         where TId: IId
 

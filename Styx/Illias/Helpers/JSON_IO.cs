@@ -51,7 +51,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var data = JProperties.Where(jproperty => jproperty != null).ToArray();
 
-            return data.Length > 0 ? new JObject(data) : new JObject();
+            return data.Length > 0
+                       ? new JObject(data)
+                       : new JObject();
 
         }
 
