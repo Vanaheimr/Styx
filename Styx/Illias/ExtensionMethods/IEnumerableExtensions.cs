@@ -624,6 +624,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region SafeAll(this IEnumerable, Check)
+
+        /// <summary>
+        /// Safely determines whether all elements of a sequence satisfy a condition..
+        /// </summary>
+        /// <typeparam name="TSource">The type of the enumeration.</typeparam>
+        /// <param name="IEnumerable">An enumeration.</param>
+        /// <param name="Check">A delegate to verify the given condition for the given enumeration.</param>
+        public static Boolean SafeAll<TSource>(this IEnumerable<TSource>  IEnumerable,
+                                               Func<TSource, Boolean>     Check)
+        {
+
+            if (IEnumerable == null || Check == null)
+                return false;
+
+            return IEnumerable.All(Check);
+
+        }
+
+        #endregion
+
         #region SafeAny(this IEnumerable, Filter = null)
 
         /// <summary>
@@ -632,8 +653,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <typeparam name="TSource">The type of the enumeration.</typeparam>
         /// <param name="IEnumerable">An enumeration.</param>
         /// <param name="Filter">An optional delegate to filter the given enumeration.</param>
-        public static Boolean SafeAny<TSource>(this IEnumerable<TSource>  IEnumerable,
-                                               Func<TSource, Boolean>     Filter = null)
+        public static Boolean SafeAny<TSource>(this IEnumerable<TSource> IEnumerable,
+                                               Func<TSource, Boolean> Filter = null)
         {
 
             if (IEnumerable == null)

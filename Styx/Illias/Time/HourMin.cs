@@ -19,17 +19,17 @@
 
 using System;
 
-using org.GraphDefined.Vanaheimr.Illias;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// This class references business details of Charging Station Operators.
+    /// A HourMin.
     /// </summary>
-    public struct HourMin : IEquatable<HourMin>, IComparable<HourMin>, IComparable
+    public readonly struct HourMin : IEquatable<HourMin>,
+                                     IComparable<HourMin>,
+                                     IComparable
     {
 
         #region Properties
@@ -75,21 +75,40 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse(Text)
+        #region (static) Parse   (Text)
 
+        /// <summary>
+        /// Parse the given string as a HourMin.
+        /// </summary>
+        /// <param name="Text">A text representation of a HourMin.</param>
         public static HourMin Parse(String Text)
         {
 
+            if (TryParse(Text, out HourMin hourMin))
+                return hourMin;
+
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text),  "The given text must not be null or empty!");
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a HourMin must not be null or empty!");
 
-            var Splited = Text.Split(':');
+            throw new ArgumentException("The given text representation of a HourMin îs invalid!", nameof(Text));
 
-            if (Splited.Length != 2)
-                throw new ArgumentException("The given input '" + Text + "' is not valid!");
+        }
 
-            return new HourMin(Byte.Parse(Splited[0]),
-                               Byte.Parse(Splited[1]));
+        #endregion
+
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as a HourMin.
+        /// </summary>
+        /// <param name="Text">A text representation of a HourMin.</param>
+        public static HourMin? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out HourMin hourMin))
+                return hourMin;
+
+            return null;
 
         }
 
@@ -100,29 +119,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out HourMin HourMin)
         {
 
-            HourMin = new HourMin(0, 0);
+            HourMin = default;
 
-            if (Text.IsNullOrEmpty())
-                return false;
+            if (Text.IsNotNullOrEmpty())
+            {
+                try
+                {
 
-            var Splited = Text.Split(':');
+                    var Splited = Text.Split(':');
 
-            if (Splited.Length != 2)
-                return false;
+                    if (Splited.Length != 2)
+                        return false;
 
-            Byte Hour = 0;
-            if (!Byte.TryParse(Splited[0], out Hour))
-                return false;
+                    if (!Byte.TryParse(Splited[0], out Byte Hour))
+                        return false;
 
-            Byte Minute = 0;
-            if (!Byte.TryParse(Splited[1], out Minute))
-                return false;
+                    if (!Byte.TryParse(Splited[1], out Byte Minute))
+                        return false;
 
-            HourMin = new HourMin(Hour, Minute);
+                    HourMin = new HourMin(Hour, Minute);
 
-            return true;
+                    return true;
+
+                }
+                catch (Exception)
+                { }
+            }
+
+            return false;
 
         }
+
+        #endregion
+
+        #region Clone
+
+        /// <summary>
+        /// Clone this HourMin.
+        /// </summary>
+        public HourMin Clone
+
+            => new HourMin(Hour,
+                           Minute);
 
         #endregion
 
@@ -137,20 +175,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin1">A HourMin.</param>
         /// <param name="HourMin2">Another HourMin.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator ==(HourMin HourMin1, HourMin HourMin2)
-        {
+        public static Boolean operator == (HourMin HourMin1,
+                                           HourMin HourMin2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(HourMin1, HourMin2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) HourMin1 == null) || ((Object) HourMin2 == null))
-                return false;
-
-            return HourMin1.Equals(HourMin2);
-
-        }
+            => HourMin1.Equals(HourMin2);
 
         #endregion
 
@@ -162,10 +190,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin1">A HourMin.</param>
         /// <param name="HourMin2">Another HourMin.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator !=(HourMin HourMin1, HourMin HourMin2)
-        {
-            return !(HourMin1 == HourMin2);
-        }
+        public static Boolean operator != (HourMin HourMin1,
+                                           HourMin HourMin2)
+
+            => !(HourMin1 == HourMin2);
 
         #endregion
 
@@ -177,15 +205,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin1">A HourMin.</param>
         /// <param name="HourMin2">Another HourMin.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <(HourMin HourMin1, HourMin HourMin2)
-        {
+        public static Boolean operator < (HourMin HourMin1,
+                                          HourMin HourMin2)
 
-            if ((Object) HourMin1 == null)
-                throw new ArgumentNullException("The given HourMin1 must not be null!");
-
-            return HourMin1.CompareTo(HourMin2) < 0;
-
-        }
+            => HourMin1.CompareTo(HourMin2) < 0;
 
         #endregion
 
@@ -197,10 +220,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin1">A HourMin.</param>
         /// <param name="HourMin2">Another HourMin.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <=(HourMin HourMin1, HourMin HourMin2)
-        {
-            return !(HourMin1 > HourMin2);
-        }
+        public static Boolean operator <= (HourMin HourMin1,
+                                           HourMin HourMin2)
+
+            => !(HourMin1 > HourMin2);
 
         #endregion
 
@@ -212,15 +235,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin1">A HourMin.</param>
         /// <param name="HourMin2">Another HourMin.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >(HourMin HourMin1, HourMin HourMin2)
-        {
+        public static Boolean operator > (HourMin HourMin1,
+                                          HourMin HourMin2)
 
-            if ((Object) HourMin1 == null)
-                throw new ArgumentNullException("The given HourMin1 must not be null!");
-
-            return HourMin1.CompareTo(HourMin2) > 0;
-
-        }
+            => HourMin1.CompareTo(HourMin2) > 0;
 
         #endregion
 
@@ -232,10 +250,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin1">A HourMin.</param>
         /// <param name="HourMin2">Another HourMin.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >=(HourMin HourMin1, HourMin HourMin2)
-        {
-            return !(HourMin1 < HourMin2);
-        }
+        public static Boolean operator >= (HourMin HourMin1,
+                                           HourMin HourMin2)
+
+            => !(HourMin1 < HourMin2);
 
         #endregion
 
@@ -252,14 +270,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+            if (Object is HourMin hourMin)
+                return CompareTo(hourMin);
 
-            // Check if the given object is an HourMin.
-            if (!(Object is HourMin))
-                throw new ArgumentNullException("The given object is not a HourMin!");
-
-            return CompareTo((HourMin) Object);
+            throw new ArgumentException("The given object is not a HourMin!",
+                                        nameof(Object));
 
         }
 
@@ -274,17 +289,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(HourMin HourMin)
         {
 
-            if ((Object) HourMin == null)
-                throw new ArgumentNullException("The given HourMin must not be null!");
+            var c = Hour.CompareTo(HourMin.Hour);
 
-            // Compare CountryIds
-            var _Result = Hour.CompareTo(HourMin.Hour);
+            if (c == 0)
+                c = Minute.CompareTo(HourMin.Minute);
 
-            // If equal: Compare charging operator identifications
-            if (_Result == 0)
-                _Result = Minute.CompareTo(HourMin.Minute);
-
-            return _Result;
+            return c;
 
         }
 
@@ -304,14 +314,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
-                return false;
+            if (Object is HourMin HourMin)
+                return Equals(HourMin);
 
-            // Check if the given object is an HourMin.
-            if (!(Object is HourMin))
-                return false;
-
-            return this.Equals((HourMin) Object);
+            return false;
 
         }
 
@@ -325,15 +331,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="HourMin">A HourMin to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(HourMin HourMin)
-        {
 
-            if ((Object) HourMin == null)
-                return false;
-
-            return Hour.  Equals(HourMin.Hour) &&
-                   Minute.Equals(HourMin.Minute);
-
-        }
+            => Hour.  Equals(HourMin.Hour) &&
+               Minute.Equals(HourMin.Minute);
 
         #endregion
 
@@ -349,7 +349,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return Hour.GetHashCode() * 23 ^ Minute.GetHashCode();
+                return Hour.  GetHashCode() * 3 ^
+                       Minute.GetHashCode();
             }
         }
 
@@ -361,7 +362,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"));
+
+            => String.Concat(Hour.ToString("D2"),
+                             ":",
+                             Minute.ToString("D2"));
 
         #endregion
 
