@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Key.IsNullOrEmpty())
                 return false;
 
-            return InternalData.TryGetValue(Key, out Object _Value);
+            return InternalData.ContainsKey(Key);
 
         }
 
