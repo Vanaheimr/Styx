@@ -28,9 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// A system identification is unique identification of a single system
     /// within a larger distributed system.
     /// </summary>
-    public struct System_Id : IId,
-                              IEquatable<System_Id>,
-                              IComparable<System_Id>
+    public readonly struct System_Id : IId<System_Id>
     {
 
         #region Data
