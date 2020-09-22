@@ -27,7 +27,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A structure to store a simple time.
     /// </summary>
-    public readonly struct Time
+    public readonly struct Time : IEquatable<Time>,
+                                  IComparable<Time>,
+                                  IComparable
     {
 
         #region Properties
@@ -35,17 +37,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The hour.
         /// </summary>
-        public Byte   Hour      { get; }
+        public readonly Byte   Hour      { get; }
 
         /// <summary>
         /// The minute.
         /// </summary>
-        public Byte   Minute    { get; }
+        public readonly Byte   Minute    { get; }
 
         /// <summary>
         /// The second.
         /// </summary>
-        public Byte?  Second    { get; }
+        public readonly Byte?  Second    { get; }
 
         #endregion
 
@@ -62,18 +64,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                      Byte?  Second  = null)
         {
 
-            #region Initial checks
-
-            if (Hour > 23)
-                throw new ArgumentException("The value of the parameter is invalid!", nameof(Hour));
+            if (Hour   > 23)
+                throw new ArgumentException("The hour value is invalid!",   nameof(Hour));
 
             if (Minute > 59)
-                throw new ArgumentException("The value of the parameter is invalid!", nameof(Minute));
+                throw new ArgumentException("The minute value is invalid!", nameof(Minute));
 
             if (Second > 59)
-                throw new ArgumentException("The value of the parameter is invalid!", nameof(Second));
+                throw new ArgumentException("The second value is invalid!", nameof(Second));
 
-            #endregion
 
             this.Hour    = Hour;
             this.Minute  = Minute;
@@ -84,20 +83,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region FromHour(Hour)
+        #region FromHour      (Hour)
 
         /// <summary>
         /// Create a new time based on the given hour.
         /// </summary>
         /// <param name="Hour">The hour.</param>
         public static Time FromHour(Byte Hour)
-        {
-            return new Time(Hour);
-        }
+
+            => new Time(Hour);
 
         #endregion
 
-        #region FromHourMin(Hour, Minute)
+        #region FromHourMin   (Hour, Minute)
 
         /// <summary>
         /// Create a new time based on the given hour and minute.
@@ -105,9 +103,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Hour">The hour.</param>
         /// <param name="Minute">The minute</param>
         public static Time FromHourMin(Byte Hour, Byte Minute)
-        {
-            return new Time(Hour, Minute);
-        }
+
+            => new Time(Hour,
+                        Minute);
 
         #endregion
 
@@ -120,14 +118,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Minute">The minute</param>
         /// <param name="Second">The second.</param>
         public static Time FromHourMinSec(Byte Hour, Byte Minute, Byte Second)
-        {
-            return new Time(Hour, Minute, Second);
-        }
+
+            => new Time(Hour,
+                        Minute,
+                        Second);
 
         #endregion
 
 
-        #region (static) Parse(Text)
+        #region (static) Parse   (Text)
 
         /// <summary>
         /// Parse the given text as time.
@@ -136,10 +135,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time Parse(String Text)
         {
 
-            if (TryParse(Text, out Time Time))
-                return Time;
+            if (TryParse(Text, out Time time))
+                return time;
 
             throw new ArgumentException("Could not parse the given text as a time.!");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text as time.
+        /// </summary>
+        /// <param name="Text">A text representation of the time.</param>
+        public static Time? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out Time time))
+                return time;
+
+            return null;
 
         }
 
@@ -155,18 +172,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Time Time)
         {
 
-            var Fragments = Text.Trim().Split(':');
+            Time = default;
 
-            Byte Hour    = 0;
-            Byte Minute  = 0;
-            Byte Second  = 0;
+            var Fragments = Text?.Trim()?.Split(':');
 
-            Time = Time.FromHour(0);
+            if (Fragments == null)
+                return false;
 
-            if (Fragments.Length == 1)
+            else if (Fragments.Length == 1)
             {
 
-                if (!Byte.TryParse(Fragments[0], out Hour))
+                if (!Byte.TryParse(Fragments[0], out Byte Hour))
                     return false;
 
                 Time = Time.FromHour(Hour);
@@ -177,10 +193,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             else if (Fragments.Length == 2)
             {
 
-                if (!Byte.TryParse(Fragments[0], out Hour))
+                if (!Byte.TryParse(Fragments[0], out Byte Hour))
                     return false;
 
-                if (!Byte.TryParse(Fragments[1], out Minute))
+                if (!Byte.TryParse(Fragments[1], out Byte Minute))
                     return false;
 
                 Time = Time.FromHourMin(Hour, Minute);
@@ -191,13 +207,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             else if (Fragments.Length == 3)
             {
 
-                if (!Byte.TryParse(Fragments[0], out Hour))
+                if (!Byte.TryParse(Fragments[0], out Byte Hour))
                     return false;
 
-                if (!Byte.TryParse(Fragments[1], out Minute))
+                if (!Byte.TryParse(Fragments[1], out Byte Minute))
                     return false;
 
-                if (!Byte.TryParse(Fragments[2], out Second))
+                if (!Byte.TryParse(Fragments[2], out Byte Second))
                     return false;
 
                 Time = Time.FromHourMinSec(Hour, Minute, Second);
@@ -212,42 +228,113 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Operator -
+        #region Operator overloading
+
+        #region Operator == (Time1, Time2)
 
         /// <summary>
-        /// Operator -
+        /// Compares two instances of this object.
         /// </summary>
         /// <param name="Time1">A time.</param>
         /// <param name="Time2">Another time.</param>
-        public static TimeSpan operator -  (Time Time1, Time Time2)
-        {
+        /// <returns>true|false</returns>
+        public static Boolean operator == (Time Time1,
+                                           Time Time2)
 
-            var Hours    = Time1.Hour   - Time2.Hour;
-            var Minutes  = Time1.Minute - Time2.Minute;
-            var Seconds  = Time1.Second - Time2.Second;
-
-            return new TimeSpan(Hours   >= 0 ? Hours         : 0,
-                                Minutes >= 0 ? Minutes       : 0,
-                                Seconds >= 0 ? Seconds.Value : 0);
-
-        }
+            => Time1.Equals(Time2);
 
         #endregion
 
-        #region (static) Operator +
+        #region Operator != (Time1, Time2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Time1">A time.</param>
+        /// <param name="Time2">Another time.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (Time Time1,
+                                           Time Time2)
+
+            => !(Time1 == Time2);
+
+        #endregion
+
+        #region Operator <  (Time1, Time2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Time1">A time.</param>
+        /// <param name="Time2">Another time.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (Time Time1,
+                                          Time Time2)
+
+            => Time1.CompareTo(Time2) < 0;
+
+        #endregion
+
+        #region Operator <= (Time1, Time2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Time1">A time.</param>
+        /// <param name="Time2">Another time.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (Time Time1,
+                                           Time Time2)
+
+            => !(Time1 > Time2);
+
+        #endregion
+
+        #region Operator >  (Time1, Time2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Time1">A time.</param>
+        /// <param name="Time2">Another time.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (Time Time1,
+                                          Time Time2)
+
+            => Time1.CompareTo(Time2) > 0;
+
+        #endregion
+
+        #region Operator >= (Time1, Time2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Time1">A time.</param>
+        /// <param name="Time2">Another time.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (Time Time1,
+                                           Time Time2)
+
+            => !(Time1 < Time2);
+
+        #endregion
+
+        #region Operator +  (Time1, Time2)
 
         /// <summary>
         /// Operator +
         /// </summary>
         /// <param name="Time1">A time.</param>
         /// <param name="Time2">Another time.</param>
-        public static TimeSpan operator +  (Time Time1, Time Time2)
+        public static TimeSpan operator +  (Time Time1,
+                                            Time Time2)
         {
 
-            var Days    = 0;
-            var Hours   = Time1.Hour   + Time2.Hour;
-            var Minutes = Time1.Minute + Time2.Minute;
-            var Seconds = Time1.Second + Time2.Second;
+            var Days     = 0;
+            var Hours    = Time1.Hour   + Time2.Hour;
+            var Minutes  = Time1.Minute + Time2.Minute;
+            var Seconds  = Time1.Second + Time2.Second;
 
             if (Seconds > 59)
             {
@@ -274,100 +361,105 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Operator >
+        #region Operator -  (Time1, Time2)
 
         /// <summary>
-        /// Operator >
+        /// Operator -
         /// </summary>
         /// <param name="Time1">A time.</param>
         /// <param name="Time2">Another time.</param>
-        public static Boolean operator >  (Time Time1, Time Time2)
+        public static TimeSpan operator -  (Time Time1,
+                                            Time Time2)
         {
 
-            if (Time1.Hour > Time2.Hour)
-                return true;
+            var Hours    = Time1.Hour   - Time2.Hour;
+            var Minutes  = Time1.Minute - Time2.Minute;
+            var Seconds  = Time1.Second - Time2.Second;
 
-            if (Time1.Hour < Time2.Hour)
-                return false;
-
-            if (Time1.Minute > Time2.Minute)
-                return true;
-
-            if (Time1.Minute < Time2.Minute)
-                return false;
-
-            if (Time1.Second > Time2.Second)
-                return true;
-
-            return false;
+            return new TimeSpan(Hours   >= 0 ? Hours         : 0,
+                                Minutes >= 0 ? Minutes       : 0,
+                                Seconds >= 0 ? Seconds.Value : 0);
 
         }
 
         #endregion
 
-        #region (static) Operator <=
+        #endregion
+
+        #region IComparable<Time> Members
+
+        #region CompareTo(Object)
 
         /// <summary>
-        /// Operator <=
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Time1">A time.</param>
-        /// <param name="Time2">Another time.</param>
-        public static Boolean operator <= (Time Time1, Time Time2)
+        /// <param name="Object">An object to compare with.</param>
+        public Int32 CompareTo(Object Object)
+
+            => Object is Time time
+                   ? CompareTo(time)
+                   : throw new ArgumentException("The given object is not a time!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(Time)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Time">An object to compare with.</param>
+        public Int32 CompareTo(Time Time)
         {
 
-            return !(Time1 > Time2);
+            var c = Hour.        CompareTo(Time.Hour);
+
+            if (c == 0)
+                c = Minute.      CompareTo(Time.Minute);
+
+            if (c == 0 && Second.HasValue)
+                c = Second.Value.CompareTo(Time.Second.Value);
+
+            return c;
 
         }
 
         #endregion
 
-        #region (static) Operator <
+        #endregion
+
+        #region IEquatable<Time> Members
+
+        #region Equals(Object)
 
         /// <summary>
-        /// Operator <
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Time1">A time.</param>
-        /// <param name="Time2">Another time.</param>
-        public static Boolean operator <  (Time Time1, Time Time2)
-        {
+        /// <param name="Object">An object to compare with.</param>
+        /// <returns>true|false</returns>
+        public override Boolean Equals(Object Object)
 
-            if (Time1.Hour > Time2.Hour)
-                return false;
-
-            if (Time1.Hour < Time2.Hour)
-                return true;
-
-            if (Time1.Minute > Time2.Minute)
-                return false;
-
-            if (Time1.Minute < Time2.Minute)
-                return true;
-
-            if (Time1.Second > Time2.Second)
-                return false;
-
-            return false;
-
-        }
+            => Object is Time time &&
+                   Equals(time);
 
         #endregion
 
-        #region (static) Operator >=
+        #region Equals(Time)
 
         /// <summary>
-        /// Operator >=
+        /// Compares two price components for equality.
         /// </summary>
-        /// <param name="Time1">A time.</param>
-        /// <param name="Time2">Another time.</param>
-        public static Boolean operator >= (Time Time1, Time Time2)
-        {
+        /// <param name="Time">A time to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(Time Time)
 
-            return !(Time1 < Time2);
-
-        }
+            => Hour.  Equals(Time.Hour)   &&
+               Minute.Equals(Time.Minute) &&
+               Second.Equals(Time.Second);
 
         #endregion
 
+        #endregion
 
         #region GetHashCode()
 
@@ -378,7 +470,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return Hour.GetHashCode() * 23 ^ Minute.GetHashCode() * 17 ^ Second.GetHashCode();
+
+                return Hour.  GetHashCode() * 5 ^
+                       Minute.GetHashCode() * 3 ^
+                       Second.GetHashCode();
+
             }
         }
 
@@ -390,14 +486,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            if (Second.HasValue)
-                return String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"), ":", Second.Value.ToString("D2"));
-
-            return String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"));
-
-        }
+            => Second.HasValue
+                   ? String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"), ":", Second.Value.ToString("D2"))
+                   : String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"));
 
         #endregion
 
