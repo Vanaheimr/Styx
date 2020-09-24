@@ -244,6 +244,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region Operator +  (JSONLDPrefix, JSONLDSuffix)
+
+        /// <summary>
+        /// Combines a JSON-LD prefix and a suffix.
+        /// </summary>
+        /// <param name="JSONLDPrefix">A JSON-LD context prefix.</param>
+        /// <param name="JSONLDSuffix">Another JSON-LD context suffix.</param>
+        /// <returns>true|false</returns>
+        public static JSONLDContext operator +  (JSONLDContext JSONLDPrefix,
+                                                 String        JSONLDSuffix)
+
+            => JSONLDContext.Parse(JSONLDPrefix.ToString() + "/" + JSONLDSuffix.ToString());
+
+        #endregion
+
         #endregion
 
         #region IComparable<JSONLDContext> Members
