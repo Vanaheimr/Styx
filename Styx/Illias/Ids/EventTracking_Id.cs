@@ -92,18 +92,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Text != null)
-                Text = Text.Trim();
+            Text = Text?.Trim();
 
             if (Text.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Text), "The given text representation of an event tracking identification must not be null or empty!");
 
             #endregion
 
-            if (TryParse(Text, out EventTracking_Id EventTrackingId))
-                return EventTrackingId;
+            if (TryParse(Text, out EventTracking_Id eventTrackingId))
+                return eventTrackingId;
 
-            throw new ArgumentException(nameof(Text), "The given text representation of an event tracking identification is invalid!");
+            throw new ArgumentException("The given text representation of an event tracking identification is invalid!",
+                                        nameof(Text));
 
         }
 
@@ -121,8 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Text != null)
-                Text = Text.Trim();
+            Text = Text?.Trim();
 
             if (Text.IsNullOrEmpty())
             {

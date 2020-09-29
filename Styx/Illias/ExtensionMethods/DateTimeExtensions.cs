@@ -111,6 +111,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a DateTime object.
+        /// </summary>
+        /// <param name="Text">A text representation of a DateTime object.</param>
+        public static DateTime? TryParse(String Text)
+        {
+
+            if (DateTime.TryParse(Text, out DateTime dateTime))
+                return dateTime;
+
+            return null;
+
+        }
+
+        #endregion
+
 
     }
 

@@ -256,7 +256,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static JSONLDContext operator +  (JSONLDContext JSONLDPrefix,
                                                  String        JSONLDSuffix)
 
-            => JSONLDContext.Parse(JSONLDPrefix.ToString() + "/" + JSONLDSuffix.ToString());
+            => JSONLDContext.Parse(JSONLDPrefix.ToString().EndsWith("/")
+                                       ? JSONLDPrefix.ToString() +       JSONLDSuffix
+                                       : JSONLDPrefix.ToString() + "/" + JSONLDSuffix);
 
         #endregion
 
