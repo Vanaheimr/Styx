@@ -444,26 +444,26 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                           String  AltitudeString = null)
         {
 
-            if (!Latitude. TryParse(LatitudeString,  out Latitude  LatitudeValue))
+            if (!Latitude. TryParse(LatitudeString,  out Latitude  latitude))
                 throw new Exception("Invalid 'latitude' value!");
 
-            if (!Longitude.TryParse(LongitudeString, out Longitude LongitudeValue))
+            if (!Longitude.TryParse(LongitudeString, out Longitude longitude))
                 throw new Exception("Invalid 'longitude' value!");
 
             if (AltitudeString.IsNeitherNullNorEmpty())
             {
 
-                if (!Aegir.Altitude.TryParse(AltitudeString, out Altitude AltitudeValue))
+                if (!Aegir.Altitude.TryParse(AltitudeString, out Altitude altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
-                return new GeoCoordinate(LatitudeValue,
-                                         LongitudeValue,
-                                         AltitudeValue);
+                return new GeoCoordinate(latitude,
+                                         longitude,
+                                         altitude);
 
             }
 
-            return new GeoCoordinate(LatitudeValue,
-                                     LongitudeValue);
+            return new GeoCoordinate(latitude,
+                                     longitude);
 
         }
 
@@ -482,25 +482,25 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                           Double? AltitudeDouble = null)
         {
 
-            if (!Latitude. TryParse(LatitudeDouble,  out Latitude  LatitudeValue))
+            if (!Latitude. TryParse(LatitudeDouble,  out Latitude  latitude))
                 throw new Exception("Invalid 'latitude' value!");
 
-            if (!Longitude.TryParse(LongitudeDouble, out Longitude LongitudeValue))
+            if (!Longitude.TryParse(LongitudeDouble, out Longitude longitude))
                 throw new Exception("Invalid 'longitude' value!");
 
             if (AltitudeDouble.HasValue)
             {
 
-                if (!Aegir.Altitude.TryParse(AltitudeDouble.Value, out Altitude AltitudeValue))
+                if (!Aegir.Altitude.TryParse(AltitudeDouble.Value, out Altitude altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
-                return new GeoCoordinate(LatitudeValue,
-                                         LongitudeValue,
-                                         AltitudeValue);
+                return new GeoCoordinate(latitude,
+                                         longitude,
+                                         altitude);
             }
 
-            return new GeoCoordinate(LatitudeValue,
-                                     LongitudeValue);
+            return new GeoCoordinate(latitude,
+                                     longitude);
 
         }
 
@@ -519,15 +519,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                        out GeoCoordinate  GeoCoordinate)
         {
 
-            GeoCoordinate = default(GeoCoordinate);
+            GeoCoordinate = default;
 
-            if (!Latitude. TryParse(LatitudeString,  out Latitude  LatitudeValue))
+            if (!Latitude. TryParse(LatitudeString,  out Latitude  latitude))
                 return false;
 
-            if (!Longitude.TryParse(LongitudeString, out Longitude LongitudeValue))
+            if (!Longitude.TryParse(LongitudeString, out Longitude longitude))
                 return false;
 
-            GeoCoordinate = new GeoCoordinate(LatitudeValue, LongitudeValue);
+            GeoCoordinate = new GeoCoordinate(latitude, longitude);
 
             return true;
 
@@ -550,20 +550,20 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                        out GeoCoordinate  GeoCoordinate)
         {
 
-            GeoCoordinate = default(GeoCoordinate);
+            GeoCoordinate = default;
 
-            if (!Latitude.      TryParse(LatitudeString,  out Latitude  LatitudeValue))
+            if (!Latitude.      TryParse(LatitudeString,  out Latitude  latitude))
                 return false;
 
-            if (!Longitude.     TryParse(LongitudeString, out Longitude LongitudeValue))
+            if (!Longitude.     TryParse(LongitudeString, out Longitude longitude))
                 return false;
 
-            if (!Aegir.Altitude.TryParse(AltitudeString,  out Altitude  AltitudeValue))
+            if (!Aegir.Altitude.TryParse(AltitudeString,  out Altitude  altitude))
                 return false;
 
-            GeoCoordinate = new GeoCoordinate(LatitudeValue,
-                                              LongitudeValue,
-                                              AltitudeValue);
+            GeoCoordinate = new GeoCoordinate(latitude,
+                                              longitude,
+                                              altitude);
 
             return true;
 
@@ -707,8 +707,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate? TryParse(JObject JSON)
         {
 
-            if (TryParse(JSON, out GeoCoordinate _GeoCoordinate))
-                return _GeoCoordinate;
+            if (TryParse(JSON, out GeoCoordinate geoCoordinate))
+                return geoCoordinate;
 
             return default(GeoCoordinate);
 
@@ -717,9 +717,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Boolean TryParse(JObject JSON, out GeoCoordinate GeoLocation)
         {
 
-            var lat         = JSON["lat"];
-            var lng         = JSON["lng"];
-            var alt         = JSON["alt"];
+            var lat         = JSON["lat"] ?? JSON["latitude"];
+            var lng         = JSON["lng"] ?? JSON["longitude"];
+            var alt         = JSON["alt"] ?? JSON["altitude"];
             var projection  = JSON["projection"];
 
             if (lat != null && lng != null)
@@ -735,9 +735,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     return true;
 
                 }
-                catch (Exception e)
-                {
-                }
+                catch (Exception)
+                { }
 
             }
 
