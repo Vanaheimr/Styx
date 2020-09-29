@@ -122,6 +122,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        public static Boolean TryParse(String Text, out Latitude Latitude)
+            => TryParse(Text, out Latitude, null);
+
         public static Boolean TryParse(String Text, out Latitude Latitude, Func<Double, Double> ValueMapper = null)
         {
 

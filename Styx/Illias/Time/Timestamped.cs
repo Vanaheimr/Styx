@@ -32,9 +32,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// A value with its creation timestamp.
     /// </summary>
     /// <typeparam name="T">The type of the timestamped value.</typeparam>
-    public struct Timestamped<T> : IEquatable<Timestamped<T>>,
-                                   IEquatable<T>,
-                                   IComparable<Timestamped<T>>
+    public readonly struct Timestamped<T> : IEquatable<Timestamped<T>>,
+                                            IEquatable<T>,
+                                            IComparable<Timestamped<T>>
     {
 
         #region Properties
