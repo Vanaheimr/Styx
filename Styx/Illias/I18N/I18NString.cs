@@ -506,8 +506,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public JObject ToJSON()
 
             => I18NStrings.Any()
-               ? new JObject(I18NStrings.SafeSelect(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
-               : new JObject();
+                   ? new JObject(I18NStrings.SafeSelect(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
+                   : new JObject();
 
         #endregion
 

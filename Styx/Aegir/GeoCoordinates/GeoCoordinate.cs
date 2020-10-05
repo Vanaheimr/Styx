@@ -182,7 +182,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static JProperty ToJSON(this GeoCoordinate GeoLocation, String JPropertyKey)
         {
 
-            if (GeoLocation == default(GeoCoordinate))
+            if (GeoLocation == default)
                 return null;
 
             return new JProperty(JPropertyKey,

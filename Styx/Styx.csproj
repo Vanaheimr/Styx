@@ -66,6 +66,7 @@
     <Compile Include="Aegir\GeoCoordinates\IGeoHash.cs" />
     <Compile Include="Aegir\GeoCoordinates\IGeoPosition.cs" />
     <Compile Include="Aegir\GeoCoordinates\IReadonlyGeoPosition.cs" />
+    <Compile Include="Aegir\GeoCoordinates\NamedGeoCoordinate.cs" />
     <Compile Include="Aegir\GeoCoordinates\Latitude.cs" />
     <Compile Include="Aegir\GeoCoordinates\Longitude.cs" />
     <Compile Include="Aegir\GeoCoordinates\NumericExtensions.cs" />

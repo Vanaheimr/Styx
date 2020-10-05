@@ -28,32 +28,22 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     /// <summary>
     /// An altitude.
     /// </summary>
-    public struct Altitude : IEquatable<Altitude>,
-                             IComparable<Altitude>,
-                             IComparable
+    public readonly struct Altitude : IEquatable<Altitude>,
+                                      IComparable<Altitude>,
+                                      IComparable
 
     {
 
         #region Properties
 
-        private Double _Value;
-
         /// <summary>
-        /// Returns the value of the altitude.
+        /// The value of the altitude.
         /// </summary>
-        public Double Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
+        public Double  Value    { get; }
 
         #endregion
 
         #region Constructor(s)
-
-        #region Altitude(Value)
 
         /// <summary>
         /// Create a new altitude.
@@ -61,10 +51,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Value">The value of the altitude.</param>
         private Altitude(Double Value)
         {
-            _Value = Value;
+            this.Value = Value;
         }
-
-        #endregion
 
         #endregion
 
@@ -97,7 +85,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             catch (Exception)
             { }
 
-            Altitude = default(Altitude);
+            Altitude = default;
             return false;
 
         }
@@ -113,7 +101,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             catch (Exception)
             { }
 
-            Altitude = default(Altitude);
+            Altitude = default;
             return false;
 
         }
@@ -127,9 +115,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="OtherAltitude">Another Altitude.</param>
         /// <returns>The distance between a and b.</returns>
         public Double DistanceTo(Altitude OtherAltitude)
-        {
-            return Math.Abs(_Value - OtherAltitude.Value);
-        }
+
+            => Math.Abs(Value - OtherAltitude.Value);
 
         #endregion
 
@@ -299,21 +286,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-            
-            try
-            {
-                return this.Equals((Altitude) Object);
-            }
-            catch (InvalidCastException)
-            {
-                return false;
-            }
-
-        }
+            => Object is Altitude altitude &&
+                   Equals(altitude);
 
         #endregion
 
@@ -325,9 +300,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude">Another altitude.</param>
         /// <returns>True if both are equal; False otherwise.</returns>
         public Boolean Equals(Altitude Altitude)
-        {
-            return this.Value.Equals(Altitude.Value);
-        }
+
+            => Value.Equals(Altitude.Value);
 
         #endregion
 
@@ -340,9 +314,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()
-        {
-            return this.Value.GetHashCode();
-        }
+
+            => Value.GetHashCode();
 
         #endregion
 
@@ -352,9 +325,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Returns a string representation of the given object.
         /// </summary>
         public override String ToString()
-        {
-            return this.Value.ToString();
-        }
+
+            => Value.ToString();
 
         #endregion
 
