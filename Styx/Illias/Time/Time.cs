@@ -65,13 +65,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Hour   > 23)
-                throw new ArgumentException("The hour value is invalid!",   nameof(Hour));
+                throw new ArgumentException("The hour value is invalid!",    nameof(Hour));
 
             if (Minute > 59)
-                throw new ArgumentException("The minute value is invalid!", nameof(Minute));
+                throw new ArgumentException("The minute value is invalid!",  nameof(Minute));
 
             if (Second > 59)
-                throw new ArgumentException("The second value is invalid!", nameof(Second));
+                throw new ArgumentException("The second value is invalid!",  nameof(Second));
 
 
             this.Hour    = Hour;
@@ -417,7 +417,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (c == 0)
                 c = Minute.      CompareTo(Time.Minute);
 
-            if (c == 0 && Second.HasValue)
+            if (c == 0 && Second.HasValue && Time.Second.HasValue)
                 c = Second.Value.CompareTo(Time.Second.Value);
 
             return c;
@@ -473,7 +473,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 return Hour.  GetHashCode() * 5 ^
                        Minute.GetHashCode() * 3 ^
-                       Second.GetHashCode();
+
+                       (Second.HasValue
+                            ? Second.GetHashCode()
+                            : 0);
 
             }
         }
@@ -487,9 +490,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => Second.HasValue
-                   ? String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"), ":", Second.Value.ToString("D2"))
-                   : String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"));
+            => String.Concat(
+
+                   Hour.  ToString("D2"), ":",
+                   Minute.ToString("D2"),
+
+                   Second.HasValue
+                       ? ":" + Second.Value.ToString("D2")
+                       : ""
+
+               );
 
         #endregion
 

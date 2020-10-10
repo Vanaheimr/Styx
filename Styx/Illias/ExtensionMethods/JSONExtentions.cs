@@ -3933,7 +3933,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -3987,7 +3987,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4042,7 +4042,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4092,7 +4092,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4144,7 +4144,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4198,7 +4198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4245,7 +4245,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4292,7 +4292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4300,6 +4300,56 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ErrorResponse  = "Invalid " + PropertyDescription + "!";
 
                 else if (!JObjectParser(JSON2, out Value, out String ErrorResponse2))
+                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public static Boolean ParseOptionalJSON<T>(this JObject          JSON,
+                                                   String                PropertyName,
+                                                   String                PropertyDescription,
+                                                   TryJObjectParser2<T>  JObjectParser,
+                                                   out T?                Value,
+                                                   out String            ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Value          = default;
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+
+                // "propertyKey": null -> will be ignored!
+                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!(JSONToken is JObject JSON2))
+                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+
+                else if (JObjectParser(JSON2, out T value, out String ErrorResponse2))
+                    Value = value;
+
+                else
                     ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
 
                 return true;
@@ -4337,7 +4387,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4385,7 +4435,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4432,7 +4482,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4480,7 +4530,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4551,7 +4601,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4623,7 +4673,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4696,7 +4746,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4764,7 +4814,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4833,7 +4883,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4905,7 +4955,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -4978,7 +5028,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -5052,7 +5102,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -5127,7 +5177,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -5194,7 +5244,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -5262,7 +5312,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
@@ -5351,7 +5401,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
             {
 
-                // "properyKey": null -> will be ignored!
+                // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
