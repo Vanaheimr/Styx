@@ -106,46 +106,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         private readonly List<ExceptionalPeriod> _ExceptionalOpenings;
         private readonly List<ExceptionalPeriod> _ExceptionalClosings;
 
-        #region IsOpen24Hours
-
-        private readonly Boolean _IsOpen24Hours;
-
         /// <summary>
         /// 24/7 open...
         /// </summary>
-        public Boolean IsOpen24Hours
-        {
-            get
-            {
-                return _IsOpen24Hours;
-            }
-        }
-
-        #endregion
-
-        #region FreeText
-
-        private String _FreeText;
+        public Boolean IsOpen24Hours { get; }
 
         /// <summary>
         /// An additoonal free text.
         /// </summary>
-        public String FreeText
-        {
-
-            get
-            {
-                return _FreeText;
-            }
-
-            set
-            {
-                _FreeText = value;
-            }
-
-        }
-
-        #endregion
+        public String FreeText { get; set; }
 
         #endregion
 
@@ -160,8 +129,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this._RegularOpenings      = new RegularHours[7];
             this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
             this._ExceptionalClosings  = new List<ExceptionalPeriod>();
-            this._FreeText             = FreeText;
-            this._IsOpen24Hours        = IsOpen24Hours;
+            this.FreeText             = FreeText;
+            this.IsOpen24Hours        = IsOpen24Hours;
 
         }
 
