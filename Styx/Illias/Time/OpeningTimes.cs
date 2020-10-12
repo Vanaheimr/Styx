@@ -298,6 +298,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             OpeningTimes = null;
 
+            if (Text == "{}")
+                return true;
+
             var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) (([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h|open|closed)");
             if (!match.Success)
                 return false;
