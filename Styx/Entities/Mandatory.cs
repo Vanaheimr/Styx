@@ -37,18 +37,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Tags
 
-        private readonly String[] _Tags;
-
         /// <summary>
         /// Additional tags of the 'mandatory'-tag.
         /// </summary>
-        public IEnumerable<String> Tags
-        {
-            get
-            {
-                return _Tags;
-            }
-        }
+        public IEnumerable<String>  Tags    { get; }
 
         #endregion
 
@@ -58,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tags">Additional tags.</param>
         public MandatoryAttribute(params String[] Tags)
         {
-            this._Tags = Tags?.Where(tag => !tag.IsNullOrEmpty()).ToArray();
+            this.Tags = Tags?.Where(tag => tag.IsNotNullOrEmpty()).Distinct().ToArray();
         }
 
     }
