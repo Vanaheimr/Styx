@@ -63,6 +63,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         unknown,
 
+        de,
+        en,
         bgn,
         deu,
         eng,
