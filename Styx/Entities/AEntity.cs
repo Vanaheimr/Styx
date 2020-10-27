@@ -122,7 +122,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         TDataSource  DataSource    { get; }
 
 
-        void CopyAllEdgesTo(TEntity Enity);
+        void CopyAllLinkedDataFrom(TEntity OldEnity);
 
 
     }
@@ -446,7 +446,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //#endregion
 
 
-        public abstract void CopyAllEdgesTo(TEntity Enity);
+        public abstract void CopyAllLinkedDataFrom(TEntity OldEnity);
 
 
 
@@ -512,7 +512,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (class) Builder
 
         /// <summary>
-        /// An abstract group builder.
+        /// An abstract builder.
         /// </summary>
         public abstract class Builder : IEntityBuilder<TId,
                                                        TEntity,
@@ -593,7 +593,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public event OnPropertyChangedDelegate OnPropertyChanged;
 
 
-            public abstract void CopyAllEdgesTo(TEntity Enity);
+            public abstract void CopyAllLinkedDataFrom(TEntity OldEnity);
 
 
 
