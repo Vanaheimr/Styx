@@ -57,7 +57,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return the first string of a multi-language string.
         /// </summary>
         public static I18NString ToI18NString(this String  Text,
-                                              Languages    Language = Languages.eng)
+                                              Languages    Language = Languages.en)
             => Text.IsNotNullOrEmpty()
                    ? I18NString.Create(Language, Text)
                    : null;
