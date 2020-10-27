@@ -402,10 +402,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         if (_Country.CountryName == unknown.CountryName)
                             continue;
 
-                        CountryNames.Add(_Country.CountryName, _Country);
-                        Alpha2Codes. Add(_Country.Alpha2Code,  _Country);
-                        Alpha3Codes. Add(_Country.Alpha3Code,  _Country);
-                        NumericCodes.Add(_Country.NumericCode, _Country);
+                        CountryNames.Add(_Country.CountryName,            _Country);
+                        Alpha2Codes. Add(_Country.Alpha2Code?.ToLower(),  _Country);
+                        Alpha3Codes. Add(_Country.Alpha3Code?.ToLower(),  _Country);
+                        NumericCodes.Add(_Country.NumericCode,            _Country);
 
                         if (!TelefonCodes.ContainsKey(_Country.TelefonCode))
                             TelefonCodes.Add(_Country.TelefonCode, _Country);
@@ -430,16 +430,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Country Parse(String AnyString)
         {
 
+            if (AnyString.IsNullOrEmpty())
+                return default;
+
+
             if (AnyString.Length == 2)
                 return ParseAlpha2Code(AnyString);
 
-            else if (AnyString.Length == 3)
+            if (AnyString.Length == 3)
                 return ParseAlpha3Code(AnyString);
 
-            else if (TryParseNumericCode(AnyString, out Country _Country))
+            if (TryParseNumericCode(AnyString, out Country _Country))
                 return _Country;
 
-            else if (TryParseTelefonCode(AnyString, out _Country))
+            if (TryParseTelefonCode(AnyString, out _Country))
                 return _Country;
 
             return ParseCountryName(AnyString);
@@ -448,29 +452,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(AnyString, out CountryValue)
+        #region TryParse(AnyString, out Country)
 
         /// <summary>
         /// Tries to find the appropriate country for the given string.
         /// </summary>
         /// <param name="AnyString">Any string.</param>
-        /// <param name="CountryValue">The country.</param>
-        public static Boolean TryParse(String AnyString, out Country CountryValue)
+        /// <param name="Country">The country.</param>
+        public static Boolean TryParse(String AnyString, out Country Country)
         {
 
-            if (TryParseAlpha2Code (AnyString, out CountryValue))
+            if (AnyString.IsNullOrEmpty())
+            {
+                Country = default;
+                return false;
+            }
+
+            if (TryParseAlpha2Code (AnyString, out Country))
                 return true;
 
-            if (TryParseAlpha3Code (AnyString, out CountryValue))
+            if (TryParseAlpha3Code (AnyString, out Country))
                 return true;
 
-            if (TryParseNumericCode(AnyString, out CountryValue))
+            if (TryParseNumericCode(AnyString, out Country))
                 return true;
 
-            if (TryParseTelefonCode(AnyString, out CountryValue))
+            if (TryParseTelefonCode(AnyString, out Country))
                 return true;
 
-            if (TryParseCountryName(AnyString, out CountryValue))
+            if (TryParseCountryName(AnyString, out Country))
                 return true;
 
             return false;
@@ -489,6 +499,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Country ParseCountryName(String CountryName)
         {
 
+            if (CountryName.IsNullOrEmpty())
+                return default;
+
             ReflectData();
 
             foreach (var countryname in CountryNames)
@@ -496,7 +509,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     if (I8Name.Text == CountryName)
                         return countryname.Value;
 
-            return null;
+            return default;
 
         }
 
@@ -512,6 +525,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>true, if successful; false otherwise.</returns>
         public static Boolean TryParseCountryName(String CountryName, out Country Country)
         {
+
+            if (CountryName.IsNullOrEmpty())
+            {
+                Country = default;
+                return false;
+            }
 
             ReflectData();
 
@@ -540,14 +559,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Country ParseAlpha2Code(String Alpha2Code)
         {
 
+            if (Alpha2Code.IsNullOrEmpty())
+                return default;
+
             ReflectData();
 
-            Country _Country;
+            if (Alpha2Codes.TryGetValue(Alpha2Code.ToLower(), out Country country))
+                return country;
 
-            if (Alpha2Codes.TryGetValue(Alpha2Code, out _Country))
-                return _Country;
-
-            return null;
+            return default;
 
         }
 
@@ -563,8 +583,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>true, if successful; false otherwise.</returns>
         public static Boolean TryParseAlpha2Code(String Alpha2Code, out Country Country)
         {
+
+            if (Alpha2Code.IsNullOrEmpty())
+            {
+                Country = default;
+                return false;
+            }
+
             ReflectData();
-            return Alpha2Codes.TryGetValue(Alpha2Code, out Country);
+
+            return Alpha2Codes.TryGetValue(Alpha2Code.ToLower(), out Country);
+
         }
 
         #endregion
@@ -579,14 +608,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Country ParseAlpha3Code(String Alpha3Code)
         {
 
+            if (Alpha3Code.IsNullOrEmpty())
+                return default;
+
             ReflectData();
 
-            Country _Country;
+            if (Alpha3Codes.TryGetValue(Alpha3Code.ToLower(), out Country country))
+                return country;
 
-            if (Alpha3Codes.TryGetValue(Alpha3Code, out _Country))
-                return _Country;
-
-            return null;
+            return default;
 
         }
 
@@ -602,8 +632,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>true, if successful; false otherwise.</returns>
         public static Boolean TryParseAlpha3Code(String Alpha3Code, out Country Country)
         {
+
+            if (Alpha3Code.IsNullOrEmpty())
+            {
+                Country = default;
+                return false;
+            }
+
             ReflectData();
-            return Alpha3Codes.TryGetValue(Alpha3Code, out Country);
+
+            return Alpha3Codes.TryGetValue(Alpha3Code.ToLower(), out Country);
+
         }
 
         #endregion
@@ -768,11 +807,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object.ReferenceEquals(Country1, Country2))
                 return true;
 
-            // If one is null, but not both, return false.
-            if (((Object) Country1 == null) || ((Object) Country2 == null))
+            if (Country1 is null || Country2 is null)
                 return false;
 
-            if ((Object) Country1 == null)
+            if (Country1 is null)
                 throw new ArgumentNullException(nameof(Country1),  "The given country must not be null!");
 
             return Country1.Equals(Country2);
@@ -803,14 +841,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Country2">Another country.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (Country Country1, Country Country2)
-        {
 
-            if ((Object) Country1 == null)
-                throw new ArgumentNullException(nameof(Country1),  "The given country must not be null!");
-
-            return Country1.CompareTo(Country2) < 0;
-
-        }
+            => Country1 is null
+                   ? throw new ArgumentNullException(nameof(Country1), "The given country must not be null!")
+                   : Country1.CompareTo(Country2) < 0;
 
         #endregion
 
@@ -836,14 +870,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Country2">Another country.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (Country Country1, Country Country2)
-        {
 
-            if ((Object) Country1 == null)
-                throw new ArgumentNullException(nameof(Country1),  "The given country must not be null!");
-
-            return Country1.CompareTo(Country2) > 0;
-
-        }
+            => Country1 is null
+                   ? throw new ArgumentNullException(nameof(Country1), "The given country must not be null!")
+                   : Country1.CompareTo(Country2) > 0;
 
         #endregion
 
@@ -871,18 +901,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var Country = Object as Country;
-            if ((Object) Country == null)
-                throw new ArgumentException("The given object is not a country!");
-
-            return CompareTo(Country);
-
-        }
+            => Object is Country country
+                   ? CompareTo(country)
+                   : throw new ArgumentException("The given object is not a country!");
 
         #endregion
 
@@ -893,14 +915,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Country">An object to compare with.</param>
         public Int32 CompareTo(Country Country)
-        {
 
-            if ((Object) Country == null)
-                throw new ArgumentNullException(nameof(Country), "The given country must not be null!");
-
-            return String.Compare(Alpha2Code, Country.Alpha2Code, StringComparison.Ordinal);
-
-        }
+            => Country is null
+                   ? throw new ArgumentNullException(nameof(Country), "The given country must not be null!")
+                   : String.Compare(Alpha2Code, Country.Alpha2Code, StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -916,18 +934,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            var Country = Object as Country;
-            if ((Object) Country == null)
-                return false;
-
-            return this.Equals(Country);
-
-        }
+            => Object is Country country &&
+                   Equals(country);
 
         #endregion
 
@@ -939,14 +948,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Country">A Country to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Country Country)
-        {
 
-            if ((Object) Country == null)
-                return false;
+            => (!(Country is null)) &&
 
-            return Alpha2Code == Country.Alpha2Code;
-
-        }
+               Alpha2Code.ToLower() == Country.Alpha2Code.ToLower();
 
         #endregion
 
@@ -960,11 +965,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => CountryName.GetHashCode() ^
-               Alpha2Code. GetHashCode() ^
-               Alpha3Code. GetHashCode() ^
-               NumericCode.GetHashCode() ^
-               TelefonCode.GetHashCode();
+            => CountryName.         GetHashCode() ^
+               Alpha2Code.ToLower().GetHashCode() ^
+               Alpha3Code.ToLower().GetHashCode() ^
+               NumericCode.         GetHashCode() ^
+               TelefonCode.         GetHashCode();
 
         #endregion
 
