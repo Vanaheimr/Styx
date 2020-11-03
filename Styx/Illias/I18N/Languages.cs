@@ -54,14 +54,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     /// <summary>
     /// ISO 639-1/3 codes for languages.
+    /// http://www.loc.gov/standards/iso639-2/php/code_list.php
     /// </summary>
     public enum Languages
     {
 
         unknown,
 
-        // ISO 639-1 codes for languages.
-        // http://www.loc.gov/standards/iso639-2/php/code_list.phpaa,
+        aa,
         ab,
         ae,
         af,

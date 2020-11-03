@@ -1209,7 +1209,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (JSONToken == null ||
-                !Decimal.TryParse(JSONToken.Value<String>(), out DecimalValue))
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out DecimalValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -3603,6 +3603,72 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
                 EnumValues = List;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseOptionalStruct (this JSON, PropertyName, PropertyDescription,                            out IEnumerable<T>,          out ErrorResponse)
+
+        public static Boolean ParseOptionalStruct<T>(this JObject        JSON,
+                                                     String              PropertyName,
+                                                     String              PropertyDescription,
+                                                     TryParser<T>        TryParser,
+                                                     out IEnumerable<T>  Values,
+                                                     out String          ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Values         = new T[0];
+            ErrorResponse  = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+                JSONToken      != null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (JSONToken.Type != JTokenType.Array)
+                {
+                    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    return false;
+                }
+
+                var JSONList = JSONToken as JArray;
+                var List     = new List<T>();
+
+                foreach (var JSONItem in JSONList)
+                {
+
+                    if (TryParser(JSONItem?.Value<String>(), out T Value))
+                        List.Add(Value);
+
+                    else
+                    {
+                        ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                        return false;
+                    }
+
+                }
+
+                Values = List;
 
             }
 
