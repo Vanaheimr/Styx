@@ -102,9 +102,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToBase64(Text)
+        #region EncodeBase64(this Text)
 
-        public static String ToBase64(this String Text)
+        public static String EncodeBase64(this String Text)
         {
 
             try
@@ -121,31 +121,60 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region FromBase64(Text)
+        #region DecodeBase64(this Text)
 
-        public static String FromBase64(this String Text)
+        public static String DecodeBase64(this String Text)
         {
 
             try
             {
 
-                var _UTF8Decoder  = new UTF8Encoding().GetDecoder();
-                var _Bytes        = Convert.FromBase64String(Text);
-                var _DecodedChars = new Char[_UTF8Decoder.GetCharCount(_Bytes, 0, _Bytes.Length)];
-                _UTF8Decoder.GetChars(_Bytes, 0, _Bytes.Length, _DecodedChars, 0);
+                var utf8Decoder  = new UTF8Encoding().GetDecoder();
+                var bytes        = Convert.FromBase64String(Text);
+                var decodedChars = new Char[utf8Decoder.GetCharCount(bytes, 0, bytes.Length)];
+                utf8Decoder.GetChars(bytes, 0, bytes.Length, decodedChars, 0);
 
-                return new String(_DecodedChars);
+                return new String(decodedChars);
 
             }
 
             catch (Exception e)
             {
-                throw new Exception("Error in base64Decode" + e.Message);
+                throw new Exception("Exception in DecodeBase64(...): " + e.Message);
             }
 
         }
 
         #endregion
+
+        #region TryDecodeBase64(this Text, out Decoded)
+
+        public static Boolean TryDecodeBase64(this String Text, out String Decoded)
+        {
+
+            try
+            {
+
+                var utf8Decoder  = new UTF8Encoding().GetDecoder();
+                var bytes        = Convert.FromBase64String(Text);
+                var decodedChars = new Char[utf8Decoder.GetCharCount(bytes, 0, bytes.Length)];
+                utf8Decoder.GetChars(bytes, 0, bytes.Length, decodedChars, 0);
+
+                Decoded =  new String(decodedChars);
+                return true;
+
+            }
+
+            catch
+            { }
+
+            Decoded = default;
+            return false;
+
+        }
+
+        #endregion
+
 
         #region EscapeForXMLandHTML(myString)
 
