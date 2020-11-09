@@ -2462,12 +2462,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                var ListOfT = new List<T>();
+                var ListOfT        = new List<T>();
+                var errorResponse  = "";
 
                 foreach (var item in JArray)
                 {
-                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out String errorResponse))
+
+                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out errorResponse))
                         ListOfT.Add(ItemT);
+
+                    if (errorResponse != null)
+                    {
+                        ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                        return false;
+                    }
+
                 }
 
                 EnumerationOfT = ListOfT;
@@ -2522,12 +2531,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                var ListOfT = new List<T>();
+                var ListOfT        = new List<T>();
+                var errorResponse  = "";
 
                 foreach (var item in JArray)
                 {
-                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out String errorResponse, CustomParser))
+
+                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out errorResponse, CustomParser))
                         ListOfT.Add(ItemT);
+
+                    if (errorResponse != null)
+                    {
+                        ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                        return false;
+                    }
+
                 }
 
                 EnumerationOfT = ListOfT;
@@ -2585,12 +2603,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                var ListOfT = new List<T>();
+                var ListOfT        = new List<T>();
+                var errorResponse  = "";
 
                 foreach (var item in JArray)
                 {
-                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out String errorResponse, null, CustomParser))
+
+                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out errorResponse, null, CustomParser))
                         ListOfT.Add(ItemT);
+
+                    if (errorResponse != null)
+                    {
+                        ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                        return false;
+                    }
+
                 }
 
                 EnumerationOfT = ListOfT;

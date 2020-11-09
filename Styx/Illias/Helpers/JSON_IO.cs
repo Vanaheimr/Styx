@@ -176,29 +176,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class JSONExtentionsOld
     {
 
-        #region ToUTF8Bytes(this JSONArray)
+        #region ToUTF8Bytes(this JSONArray,  Format = None)
 
-        public static Byte[] ToUTF8Bytes(this JArray JSONArray)
+        public static Byte[] ToUTF8Bytes(this JArray                 JSONArray,
+                                         Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
         {
 
             if (JSONArray == null)
                 return new Byte[0];
 
-            return Encoding.UTF8.GetBytes(JSONArray.ToString());
+            return Encoding.UTF8.GetBytes(JSONArray.ToString(Format));
 
         }
 
         #endregion
 
-        #region ToUTF8Bytes(this JSONObject)
+        #region ToUTF8Bytes(this JSONObject, Format = None)
 
-        public static Byte[] ToUTF8Bytes(this JObject JSONObject)
+        public static Byte[] ToUTF8Bytes(this JObject                JSONObject,
+                                         Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
         {
 
             if (JSONObject == null)
                 return new Byte[0];
 
-            return Encoding.UTF8.GetBytes(JSONObject.ToString());
+            return Encoding.UTF8.GetBytes(JSONObject.ToString(Format));
 
         }
 
