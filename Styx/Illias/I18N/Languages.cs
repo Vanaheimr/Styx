@@ -1787,7 +1787,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         deq,
         der,
         des,
-        deu,
+     //   deu,  // ToDo: Readd me!
         dev,
         dez,
         dga,
@@ -2071,7 +2071,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         enc,
         end,
         enf,
-        eng,
+      //  eng, //ToDo: Readd this!
         enh,
         enl,
         enm,
