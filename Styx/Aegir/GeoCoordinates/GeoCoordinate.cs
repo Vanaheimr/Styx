@@ -756,11 +756,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("lat",  Latitude. ToString()),
-                           new JProperty("lng",  Longitude.ToString()),
+                           new JProperty("lat",  Latitude. Value),
+                           new JProperty("lng",  Longitude.Value),
 
                            Altitude.HasValue
-                               ? new JProperty("alt",  Altitude.ToString())
+                               ? new JProperty("alt",  Altitude.Value)
                                : null
 
                        );
