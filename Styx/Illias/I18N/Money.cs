@@ -29,9 +29,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Money: A decimal value with an ISO 4217 currency.
     /// </summary>
-    public struct Money : IEquatable<Money>,
-                          IComparable<Money>,
-                          IComparable
+    public readonly struct Money : IEquatable<Money>,
+                                   IComparable<Money>,
+                                   IComparable
     {
 
         #region Data
