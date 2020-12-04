@@ -191,7 +191,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                    ? new JProperty("customData",   CustomData)
                                    : null,
 
-                               DataSource != default
+                               DataSource.IsNotNullOrEmpty()
                                    ? new JProperty("dataSource",   DataSource)
                                    : null,
 
