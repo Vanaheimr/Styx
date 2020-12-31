@@ -27,6 +27,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class LanguagesExtentions
     {
 
+        public static Languages Parse(String Text)
+        {
+
+            if (TryParse(Text, out Languages language))
+                return language;
+
+            throw new ArgumentException("Unknown language '" + Text + "'!", nameof(Text));
+
+        }
+
+        public static Boolean TryParse(String Text, out Languages Language)
+
+            => Enum.TryParse(Text,
+                             true,
+                             out Language);
+
         public static String AsText(this Languages Language)
         {
             switch (Language)
@@ -34,17 +50,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 default:
                     return Language.ToString();
-
-            }
-        }
-
-        public static Languages Parse(String Text)
-        {
-            switch (Text?.ToLower())
-            {
-
-                default:
-                    return (Languages) Enum.Parse(typeof(Languages), Text, true);
 
             }
         }

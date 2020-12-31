@@ -789,6 +789,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Clone
+
+        /// <summary>
+        /// Clone this energy source.
+        /// </summary>
+        public Country Clone
+
+            => new Country(CountryName.Clone,
+                           Alpha2Code != null ? new String(Alpha2Code.ToCharArray()) : null,
+                           Alpha3Code != null ? new String(Alpha3Code.ToCharArray()) : null,
+                           NumericCode,
+                           TelefonCode);
+
+        #endregion
+
 
         #region Operator overloading
 

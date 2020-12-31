@@ -43,6 +43,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public delegate JArray   CustomJArraySerializerDelegate<T> (T       DataObject, JArray  JSON);
 
 
+    public delegate TResult  Parser            <TResult>(String  Input);
+
     public delegate Boolean  TryParser         <TResult>(String  Input, out TResult  arg);
     public delegate Boolean  TryParser2        <TResult>(String  Input, out TResult  arg, out String ErrorResponse);
     public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult  arg, out String ErrorResponse, CustomJObjectParserDelegate<TResult> CustomParser = null);
@@ -2366,6 +2368,137 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
 
+        public static Boolean ParseMandatory<T>(this JObject         JSON,
+                                                String               PropertyName,
+                                                String               PropertyDescription,
+                                                Parser<T>            Parser,
+                                                out IEnumerable<T>   EnumerationOfT,
+                                                out String           ErrorResponse)
+        {
+
+            EnumerationOfT = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (!(JSONToken is JArray JArray))
+                {
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    return false;
+                }
+
+                var ListOfT = new List<T>();
+
+                foreach (var item in JArray)
+                {
+                    if (item.Type == JTokenType.String)
+                        ListOfT.Add(Parser(item.Value<String>()));
+                }
+
+                EnumerationOfT = ListOfT;
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+        public static Boolean ParseMandatory<T>(this JObject         JSON,
+                                                String               PropertyName,
+                                                String               PropertyDescription,
+                                                TryParser<T>         TryParser,
+                                                out IEnumerable<T>   EnumerationOfT,
+                                                out String           ErrorResponse)
+        {
+
+            EnumerationOfT = null;
+
+            if (JSON == null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (!(JSONToken is JArray JArray))
+                {
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    return false;
+                }
+
+                var ListOfT = new List<T>();
+
+                foreach (var item in JArray)
+                {
+                    if (item.Type == JTokenType.String)
+                    {
+
+                        if (TryParser(item.Value<String>(), out T ItemT))
+                            ListOfT.Add(ItemT);
+
+                        else
+                        {
+                            ErrorResponse = "Invalid value '" + item.Value<String>() + "' for '" + (PropertyDescription ?? PropertyName) + "'!";
+                            return false;
+                        }
+
+                    }
+                }
+
+                EnumerationOfT = ListOfT;
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
         public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
                                                     String               PropertyName,
                                                     String               PropertyDescription,
@@ -2424,6 +2557,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return true;
 
         }
+
 
         public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
                                                     String                PropertyName,

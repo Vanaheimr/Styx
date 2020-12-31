@@ -511,7 +511,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Clone
 
+        /// <summary>
+        /// Clone this energy source.
+        /// </summary>
+        public I18NString Clone
+
+            => new I18NString(I18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
+
+        #endregion
 
 
         public Boolean Is(Languages  Language,
