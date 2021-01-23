@@ -21,6 +21,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -394,9 +395,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         public static void Write(this Stream Stream, Byte[] ByteArray)
-        {
-            Stream.Write(ByteArray, 0, ByteArray.Length);
-        }
+
+            => Stream.Write(ByteArray, 0, ByteArray.Length);
+
+        public static async Task WriteAsync(this Stream Stream, Byte[] ByteArray)
+
+            => await Stream.WriteAsync(ByteArray, 0, ByteArray.Length).ConfigureAwait(false);
 
     }
 
