@@ -12,33 +12,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region Properties
 
-        #region Item1
+        public T1  Item1    { get; }
 
-        private readonly T1 _Item1;
-
-        public T1 Item1
-        {
-            get
-            {
-                return _Item1;
-            }
-        }
-
-        #endregion
-
-        #region Item2
-
-        private readonly T2 _Item2;
-
-        public T2 Item2
-        {
-            get
-            {
-                return _Item2;
-            }
-        }
-
-        #endregion
+        public T2  Item2    { get; }
 
         #endregion
 
@@ -46,8 +22,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public Tuple(T1 Item1, T2 Item2)
         {
-            this._Item1  = Item1;
-            this._Item2  = Item2;
+            this.Item1  = Item1;
+            this.Item2  = Item2;
         }
 
         #endregion

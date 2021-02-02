@@ -43,9 +43,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="IEnumerable">An enumeration of Doubles.</param>
         /// <returns>The stddev of the given enumeration of doubles.</returns>
         public static Double StdDev(this IEnumerable<Double> IEnumerable)
-        {
-            return IEnumerable.AverageAndStdDev().Item2;
-        }
+
+            => IEnumerable.AverageAndStdDev().Item2;
 
         #endregion
 
@@ -56,7 +55,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="IEnumerable">An enumeration of Doubles.</param>
         /// <returns>The mean and stddev of the given enumeration of doubles.</returns>
-        public static org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<Double, Double> AverageAndStdDev(this IEnumerable<Double> IEnumerable)
+        public static Collections.Tuple<Double, Double> AverageAndStdDev(this IEnumerable<Double> IEnumerable)
         {
 
             #region Initial Checks
@@ -70,17 +69,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 throw new ArgumentNullException("The length of the given enumeration of doubles must not be zero!");
 
             if (Count == 1)
-                return new org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<Double, Double>(IEnumerable.First(), 0);
+                return new Collections.Tuple<Double, Double>(IEnumerable.First(), 0);
 
             #endregion
 
             var average = IEnumerable.Average();
-            var sum = 0.0;
+            var sum     = 0.0;
 
             foreach (var value in IEnumerable)
                 sum += (value - average) * (value - average);
 
-            return new org.GraphDefined.Vanaheimr.Illias.Collections.Tuple<Double, Double>(average, Math.Sqrt(sum / (Count - 1)));
+            return new Collections.Tuple<Double, Double>(average, Math.Sqrt(sum / (Count - 1)));
 
         }
 
