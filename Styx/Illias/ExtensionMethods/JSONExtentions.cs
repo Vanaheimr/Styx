@@ -113,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  out String    ErrorResponse)
         {
 
-            Text = String.Empty;
+            Text = null;
 
             if (JSON == null)
             {
@@ -138,12 +138,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken.ToString() == "{}")
                 {
-                    Text           = null;
-                    ErrorResponse  = null;
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return true;
                 }
 
                 Text = JSONToken?.Value<String>();
+
+                if (Text == null)
+                {
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    return false;
+                }
 
             }
             catch (Exception)
