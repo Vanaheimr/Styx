@@ -27,6 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     /// <summary>
     /// A country.
+    /// https://laendercode.net
     /// </summary>
     public class Country : IEquatable <Country>,
                            IComparable<Country>,
@@ -276,6 +277,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Nepal                                    = new Country(new I18NString(Languages.en, "Nepal"),                                          "NP", "NPL", 524, 977);
         public static readonly Country Netherlands                              = new Country(new I18NString(Languages.en, "Netherlands"),                                    "NL", "NLD", 528, 31);
         public static readonly Country NetherlandsAntilles                      = new Country(new I18NString(Languages.en, "Netherlands Antilles"),                           "AN", "ANT", 530, 1869);
+        public static readonly Country Curaçao                                  = new Country(new I18NString(Languages.en, "Curaçao"),                                        "CW", "CUW", 531, 599);
         public static readonly Country NewCaledonia                             = new Country(new I18NString(Languages.en, "New Caledonia"),                                  "NC", "NCL", 540, 687);
         public static readonly Country NewZealand                               = new Country(new I18NString(Languages.en, "New Zealand"),                                    "NZ", "NZL", 554, 64);
         public static readonly Country Nicaragua                                = new Country(new I18NString(Languages.en, "Nicaragua"),                                      "NI", "NIC", 558, 505);
@@ -357,6 +359,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Ukraine                                  = new Country(new I18NString(Languages.en, "Ukraine"),                                        "UA", "UKR", 804, 380);
         public static readonly Country UnitedArabEmirates                       = new Country(new I18NString(Languages.en, "United Arab Emirates"),                           "AE", "ARE", 784, 971);
         public static readonly Country UnitedKingdom                            = new Country(new I18NString(Languages.en, "United Kingdom"),                                 "GB", "GBR", 826, 44);
+        public static readonly Country UnitedKingdom_Invalid                    = new Country(new I18NString(Languages.en, "United Kingdom (invalid)"),                       "UK", "UKI", 11826, 11144);
         public static readonly Country UnitedStatesOfAmerica                    = new Country(new I18NString(Languages.en, "United States of America"),                       "US", "USA", 840, 1);
         public static readonly Country UnitedStatesMinorOutlyingIslands         = new Country(new I18NString(Languages.en, "United States Minor Outlying Islands"),           "UM", "UMI", 581, 1);
         public static readonly Country Uruguay                                  = new Country(new I18NString(Languages.en, "Uruguay"),                                        "UY", "URY", 858, 598);
