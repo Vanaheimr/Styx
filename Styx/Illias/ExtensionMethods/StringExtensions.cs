@@ -165,8 +165,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            catch
-            { }
+            catch (Exception e)
+            {
+
+            }
 
             Decoded = default;
             return false;
