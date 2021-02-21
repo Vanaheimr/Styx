@@ -178,69 +178,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region EscapeForXMLandHTML(myString)
+        #region EscapeForXMLandHTML(Text)
 
-        public static String EscapeForXMLandHTML(this String myString)
-        {
+        public static String EscapeForXMLandHTML(this String Text)
 
-            if (myString == null)
-                throw new ArgumentNullException("myString must not be null!");
-
-            myString = myString.Replace("<", "&lt;");
-            myString = myString.Replace(">", "&gt;");
-            myString = myString.Replace("&", "&amp;");
-
-            return myString;
-
-        }
+            => Text?.Replace("<", "&lt;")?.
+                     Replace(">", "&gt;")?.
+                     Replace("&", "&amp;");
 
         #endregion
 
-        #region ToUTF8String(this myByteArray, NumberOfBytes = -1, ThrowException = true)
+        #region ToUTF8String(this ArrayOfBytes, NumberOfBytes = -1)
 
-        public static String ToUTF8String(this Byte[] ArrayOfBytes, Int32 NumberOfBytes = -1, Boolean ThrowException = true)
-        {
+        public static String ToUTF8String(this Byte[]  ArrayOfBytes,
+                                          Int32        NumberOfBytes = -1)
 
-            if (ArrayOfBytes == null)
-            {
-                if (ThrowException)
-                    throw new ArgumentNullException("ArrayOfBytes must not be null!");
-                else
-                    return String.Empty;
-            }
-
-            if (ArrayOfBytes.Length == 0)
-                return String.Empty;
-
-            NumberOfBytes = (NumberOfBytes > -1) ? NumberOfBytes : ArrayOfBytes.Length;
-
-            return Encoding.UTF8.GetString(ArrayOfBytes, 0, NumberOfBytes);
-
-        }
+            => ArrayOfBytes == null || ArrayOfBytes.Length == 0
+                   ? String.Empty
+                   : Encoding.UTF8.GetString(ArrayOfBytes,
+                                             0,
+                                             NumberOfBytes > -1
+                                                 ? NumberOfBytes
+                                                 : ArrayOfBytes.Length);
 
         #endregion
 
-        #region ToUTF8String(this MemoryStream, NumberOfBytes = -1, ThrowException = true)
+        #region ToUTF8String(this MemoryStream, NumberOfBytes = -1)
 
-        public static String ToUTF8String(this MemoryStream MemoryStream, Int32 NumberOfBytes = -1, Boolean ThrowException = true)
-        {
+        public static String ToUTF8String(this MemoryStream MemoryStream, Int32 NumberOfBytes = -1)
 
-            if (MemoryStream == null)
-            {
-                if (ThrowException)
-                    throw new ArgumentNullException("ArrayOfBytes must not be null!");
-                else
-                    return String.Empty;
-            }
-
-            if (MemoryStream.Length == 0)
-                return String.Empty;
-
-            NumberOfBytes = (NumberOfBytes > -1) ? NumberOfBytes : (Int32) MemoryStream.Length;
-
-            return Encoding.UTF8.GetString(MemoryStream.ToArray(), 0, NumberOfBytes);
-
-        }
+             => MemoryStream == null || MemoryStream.Length == 0
+                    ? String.Empty
+                    : Encoding.UTF8.GetString(MemoryStream.ToArray(),
+                                              0,
+                                              NumberOfBytes > -1
+                                                  ? NumberOfBytes
+                                                  : (Int32) MemoryStream.Length);
 
         #endregion
 
