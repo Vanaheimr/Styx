@@ -249,6 +249,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Sum(this IEnumerable)
+
+        /// <summary>
+        /// Computes the sum of a sequence of System.UInt64 values.
+        /// </summary>
+        public static UInt64 Sum(this IEnumerable<UInt64> IEnumerable)
+        {
+
+            if (IEnumerable == null)
+                return 0;
+
+            var sum = 0UL;
+
+            foreach (var element in IEnumerable)
+                sum += element;
+
+            return sum;
+
+        }
+
+        #endregion
+
 
         #region Skip<T>(this Enumerable, Count)
 
