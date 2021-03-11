@@ -54,6 +54,138 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
         }
 
+        public static Languages3 ToLanguages3(this Languages Language)
+        {
+            switch (Language)
+            {
+
+                case Languages.de:
+                    return Languages3.deu;
+
+                default:
+                    throw new ArgumentException("Unknow language!", nameof(Language));
+
+            }
+        }
+
+        public static Languages ToLanguages(this Country Country)
+        {
+            switch (Country.Alpha2Code.ToLower())
+            {
+
+                case "au":
+                case "de":
+                    return Languages.de;
+                //case "dk":
+                //    return Languages.dk;
+                case "fr":
+                    return Languages.fr;
+                case "no":
+                    return Languages.no;
+                case "fi":
+                    return Languages.fi;
+                case "se":
+                    return Languages.se;
+                case "it":
+                    return Languages.it;
+                case "us":
+                    return Languages.en;
+
+                default:
+                    throw new ArgumentException("Unknow language for country '" + Country.ToString() + "'!", nameof(Country));
+
+            }
+        }
+
+        public static Languages3 ToLanguages3(this Country Country)
+        {
+            switch (Country.Alpha2Code.ToLower())
+            {
+
+                case "au":
+                case "de":
+                    return Languages3.deu;
+                case "fr":
+                    return Languages3.fra;
+                //case "no":
+                //    return Languages3.no;
+                case "fi":
+                    return Languages3.fin;
+                case "se":
+                    return Languages3.swe;
+                case "it":
+                    return Languages3.ita;
+                //case "us":
+                //    return Languages3.eng;
+
+                default:
+                    throw new ArgumentException("Unknow language for country '" + Country.ToString() + "'!", nameof(Country));
+
+            }
+        }
+
+        //    //case "dk": LocationLanguage = Languages.dk; break;
+        //    case "no": LocationLanguage = Languages.no; break;
+        //
+        //    case "sk": LocationLanguage = Languages.sk; break;
+        //    case "us": LocationLanguage = Languages.en; break;
+        //    case "nl": LocationLanguage = Languages.nld; break;
+        //    case "at": LocationLanguage = Languages.de; break;
+        //    case "ru": LocationLanguage = Languages.ru; break;
+        //    case "il": LocationLanguage = Languages.heb; break;
+        //
+        //    case "be":
+        //    case "ch":
+        //    case "al":
+        //    default:   LocationLanguage = Languages.unknown; break;
+
+
+        //public static Country ToLanguages3(this Languages Language)
+
+        //    => switch //(EVSEInfo.PoolAddress.Country.Alpha2Code.ToLower())
+
+        //    case "no": LocationLanguage = Languages.no; break;
+        //    case "fi": LocationLanguage = Languages.fin; break;
+        //    case "se": LocationLanguage = Languages.swe; break;
+
+        //    case "sk": LocationLanguage = Languages.sk; break;
+        //    case "it": LocationLanguage = Languages.ita; break;
+        //    case "us": LocationLanguage = Languages.en; break;
+        //    case "nl": LocationLanguage = Languages.nld; break;
+        //    case "at": LocationLanguage = Languages.de; break;
+        //    case "ru": LocationLanguage = Languages.ru; break;
+        //    case "il": LocationLanguage = Languages.heb; break;
+
+        //    case "be":
+        //    case "ch":
+        //    case "al":
+        //    default:   LocationLanguage = Languages.unknown; break;
+
+        // switch (EVSEInfo.PoolAddress.Country.Alpha2Code.ToLower())
+        // {
+        // 
+        //     case "de": LocationLanguage = Languages.de; break;
+        //     case "fr": LocationLanguage = Languages.fra; break;
+        //       case "dk": LocationLanguage = Languages.dk; break;
+        //     case "no": LocationLanguage = Languages.no; break;
+        //     case "fi": LocationLanguage = Languages.fin; break;
+        //     case "se": LocationLanguage = Languages.swe; break;
+        // 
+        //     case "sk": LocationLanguage = Languages.sk; break;
+        //     case "it": LocationLanguage = Languages.ita; break;
+        //     case "us": LocationLanguage = Languages.en; break;
+        //     case "nl": LocationLanguage = Languages.nld; break;
+        //     case "at": LocationLanguage = Languages.de; break;
+        //     case "ru": LocationLanguage = Languages.ru; break;
+        //     case "il": LocationLanguage = Languages.heb; break;
+        // 
+        //     case "be":
+        //     case "ch":
+        //     case "al":
+        //     default:   LocationLanguage = Languages.unknown; break;
+        // 
+        // }
+
 
     }
 
@@ -252,10 +384,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         za,
         zh,
         zu,
+    }
 
 
-        // ISO 639-3 codes for languages.
-        // http://www-01.sil.org/iso639-3/codes.asp?order=639_3
+    /// <summary>
+    /// ISO 639-3 codes for languages.
+    /// http://www-01.sil.org/iso639-3/codes.asp?order=639_3
+    /// </summary>
+    public enum Languages3
+    {
         aaa,
         aab,
         aac,
@@ -1792,7 +1929,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         deq,
         der,
         des,
-     //   deu,  // ToDo: Readd me!
+        deu,
         dev,
         dez,
         dga,
