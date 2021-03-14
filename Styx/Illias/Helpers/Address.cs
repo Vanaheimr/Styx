@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2020 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2021 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Illias <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -129,6 +129,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Country     Country          { get; }
 
         /// <summary>
+        /// The timezone.
+        /// </summary>
+        public Time_Zone?  Timezone         { get; }
+
+        /// <summary>
         /// An optional text/comment to describe the address.
         /// </summary>
         public I18NString  Comment          { get; }
@@ -147,6 +152,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PostalCodeSub">The postal code sub</param>
         /// <param name="City">The city.</param>
         /// <param name="Country">The country.</param>
+        /// <param name="Timezone">The timezone.</param>
         /// <param name="Comment">An optional text/comment to describe the address.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
@@ -157,6 +163,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        String                      PostalCodeSub,
                        I18NString                  City,
                        Country                     Country,
+                       Time_Zone?                  Timezone     = null,
                        I18NString                  Comment      = null,
 
                        Dictionary<String, Object>  CustomData   = null)
@@ -172,6 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.PostalCodeSub  = PostalCodeSub ?? "";
             this.City           = City          ?? I18NString.Empty;
             this.Country        = Country;
+            this.Timezone       = Timezone;
             this.Comment        = Comment       ?? I18NString.Empty;
 
         }
@@ -198,6 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      String                      Street,
                                      String                      HouseNumber,
                                      String                      FloorLevel   = null,
+                                     Time_Zone?                  TimeZone     = null,
                                      I18NString                  Comment      = null,
                                      Dictionary<String, Object>  CustomData   = null)
 
@@ -209,6 +218,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            "",
                            City,
                            Country,
+                           TimeZone,
                            Comment,
                            CustomData);
 
@@ -422,6 +432,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                       postalCodeSub,
                                       city,
                                       country,
+                                      null,
                                       comment);
 
 

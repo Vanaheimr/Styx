@@ -212,6 +212,7 @@
     <Compile Include="Illias\Geometry\Maths\NumericTypeExtensions.cs" />
     <Compile Include="Illias\Geometry\Voronoi.cs" />
     <Compile Include="Illias\Helpers\ACustomData.cs" />
+    <Compile Include="Illias\Helpers\Time_Zone.cs" />
     <Compile Include="Illias\Helpers\Address.cs" />
     <Compile Include="Illias\Helpers\DataLicenses.cs" />
     <Compile Include="Illias\Helpers\DataLicense_Id.cs" />

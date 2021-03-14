@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2020 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2010-2021 Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
  * This file is part of Illias <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -70,21 +70,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => !String.IsNullOrEmpty(GivenString)
                    ? Mapper(GivenString)
                    : GivenString;
-
-        #endregion
-
-        #region WhenNullOrEmpty<T>(this GivenString, Default)
-
-        public static String WhenNullOrEmpty(this String  GivenString,
-                                             String       Default)
-        {
-
-            if (String.IsNullOrEmpty(GivenString?.Trim()))
-                return Default;
-
-            return GivenString;
-
-        }
 
         #endregion
 
