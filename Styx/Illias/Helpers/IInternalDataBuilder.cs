@@ -3,14 +3,14 @@
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public interface ICustomDataBuilder
+    public interface IInternalDataBuilder
     {
 
-        void AddCustomData(string Key, object Value);
+        void AddInternalData(string Key, object Value);
 
-        object GetCustomData(string Key);
+        object GetInternalData(string Key);
 
-        T GetCustomDataAs<T>(string Key);
+        T GetInternalDataAs<T>(string Key);
 
         void IfDefined(string Key, Action<object> ValueDelegate);
 

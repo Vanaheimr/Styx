@@ -76,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A WWCP address.
     /// </summary>
-    public class Address : ACustomData,
+    public class Address : AInternalData,
                            IEquatable<Address>,
                            IComparable<Address>,
                            IComparable

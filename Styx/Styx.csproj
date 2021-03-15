@@ -211,14 +211,14 @@
     <Compile Include="Illias\Geometry\Maths\MathsUInt32.cs" />
     <Compile Include="Illias\Geometry\Maths\NumericTypeExtensions.cs" />
     <Compile Include="Illias\Geometry\Voronoi.cs" />
-    <Compile Include="Illias\Helpers\ACustomData.cs" />
+    <Compile Include="Illias\Helpers\AInternalData.cs" />
     <Compile Include="Illias\Helpers\Time_Zone.cs" />
     <Compile Include="Illias\Helpers\Address.cs" />
     <Compile Include="Illias\Helpers\DataLicenses.cs" />
     <Compile Include="Illias\Helpers\DataLicense_Id.cs" />
     <Compile Include="Illias\Helpers\DecimalMinMax.cs" />
     <Compile Include="Illias\Helpers\DoubleMinMax.cs" />
-    <Compile Include="Illias\Helpers\ICustomDataBuilder.cs" />
+    <Compile Include="Illias\Helpers\IInternalDataBuilder.cs" />
     <Compile Include="Illias\Helpers\Int32MinMax.cs" />
     <Compile Include="Illias\Helpers\Int64MinMax.cs" />
     <Compile Include="Illias\Helpers\JSON_IO.cs" />
