@@ -618,30 +618,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var Dictionary = new Dictionary<String, String>();
 
-            if (Text.IsNullOrEmpty())
-                Text = Text.Trim();
+            Text = Text?.Trim();
 
             if (Text.IsNullOrEmpty())
                 return Dictionary;
 
-            Text.Split(FirstSeparator).
+            Text.Split     (FirstSeparator).
                  SafeSelect(command => command.Split(SecondSeparator)).
                  ForEach   (tuple   => {
 
                                            if (tuple.Length == 1)
                                            {
-                                               if (!Dictionary.ContainsKey(tuple[0]))
-                                                   Dictionary.Add(tuple[0], "");
-                                               else
-                                                   Dictionary[tuple[0]] = "";
+                                               if (tuple[0] != null)
+                                               {
+                                                   if (!Dictionary.ContainsKey(tuple[0].Trim()))
+                                                       Dictionary.Add(tuple[0].Trim(), "");
+                                                   else
+                                                       Dictionary[tuple[0].Trim()] = "";
+                                               }
                                            }
 
-                                           if (tuple.Length == 2)
+                                           else if (tuple.Length == 2)
                                            {
-                                               if (!Dictionary.ContainsKey(tuple[0]))
-                                                   Dictionary.Add(tuple[0], tuple[1]);
-                                               else
-                                                   Dictionary[tuple[0]] = tuple[1];
+                                               if (tuple[0] != null)
+                                               {
+                                                   if (!Dictionary.ContainsKey(tuple[0].Trim()))
+                                                       Dictionary.Add(tuple[0].Trim(), tuple[1]);
+                                                   else
+                                                       Dictionary[tuple[0].Trim()] = tuple[1];
+                                               }
                                            }
 
                                        });
