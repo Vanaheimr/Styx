@@ -82,18 +82,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time_Zone Parse(String Text)
         {
 
-            #region Initial checks
-
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text-representation of a time zone identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out Time_Zone chargingPoolId))
-                return chargingPoolId;
+            if (TryParse(Text, out Time_Zone timeZone))
+                return timeZone;
 
             throw new ArgumentException("Invalid text-representation of a time zone identification: '" + Text + "'!", nameof(Text));
 
@@ -110,8 +100,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time_Zone? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Time_Zone chargingPoolId))
-                return chargingPoolId;
+            if (TryParse(Text, out Time_Zone timeZone))
+                return timeZone;
 
             return new Time_Zone?();
 
@@ -119,32 +109,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text, out ChargingPoolId)
+        #region TryParse(Text, out TimeZone)
 
         /// <summary>
         /// Try to parse the given string as a time zone identification.
         /// </summary>
         /// <param name="Text">A text-representation of a time zone identification.</param>
-        /// <param name="ChargingPoolId">The parsed time zone identification.</param>
-        public static Boolean TryParse(String Text, out Time_Zone ChargingPoolId)
+        /// <param name="TimeZone">The parsed time zone identification.</param>
+        public static Boolean TryParse(String Text, out Time_Zone TimeZone)
         {
 
             #region Initial checks
 
-            if (Text != null)
-                Text = Text.Trim();
+            TimeZone = default;
+
+            Text = Text?.Trim();
 
             if (Text.IsNullOrEmpty())
-            {
-                ChargingPoolId = default;
                 return false;
-            }
 
             #endregion
 
             try
             {
-                ChargingPoolId = new Time_Zone(Text);
+                TimeZone = new Time_Zone(Text);
                 return true;
             }
 
@@ -155,7 +143,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 #pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ChargingPoolId = default;
             return false;
 
         }
@@ -178,87 +165,87 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Operator overloading
 
-        #region Operator == (ChargingPoolId1, ChargingPoolId2)
+        #region Operator == (TimeZone1, TimeZone2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A time zone identification.</param>
-        /// <param name="ChargingPoolId2">Another time zone identification.</param>
+        /// <param name="TimeZone1">A time zone identification.</param>
+        /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Time_Zone ChargingPoolId1, Time_Zone ChargingPoolId2)
-            => ChargingPoolId1.Equals(ChargingPoolId2);
+        public static Boolean operator == (Time_Zone TimeZone1, Time_Zone TimeZone2)
+            => TimeZone1.Equals(TimeZone2);
 
         #endregion
 
-        #region Operator != (ChargingPoolId1, ChargingPoolId2)
+        #region Operator != (TimeZone1, TimeZone2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A time zone identification.</param>
-        /// <param name="ChargingPoolId2">Another time zone identification.</param>
+        /// <param name="TimeZone1">A time zone identification.</param>
+        /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Time_Zone ChargingPoolId1, Time_Zone ChargingPoolId2)
-            => !ChargingPoolId1.Equals(ChargingPoolId2);
+        public static Boolean operator != (Time_Zone TimeZone1, Time_Zone TimeZone2)
+            => !TimeZone1.Equals(TimeZone2);
 
         #endregion
 
-        #region Operator <  (ChargingPoolId1, ChargingPoolId2)
+        #region Operator <  (TimeZone1, TimeZone2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A time zone identification.</param>
-        /// <param name="ChargingPoolId2">Another time zone identification.</param>
+        /// <param name="TimeZone1">A time zone identification.</param>
+        /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Time_Zone ChargingPoolId1, Time_Zone ChargingPoolId2)
-            => ChargingPoolId1.CompareTo(ChargingPoolId2) < 0;
+        public static Boolean operator < (Time_Zone TimeZone1, Time_Zone TimeZone2)
+            => TimeZone1.CompareTo(TimeZone2) < 0;
 
         #endregion
 
-        #region Operator <= (ChargingPoolId1, ChargingPoolId2)
+        #region Operator <= (TimeZone1, TimeZone2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A time zone identification.</param>
-        /// <param name="ChargingPoolId2">Another time zone identification.</param>
+        /// <param name="TimeZone1">A time zone identification.</param>
+        /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Time_Zone ChargingPoolId1, Time_Zone ChargingPoolId2)
-            => ChargingPoolId1.CompareTo(ChargingPoolId2) <= 0;
+        public static Boolean operator <= (Time_Zone TimeZone1, Time_Zone TimeZone2)
+            => TimeZone1.CompareTo(TimeZone2) <= 0;
 
         #endregion
 
-        #region Operator >  (ChargingPoolId1, ChargingPoolId2)
+        #region Operator >  (TimeZone1, TimeZone2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A time zone identification.</param>
-        /// <param name="ChargingPoolId2">Another time zone identification.</param>
+        /// <param name="TimeZone1">A time zone identification.</param>
+        /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Time_Zone ChargingPoolId1, Time_Zone ChargingPoolId2)
-            => ChargingPoolId1.CompareTo(ChargingPoolId2) > 0;
+        public static Boolean operator > (Time_Zone TimeZone1, Time_Zone TimeZone2)
+            => TimeZone1.CompareTo(TimeZone2) > 0;
 
         #endregion
 
-        #region Operator >= (ChargingPoolId1, ChargingPoolId2)
+        #region Operator >= (TimeZone1, TimeZone2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A time zone identification.</param>
-        /// <param name="ChargingPoolId2">Another time zone identification.</param>
+        /// <param name="TimeZone1">A time zone identification.</param>
+        /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Time_Zone ChargingPoolId1, Time_Zone ChargingPoolId2)
-            => ChargingPoolId1.CompareTo(ChargingPoolId2) >= 0;
+        public static Boolean operator >= (Time_Zone TimeZone1, Time_Zone TimeZone2)
+            => TimeZone1.CompareTo(TimeZone2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingPoolId> Members
+        #region IComparable<TimeZone> Members
 
         #region CompareTo(Object)
 
@@ -268,30 +255,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
 
-            => Object is Time_Zone chargingPoolId
-                   ? CompareTo(chargingPoolId)
+            => Object is Time_Zone timeZone
+                   ? CompareTo(timeZone)
                    : throw new ArgumentException("The given object is not a time zone identification!",
                                                  nameof(Object));
 
         #endregion
 
-        #region CompareTo(ChargingPoolId)
+        #region CompareTo(TimeZone)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId">An object to compare with.</param>
-        public Int32 CompareTo(Time_Zone ChargingPoolId)
+        /// <param name="TimeZone">An object to compare with.</param>
+        public Int32 CompareTo(Time_Zone TimeZone)
 
             => String.Compare(InternalId,
-                              ChargingPoolId.InternalId,
+                              TimeZone.InternalId,
                               StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
         #endregion
 
-        #region IEquatable<ChargingPoolId> Members
+        #region IEquatable<TimeZone> Members
 
         #region Equals(Object)
 
@@ -302,22 +289,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
 
-            => Object is Time_Zone chargingPoolId &&
-                   Equals(chargingPoolId);
+            => Object is Time_Zone timeZone &&
+                   Equals(timeZone);
 
         #endregion
 
-        #region Equals(ChargingPoolId)
+        #region Equals(TimeZone)
 
         /// <summary>
-        /// Compares two ChargingPoolIds for equality.
+        /// Compares two TimeZones for equality.
         /// </summary>
-        /// <param name="ChargingPoolId">A time zone identification to compare with.</param>
+        /// <param name="TimeZone">A time zone identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Time_Zone ChargingPoolId)
+        public Boolean Equals(Time_Zone TimeZone)
 
             => String.Equals(InternalId,
-                             ChargingPoolId.InternalId,
+                             TimeZone.InternalId,
                              StringComparison.OrdinalIgnoreCase);
 
         #endregion
