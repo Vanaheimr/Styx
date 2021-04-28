@@ -123,16 +123,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Argentina                                = new Country(new I18NString(Languages.en, "Argentina"),                                      "AR", "ARG", 032, 54);
         public static readonly Country Armenia                                  = new Country(new I18NString(Languages.en, "Armenia"),                                        "AM", "ARM", 051, 374);
         public static readonly Country Aruba                                    = new Country(new I18NString(Languages.en, "Aruba"),                                          "AW", "ABW", 533, 297);
-        //Ascension	+247
+        //Ascension    +247
         public static readonly Country Australia                                = new Country(new I18NString(Languages.en, "Australia"),                                      "AU", "AUS", 036, 61);
-        //Australian External Territories	+672
+        //Australian External Territories    +672
         public static readonly Country Austria                                  = new Country(new I18NString(Languages.en, "Austria"),                                        "AT", "AUT", 040, 43);
         public static readonly Country Azerbaijan                               = new Country(new I18NString(Languages.en, "Azerbaijan"),                                     "AZ", "AZE", 031, 994);
         public static readonly Country Bahamas                                  = new Country(new I18NString(Languages.en, "Bahamas"),                                        "BS", "BHS", 044, 1242);
         public static readonly Country Bahrain                                  = new Country(new I18NString(Languages.en, "Bahrain"),                                        "BH", "BHR", 048, 973);
         public static readonly Country Bangladesh                               = new Country(new I18NString(Languages.en, "Bangladesh"),                                     "BD", "BGD", 050, 880);
         public static readonly Country Barbados                                 = new Country(new I18NString(Languages.en, "Barbados"),                                       "BB", "BRB", 052, 1246);
-        //Barbuda	+1 268
+        //Barbuda    +1 268
         public static readonly Country Belarus                                  = new Country(new I18NString(Languages.en, "Belarus"),                                        "BY", "BLR", 112, 375);
         public static readonly Country Belgium                                  = new Country(new I18NString(Languages.en, "Belgium"),                                        "BE", "BEL", 056, 32);
         public static readonly Country Belize                                   = new Country(new I18NString(Languages.en, "Belize"),                                         "BZ", "BLZ", 084, 501);
@@ -140,7 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Bermuda                                  = new Country(new I18NString(Languages.en, "Bermuda"),                                        "BM", "BMU", 060, 1441);
         public static readonly Country Bhutan                                   = new Country(new I18NString(Languages.en, "Bhutan"),                                         "BT", "BTN", 064, 975);
         public static readonly Country Bolivia                                  = new Country(new I18NString(Languages.en, "Bolivia"),                                        "BO", "BOL", 068, 591);
-        //Bonaire	+599 7
+        //Bonaire    +599 7
         public static readonly Country BosniaAndHerzegovina                     = new Country(new I18NString(Languages.en, "Bosnia and Herzegovina"),                         "BA", "BIH", 070, 387);
         public static readonly Country Botswana                                 = new Country(new I18NString(Languages.en, "Botswana"),                                       "BW", "BWA", 072, 267);
         public static readonly Country BouvetIsland                             = new Country(new I18NString(Languages.en, "Bouvet Island"),                                  "BV", "BVT", 074, 0);
@@ -150,38 +150,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country BruneiDarussalam                         = new Country(new I18NString(Languages.en, "Brunei Darussalam"),                              "BN", "BRN", 096, 673);
         public static readonly Country Bulgaria                                 = new Country(new I18NString(Languages.en, "Bulgaria"),                                       "BG", "BGR", 100, 359);
         public static readonly Country BurkinaFaso                              = new Country(new I18NString(Languages.en, "Burkina Faso"),                                   "BF", "BFA", 854, 226);
-        //Burma	+95
-        public static readonly Country Burundi                                  = new Country(new I18NString(Languages.en, "Burundi"),                                        "BI", "BDI", 108, 257);
-        public static readonly Country Cambodia                                 = new Country(new I18NString(Languages.en, "Cambodia"),                                       "KH", "KHM", 116, 855);
-        public static readonly Country Cameroon                                 = new Country(new I18NString(Languages.en, "Cameroon"),                                       "CM", "CMR", 120, 237);
-        public static readonly Country Canada                                   = new Country(new I18NString(Languages.en, "Canada"),                                         "CA", "CAN", 124, 1);
-        public static readonly Country CapeVerde                                = new Country(new I18NString(Languages.en, "Cape Verde"),                                     "CV", "CPV", 132, 238);
+        //Burma    +95
+        public static readonly Country Burundi                                  = new Country(new I18NString(Languages.en, "Burundi"),                                        "BI", "BDI", 108,  257);
+        public static readonly Country Cambodia                                 = new Country(new I18NString(Languages.en, "Cambodia"),                                       "KH", "KHM", 116,  855);
+        public static readonly Country Cameroon                                 = new Country(new I18NString(Languages.en, "Cameroon"),                                       "CM", "CMR", 120,  237);
+        public static readonly Country Canada                                   = new Country(new I18NString(Languages.en, "Canada"),                                         "CA", "CAN", 124,    1);
+        public static readonly Country CapeVerde                                = new Country(new I18NString(Languages.en, "Cape Verde"),                                     "CV", "CPV", 132,  238);
         public static readonly Country CaymanIslands                            = new Country(new I18NString(Languages.en, "Cayman Islands"),                                 "KY", "CYM", 136, 1345);
-        public static readonly Country CentralAfricanRepublic                   = new Country(new I18NString(Languages.en, "Central African Republic"),                       "CF", "CAF", 140, 236);
-        public static readonly Country Chad                                     = new Country(new I18NString(Languages.en, "Chad"),                                           "TD", "TCD", 148, 235);
-        //Chatham Island, New Zealand	+64
-        public static readonly Country Chile                                    = new Country(new I18NString(Languages.en, "Chile"),                                          "CL", "CHL", 152, 56);
-        public static readonly Country China                                    = new Country(new I18NString(Languages.en, "China"),                                          "CN", "CHN", 156, 86);
-        public static readonly Country ChristmasIsland                          = new Country(new I18NString(Languages.en, "Christmas Island"),                               "CX", "CXR", 162, 61);
-        public static readonly Country Cocos_Keeling_Islands                    = new Country(new I18NString(Languages.en, "Cocos (Keeling) Islands"),                        "CC", "CCK", 166, 61);
-        public static readonly Country Colombia                                 = new Country(new I18NString(Languages.en, "Colombia"),                                       "CO", "COL", 170, 57);
-        public static readonly Country Comoros                                  = new Country(new I18NString(Languages.en, "Comoros"),                                        "KM", "COM", 174, 269);
-        public static readonly Country Congo_Brazzaville                        = new Country(new I18NString(Languages.en, "Congo (Brazzaville)"),                            "CG", "COG", 178, 242);
-        public static readonly Country DemocraticRepublicOfTheCongo             = new Country(new I18NString(Languages.en, "Democratic Republic of the Congo"),               "CD", "COD", 180, 243);
-        public static readonly Country CookIslands                              = new Country(new I18NString(Languages.en, "Cook Islands"),                                   "CK", "COK", 184, 682);
-        public static readonly Country CostaRica                                = new Country(new I18NString(Languages.en, "Costa Rica"),                                     "CR", "CRI", 188, 506);
-        public static readonly Country CoteDIvoire                              = new Country(new I18NString(Languages.en, "Côte d'Ivoire"),                                  "CI", "CIV", 384, 225);
-        public static readonly Country Croatia                                  = new Country(new I18NString(Languages.en, "Croatia"),                                        "HR", "HRV", 191, 385);
-        public static readonly Country Cuba                                     = new Country(new I18NString(Languages.en, "Cuba"),                                           "CU", "CUB", 192, 53);
-        public static readonly Country Cyprus                                   = new Country(new I18NString(Languages.en, "Cyprus"),                                         "CY", "CYP", 196, 357);
-        public static readonly Country CzechRepublic                            = new Country(new I18NString(Languages.en, "Czech Republic"),                                 "CZ", "CZE", 203, 420);
-        public static readonly Country Denmark                                  = new Country(new I18NString(Languages.en, "Denmark"),                                        "DK", "DNK", 208, 45);
-        //Diego Garcia	+246
-        public static readonly Country Djibouti                                 = new Country(new I18NString(Languages.en, "Djibouti"),                                       "DJ", "DJI", 262, 253);
+        public static readonly Country CentralAfricanRepublic                   = new Country(new I18NString(Languages.en, "Central African Republic"),                       "CF", "CAF", 140,  236);
+        public static readonly Country Chad                                     = new Country(new I18NString(Languages.en, "Chad"),                                           "TD", "TCD", 148,  235);
+        //Chatham Island, New Zealand    +64
+        public static readonly Country Chile                                    = new Country(new I18NString(Languages.en, "Chile"),                                          "CL", "CHL", 152,   56);
+        public static readonly Country China                                    = new Country(new I18NString(Languages.en, "China"),                                          "CN", "CHN", 156,   86);
+        public static readonly Country ChristmasIsland                          = new Country(new I18NString(Languages.en, "Christmas Island"),                               "CX", "CXR", 162,   61);
+        public static readonly Country Cocos_Keeling_Islands                    = new Country(new I18NString(Languages.en, "Cocos (Keeling) Islands"),                        "CC", "CCK", 166,   61);
+        public static readonly Country Colombia                                 = new Country(new I18NString(Languages.en, "Colombia"),                                       "CO", "COL", 170,   57);
+        public static readonly Country Comoros                                  = new Country(new I18NString(Languages.en, "Comoros"),                                        "KM", "COM", 174,  269);
+        public static readonly Country Congo_Brazzaville                        = new Country(new I18NString(Languages.en, "Congo (Brazzaville)"),                            "CG", "COG", 178,  242);
+        public static readonly Country DemocraticRepublicOfTheCongo             = new Country(new I18NString(Languages.en, "Democratic Republic of the Congo"),               "CD", "COD", 180,  243);
+        public static readonly Country CookIslands                              = new Country(new I18NString(Languages.en, "Cook Islands"),                                   "CK", "COK", 184,  682);
+        public static readonly Country CostaRica                                = new Country(new I18NString(Languages.en, "Costa Rica"),                                     "CR", "CRI", 188,  506);
+        public static readonly Country CoteDIvoire                              = new Country(new I18NString(Languages.en, "Côte d'Ivoire"),                                  "CI", "CIV", 384,  225);
+        public static readonly Country Croatia                                  = new Country(new I18NString(Languages.en, "Croatia"),                                        "HR", "HRV", 191,  385);
+        public static readonly Country Cuba                                     = new Country(new I18NString(Languages.en, "Cuba"),                                           "CU", "CUB", 192,   53);
+        public static readonly Country Cyprus                                   = new Country(new I18NString(Languages.en, "Cyprus"),                                         "CY", "CYP", 196,  357);
+        public static readonly Country CzechRepublic                            = new Country(new I18NString(Languages.en, "Czech Republic"),                                 "CZ", "CZE", 203,  420);
+        public static readonly Country ClippertonIsland                         = new Country(new I18NString(Languages.en, "Clipperton Island"),                              "CP", "CPT",   0,    0);
+        public static readonly Country Denmark                                  = new Country(new I18NString(Languages.en, "Denmark"),                                        "DK", "DNK", 208,   45);
+        //Diego Garcia    +246
+        public static readonly Country Djibouti                                 = new Country(new I18NString(Languages.en, "Djibouti"),                                       "DJ", "DJI", 262,  253);
         public static readonly Country Dominica                                 = new Country(new I18NString(Languages.en, "Dominica"),                                       "DM", "DMA", 212, 1767);
         public static readonly Country DominicanRepublic                        = new Country(new I18NString(Languages.en, "Dominican Republic"),                             "DO", "DOM", 214, 1809);
-        //East Timor	+670
-        //Easter Island	+56
+        //East Timor    +670
+        //Easter Island    +56
         public static readonly Country Ecuador                                  = new Country(new I18NString(Languages.en, "Ecuador"),                                        "EC", "ECU", 218, 593);
         public static readonly Country Egypt                                    = new Country(new I18NString(Languages.en, "Egypt"),                                          "EG", "EGY", 818, 20);
         public static readonly Country ElSalvador                               = new Country(new I18NString(Languages.en, "El Salvador"),                                    "SV", "SLV", 222, 503);
@@ -263,7 +264,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Mayotte                                  = new Country(new I18NString(Languages.en, "Mayotte"),                                        "YT", "MYT", 175, 262);
         public static readonly Country Mexico                                   = new Country(new I18NString(Languages.en, "Mexico"),                                         "MX", "MEX", 484, 52);
         public static readonly Country FederatedStatesOfMicronesia              = new Country(new I18NString(Languages.en, "Federated States of Micronesia"),                 "FM", "FSM", 583, 691);
-        //Midway Island, USA	+1 808
+        //Midway Island, USA    +1 808
         public static readonly Country Moldova                                  = new Country(new I18NString(Languages.en, "Moldova"),                                        "MD", "MDA", 498, 373);
         public static readonly Country Monaco                                   = new Country(new I18NString(Languages.en, "Monaco"),                                         "MC", "MCO", 492, 377);
         public static readonly Country Mongolia                                 = new Country(new I18NString(Languages.en, "Mongolia"),                                       "MN", "MNG", 496, 976);
@@ -305,7 +306,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Romania                                  = new Country(new I18NString(Languages.en, "Romania"),                                        "RO", "ROU", 642, 40);
         public static readonly Country RussianFederation                        = new Country(new I18NString(Languages.en, "Russian Federation"),                             "RU", "RUS", 643, 7);
         public static readonly Country Rwanda                                   = new Country(new I18NString(Languages.en, "Rwanda"),                                         "RW", "RWA", 646, 250);
-        //Saba	+599 4
+        //Saba    +599 4
         public static readonly Country SaintBarthelemy                          = new Country(new I18NString(Languages.en, "Saint-Barthélemy"),                               "BL", "BLM", 652, 590);
         public static readonly Country SaintHelena                              = new Country(new I18NString(Languages.en, "Saint Helena"),                                   "SH", "SHN", 654, 290);
         public static readonly Country SaintKittsAndNevis                       = new Country(new I18NString(Languages.en, "Saint Kitts and Nevis"),                          "KN", "KNA", 659, 1869);
@@ -322,15 +323,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Seychelles                               = new Country(new I18NString(Languages.en, "Seychelles"),                                     "SC", "SYC", 690, 248);
         public static readonly Country SierraLeone                              = new Country(new I18NString(Languages.en, "Sierra Leone"),                                   "SL", "SLE", 694, 232);
         public static readonly Country Singapore                                = new Country(new I18NString(Languages.en, "Singapore"),                                      "SG", "SGP", 702, 65);
-        //Sint Eustatius	+599 3
-        //Sint Maarten (Netherlands)	+1 721
+        //Sint Eustatius    +599 3
+        //Sint Maarten (Netherlands)    +1 721
         public static readonly Country Slovakia                                 = new Country(new I18NString(Languages.en, "Slovakia"),                                       "SK", "SVK", 703, 421);
         public static readonly Country Slovenia                                 = new Country(new I18NString(Languages.en, "Slovenia"),                                       "SI", "SVN", 705, 386);
         public static readonly Country SolomonIslands                           = new Country(new I18NString(Languages.en, "Solomon Islands"),                                "SB", "SLB", 090, 677);
         public static readonly Country Somalia                                  = new Country(new I18NString(Languages.en, "Somalia"),                                        "SO", "SOM", 706, 252);
         public static readonly Country SouthAfrica                              = new Country(new I18NString(Languages.en, "South Africa"),                                   "ZA", "ZAF", 710, 27);
         public static readonly Country SouthGeorgiaAndTheSouthSandwichIslands   = new Country(new I18NString(Languages.en, "South Georgia and the South Sandwich Islands"),   "GS", "SGS", 239, 500);
-        //South Ossetia	+995 34
+        //South Ossetia    +995 34
         public static readonly Country SouthSudan                               = new Country(new I18NString(Languages.en, "South Sudan"),                                    "SS", "SSD", 728, 211);
         public static readonly Country Spain                                    = new Country(new I18NString(Languages.en, "Spain"),                                          "ES", "ESP", 724, 34);
         public static readonly Country SriLanka                                 = new Country(new I18NString(Languages.en, "Sri Lanka"),                                      "LK", "LKA", 144, 94);
@@ -369,12 +370,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Venezuela                                = new Country(new I18NString(Languages.en, "Bolivarian Republic of Venezuela"),               "VE", "VEN", 862, 58);
         public static readonly Country Vietnam                                  = new Country(new I18NString(Languages.en, "Vietnam"),                                        "VN", "VNM", 704, 84);
         public static readonly Country VirginIslands                            = new Country(new I18NString(Languages.en, "Virgin Islands"),                                 "VI", "VIR", 850, 1340);
-        //Wake Island, USA	+1 808
+        //Wake Island, USA    +1 808
         public static readonly Country WallisAndFutunaIslands                   = new Country(new I18NString(Languages.en, "Wallis and Futuna Islands"),                      "WF", "WLF", 876, 681);
         public static readonly Country WesternSahara                            = new Country(new I18NString(Languages.en, "Western Sahara"),                                 "EH", "ESH", 732, 0);
         public static readonly Country Yemen                                    = new Country(new I18NString(Languages.en, "Yemen"),                                          "YE", "YEM", 887, 967);
         public static readonly Country Zambia                                   = new Country(new I18NString(Languages.en, "Zambia"),                                         "ZM", "ZMB", 894, 260);
-        //Zanzibar	+255
+        //Zanzibar    +255
         public static readonly Country Zimbabwe                                 = new Country(new I18NString(Languages.en, "Zimbabwe"),                                       "ZW", "ZWE", 716, 263);
 
         public static readonly Country Testland                                 = new Country(new I18NString(Languages.en, "Testland"),                                       "YY", "YYY", 999, 999);
