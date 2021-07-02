@@ -87,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region EncodeBase64(this Text)
+        #region EncodeBase64   (this Text)
 
         public static String EncodeBase64(this String Text)
         {
@@ -106,7 +106,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region DecodeBase64(this Text)
+        #region DecodeBase64   (this Text)
 
         public static String DecodeBase64(this String Text)
         {
@@ -140,20 +140,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                var utf8Decoder  = new UTF8Encoding().GetDecoder();
-                var bytes        = Convert.FromBase64String(Text);
-                var decodedChars = new Char[utf8Decoder.GetCharCount(bytes, 0, bytes.Length)];
+                var utf8Decoder   = new UTF8Encoding().GetDecoder();
+                var bytes         = Convert.FromBase64String(Text);
+                var decodedChars  = new Char[utf8Decoder.GetCharCount(bytes, 0, bytes.Length)];
                 utf8Decoder.GetChars(bytes, 0, bytes.Length, decodedChars, 0);
 
-                Decoded =  new String(decodedChars);
+                Decoded           =  new String(decodedChars);
                 return true;
 
             }
-
-            catch (Exception e)
-            {
-
-            }
+            catch (Exception)
+            { }
 
             Decoded = default;
             return false;
@@ -161,6 +158,46 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        #region DecodeBase64ToByteArray   (this Text)
+
+        public static Byte[] DecodeBase64ToByteArray(this String Text)
+        {
+
+            try
+            {
+                return Convert.FromBase64String(Text);
+            }
+            catch (Exception)
+            { }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryDecodeBase64ToByteArray(this Text, out Decoded)
+
+        public static Boolean TryDecodeBase64ToByteArray(this String Text, out Byte[] Decoded)
+        {
+
+            try
+            {
+                Decoded = Convert.FromBase64String(Text);
+                return true;
+            }
+            catch (Exception)
+            { }
+
+            Decoded = default;
+            return false;
+
+        }
+
+        #endregion
+
 
 
         #region EscapeForXMLandHTML(Text)
