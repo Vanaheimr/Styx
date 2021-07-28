@@ -87,9 +87,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region EncodeBase64   (this Text)
+        #region ToBase64   (this Text)
 
-        public static String EncodeBase64(this String Text)
+        public static String ToBase64(this String Text)
         {
 
             try
@@ -99,16 +99,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             catch (Exception e)
             {
-                throw new Exception("Error in base64Encode" + e.Message);
+                throw new Exception("Error in ToBase64" + e.Message);
             }
 
         }
 
         #endregion
 
-        #region DecodeBase64   (this Text)
+        #region ToBase64   (this Bytes)
 
-        public static String DecodeBase64(this String Text)
+        public static String ToBase64(this Byte[] Bytes)
+        {
+
+            try
+            {
+                return Convert.ToBase64String(Bytes);
+            }
+
+            catch (Exception e)
+            {
+                throw new Exception("Error in ToBase64" + e.Message);
+            }
+
+        }
+
+        #endregion
+
+        #region FromBase64_UTF8(this Text)
+
+        public static String FromBase64_UTF8(this String Text)
         {
 
             try
@@ -125,16 +144,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             catch (Exception e)
             {
-                throw new Exception("Exception in DecodeBase64(...): " + e.Message);
+                throw new Exception("Exception in FromBase64(...): " + e.Message);
             }
 
         }
 
         #endregion
 
-        #region TryDecodeBase64(this Text, out Decoded)
+        #region TryBase64Decode_UTF8(this Text, out Decoded)
 
-        public static Boolean TryDecodeBase64(this String Text, out String Decoded)
+        public static Boolean TryBase64Decode_UTF8(this String Text, out String Decoded)
         {
 
             try
@@ -160,27 +179,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region DecodeBase64ToByteArray   (this Text)
+        #region FromBase64             (this Text)
 
-        public static Byte[] DecodeBase64ToByteArray(this String Text)
-        {
+        public static Byte[] FromBase64(this String Text)
 
-            try
-            {
-                return Convert.FromBase64String(Text);
-            }
-            catch (Exception)
-            { }
-
-            return null;
-
-        }
+            => Convert.FromBase64String(Text);
 
         #endregion
 
-        #region TryDecodeBase64ToByteArray(this Text, out Decoded)
+        #region TryBase64DecodeToByteArray(this Text, out Decoded)
 
-        public static Boolean TryDecodeBase64ToByteArray(this String Text, out Byte[] Decoded)
+        public static Boolean TryBase64DecodeToByteArray(this String Text, out Byte[] Decoded)
         {
 
             try
@@ -197,7 +206,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
 
         #region EscapeForXMLandHTML(Text)
