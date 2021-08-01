@@ -427,6 +427,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //#endregion
 
+        #region CommonPrefix(this Texts)
+
+        public static String CommonPrefix(this IEnumerable<String> Texts)
+        {
+
+            if (Texts is null || !Texts.Any())
+                return "";
+
+            if (Texts.Count() == 1)
+                return Texts.First();
+
+            var texts          = Texts.Where (text => !(text is null)).ToArray();
+            var shortedLength  = Texts.Select(text => text.Length).    Min();
+            var pos            = 0;
+
+            while (texts.All(text => text[pos] == texts.First()[pos]))
+                pos++;
+
+            return texts.First().Substring(0, pos);
+
+        }
+
+        #endregion
+
+
 
         #region IsNullOrEmpty(GivenString, Delegate, [CallerMemberName] ParameterName = "")
 
