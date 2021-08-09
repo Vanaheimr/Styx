@@ -191,7 +191,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private readonly Dictionary<Languages, String> I18NStrings;
+        private readonly Dictionary<Languages, String> i18NStrings;
 
         #endregion
 
@@ -204,7 +204,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public I18NString()
         {
-            this.I18NStrings = new Dictionary<Languages, String>();
+            this.i18NStrings = new Dictionary<Languages, String>();
         }
 
         #endregion
@@ -220,7 +220,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString(Languages Language, String Text)
             : this()
         {
-            I18NStrings.Add(Language, Text);
+            i18NStrings.Add(Language, Text);
         }
 
         #endregion
@@ -237,7 +237,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Texts != null)
                 foreach (var Text in Texts)
-                    I18NStrings.Add(Text.Key, Text.Value);
+                    i18NStrings.Add(Text.Key, Text.Value);
 
         }
 
@@ -255,7 +255,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (I18NPairs != null)
                 foreach (var Text in I18NPairs)
-                    I18NStrings.Add(Text.Language, Text.Text);
+                    i18NStrings.Add(Text.Language, Text.Text);
 
         }
 
@@ -273,7 +273,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (I18NPairs != null)
                 foreach (var Text in I18NPairs)
-                    I18NStrings.Add(Text.Language, Text.Text);
+                    i18NStrings.Add(Text.Language, Text.Text);
 
         }
 
@@ -319,11 +319,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               String     Text)
         {
 
-            if (!I18NStrings.ContainsKey(Language))
-                I18NStrings.Add(Language, Text);
+            if (!i18NStrings.ContainsKey(Language))
+                i18NStrings.Add(Language, Text);
 
             else
-                I18NStrings[Language] = Text;
+                i18NStrings[Language] = Text;
 
             return this;
 
@@ -341,11 +341,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString Add(I18NPair I18NPair)
         {
 
-            if (!I18NStrings.ContainsKey(I18NPair.Language))
-                I18NStrings.Add(I18NPair.Language, I18NPair.Text);
+            if (!i18NStrings.ContainsKey(I18NPair.Language))
+                i18NStrings.Add(I18NPair.Language, I18NPair.Text);
 
             else
-                I18NStrings[I18NPair.Language] = I18NPair.Text;
+                i18NStrings[I18NPair.Language] = I18NPair.Text;
 
             return this;
 
@@ -361,7 +361,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Language">The internationalized (I18N) language.</param>
         public Boolean has(Languages Language)
 
-            => I18NStrings.ContainsKey(Language);
+            => i18NStrings.ContainsKey(Language);
 
         #endregion
 
@@ -379,7 +379,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
 
-                if (I18NStrings.TryGetValue(Language, out String Text))
+                if (i18NStrings.TryGetValue(Language, out String Text))
                     return Text;
 
                 return String.Empty;
@@ -388,7 +388,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             set
             {
-                I18NStrings[Language] = value;
+                i18NStrings[Language] = value;
             }
 
         }
@@ -404,8 +404,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString Remove(Languages Language)
         {
 
-            if (I18NStrings.ContainsKey(Language))
-                I18NStrings.Remove(Language);
+            if (i18NStrings.ContainsKey(Language))
+                i18NStrings.Remove(Language);
 
             return this;
 
@@ -498,6 +498,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #region Count
+
+        /// <summary>
+        /// The number of language/value pairs.
+        /// </summary>
+        public UInt32 Count
+
+            => (UInt32) i18NStrings.Count;
+
+        #endregion
+
+
         #region ToJSON()
 
         /// <summary>
@@ -505,8 +517,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public JObject ToJSON()
 
-            => I18NStrings.Any()
-                   ? new JObject(I18NStrings.SafeSelect(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
+            => i18NStrings.Any()
+                   ? new JObject(i18NStrings.SafeSelect(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
                    : new JObject();
 
         #endregion
@@ -518,7 +530,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public I18NString Clone
 
-            => new I18NString(I18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
+            => new I18NString(i18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
 
         #endregion
 
@@ -527,10 +539,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           String     Value)
         {
 
-            if (!I18NStrings.ContainsKey(Language))
+            if (!i18NStrings.ContainsKey(Language))
                 return false;
 
-            return I18NStrings[Language].Equals(Value);
+            return i18NStrings[Language].Equals(Value);
 
         }
 
@@ -538,17 +550,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                              String     Value)
         {
 
-            if (!I18NStrings.ContainsKey(Language))
+            if (!i18NStrings.ContainsKey(Language))
                 return true;
 
-            return !I18NStrings[Language].Equals(Value);
+            return !i18NStrings[Language].Equals(Value);
 
         }
 
 
-        public Boolean Matches(String Match, Boolean IgnoreCase = false)
+        public Boolean Matches(String   Match,
+                               Boolean  IgnoreCase  = false)
 
-            => I18NStrings.Any(kvp => IgnoreCase
+            => i18NStrings.Any(kvp => IgnoreCase
                                           ? kvp.Value.IndexOf(Match, StringComparison.OrdinalIgnoreCase) >= 0
                                           : kvp.Value.IndexOf(Match) >= 0);
 
@@ -559,13 +572,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Enumerate all internationalized (I18N) texts.
         /// </summary>
         public IEnumerator<I18NPair> GetEnumerator()
-            => I18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
+            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
 
         /// <summary>
         /// Enumerate all internationalized (I18N) texts.
         /// </summary>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => I18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
+            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
 
         #endregion
 
@@ -623,18 +636,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            var I18NString = Object as I18NString;
-            if ((Object) I18NString == null)
-                return false;
-
-            return Equals(I18NString);
-
-        }
+            => Object is I18NString i18NString &&
+                  Equals(i18NString);
 
         #endregion
 
@@ -643,20 +647,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two I18NString for equality.
         /// </summary>
-        /// <param name="I18NString">An I18NString to compare with.</param>
+        /// <param name="i18NString">An I18NString to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(I18NString I18NString)
+        public Boolean Equals(I18NString i18NString)
         {
 
-            if ((Object) I18NString == null)
+            if (!(i18NString is I18NString))
                 return false;
 
-            if (I18NStrings.Count != I18NString.Count())
+            if (i18NStrings.Count != i18NString.Count())
                 return false;
 
-            foreach (var I18N in I18NStrings)
+            foreach (var I18N in i18NStrings)
             {
-                if (I18N.Value != I18NString[I18N.Key])
+                if (I18N.Value != i18NString[I18N.Key])
                     return false;
             }
 
@@ -676,15 +680,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Int32 GetHashCode()
         {
 
-            Int32 ReturnValue = 0;
+            Int32 returnValue = 0;
 
-            foreach (var Value in I18NStrings.
+            foreach (var Value in i18NStrings.
                                       Select(I18N => I18N.Key.GetHashCode() ^ I18N.Value.GetHashCode()))
             {
-                ReturnValue ^= Value;
+                returnValue ^= Value;
             }
 
-            return ReturnValue;
+            return returnValue;
 
         }
 
@@ -698,10 +702,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override String ToString()
         {
 
-            if (I18NStrings.Count == 0)
+            if (i18NStrings.Count == 0)
                 return String.Empty;
 
-            return I18NStrings.
+            return i18NStrings.
                        Select(I18N => I18N.Key.ToString() + ": " + I18N.Value).
                        AggregateWith("; ");
 

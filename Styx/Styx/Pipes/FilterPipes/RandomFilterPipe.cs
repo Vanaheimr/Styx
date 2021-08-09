@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             : base(SourceElement)
         {
             this.Bias    = Bias;
-            this.Random  = (Random == null) ? new Random(DateTime.Now.Millisecond) : Random;
+            this.Random  = (Random == null) ? new Random() : Random;
         }
 
         #endregion
@@ -103,7 +103,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             : base(SourcePipe)
         {
             this.Bias    = Bias;
-            this.Random  = (Random == null) ? new Random(DateTime.Now.Millisecond) : Random;
+            this.Random  = (Random == null) ? new Random() : Random;
         }
 
         #endregion
@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             : base(SourceEnumerator)
         {
             this.Bias    = Bias;
-            this.Random  = (Random == null) ? new Random(DateTime.Now.Millisecond) : Random;
+            this.Random  = (Random == null) ? new Random() : Random;
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             : base(SourceEnumerable)
         {
             this.Bias    = Bias;
-            this.Random  = (Random == null) ? new Random(DateTime.Now.Millisecond) : Random;
+            this.Random  = (Random == null) ? new Random() : Random;
         }
 
         #endregion
