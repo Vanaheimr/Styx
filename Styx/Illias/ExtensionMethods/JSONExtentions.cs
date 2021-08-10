@@ -2374,7 +2374,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
 
         public static Boolean ParseMandatory<T>(this JObject         JSON,
                                                 String               PropertyName,
@@ -2506,6 +2506,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
 
         public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
                                                     String               PropertyName,
