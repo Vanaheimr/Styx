@@ -20,6 +20,7 @@
 using System;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -60,22 +61,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Log(this Exception, Source)
-
-        /// <summary>
-        /// Write the current timestamp and given exception to Debug.
-        /// </summary>
-        /// <param name="Exception">The exception.</param>
-        /// <param name="Source">The source of the exception.</param>
-        public static void Log(this Exception Exception, String Source)
-        {
-            if (Exception != null)
-                Debug.WriteLine(String.Concat("[", DateTime.Now, "] ", Source ?? "", " led to an exception: ", Exception.Message, Environment.NewLine,
-                                              Exception.StackTrace, Environment.NewLine));
-        }
-
-        #endregion
-
         #region Log(Message, Exception)
 
         /// <summary>
@@ -88,6 +73,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Exception != null)
                 Debug.WriteLine(String.Concat("[", DateTime.Now, "] ", Message ?? "", Environment.NewLine, Exception.Message, Environment.NewLine,
                                               Exception.StackTrace, Environment.NewLine));
+        }
+
+        #endregion
+
+        #region Log(Exception, Source)
+
+        /// <summary>
+        /// Write the current timestamp and given exception to Debug.
+        /// </summary>
+        /// <param name="Exception">The exception.</param>
+        /// <param name="Source">The source of the exception.</param>
+        public static void Log(Exception Exception, String Source)
+        {
+            if (Exception != null)
+                Debug.WriteLine(String.Concat("[", DateTime.Now, "] ", Source ?? "", " led to an exception: ", Exception.Message, Environment.NewLine,
+                                              Exception.StackTrace, Environment.NewLine));
+        }
+
+        #endregion
+
+        #region LogException(Exception, Source)
+
+        /// <summary>
+        /// Write the current timestamp and given exception to Debug.
+        /// </summary>
+        /// <param name="Exception">The exception.</param>
+        /// <param name="Source">The source of the exception.</param>
+        public static void LogException(Exception Exception, [CallerMemberName] String Source = "")
+        {
+            if (Exception != null)
+                Debug.WriteLine(String.Concat("[", DateTime.Now, "] ", Source ?? "", " led to an exception: ", Environment.NewLine,
+                                Exception.Message,    Environment.NewLine,
+                                Exception.StackTrace, Environment.NewLine));
         }
 
         #endregion
