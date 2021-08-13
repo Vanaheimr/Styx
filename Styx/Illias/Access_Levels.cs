@@ -23,6 +23,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         None,
         ReadOnly,
         ReadWrite,
+        AdminReadOnly,
         Admin
     }
 
