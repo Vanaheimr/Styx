@@ -110,7 +110,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     return LeftObject.CompareTo(RightObject) <= 0;
 
                 default:
-                    throw new Exception("Invalid state as no valid filter had been provided!");
+                    throw new Exception("Invalid state as no valid filter has been provided!");
             
             }
 

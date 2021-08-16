@@ -81,13 +81,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
     #region IllegalStateException
 
     /// <summary>
-    /// An illegal state had been reached.
+    /// An illegal state has been reached.
     /// </summary>
     public class IllegalStateException : PipesException
     {
 
         /// <summary>
-        /// An illegal state had been reached.
+        /// An illegal state has been reached.
         /// </summary>
         public IllegalStateException(String myMessage)
             : base(myMessage)
