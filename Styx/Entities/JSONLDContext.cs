@@ -45,14 +45,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Indicates whether this JSON-LD context is null or empty.
         /// </summary>
         public Boolean IsNullOrEmpty
-
             => InternalContext.IsNullOrEmpty();
+
+        /// <summary>
+        /// Indicates whether this JSON-LD context is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalContext.IsNotNullOrEmpty();
 
         /// <summary>
         /// The length of the JSON-LD context.
         /// </summary>
         public UInt64 Length
-
             => (UInt64) (InternalContext?.Length ?? 0);
 
         #endregion

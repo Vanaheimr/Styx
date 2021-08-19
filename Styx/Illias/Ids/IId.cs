@@ -56,12 +56,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        Boolean IsNullOrEmpty    { get; }
+        Boolean IsNullOrEmpty       { get; }
+
+        ///// <summary>
+        ///// Indicates whether this identification is null or empty.
+        ///// </summary>
+        //Boolean IsNotNullOrEmpty    { get; }
 
         /// <summary>
         /// The length of the identification.
         /// </summary>
-        UInt64  Length           { get; }
+        UInt64  Length              { get; }
 
         /// <summary>
         /// Return a text representation of this object.

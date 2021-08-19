@@ -54,6 +54,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
+        /// Indicates whether this identification is NOT null or empty.
+        /// </summary>
+        public Boolean IsNotNullOrEmpty
+            => InternalId.IsNotNullOrEmpty();
+
+        /// <summary>
         /// The length of the data license.
         /// </summary>
         public UInt64 Length
