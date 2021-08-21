@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2010-2013, Achim 'ahzf' Friedland <achim@graph-database.org>
- * This file is part of Balder <http://www.github.com/Vanaheimr/Balder>
+ * Copyright (c) 2010-2021, Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of Balder <https://www.github.com/Vanaheimr/Balder>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

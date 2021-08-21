@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 WWCP <http://www.github.com/eMI3/WWCP-Bindings>
+ * This file is part of eMI3 WWCP <https://www.github.com/eMI3/WWCP-Bindings>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.

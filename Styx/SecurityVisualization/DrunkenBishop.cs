@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2014-2016, Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
- * This file is part of Vanaheimr BouncyCastle <http://www.github.com/Vanaheimr/BouncyCastle>
+ * Copyright (c) 2014-2021, Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of Vanaheimr BouncyCastle <https://www.github.com/Vanaheimr/BouncyCastle>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

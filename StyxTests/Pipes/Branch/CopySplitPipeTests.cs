@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2010-2013, Achim 'ahzf' Friedland <achim@graph-database.org>
- * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
+ * Copyright (c) 2010-2021, Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
