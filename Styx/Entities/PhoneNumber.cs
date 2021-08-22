@@ -26,6 +26,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
+    /// Extention methods for phone numbers.
+    /// </summary>
+    public static class PhoneNumberExtentions
+    {
+
+        /// <summary>
+        /// Indicates whether this phone number is null or empty.
+        /// </summary>
+        /// <param name="PhoneNumber">A phone number.</param>
+        public static Boolean IsNullOrEmpty(this PhoneNumber? PhoneNumber)
+            => !PhoneNumber.HasValue || PhoneNumber.Value.IsNullOrEmpty;
+
+        /// <summary>
+        /// Indicates whether this phone number is null or empty.
+        /// </summary>
+        /// <param name="PhoneNumber">A phone number.</param>
+        public static Boolean IsNotNullOrEmpty(this PhoneNumber? PhoneNumber)
+            => PhoneNumber.HasValue && PhoneNumber.Value.IsNotNullOrEmpty;
+
+    }
+
+
+    /// <summary>
     /// A phone number.
     /// </summary>
     public struct PhoneNumber : IId,
@@ -38,12 +61,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The internal identification.
         /// </summary>
-        private readonly        String  InternalId;
+        private readonly String InternalId;
 
         /// <summary>
         /// The regular expression init string for matching phone numbers.
         /// </summary>
-        public static readonly  Regex   IsPhoneNumber_RegExprString  = new Regex("\\+?[0-9\\ \\-\\/]{5,30}");
+        public static readonly Regex IsPhoneNumber_RegExprString = new Regex("\\+?[0-9\\ \\-\\/]{5,30}");
 
         #endregion
 
@@ -83,88 +106,68 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a phone number.
         /// </summary>
-        /// <param name="Text">A text representation of a phone number.</param>
+        /// <param name="Text">A text-representation of a phone number.</param>
         public static PhoneNumber Parse(String Text)
         {
 
-            #region Initial checks
+            if (TryParse(Text, out PhoneNumber phoneNumber))
+                return phoneNumber;
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a phone number must not be null or empty!");
-
-            #endregion
-
-            if (!TryParse(Text, out PhoneNumber _PhoneNumber))
-                throw new ArgumentException("The given text '" + Text + "' is not a valid phone number!");
-
-            return _PhoneNumber;
+            throw new ArgumentException("Invalid text-representation of a phone number: '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region TryParse(Text)
 
         /// <summary>
         /// Try to parse the given string as a phone number.
         /// </summary>
-        /// <param name="Text">A text representation of a phone number.</param>
+        /// <param name="Text">A text-representation of a phone number.</param>
         public static PhoneNumber? TryParse(String Text)
         {
 
-            if (TryParse(Text, out PhoneNumber _PhoneNumber))
-                return _PhoneNumber;
+            if (TryParse(Text, out PhoneNumber phoneNumber))
+                return phoneNumber;
 
-            return new PhoneNumber?();
+            return null;
 
         }
 
         #endregion
 
-        #region (static) TryParse(Text, out PhoneNumber)
+        #region TryParse(Text, out PhoneNumber)
 
         /// <summary>
         /// Try to parse the given string as a phone number.
         /// </summary>
-        /// <param name="Text">A text representation of a phone number.</param>
+        /// <param name="Text">A text-representation of a phone number.</param>
         /// <param name="PhoneNumber">The parsed phone number.</param>
         public static Boolean TryParse(String Text, out PhoneNumber PhoneNumber)
         {
 
-            #region Initial checks
+            Text = Text?.Trim();
 
-            if (Text != null)
-                Text = Text.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of a phone number must not be null or empty!");
-
-            #endregion
-
-            try
+            if (Text.IsNotNullOrEmpty() &&
+                IsPhoneNumber_RegExprString.IsMatch(Text))
             {
-
-                var Match = IsPhoneNumber_RegExprString.Match(Text);
-
-                if (Match.Success)
+                try
                 {
                     PhoneNumber = new PhoneNumber(Text);
                     return true;
                 }
-
+                catch
+                { }
             }
-            catch (Exception)
-            { }
 
-            PhoneNumber = default(PhoneNumber);
+            PhoneNumber = default;
             return false;
 
         }
@@ -174,11 +177,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Clone
 
         /// <summary>
-        /// Clone a phone number.
+        /// Clone this phone number.
         /// </summary>
-
         public PhoneNumber Clone
-            => new PhoneNumber(new String(InternalId.ToCharArray()));
+
+            => new PhoneNumber(
+                   new String(InternalId?.ToCharArray())
+               );
 
         #endregion
 
@@ -193,20 +198,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
-        {
+        public static Boolean operator == (PhoneNumber PhoneNumber1,
+                                           PhoneNumber PhoneNumber2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(PhoneNumber1, PhoneNumber2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) PhoneNumber1 == null) || ((Object) PhoneNumber2 == null))
-                return false;
-
-            return PhoneNumber1.Equals(PhoneNumber2);
-
-        }
+            => PhoneNumber1.Equals(PhoneNumber2);
 
         #endregion
 
@@ -218,8 +213,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
-            => !(PhoneNumber1 == PhoneNumber2);
+        public static Boolean operator != (PhoneNumber PhoneNumber1,
+                                           PhoneNumber PhoneNumber2)
+
+            => !PhoneNumber1.Equals(PhoneNumber2);
 
         #endregion
 
@@ -231,15 +228,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
-        {
+        public static Boolean operator < (PhoneNumber PhoneNumber1,
+                                          PhoneNumber PhoneNumber2)
 
-            if ((Object) PhoneNumber1 == null)
-                throw new ArgumentNullException(nameof(PhoneNumber1), "The given PhoneNumber1 must not be null!");
-
-            return PhoneNumber1.CompareTo(PhoneNumber2) < 0;
-
-        }
+            => PhoneNumber1.CompareTo(PhoneNumber2) < 0;
 
         #endregion
 
@@ -251,8 +243,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
-            => !(PhoneNumber1 > PhoneNumber2);
+        public static Boolean operator <= (PhoneNumber PhoneNumber1,
+                                           PhoneNumber PhoneNumber2)
+
+            => PhoneNumber1.CompareTo(PhoneNumber2) <= 0;
 
         #endregion
 
@@ -264,15 +258,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
-        {
+        public static Boolean operator > (PhoneNumber PhoneNumber1,
+                                          PhoneNumber PhoneNumber2)
 
-            if ((Object) PhoneNumber1 == null)
-                throw new ArgumentNullException(nameof(PhoneNumber1), "The given PhoneNumber1 must not be null!");
-
-            return PhoneNumber1.CompareTo(PhoneNumber2) > 0;
-
-        }
+            => PhoneNumber1.CompareTo(PhoneNumber2) > 0;
 
         #endregion
 
@@ -284,8 +273,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PhoneNumber1">A phone number.</param>
         /// <param name="PhoneNumber2">Another phone number.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (PhoneNumber PhoneNumber1, PhoneNumber PhoneNumber2)
-            => !(PhoneNumber1 < PhoneNumber2);
+        public static Boolean operator >= (PhoneNumber PhoneNumber1,
+                                           PhoneNumber PhoneNumber2)
+
+            => PhoneNumber1.CompareTo(PhoneNumber2) >= 0;
 
         #endregion
 
@@ -300,18 +291,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is PhoneNumber))
-                throw new ArgumentException("The given object is not a phone number!",
-                                            nameof(Object));
-
-            return CompareTo((PhoneNumber) Object);
-
-        }
+            => Object is PhoneNumber phoneNumber
+                   ? CompareTo(phoneNumber)
+                   : throw new ArgumentException("The given object is not a phone number!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -322,14 +306,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="PhoneNumber">An object to compare with.</param>
         public Int32 CompareTo(PhoneNumber PhoneNumber)
-        {
 
-            if ((Object) PhoneNumber == null)
-                throw new ArgumentNullException(nameof(PhoneNumber),  "The given phone number must not be null!");
-
-            return String.Compare(InternalId, PhoneNumber.InternalId, StringComparison.Ordinal);
-
-        }
+            => String.Compare(InternalId,
+                              PhoneNumber.InternalId,
+                              StringComparison.Ordinal);
 
         #endregion
 
@@ -345,36 +325,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is PhoneNumber))
-                return false;
-
-            return Equals((PhoneNumber) Object);
-
-        }
+            => Object is PhoneNumber phoneNumber &&
+                   Equals(phoneNumber);
 
         #endregion
 
         #region Equals(PhoneNumber)
 
         /// <summary>
-        /// Compares two phone numbers for equality.
+        /// Compares two PhoneNumbers for equality.
         /// </summary>
-        /// <param name="PhoneNumber">An phone number to compare with.</param>
+        /// <param name="PhoneNumber">A phone number to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(PhoneNumber PhoneNumber)
-        {
 
-            if ((Object) PhoneNumber == null)
-                return false;
-
-            return InternalId.Equals(PhoneNumber.InternalId);
-
-        }
+            => String.Equals(InternalId,
+                             PhoneNumber.InternalId,
+                             StringComparison.Ordinal);
 
         #endregion
 
@@ -383,21 +351,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region GetHashCode()
 
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-            => InternalId.GetHashCode();
+
+            => InternalId?.GetHashCode() ?? 0;
 
         #endregion
 
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object.
+        /// Return a text-representation of this object.
         /// </summary>
         public override String ToString()
-            => InternalId;
+
+            => InternalId ?? "";
 
         #endregion
 

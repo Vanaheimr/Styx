@@ -742,6 +742,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ToSafeHashSet(this IEnumerable)
+
+        /// <summary>
+        /// Safely determines whether a sequence contains any elements.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the enumeration.</typeparam>
+        public static HashSet<TSource> ToSafeHashSet<TSource>(this IEnumerable<TSource> IEnumerable)
+        {
+
+            if (IEnumerable is null || !IEnumerable.Any())
+                return new HashSet<TSource>();
+
+            return new HashSet<TSource>(IEnumerable);
+
+        }
+
+        #endregion
+
         #region SelectIgnoreErrors(this IEnumerable, SelectionDelegate, DefaultValues = null)
 
         /// <summary>
