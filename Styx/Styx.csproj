@@ -258,6 +258,7 @@
     <Compile Include="Illias\Time\TimeSpanExtentions.cs" />
     <Compile Include="Illias\Time\TimeSpanMinMax.cs" />
     <Compile Include="Illias\Time\Timestamped.cs" />
+    <Compile Include="Illias\Time\Timestamp.cs" />
     <Compile Include="Illias\Time\UniqueTimestamp.cs" />
     <Compile Include="Illias\Transactions\IsolationLevel.cs" />
     <Compile Include="Illias\Transactions\Transaction.cs" />

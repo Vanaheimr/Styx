@@ -42,12 +42,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The timestamp of the value creation.
         /// </summary>
-        public DateTime Timestamp   { get; }
+        public DateTime  Timestamp    { get; }
 
         /// <summary>
         /// The value.
         /// </summary>
-        public T        Value       { get; }
+        public T         Value        { get; }
 
         #endregion
 
@@ -58,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value.</param>
         public Timestamped(T Value)
-            : this(DateTime.UtcNow, Value)
+            : this(Illias.Timestamp.Now, Value)
         { }
 
         /// <summary>
@@ -99,40 +99,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (Timestamped<T> Timestamped1, Timestamped<T> Timestamped2)
-        {
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(Timestamped1, Timestamped2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) Timestamped1 == null) || ((Object) Timestamped2 == null))
-                return false;
-
-            return Timestamped1.Equals(Timestamped2);
-
-        }
+            => Timestamped1.Equals(Timestamped2);
 
         #endregion
 
-        #region Operator == (Timestamped1, Value)
+        #region Operator == (Timestamped,  Value)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped">A timestamped value.</param>
         /// <param name="Value">Another value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Timestamped<T> Timestamped1, T Value)
-        {
+        public static Boolean operator == (Timestamped<T> Timestamped, T Value)
 
-            // If one is null, but not both, return false.
-            if (((Object) Timestamped1 == null) || ((Object) Value == null))
-                return false;
+            => Timestamped.Value?.Equals(Value) == true;
 
-            return Timestamped1.Value.Equals(Value);
+        #endregion
 
-        }
+        #region Operator == (Timestamped,  Timestamp)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped">A timestamped value.</param>
+        /// <param name="Timestamp">Another timestamp.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (Timestamped<T> Timestamped, DateTime Timestamp)
+
+            => Timestamped.Timestamp.Equals(Timestamp);
 
         #endregion
 
@@ -145,11 +141,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Timestamped<T> Timestamped1, Timestamped<T> Timestamped2)
-            => !(Timestamped1 == Timestamped2);
+
+            => !Timestamped1.Equals(Timestamped2);
 
         #endregion
 
-        #region Operator != (Timestamped1, Value)
+        #region Operator != (Timestamped,  Value)
 
         /// <summary>
         /// Compares two instances of this object.
@@ -158,7 +155,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Value">Another value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Timestamped<T> Timestamped1, T Value)
-            => !(Timestamped1 == Value);
+
+            => !(Timestamped1.Value?.Equals(Value) == true);
+
+        #endregion
+
+        #region Operator != (Timestamped,  Timestamp)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped">A timestamped value.</param>
+        /// <param name="Timestamp">Another timestamp.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (Timestamped<T> Timestamped, DateTime Timestamp)
+
+            => !Timestamped.Timestamp.Equals(Timestamp);
 
         #endregion
 
@@ -172,14 +184,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (Timestamped<T> Timestamped1, Timestamped<T> Timestamped2)
-        {
 
-            if ((Object) Timestamped1 == null)
-                throw new ArgumentNullException("The given Timestamped1 must not be null!");
-
-            return Timestamped1.CompareTo(Timestamped2) < 0;
-
-        }
+            => Timestamped1.CompareTo(Timestamped2) < 0;
 
         #endregion
 
@@ -192,7 +198,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Timestamped<T> Timestamped1, Timestamped<T> Timestamped2)
-            => !(Timestamped1 > Timestamped2);
+
+            => Timestamped1.CompareTo(Timestamped2) <= 0;
 
         #endregion
 
@@ -205,14 +212,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (Timestamped<T> Timestamped1, Timestamped<T> Timestamped2)
-        {
 
-            if ((Object) Timestamped1 == null)
-                throw new ArgumentNullException("The given Timestamped1 must not be null!");
-
-            return Timestamped1.CompareTo(Timestamped2) > 0;
-
-        }
+            => Timestamped1.CompareTo(Timestamped2) > 0;
 
         #endregion
 
@@ -225,7 +226,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Timestamped<T> Timestamped1, Timestamped<T> Timestamped2)
-            => !(Timestamped1 < Timestamped2);
+
+            => Timestamped1.CompareTo(Timestamped2) >= 0;
 
         #endregion
 
@@ -240,14 +242,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            return CompareTo((Timestamped<T>) Object);
-
-        }
+            => Object is Timestamped<T> timestamped
+                   ? CompareTo(timestamped)
+                   : throw new ArgumentException("The given object is not a timestamped value!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -260,17 +259,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Timestamped<T> Timestamped)
         {
 
-            if ((Object) Timestamped == null)
-                throw new ArgumentNullException(nameof(Timestamped), "The given timestamped value must not be null!");
+            var c = Timestamp.CompareTo(Timestamped.Timestamp);
 
-            // Compare the timestamps
-            var _Result = Timestamp.CompareTo(Timestamped.Timestamp);
+            if (c == 0)
+                c = (Value?.ToString() ?? "").CompareTo(Timestamped.Value?.ToString() ?? "");
 
-            // If equal: Compare the values
-            if (_Result == 0)
-                _Result = Value.ToString().CompareTo(Timestamped.Value.ToString());
-
-            return _Result;
+            return c;
 
         }
 
@@ -288,17 +282,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is Timestamped<T>))
-                return false;
-
-            return Equals((Timestamped<T>) Object);
-
-        }
+            => Object is Timestamped<T> timestamped &&
+                   Equals(timestamped);
 
         #endregion
 
@@ -312,13 +298,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(T OtherValue)
         {
 
-            if ((Object) OtherValue == null)
-                return false;
-
             if (Value == null && OtherValue == null)
                 return true;
 
-            if (OtherValue == null)
+            if (Value == null)
                 return false;
 
             return Value.Equals(OtherValue);
@@ -337,16 +320,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(Timestamped<T> Timestamped)
         {
 
-            if ((Object) Timestamped == null)
+            if (Timestamp != Timestamped.Timestamp)
                 return false;
 
             if (Value == null && Timestamped.Value == null)
                 return true;
 
             if (Value == null)
-                return false;
-
-            if (!Timestamp.Equals(Timestamped.Timestamp))
                 return false;
 
             return Value.Equals(Timestamped.Value);
@@ -369,7 +349,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 return Timestamp.GetHashCode() * 3 ^
-                       Value.    GetHashCode();
+                      (Value?.   GetHashCode() ?? 0);
 
             }
         }
@@ -385,7 +365,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => String.Concat(Timestamp.ToIso8601(),
                              " -> ",
-                             Value.ToString());
+                             Value?.ToString() ?? "");
 
         #endregion
 
