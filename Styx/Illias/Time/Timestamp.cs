@@ -38,6 +38,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             timeTravel = TimeTravel;
         }
 
+        public static void Reset()
+        {
+            timeTravel = TimeSpan.Zero;
+        }
+
     }
 
 }
