@@ -508,7 +508,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        public readonly struct Comparizion
+        public readonly struct ComparizionResult
         {
 
             public readonly struct PropertyWithValue
@@ -521,8 +521,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 public PropertyWithValue(String Name,
                                          Object Value)
                 {
+
                     this.Name   = Name;
                     this.Value  = Value;
+
                 }
 
                 public override String ToString()
@@ -545,9 +547,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           Object  OldValue,
                                           Object  NewValue)
                 {
+
                     this.Name      = Name;
                     this.OldValue  = OldValue;
                     this.NewValue  = NewValue;
+
                 }
 
                 public override String ToString()
@@ -563,13 +567,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public IEnumerable<PropertyWithValue>   Removed    { get; }
 
 
-            public Comparizion(IEnumerable<PropertyWithValue>  Added,
-                               IEnumerable<PropertyWithValues> Updated,
-                               IEnumerable<PropertyWithValue>  Removed)
+            public ComparizionResult(IEnumerable<PropertyWithValue>   Added,
+                                     IEnumerable<PropertyWithValues>  Updated,
+                                     IEnumerable<PropertyWithValue>   Removed)
             {
+
                 this.Added    = Added;
                 this.Updated  = Updated;
                 this.Removed  = Removed;
+
             }
 
 
@@ -637,21 +643,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public Comparizion CompareWith(AEntity<TId,
-                                               TEntity,
-                                               TCustomData,
-                                               TDataSource> Entity)
+        public ComparizionResult CompareWith(AEntity<TId,
+                                                     TEntity,
+                                                     TCustomData,
+                                                     TDataSource> Entity)
         {
 
-            var Added    = new List<Comparizion.PropertyWithValue>();
-            var Updated  = new List<Comparizion.PropertyWithValues>();
-            var Removed  = new List<Comparizion.PropertyWithValue>();
+            var Added    = new List<ComparizionResult.PropertyWithValue>();
+            var Updated  = new List<ComparizionResult.PropertyWithValues>();
+            var Removed  = new List<ComparizionResult.PropertyWithValue>();
 
             var propertyInfos1 = this.GetType().GetProperties().
                                                 Where(info => info.CustomAttributes.SafeAny() &&
                                                               info.CustomAttributes.Any(attr => attr.AttributeType == typeof(MandatoryAttribute) ||
                                                                                                 attr.AttributeType == typeof(OptionalAttribute))).
-                                                //Where(i => i.Name == "Owner" || i.Name == "ActivationDate").
                                                 ToArray();
 
             foreach (var pinfo in propertyInfos1)
@@ -664,19 +669,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 { }
 
                 else if (getter1 is null)
-                    Added.  Add(new Comparizion.PropertyWithValue (pinfo.Name, getter2));
+                    Added.  Add(new ComparizionResult.PropertyWithValue (pinfo.Name, getter2));
 
                 else if (getter2 is null)
-                    Removed.Add(new Comparizion.PropertyWithValue (pinfo.Name, getter1));
+                    Removed.Add(new ComparizionResult.PropertyWithValue (pinfo.Name, getter1));
 
                 else if (!getter1.Equals(getter2))
-                    Updated.Add(new Comparizion.PropertyWithValues(pinfo.Name, getter1, getter2));
+                    Updated.Add(new ComparizionResult.PropertyWithValues(pinfo.Name, getter1, getter2));
 
             }
 
-            return new Comparizion(Added,
-                                   Updated,
-                                   Removed);
+            return new ComparizionResult(Added,
+                                         Updated,
+                                         Removed);
 
         }
 
