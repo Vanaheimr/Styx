@@ -507,142 +507,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-
-        public readonly struct ComparizionResult
-        {
-
-            public readonly struct PropertyWithValue
-            {
-
-                public readonly String  Name     { get; }
-
-                public readonly Object  Value    { get; }
-
-                public PropertyWithValue(String Name,
-                                         Object Value)
-                {
-
-                    this.Name   = Name;
-                    this.Value  = Value;
-
-                }
-
-                public override String ToString()
-
-                    => String.Concat(Name, ": '", Value, "'");
-
-            }
-
-            public readonly struct PropertyWithValues
-            {
-
-                public readonly String  Name        { get; }
-
-                public readonly Object  OldValue    { get; }
-
-                public readonly Object  NewValue    { get; }
-
-
-                public PropertyWithValues(String  Name,
-                                          Object  OldValue,
-                                          Object  NewValue)
-                {
-
-                    this.Name      = Name;
-                    this.OldValue  = OldValue;
-                    this.NewValue  = NewValue;
-
-                }
-
-                public override String ToString()
-
-                    => String.Concat(Name, ": '", OldValue, "' => '", NewValue, "'");
-
-            }
-
-
-
-            public IEnumerable<PropertyWithValue>   Added      { get; }
-            public IEnumerable<PropertyWithValues>  Updated    { get; }
-            public IEnumerable<PropertyWithValue>   Removed    { get; }
-
-
-            public ComparizionResult(IEnumerable<PropertyWithValue>   Added,
-                                     IEnumerable<PropertyWithValues>  Updated,
-                                     IEnumerable<PropertyWithValue>   Removed)
-            {
-
-                this.Added    = Added;
-                this.Updated  = Updated;
-                this.Removed  = Removed;
-
-            }
-
-
-            public JObject ToJSON()
-            {
-
-                var JSON = new JObject();
-
-
-                foreach (var added in Added)
-                {
-
-                    if (!JSON.ContainsKey("added"))
-                        JSON.Add("added", new JObject());
-
-                    if      (added.Value is String   text)
-                        (JSON["added"] as JObject).Add(added.Name, text);
-
-                    else if (added.Value is DateTime timestamp)
-                        (JSON["added"] as JObject).Add(added.Name, timestamp.  ToIso8601());
-
-                    else
-                        (JSON["added"] as JObject).Add(added.Name, added.Value.ToString());
-
-                }
-
-                foreach (var updated in Updated)
-                {
-
-                    if (!JSON.ContainsKey("updated"))
-                        JSON.Add("updated", new JObject());
-
-                    if      (updated.NewValue is String)
-                        (JSON["updated"] as JObject).Add(updated.Name, new JArray(updated.NewValue as String, updated.OldValue as String));
-
-                    else if (updated.NewValue is DateTime)
-                        (JSON["updated"] as JObject).Add(updated.Name, new JArray(((DateTime)updated.NewValue).ToIso8601(), ((DateTime)updated.OldValue).ToIso8601()));
-
-                    else
-                        (JSON["updated"] as JObject).Add(updated.Name, new JArray(updated.NewValue.ToString(), updated.OldValue.ToString()));
-
-                }
-
-                foreach (var removed in Removed)
-                {
-
-                    if (!JSON.ContainsKey("removed"))
-                        JSON.Add("removed", new JObject());
-
-                    if      (removed.Value is String   text)
-                        (JSON["removed"] as JObject).Add(removed.Name, text);
-
-                    else if (removed.Value is DateTime timestamp)
-                        (JSON["removed"] as JObject).Add(removed.Name, timestamp.    ToIso8601());
-
-                    else
-                        (JSON["removed"] as JObject).Add(removed.Name, removed.Value.ToString());
-
-                }
-
-                return JSON;
-
-            }
-
-        }
-
-
         public ComparizionResult CompareWith(AEntity<TId,
                                                      TEntity,
                                                      TCustomData,
@@ -653,13 +517,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var Updated  = new List<ComparizionResult.PropertyWithValues>();
             var Removed  = new List<ComparizionResult.PropertyWithValue>();
 
-            var propertyInfos1 = this.GetType().GetProperties().
-                                                Where(info => info.CustomAttributes.SafeAny() &&
-                                                              info.CustomAttributes.Any(attr => attr.AttributeType == typeof(MandatoryAttribute) ||
-                                                                                                attr.AttributeType == typeof(OptionalAttribute))).
-                                                ToArray();
+            var propertyInfos = GetType().GetProperties().
+                                          Where(info => info.CustomAttributes.SafeAny() &&
+                                                        info.CustomAttributes.Any(attr => attr.AttributeType == typeof(MandatoryAttribute) ||
+                                                                                          attr.AttributeType == typeof(OptionalAttribute))).
+                                          ToArray();
 
-            foreach (var pinfo in propertyInfos1)
+            foreach (var pinfo in propertyInfos)
             {
 
                 var getter1 = Entity.GetType().InvokeMember(pinfo.Name, System.Reflection.BindingFlags.GetProperty, null, Entity, new Object[] { });

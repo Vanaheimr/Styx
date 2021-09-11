@@ -90,6 +90,7 @@
     <Compile Include="Aegir\GeoObjects\GeoVector.cs" />
     <Compile Include="Aegir\Semantics.cs" />
     <Compile Include="Aegir\Tools\Polyfile2ShapeInfo.cs" />
+    <Compile Include="Entities\ComparizionResult.cs" />
     <Compile Include="Entities\JSONLDContext.cs" />
     <Compile Include="Illias\ApplicationRunType.cs" />
     <Compile Include="Illias\Access_Levels.cs" />
