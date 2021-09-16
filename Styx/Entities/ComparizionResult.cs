@@ -388,12 +388,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #region Calculate colums sizes
 
             var maxPropertyNameLength     = new Int32[]{
-                                                Added.  Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0),
-                                                Updated.Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0),
-                                                Removed.Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0)
+                                                Added.  Any() ? Added.  Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0) : 0,
+                                                Updated.Any() ? Updated.Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0) : 0,
+                                                Removed.Any() ? Removed.Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0) : 0
                                             }.Max();
 
-            var maxUpdatedOldValueLength  = Updated.Max(_ => IncludeProperty(_.Name) ? _.OldValue.ToString().Length : 0);
+            var maxUpdatedOldValueLength  = Updated.Any() ? Updated.Max(_ => IncludeProperty(_.Name) ? _.OldValue.ToString().Length : 0) : 0;
 
             var sb = new StringBuilder();
 
