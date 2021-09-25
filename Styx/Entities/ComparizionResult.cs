@@ -135,7 +135,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToJSON(IncludeProperty = null, MaskProperty = null)
+        #region ToJSON    (IncludeProperty = null, MaskProperty = null)
 
         public JObject ToJSON(Func<String, Boolean>  IncludeProperty   = null,
                               Func<String, Boolean>  MaskProperty      = null)
@@ -246,7 +246,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToHTML(IncludeProperty = null, MaskProperty = null)
+        #region ToHTML    (IncludeProperty = null, MaskProperty = null)
 
         public String ToHTML(Func<String, Boolean>  IncludeProperty   = null,
                              Func<String, Boolean>  MaskProperty      = null)
@@ -369,7 +369,113 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToText(IncludeProperty = null, MaskProperty = null)
+        #region ToTelegram(IncludeProperty = null, MaskProperty = null)
+
+        public String ToTelegram(Func<String, Boolean>  IncludeProperty   = null,
+                                 Func<String, Boolean>  MaskProperty      = null)
+        {
+
+            #region Init
+
+            if (IncludeProperty is null)
+                IncludeProperty = _ => true;
+
+            if (MaskProperty is null)
+                MaskProperty = _ => false;
+
+            #endregion
+
+            var sb = new StringBuilder();
+
+            #region Added   properties
+
+            if (Added.SafeAny())
+            {
+
+                sb.AppendLine("\n<b>Added properties</b>");
+
+                foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                {
+
+                    sb.Append("<i>");
+                    sb.Append(property.Name);
+                    sb.Append("</i>: ");
+
+                    if (!MaskProperty(property.Name))
+                        sb.AppendLine(property.Value.ToString());
+                    else
+                        sb.AppendLine("n/a");
+
+                }
+
+            }
+
+            #endregion
+
+            #region Updated properties
+
+            if (Updated.SafeAny())
+            {
+
+                sb.AppendLine("\n<b>Updated properties</b>");
+
+                foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
+                {
+
+                    sb.Append("<i>");
+                    sb.Append(property.Name);
+                    sb.Append("</i>: ");
+
+                    if (!MaskProperty(property.Name))
+                        sb.Append(property.OldValue);
+                    else
+                        sb.Append("n/a");
+
+                    sb.Append(@" → ");
+
+                    if (!MaskProperty(property.Name))
+                        sb.AppendLine(property.NewValue.ToString());
+                    else
+                        sb.AppendLine("n/a");
+
+                }
+
+            }
+
+            #endregion
+
+            #region Removed properties
+
+            if (Removed.SafeAny())
+            {
+
+                sb.AppendLine("\n<b>Removed properties</b>");
+
+                foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                {
+
+                    sb.Append("<b>");
+                    sb.Append(property.Name);
+                    sb.Append("</b>: ");
+
+                    if (!MaskProperty(property.Name))
+                        sb.AppendLine(property.Value.ToString());
+                    else
+                        sb.AppendLine("n/a");
+
+                }
+
+            }
+
+            #endregion
+
+            return sb.ToString();
+
+        }
+
+        #endregion
+
+        #region ToText    (IncludeProperty = null, MaskProperty = null)
 
         public String ToText(Func<String, Boolean>  IncludeProperty   = null,
                              Func<String, Boolean>  MaskProperty      = null)
