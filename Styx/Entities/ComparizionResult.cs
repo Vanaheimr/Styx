@@ -454,9 +454,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
                 {
 
-                    sb.Append("<b>");
+                    sb.Append("<i>");
                     sb.Append(property.Name);
-                    sb.Append("</b>: ");
+                    sb.Append("</i>: ");
 
                     if (!MaskProperty(property.Name))
                         sb.AppendLine(property.Value.ToString());
