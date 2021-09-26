@@ -155,26 +155,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+            if (Added.SafeAny())
             {
 
-                if (!JSON.ContainsKey("added"))
-                    JSON.Add("added", new JObject());
-
-                if (MaskProperty(property.Name))
-                    (JSON["removed"] as JObject).Add(property.Name, "n/a");
-
-                else
+                foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
                 {
 
-                    if      (property.Value is String   text)
-                        (JSON["added"] as JObject).Add(property.Name, text);
+                    if (!JSON.ContainsKey("added"))
+                        JSON.Add("added", new JObject());
 
-                    else if (property.Value is DateTime timestamp)
-                        (JSON["added"] as JObject).Add(property.Name, timestamp.  ToIso8601());
+                    if (MaskProperty(property.Name))
+                        (JSON["removed"] as JObject).Add(property.Name, "n/a");
 
                     else
-                        (JSON["added"] as JObject).Add(property.Name, property.Value.ToString());
+                    {
+
+                        if (property.Value is String text)
+                            (JSON["added"] as JObject).Add(property.Name, text);
+
+                        else if (property.Value is DateTime timestamp)
+                            (JSON["added"] as JObject).Add(property.Name, timestamp.ToIso8601());
+
+                        else
+                            (JSON["added"] as JObject).Add(property.Name, property.Value.ToString());
+
+                    }
 
                 }
 
@@ -184,26 +189,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Updated properties
 
-            foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
+            if (Updated.SafeAny())
             {
 
-                if (!JSON.ContainsKey("updated"))
-                    JSON.Add("updated", new JObject());
-
-                if (MaskProperty(property.Name))
-                    (JSON["removed"] as JObject).Add(property.Name, "n/a");
-
-                else
+                foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
                 {
 
-                    if      (property.NewValue is String)
-                        (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue as String, property.OldValue as String));
+                    if (!JSON.ContainsKey("updated"))
+                        JSON.Add("updated", new JObject());
 
-                    else if (property.NewValue is DateTime)
-                        (JSON["updated"] as JObject).Add(property.Name, new JArray(((DateTime) property.NewValue).ToIso8601(), ((DateTime) property.OldValue).ToIso8601()));
+                    if (MaskProperty(property.Name))
+                        (JSON["removed"] as JObject).Add(property.Name, "n/a");
 
                     else
-                        (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue.ToString(), property.OldValue.ToString()));
+                    {
+
+                        if (property.NewValue is String)
+                            (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue as String, property.OldValue as String));
+
+                        else if (property.NewValue is DateTime)
+                            (JSON["updated"] as JObject).Add(property.Name, new JArray(((DateTime)property.NewValue).ToIso8601(), ((DateTime)property.OldValue).ToIso8601()));
+
+                        else
+                            (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue.ToString(), property.OldValue.ToString()));
+
+                    }
 
                 }
 
@@ -213,26 +223,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Removed properties
 
-            foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+            if (Removed.SafeAny())
             {
 
-                if (!JSON.ContainsKey("removed"))
-                    JSON.Add("removed", new JObject());
-
-                if (MaskProperty(property.Name))
-                    (JSON["removed"] as JObject).Add(property.Name, "n/a");
-
-                else
+                foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
                 {
 
-                    if      (property.Value is String   text)
-                        (JSON["removed"] as JObject).Add(property.Name, text);
+                    if (!JSON.ContainsKey("removed"))
+                        JSON.Add("removed", new JObject());
 
-                    else if (property.Value is DateTime timestamp)
-                        (JSON["removed"] as JObject).Add(property.Name, timestamp.    ToIso8601());
+                    if (MaskProperty(property.Name))
+                        (JSON["removed"] as JObject).Add(property.Name, "n/a");
 
                     else
-                        (JSON["removed"] as JObject).Add(property.Name, property.Value.ToString());
+                    {
+
+                        if (property.Value is String text)
+                            (JSON["removed"] as JObject).Add(property.Name, text);
+
+                        else if (property.Value is DateTime timestamp)
+                            (JSON["removed"] as JObject).Add(property.Name, timestamp.ToIso8601());
+
+                        else
+                            (JSON["removed"] as JObject).Add(property.Name, property.Value.ToString());
+
+                    }
 
                 }
 
@@ -279,87 +294,102 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            sb.AppendLine(@"<div class=""headline"">Added properties</div>");
-            sb.AppendLine(@"<table id=""added"" class=""properties"">");
-
-            foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+            if (Added.SafeAny())
             {
 
-                sb.Append(@"<tr><td class=""key"">");
-                sb.Append(property.Name);
-                sb.Append(@"</td><td class=""value"">");
+                sb.AppendLine(@"<div class=""headline"">Added properties</div>");
+                sb.AppendLine(@"<table id=""added"" class=""properties"">");
 
-                if (!MaskProperty(property.Name))
-                    sb.Append(property.Value);
-                else
-                    sb.Append("n/a");
+                foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                {
 
-                sb.Append(@"</td></tr>");
-                sb.Append(Environment.NewLine);
+                    sb.Append(@"<tr><td class=""key"">");
+                    sb.Append(property.Name);
+                    sb.Append(@"</td><td class=""value"">");
+
+                    if (!MaskProperty(property.Name))
+                        sb.Append(property.Value);
+                    else
+                        sb.Append("n/a");
+
+                    sb.Append(@"</td></tr>");
+                    sb.Append(Environment.NewLine);
+
+                }
+
+                sb.AppendLine("</table>");
 
             }
-
-            sb.AppendLine("</table>");
 
             #endregion
 
             #region Updated properties
 
-            sb.AppendLine(@"<div class=""headline"">Updated properties</div>");
-            sb.AppendLine(@"<table id=""updated"" class=""properties"">");
-
-            foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
+            if (Updated.SafeAny())
             {
 
-                sb.Append(@"<tr><td class=""key"">");
-                sb.Append(property.Name);
-                sb.Append(@"</td><td class=""value"">");
+                sb.AppendLine(@"<div class=""headline"">Updated properties</div>");
+                sb.AppendLine(@"<table id=""updated"" class=""properties"">");
 
-                if (!MaskProperty(property.Name))
-                    sb.Append(property.OldValue);
-                else
-                    sb.Append("n/a");
+                foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
+                {
+
+                    sb.Append(@"<tr><td class=""key"">");
+                    sb.Append(property.Name);
+                    sb.Append(@"</td><td class=""value"">");
+
+                    if (!MaskProperty(property.Name))
+                        sb.Append(property.OldValue);
+                    else
+                        sb.Append("n/a");
 
 
-                sb.Append(@"</td><td class=""value"">");
+                    sb.Append(@"</td><td class=""value"">");
 
-                if (!MaskProperty(property.Name))
-                    sb.Append(property.NewValue);
-                else
-                    sb.Append("n/a");
+                    if (!MaskProperty(property.Name))
+                        sb.Append(property.NewValue);
+                    else
+                        sb.Append("n/a");
 
-                sb.Append(@"</td></tr>");
-                sb.Append(Environment.NewLine);
+                    sb.Append(@"</td></tr>");
+                    sb.Append(Environment.NewLine);
+
+                }
+
+                sb.AppendLine("</table>");
 
             }
-
-            sb.AppendLine("</table>");
 
             #endregion
 
             #region Removed properties
 
-            sb.AppendLine(@"<div class=""headline"">Removed properties</div>");
-            sb.AppendLine(@"<table id=""removed"" class=""properties"">");
-
-            foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+            if (Removed.SafeAny())
             {
 
-                sb.Append(@"<tr><td class=""key"">");
-                sb.Append(property.Name);
-                sb.Append(@"</td><td class=""value"">");
+                sb.AppendLine(@"<div class=""headline"">Removed properties</div>");
+                sb.AppendLine(@"<table id=""removed"" class=""properties"">");
 
-                if (!MaskProperty(property.Name))
-                    sb.Append(property.Value);
-                else
-                    sb.Append("n/a");
+                foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                {
 
-                sb.Append(@"</td></tr>");
-                sb.Append(Environment.NewLine);
+                    sb.Append(@"<tr><td class=""key"">");
+                    sb.Append(property.Name);
+                    sb.Append(@"</td><td class=""value"">");
+
+                    if (!MaskProperty(property.Name))
+                        sb.Append(property.Value);
+                    else
+                        sb.Append("n/a");
+
+                    sb.Append(@"</td></tr>");
+                    sb.Append(Environment.NewLine);
+
+                }
+
+                sb.AppendLine("</table>");
 
             }
-
-            sb.AppendLine("</table>");
 
             #endregion
 
@@ -507,73 +537,88 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            sb.AppendLine(@"Added properties");
-            sb.AppendLine(@"----------------");
-            sb.AppendLine();
-
-            foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+            if (Added.SafeAny())
             {
 
-                sb.Append((property.Name + ": ").PadRight(maxPropertyNameLength + 2));
+                sb.AppendLine(@"Added properties");
+                sb.AppendLine(@"----------------");
+                sb.AppendLine();
 
-                if (!MaskProperty(property.Name))
-                    sb.AppendLine(property.Value.ToString());
-                else
-                    sb.AppendLine("n/a");
+                foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                {
+
+                    sb.Append((property.Name + ": ").PadRight(maxPropertyNameLength + 2));
+
+                    if (!MaskProperty(property.Name))
+                        sb.AppendLine(property.Value.ToString());
+                    else
+                        sb.AppendLine("n/a");
+
+                }
+
+                sb.AppendLine();
 
             }
-
-            sb.AppendLine();
 
             #endregion
 
             #region Updated properties
 
-            sb.AppendLine(@"Updated properties");
-            sb.AppendLine(@"------------------");
-            sb.AppendLine();
-
-            foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
+            if (Updated.SafeAny())
             {
 
-                sb.Append((property.Name + ": ").PadRight(maxPropertyNameLength + 2));
+                sb.AppendLine(@"Updated properties");
+                sb.AppendLine(@"------------------");
+                sb.AppendLine();
 
-                if (!MaskProperty(property.Name))
+                foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
                 {
-                    sb.Append(property.OldValue.ToString().PadRight(maxUpdatedOldValueLength + 3));
-                    sb.AppendLine(property.NewValue.ToString());
+
+                    sb.Append((property.Name + ": ").PadRight(maxPropertyNameLength + 2));
+
+                    if (!MaskProperty(property.Name))
+                    {
+                        sb.Append(property.OldValue.ToString().PadRight(maxUpdatedOldValueLength + 3));
+                        sb.AppendLine(property.NewValue.ToString());
+                    }
+                    else
+                    {
+                        sb.Append("n/a".PadRight(maxUpdatedOldValueLength + 3));
+                        sb.AppendLine("n/a");
+                    }
+
                 }
-                else
-                {
-                    sb.Append("n/a".PadRight(maxUpdatedOldValueLength + 3));
-                    sb.AppendLine("n/a");
-                }
+
+                sb.AppendLine();
 
             }
-
-            sb.AppendLine();
 
             #endregion
 
             #region Removed properties
 
-            sb.AppendLine(@"Removed properties");
-            sb.AppendLine(@"------------------");
-            sb.AppendLine();
-
-            foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+            if (Removed.SafeAny())
             {
 
-                sb.Append((property.Name + ": ").PadRight(maxPropertyNameLength + 2));
+                sb.AppendLine(@"Removed properties");
+                sb.AppendLine(@"------------------");
+                sb.AppendLine();
 
-                if (!MaskProperty(property.Name))
-                    sb.AppendLine(property.Value.ToString());
-                else
-                    sb.AppendLine("n/a");
+                foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                {
+
+                    sb.Append((property.Name + ": ").PadRight(maxPropertyNameLength + 2));
+
+                    if (!MaskProperty(property.Name))
+                        sb.AppendLine(property.Value.ToString());
+                    else
+                        sb.AppendLine("n/a");
+
+                }
+
+                sb.AppendLine();
 
             }
-
-            sb.AppendLine();
 
             #endregion
 
@@ -582,7 +627,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
     }
 
