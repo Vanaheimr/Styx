@@ -5365,7 +5365,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return true;
                 }
 
-                var list = new List<T>();
+                var list            = new List<T>();
+                var errorResponses  = new List<String>();
 
                 foreach (var element in JSONArray)
                 {
@@ -5382,12 +5383,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return true;
                     }
 
-                    if (Parser(element as JObject, out T itemT, out ErrorResponse))
+                    if (Parser(element as JObject, out T itemT, out String errorResponse))
                         list.Add(itemT);
+                    else
+                        errorResponses.Add(errorResponse);
 
                 }
 
                 EnumerableT = list;
+
+                if (errorResponses.Any())
+                    ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
+
                 return true;
 
             }
