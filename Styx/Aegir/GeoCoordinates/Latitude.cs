@@ -144,7 +144,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
-        public static Boolean TryParseNema(String Text, out Latitude Latitude, Func<Double, Double> ValueMapper = null)
+        public static Boolean TryParseNMEA(String Text, out Latitude Latitude, Func<Double, Double> ValueMapper = null)
         {
 
             try
