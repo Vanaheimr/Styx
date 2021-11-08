@@ -155,7 +155,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            if (Added.SafeAny())
+            if (Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
@@ -189,7 +189,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Updated properties
 
-            if (Updated.SafeAny())
+            if (Updated.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
@@ -223,7 +223,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Removed properties
 
-            if (Removed.SafeAny())
+            if (Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
@@ -294,7 +294,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            if (Added.SafeAny())
+            if (Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine(@"<div class=""headline"">Added properties</div>");
@@ -325,7 +325,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Updated properties
 
-            if (Updated.SafeAny())
+            if (Updated.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine(@"<div class=""headline"">Updated properties</div>");
@@ -364,7 +364,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Removed properties
 
-            if (Removed.SafeAny())
+            if (Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine(@"<div class=""headline"">Removed properties</div>");
@@ -419,7 +419,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added   properties
 
-            if (Added.SafeAny())
+            if (Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine("\n<b>Added properties</b>");
@@ -444,7 +444,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Updated properties
 
-            if (Updated.SafeAny())
+            if (Updated.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine("\n<b>Updated properties</b>");
@@ -476,7 +476,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Removed properties
 
-            if (Removed.SafeAny())
+            if (Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine("\n<b>Removed properties</b>");
@@ -537,7 +537,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            if (Added.SafeAny())
+            if (Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine(@"Added properties");
@@ -564,7 +564,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Updated properties
 
-            if (Updated.SafeAny())
+            if (Updated.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine(@"Updated properties");
@@ -597,7 +597,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Removed properties
 
-            if (Removed.SafeAny())
+            if (Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
             {
 
                 sb.AppendLine(@"Removed properties");
