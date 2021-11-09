@@ -141,7 +141,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => Number >= 0
                    ? new Meter(Number, IsKiloMeters: false)
-                   : null;
+                   : new Meter?();
 
         /// <summary>
         /// Parse the given number as a meter.
@@ -151,7 +151,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => Number >= 0
                    ? new Meter(Number, IsKiloMeters: false)
-                   : null;
+                   : new Meter?();
 
         #endregion
 
