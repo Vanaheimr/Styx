@@ -27,16 +27,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A meter.
     /// </summary>
-    public struct Meter : IComparable<Meter>,
-                          IEquatable<Meter>
+    public readonly struct Meter : IComparable<Meter>,
+                                   IEquatable<Meter>
     {
+
+        #region Data
+
+        private readonly Double InternalValue;
+
+        #endregion
 
         #region Properties
 
         /// <summary>
         /// The value of the meter.
         /// </summary>
-        public Double   Value          { get; }
+        public Double   Value
+
+            => IsKiloMeters
+                   ? InternalValue * 1000
+                   : InternalValue;
 
         /// <summary>
         /// Value is km, not meters.
@@ -51,18 +61,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new meter.
         /// </summary>
         private Meter(Double   Value,
-                      Boolean  IsKiloMeters)
+                      Boolean  IsKiloMeters = false)
         {
-
-            this.Value         = Value;
-            this.IsKiloMeters  = IsKiloMeters;
-
+            this.InternalValue  = Value;
+            this.IsKiloMeters   = IsKiloMeters;
         }
 
         #endregion
 
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a meter.
@@ -71,29 +79,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Meter Parse(String Text)
         {
 
-            if (Text.ToLower().EndsWith("km") && Double.TryParse(Text.Substring(0, Text.Length - 2), out Double _Meters))
-                return new Meter(_Meters, true);
+            if (TryParse(Text, out Meter meter))
+                return meter;
 
-            if (Text.ToLower().EndsWith("m")  && Double.TryParse(Text.Substring(0, Text.Length - 1), out _Meters))
-                return new Meter(_Meters, false);
-
-            if (Double.TryParse(Text, out _Meters))
-                return new Meter(_Meters, false);
-
-            throw new ArgumentException("The given text '" + Text + "' is not a valid format!");
+            throw new ArgumentException("The given text '" + Text + "' is not a valid meter!");
 
         }
 
         #endregion
 
-        #region Parse(Number)
+        #region Parse   (Number)
 
         /// <summary>
         /// Parse the given number as a meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a meter.</param>
         public static Meter Parse(Single Number)
-            => new Meter(Number, false);
+
+            => Number >= 0
+                   ? new Meter(Number, IsKiloMeters: false)
+                   : default;
 
 
         /// <summary>
@@ -101,7 +106,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a meter.</param>
         public static Meter Parse(Double Number)
-            => new Meter(Number, false);
+
+            => Number >= 0
+                   ? new Meter(Number, IsKiloMeters: false)
+                   : default;
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as a meter.
+        /// </summary>
+        /// <param name="Text">A text representation of a meter.</param>
+        public static Meter? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out Meter meter))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Number)
+
+        /// <summary>
+        /// Parse the given number as a meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a meter.</param>
+        public static Meter? TryParse(Single Number)
+
+            => Number >= 0
+                   ? new Meter(Number, IsKiloMeters: false)
+                   : null;
+
+        /// <summary>
+        /// Parse the given number as a meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a meter.</param>
+        public static Meter? TryParse(Double Number)
+
+            => Number >= 0
+                   ? new Meter(Number, IsKiloMeters: false)
+                   : null;
 
         #endregion
 
@@ -115,26 +165,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Meter Meter)
         {
 
-            try
+            Text = Text?.Trim()?.ToLower();
+
+            if (Text.IsNotNullOrEmpty())
             {
-
-                if (Text.ToLower().EndsWith("km") && Double.TryParse(Text.Substring(0, Text.Length - 2), out Double _Meters))
-                    Meter = new Meter(_Meters, true);
-
-                if (Text.ToLower().EndsWith("m")  && Double.TryParse(Text.Substring(0, Text.Length - 1), out _Meters))
-                    Meter = new Meter(_Meters, false);
-
-                if (Double.TryParse(Text, out _Meters))
+                try
                 {
-                    Meter = new Meter(_Meters, false);
-                    return true;
+
+                    if      (Text.EndsWith("km") &&
+                             Double.TryParse(Text.Substring(0, Text.Length - 2)?.Trim(), out Double meters) &&
+                             meters >= 0)
+                    {
+                        Meter = new Meter(meters, IsKiloMeters: true);
+                        return true;
+                    }
+
+                    else if (Text.EndsWith("m") &&
+                             Double.TryParse(Text.Substring(0, Text.Length - 1)?.Trim(), out meters) &&
+                             meters >= 0)
+                    {
+                        Meter = new Meter(meters, IsKiloMeters: false);
+                        return true;
+                    }
+
+                    else if (Double.TryParse(Text, out meters) &&
+                             meters >= 0)
+                    {
+                        Meter = new Meter(meters, IsKiloMeters: false);
+                        return true;
+                    }
+
                 }
-
+                catch (Exception)
+                { }
             }
-            catch (Exception)
-            { }
 
-            Meter = default(Meter);
+            Meter = default;
             return false;
 
         }
@@ -150,19 +216,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Meter">The parsed Meter.</param>
         public static Boolean TryParse(Single Number, out Meter Meter)
         {
-            try
+
+            if (Number >= 0)
             {
-
-                Meter = new Meter(Number, false);
-
-                return true;
-
+                try
+                {
+                    Meter = new Meter(Number, IsKiloMeters: false);
+                    return true;
+                }
+                catch (Exception)
+                { }
             }
-            catch (Exception)
-            {
-                Meter = default(Meter);
-                return false;
-            }
+
+            Meter = default;
+            return false;
+
         }
 
         /// <summary>
@@ -172,21 +240,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Meter">The parsed Meter.</param>
         public static Boolean TryParse(Double Number, out Meter Meter)
         {
-            try
+
+            if (Number >= 0)
             {
-
-                Meter = new Meter(Number, false);
-
-                return true;
-
+                try
+                {
+                    Meter = new Meter(Number, IsKiloMeters: false);
+                    return true;
+                }
+                catch (Exception)
+                { }
             }
-            catch (Exception)
-            {
-                Meter = default(Meter);
-                return false;
-            }
+
+            Meter = default;
+            return false;
+
         }
-
 
         #endregion
 
@@ -208,23 +277,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Meter Meter1, Meter Meter2)
-        {
+        public static Boolean operator == (Meter Meter1,
+                                           Meter Meter2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(Meter1, Meter2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) Meter1 == null) || ((Object) Meter2 == null))
-                return false;
-
-            return Meter1.Equals(Meter2);
-
-        }
+            => Meter1.Equals(Meter2);
 
         #endregion
 
@@ -233,11 +292,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Meter Meter1, Meter Meter2)
-            => !(Meter1 == Meter2);
+        public static Boolean operator != (Meter Meter1,
+                                           Meter Meter2)
+
+            => !Meter1.Equals(Meter2);
 
         #endregion
 
@@ -246,18 +307,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Meter Meter1, Meter Meter2)
-        {
+        public static Boolean operator < (Meter Meter1,
+                                          Meter Meter2)
 
-            if ((Object) Meter1 == null)
-                throw new ArgumentNullException(nameof(Meter1), "The given Meter1 must not be null!");
-
-            return Meter1.CompareTo(Meter2) < 0;
-
-        }
+            => Meter1.CompareTo(Meter2) < 0;
 
         #endregion
 
@@ -266,11 +322,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Meter Meter1, Meter Meter2)
-            => !(Meter1 > Meter2);
+        public static Boolean operator <= (Meter Meter1,
+                                           Meter Meter2)
+
+            => Meter1.CompareTo(Meter2) <= 0;
 
         #endregion
 
@@ -279,18 +337,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Meter Meter1, Meter Meter2)
-        {
+        public static Boolean operator > (Meter Meter1,
+                                          Meter Meter2)
 
-            if ((Object) Meter1 == null)
-                throw new ArgumentNullException(nameof(Meter1), "The given Meter1 must not be null!");
-
-            return Meter1.CompareTo(Meter2) > 0;
-
-        }
+            => Meter1.CompareTo(Meter2) > 0;
 
         #endregion
 
@@ -299,11 +352,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Meter Meter1, Meter Meter2)
-            => !(Meter1 < Meter2);
+        public static Boolean operator >= (Meter Meter1,
+                                           Meter Meter2)
+
+            => Meter1.CompareTo(Meter2) >= 0;
 
         #endregion
 
@@ -312,8 +367,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Accumulates two Meters.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         public static Meter operator +  (Meter Meter1, Meter Meter2)
             => Meter.Parse(Meter1.Value + Meter2.Value);
 
@@ -324,8 +379,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Substracts two Meters.
         /// </summary>
-        /// <param name="Meter1">A Meter.</param>
-        /// <param name="Meter2">Another Meter.</param>
+        /// <param name="Meter1">A meter.</param>
+        /// <param name="Meter2">Another meter.</param>
         public static Meter operator -  (Meter Meter1, Meter Meter2)
             => Meter.Parse(Meter1.Value - Meter2.Value);
 
@@ -342,18 +397,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         public Int32 CompareTo(Object Object)
-        {
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            if (!(Object is Meter))
-                throw new ArgumentException("The given object is not a meter!",
-                                            nameof(Object));
-
-            return CompareTo((Meter) Object);
-
-        }
+            => Object is Meter meter
+                   ? CompareTo(meter)
+                   : throw new ArgumentException("The given object is not a meter!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -364,14 +412,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Meter">An object to compare with.</param>
         public Int32 CompareTo(Meter Meter)
-        {
 
-            if ((Object) Meter == null)
-                throw new ArgumentNullException(nameof(Meter),  "The given Meter must not be null!");
-
-            return Value.CompareTo(Meter.Value);
-
-        }
+            => Value > Meter.Value
+                   ? 1
+                   : 0;
 
         #endregion
 
@@ -387,17 +431,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is Meter))
-                return false;
-
-            return Equals((Meter) Object);
-
-        }
+            => Object is Meter meter &&
+                   Equals(meter);
 
         #endregion
 
@@ -406,18 +442,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two Meters for equality.
         /// </summary>
-        /// <param name="Meter">A Meter to compare with.</param>
+        /// <param name="Meter">A meter to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Meter Meter)
-        {
 
-            if ((Object) Meter == null)
-                return false;
-
-            return Value.       Equals(Meter.Value) &&
-                   IsKiloMeters.Equals(Meter.IsKiloMeters);
-
-        }
+            => Value.Equals(Meter.Value);
 
         #endregion
 
@@ -430,15 +459,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
 
-                return Value.       GetHashCode() * 3 ^
-                       IsKiloMeters.GetHashCode();
-
-            }
-        }
+            => Value.GetHashCode();
 
         #endregion
 
@@ -449,7 +471,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => Value.ToString() + (IsKiloMeters ? "km" : "m");
+            => InternalValue.ToString() + (IsKiloMeters ? " km" : " m");
 
         #endregion
 
