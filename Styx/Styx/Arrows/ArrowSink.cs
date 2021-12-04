@@ -27,7 +27,7 @@ using System.Collections.Concurrent;
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
-    public static class ToIEnumerableExtention
+    public static class ToIEnumerableExtension
     {
 
         public static IEnumerable<TMessage> ToIEnumerable<TMessage>(this IArrowSender<TMessage> INotification)

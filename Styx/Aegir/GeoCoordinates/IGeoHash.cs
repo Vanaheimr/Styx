@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     #region IGeoHashExtensions
 
     /// <summary>
-    /// Extentionmethods for the IGeoHash interface.
+    /// Extensionmethods for the IGeoHash interface.
     /// </summary>
     public static class IGeoHashExtensions
     {
