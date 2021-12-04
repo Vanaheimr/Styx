@@ -25,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extention methods for concat pipes.
+    /// Extension methods for concat pipes.
     /// </summary>
     public static class ConcatPipeExtensions
     {

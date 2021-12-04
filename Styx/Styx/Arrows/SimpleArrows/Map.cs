@@ -26,9 +26,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the MapArrow.
+    /// Extension methods for the MapArrow.
     /// </summary>
-    public static class MapArrowExtentions
+    public static class MapArrowExtensions
     {
 
         #region Map<TIn, TOut>

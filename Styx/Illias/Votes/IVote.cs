@@ -40,12 +40,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Votes
     #endregion
 
 
-    #region IVoteExtentions
+    #region IVoteExtensions
 
     /// <summary>
-    /// Extentions methods for the IVote interface.
+    /// Extensions methods for the IVote interface.
     /// </summary>
-    public static class IVoteExtentions
+    public static class IVoteExtensions
     {
 
         #region Yes(this IVote<Boolean>)

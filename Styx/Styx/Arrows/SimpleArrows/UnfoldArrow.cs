@@ -25,7 +25,7 @@ using System.Collections.Generic;
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
-    public static class UnfoldArrowExtentions
+    public static class UnfoldArrowExtensions
     {
 
         /// <summary>

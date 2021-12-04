@@ -26,9 +26,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for the Id interface.
+    /// Extension methods for the Id interface.
     /// </summary>
-    public static class IIdExtentions
+    public static class IIdExtensions
     {
 
         /// <summary>

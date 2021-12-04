@@ -27,9 +27,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the ConcurrentActionArrow&lt;TIn&gt;.
+    /// Extension methods for the ConcurrentActionArrow&lt;TIn&gt;.
     /// </summary>
-    public static class ConcurrentActionArrowExtentions
+    public static class ConcurrentActionArrowExtensions
     {
 
         #region CallConcurrently<TIn>(this ArrowSender, MessageAction, MaxQueueSize = 1000)

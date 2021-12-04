@@ -30,12 +30,12 @@ using System;
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
-    #region GeoHash32Extentions
+    #region GeoHash32Extensions
 
     /// <summary>
-    /// Extention methods for the GeoHash32 data structure.
+    /// Extension methods for the GeoHash32 data structure.
     /// </summary>
-    public static class GeoHash32Extentions
+    public static class GeoHash32Extensions
     {
 
         /// <summary>

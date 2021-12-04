@@ -462,7 +462,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     #endregion
 
 
-    public static class TimestampedExtentions
+    public static class TimestampedExtensions
     {
 
         public static IEnumerable<Timestamped<T>> Deduplicate<T>(this IEnumerable<Timestamped<T>> Enumeration)

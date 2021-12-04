@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extention methods for select pipes.
+    /// Extension methods for select pipes.
     /// </summary>
     public static class SelectPipeExtensions
     {

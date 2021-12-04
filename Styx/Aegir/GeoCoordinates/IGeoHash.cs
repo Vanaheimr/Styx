@@ -24,12 +24,12 @@ using System;
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
-    #region IGeoHashExtentions
+    #region IGeoHashExtensions
 
     /// <summary>
     /// Extentionmethods for the IGeoHash interface.
     /// </summary>
-    public static class IGeoHashExtentions
+    public static class IGeoHashExtensions
     {
 
         #region ToGeoCoordinate(Digits = 12)

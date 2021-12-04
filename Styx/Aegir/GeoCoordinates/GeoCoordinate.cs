@@ -138,7 +138,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     /// <summary>
     /// JSON I/O.
     /// </summary>
-    public static class GeoCoordinateExtentions
+    public static class GeoCoordinateExtensions
     {
 
         #region ToJSON(this GeoLocation)

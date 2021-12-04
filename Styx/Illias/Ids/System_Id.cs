@@ -25,9 +25,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for system identifications.
+    /// Extension methods for system identifications.
     /// </summary>
-    public static class SystemIdExtentions
+    public static class SystemIdExtensions
     {
 
         /// <summary>

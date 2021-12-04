@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the SkipArrow&lt;TMessage&gt;.
+    /// Extension methods for the SkipArrow&lt;TMessage&gt;.
     /// </summary>
     public static class SkipArrowExtensions
     {

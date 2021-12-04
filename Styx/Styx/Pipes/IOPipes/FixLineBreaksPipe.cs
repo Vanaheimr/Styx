@@ -33,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     #region FixLineBreaksPipeExtensions
 
     /// <summary>
-    /// Extention methods for FixLineBreaks pipes.
+    /// Extension methods for FixLineBreaks pipes.
     /// </summary>
     public static class FixLineBreaksPipeExtensions
     {

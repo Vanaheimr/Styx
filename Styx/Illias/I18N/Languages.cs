@@ -24,7 +24,7 @@ using System;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public static class LanguagesExtentions
+    public static class LanguagesExtensions
     {
 
         public static Languages Parse(String Text)

@@ -25,7 +25,7 @@ using System.Collections.Generic;
 namespace org.GraphDefined.Vanaheimr.Styx
 {
 
-    public static class PathPipeExtentions
+    public static class PathPipeExtensions
     {
 
         //public static IEnumerable<IEnumerable<Object>> Paths<S>(this IEndPipe<S> EndPipe)

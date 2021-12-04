@@ -29,7 +29,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Extensions to the SecureString class.
     /// </summary>
-    public static class SecureStringExtentions
+    public static class SecureStringExtensions
     {
 
         public static String UnsecureString(this SecureString SecureText)

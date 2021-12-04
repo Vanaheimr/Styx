@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extention methods for zip-merge pipes.
+    /// Extension methods for zip-merge pipes.
     /// </summary>
     public static class ZipMergePipeExtensions
     {

@@ -29,7 +29,7 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public static class WarningsExtentions
+    public static class WarningsExtensions
     {
 
         public static Boolean IsNeitherNullNorEmpty(this Warning Warning)

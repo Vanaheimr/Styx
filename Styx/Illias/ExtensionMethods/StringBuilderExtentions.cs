@@ -30,7 +30,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Extensions to the StringBuilder class.
     /// </summary>
-    public static class StringBuilderExtentions
+    public static class StringBuilderExtensions
     {
 
         #region AppendCSV(this StringBuilder, IEnumerable)

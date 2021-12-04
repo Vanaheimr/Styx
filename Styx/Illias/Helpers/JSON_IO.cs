@@ -32,7 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for JSON objects.
+    /// Extension methods for JSON objects.
     /// </summary>
     public static class JSONObject
     {
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     }
 
     /// <summary>
-    /// Extention methods for JSON arrays.
+    /// Extension methods for JSON arrays.
     /// </summary>
     public static class JSONArray
     {
@@ -171,9 +171,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     }
 
     /// <summary>
-    /// Extention methods for JSON representations of common classes.
+    /// Extension methods for JSON representations of common classes.
     /// </summary>
-    public static class JSONExtentionsOld
+    public static class JSONExtensionsOld
     {
 
         #region ToUTF8Bytes(this JSONArray,  Format = None)

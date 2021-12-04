@@ -25,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the MinMaxArrow.
+    /// Extension methods for the MinMaxArrow.
     /// </summary>
     public static class MinMaxArrowExtensions
     {

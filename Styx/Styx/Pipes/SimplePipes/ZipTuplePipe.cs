@@ -28,7 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extention methods for zip pipes.
+    /// Extension methods for zip pipes.
     /// </summary>
     public static class ZipTuplePipeExtensions
     {

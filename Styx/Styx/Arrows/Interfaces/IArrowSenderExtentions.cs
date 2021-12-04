@@ -19,9 +19,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extentions for the IArrowSender interface.
+    /// Extensions for the IArrowSender interface.
     /// </summary>
-    public static partial class IArrowSenderExtentions
+    public static partial class IArrowSenderExtensions
     {
 
         public static void SendTo<T>(this IArrowSender  <T> INotification,

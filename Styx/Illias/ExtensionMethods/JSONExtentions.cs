@@ -66,9 +66,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
     /// <summary>
-    /// Extention methods to parse JSON.
+    /// Extension methods to parse JSON.
     /// </summary>
-    public static class JSONExtentions
+    public static class JSONExtensions
     {
 
         #region Contains             (this JSON, PropertyName)

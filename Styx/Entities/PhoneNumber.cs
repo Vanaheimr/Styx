@@ -26,9 +26,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for phone numbers.
+    /// Extension methods for phone numbers.
     /// </summary>
-    public static class PhoneNumberExtentions
+    public static class PhoneNumberExtensions
     {
 
         /// <summary>

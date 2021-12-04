@@ -28,9 +28,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for internationalized (I18N) multi-language texts/strings.
+    /// Extension methods for internationalized (I18N) multi-language texts/strings.
     /// </summary>
-    public static class I18NStringExtentions
+    public static class I18NStringExtensions
     {
 
         /// <summary>
@@ -482,7 +482,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 try
                 {
 
-                    I18NText.Add(LanguagesExtentions.Parse(JSONProperty.Key),
+                    I18NText.Add(LanguagesExtensions.Parse(JSONProperty.Key),
                                  JSONProperty.Value.Value<String>());
 
                 }

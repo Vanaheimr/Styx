@@ -29,12 +29,12 @@ using org.GraphDefined.Vanaheimr.Illias.Collections;
 namespace org.GraphDefined.Vanaheimr.Styx
 {
 
-    #region PropertyPipeExtentions
+    #region PropertyPipeExtensions
     
     /// <summary>
-    /// Extention methods for the PropertyPipe.
+    /// Extension methods for the PropertyPipe.
     /// </summary>
-    public static class PropertyPipeExtentions
+    public static class PropertyPipeExtensions
     {
 
         #region P<TKey, TValue>(this IReadOnlyProperties<...>, Keys)

@@ -25,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the CalcArrow.
+    /// Extension methods for the CalcArrow.
     /// </summary>
     public static class CalcArrowExtensions
     {

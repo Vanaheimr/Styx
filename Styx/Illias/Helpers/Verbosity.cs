@@ -24,7 +24,7 @@ using System;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public static class VerbosityExtentions
+    public static class VerbosityExtensions
     {
 
         public static Verbosity Parse(String Text)

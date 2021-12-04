@@ -30,9 +30,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extention methods for the ConcurrentSelectArrow.
+    /// Extension methods for the ConcurrentSelectArrow.
     /// </summary>
-    public static partial class ConcurrentSelectArrowExtentions
+    public static partial class ConcurrentSelectArrowExtensions
     {
 
         #region ConcurrentSelect<TIn, TOut>(this ArrowSender, MessageProcessor,  MaxQueueSize = 1000)

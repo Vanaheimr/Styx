@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     #region CSVReaderPipeExtensions
 
     /// <summary>
-    /// Extention methods for CSV pipes.
+    /// Extension methods for CSV pipes.
     /// </summary>
     public static class CSVReaderPipeExtensions
     {

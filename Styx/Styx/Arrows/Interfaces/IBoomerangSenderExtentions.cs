@@ -19,9 +19,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     /// <summary>
-    /// Extentions for the IBoomerangSender interface.
+    /// Extensions for the IBoomerangSender interface.
     /// </summary>
-    public static partial class IBoomerangSenderExtentions
+    public static partial class IBoomerangSenderExtensions
     {
 
         public static void ConnectTo<T, TResult>(this IBoomerangSender  <T, TResult> INotification,

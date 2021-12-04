@@ -28,7 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extention methods for where pipes.
+    /// Extension methods for where pipes.
     /// </summary>
     public static class WherePipeExtensions
     {

@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 {
 
     /// <summary>
-    /// Extention methods for PropertiesMaps.
+    /// Extension methods for PropertiesMaps.
     /// </summary>
     public static class PropertiesMaps
     {

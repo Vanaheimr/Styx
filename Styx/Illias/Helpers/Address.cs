@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// JSON I/O.
     /// </summary>
-    public static class AddressExtentions
+    public static class AddressExtensions
     {
 
         #region ToJSON(this Address, JPropertyKey, Embedded  = false)

@@ -30,9 +30,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
 {
 
     /// <summary>
-    /// Extentions methods for the IEndPipe interface.
+    /// Extensions methods for the IEndPipe interface.
     /// </summary>
-    public static partial class IEndPipeExtentions
+    public static partial class IEndPipeExtensions
     {
 
         // Anything which maps from IEndPipe to something unlike IEndPipe...

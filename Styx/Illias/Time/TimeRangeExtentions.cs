@@ -25,9 +25,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extention methods for time ranges.
+    /// Extension methods for time ranges.
     /// </summary>
-    public static class TimeRangeExtentions
+    public static class TimeRangeExtensions
     {
 
         #region To(this TimeRange, EndTime)

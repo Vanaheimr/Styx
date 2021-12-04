@@ -27,7 +27,7 @@ using System.Collections.Generic;
 namespace org.GraphDefined.Vanaheimr.Styx
 {
 
-    public static partial class IEndPipeExtentions
+    public static partial class IEndPipeExtensions
     {
 
         public static EndPipeEnumerable<E> AsEnumerable<E>(this IEndPipe<E> EndPipe)

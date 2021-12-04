@@ -28,7 +28,7 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public static class OpeningTimesExtentions
+    public static class OpeningTimesExtensions
     {
 
         #region ToJSON(this OpeningTimes)

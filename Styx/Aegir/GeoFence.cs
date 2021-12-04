@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     /// <summary>
     /// JSON I/O.
     /// </summary>
-    public static class GeoFenceExtentions
+    public static class GeoFenceExtensions
     {
 
         /// <summary>
