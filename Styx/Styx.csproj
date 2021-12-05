@@ -409,6 +409,9 @@
     <Compile Include="Styx\SilverlightTools.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="Styx\Pipes\Interfaces\PipesClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
