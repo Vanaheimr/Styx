@@ -55,6 +55,7 @@
     <Compile Include="Aegir\ArrowsAndPipes\GeoCoordinate2TilesXY.cs" />
     <Compile Include="Aegir\ArrowsAndPipes\GeoCoordinates2ShapeDefinition.cs" />
     <Compile Include="Aegir\ArrowsAndPipes\Mouse2GeoCoordinate.cs" />
+    <Compile Include="Aegir\ArrowsAndPipes\PolyReaderMetaPipe.cs" />
     <Compile Include="Aegir\ArrowsAndPipes\TilesXY2GeoCoordinate.cs" />
     <Compile Include="Aegir\GeoBoundingBox.cs" />
     <Compile Include="Aegir\GeoCoordinates\Altitude.cs" />
