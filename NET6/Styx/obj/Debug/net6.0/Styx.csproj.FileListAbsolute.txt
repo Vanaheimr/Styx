@@ -1,0 +1,12 @@
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\bin\Debug\net6.0\Styx.deps.json
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\bin\Debug\net6.0\Styx.dll
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\bin\Debug\net6.0\Styx.pdb
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.csproj.AssemblyReference.cache
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.GeneratedMSBuildEditorConfig.editorconfig
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.AssemblyInfoInputs.cache
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.AssemblyInfo.cs
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.csproj.CoreCompileInputs.cache
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.dll
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\refint\Styx.dll
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\Styx.pdb
+D:\Coding\ChargeITMobility\ChargeITMobilityEMP1a_Prod\libs\Styx\NET6\Styx\obj\Debug\net6.0\ref\Styx.dll

@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "gG7QWaNgE2NNukiBl7Fd1ZVd5HyAI/s9LmU4fckVJYkm3K+F+cfI9lSiY8PESP3Xt7t1HcgVpRJfuVzsvWjW7g==",
+  "success": true,
+  "projectFilePath": "D:\\Coding\\ChargeITMobility\\ChargeITMobilityEMP1a_Prod\\libs\\Styx\\NET6\\StyxTests\\StyxTests.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\achim\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\achim\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
+    "C:\\Users\\achim\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\achim\\.nuget\\packages\\nunit\\3.13.3\\nunit.3.13.3.nupkg.sha512",
+    "C:\\Users\\achim\\.nuget\\packages\\nunit3testadapter\\4.2.1\\nunit3testadapter.4.2.1.nupkg.sha512"
+  ],
+  "logs": []
+}
