@@ -674,14 +674,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <typeparam name="TSource">The type of the enumeration.</typeparam>
         /// <param name="IEnumerable">An enumeration.</param>
         /// <param name="Filter">An optional delegate to filter the given enumeration.</param>
-        public static Boolean SafeAny<TSource>(this IEnumerable<TSource> IEnumerable,
-                                               Func<TSource, Boolean> Filter = null)
+        public static Boolean SafeAny<TSource>(this IEnumerable<TSource>?  IEnumerable,
+                                               Func<TSource, Boolean>?     Filter   = null)
         {
 
-            if (IEnumerable == null)
+            if (IEnumerable is null)
                 return false;
 
-            return Filter != null
+            return Filter is not null
                        ? IEnumerable.Any(Filter)
                        : IEnumerable.Any();
 
