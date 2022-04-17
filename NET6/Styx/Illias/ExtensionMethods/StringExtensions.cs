@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Indicates whether the given string is not null or empty.
         /// </summary>
         /// <param name="GivenString">A string.</param>
-        public static Boolean IsNotNullOrEmpty(this String GivenString)
+        public static Boolean IsNotNullOrEmpty(this String? GivenString)
             => !String.IsNullOrEmpty(GivenString?.Trim());
 
         #endregion
