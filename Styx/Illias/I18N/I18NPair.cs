@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// An internationalized (I18N) language text pair.
     /// </summary>
-    public struct I18NPair : IEquatable<I18NPair>
+    public readonly struct I18NPair : IEquatable<I18NPair>
     {
 
         #region Properties
@@ -61,6 +61,40 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (I18NPair1, I18NPair2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="I18NPair1">An internationalized (I18N) language text pair.</param>
+        /// <param name="I18NPair2">Another internationalized (I18N) language text pair.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (I18NPair I18NPair1,
+                                           I18NPair I18NPair2)
+
+            => I18NPair1.Equals(I18NPair2);
+
+        #endregion
+
+        #region Operator != (I18NPair1, I18NPair2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="I18NPair1">An internationalized (I18N) language text pair.</param>
+        /// <param name="I18NPair2">Another internationalized (I18N) language text pair.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (I18NPair I18NPair1,
+                                           I18NPair I18NPair2)
+
+            => !I18NPair1.Equals(I18NPair2);
+
+        #endregion
+
+        #endregion
+
         #region IEquatable<I18NPair> Members
 
         #region Equals(Object)
@@ -71,19 +105,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
         public override Boolean Equals(Object Object)
-        {
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an I18NPair.
-            var I18NPair = (I18NPair) Object;
-            if ((Object) I18NPair == null)
-                return false;
-
-            return this.Equals(I18NPair);
-
-        }
+            => Object is I18NPair i18NPair &&
+                   Equals(i18NPair);
 
         #endregion
 
@@ -95,20 +119,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="I18NPair">An I18NPair to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(I18NPair I18NPair)
-        {
 
-            if ((Object) I18NPair == null)
-                return false;
-
-            if (I18NPair.Language != Language)
-                return false;
-
-            if (I18NPair.Text     != Text)
-                return false;
-
-            return true;
-
-        }
+            => Language.Equals(I18NPair.Language) &&
+               String.Equals(Text,
+                             I18NPair.Text);
 
         #endregion
 
@@ -120,9 +134,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return Language.GetHashCode() ^ Text.GetHashCode();
-        }
+
+            => Language.GetHashCode() ^
+               Text.    GetHashCode();
 
         #endregion
 
@@ -132,9 +146,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return "[" + Language + "] " + Text;
-        }
+
+            => String.Concat("[", Language, "] ", Text);
 
         #endregion
 

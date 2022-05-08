@@ -870,10 +870,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValue">The default value to return for an empty enumeration.</param>
         public static T AggregateOrDefault<T>(this IEnumerable<T>  Enumeration,
                                               Func<T, T, T>        AggreationDelegate,
-                                              T                    DefaultValue = default(T))
+                                              T                    DefaultValue = default)
         {
 
-            if (Enumeration == null)
+            if (Enumeration is null)
                 return DefaultValue;
 
             var Array = Enumeration.ToArray();
@@ -885,7 +885,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
                 return Array.Aggregate(AggreationDelegate);
             }
-            catch (Exception e)
+            catch
             {
                 return DefaultValue;
             }
