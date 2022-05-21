@@ -97,7 +97,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 _char[++x] = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
             }
 
-            return ToLower ? new String(_char).ToLower() : new String(_char);
+            return ToLower
+                ? new String(_char).ToLower()
+                : new String(_char);
 
         }
 
