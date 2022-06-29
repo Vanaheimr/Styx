@@ -41,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Indicates whether the given string is null or empty.
         /// </summary>
         /// <param name="GivenString">A string.</param>
-        public static Boolean IsNullOrEmpty(this String GivenString)
+        public static Boolean IsNullOrEmpty(this String? GivenString)
             => String.IsNullOrEmpty(GivenString?.Trim());
 
         #endregion
@@ -64,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="GivenString">The string.</param>
         /// <param name="Mapper">A string mapper delegate.</param>
-        public static String IfNotNullOrEmpty(this String           GivenString,
+        public static String IfNotNullOrEmpty(this String?          GivenString,
                                               Func<String, String>  Mapper)
 
             => !String.IsNullOrEmpty(GivenString)
@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// or consists only of white-space characters.
         /// </summary>
         /// <param name="GivenString">A string.</param>
-        public static Boolean IsNullOrWhiteSpace(this String GivenString)
+        public static Boolean IsNullOrWhiteSpace(this String? GivenString)
             => String.IsNullOrWhiteSpace(GivenString);
 
         #endregion
@@ -223,7 +223,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String ToUTF8String(this Byte[]  ArrayOfBytes,
                                           Int32        NumberOfBytes = -1)
 
-            => ArrayOfBytes == null || ArrayOfBytes.Length == 0
+            => ArrayOfBytes is null || ArrayOfBytes.Length == 0
                    ? String.Empty
                    : Encoding.UTF8.GetString(ArrayOfBytes,
                                              0,
@@ -237,7 +237,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static String ToUTF8String(this MemoryStream MemoryStream, Int32 NumberOfBytes = -1)
 
-             => MemoryStream == null || MemoryStream.Length == 0
+             => MemoryStream is null || MemoryStream.Length == 0
                     ? String.Empty
                     : Encoding.UTF8.GetString(MemoryStream.ToArray(),
                                               0,
@@ -249,11 +249,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToUTF8Bytes(this Text)
 
-        public static Byte[] ToUTF8Bytes(this String Text)
+        public static Byte[] ToUTF8Bytes(this String? Text)
         {
 
-            if (Text == null)
-                return new Byte[0];
+            if (Text is null)
+                return Array.Empty<Byte>();
 
             return Encoding.UTF8.GetBytes(Text);
 
@@ -270,13 +270,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="String">A string.</param>
         /// <param name="Substring">A substring to search for.</param>
         /// <returns>True if the value parameter occurs within this string.</returns>
-        public static Boolean IsNotNullAndContains(this String String, String Substring)
+        public static Boolean IsNotNullAndContains(this String?  String,
+                                                   String        Substring)
         {
 
-            if (String != null)
-                return String.Contains(Substring);
+            if (String is null || Substring is null)
+                return false;
 
-            return false;
+            return String.Contains(Substring);
 
         }
 
