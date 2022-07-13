@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -104,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
 
             => Object is I18NPair i18NPair &&
                    Equals(i18NPair);
@@ -121,8 +115,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(I18NPair I18NPair)
 
             => Language.Equals(I18NPair.Language) &&
-               String.Equals(Text,
-                             I18NPair.Text);
+                   String.Equals(Text,
+                                 I18NPair.Text);
 
         #endregion
 

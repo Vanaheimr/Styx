@@ -18,13 +18,9 @@
 #region Usings
 
 using System;
-using System.Linq;
 using System.Text;
-using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -43,13 +39,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a JSON object using the given JSON properties, but filter null values.
         /// </summary>
         /// <param name="JProperties">JSON properties.</param>
-        public static JObject Create(params JProperty[] JProperties)
+        public static JObject Create(params JProperty?[] JProperties)
         {
 
-            if (JProperties == null)
+            if (JProperties is null || !JProperties.Any())
                 return new JObject();
 
-            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+            var data = JProperties.
+                           Where(jproperty => jproperty is not null).
+                           Cast<JProperty>().
+                           ToArray();
 
             return data.Length > 0
                        ? new JObject(data)
@@ -65,15 +64,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a JSON object using the given JSON properties, but filter null values.
         /// </summary>
         /// <param name="JProperties">JSON properties.</param>
-        public static JObject Create(IEnumerable<JProperty> JProperties)
+        public static JObject Create(IEnumerable<JProperty?> JProperties)
         {
 
-            if (JProperties == null)
+            if (JProperties is null || !JProperties.Any())
                 return new JObject();
 
-            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+            var data = JProperties.
+                           Where(jproperty => jproperty is not null).
+                           Cast<JProperty>().
+                           ToArray();
 
-            return data.Length > 0 ? new JObject(data) : new JObject();
+            return data.Length > 0
+                       ? new JObject(data)
+                       : new JObject();
 
         }
 
@@ -93,15 +97,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a JSON array using the given JSON objects, but filter null values.
         /// </summary>
         /// <param name="JObjects">JSON objects.</param>
-        public static JArray Create(params JObject[] JObjects)
+        public static JArray Create(params JObject?[] JObjects)
         {
 
-            if (JObjects == null)
+            if (JObjects is null || !JObjects.Any())
                 return new JArray();
 
-            var data = JObjects.Where(jobject => jobject != null).ToArray();
+            var data = JObjects.
+                           Where(jobject => jobject is not null).
+                           Cast<JObject>().
+                           ToArray();
 
-            return data.Length > 0 ? new JArray(data) : new JArray();
+            return data.Length > 0
+                       ? new JArray(data)
+                       : new JArray();
 
         }
 
@@ -113,15 +122,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a JSON array using the given JSON objects, but filter null values.
         /// </summary>
         /// <param name="JObjects">JSON objects.</param>
-        public static JArray Create(IEnumerable<JObject> JObjects)
+        public static JArray Create(IEnumerable<JObject?> JObjects)
         {
 
-            if (JObjects == null)
+            if (JObjects is null || !JObjects.Any())
                 return new JArray();
 
-            var data = JObjects.Where(jobject => jobject != null).ToArray();
+            var data = JObjects.
+                           Where(jobject => jobject is not null).
+                           Cast<JObject>().
+                           ToArray();
 
-            return data.Length > 0 ? new JArray(data) : new JArray();
+            return data.Length > 0
+                       ? new JArray(data)
+                       : new JArray();
 
         }
 
@@ -137,12 +151,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static JArray Create(params JProperty[] JProperties)
         {
 
-            if (JProperties == null)
+            if (JProperties is null || !JProperties.Any())
                 return new JArray();
 
-            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+            var data = JProperties.
+                           Where(jproperty => jproperty is not null).
+                           Cast<JProperty>().
+                           ToArray();
 
-            return data.Length > 0 ? new JArray(data) : new JArray();
+            return data.Length > 0
+                       ? new JArray(data)
+                       : new JArray();
 
         }
 
@@ -157,12 +176,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static JArray Create(IEnumerable<JProperty> JProperties)
         {
 
-            if (JProperties == null)
+            if (JProperties is null || !JProperties.Any())
                 return new JArray();
 
-            var data = JProperties.Where(jproperty => jproperty != null).ToArray();
+            var data = JProperties.
+                           Where(jproperty => jproperty is not null).
+                           Cast<JProperty>().
+                           ToArray();
 
-            return data.Length > 0 ? new JArray(data) : new JArray();
+            return data.Length > 0
+                       ? new JArray(data)
+                       : new JArray();
 
         }
 
