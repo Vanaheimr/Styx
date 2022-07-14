@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new data structure for customer specific data.
         /// </summary>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        protected AInternalData(Dictionary<String, Object> InternalData)
+        protected AInternalData(Dictionary<String, Object>? InternalData)
         {
             this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
         }
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new data structure for customer specific data.
         /// </summary>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        protected AInternalData(IReadOnlyDictionary<String, Object> InternalData)
+        protected AInternalData(IReadOnlyDictionary<String, Object>? InternalData)
         {
             this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
         }
@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new data structure for customer specific data.
         /// </summary>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        protected AInternalData(IEnumerable<KeyValuePair<String, Object>> InternalData = null)
+        protected AInternalData(IEnumerable<KeyValuePair<String, Object>>? InternalData = null)
         {
             this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
         }
@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean IsDefined(String Key)
         {
 
-            if (internalData == null)
+            if (internalData is null)
                 return false;
 
             if (Key.IsNullOrEmpty())
@@ -96,42 +96,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean IsDefined(String Key, Object Value)
         {
 
-            if (internalData == null)
+            if (internalData is null)
                 return false;
 
             if (Key.IsNullOrEmpty())
                 return false;
 
-            if (internalData.TryGetValue(Key, out Object value))
+            if (internalData.TryGetValue(Key, out Object? value))
                 return Value.Equals(value);
 
             return false;
 
         }
 
-        public Object GetInternalData(String Key)
+        public Object? GetInternalData(String Key)
         {
 
-            if (internalData == null)
+            if (internalData is null)
                 return null;
 
-            if (internalData.TryGetValue(Key, out Object value))
+            if (internalData.TryGetValue(Key, out Object? value))
                 return value;
 
             return null;
 
         }
 
-        public T GetInternalDataAs<T>(String Key)
+        public T? GetInternalDataAs<T>(String Key)
         {
 
-            if (internalData == null)
+            if (internalData is null)
                 return default;
 
             try
             {
 
-                if (internalData.TryGetValue(Key, out Object value))
+                if (internalData.TryGetValue(Key, out Object? value))
                     return (T) value;
 
             }
@@ -144,10 +144,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public Boolean TryGetInternalData(String Key, out Object Value)
+        public Boolean TryGetInternalData(String Key, out Object? Value)
         {
 
-            if (internalData == null)
+            if (internalData is null)
             {
                 Value = null;
                 return false;
@@ -157,16 +157,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public Boolean TryGetInternalDataAs<T>(String Key, out T Value)
+        public Boolean TryGetInternalDataAs<T>(String Key, out T? Value)
         {
 
-            if (internalData != null)
+            if (internalData is not null)
             {
 
                 try
                 {
 
-                    if (internalData.TryGetValue(Key, out Object value))
+                    if (internalData.TryGetValue(Key, out Object? value))
                     {
                         Value = (T) value;
                         return true;
@@ -192,7 +192,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (internalData  != null &&
                 ValueDelegate != null &&
-                internalData.TryGetValue(Key, out Object value))
+                internalData.TryGetValue(Key, out Object? value) &&
+                value is not null)
             {
                 ValueDelegate(value);
             }
@@ -203,10 +204,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                    Action<T>  ValueDelegate)
         {
 
-            if (ValueDelegate == null)
+            if (ValueDelegate is null)
                 return;
 
-            if (internalData.TryGetValue(Key, out Object value) &&
+            if (internalData.TryGetValue(Key, out Object? value) &&
                 value is T valueT)
             {
                 ValueDelegate(valueT);
@@ -236,7 +237,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// Create a new data structure for internal customer specific data.
             /// </summary>
             /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
-            protected Builder(Dictionary<String, Object> InternalData = null)
+            protected Builder(Dictionary<String, Object>? InternalData = null)
             {
                 this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
             }
@@ -245,7 +246,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// Create a new data structure for customer specific data.
             /// </summary>
             /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
-            protected Builder(IReadOnlyDictionary<String, Object> InternalData)
+            protected Builder(IReadOnlyDictionary<String, Object>? InternalData)
             {
                 this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
             }
@@ -254,7 +255,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// Create a new data structure for customer specific data.
             /// </summary>
             /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
-            protected Builder(IEnumerable<KeyValuePair<String, Object>> InternalData = null)
+            protected Builder(IEnumerable<KeyValuePair<String, Object>>? InternalData = null)
             {
                 this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
             }
@@ -293,21 +294,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public Boolean IsDefined(String  Key)
                 => internalData.ContainsKey(Key);
 
-            public Object GetInternalData(String  Key)
+            public Object? GetInternalData(String  Key)
             {
 
-                if (internalData.TryGetValue(Key, out Object value))
+                if (internalData.TryGetValue(Key, out Object? value))
                     return value;
 
                 return null;
 
             }
 
-            public T GetInternalDataAs<T>(String  Key)
+            public T? GetInternalDataAs<T>(String  Key)
             {
 
-                if (internalData.TryGetValue(Key, out Object value))
-                    return (T) value;
+                try
+                {
+                    if (internalData.TryGetValue(Key, out Object? value))
+                        return (T) value;
+                }
+                catch (Exception)
+                { }
 
                 return default;
 
@@ -318,11 +324,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                   Action<Object>  ValueDelegate)
             {
 
-                if (ValueDelegate == null)
+                if (ValueDelegate is null)
                     return;
 
-                if (internalData.TryGetValue(Key, out Object value))
+                if (internalData.TryGetValue(Key, out Object? value) &&
+                    value is not null)
+                {
                     ValueDelegate(value);
+                }
 
             }
 
@@ -333,7 +342,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (ValueDelegate == null)
                     return;
 
-                if (internalData.TryGetValue(Key, out Object value) &&
+                if (internalData.TryGetValue(Key, out Object? value) &&
                     value is T valueT)
                 {
                     ValueDelegate(valueT);
