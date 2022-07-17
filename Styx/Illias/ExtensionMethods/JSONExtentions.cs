@@ -46,19 +46,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate TResult  Parser            <TResult>(String  Input);
 
-    public delegate Boolean  TryParser         <TResult>(String  Input, out TResult  arg);
-    public delegate Boolean  TryParser2        <TResult>(String  Input, out TResult  arg, out String ErrorResponse);
-    public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult  arg, out String ErrorResponse, CustomJObjectParserDelegate<TResult> CustomParser = null);
-    public delegate Boolean  TryParser4        <TResult>(String  Input, out TResult  arg, OnExceptionDelegate OnException);
+    public delegate Boolean  TryParser         <TResult>(String  Input, out TResult?  arg);
+    public delegate Boolean  TryParser2        <TResult>(String  Input, out TResult?  arg, out String? ErrorResponse);
+    public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult?  arg, out String? ErrorResponse, CustomJObjectParserDelegate<TResult> CustomParser = null);
+    public delegate Boolean  TryParser4        <TResult>(String  Input, out TResult?  arg, OnExceptionDelegate OnException);
 
-    public delegate Boolean  TryJObjectParser  <TResult>     (JObject Input, out TResult  arg);
-    public delegate Boolean  TryJObjectParser2 <TResult>     (JObject Input, out TResult  arg, out String ErrorResponse);
-    public delegate Boolean  TryJObjectParser3a<TResult>     (JObject Input, out TResult  arg, out String ErrorResponse,                 CustomJObjectParserDelegate<TResult> CustomParser = null);
-    public delegate Boolean  TryJObjectParser3b<TResult, TId>(JObject Input, out TResult  arg, out String ErrorResponse, TId? Id = null, CustomJObjectParserDelegate<TResult> CustomParser = null) where TId: struct;
-    public delegate Boolean  TryJObjectParser4 <TResult>     (JObject Input, out TResult  arg, OnExceptionDelegate OnException);
+    public delegate Boolean  TryJObjectParser  <TResult>     (JObject Input, out TResult? arg);
+    public delegate Boolean  TryJObjectParser2 <TResult>     (JObject Input, out TResult? arg, out String? ErrorResponse);
+    public delegate Boolean  TryJObjectParser3a<TResult>     (JObject Input, out TResult? arg, out String? ErrorResponse,                 CustomJObjectParserDelegate<TResult> CustomParser = null);
+    public delegate Boolean  TryJObjectParser3b<TResult, TId>(JObject Input, out TResult? arg, out String? ErrorResponse, TId? Id = null, CustomJObjectParserDelegate<TResult> CustomParser = null) where TId: struct;
+    public delegate Boolean  TryJObjectParser4 <TResult>     (JObject Input, out TResult? arg, OnExceptionDelegate OnException);
 
-    public delegate Boolean  TryJArrayParser   <TResult>     (JArray  Input, out TResult  arg);
-    public delegate Boolean  TryJArrayParser2  <TResult>     (JArray  Input, out TResult  arg, out String ErrorResponse);
+    public delegate Boolean  TryJArrayParser   <TResult>     (JArray  Input, out TResult? arg);
+    public delegate Boolean  TryJArrayParser2  <TResult>     (JArray  Input, out TResult? arg, out String? ErrorResponse);
 
     public delegate TResult?    ParserNullable <TResult>(String  Input)                                                    where TResult: struct;
     public delegate Boolean  TryParserNullable1<TResult>(String  Input, out TResult? arg)                                  where TResult: struct;
