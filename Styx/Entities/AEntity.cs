@@ -155,8 +155,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
         protected AEntity(TId            Id,
                           JSONLDContext  JSONLDContext,
-                          JObject        CustomData   = default,
-                          String         DataSource   = default,
+                          JObject?       CustomData   = default,
+                          String?        DataSource   = default,
                           DateTime?      LastChange   = default)
 
             : base(Id,
@@ -258,13 +258,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Custom data stored within this entity.
         /// </summary>
         [Optional]
-        public TCustomData    CustomData       { get; }
+        public TCustomData?   CustomData       { get; }
 
         /// <summary>
         /// The data source of this entity, e.g. an automatic importer.
         /// </summary>
         [Optional]
-        public TDataSource    DataSource       { get; }
+        public TDataSource?   DataSource       { get; }
 
         /// <summary>
         /// The timestamp of the last changes within this entity.
@@ -282,7 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Events
 
-        public event OnPropertyChangedDelegate OnPropertyChanged;
+        public event OnPropertyChangedDelegate?  OnPropertyChanged;
 
         #endregion
 
@@ -298,8 +298,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
         protected AEntity(TId            Id,
                           JSONLDContext  JSONLDContext,
-                          TCustomData    CustomData   = default,
-                          TDataSource    DataSource   = default,
+                          TCustomData?   CustomData   = default,
+                          TDataSource?   DataSource   = default,
                           DateTime?      LastChange   = default)
 
         {

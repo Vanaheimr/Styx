@@ -105,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The unique identification of the data structure.
         /// </summary>
-        TId Id { get; }
+        TId  Id    { get; }
 
     }
 
