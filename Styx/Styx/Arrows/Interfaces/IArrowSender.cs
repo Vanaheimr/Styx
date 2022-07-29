@@ -32,9 +32,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public delegate void    NotificationEventHandler<T1, T2, T3, T4>     (T1 Message1, T2 Message2, T3 Message3, T4 Message4);
     public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5> (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
 
-    public delegate void    StartedEventHandler                          (Object Sender, DateTime Timestamp, String    Message = null);
+    public delegate void    StartedEventHandler                          (Object Sender, DateTime Timestamp, String?   Message = null);
     public delegate void    ExceptionOccuredEventHandler                 (Object Sender, DateTime Timestamp, Exception Exception);
-    public delegate void    CompletedEventHandler                        (Object Sender, DateTime Timestamp, String    Message = null);
+    public delegate void    CompletedEventHandler                        (Object Sender, DateTime Timestamp, String?   Message = null);
 
     #endregion
 
