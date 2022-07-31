@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        String        PropertyName)
         {
 
-            if (JSON == null || PropertyName.IsNullOrEmpty())
+            if (JSON is null || PropertyName.IsNullOrEmpty())
                 return false;
 
             return JSON[PropertyName] != null;
@@ -89,14 +89,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region GetString            (this JSON, PropertyName, DefaultValue = default)
 
-        public static String GetString(this JObject  JSON,
-                                       String        PropertyName,
-                                       String        DefaultValue = default)
+        public static String? GetString(this JObject  JSON,
+                                        String        PropertyName,
+                                        String?       DefaultValue = default)
         {
 
-            PropertyName = PropertyName?.Trim();
+            PropertyName = PropertyName.Trim();
 
-            if (JSON == null || PropertyName.IsNullOrEmpty())
+            if (JSON is null || PropertyName.IsNullOrEmpty())
                 return DefaultValue;
 
             var value = JSON[PropertyName]?.Value<String>()?.Trim();
@@ -1931,8 +1931,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                     String               PropertyName,
                                                     String               PropertyDescription,
                                                     TryJObjectParser<T>  TryJObjectParser,
-                                                    out T                Value,
-                                                    out String           ErrorResponse)
+                                                    out T?               Value,
+                                                    out String?          ErrorResponse)
         {
 
             Value = default;
@@ -1955,19 +1955,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!(JSONToken is JObject JSONValue))
+            if (JSONToken is not JObject JSONValue)
             {
                 ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!TryJObjectParser(JSONValue, out T value))
+            if (!TryJObjectParser(JSONValue, out T? value))
             {
                 Value         = default;
                 ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
@@ -1984,8 +1984,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                     String                PropertyName,
                                                     String                PropertyDescription,
                                                     TryJObjectParser2<T>  TryJObjectParser,
-                                                    out T                 Value,
-                                                    out String            ErrorResponse)
+                                                    out T?                Value,
+                                                    out String?           ErrorResponse)
         {
 
             Value = default;
@@ -2008,19 +2008,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!(JSONToken is JObject JSONValue))
+            if (JSONToken is not JObject JSONValue)
             {
                 ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!TryJObjectParser(JSONValue, out T value, out string errrr))
+            if (!TryJObjectParser(JSONValue, out T? value, out _))
             {
                 Value         = default;
                 ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
@@ -2037,9 +2037,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                     String                PropertyName,
                                                     String                PropertyDescription,
                                                     TryJObjectParser4<T>  TryJObjectParser,
-                                                    out T                 Value,
-                                                    out String            ErrorResponse,
-                                                    OnExceptionDelegate   OnException  = null)
+                                                    out T?                Value,
+                                                    out String?           ErrorResponse,
+                                                    OnExceptionDelegate?  OnException  = null)
         {
 
             Value = default;
@@ -2062,19 +2062,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!(JSONToken is JObject JSONValue))
+            if (JSONToken is not JObject JSONValue)
             {
                 ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!TryJObjectParser(JSONValue, out T value, OnException))
+            if (!TryJObjectParser(JSONValue, out T? value, OnException))
             {
                 Value         = default;
                 ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
