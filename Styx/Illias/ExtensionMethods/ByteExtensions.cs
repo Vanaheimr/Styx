@@ -80,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Boolean      ToLower     = true)
         {
 
-            if (ByteArray == null)
+            if (ByteArray is null)
                 throw new ArgumentNullException(nameof(ByteArray), "The given byte array must not be null!");
 
             var length = Length ?? ByteArray.Length - StartIndex;
