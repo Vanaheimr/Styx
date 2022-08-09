@@ -1567,11 +1567,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out DateTime  Timestamp,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
 
         {
 
-            Timestamp = DateTime.MinValue;
+            Timestamp = default;
 
             if (JSON == null)
             {
@@ -1585,19 +1585,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
             }
 
+            DateTime timestamp;
             try
             {
 
-                Timestamp = JSONToken.Value<DateTime>();
+                timestamp = JSONToken.Value<DateTime>();
 
-                if (Timestamp.Kind != DateTimeKind.Utc)
-                    Timestamp = Timestamp.ToUniversalTime();
+                if (timestamp.Kind != DateTimeKind.Utc)
+                    timestamp = timestamp.ToUniversalTime();
 
             }
             catch (Exception)
@@ -1606,7 +1607,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            ErrorResponse = null;
+            Timestamp      = timestamp;
+            ErrorResponse  = null;
             return true;
 
         }
