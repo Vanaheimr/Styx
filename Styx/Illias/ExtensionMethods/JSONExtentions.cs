@@ -321,7 +321,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
@@ -1992,7 +1992,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -2004,7 +2004,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryJObjectParser == null)
+            if (TryJObjectParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;

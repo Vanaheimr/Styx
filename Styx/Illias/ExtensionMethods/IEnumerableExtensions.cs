@@ -535,7 +535,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNullOrEmpty<T>(this IEnumerable<T> Enumerable)
         {
 
-            if (Enumerable == null || !Enumerable.Any())
+            if (Enumerable is null || !Enumerable.Any())
                 return true;
 
             return false;
@@ -549,7 +549,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNeitherNullNorEmpty<T>(this IEnumerable<T> Enumerable)
         {
 
-            if (Enumerable == null)
+            if (Enumerable is null)
                 return false;
 
             return Enumerable.Any();
