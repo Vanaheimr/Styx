@@ -229,16 +229,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="Key">The property key.</param>
-        public static TValue TryGet<TKey, TValue>(this IDictionary<TKey, TValue> Dictionary, TKey Key)
+        public static TValue? TryGet<TKey, TValue>(this IDictionary<TKey, TValue> Dictionary, TKey Key)
         {
 
-            if (Dictionary != null &&
-                Dictionary.TryGetValue(Key, out TValue Value))
+            if (Dictionary is not null &&
+                Dictionary.TryGetValue(Key, out TValue? value))
             {
-                return Value;
+                return value;
             }
 
-            return default(TValue);
+            return default;
 
         }
 
