@@ -17,10 +17,10 @@
 
 #region Usings
 
-using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -31,38 +31,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class OpeningTimesExtensions
     {
 
-        #region ToJSON(this OpeningTimes)
+        public static String AsString(DayOfWeek dayOfWeek)
 
-        public static JObject ToJSON(this OpeningTimes OpeningTimes)
-        {
+            => dayOfWeek switch {
+                   DayOfWeek.Monday     => "monday",
+                   DayOfWeek.Tuesday    => "tuesday",
+                   DayOfWeek.Wednesday  => "wednesday",
+                   DayOfWeek.Thursday   => "thursday",
+                   DayOfWeek.Friday     => "friday",
+                   DayOfWeek.Saturday   => "saturday",
+                   _                    => "sunday"
+               };
 
-            var JO = new JObject();
-            //OpeningTimes.RegularHours.ForEach(rh => JO.Add(rh.Weekday.ToString(), new JObject(new JProperty("from", rh.Begin.ToString()), new JProperty("to", rh.End.ToString()))));
-            OpeningTimes.RegularOpenings.ForEach(rh => JO.Add(rh.DayOfWeek.ToString(), new JArray(rh.PeriodBegin.ToString(), rh.PeriodEnd.ToString())));
-            if (OpeningTimes.FreeText.IsNotNullOrEmpty())
-                JO.Add("Text", OpeningTimes.FreeText);
 
-            return (OpeningTimes != null)
-                       ? OpeningTimes.IsOpen24Hours
-                             ? new JObject()
-                             : JO
-                       : null;
 
-        }
+        //#region ToJSON(this OpeningTimes, JPropertyKey)
 
-        #endregion
+        //public static JProperty ToJSON(this OpeningTimes OpeningTimes, String JPropertyKey)
 
-        #region ToJSON(this OpeningTimes, JPropertyKey)
+        //    => OpeningTimes != null
+        //           ? OpeningTimes.IsOpen24Hours
+        //                 ? new JProperty(JPropertyKey, OpeningTimes._24_7)
+        //                 : new JProperty(JPropertyKey, OpeningTimes.ToJSON())
+        //           : null;
 
-        public static JProperty ToJSON(this OpeningTimes OpeningTimes, String JPropertyKey)
-
-            => OpeningTimes != null
-                   ? OpeningTimes.IsOpen24Hours
-                         ? new JProperty(JPropertyKey, OpeningTimes._24_7)
-                         : new JProperty(JPropertyKey, OpeningTimes.ToJSON())
-                   : null;
-
-        #endregion
+        //#endregion
 
     }
 
@@ -80,31 +73,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public const String _24_7 = "24/7";
 
+        private readonly Dictionary<DayOfWeek, List<RegularHours>>  regularOpenings;
+        private readonly List<ExceptionalPeriod>                    exceptionalOpenings;
+        private readonly List<ExceptionalPeriod>                    exceptionalClosings;
+
         #endregion
 
         #region Properties
 
-        #region RegularOpenings
-
-        private readonly RegularHours[] regularOpenings;
-
         /// <summary>
-        /// The regular openings.
+        /// Regular Openings
         /// </summary>
-        public IEnumerable<RegularHours> RegularOpenings
+        public ReadOnlyDictionary<DayOfWeek, IEnumerable<RegularHours>> RegularOpenings
         {
             get
             {
-                return regularOpenings.Where(rh => !(rh.DayOfWeek        == DayOfWeek.Sunday                &&
-                                                     rh.PeriodBegin.Hour == 0 && rh.PeriodBegin.Minute == 0 &&
-                                                     rh.PeriodEnd.  Hour == 0 && rh.PeriodEnd.  Minute == 0));
+                var d = new Dictionary<DayOfWeek, IEnumerable<RegularHours>>();
+
+                foreach (var regularOpening in regularOpenings)
+                    d.Add(regularOpening.Key, regularOpening.Value);
+
+                return new (d);
+
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Exceptional Openings
+        /// </summary>
+        public IEnumerable<ExceptionalPeriod> ExceptionalOpenings
+            => exceptionalOpenings;
 
-        private readonly List<ExceptionalPeriod>  exceptionalOpenings;
-        private readonly List<ExceptionalPeriod>  exceptionalClosings;
+        /// <summary>
+        /// Exceptional Closings
+        /// </summary>
+        public IEnumerable<ExceptionalPeriod> ExceptionalClosings
+            => exceptionalOpenings;
 
         /// <summary>
         /// 24/7 open...
@@ -122,11 +126,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region OpeningTime(IsOpen24Hours, FreeText = "")
 
-        private OpeningTimes(Boolean  IsOpen24Hours,
-                             String   FreeText = "")
+        public OpeningTimes(Boolean  IsOpen24Hours,
+                            String   FreeText = "")
         {
 
-            this.regularOpenings      = new RegularHours[7];
+            this.regularOpenings      = new Dictionary<DayOfWeek, List<RegularHours>>();
             this.exceptionalOpenings  = new List<ExceptionalPeriod>();
             this.exceptionalClosings  = new List<ExceptionalPeriod>();
             this.FreeText             = FreeText;
@@ -146,7 +150,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            SetRegularOpening(FromWeekday, ToWeekday, new HourMin(0, 0), new HourMin(0, 0));
+            AddRegularOpenings(FromWeekday,
+                               ToWeekday,
+                               new HourMin(0, 0),
+                               new HourMin(0, 0));
 
         }
 
@@ -163,7 +170,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            SetRegularOpening(Weekday, Begin, End);
+            AddRegularOpening(Weekday,
+                              Begin,
+                              End);
 
         }
 
@@ -181,7 +190,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            SetRegularOpening(FromWeekday, ToWeekday, Begin, End);
+            AddRegularOpenings(FromWeekday,
+                               ToWeekday,
+                               Begin,
+                               End);
 
         }
 
@@ -190,13 +202,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Documentation
+
         // "opening_times": {
         //
         //     "regular_hours": [
         //       {
         //         "weekday": 1,
         //         "period_begin": "08:00",
-        //         "period_end":   "20:00"
+        //         "period_end":   "14:00"
+        //       },
+        //       {
+        //         "weekday": 1,
+        //         "period_begin": "19:00",
+        //         "period_end":   "23:00"
         //       },
         //       {
         //         "weekday": 2,
@@ -238,22 +257,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //
         //   }
 
+        #endregion
 
-        public OpeningTimes SetRegularOpening(DayOfWeek  Weekday,
+
+        #region AddRegularOpening (Weekday,                Begin, End)
+
+        public OpeningTimes AddRegularOpening(DayOfWeek  Weekday,
                                               HourMin    Begin,
                                               HourMin    End)
         {
 
-            regularOpenings[(int) Weekday] = new RegularHours(Weekday, Begin, End);
+            if (!regularOpenings.ContainsKey(Weekday))
+                regularOpenings.Add(Weekday, new List<RegularHours>());
+
+            regularOpenings[Weekday].Add(new RegularHours(Weekday,
+                                                          Begin,
+                                                          End));
 
             return this;
 
         }
 
-        public OpeningTimes SetRegularOpening(DayOfWeek  FromWeekday,
-                                              DayOfWeek  ToWeekday,
-                                              HourMin    Begin,
-                                              HourMin    End)
+        #endregion
+
+        #region AddRegularOpenings(FromWeekday, ToWeekday, Begin, End)
+
+        public OpeningTimes AddRegularOpenings(DayOfWeek  FromWeekday,
+                                               DayOfWeek  ToWeekday,
+                                               HourMin    Begin,
+                                               HourMin    End)
         {
 
             var fromWeekday = (int) FromWeekday;
@@ -263,36 +295,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 toWeekday += 7;
 
             for (var weekday = fromWeekday; weekday <= toWeekday; weekday++)
-                regularOpenings[weekday % 7] = new RegularHours((DayOfWeek) (weekday % 7), Begin, End);
+            {
+
+                if (!regularOpenings.ContainsKey((DayOfWeek) (weekday % 7)))
+                    regularOpenings.Add((DayOfWeek) (weekday % 7), new List<RegularHours>());
+
+                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek)(weekday % 7), Begin, End));
+
+            }
 
             return this;
 
         }
 
-        public OpeningTimes AddExceptionalOpening(DateTime Start, DateTime End)
+        #endregion
+
+        #region AddExceptionalClosing(StartTimestamp, EndTimestamp)
+
+        public OpeningTimes AddExceptionalOpening(DateTime StartTimestamp, DateTime EndTimestamp)
         {
 
-            exceptionalOpenings.Add(new ExceptionalPeriod(Start, End));
+            exceptionalOpenings.Add(new ExceptionalPeriod(StartTimestamp, EndTimestamp));
 
             return this;
 
         }
 
-        public OpeningTimes AddExceptionalClosing(DateTime Start, DateTime End)
+        #endregion
+
+        #region AddExceptionalClosing(StartTimestamp, EndTimestamp)
+
+        public OpeningTimes AddExceptionalClosing(DateTime StartTimestamp, DateTime EndTimestamp)
         {
 
-            exceptionalClosings.Add(new ExceptionalPeriod(Start, End));
+            exceptionalClosings.Add(new ExceptionalPeriod(StartTimestamp, EndTimestamp));
 
             return this;
 
         }
 
+        #endregion
+
+
+        #region FromFreeText(Text, IsOpen24Hours = true)
 
         public static OpeningTimes FromFreeText(String   Text,
                                                 Boolean  IsOpen24Hours = true)
 
-            => new OpeningTimes(IsOpen24Hours, Text);
+            => new (IsOpen24Hours, Text);
 
+        #endregion
+
+        #region Parse(Text)
 
         public static OpeningTimes? Parse(String Text)
         {
@@ -304,12 +358,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region TryParse(Text, out OpeningTimes)
+
         public static Boolean TryParse(String Text, out OpeningTimes? OpeningTimes)
         {
 
             if (Text == _24_7)
             {
-                OpeningTimes = new OpeningTimes(true);
+                OpeningTimes = new OpeningTimes(IsOpen24Hours: true);
                 return true;
             }
 
@@ -380,6 +438,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
+
             DayOfWeek ToWeekday;
 
             switch (match.Groups[2].Value.ToLower())
@@ -440,13 +499,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Parse hours...
 
-            HourMin Begin;
-            HourMin End;
-
-            if (HourMin.TryParse(match.Groups[4].Value, out Begin) &&
-                HourMin.TryParse(match.Groups[5].Value, out End))
+            if (HourMin.TryParse(match.Groups[4].Value, out HourMin begin) &&
+                HourMin.TryParse(match.Groups[5].Value, out HourMin end))
             {
-                OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday, Begin, End);
+                OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday, begin, end);
                 return true;
             }
 
@@ -475,6 +531,50 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return false;
 
         }
+
+        #endregion
+
+        #region ToJSON(this OpeningTimes)
+
+        public JObject ToJSON()
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty("24/7", IsOpen24Hours),
+
+                           regularOpenings.Any()
+                               ? new JProperty("regularOpenings",      new JArray(regularOpenings.Select(regularOpening =>
+                                                                           new JObject(
+                                                                               new JProperty(
+                                                                                   OpeningTimesExtensions.AsString(regularOpening.Key),
+                                                                                   new JArray(regularOpening.Value.Select(regularHours => regularHours.ToJSON()))
+                                                                               )
+                                                                           )
+                                                                       ))
+                                 )
+                               : null,
+
+                           exceptionalOpenings.Any()
+                               ? new JProperty("exceptionalOpenings",  new JArray(exceptionalOpenings.Select(exceptionalOpening => exceptionalOpening.ToString())))
+                               : null,
+
+                           exceptionalClosings.Any()
+                               ? new JProperty("exceptionalClosings",  new JArray(exceptionalClosings.Select(exceptionalClosing => exceptionalClosing.ToString())))
+                               : null,
+
+                           FreeText.IsNotNullOrEmpty()
+                               ? new JProperty("freeText",             FreeText)
+                               : null
+
+                       );
+
+            return JSON;
+
+        }
+
+        #endregion
+
 
 
         #region (static) Open24Hours
@@ -556,19 +656,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="OpeningTimes">An opening time to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(OpeningTimes OpeningTimes)
-        {
+        public Boolean Equals(OpeningTimes? OpeningTimes)
 
-            return OpeningTimes is not null &&
+            => OpeningTimes is not null &&
 
-                   IsOpen24Hours && OpeningTimes.IsOpen24Hours &&
+               IsOpen24Hours && OpeningTimes.IsOpen24Hours &&
 
                ((FreeText is     null && OpeningTimes.FreeText is     null) ||
                 (FreeText is not null && OpeningTimes.FreeText is not null && FreeText.Equals(OpeningTimes.FreeText)));
-
-
-
-        }
 
         #endregion
 
@@ -580,7 +675,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => FreeText.GetHashCode();
+
+            => FreeText?.GetHashCode() ?? 0;
 
         #endregion
 
@@ -590,7 +686,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => IsOpen24Hours ? "24 hours" : FreeText;
+
+            => IsOpen24Hours
+                   ? "Open 24 hours"
+                   : FreeText ?? "";
 
         #endregion
 

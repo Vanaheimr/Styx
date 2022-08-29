@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Newtonsoft.Json.Linq;
 using System;
 
 #endregion
@@ -80,6 +81,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+                   new JProperty("begin", PeriodBegin.ToString()),
+                   new JProperty("end",   PeriodEnd.  ToString())
+               );
 
 
         #region Operator overloading
