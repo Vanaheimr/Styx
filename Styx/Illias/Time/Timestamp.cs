@@ -18,19 +18,32 @@
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    /// <summary>
+    /// A timestamp that allows time traveling.
+    /// </summary>
     public static class Timestamp
     {
 
         private static TimeSpan timeTravel = TimeSpan.Zero;
 
+        /// <summary>
+        /// The current time stamp respecting time travels.
+        /// </summary>
         public static DateTime Now
             => DateTime.UtcNow + timeTravel;
 
+        /// <summary>
+        /// Travel in time.
+        /// </summary>
+        /// <param name="TimeTravel">The amount of time you want to travel.</param>
         public static void TimeTravel(TimeSpan TimeTravel)
         {
             timeTravel = TimeTravel;
         }
 
+        /// <summary>
+        /// Return to normal time.
+        /// </summary>
         public static void Reset()
         {
             timeTravel = TimeSpan.Zero;
