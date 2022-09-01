@@ -17,13 +17,10 @@
 
 #region Usings
 
-using System;
 using System.Text;
-using System.Linq;
 using System.Security.Cryptography;
 
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 
 #endregion
 
@@ -46,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Custom data stored within this entity.
         /// </summary>
-        TCustomData  CustomData    { get; }
+        TCustomData?  CustomData    { get; }
 
     }
 
@@ -61,10 +58,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The timestamp of the last changes within this entity.
         /// Can e.g. be used as a HTTP ETag.
         /// </summary>
-        DateTime  LastChange    { get; }
+        DateTime  LastChangeDate    { get; }
 
 
-        event OnPropertyChangedDelegate OnPropertyChanged;
+        event OnPropertyChangedDelegate? OnPropertyChanged;
 
     }
 
@@ -114,12 +111,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The unique identification of this entity.
         /// </summary>
-        TId          Id            { get; }
+        TId           Id            { get; }
 
         /// <summary>
         /// The data source of this entity, e.g. an automatic importer.
         /// </summary>
-        TDataSource  DataSource    { get; }
+        TDataSource?  DataSource    { get; }
 
 
         void CopyAllLinkedDataFrom(TEntity OldEnity);
@@ -153,17 +150,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="CustomData">Custom data stored within this entity.</param>
         /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
         /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
-        protected AEntity(TId            Id,
-                          JSONLDContext  JSONLDContext,
-                          JObject?       CustomData   = default,
-                          String?        DataSource   = default,
-                          DateTime?      LastChange   = default)
+        protected AEntity(TId                      Id,
+                          JSONLDContext            JSONLDContext,
+                          DateTime?                LastChange   = default,
+                          IEnumerable<Signature>?  Signatures   = default,
+                          JObject?                 CustomData   = default,
+                          String?                  DataSource   = default)
 
             : base(Id,
                    JSONLDContext,
+                   LastChange,
+                   Signatures,
                    CustomData,
-                   DataSource,
-                   LastChange)
+                   DataSource)
 
         { }
 
@@ -179,28 +178,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var JSON = JSONObject.Create(
 
-                           new JProperty[] {
+                           new JProperty?[] {
 
-                               new JProperty("@id",                Id.           ToString()),
+                               new JProperty("@id",                    Id.            ToString()),
 
                                Embedded
                                    ? null
-                                   : new JProperty("@context",     JSONLDContext.ToString()),
+                                   : new JProperty("@context",         JSONLDContext. ToString()),
 
-                               CustomData != default
-                                   ? new JProperty("customData",   CustomData)
+                               CustomData is not null
+                                   ? new JProperty("customData",       CustomData)
                                    : null,
 
                                DataSource.IsNotNullOrEmpty()
-                                   ? new JProperty("dataSource",   DataSource)
+                                   ? new JProperty("dataSource",       DataSource)
                                    : null,
 
                                IncludeLastChange
-                                   ? new JProperty("lastChange",   LastChange.   ToIso8601())
-                                   : null,
-
-                               IncludeCryptoHash
-                                   ? new JProperty("hashValue",    HashValue)
+                                   ? new JProperty("lastChangeDate",   LastChangeDate.ToIso8601())
                                    : null
 
                            }.
@@ -209,7 +204,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                        );
 
-            return CustomAEntitySerializer != null
+            return CustomAEntitySerializer is not null
                        ? CustomAEntitySerializer(JSON)
                        : JSON;
 
@@ -246,37 +241,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public TId            Id               { get; }
+        public TId                      Id               { get; }
 
         /// <summary>
         /// The JSON-LD context of this entity.
         /// </summary>
         [Mandatory]
-        public JSONLDContext  JSONLDContext    { get; }
-
-        /// <summary>
-        /// Custom data stored within this entity.
-        /// </summary>
-        [Optional]
-        public TCustomData?   CustomData       { get; }
-
-        /// <summary>
-        /// The data source of this entity, e.g. an automatic importer.
-        /// </summary>
-        [Optional]
-        public TDataSource?   DataSource       { get; }
+        public JSONLDContext            JSONLDContext    { get; }
 
         /// <summary>
         /// The timestamp of the last changes within this entity.
         /// Can e.g. be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime       LastChange       { get; protected set; }
+        public DateTime                 LastChangeDate   { get; protected set; }
 
         /// <summary>
-        /// The cryptographic hash value of this entity.
+        /// All signatures of this blog posting.
         /// </summary>
-        public String         HashValue        { get; protected set; }
+        [Optional]
+        public IEnumerable<Signature>?  Signatures       { get; }
+
+        /// <summary>
+        /// Custom data stored within this entity.
+        /// </summary>
+        [Optional]
+        public TCustomData?             CustomData       { get; }
+
+        /// <summary>
+        /// The data source of this entity, e.g. an automatic importer.
+        /// </summary>
+        [Optional]
+        public TDataSource?             DataSource       { get; }
 
         #endregion
 
@@ -295,12 +291,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSONLDContext">The JSON-LD context of this entity.</param>
         /// <param name="CustomData">Custom data stored within this entity.</param>
         /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
-        /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
-        protected AEntity(TId            Id,
-                          JSONLDContext  JSONLDContext,
-                          TCustomData?   CustomData   = default,
-                          TDataSource?   DataSource   = default,
-                          DateTime?      LastChange   = default)
+        /// <param name="LastChangeDate">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
+        protected AEntity(TId                      Id,
+                          JSONLDContext            JSONLDContext,
+                          DateTime?                LastChangeDate   = default,
+                          IEnumerable<Signature>?  Signatures       = default,
+                          TCustomData?             CustomData       = default,
+                          TDataSource?             DataSource       = default)
 
         {
 
@@ -310,11 +307,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONLDContext.Equals(default))
                 throw new ArgumentNullException(nameof(JSONLDContext),  "The given JSON-LD context must not be null or empty!");
 
-            this.Id             = Id;
-            this.JSONLDContext  = JSONLDContext;
-            this.CustomData     = CustomData;
-            this.DataSource     = DataSource;
-            this.LastChange     = LastChange ?? DateTime.UtcNow;
+            this.Id              = Id;
+            this.JSONLDContext   = JSONLDContext;
+            this.LastChangeDate  = LastChangeDate ?? Timestamp.Now;
+            this.Signatures      = Signatures;
+            this.CustomData      = CustomData;
+            this.DataSource      = DataSource;
 
         }
 
@@ -396,7 +394,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    #endregion
 
-        //    this.LastChange = DateTime.UtcNow;
+        //    this.LastChange = Timestamp.Now;
 
         //    OnPropertyChanged?.Invoke(LastChange,
         //                              this,
@@ -465,27 +463,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region CalcHash()
 
-        /// <summary>
-        /// Calculate the hash value of this object.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
-        public void CalcHash()
-        {
+        ///// <summary>
+        ///// Calculate the hash value of this object.
+        ///// </summary>
+        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
+        //public void CalcHash()
+        //{
 
-            using (var SHA256 = new SHA256Managed())
-            {
+        //    using (var SHA256 = new SHA256Managed())
+        //    {
 
-                HashValue = "json:sha256:" +
-                            SHA256.ComputeHash(Encoding.Unicode.GetBytes(
-                                                   ToJSON  (IncludeCryptoHash: false).
-                                                   ToString(Newtonsoft.Json.Formatting.None)
-                                               )).
-                                   Select(value => String.Format("{0:x2}", value)).
-                                   Aggregate();
+        //        HashValue = "json:sha256:" +
+        //                    SHA256.ComputeHash(Encoding.Unicode.GetBytes(
+        //                                           ToJSON  (IncludeCryptoHash: false).
+        //                                           ToString(Newtonsoft.Json.Formatting.None)
+        //                                       )).
+        //                           Select(value => String.Format("{0:x2}", value)).
+        //                           Aggregate();
 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 
@@ -569,37 +567,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// The unique identification of this entity.
             /// </summary>
             [Mandatory]
-            public  TId           Id               { get; set; }
+            public  TId                Id               { get; set; }
 
             /// <summary>
             /// The JSON-LD context of this entity.
             /// </summary>
             [Mandatory]
-            public JSONLDContext  JSONLDContext    { get; set; }
-
-            /// <summary>
-            /// Custom data stored within this entity.
-            /// </summary>
-            [Optional]
-            public TCustomData    CustomData       { get; set; }
-
-            /// <summary>
-            /// The data source of this entity, e.g. an automatic importer.
-            /// </summary>
-            [Optional]
-            public TDataSource    DataSource       { get; set; }
+            public JSONLDContext       JSONLDContext    { get; set; }
 
             /// <summary>
             /// The timestamp of the last changes within this entity.
             /// Can e.g. be used as a HTTP ETag.
             /// </summary>
             [Mandatory]
-            public DateTime       LastChange       { get; set; }
+            public DateTime            LastChangeDate   { get; set; }
 
             /// <summary>
-            /// The cryptographic hash value of this entity.
+            /// All signatures of this blog posting.
             /// </summary>
-            public String         HashValue        { get; set; }
+            [Optional]
+            public HashSet<Signature>  Signatures       { get; }
+
+            /// <summary>
+            /// Custom data stored within this entity.
+            /// </summary>
+            [Optional]
+            public TCustomData?        CustomData       { get; set; }
+
+            /// <summary>
+            /// The data source of this entity, e.g. an automatic importer.
+            /// </summary>
+            [Optional]
+            public TDataSource?        DataSource       { get; set; }
+
+            #endregion
+
+            #region Events
+
+            public event OnPropertyChangedDelegate?  OnPropertyChanged;
 
             #endregion
 
@@ -612,32 +617,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// <param name="JSONLDContext">The JSON-LD context of this entity.</param>
             /// <param name="CustomData">Custom data stored within this entity.</param>
             /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
-            /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
-            public Builder(TId            Id,
-                           JSONLDContext  JSONLDContext,
-                           TCustomData    CustomData   = default,
-                           TDataSource    DataSource   = default,
-                           DateTime?      LastChange   = default)
+            /// <param name="LastChangeDate">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
+            public Builder(TId                      Id,
+                           JSONLDContext            JSONLDContext,
+                           DateTime?                LastChangeDate   = default,
+                           IEnumerable<Signature>?  Signatures       = default,
+                           TCustomData?             CustomData       = default,
+                           TDataSource?             DataSource       = default)
 
             {
 
-                this.Id             = Id;
-                this.JSONLDContext  = JSONLDContext;
-                this.CustomData     = CustomData;
-                this.DataSource     = DataSource;
-                this.LastChange     = LastChange ?? DateTime.UtcNow;
-                this.HashValue      = HashValue;
+                this.Id              = Id;
+                this.JSONLDContext   = JSONLDContext;
+                this.Signatures      = Signatures is not null
+                                           ? new HashSet<Signature>(Signatures)
+                                           : new HashSet<Signature>();
+                this.LastChangeDate  = LastChangeDate ?? Timestamp.Now;
+                this.CustomData      = CustomData;
+                this.DataSource      = DataSource;
 
             }
 
             #endregion
 
 
-            public event OnPropertyChangedDelegate OnPropertyChanged;
-
-
             public abstract void CopyAllLinkedDataFrom(TEntity OldEnity);
-
 
 
 
