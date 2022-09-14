@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -60,11 +54,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The internal identification.
         /// </summary>
         private readonly String InternalId;
-
-        /// <summary>
-        /// Private non-cryptographic random number generator.
-        /// </summary>
-        private static readonly Random _random = new Random();
 
         #endregion
 
@@ -111,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Length">The expected length of the system identification.</param>
         public static System_Id Random(Byte Length = 15)
 
-            => new System_Id(_random.RandomString(Length).ToUpper());
+            => new System_Id(RandomExtensions.RandomString(Length).ToUpper());
 
         #endregion
 

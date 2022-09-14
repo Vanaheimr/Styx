@@ -17,11 +17,7 @@
 
 #region Usings
 
-using System;
-using System.IO;
 using System.Text;
-using System.Linq;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 #endregion
@@ -38,10 +34,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region IsNullOrEmpty(GivenString)
 
         /// <summary>
-        /// Indicates whether the given string is null or empty.
+        /// Indicates whether the given (trimmed) string is null or empty.
         /// </summary>
         /// <param name="GivenString">A string.</param>
         public static Boolean IsNullOrEmpty(this String? GivenString)
+
             => String.IsNullOrEmpty(GivenString?.Trim());
 
         #endregion
@@ -49,27 +46,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region IsNotNullOrEmpty(GivenString)
 
         /// <summary>
-        /// Indicates whether the given string is not null or empty.
+        /// Indicates whether the given (trimmed) string is not null or empty.
         /// </summary>
         /// <param name="GivenString">A string.</param>
         public static Boolean IsNotNullOrEmpty(this String? GivenString)
+
             => !String.IsNullOrEmpty(GivenString?.Trim());
 
         #endregion
 
-        #region IfNotNullOrEmpty(GivenString, Mapper)
+        #region IfNotNullOrEmpty(GivenString, Mapper, DefaultValue)
 
         /// <summary>
-        /// Mappes the given string if it is not null or empty.
+        /// Mappes the given string if it is not null or empty, or returns the default value.
         /// </summary>
-        /// <param name="GivenString">The string.</param>
+        /// <param name="GivenString">A string.</param>
         /// <param name="Mapper">A string mapper delegate.</param>
+        /// <param name="DefaultValue">A default string value.</param>
         public static String IfNotNullOrEmpty(this String?          GivenString,
-                                              Func<String, String>  Mapper)
+                                              Func<String, String>  Mapper,
+                                              String                DefaultValue)
 
-            => !String.IsNullOrEmpty(GivenString)
-                   ? Mapper(GivenString)
-                   : GivenString;
+            => String.IsNullOrEmpty(GivenString?.Trim()) || Mapper is null
+                   ? DefaultValue
+                   : Mapper(GivenString);
 
         #endregion
 
@@ -82,6 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="GivenString">A string.</param>
         public static Boolean IsNullOrWhiteSpace(this String? GivenString)
+
             => String.IsNullOrWhiteSpace(GivenString);
 
         #endregion

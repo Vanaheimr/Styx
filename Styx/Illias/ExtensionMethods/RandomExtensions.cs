@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Text;
 
 #endregion
@@ -31,18 +30,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class RandomExtensions
     {
 
-        #region GetBytes          (this _Random, NumberOfBytes)
+        #region GetBytes          (NumberOfBytes)
 
         /// <summary>
         /// Get an array of random bytes.
         /// </summary>
         /// <param name="Random">The source of randomness.</param>
         /// <param name="NumberOfBytes">The number of random bytes to genrate.</param>
-        public static Byte[] GetBytes(this Random Random, UInt16 NumberOfBytes)
+        public static Byte[] GetBytes(UInt16 NumberOfBytes)
         {
 
             var ByteArray = new Byte[NumberOfBytes];
-            Random.NextBytes(ByteArray);
+            Random.Shared.NextBytes(ByteArray);
 
             return ByteArray;
 
@@ -50,19 +49,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomString      (this Random, Length)
+        #region RandomString      (Length)
 
         /// <summary>
         /// Get random string [a-zA-Z1-9]{Length} (without 'I', 'l', 'O', '0') of the given length.
         /// </summary>
         /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The expected length of the random string.</param>
-        public static String RandomString(this Random Random, UInt16 Length)
+        public static String RandomString(UInt16 Length)
         {
 
             var tryAgain  = false;
             var ByteArray = new Byte[Length];
-            Random.NextBytes(ByteArray);
+            Random.Shared.NextBytes(ByteArray);
 
 
             for (var i = 0; i < Length; i++)
@@ -81,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         ByteArray[i] == 0x6C || // l
                         ByteArray[i] == 0x4F) { // O
 
-                        ByteArray[i] = (Byte) Random.Next(256);
+                        ByteArray[i] = (Byte) Random.Shared.Next(256);
                         tryAgain     = true;
 
                     }
@@ -96,18 +95,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomHexString   (this Random, Length)
+        #region RandomHexString   (Length)
 
         /// <summary>
         /// Get random string [A-F0-9]{Length} of the given length.
         /// </summary>
         /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The expected length of the random string.</param>
-        public static String RandomHexString(this Random Random, UInt16 Length)
+        public static String RandomHexString(UInt16 Length)
         {
 
             var byteArray = new Byte[Length / 2];
-            Random.NextBytes(byteArray);
+            Random.Shared.NextBytes(byteArray);
 
             return byteArray.ToHexString();
 
@@ -115,25 +114,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomNumberString(this Random, Length)
+        #region RandomNumberString(Length)
 
         /// <summary>
         /// Get random number as string [0-9]{Length} of the given length.
         /// </summary>
         /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The the length of the string.</param>
-        public static String RandomNumberString(this Random Random, UInt16 Length)
+        public static String RandomNumberString(UInt16 Length)
         {
 
-            if (Random == null)
-                throw new ArgumentNullException(nameof(Random));
-
-            var _StringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             for (var i = 0; i < Length; i++)
-                _StringBuilder.Append(Random.Next(10));
+                stringBuilder.Append(Random.Shared.Next(10));
 
-            return _StringBuilder.ToString();
+            return stringBuilder.ToString();
 
         }
 
