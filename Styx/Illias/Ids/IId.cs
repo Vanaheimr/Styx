@@ -109,23 +109,4 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     }
 
-
-    /// <summary>
-    /// The common generic interface of an entity having one or multiple unique identification(s).
-    /// </summary>
-    /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
-    public interface IHasIds<TId> : IHasId<TId>
-
-        where TId : IId
-
-    {
-
-        /// <summary>
-        /// Auxilary unique identifications of this entity.
-        /// (Think of CNAMES in DNS, or brand names for companies)
-        /// </summary>
-        IEnumerable<TId> Ids    { get; }
-
-    }
-
 }
