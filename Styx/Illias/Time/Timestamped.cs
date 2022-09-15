@@ -15,16 +15,38 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+
+    public static class TimestampedExtensions
+    {
+
+        public static IEnumerable<Timestamped<T>> Deduplicate<T>(this IEnumerable<Timestamped<T>> Enumeration)
+        {
+
+            var OrderedEnumeration = Enumeration.
+                                         OrderBy(TVP => TVP.Timestamp).
+                                         ToArray();
+
+            if (OrderedEnumeration.Length > 0)
+            {
+
+                for (var i = 0; i < OrderedEnumeration.Length - 1; i++)
+                {
+                    if (!OrderedEnumeration[i].Equals(OrderedEnumeration[i + 1]))
+                        yield return OrderedEnumeration[i];
+                }
+
+                yield return OrderedEnumeration[OrderedEnumeration.Length];
+
+            }
+
+        }
+
+
+    }
+
 
     #region Timestamped<T>
 
@@ -32,8 +54,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// A value with its creation timestamp.
     /// </summary>
     /// <typeparam name="T">The type of the timestamped value.</typeparam>
-    public readonly struct Timestamped<T> : IEquatable<Timestamped<T>>,
-                                            IEquatable<T>,
+    public readonly struct Timestamped<T> : IEquatable<T>,
+                                            IEquatable<Timestamped<T>>,
                                             IComparable<Timestamped<T>>
     {
 
@@ -66,7 +88,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Timestamp">The timestamp.</param>
         /// <param name="Value">The value.</param>
-        public Timestamped(DateTime Timestamp, T Value)
+        public Timestamped(DateTime  Timestamp,
+                           T         Value)
         {
             this.Value      = Value;
             this.Timestamp  = Timestamp;
@@ -83,7 +106,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value to be timestamped.</param>
         public static implicit operator Timestamped<T>(T Value)
-            => new Timestamped<T>(Value);
+
+            => new (Value);
 
         #endregion
 
@@ -384,39 +408,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Properties
 
-        #region Timestamp
-
-        private DateTime _Timestamp;
-
         /// <summary>
         /// The timestamp of the value creation.
         /// </summary>
-        public DateTime Timestamp
-        {
-            get
-            {
-                return _Timestamp;
-            }
-        }
-
-        #endregion
-
-        #region Value
-
-        private readonly T _Value;
+        public DateTime  Timestamp    { get; private set; }
 
         /// <summary>
         /// The value.
         /// </summary>
-        public T Value
-        {
-            get
-            {
-                return _Value;
-            }
-        }
-
-        #endregion
+        public T         Value        { get; }
 
         #endregion
 
@@ -429,22 +429,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value.</param>
         public Timestamped_RW(T Value)
-            : this(Value, DateTime.UtcNow)
+            : this(Value, Illias.Timestamp.Now)
         { }
 
         #endregion
 
-        #region Timestamped(Value, Timestamp)
+        #region Timestamped_RW(Value, Timestamp)
 
         /// <summary>
         /// Create a new timestamped value.
         /// </summary>
         /// <param name="Value">The value.</param>
         /// <param name="Timestamp">The timestamp.</param>
-        public Timestamped_RW(T Value, DateTime Timestamp)
+        public Timestamped_RW(T         Value,
+                              DateTime  Timestamp)
         {
-            _Value      = Value;
-            _Timestamp  = Timestamp;
+            this.Value      = Value;
+            this.Timestamp  = Timestamp;
         }
 
         #endregion
@@ -454,40 +455,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public void UpdateTimestamp()
         {
-            _Timestamp = DateTime.UtcNow;
+            this.Timestamp = DateTime.UtcNow;
         }
 
     }
 
     #endregion
-
-
-    public static class TimestampedExtensions
-    {
-
-        public static IEnumerable<Timestamped<T>> Deduplicate<T>(this IEnumerable<Timestamped<T>> Enumeration)
-        {
-
-            var OrderedEnumeration = Enumeration.
-                                         OrderBy(TVP => TVP.Timestamp).
-                                         ToArray();
-
-            if (OrderedEnumeration.Length > 0)
-            {
-
-                for (var i = 0; i < OrderedEnumeration.Length - 1; i++)
-                {
-                    if (!OrderedEnumeration[i].Equals(OrderedEnumeration[i + 1]))
-                        yield return OrderedEnumeration[i];
-                }
-
-                yield return OrderedEnumeration[OrderedEnumeration.Length];
-
-            }
-
-        }
-
-
-    }
 
 }
