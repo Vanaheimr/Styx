@@ -19,6 +19,7 @@
 
 using System.Text;
 using System.Runtime.CompilerServices;
+using System;
 
 #endregion
 
@@ -403,14 +404,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String SubstringMax(this String Text, UInt32 Length)
         {
 
-            if (Text == null)
-                return null;
+            if (Text is null)
+                return "";
 
             Text = Text.Trim();
 
             return Text.IsNotNullOrEmpty()
-                       ? Text.Substring(0, (Int32) Math.Min((UInt32) Text.Length, Length))
-                       : Text;
+                       ? Text[..(Int32) Math.Min((UInt32) Text.Length, Length)]
+                       : "";
 
         }
 
@@ -452,7 +453,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Text.StartsWith(Prefix, StringComparison.Ordinal))
-                return Replacement + Text.Substring(Prefix.Length);
+                return String.Concat(Replacement, Text.AsSpan(Prefix.Length));
 
             return Text;
 

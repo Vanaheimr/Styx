@@ -1670,13 +1670,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String          PropertyName,
                                              String          PropertyDescription,
                                              out I18NString  I18NText,
-                                             out String      ErrorResponse)
+                                             out String?     ErrorResponse)
 
         {
 
-            I18NText = I18NString.Empty;
+            I18NText       = I18NString.Empty;
+            ErrorResponse  = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1688,41 +1689,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
             }
 
-            var i18nJSON = JSONToken as JObject;
-
-            if (i18nJSON == null)
+            if (JSONToken is not JObject i18NObject)
             {
                 ErrorResponse = "Invalid i18n JSON string provided!";
                 return false;
             }
 
-            var i18NString = I18NString.Empty;
-
-            foreach (var i18nProperty in i18nJSON)
+            foreach (var i18nProperty in i18NObject)
             {
-
-                try
+                if (i18nProperty.Key   is not null &&
+                    i18nProperty.Value is not null &&
+                    Enum.TryParse(i18nProperty.Key, true, out Languages language) &&
+                    i18nProperty.Value.Value<String>() is String text)
                 {
-
-                    i18NString.Add((Languages) Enum.Parse(typeof(Languages), i18nProperty.Key),
-                                   i18nProperty.Value.Value<String>());
-
-                } catch (Exception)
+                    I18NText.Add(language, text);
+                }
+                else
                 {
                     ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
-
             }
 
-            ErrorResponse = null;
-            I18NText      = i18NString;
             return true;
 
         }
@@ -3001,7 +2995,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken _JToken) && _JToken?.Value<String>() != null)
+            if (JSON.TryGetValue(PropertyName, out JToken? _JToken) && _JToken?.Value<String>() != null)
             {
 
                 try
@@ -3012,11 +3006,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return !TOut.Equals(InvalidResult);
 
                 }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
                 { }
 
             }
@@ -3835,20 +3825,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseOptionalEnums  (this JSON, PropertyName, PropertyDescription,                            out IEnumerable<Enum>,       out ErrorResponse)
 
-        public static Boolean ParseOptionalEnums<TEnum>(this JObject            JSON,
-                                                        String                  PropertyName,
-                                                        String                  PropertyDescription,
-                                                        out IEnumerable<TEnum>  EnumValues,
-                                                        out String              ErrorResponse)
+        public static Boolean ParseOptionalEnums<TEnum>(this JObject        JSON,
+                                                        String              PropertyName,
+                                                        String              PropertyDescription,
+                                                        out HashSet<TEnum>  EnumValues,
+                                                        out String?         ErrorResponse)
 
             where TEnum : struct
 
         {
 
-            EnumValues     = new TEnum[0];
+            EnumValues     = new HashSet<TEnum>();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3860,35 +3850,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
-                JSONToken.Type != JTokenType.Null)
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is not JArray JSONArray)
+            {
+                ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            foreach (var JSONItem in JSONArray)
             {
 
-                if (JSONToken.Type != JTokenType.Array)
+                if (Enum.TryParse(JSONItem?.Value<String>(), true, out TEnum enumValue))
+                    EnumValues.Add(enumValue);
+
+                else
                 {
-                    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
                 }
-
-                var JSONList = JSONToken as JArray;
-                var List     = new List<TEnum>();
-
-                foreach (var JSONItem in JSONList)
-                {
-
-                    if (Enum.TryParse(JSONItem?.Value<String>(), true, out TEnum enumValue))
-                        List.Add(enumValue);
-
-                    else
-                    {
-                        ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
-                        return false;
-                    }
-
-                }
-
-                EnumValues = List;
 
             }
 

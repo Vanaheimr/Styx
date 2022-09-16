@@ -17,61 +17,13 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
-
-    /// <summary>
-    /// JSON I/O.
-    /// </summary>
-    public static class AddressExtensions
-    {
-
-        #region ToJSON(this Address, JPropertyKey, Embedded  = false)
-
-        public static JProperty ToJSON(this Address  Address,
-                                       String        JPropertyKey,
-                                       Boolean       Embedded  = false)
-
-            => Address != null
-                   ? new JProperty(JPropertyKey,
-                                   Address.ToJSON(Embedded))
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this Addresses, JPropertyKey)
-
-        public static JArray ToJSON(this IEnumerable<Address> Addresses)
-
-            => Addresses?.Any() == true
-                   ? new JArray(Addresses.SafeSelect(addr => addr.ToJSON()))
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this Addresses, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<Address> Addresses, String JPropertyKey)
-
-            => Addresses != null
-                   ? new JProperty(JPropertyKey,
-                                   Addresses.ToJSON())
-                   : null;
-
-        #endregion
-
-        //public static Boolean TryParseAddress(this String Text, out Address Address)
-        //    => Address.TryParseJSON(JObject.Parse(Text), out Address);
-
-    }
 
     /// <summary>
     /// A WWCP address.
@@ -96,47 +48,57 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The name of the street.
         /// </summary>
-        public String      Street           { get; }
-
-        /// <summary>
-        /// The house number.
-        /// </summary>
-        public String      HouseNumber      { get; }
-
-        /// <summary>
-        /// The floor level.
-        /// </summary>
-        public String      FloorLevel       { get; }
+        public String                   Street               { get; }
 
         /// <summary>
         /// The postal code.
         /// </summary>
-        public String      PostalCode       { get; }
-
-        /// <summary>
-        /// The postal code sub.
-        /// </summary>
-        public String      PostalCodeSub    { get; }
+        public String                   PostalCode           { get; }
 
         /// <summary>
         /// The city.
         /// </summary>
-        public I18NString  City             { get; }
+        public I18NString               City                 { get; }
 
         /// <summary>
         /// The country.
         /// </summary>
-        public Country     Country          { get; }
+        public Country                  Country              { get; }
+
+        /// <summary>
+        /// The house number.
+        /// </summary>
+        public String?                  HouseNumber          { get; }
+
+        /// <summary>
+        /// The floor level.
+        /// </summary>
+        public String?                  FloorLevel           { get; }
+
+        /// <summary>
+        /// The region.
+        /// </summary>
+        public String?                  Region               { get; }
+
+        /// <summary>
+        /// The postal code sub.
+        /// </summary>
+        public String?                  PostalCodeSub        { get; }
 
         /// <summary>
         /// The timezone.
         /// </summary>
-        public Time_Zone?  Timezone         { get; }
+        public Time_Zone?               TimeZone             { get; }
+
+        /// <summary>
+        /// The official languages at this address.
+        /// </summary>
+        public IEnumerable<Languages>?  OfficialLanguages    { get; }
 
         /// <summary>
         /// An optional text/comment to describe the address.
         /// </summary>
-        public I18NString  Comment          { get; }
+        public I18NString?              Comment              { get; }
 
         #endregion
 
@@ -152,272 +114,292 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PostalCodeSub">The postal code sub</param>
         /// <param name="City">The city.</param>
         /// <param name="Country">The country.</param>
-        /// <param name="Timezone">The timezone.</param>
+        /// <param name="TimeZone">The timezone.</param>
         /// <param name="Comment">An optional text/comment to describe the address.</param>
         /// 
-        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public Address(String                      Street,
-                       String                      HouseNumber,
-                       String                      FloorLevel,
-                       String                      PostalCode,
-                       String                      PostalCodeSub,
-                       I18NString                  City,
-                       Country                     Country,
-                       Time_Zone?                  Timezone     = null,
-                       I18NString                  Comment      = null,
+        /// <param name="CustomData">Optional custom data, e.g. in combination with custom parsers and serializers.</param>
+        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        public Address(String                       Street,
+                       String                       PostalCode,
+                       I18NString                   City,
+                       Country                      Country,
 
-                       Dictionary<String, Object>  CustomData   = null)
+                       String?                      HouseNumber         = null,
+                       String?                      FloorLevel          = null,
+                       String?                      Region              = null,
+                       String?                      PostalCodeSub       = null,
+                       Time_Zone?                   TimeZone            = null,
+                       IEnumerable<Languages>?      OfficialLanguages   = null,
+                       I18NString?                  Comment             = null,
 
-            : base(CustomData)
+                       JObject?                     CustomData          = null,
+                       Dictionary<String, Object>?  InternalData        = null)
+
+            : base(CustomData,
+                   InternalData)
 
         {
 
-            this.Street         = Street        ?? "";
-            this.HouseNumber    = HouseNumber   ?? "";
-            this.FloorLevel     = FloorLevel    ?? "";
-            this.PostalCode     = PostalCode    ?? "";
-            this.PostalCodeSub  = PostalCodeSub ?? "";
-            this.City           = City          ?? I18NString.Empty;
-            this.Country        = Country;
-            this.Timezone       = Timezone;
-            this.Comment        = Comment       ?? I18NString.Empty;
+            this.Street             = Street;
+            this.PostalCode         = PostalCode;
+            this.City               = City;
+            this.Country            = Country;
+
+            this.HouseNumber        = HouseNumber;
+            this.FloorLevel         = FloorLevel;
+            this.Region             = Region;
+            this.PostalCodeSub      = PostalCodeSub;
+            this.TimeZone           = TimeZone;
+            this.OfficialLanguages  = OfficialLanguages;
+            this.Comment            = Comment;
 
         }
 
         #endregion
 
 
-        #region (static) Create(Country, PostalCode, City, Street, HouseNumber, CustomData = null)
+        #region (static) Parse   (JSON, CustomAddressParser = null)
 
         /// <summary>
-        /// Create a new minimal address.
+        /// Parse the given JSON representation of an address.
         /// </summary>
-        /// <param name="Country">The country.</param>
-        /// <param name="PostalCode">The postal code</param>
-        /// <param name="City">The city.</param>
-        /// <param name="Street">The name of the street.</param>
-        /// <param name="HouseNumber">The house number.</param>
-        /// <param name="FloorLevel">The floor level.</param>
-        /// <param name="Comment">A comment to this address.</param>
-        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
-        public static Address Create(Country                     Country,
-                                     String                      PostalCode,
-                                     I18NString                  City,
-                                     String                      Street,
-                                     String                      HouseNumber,
-                                     String                      FloorLevel   = null,
-                                     Time_Zone?                  TimeZone     = null,
-                                     I18NString                  Comment      = null,
-                                     Dictionary<String, Object>  CustomData   = null)
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="CustomAddressParser">A delegate to parse custom address JSON objects.</param>
+        public static Address Parse(JObject                                JSON,
+                                    CustomJObjectParserDelegate<Address>?  CustomAddressParser   = null)
+        {
 
+            if (TryParse(JSON,
+                         out Address?  address,
+                         out String?   errorResponse,
+                         CustomAddressParser))
+            {
+                return address!;
+            }
 
-            => new Address(Street,
-                           HouseNumber,
-                           FloorLevel,
-                           PostalCode,
-                           "",
-                           City,
-                           Country,
-                           TimeZone,
-                           Comment,
-                           CustomData);
+            throw new ArgumentException("The given JSON representation of an address is invalid: " + errorResponse, nameof(JSON));
+
+        }
 
         #endregion
 
-        //public static Address Parse(String Text)
-        //{
-
-        //    if (TryParseJSON(JObject.Parse(Text), out Address _Address))
-        //        return _Address;
-
-        //    return null;
-
-        //}
-
-        //public static Address ParseAddressJSON(JObject JSONObject, String PropertyKey)
-        //{
-
-        //    try
-        //    {
-
-        //        if (JSONObject[PropertyKey] is JObject JSON)
-        //            return Create(Country.Parse(JSON["country"    ]?.Value<String>()),
-        //                                        JSON["postalCode" ]?.Value<String>(),
-        //                                       (JSON["city"       ] as JObject)?.ParseI18NString(),
-        //                                        JSON["street"     ]?.Value<String>(),
-        //                                        JSON["houseNumber"]?.Value<String>(),
-        //                                        JSON["floorLevel" ]?.Value<String>(),
-        //                                       (JSON["comment"    ] as JObject)?.ParseI18NString());
-
-        //    }
-        //    catch (Exception)
-        //    { }
-
-        //    return null;
-
-        //}
-
-
-        #region ToJSON(...)
+        #region (static) Parse   (Text, CustomAddressParser = null)
 
         /// <summary>
-        /// Return a JSON representation of this object.
+        /// Parse the given text representation of an address.
         /// </summary>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
-        public JObject ToJSON(Boolean Embedded  = false)
+        /// <param name="Text">The text to parse.</param>
+        /// <param name="CustomAddressParser">A delegate to parse custom address JSON objects.</param>
+        public static Address Parse(String                                 Text,
+                                    CustomJObjectParserDelegate<Address>?  CustomAddressParser   = null)
+        {
 
-            => JSONObject.Create(
+            if (TryParse(Text,
+                         out Address?  address,
+                         out String?   errorResponse,
+                         CustomAddressParser))
+            {
+                return address!;
+            }
 
-                   !Embedded
-                       ? new JProperty("@context", JSONLDContext.ToString())
-                       : null,
+            throw new ArgumentException("The given text representation of an address is invalid: " + errorResponse, nameof(Text));
 
-                   FloorLevel.         ToJSON("floorLevel"),
-                   HouseNumber.        ToJSON("houseNumber"),
-                   Street.             ToJSON("street"),
-                   PostalCode.         ToJSON("postalCode"),
-                   PostalCodeSub.      ToJSON("postalCodeSub"),
-                   City.               ToJSON("city"),
-                   Country?.Alpha3Code.ToJSON("country"),
-                   Comment.            ToJSON("comment")
-
-                );
+        }
 
         #endregion
 
-        #region (static) TryParseJSON(JSONObject, ..., out Address, out ErrorResponse)
+        #region (static) TryParse(JSON, out Address, out ErrorResponse, CustomAddressParser = null)
 
-        public static Boolean TryParse(JObject      JSONObject,
-                                       out Address  Address,
-                                       out String   ErrorResponse)
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an address.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="Address">The parsed address.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject       JSON,
+                                       out Address?  Address,
+                                       out String?   ErrorResponse)
+
+            => TryParse(JSON,
+                        out Address,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of an address.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="Address">The parsed address.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAddressParser">A delegate to parse custom addresss JSON objects.</param>
+        public static Boolean TryParse(JObject                                JSON,
+                                       out Address?                           Address,
+                                       out String?                            ErrorResponse,
+                                       CustomJObjectParserDelegate<Address>?  CustomAddressParser)
         {
 
             try
             {
 
-                Address = null;
+                Address = default;
 
-                if (JSONObject?.HasValues != true)
+                if (JSON?.HasValues != true)
                 {
                     ErrorResponse = "The given JSON object must not be null or empty!";
                     return false;
                 }
 
-                #region Parse PrivacyLevel     [optional]
+                #region Parse Street                [mandatory]
 
-                if (JSONObject.ParseOptional("country",
-                                             "country",
-                                             Country.TryParse,
-                                             out Country country,
-                                             out ErrorResponse))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
-
-                #region Parse PostalCode       [optional]
-
-                if (JSONObject.ParseOptional("postalCode",
-                                             "postal code",
-                                             out String postalCode,
-                                             out ErrorResponse))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
-
-                #region Parse postalCodeSub    [optional]
-
-                if (JSONObject.ParseOptional("postalCodeSub",
-                                             "postal code sub",
-                                             out String postalCodeSub,
-                                             out ErrorResponse))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
-
-                #region Parse City             [optional]
-
-                if (JSONObject.ParseOptional("city",
-                                             "city",
-                                             out I18NString city,
-                                             out ErrorResponse))
-                {
-
-                    if (ErrorResponse != null)
-                        return false;
-
-                }
-
-                #endregion
-
-                #region Parse Street           [optional]
-
-                if (JSONObject.ParseOptional("street",
+                if (!JSON.ParseMandatoryText("street",
                                              "street",
-                                             out String street,
+                                             out String Street,
                                              out ErrorResponse))
                 {
+                    return false;
+                }
 
-                    if (ErrorResponse != null)
+                #endregion
+
+                #region Parse Country               [mandatory]
+
+                if (!JSON.ParseMandatory("country",
+                                         "country",
+                                         Illias.Country.TryParse,
+                                         out Country Country,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse PostalCode            [mandatory]
+
+                if (!JSON.ParseMandatoryText("postalCode",
+                                             "postal code",
+                                             out String PostalCode,
+                                             out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse City                  [mandatory]
+
+                if (!JSON.ParseMandatory("city",
+                                         "city",
+                                         out I18NString City,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                #region Parse HouseNumber           [optional]
+
+                if (JSON.ParseOptional("houseNumber",
+                                       "house number",
+                                       out String houseNumber,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
 
                 #endregion
 
-                #region Parse HouseNumber      [optional]
+                #region Parse FloorLevel            [optional]
 
-                if (JSONObject.ParseOptional("houseNumber",
-                                             "house number",
-                                             out String houseNumber,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("floorLevel",
+                                       "floor level",
+                                       out String floorLevel,
+                                       out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
 
                 #endregion
 
-                #region Parse FloorLevel       [optional]
+                #region Parse Region                [optional]
 
-                if (JSONObject.ParseOptional("floorLevel",
-                                             "floor level",
-                                             out String floorLevel,
-                                             out ErrorResponse))
+                if (JSON.ParseOptional("region",
+                                       "region",
+                                       out String Region,
+                                       out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
 
                 #endregion
 
-                #region Parse Comment          [optional]
+                #region Parse PostalCodeSub         [optional]
 
-                if (JSONObject.ParseOptional("comment",
-                                             "comment",
-                                             out I18NString comment,
+                if (JSON.ParseOptional("postalCodeSub",
+                                             "postal code sub",
+                                             out String PostalCodeSub,
                                              out ErrorResponse))
                 {
 
-                    if (ErrorResponse != null)
+                    if (ErrorResponse is not null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse TimeZone              [optional]
+
+                if (JSON.ParseOptional("TimeZone",
+                                       "time zone",
+                                       Time_Zone.TryParse,
+                                       out Time_Zone? TimeZone,
+                                       out ErrorResponse))
+                {
+                    if (ErrorResponse is not null)
+                        return false;
+                }
+
+                #endregion
+
+                #region Parse Comment               [optional]
+
+                if (JSON.ParseOptional("comment",
+                                       "comment",
+                                       out I18NString comment,
+                                       out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse OfficialLanguages     [optional]
+
+                if (JSON.ParseOptionalEnums("officialLanguages",
+                                            "official languages",
+                                            out HashSet<Languages> OfficialLanguages,
+                                            out ErrorResponse))
+                {
+
+                    if (ErrorResponse is not null)
                         return false;
 
                 }
@@ -425,27 +407,141 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #endregion
 
 
-                Address = new Address(street,
+                #region Parse CustomData            [optional]
+
+                var customData = JSON[nameof(CustomData)] as JObject;
+
+                #endregion
+
+
+                Address = new Address(Street,
+                                      PostalCode,
+                                      City,
+                                      Country,
+
                                       houseNumber,
                                       floorLevel,
-                                      postalCode,
-                                      postalCodeSub,
-                                      city,
-                                      country,
-                                      null,
-                                      comment);
+                                      Region,
+                                      PostalCodeSub,
+                                      TimeZone,
+                                      OfficialLanguages,
+                                      comment,
+
+                                      customData);
 
 
-                ErrorResponse = null;
+                if (CustomAddressParser is not null)
+                    Address = CustomAddressParser(JSON,
+                                                  Address);
+
                 return true;
 
             }
             catch (Exception e)
             {
-                ErrorResponse  = "Parsing the given address failed: " + e.Message;
-                Address        = null;
+                Address        = default;
+                ErrorResponse  = "The given JSON representation of an address is invalid: " + e.Message;
                 return false;
             }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out Address, out ErrorResponse, CustomAddressParser = null)
+
+        /// <summary>
+        /// Try to parse the given text representation of a address.
+        /// </summary>
+        /// <param name="Text">The text to parse.</param>
+        /// <param name="Address">The parsed address.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomAddressParser">A delegate to parse custom addresss JSON objects.</param>
+        public static Boolean TryParse(String                                 Text,
+                                       out Address?                           Address,
+                                       out String?                            ErrorResponse,
+                                       CustomJObjectParserDelegate<Address>?  CustomAddressParser)
+        {
+
+            try
+            {
+
+                return TryParse(JObject.Parse(Text),
+                                out Address,
+                                out ErrorResponse,
+                                CustomAddressParser);
+
+            }
+            catch (Exception e)
+            {
+                Address        = default;
+                ErrorResponse  = "The given text representation of an address is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON(Embedded = false, CustomAddressSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="CustomAddressSerializer">A delegate to serialize custom address JSON objects.</param>
+        public JObject ToJSON(Boolean                                    Embedded                  = false,
+                              CustomJObjectSerializerDelegate<Address>?  CustomAddressSerializer   = null)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           !Embedded
+                               ? new JProperty("@context", JSONLDContext.ToString())
+                               : null,
+
+                           new JProperty("street",                    Street),
+                           new JProperty("postalCode",                PostalCode),
+                           new JProperty("city",                      City.ToJSON()),
+                           new JProperty("country",                   Country.Alpha3Code),
+
+                           HouseNumber.IsNotNullOrEmpty()
+                               ? new JProperty("houseNumber",         HouseNumber)
+                               : null,
+
+                           FloorLevel.IsNotNullOrEmpty()
+                               ? new JProperty("floorLevel",          FloorLevel)
+                               : null,
+
+                           Region.IsNotNullOrEmpty()
+                               ? new JProperty("region",              Region)
+                               : null,
+
+                           PostalCodeSub.IsNotNullOrEmpty()
+                               ? new JProperty("postalCodeSub",       PostalCodeSub)
+                               : null,
+
+                           TimeZone.HasValue
+                               ? new JProperty("timeZone",            TimeZone.Value.ToString())
+                               : null,
+
+                           OfficialLanguages is not null && OfficialLanguages.Any()
+                               ? new JProperty("officialLanguages",   new JArray(OfficialLanguages.Select(language => language.ToString())))
+                               : null,
+
+                           Comment is not null && Comment.IsNeitherNullNorEmpty()
+                               ? new JProperty("comment",             Comment.ToJSON())
+                               : null,
+
+                           CustomData is not null && CustomData.HasValues
+                               ? new JProperty("customData",          CustomData)
+                               : null
+
+                       );
+
+            return CustomAddressSerializer is not null
+                       ? CustomAddressSerializer(this, JSON)
+                       : JSON;
 
         }
 
@@ -469,8 +565,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Object.ReferenceEquals(Address1, Address2))
                 return true;
 
-            // If one is null, but not both, return false.
-            if (((Object) Address1 == null) || ((Object) Address2 == null))
+            if (Address1 is null || Address2 is null)
                 return false;
 
             return Address1.Equals(Address2);
@@ -504,8 +599,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator < (Address Address1, Address Address2)
         {
 
-            if ((Object) Address1 == null)
-                throw new ArgumentNullException(nameof(Address1), "The given Address1 must not be null!");
+            if (Address1 is null)
+                throw new ArgumentNullException(nameof(Address1), "The given address must not be null!");
 
             return Address1.CompareTo(Address2) < 0;
 
@@ -537,8 +632,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator > (Address Address1, Address Address2)
         {
 
-            if ((Object)Address1 == null)
-                throw new ArgumentNullException(nameof(Address1), "The given Address1 must not be null!");
+            if (Address1 is null)
+                throw new ArgumentNullException(nameof(Address1), "The given address must not be null!");
 
             return Address1.CompareTo(Address2) > 0;
 
@@ -569,19 +664,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
-
-            var Address = Object as Address;
-            if ((Object)Address == null)
-                throw new ArgumentException("The given object is not an address identification!", nameof(Object));
-
-            return CompareTo(Address);
-
-        }
+            => Object is Address address
+                   ? CompareTo(address)
+                   : throw new ArgumentException("The given object is not an address!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -591,13 +679,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Address">An object to compare with.</param>
-        public Int32 CompareTo(Address Address)
+        public Int32 CompareTo(Address? Address)
         {
 
-            if ((Object) Address == null)
+            if (Address is null)
                 throw new ArgumentNullException(nameof(Address), "The given address must not be null!");
 
-            var c = Country.     CompareTo(Address.Country);
+            var c = Street.      CompareTo(Address.Street);
             if (c != 0)
                 return c;
 
@@ -609,7 +697,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (c != 0)
                 return c;
 
-            return Street.       CompareTo(Address.Street);
+            c = Country.         CompareTo(Address.Country);
+            if (c != 0)
+                return c;
+
+
+            if (HouseNumber   is not null && Address.HouseNumber   is not null)
+            {
+                c = HouseNumber.CompareTo(Address.HouseNumber);
+                if (c != 0)
+                    return c;
+            }
+
+            if (FloorLevel    is not null && Address.FloorLevel    is not null)
+            {
+                c = FloorLevel.CompareTo(Address.FloorLevel);
+                if (c != 0)
+                    return c;
+            }
+
+            if (Region        is not null && Address.Region        is not null)
+            {
+                c = Region.CompareTo(Address.Region);
+                if (c != 0)
+                    return c;
+            }
+
+            if (PostalCodeSub is not null && Address.PostalCodeSub is not null)
+            {
+                c = PostalCodeSub.CompareTo(Address.PostalCodeSub);
+                if (c != 0)
+                    return c;
+            }
+
+            if (TimeZone      is not null && Address.TimeZone      is not null)
+            {
+                c = TimeZone.Value.CompareTo(Address.TimeZone.Value);
+                if (c != 0)
+                    return c;
+            }
+
+
+            // OfficialLanguages
+
+
+            if (Comment is not null && Address.Comment is not null)
+            {
+                c = Comment.FirstText().CompareTo(Address.Comment.FirstText());
+                if (c != 0)
+                    return c;
+            }
+
+            return c;
 
         }
 
@@ -626,20 +765,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an Address.
-            var Address = Object as Address;
-            if ((Object) Address == null)
-                return false;
-
-            return this.Equals(Address);
-
-        }
+            => Object is Address address &&
+                   Equals(address);
 
         #endregion
 
@@ -650,30 +779,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Address">An address to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Address Address)
-        {
+        public Boolean Equals(Address? Address)
 
-            if ((Object) Address == null)
-                return false;
+            => Address is not null &&
 
-            try
-            {
+               String. Equals(Street,
+                              Address.Street,
+                              StringComparison.OrdinalIgnoreCase) &&
 
-            return Street.        Equals(Address.Street)        &&
-                   HouseNumber.   Equals(Address.HouseNumber)   &&
-                   FloorLevel.    Equals(Address.FloorLevel)    &&
-                   PostalCode.    Equals(Address.PostalCode)    &&
-                   PostalCodeSub. Equals(Address.PostalCodeSub) &&
-                   City.          Equals(Address.City)          &&
-                   Country.       Equals(Address.Country);
+               String. Equals(PostalCode,
+                              Address.PostalCode,
+                              StringComparison.OrdinalIgnoreCase) &&
 
-            }
-            catch (Exception e)
-            {
-                return false;
-            }
+               City.   Equals(Address.City)                       &&
+               Country.Equals(Address.Country)                    &&
 
-        }
+               String. Equals(HouseNumber,
+                              Address.HouseNumber,
+                              StringComparison.OrdinalIgnoreCase) &&
+
+               String. Equals(FloorLevel,
+                              Address.FloorLevel,
+                              StringComparison.OrdinalIgnoreCase) &&
+
+               String. Equals(Region,
+                              Address.Region,
+                              StringComparison.OrdinalIgnoreCase) &&
+
+               String. Equals(PostalCodeSub,
+                              Address.PostalCodeSub,
+                              StringComparison.OrdinalIgnoreCase) &&
+
+// TimeZone
+// OfficialLanguages
+
+               ((Comment is     null && Address.Comment is     null) ||
+                (Comment is not null && Address.Comment is not null && Comment.Equals(Address.Comment)));
 
         #endregion
 
@@ -690,13 +831,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             unchecked
             {
 
-                return Street.        GetHashCode() * 17 ^
-                       HouseNumber.   GetHashCode() * 13 ^
-                       FloorLevel.    GetHashCode() * 11 ^
-                       PostalCode.    GetHashCode() *  7 ^
-                       PostalCodeSub. GetHashCode() *  5 ^
-                       City.          GetHashCode() *  3 ^
-                       Country.       GetHashCode();
+                return Street.         GetHashCode()       * 29 ^
+                       PostalCode.     GetHashCode()       * 27 ^
+                       City.           GetHashCode()       * 23 ^
+                       Country.        GetHashCode()       * 17 ^
+
+                       (HouseNumber?.  GetHashCode() ?? 0) * 13 ^
+                       (FloorLevel?.   GetHashCode() ?? 0) * 11 ^
+                       (Region?.       GetHashCode() ?? 0) *  7 ^
+                       (PostalCodeSub?.GetHashCode() ?? 0) *  5 ^
+                       (TimeZone?.     GetHashCode() ?? 0) *  3 ^
+                       // OfficialLanguages
+                       (Comment?.      GetHashCode() ?? 0);
 
             }
         }

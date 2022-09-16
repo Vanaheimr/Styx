@@ -169,7 +169,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 //                                   out ErrorResponse))
                 //{
 
-                //    if (ErrorResponse != null)
+                //    if (ErrorResponse is not null)
                 //        return false;
 
                 //}
@@ -216,7 +216,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 //                             out ErrorResponse))
                 //{
 
-                //    if (ErrorResponse != null)
+                //    if (ErrorResponse is not null)
                 //        return false;
 
                 //}
