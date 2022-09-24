@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -39,55 +36,75 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
         [Optional]
-        public JObject?                    CustomData      { get; }
+        protected JObject?                CustomData      { get; }
 
         /// <summary>
         /// An optional dictionary of customer-specific data.
         /// </summary>
         [Optional]
-        public Dictionary<String, Object>  InternalData    { get; }
+        protected UserDefinedDictionary?  InternalData    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        /// <summary>
-        /// Create a new data structure for customer specific data.
-        /// </summary>
-        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        protected AInternalData(JObject?                     CustomData,
-                                Dictionary<String, Object>?  InternalData)
-        {
+        ///// <summary>
+        ///// Create a new data structure for customer specific data.
+        ///// </summary>
+        ///// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        //protected AInternalData(JObject?                     CustomData,
+        //                        Dictionary<String, Object?>  InternalData)
+        //{
 
-            this.CustomData    = CustomData;
-            this.InternalData  = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
-        }
+        //    this.CustomData    = CustomData;
+        //    this.InternalData  = InternalData is not null
+        //                             ? new UserDefinedDictionary(InternalData)
+        //                             : null;
 
-        /// <summary>
-        /// Create a new data structure for customer specific data.
-        /// </summary>
-        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        protected AInternalData(JObject?                              CustomData,
-                                IReadOnlyDictionary<String, Object>?  InternalData)
-        {
-
-            this.CustomData    = CustomData;
-            this.InternalData  = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
-
-        }
+        //}
 
         /// <summary>
         /// Create a new data structure for customer specific data.
         /// </summary>
         /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
-        protected AInternalData(JObject?                                    CustomData,
-                                IEnumerable<KeyValuePair<String, Object>>?  InternalData)
+        protected AInternalData(JObject?                CustomData,
+                                UserDefinedDictionary?  InternalData)
         {
 
             this.CustomData    = CustomData;
-            this.InternalData  = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+            this.InternalData  = InternalData;
 
         }
+
+
+
+
+
+        ///// <summary>
+        ///// Create a new data structure for customer specific data.
+        ///// </summary>
+        ///// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        //protected AInternalData(JObject?                              CustomData,
+        //                        IReadOnlyDictionary<String, Object>?  InternalData)
+        //{
+
+        //    this.CustomData    = CustomData;
+        //    this.InternalData  = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+
+        //}
+
+        ///// <summary>
+        ///// Create a new data structure for customer specific data.
+        ///// </summary>
+        ///// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        //protected AInternalData(JObject?                                    CustomData,
+        //                        IEnumerable<KeyValuePair<String, Object>>?  InternalData)
+        //{
+
+        //    this.CustomData    = CustomData;
+        //    this.InternalData  = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+
+        //}
 
         #endregion
 
@@ -95,32 +112,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         public Boolean HasInternalData
-            => InternalData != null && InternalData.Count > 0;
+
+            => InternalData is not null &&
+               InternalData.Any();
 
         public Boolean IsDefined(String Key)
         {
 
-            if (InternalData is null)
-                return false;
+            if (InternalData is not null &&
+                Key.IsNotNullOrEmpty())
+            {
+                return InternalData.ContainsKey(Key);
+            }
 
-            if (Key.IsNullOrEmpty())
-                return false;
-
-            return InternalData.ContainsKey(Key);
+            return false;
 
         }
 
         public Boolean IsDefined(String Key, Object Value)
         {
 
-            if (InternalData is null)
-                return false;
-
-            if (Key.IsNullOrEmpty())
-                return false;
-
-            if (InternalData.TryGetValue(Key, out Object? value))
+            if (InternalData is not null &&
+                Key.IsNotNullOrEmpty() &&
+                InternalData.TryGet(Key, out Object? value))
+            {
                 return Value.Equals(value);
+            }
 
             return false;
 
@@ -129,11 +146,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Object? GetInternalData(String Key)
         {
 
-            if (InternalData is null)
-                return null;
-
-            if (InternalData.TryGetValue(Key, out Object? value))
+            if (InternalData is not null &&
+                InternalData.TryGet(Key, out Object? value))
+            {
                 return value;
+            }
 
             return null;
 
@@ -142,20 +159,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public T? GetInternalDataAs<T>(String Key)
         {
 
-            if (InternalData is null)
-                return default;
-
-            try
+            if (InternalData is not null &&
+                InternalData.TryGet(Key, out Object? value) &&
+                value is T valueT)
             {
-
-                if (InternalData.TryGetValue(Key, out Object? value))
-                    return (T) value;
-
+                return valueT;
             }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-            catch (Exception)
-            { }
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
 
             return default;
 
@@ -170,31 +179,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            return InternalData.TryGetValue(Key, out Value);
+            return InternalData.TryGet(Key, out Value);
 
         }
 
         public Boolean TryGetInternalDataAs<T>(String Key, out T? Value)
         {
 
-            if (InternalData is not null)
+            if (InternalData is not null &&
+                InternalData.TryGet(Key, out Object? value) &&
+                value is T valueT)
             {
-
-                try
-                {
-
-                    if (InternalData.TryGetValue(Key, out Object? value))
-                    {
-                        Value = (T) value;
-                        return true;
-                    }
-
-                }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-                catch (Exception)
-                { }
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
-
+                Value = valueT;
+                return true;
             }
 
             Value = default;
@@ -207,9 +204,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               Action<Object>  ValueDelegate)
         {
 
-            if (InternalData  != null &&
-                ValueDelegate != null &&
-                InternalData.TryGetValue(Key, out Object? value) &&
+            if (InternalData  is not null &&
+                ValueDelegate is not null &&
+                InternalData.TryGet(Key, out Object? value) &&
                 value is not null)
             {
                 ValueDelegate(value);
@@ -220,154 +217,175 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public void IfDefinedAs<T>(String     Key,
                                    Action<T>  ValueDelegate)
         {
-
-            if (ValueDelegate is null)
-                return;
-
-            if (InternalData.TryGetValue(Key, out Object? value) &&
-                value is T valueT)
+            if (InternalData is not null)
             {
-                ValueDelegate(valueT);
-            }
+                lock (InternalData)
+                {
 
+                    if (ValueDelegate is not null &&
+                        InternalData.TryGet(Key, out Object? value) &&
+                        value is T valueT)
+                    {
+                        ValueDelegate(valueT);
+                    }
+
+                }
+            }
         }
 
 
-        /// <summary>
-        /// An abstract builder for internal customer-specific data.
-        /// </summary>
-        public abstract class Builder : IInternalDataBuilder
+        public void SetInternalData(String Key,
+                                    Object Value)
         {
-
-            #region Properties
-
-            /// <summary>
-            /// All internal data.
-            /// </summary>
-            protected Dictionary<String, Object>  internalData    { get; }
-
-            #endregion
-
-            #region Constructor(s)
-
-            /// <summary>
-            /// Create a new data structure for internal customer specific data.
-            /// </summary>
-            /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
-            protected Builder(Dictionary<String, Object>? InternalData = null)
+            if (InternalData is not null)
             {
-                this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
-            }
-
-            /// <summary>
-            /// Create a new data structure for customer specific data.
-            /// </summary>
-            /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
-            protected Builder(IReadOnlyDictionary<String, Object>? InternalData)
-            {
-                this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
-            }
-
-            /// <summary>
-            /// Create a new data structure for customer specific data.
-            /// </summary>
-            /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
-            protected Builder(IEnumerable<KeyValuePair<String, Object>>? InternalData = null)
-            {
-                this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
-            }
-
-            #endregion
-
-
-            public IEnumerable<KeyValuePair<String, Object>> InternalData
-                => internalData;
-
-
-            public void AddInternalData(String  Key,
-                                        Object  Value)
-            {
-                internalData.Add(Key, Value);
-            }
-
-            public void SetInternalData(String  Key,
-                                        Object  Value)
-            {
-                lock (internalData)
+                lock (InternalData)
                 {
-
-                    if (!internalData.ContainsKey(Key))
-                        internalData.Add(Key, Value);
-
-                    else
-                        internalData[Key] = Value;
-
+                    InternalData.Set(Key, Value);
                 }
             }
-
-            public Boolean HasInternalData
-                => internalData != null && internalData.Count > 0;
-
-            public Boolean IsDefined(String  Key)
-                => internalData.ContainsKey(Key);
-
-            public Object? GetInternalData(String  Key)
-            {
-
-                if (internalData.TryGetValue(Key, out Object? value))
-                    return value;
-
-                return null;
-
-            }
-
-            public T? GetInternalDataAs<T>(String  Key)
-            {
-
-                try
-                {
-                    if (internalData.TryGetValue(Key, out Object? value))
-                        return (T) value;
-                }
-                catch (Exception)
-                { }
-
-                return default;
-
-            }
-
-
-            public void IfDefined(String          Key,
-                                  Action<Object>  ValueDelegate)
-            {
-
-                if (ValueDelegate is null)
-                    return;
-
-                if (internalData.TryGetValue(Key, out Object? value) &&
-                    value is not null)
-                {
-                    ValueDelegate(value);
-                }
-
-            }
-
-            public void IfDefinedAs<T>(String     Key,
-                                       Action<T>  ValueDelegate)
-            {
-
-                if (ValueDelegate == null)
-                    return;
-
-                if (internalData.TryGetValue(Key, out Object? value) &&
-                    value is T valueT)
-                {
-                    ValueDelegate(valueT);
-                }
-
-            }
-
         }
+
+
+
+
+
+
+        ///// <summary>
+        ///// An abstract builder for internal customer-specific data.
+        ///// </summary>
+        //public abstract class Builder : IInternalDataBuilder
+        //{
+
+        //    #region Properties
+
+        //    /// <summary>
+        //    /// All internal data.
+        //    /// </summary>
+        //    protected Dictionary<String, Object>  internalData    { get; }
+
+        //    #endregion
+
+        //    #region Constructor(s)
+
+        //    /// <summary>
+        //    /// Create a new data structure for internal customer specific data.
+        //    /// </summary>
+        //    /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
+        //    protected Builder(Dictionary<String, Object>? InternalData = null)
+        //    {
+        //        this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+        //    }
+
+        //    /// <summary>
+        //    /// Create a new data structure for customer specific data.
+        //    /// </summary>
+        //    /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
+        //    protected Builder(IReadOnlyDictionary<String, Object>? InternalData)
+        //    {
+        //        this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+        //    }
+
+        //    /// <summary>
+        //    /// Create a new data structure for customer specific data.
+        //    /// </summary>
+        //    /// <param name="InternalData">An optional dictionary of internal customer-specific data.</param>
+        //    protected Builder(IEnumerable<KeyValuePair<String, Object>>? InternalData = null)
+        //    {
+        //        this.internalData = (InternalData?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value)) ?? new Dictionary<String, Object>();
+        //    }
+
+        //    #endregion
+
+
+        //    public IEnumerable<KeyValuePair<String, Object>> InternalData
+        //        => internalData;
+
+
+        //    public void AddInternalData(String  Key,
+        //                                Object  Value)
+        //    {
+        //        internalData.Add(Key, Value);
+        //    }
+
+        //    public void SetInternalData(String  Key,
+        //                                Object  Value)
+        //    {
+        //        lock (internalData)
+        //        {
+
+        //            if (!internalData.ContainsKey(Key))
+        //                internalData.Add(Key, Value);
+
+        //            else
+        //                internalData[Key] = Value;
+
+        //        }
+        //    }
+
+        //    public Boolean HasInternalData
+        //        => internalData != null && internalData.Count > 0;
+
+        //    public Boolean IsDefined(String  Key)
+        //        => internalData.ContainsKey(Key);
+
+        //    public Object? GetInternalData(String  Key)
+        //    {
+
+        //        if (internalData.TryGetValue(Key, out Object? value))
+        //            return value;
+
+        //        return null;
+
+        //    }
+
+        //    public T? GetInternalDataAs<T>(String  Key)
+        //    {
+
+        //        try
+        //        {
+        //            if (internalData.TryGetValue(Key, out Object? value))
+        //                return (T) value;
+        //        }
+        //        catch (Exception)
+        //        { }
+
+        //        return default;
+
+        //    }
+
+
+        //    public void IfDefined(String          Key,
+        //                          Action<Object>  ValueDelegate)
+        //    {
+
+        //        if (ValueDelegate is null)
+        //            return;
+
+        //        if (internalData.TryGetValue(Key, out Object? value) &&
+        //            value is not null)
+        //        {
+        //            ValueDelegate(value);
+        //        }
+
+        //    }
+
+        //    public void IfDefinedAs<T>(String     Key,
+        //                               Action<T>  ValueDelegate)
+        //    {
+
+        //        if (ValueDelegate == null)
+        //            return;
+
+        //        if (internalData.TryGetValue(Key, out Object? value) &&
+        //            value is T valueT)
+        //        {
+        //            ValueDelegate(valueT);
+        //        }
+
+        //    }
+
+        //}
 
     }
 

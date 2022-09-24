@@ -133,7 +133,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        I18NString?                  Comment             = null,
 
                        JObject?                     CustomData          = null,
-                       Dictionary<String, Object>?  InternalData        = null)
+                       UserDefinedDictionary?       InternalData        = null)
 
             : base(CustomData,
                    InternalData)
