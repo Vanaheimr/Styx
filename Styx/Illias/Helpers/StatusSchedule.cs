@@ -17,13 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -44,7 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize = 100;
 
-        private readonly List<Timestamped<T>> _StatusSchedule;
+        private readonly List<Timestamped<T>> statusSchedule;
 
         #endregion
 
@@ -52,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region CurrentStatus
 
-        private Timestamped<T> _CurrentStatus;
+        private Timestamped<T> currentStatus;
 
         /// <summary>
         /// The current status entry.
@@ -133,7 +127,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             this.MaxStatusHistorySize  = MaxStatusListSize;
-            this._StatusSchedule       = new List<Timestamped<T>>();
+            this.statusSchedule       = new List<Timestamped<T>>();
 
         }
 
@@ -153,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            _StatusSchedule.Add(InitialValue);
+            statusSchedule.Add(InitialValue);
 
         }
 
@@ -170,7 +164,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            _StatusSchedule.Add(InitialValue);
+            statusSchedule.Add(InitialValue);
 
         }
 
@@ -193,7 +187,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (InitialValues.IsNeitherNullNorEmpty())
             {
                 var Now = Timestamp.Now;
-                _StatusSchedule.AddRange(InitialValues.Select(_ => new Timestamped<T>(Now, _)));
+                statusSchedule.AddRange(InitialValues.Select(_ => new Timestamped<T>(Now, _)));
             }
 
         }
@@ -212,7 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (InitialValues.IsNeitherNullNorEmpty())
-                _StatusSchedule.AddRange(InitialValues);
+                statusSchedule.AddRange(InitialValues);
 
         }
 
@@ -258,27 +252,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         DateTime  Timestamp)
         {
 
-            lock (_StatusSchedule)
+            lock (statusSchedule)
             {
 
                 // Ignore 'insert' if the values are the same
-                if (_StatusSchedule.Count == 0 ||
-                    !EqualityComparer<T>.Default.Equals(Value, _StatusSchedule.First().Value))
+                if (statusSchedule.Count == 0 ||
+                    !EqualityComparer<T>.Default.Equals(Value, statusSchedule.First().Value))
                 {
 
-                    var _OldStatus = _CurrentStatus;
+                    var oldStatus         = currentStatus;
 
                     // Remove any old status having the same timestamp!
-                    var NewStatusSchedule = _StatusSchedule.
-                                                Where(status => status.Timestamp.ToIso8601() != Timestamp.ToIso8601()).
+                    var newStatusSchedule = statusSchedule.
+                                                Where (status => status.Timestamp.ToIso8601() != Timestamp.ToIso8601()).
                                                 ToList();
 
-                    NewStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
+                    newStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
 
-                    _StatusSchedule.Clear();
-                    _StatusSchedule.AddRange(NewStatusSchedule.
-                                                 OrderByDescending(v => v.Timestamp).
-                                                 Take(MaxStatusHistorySize));
+                    statusSchedule.Clear();
+                    statusSchedule.AddRange(newStatusSchedule.
+                                                OrderByDescending(v => v.Timestamp).
+                                                Take(MaxStatusHistorySize));
 
                     // Will call the change-events.
                     CheckCurrentStatus();
@@ -302,10 +296,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public StatusSchedule<T> Insert(IEnumerable<Timestamped<T>> StatusList)
         {
 
-            lock (_StatusSchedule)
+            lock (statusSchedule)
             {
 
-                var _OldStatus = _CurrentStatus;
+                var _OldStatus = currentStatus;
 
                 // Remove any old status having the same timestamp!
                 var NewStatusSchedule = StatusList.
@@ -317,7 +311,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             Take(MaxStatusHistorySize).
                                             ToArray();
 
-                _StatusSchedule.AddRange(NewStatusSchedule);
+                statusSchedule.AddRange(NewStatusSchedule);
 
                 CheckCurrentStatus(_OldStatus);
 
@@ -364,10 +358,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public StatusSchedule<T> Replace(IEnumerable<Timestamped<T>> StatusList)
         {
 
-            lock (_StatusSchedule)
+            lock (statusSchedule)
             {
 
-                var _OldStatus = _CurrentStatus;
+                var _OldStatus = currentStatus;
 
                 // Remove any status having the same timestamp!
                 var NewStatusSchedule = StatusList.
@@ -379,8 +373,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             Take(MaxStatusHistorySize).
                                             ToArray();
 
-                _StatusSchedule.Clear();
-                _StatusSchedule.AddRange(NewStatusSchedule);
+                statusSchedule.Clear();
+                statusSchedule.AddRange(NewStatusSchedule);
 
                 CheckCurrentStatus(_OldStatus);
 
@@ -398,32 +392,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
         private Timestamped<T> CheckCurrentStatus(Timestamped<T>? OldStatus = null)
         {
 
-            lock (_StatusSchedule)
+            lock (statusSchedule)
             {
 
-                var _OldStatus   = OldStatus.HasValue ? OldStatus.Value : _CurrentStatus;
-                var Now          = Timestamp.Now;
+                var oldStatus    = OldStatus.HasValue ? OldStatus.Value : currentStatus;
+                var now          = Timestamp.Now;
 
-                var HistoryList  = _StatusSchedule.Where(status => status.Timestamp <= Now).ToArray();
-                _CurrentStatus   = HistoryList.Any()
-                                       ? HistoryList.First()
+                var historyList  = statusSchedule.Where(status => status.Timestamp <= now).ToArray();
+                currentStatus    = historyList.Any()
+                                       ? historyList.First()
                                        : new Timestamped<T>(Timestamp.Now, default);
 
-                var FutureList   = _StatusSchedule.Where(status => status.Timestamp > Now).ToArray();
-                _NextStatus      = FutureList.Any()
-                                       ? FutureList.Last()
+                var futureList   = statusSchedule.Where(status => status.Timestamp > now).ToArray();
+                _NextStatus      = futureList.Any()
+                                       ? futureList.Last()
                                        : new Timestamped<T>?();
 
-                if (!EqualityComparer<T>.Default.Equals(_CurrentStatus.Value, _OldStatus.Value))
+                if (!EqualityComparer<T>.Default.Equals(currentStatus.Value, oldStatus.Value))
                     OnStatusChanged?.Invoke(Timestamp.Now,
                                             EventTracking_Id.New,
                                             this,
-                                            _OldStatus,
-                                            _CurrentStatus);
+                                            oldStatus,
+                                            currentStatus);
 
             }
 
-            return _CurrentStatus;
+            return currentStatus;
 
         }
 
@@ -437,7 +431,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public IEnumerator<Timestamped<T>> GetEnumerator()
 
-            => _StatusSchedule.
+            => statusSchedule.
                    OrderByDescending(status => status.Timestamp).
                    GetEnumerator();
 
@@ -446,7 +440,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
 
-            => _StatusSchedule.
+            => statusSchedule.
                    OrderByDescending(status => status.Timestamp).
                    GetEnumerator();
 

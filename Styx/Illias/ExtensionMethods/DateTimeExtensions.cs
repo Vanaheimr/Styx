@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -74,8 +68,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Fractions">Iclude the fractions of seconds.</param>
         /// <returns>The DateTime formated as "yyyy-MM-ddTHH:mm:ss.fff" + "Z"</returns>
         /// <example>2014-02-01T15:45:00.000Z</example>
-        public static String ToIso8601(this DateTime DateTime, Boolean Fractions = true)
-            => DateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "")) + "Z";
+        public static String ToIso8601(this DateTime  DateTime,
+                                       Boolean        Fractions   = true)
+
+            => DateTime.ToUniversalTime().
+                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "")) + "Z";
 
         #endregion
 
@@ -88,7 +85,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Fractions">Iclude the fractions of seconds.</param>
         /// <returns>The DateTime formated as "yyyy-MM-ddTHH:mm:ss.fffzzz"</returns>
         /// <example>2014-02-01T15:45:00.000+00:00</example>
-        public static String ToIso8601WithOffset(this DateTime DateTime, Boolean Fractions = true)
+        public static String ToIso8601WithOffset(this DateTime  DateTime,
+                                                 Boolean        Fractions   = true)
 
             => (DateTime.Kind == DateTimeKind.Utc
                     ? DateTime.ToLocalTime()
