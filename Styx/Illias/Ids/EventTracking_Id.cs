@@ -158,8 +158,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public EventTracking_Id Clone
 
-            => new EventTracking_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

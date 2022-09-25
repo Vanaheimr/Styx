@@ -159,8 +159,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public DataLicense_Id Clone
 
-            => new DataLicense_Id(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion

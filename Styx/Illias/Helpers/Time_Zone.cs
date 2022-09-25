@@ -162,8 +162,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Time_Zone Clone
 
-            => new Time_Zone(
-                   new String(InternalId.ToCharArray())
+            => new (
+                   new String(InternalId?.ToCharArray())
                );
 
         #endregion
