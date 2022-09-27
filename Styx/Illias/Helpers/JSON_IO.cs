@@ -82,6 +82,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region ToUTF8Bytes(this JSONObject, Format = None)
+
+        public static Byte[] ToUTF8Bytes(this JObject                JSONObject,
+                                         Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
+        {
+
+            if (JSONObject == null)
+                return new Byte[0];
+
+            return Encoding.UTF8.GetBytes(JSONObject.ToString(Format));
+
+        }
+
+        #endregion
+
     }
 
     /// <summary>
@@ -191,15 +207,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-    }
 
-    /// <summary>
-    /// Extension methods for JSON representations of common classes.
-    /// </summary>
-    public static class JSONExtensionsOld
-    {
-
-        #region ToUTF8Bytes(this JSONArray,  Format = None)
+        #region ToUTF8Bytes(this JSONArray, Format = None)
 
         public static Byte[] ToUTF8Bytes(this JArray                 JSONArray,
                                          Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
@@ -214,21 +223,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToUTF8Bytes(this JSONObject, Format = None)
+    }
 
-        public static Byte[] ToUTF8Bytes(this JObject                JSONObject,
-                                         Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
-        {
-
-            if (JSONObject == null)
-                return new Byte[0];
-
-            return Encoding.UTF8.GetBytes(JSONObject.ToString(Format));
-
-        }
-
-        #endregion
-
+    /// <summary>
+    /// Extension methods for JSON representations of common classes.
+    /// </summary>
+    public static class JSONExtensionsOld
+    {
 
         #region ToJSON(this Decimal, JPropertyKey)
 
@@ -294,63 +295,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => Text.IsNotNullOrEmpty()
                    ? new JProperty(JPropertyKey, Text)
-                   : null;
-
-        #endregion
-
-
-        #region ToJSON(this DataLicenseIds)
-
-        public static JArray ToJSON(this IEnumerable<DataLicense_Id> DataLicenseIds)
-
-            => DataLicenseIds != null
-                   ? new JArray(DataLicenseIds)
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicenseIds, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<DataLicense_Id> DataLicenseIds, String JPropertyKey)
-
-            => DataLicenseIds != null
-                   ? new JProperty(JPropertyKey, new JArray(DataLicenseIds))
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicense)
-
-        public static JObject ToJSON(this DataLicense DataLicense)
-
-            => DataLicense != null
-                   ? JSONObject.Create(
-                         new JProperty("@id",          DataLicense.Id.ToString()),
-                         new JProperty("@context",     "https://opendata.social/contexts/dataLicenses"),
-                         new JProperty("description",  DataLicense.Description),
-                         new JProperty("uris",         new JArray(DataLicense.URIs))
-                     )
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicenses)
-
-        public static JArray ToJSON(this IEnumerable<DataLicense> DataLicenses)
-
-            => DataLicenses != null
-                   ? new JArray(DataLicenses.SafeSelect(ToJSON))
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicenses, JPropertyKey)
-
-        public static JProperty ToJSON(this IEnumerable<DataLicense> DataLicenses, String JPropertyKey)
-
-            => DataLicenses != null
-                   ? new JProperty(JPropertyKey,
-                                   new JArray(DataLicenses.SafeSelect(license => license.ToJSON())))
                    : null;
 
         #endregion

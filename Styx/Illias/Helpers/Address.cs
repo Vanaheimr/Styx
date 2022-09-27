@@ -488,7 +488,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
         /// <param name="CustomAddressSerializer">A delegate to serialize custom address JSON objects.</param>
         public JObject ToJSON(Boolean                                    Embedded                  = false,
                               CustomJObjectSerializerDelegate<Address>?  CustomAddressSerializer   = null)
