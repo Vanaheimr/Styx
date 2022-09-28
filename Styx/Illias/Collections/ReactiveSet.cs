@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -36,66 +28,70 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private readonly HashSet<T> _Set;
+        private readonly HashSet<T> internalSet;
 
         #endregion
 
         #region Properties
 
-        #region Count
-
         /// <summary>
         /// The number of items stored within this reactive set.
         /// </summary>
         public UInt64 Count
-        {
-            get
-            {
-                return (UInt64) _Set.Count;
-            }
-        }
+
+            => (UInt64) internalSet.Count;
 
         #endregion
+
+        #region Typed Delegates
+
+        /// <summary>
+        /// A delegate called whenever an item was added to the reactive set.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnItemAddedDelegate  (DateTime        Timestamp,
+                                                   ReactiveSet<T>  ReactiveSet,
+                                                   T               Item);
+
+        /// <summary>
+        /// A delegate called whenever an item was removed from the reactive set.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnItemRemovedDelegate(DateTime        Timestamp,
+                                                   ReactiveSet<T>  ReactiveSet,
+                                                   T               Item);
+
+        /// <summary>
+        /// A delegate called whenever the reactive set changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnSetChangedDelegate (DateTime         Timestamp,
+                                                   ReactiveSet<T>   ReactiveSet,
+                                                   IEnumerable<T>   NewItems,
+                                                   IEnumerable<T>?  OldItems = null);
 
         #endregion
 
         #region Events
 
-        #region OnItemAdded
+        /// <summary>
+        /// An event fired whenever an item was added to the reactive set.
+        /// </summary>
+        public event OnItemAddedDelegate?    OnItemAdded;
 
         /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// An event fired whenever an item was removed from the reactive set.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnItemAddedDelegate(DateTime Timestamp, ReactiveSet<T> ReactiveSet, T Item);
+        public event OnItemRemovedDelegate?  OnItemRemoved;
 
         /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// An event fired whenever the reactive set changed.
         /// </summary>
-        public event OnItemAddedDelegate OnItemAdded;
-
-        #endregion
-
-        #region OnItemRemoved
-
-        /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnItemRemovedDelegate(DateTime Timestamp, ReactiveSet<T> ReactiveSet, T Item);
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        public event OnItemRemovedDelegate OnItemRemoved;
-
-        #endregion
+        public event OnSetChangedDelegate?   OnSetChanged;
 
         #endregion
 
         #region Constructor(s)
-
-        #region ReactiveSet(params Items)
 
         /// <summary>
         /// Create a new reactive set storing on the given items.
@@ -104,17 +100,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public ReactiveSet(params T[] Items)
         {
 
-            if (Items == null)
-                this._Set = new HashSet<T>();
-
-            else
-                this._Set = new HashSet<T>(Items);
+            this.internalSet = Items is null
+                                   ? new HashSet<T>()
+                                   : new HashSet<T>(Items);
 
         }
-
-        #endregion
-
-        #region ReactiveSet(Items)
 
         /// <summary>
         /// Create a new reactive set storing on the given items.
@@ -123,16 +113,43 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public ReactiveSet(IEnumerable<T> Items)
         {
 
-            this._Set = new HashSet<T>(Items);
+            this.internalSet = Items is null
+                                   ? new HashSet<T>()
+                                   : new HashSet<T>(Items);
 
         }
 
         #endregion
 
+
+        #region AddAndReturn(Item)
+
+        /// <summary>
+        /// Add the given item to the reactive set and return it.
+        /// </summary>
+        /// <param name="Item">An item.</param>
+        public T AddAndReturn(T Item)
+        {
+
+            if (Item is not null)
+            {
+
+                lock (internalSet)
+                {
+                    internalSet.Add(Item);
+                }
+
+                OnItemAdded?.Invoke(Timestamp.Now, this, Item);
+
+            }
+
+            return Item;
+
+        }
+
         #endregion
 
-
-        #region Add(Items...)
+        #region Add    (Items...)
 
         /// <summary>
         /// Add the given array of items to the reactive set.
@@ -144,30 +161,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Add(Items)
+        #region Add    (Items, OnlyOneEvent = false)
 
         /// <summary>
         /// Add the given enumeration of items to the reactive set.
         /// </summary>
         /// <param name="Items">An enumeration of items.</param>
-        public ReactiveSet<T> Add(IEnumerable<T> Items)
+        /// <param name="OnlyOneEvent">Send only a single change event.</param>
+        public ReactiveSet<T> Add(IEnumerable<T>  Items,
+                                  Boolean         OnlyOneEvent = false)
         {
 
-            if (Items != null && Items.Any())
-                lock(_Set)
+            if (Items is not null && Items.Any())
+            {
+
+                lock(internalSet)
                 {
-
-                    var Timestamp = DateTime.Now;
-
-                    Items.ForEach(Item => {
-
-                        _Set.Add(Item);
-
-                         OnItemAdded?.Invoke(Timestamp, this, Item);
-
-                    });
-
+                    foreach (var item in Items)
+                        internalSet.Add(item);
                 }
+
+                var timestamp = Timestamp.Now;
+
+                if (!OnlyOneEvent)
+                    foreach (var item in Items)
+                        OnItemAdded?.Invoke(timestamp, this, item);
+
+                OnSetChanged?.Invoke(timestamp, this, Items);
+
+            }
 
             return this;
 
@@ -175,28 +197,96 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturn(Item)
+        #region Set    (Items, OnlyOneEvent = false)
 
         /// <summary>
-        /// Add the given item to the reactive set and return it.
+        /// Remove the given enumeration of items from the reactive set.
         /// </summary>
-        /// <param name="Item">An item.</param>
-        public T AddAndReturn(T Item)
+        /// <param name="Items">An enumeration of items.</param>
+        /// <param name="OnlyOneEvent">Send only a single change event.</param>
+        public ReactiveSet<T> Set(IEnumerable<T>  Items,
+                                  Boolean         OnlyOneEvent = false)
         {
 
-            if (Item != null)
-                lock(_Set)
+            if (Items is not null &&
+                Items.Any())
+            {
+
+                var toAdd     = new List<T>();
+                var toRemove  = new List<T>();
+
+                lock (internalSet)
                 {
 
-                    var Timestamp = DateTime.Now;
+                    toAdd.   AddRange(Items.      Except(internalSet));
+                    toRemove.AddRange(internalSet.Except(Items));
 
-                    _Set.Add(Item);
+                    foreach (var item in toRemove)
+                        internalSet.Remove(item);
 
-                    OnItemAdded?.Invoke(Timestamp, this, Item);
+                    foreach (var item in toAdd)
+                        internalSet.Add   (item);
 
                 }
 
-            return Item;
+                var timestamp = Timestamp.Now;
+
+                if (!OnlyOneEvent)
+                {
+
+                    foreach (var item in toRemove)
+                        OnItemRemoved?.Invoke(timestamp, this, item);
+
+                    foreach (var item in toAdd)
+                        OnItemAdded?.  Invoke(timestamp, this, item);
+
+                }
+
+                OnSetChanged?.Invoke(timestamp, this, toAdd.Concat(toRemove));
+
+            }
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region Replace(Items, OnlyOneEvent = false)
+
+        /// <summary>
+        /// Add the given enumeration of items to the reactive set.
+        /// </summary>
+        /// <param name="Items">An enumeration of items.</param>
+        /// <param name="OnlyOneEvent">Send only a single change event.</param>
+        public ReactiveSet<T> Replace(IEnumerable<T>  Items,
+                                      Boolean         OnlyOneEvent = false)
+        {
+
+            if (Items is not null && Items.Any())
+            {
+
+                lock (internalSet)
+                {
+
+                    internalSet.Clear();
+
+                    foreach (var item in Items)
+                        internalSet.Add(item);
+
+                }
+
+                var timestamp = Timestamp.Now;
+
+                if (!OnlyOneEvent)
+                    foreach (var item in Items)
+                        OnItemAdded?.Invoke(timestamp, this, item);
+
+                OnSetChanged?.Invoke(timestamp, this, Items);
+
+            }
+
+            return this;
 
         }
 
@@ -212,7 +302,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>true if the reactive set contains the specified item; otherwise, false.</returns>
         public Boolean Contains(T Item)
 
-            => _Set.Contains(Item);
+            => internalSet.Contains(Item);
 
         #endregion
 
@@ -228,30 +318,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Remove(Items)
+        #region Remove(Items, OnlyOneEvent = false)
 
         /// <summary>
         /// Remove the given enumeration of items from the reactive set.
         /// </summary>
         /// <param name="Items">An enumeration of items.</param>
-        public ReactiveSet<T> Remove(IEnumerable<T> Items)
+        /// <param name="OnlyOneEvent">Send only a single change event.</param>
+        public ReactiveSet<T> Remove(IEnumerable<T>  Items,
+                                     Boolean         OnlyOneEvent = false)
         {
 
-            if (Items != null && Items.Any())
-                lock(_Set)
+            if (Items is not null &&
+                Items.Any())
+            {
+
+                lock(internalSet)
                 {
-
-                    var Timestamp = DateTime.Now;
-
-                    Items.ForEach(Item => {
-
-                        _Set.Remove(Item);
-
-                        OnItemRemoved?.Invoke(Timestamp, this, Item);
-
-                    });
-
+                    foreach (var item in Items)
+                        internalSet.Remove(item);
                 }
+
+                var timestamp = Timestamp.Now;
+
+                if (!OnlyOneEvent)
+                    foreach (var item in Items)
+                        OnItemRemoved?.Invoke(timestamp, this, item);
+
+                OnSetChanged?.Invoke(timestamp, this, Items);
+
+            }
 
             return this;
 
@@ -259,40 +355,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-
-        #region Set(Items)
+        #region Clear()
 
         /// <summary>
-        /// Remove the given enumeration of items from the reactive set.
+        /// Remove all items from the reactive set.
         /// </summary>
-        /// <param name="Items">An enumeration of items.</param>
-        public ReactiveSet<T> Set(IEnumerable<T> Items)
+        public void Clear()
         {
-
-            if (Items?.Any() == true)
+            lock (internalSet)
             {
-                lock (_Set)
-                {
-
-                    var ToAdd      = Items.Except(_Set). ToArray();
-                    var ToRemove   = _Set. Except(Items).ToArray();
-                    var Timestamp  = DateTime.Now;
-
-                    ToRemove.ForEach(Item => {
-                        _Set.Remove(Item);
-                        OnItemRemoved?.Invoke(Timestamp, this, Item);
-                    });
-
-                    ToAdd.ForEach(Item => {
-                        _Set.Add(Item);
-                        OnItemAdded?.  Invoke(Timestamp, this, Item);
-                    });
-
-                }
+                internalSet.Clear();
             }
-
-            return this;
-
         }
 
         #endregion
@@ -308,7 +381,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ReactiveSet<T> ReactiveSet1, ReactiveSet<T> ReactiveSet2)
+        public static Boolean operator == (ReactiveSet<T> ReactiveSet1,
+                                           ReactiveSet<T> ReactiveSet2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -316,7 +390,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ReactiveSet1 == null) || ((Object) ReactiveSet2 == null))
+            if (ReactiveSet1 is null || ReactiveSet2 is null)
                 return false;
 
             return ReactiveSet1.Equals(ReactiveSet2);
@@ -333,10 +407,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ReactiveSet<T> ReactiveSet1, ReactiveSet<T> ReactiveSet2)
-        {
-            return !(ReactiveSet1 == ReactiveSet2);
-        }
+        public static Boolean operator != (ReactiveSet<T> ReactiveSet1,
+                                           ReactiveSet<T> ReactiveSet2)
+
+            => !(ReactiveSet1 == ReactiveSet2);
 
         #endregion
 
@@ -348,11 +422,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ReactiveSet<T> ReactiveSet1, ReactiveSet<T> ReactiveSet2)
+        public static Boolean operator < (ReactiveSet<T> ReactiveSet1,
+                                          ReactiveSet<T> ReactiveSet2)
         {
 
-            if ((Object) ReactiveSet1 == null)
-                throw new ArgumentNullException("The given ReactiveSet1 must not be null!");
+            if (ReactiveSet1 is null)
+                throw new ArgumentNullException(nameof(ReactiveSet1), "The given ReactiveSet1 must not be null!");
 
             return ReactiveSet1.Count < ReactiveSet2.Count;
 
@@ -368,10 +443,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ReactiveSet<T> ReactiveSet1, ReactiveSet<T> ReactiveSet2)
-        {
-            return !(ReactiveSet1 > ReactiveSet2);
-        }
+        public static Boolean operator <= (ReactiveSet<T> ReactiveSet1,
+                                           ReactiveSet<T> ReactiveSet2)
+
+            => !(ReactiveSet1 > ReactiveSet2);
 
         #endregion
 
@@ -383,11 +458,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ReactiveSet<T> ReactiveSet1, ReactiveSet<T> ReactiveSet2)
+        public static Boolean operator > (ReactiveSet<T> ReactiveSet1,
+                                          ReactiveSet<T> ReactiveSet2)
         {
 
-            if ((Object) ReactiveSet1 == null)
-                throw new ArgumentNullException("The given ReactiveSet1 must not be null!");
+            if (ReactiveSet1 is null)
+                throw new ArgumentNullException(nameof(ReactiveSet1), "The given ReactiveSet1 must not be null!");
 
             return ReactiveSet1.Count > ReactiveSet2.Count;
 
@@ -403,10 +479,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ReactiveSet<T> ReactiveSet1, ReactiveSet<T> ReactiveSet2)
-        {
-            return !(ReactiveSet1 < ReactiveSet2);
-        }
+        public static Boolean operator >= (ReactiveSet<T> ReactiveSet1,
+                                           ReactiveSet<T> ReactiveSet2)
+
+            => !(ReactiveSet1 < ReactiveSet2);
 
         #endregion
 
@@ -418,17 +494,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Enumerate the reactive list.
         /// </summary>
         public IEnumerator<T> GetEnumerator()
-        {
-            return _Set.GetEnumerator();
-        }
+            => internalSet.GetEnumerator();
 
         /// <summary>
         /// Enumerate the reactive list.
         /// </summary>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _Set.GetEnumerator();
-        }
+            => internalSet.GetEnumerator();
 
         #endregion
 
@@ -441,20 +513,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a reactive set.
-            var ReactiveSet = Object as ReactiveSet<T>;
-            if ((Object) ReactiveSet == null)
-                return false;
-
-            return this.Equals(ReactiveSet);
-
-        }
+            => Object is ReactiveSet<T> reactiveSet &&
+                  Equals(reactiveSet);
 
         #endregion
 
@@ -464,19 +526,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two reactive sets for equality.
         /// </summary>
         /// <param name="ReactiveSet">A reactive set to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ReactiveSet<T> ReactiveSet)
-        {
+        public Boolean Equals(ReactiveSet<T>? ReactiveSet)
 
-            if ((Object) ReactiveSet == null)
-                return false;
-
-            if (this.Count != ReactiveSet.Count)
-                return false;
-
-            return _Set.All(item => ReactiveSet.Contains(item));
-
-        }
+            => ReactiveSet is not null &&
+               internalSet.Count == ReactiveSet.internalSet.Count &&
+               internalSet.All(item => ReactiveSet.Contains(item));
 
         #endregion
 
@@ -488,9 +542,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return _Set.GetHashCode();
-        }
+            => internalSet.GetHashCode();
 
         #endregion
 
@@ -500,9 +552,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return "'" + _Set.AggregateWith(", ") + "'";
-        }
+
+            => String.Concat("'", internalSet.AggregateWith(", "), "'");
 
         #endregion
 

@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -50,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tags">Additional tags.</param>
         public MandatoryAttribute(params String[] Tags)
         {
-            this.Tags = Tags?.Where(tag => tag.IsNotNullOrEmpty()).Distinct().ToArray();
+            this.Tags = Tags?.Where(tag => tag.IsNotNullOrEmpty()).Distinct().ToArray() ?? Array.Empty<String>();
         }
 
     }

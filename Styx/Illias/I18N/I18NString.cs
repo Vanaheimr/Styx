@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -155,26 +152,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return I18NString.
                        Select(v => @"<span class=""I18N_" + v.Language + @"""><a href=""" + URI + @"?language=en"">" + v.Text + "</a></span>").
                        AggregateWith(Environment.NewLine);
-
-        }
-
-        #endregion
-
-
-        #region ToJSON(this I18NString, JPropertyKey)
-
-        /// <summary>
-        /// Return a JSON representation of the given internationalized string.
-        /// </summary>
-        /// <param name="I18NString">An internationalized string.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key.</param>
-        public static JProperty ToJSON(this I18NString I18NString, String JPropertyKey)
-        {
-
-            if (I18NString == null || !I18NString.Any())
-                return null;
-
-            return new JProperty(JPropertyKey, I18NString.ToJSON());
 
         }
 

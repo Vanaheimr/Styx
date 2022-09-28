@@ -15,10 +15,18 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using Newtonsoft.Json.Linq;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-
+    /// <summary>
+    /// Extension methods for timestamped values.
+    /// </summary>
     public static class TimestampedExtensions
     {
 
@@ -32,8 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (OrderedEnumeration.Length > 0)
             {
 
-                for (var i = 0; i < OrderedEnumeration.Length - 1; i++)
-                {
+                for (var i = 0; i < OrderedEnumeration.Length - 1; i++) {
                     if (!OrderedEnumeration[i].Equals(OrderedEnumeration[i + 1]))
                         yield return OrderedEnumeration[i];
                 }
@@ -43,6 +50,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
         }
+
+
+        /// <summary>
+        /// Return a JSON representation of the given timestamped value.
+        /// </summary>
+        /// <param name="TimestampedT">A timestamped value.</param>
+        public static JObject ToJSON<T>(this Timestamped<T> TimestampedT)
+
+            => new (
+                   new JProperty("timestamp", TimestampedT.Timestamp.ToIso8601()),
+                   new JProperty("value",     TimestampedT.Value?.   ToString())
+               );
 
 
     }

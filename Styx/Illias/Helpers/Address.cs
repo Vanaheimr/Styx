@@ -118,7 +118,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Comment">An optional text/comment to describe the address.</param>
         /// 
         /// <param name="CustomData">Optional custom data, e.g. in combination with custom parsers and serializers.</param>
-        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        /// <param name="InternalData">An optional dictionary of internal data.</param>
         public Address(String                       Street,
                        String                       PostalCode,
                        I18NString                   City,

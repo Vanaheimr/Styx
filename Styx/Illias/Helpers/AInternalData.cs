@@ -18,6 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
+using System.Runtime.CompilerServices;
 
 #endregion
 
@@ -38,11 +39,50 @@ namespace org.GraphDefined.Vanaheimr.Illias
         [Optional]
         protected JObject                CustomData      { get; }
 
+
         /// <summary>
         /// An optional dictionary of customer-specific data.
         /// </summary>
         [Optional]
         protected UserDefinedDictionary  InternalData    { get; }
+
+
+        #region LastChange
+
+        private DateTime lastChange;
+
+        /// <summary>
+        /// The timestamp of the last changes within this ChargingPool.
+        /// Can be used as a HTTP ETag.
+        /// </summary>
+        [Mandatory]
+        public DateTime LastChange
+        {
+
+            get
+            {
+                return lastChange;
+            }
+
+            set
+            {
+                SetProperty(ref lastChange,
+                            value,
+                            EventTracking_Id.New);
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// An event called whenever a property of this entity changed.
+        /// </summary>
+        public event OnPropertyChangedDelegate? OnPropertyChanged;
 
         #endregion
 
@@ -51,13 +91,109 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Create a new data structure for customer specific data.
         /// </summary>
-        /// <param name="InternalData">An optional dictionary of customer-specific data.</param>
+        /// <param name="InternalData">An optional dictionary of internal data.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData)
         {
 
             this.CustomData    = CustomData   ?? new JObject();
             this.InternalData  = InternalData ?? new UserDefinedDictionary();
+
+        }
+
+        #endregion
+
+
+        #region SetProperty<T>(ref FieldToChange, NewValue, EventTrackingId = null, [CallerMemberName])
+
+        /// <summary>
+        /// Change the given field and call the OnPropertyChanged event.
+        /// </summary>
+        /// <typeparam name="T">The type of the field to be changed.</typeparam>
+        /// <param name="FieldToChange">A reference to the field to be changed.</param>
+        /// <param name="NewValue">The new value of the field to be changed.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
+        public void SetProperty<T>(ref                T                  FieldToChange,
+                                                      T                  NewValue,
+                                                      EventTracking_Id?  EventTrackingId   = null,
+                                   [CallerMemberName] String             PropertyName      = "")
+        {
+
+            if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
+            {
+
+                var OldValue       = FieldToChange;
+                    FieldToChange  = NewValue;
+
+                PropertyChanged(PropertyName,
+                                OldValue,
+                                NewValue,
+                                EventTrackingId ?? EventTracking_Id.New);
+
+            }
+
+        }
+
+        #endregion
+
+        #region DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
+
+        /// <summary>
+        /// Delete the given field and call the OnPropertyChanged event.
+        /// </summary>
+        /// <typeparam name="T">The type of the field to be deleted.</typeparam>
+        /// <param name="FieldToChange">A reference to the field to be deleted.</param>
+        /// <param name="PropertyName">The name of the property to be deleted (set by the compiler!)</param>
+        public void DeleteProperty<T>(ref                T       FieldToChange,
+                                      [CallerMemberName] String  PropertyName = "")
+        {
+
+            if (FieldToChange != null)
+            {
+
+                var OldValue       = FieldToChange;
+                    FieldToChange  = default(T);
+
+                PropertyChanged(PropertyName, OldValue, default(T));
+
+            }
+
+        }
+
+        #endregion
+
+        #region PropertyChanged<T>(PropertyName, OldValue, NewValue, EventTrackingId)
+
+        /// <summary>
+        /// Notify subscribers that a property has changed.
+        /// </summary>
+        /// <typeparam name="T">The type of the changed property.</typeparam>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        public void PropertyChanged<T>(String             PropertyName,
+                                       T                  OldValue,
+                                       T                  NewValue,
+                                       EventTracking_Id?  EventTrackingId = null)
+        {
+
+            #region Initial checks
+
+            if (PropertyName is null)
+                throw new ArgumentNullException(nameof(PropertyName), "The given property name must not be null!");
+
+            #endregion
+
+            this.lastChange = Timestamp.Now;
+
+            OnPropertyChanged?.Invoke(LastChange,
+                                      EventTrackingId ?? EventTracking_Id.New,
+                                      this,
+                                      PropertyName,
+                                      OldValue,
+                                      NewValue);
 
         }
 
