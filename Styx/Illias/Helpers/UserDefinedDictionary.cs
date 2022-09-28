@@ -38,8 +38,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    EventTracking_Id  EventTrackingId,
                                                    Object            Sender,
                                                    String            PropertyName,
-                                                   Object            OldValue,
-                                                   Object            NewValue);
+                                                   Object?           OldValue,
+                                                   Object?           NewValue);
 
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     }
 
-    public class UserDefinedDictionary : IEnumerable<KeyValuePair<String, Object>>
+    public class UserDefinedDictionary : IEnumerable<KeyValuePair<String, Object?>>
     {
 
         #region Data
@@ -90,6 +90,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Create a new user-defined dictionary.
+        /// </summary>
+        /// <param name="InternalData">Optional data for initialization.</param>
         public UserDefinedDictionary(Dictionary<String, Object?>? InternalData = null)
         {
             InternalDictionary = InternalData ?? new Dictionary<String, Object?>();
@@ -101,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Set(Key, NewValue, OldValue = null, EventTrackingId = null)
 
         public SetPropertyResult Set(String             Key,
-                                     Object             NewValue,
+                                     Object?            NewValue,
                                      Object?            OldValue          = null,
                                      EventTracking_Id?  EventTrackingId   = null)
         {
@@ -128,10 +132,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                if (currentValue.ToString() != OldValue.ToString())
+                if (currentValue?.ToString() != OldValue?.ToString())
                     return SetPropertyResult.Conflict;
 
-                if (NewValue != null)
+                if (NewValue is not null)
                 {
 
                     InternalDictionary[Key] = NewValue;
@@ -165,6 +169,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region IsEmpty
+
+        public Boolean IsEmpty
+            => !InternalDictionary.Any();
+
+        #endregion
+
         #region ContainsKey(Key)
 
         public Boolean ContainsKey(String Key)
@@ -173,34 +184,75 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Contains(Key, Value)
+        #region Contains(Key, ExpectedValue)
 
         public Boolean Contains(String  Key,
-                                Object  Value)
+                                Object? ExpectedValue)
         {
+            lock (InternalDictionary)
+            {
 
-            if (!InternalDictionary.TryGetValue(Key, out Object? CurrentValue))
-                return false;
+                if (!InternalDictionary.TryGetValue(Key, out Object? currentValue))
+                    return false;
 
-            return CurrentValue.ToString() == Value.ToString();
+                return currentValue?.Equals(ExpectedValue) == true;
 
+            }
         }
 
         #endregion
 
         #region Contains(KeyValuePair)
 
-        public Boolean Contains(KeyValuePair<String, Object>  KeyValuePair)
+        public Boolean Contains(KeyValuePair<String, Object?>  KeyValuePair)
 
-            => Contains(KeyValuePair.Key, KeyValuePair.Value);
+            => Contains(KeyValuePair.Key,
+                        KeyValuePair.Value);
 
         #endregion
+
+        #region IfDefined(Key, out ValueDelegate)
+
+        public void IfDefined(String          Key,
+                              Action<Object>  ValueDelegate)
+        {
+
+            if (ValueDelegate is not null &&
+                InternalDictionary.TryGetValue(Key, out Object? value) &&
+                value is not null)
+            {
+                ValueDelegate(value);
+            }
+
+        }
+
+        #endregion
+
+        #region IfDefinedAs<T>(Key, out ValueDelegate)
+
+        public void IfDefinedAs<T>(String     Key,
+                                   Action<T>  ValueDelegate)
+        {
+            lock (InternalDictionary)
+            {
+
+                if (ValueDelegate is not null &&
+                    InternalDictionary.TryGetValue(Key, out Object? value) &&
+                    value is T valueT)
+                {
+                    ValueDelegate(valueT);
+                }
+
+            }
+        }
+
+        #endregion
+
 
         #region Get(Key)
 
         public Object? Get(String Key)
         {
-
             lock (InternalDictionary)
             {
 
@@ -210,7 +262,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return null;
 
             }
-
         }
 
         #endregion
@@ -223,11 +274,47 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region GetAs<T>(Key)
+
+        public T? GetAs<T>(String Key)
+        {
+
+            if (InternalDictionary.TryGetValue(Key, out Object? value) &&
+                value is T valueT)
+            {
+                return valueT;
+            }
+
+            return default;
+
+        }
+
+        #endregion
+
+        #region TryGetAs<T>(Key, out Value)
+
+        public Boolean TryGetAs<T>(String Key, out T? Value)
+        {
+
+            if (InternalDictionary.TryGetValue(Key, out Object? value) &&
+                value is T valueT)
+            {
+                Value = valueT;
+                return true;
+            }
+
+            Value = default;
+            return false;
+
+        }
+
+        #endregion
+
+
         #region Remove(Key)
 
         public Object? Remove(String Key)
         {
-
             lock (InternalDictionary)
             {
 
@@ -240,7 +327,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return null;
 
             }
-
         }
 
         #endregion

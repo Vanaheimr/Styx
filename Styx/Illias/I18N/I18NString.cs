@@ -195,6 +195,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Events
+
+        /// <summary>
+        /// An event called whenever the multi-language text changed.
+        /// </summary>
+        public event OnPropertyChangedDelegate? OnPropertyChanged;
+
+        #endregion
+
         #region Constructor(s)
 
         #region I18NString()
@@ -307,6 +316,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region Add(Language, Text)
 
         /// <summary>
@@ -320,10 +330,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (!i18NStrings.ContainsKey(Language))
+            {
+
                 i18NStrings.Add(Language, Text);
 
+                OnPropertyChanged?.Invoke(Timestamp.Now,
+                                          EventTracking_Id.New,
+                                          this,
+                                          "",
+                                          null,
+                                          new Tuple<Languages, String>(Language, Text));
+
+            }
+
             else
+            {
+
+                var oldText = i18NStrings[Language];
+
                 i18NStrings[Language] = Text;
+
+                OnPropertyChanged?.Invoke(Timestamp.Now,
+                                          EventTracking_Id.New,
+                                          this,
+                                          "",
+                                          new Tuple<Languages, String>(Language, oldText),
+                                          new Tuple<Languages, String>(Language,    Text));
+
+            }
 
             return this;
 
@@ -339,19 +373,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="I18NPair">The internationalized (I18N) text.</param>
         public I18NString Add(I18NPair I18NPair)
+
+            => Add(I18NPair.Language,
+                   I18NPair.Text);
+
+        #endregion
+
+        #region Add(I18NPairs)
+
+        /// <summary>
+        /// Add a new language-text-pair to the given
+        /// internationalized (I18N) multi-language string.
+        /// </summary>
+        /// <param name="I18NPairs">An enumeration of internationalized (I18N) texts.</param>
+        public I18NString Add(IEnumerable<I18NPair> I18NPairs)
         {
 
-            if (!i18NStrings.ContainsKey(I18NPair.Language))
-                i18NStrings.Add(I18NPair.Language, I18NPair.Text);
-
-            else
-                i18NStrings[I18NPair.Language] = I18NPair.Text;
+            foreach (var I18NPair in I18NPairs)
+                Add(I18NPair.Language,
+                    I18NPair.Text);
 
             return this;
 
         }
 
         #endregion
+
 
         #region has(Language)
 
@@ -394,6 +441,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
 
         #region Remove(Language)
 
