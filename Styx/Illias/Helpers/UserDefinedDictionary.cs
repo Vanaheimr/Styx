@@ -99,6 +99,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             InternalDictionary = InternalData ?? new Dictionary<String, Object?>();
         }
 
+        /// <summary>
+        /// Create a new user-defined dictionary.
+        /// </summary>
+        /// <param name="InternalData">Optional data for initialization.</param>
+        public UserDefinedDictionary(IEnumerable<KeyValuePair<String, Object?>> InternalData)
+        {
+            InternalDictionary = new Dictionary<String, Object?>(InternalData);
+        }
+
         #endregion
 
 
@@ -172,7 +181,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region IsEmpty
 
         public Boolean IsEmpty
-            => !InternalDictionary.Any();
+            => InternalDictionary.Count == 0;
+
+        #endregion
+
+        #region IsNotEmpty
+
+        public Boolean IsNotEmpty
+            => InternalDictionary.Count > 0;
 
         #endregion
 
