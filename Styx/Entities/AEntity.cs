@@ -169,11 +169,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (protected) ToJSON(JSONLDContext, ...)
 
-        protected JObject ToJSON(Boolean                 Embedded,
-                                 Boolean                 IncludeLastChange,
-                                 Boolean                 IncludeCryptoHash,
-                                 Func<JObject, JObject>  CustomAEntitySerializer   = null,
-                                 params JProperty[]      JSONProperties)
+        protected JObject ToJSON(Boolean                  Embedded,
+                                 Boolean                  IncludeLastChange,
+                                 Func<JObject, JObject>?  CustomAEntitySerializer   = null,
+                                 params JProperty?[]      JSONProperties)
         {
 
             var JSON = JSONObject.Create(
@@ -448,15 +447,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        #region ToJSON(Embedded = false, IncludeCryptoHash = false)
+        #region ToJSON(Embedded = false)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
         /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
-        /// <param name="IncludeCryptoHash">Include the crypto hash value of this object.</param>
-        public abstract JObject ToJSON(Boolean Embedded           = false,
-                                       Boolean IncludeCryptoHash  = false);
+        public abstract JObject ToJSON(Boolean Embedded = false);
 
         #endregion
 
