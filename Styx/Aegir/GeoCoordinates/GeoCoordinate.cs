@@ -367,7 +367,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                            Longitude  Longitude,
                                            Altitude?  Altitude = null)
 
-            => new GeoCoordinate(Latitude, Longitude, Altitude);
+            => new (Latitude,
+                    Longitude,
+                    Altitude);
 
 
         /// <summary>
@@ -381,8 +383,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                             Altitude?   Altitude = null)
 
             => Latitude.HasValue && Longitude.HasValue
-                   ? new GeoCoordinate(Latitude.Value, Longitude.Value, Altitude)
-                   : new GeoCoordinate?();
+                   ? new GeoCoordinate(Latitude. Value,
+                                       Longitude.Value,
+                                       Altitude)
+                   : null;
 
         #endregion
 

@@ -17,9 +17,8 @@
 
 #region Usings
 
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
 
 using Newtonsoft.Json.Linq;
 
@@ -42,20 +41,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    DayOfWeek.Saturday   => "saturday",
                    _                    => "sunday"
                };
-
-
-
-        //#region ToJSON(this OpeningTimes, JPropertyKey)
-
-        //public static JProperty ToJSON(this OpeningTimes OpeningTimes, String JPropertyKey)
-
-        //    => OpeningTimes != null
-        //           ? OpeningTimes.IsOpen24Hours
-        //                 ? new JProperty(JPropertyKey, OpeningTimes._24_7)
-        //                 : new JProperty(JPropertyKey, OpeningTimes.ToJSON())
-        //           : null;
-
-        //#endregion
 
     }
 
@@ -88,12 +73,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             get
             {
-                var d = new Dictionary<DayOfWeek, IEnumerable<RegularHours>>();
+
+                var copy = new Dictionary<DayOfWeek, IEnumerable<RegularHours>>();
 
                 foreach (var regularOpening in regularOpenings)
-                    d.Add(regularOpening.Key, regularOpening.Value);
+                    copy.Add(regularOpening.Key, regularOpening.Value);
 
-                return new (d);
+                return new (copy);
 
             }
         }
@@ -113,7 +99,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// 24/7 open...
         /// </summary>
-        public Boolean  IsOpen24Hours    { get; }
+        public Boolean  IsOpen24Hours
+            => !regularOpenings.Any();
 
         /// <summary>
         /// An additoonal free text.
@@ -124,17 +111,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
-        #region OpeningTime(IsOpen24Hours, FreeText = "")
+        #region OpeningTime(FreeText = "")
 
-        public OpeningTimes(Boolean  IsOpen24Hours,
-                            String   FreeText = "")
+        public OpeningTimes(String  FreeText = "")
         {
 
             this.regularOpenings      = new Dictionary<DayOfWeek, List<RegularHours>>();
             this.exceptionalOpenings  = new List<ExceptionalPeriod>();
             this.exceptionalClosings  = new List<ExceptionalPeriod>();
             this.FreeText             = FreeText;
-            this.IsOpen24Hours        = IsOpen24Hours;
 
         }
 
@@ -146,7 +131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             DayOfWeek  ToWeekday,
                             String     FreeText = "")
 
-            : this(false, FreeText)
+            : this(FreeText)
 
         {
 
@@ -166,7 +151,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             HourMin    End,
                             String     FreeText = "")
 
-            : this(false, FreeText)
+            : this(FreeText)
 
         {
 
@@ -186,7 +171,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             HourMin    End,
                             String     FreeText = "")
 
-            : this(false, FreeText)
+            : this(FreeText)
 
         {
 
@@ -280,6 +265,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region AddRegularOpenings(FromWeekday, ToWeekday)
+
+        public OpeningTimes AddRegularOpenings(DayOfWeek  FromWeekday,
+                                               DayOfWeek  ToWeekday)
+        {
+
+            var fromWeekday = (int) FromWeekday;
+            var toWeekday   = (int) ToWeekday;
+
+            if (toWeekday < fromWeekday)
+                toWeekday += 7;
+
+            for (var weekday = fromWeekday; weekday <= toWeekday; weekday++)
+            {
+
+                if (!regularOpenings.ContainsKey((DayOfWeek) (weekday % 7)))
+                    regularOpenings.Add((DayOfWeek) (weekday % 7), new List<RegularHours>());
+
+                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek)(weekday % 7),
+                                                                                new HourMin(0, 0),
+                                                                                new HourMin(0, 0)));
+
+            }
+
+            return this;
+
+        }
+
+        #endregion
+
         #region AddRegularOpenings(FromWeekday, ToWeekday, Begin, End)
 
         public OpeningTimes AddRegularOpenings(DayOfWeek  FromWeekday,
@@ -300,7 +315,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!regularOpenings.ContainsKey((DayOfWeek) (weekday % 7)))
                     regularOpenings.Add((DayOfWeek) (weekday % 7), new List<RegularHours>());
 
-                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek)(weekday % 7), Begin, End));
+                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek)(weekday % 7),
+                                                                                Begin,
+                                                                                End));
 
             }
 
@@ -337,18 +354,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region FromFreeText(Text, IsOpen24Hours = true)
-
-        public static OpeningTimes FromFreeText(String   Text,
-                                                Boolean  IsOpen24Hours = true)
-
-            => new (IsOpen24Hours, Text);
-
-        #endregion
-
         #region Parse(Text)
 
         public static OpeningTimes? Parse(String Text)
+        {
+
+            if (TryParse(Text, out OpeningTimes? openingTimes))
+                return openingTimes;
+
+            throw new ArgumentException("Invalid text-representation of opening times: '" + Text + "'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region Parse(Texts)
+
+        public static OpeningTimes? Parse(IEnumerable<String> Texts)
+        {
+
+            if (TryParse(Texts, out OpeningTimes? openingTimes))
+                return openingTimes;
+
+            throw new ArgumentException("Invalid text-representation of opening times: '" + Texts.AggregateWith(",") + "'!",
+                                        nameof(Texts));
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        public static OpeningTimes? TryParse(String Text)
         {
 
             if (TryParse(Text, out OpeningTimes? openingTimes))
@@ -360,173 +398,191 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text, out OpeningTimes)
+        #region TryParse(Text,  out OpeningTimes)
 
         public static Boolean TryParse(String Text, out OpeningTimes? OpeningTimes)
+
+            => TryParse(new String[] { Text }, out OpeningTimes);
+
+        #endregion
+
+        #region TryParse(Texts, out OpeningTimes)
+
+        public static Boolean TryParse(IEnumerable<String> Texts, out OpeningTimes? OpeningTimes)
         {
 
-            if (Text == _24_7)
+            if (!Texts.Any() || Texts.First() == _24_7 || Texts.First() == "{}")
             {
-                OpeningTimes = new OpeningTimes(IsOpen24Hours: true);
+                OpeningTimes = Open24Hours;
                 return true;
             }
 
-            OpeningTimes = null;
+            OpeningTimes = new OpeningTimes();
 
-            if (Text == "{}")
-                return true;
-
-            var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) (([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h|open|closed)");
-            if (!match.Success)
-                return false;
-
-            #region Parse weekdays
-
-            DayOfWeek FromWeekday;
-
-            switch (match.Groups[1].Value.ToLower())
+            foreach (var text in Texts)
             {
 
-                case "mo":
-                case "mon":
-                case "monday":
-                    FromWeekday = DayOfWeek.Monday;
-                    break;
-
-                case "tu":
-                case "di":
-                case "tue":
-                case "tuesday":
-                    FromWeekday = DayOfWeek.Tuesday;
-                    break;
-
-                case "we":
-                case "mi":
-                case "wed":
-                case "wednesday":
-                    FromWeekday = DayOfWeek.Wednesday;
-                    break;
-
-                case "th":
-                case "do":
-                case "thu":
-                case "thursday":
-                    FromWeekday = DayOfWeek.Thursday;
-                    break;
-
-                case "fr":
-                case "fri":
-                case "friday":
-                    FromWeekday = DayOfWeek.Friday;
-                    break;
-
-                case "sa":
-                case "sat":
-                case "saturday":
-                    FromWeekday = DayOfWeek.Saturday;
-                    break;
-
-                case "su":
-                case "so":
-                case "sun":
-                case "sunday":
-                    FromWeekday = DayOfWeek.Sunday;
-                    break;
-
-                default:
+                // "Monday 07:00h - 21:00h"
+                // "Monday - Sunday 06:00h - 21:00h"
+                var match = Regex.Match(text, "([a-zA-Z]+)( - ([a-zA-Z]+))* ((([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h)|open|closed)");
+                if (!match.Success)
                     return false;
 
+                #region Parse weekdays
+
+                DayOfWeek FromWeekday;
+
+                switch (match.Groups[1].Value.ToLower())
+                {
+
+                    case "mo":
+                    case "mon":
+                    case "monday":
+                        FromWeekday = DayOfWeek.Monday;
+                        break;
+
+                    case "tu":
+                    case "di":
+                    case "tue":
+                    case "tuesday":
+                        FromWeekday = DayOfWeek.Tuesday;
+                        break;
+
+                    case "we":
+                    case "mi":
+                    case "wed":
+                    case "wednesday":
+                        FromWeekday = DayOfWeek.Wednesday;
+                        break;
+
+                    case "th":
+                    case "do":
+                    case "thu":
+                    case "thursday":
+                        FromWeekday = DayOfWeek.Thursday;
+                        break;
+
+                    case "fr":
+                    case "fri":
+                    case "friday":
+                        FromWeekday = DayOfWeek.Friday;
+                        break;
+
+                    case "sa":
+                    case "sat":
+                    case "saturday":
+                        FromWeekday = DayOfWeek.Saturday;
+                        break;
+
+                    case "su":
+                    case "so":
+                    case "sun":
+                    case "sunday":
+                        FromWeekday = DayOfWeek.Sunday;
+                        break;
+
+                    default:
+                        return false;
+
+                }
+
+
+                DayOfWeek ToWeekday;
+
+                switch (match.Groups[3].Value.ToLower())
+                {
+
+                    case "":
+                        ToWeekday = FromWeekday;
+                        break;
+
+                    case "mo":
+                    case "mon":
+                    case "monday":
+                        ToWeekday = DayOfWeek.Monday;
+                        break;
+
+                    case "tu":
+                    case "di":
+                    case "tue":
+                    case "tuesday":
+                        ToWeekday = DayOfWeek.Tuesday;
+                        break;
+
+                    case "we":
+                    case "mi":
+                    case "wed":
+                    case "wednesday":
+                        ToWeekday = DayOfWeek.Wednesday;
+                        break;
+
+                    case "th":
+                    case "do":
+                    case "thu":
+                    case "thursday":
+                        ToWeekday = DayOfWeek.Thursday;
+                        break;
+
+                    case "fr":
+                    case "fri":
+                    case "friday":
+                        ToWeekday = DayOfWeek.Friday;
+                        break;
+
+                    case "sa":
+                    case "sat":
+                    case "saturday":
+                        ToWeekday = DayOfWeek.Saturday;
+                        break;
+
+                    case "su":
+                    case "so":
+                    case "sun":
+                    case "sunday":
+                        ToWeekday = DayOfWeek.Sunday;
+                        break;
+
+                    default:
+                        return false;
+
+                }
+
+                #endregion
+
+                #region Parse hours...
+
+                if (HourMin.TryParse(match.Groups[6].Value, out HourMin begin) &&
+                    HourMin.TryParse(match.Groups[7].Value, out HourMin end))
+                {
+                    OpeningTimes.AddRegularOpenings(FromWeekday, ToWeekday, begin, end);
+                }
+
+                #endregion
+
+                #region ...or parse "open"
+
+                else if (match.Groups[4].Value == "open")
+                {
+                    OpeningTimes.AddRegularOpenings(FromWeekday, ToWeekday);
+                }
+
+                #endregion
+
+                #region ...or parse "closed"
+
+                else if (match.Groups[4].Value == "closed")
+                {
+                    //OpeningTimes.AddExceptionalClosing(FromWeekday, ToWeekday);
+                    OpeningTimes = OpeningTimes.FromFreeText(text);
+                    return true;
+                }
+
+                #endregion
+
             }
 
-
-            DayOfWeek ToWeekday;
-
-            switch (match.Groups[2].Value.ToLower())
-            {
-
-                case "mo":
-                case "mon":
-                case "monday":
-                    ToWeekday = DayOfWeek.Monday;
-                    break;
-
-                case "tu":
-                case "di":
-                case "tue":
-                case "tuesday":
-                    ToWeekday = DayOfWeek.Tuesday;
-                    break;
-
-                case "we":
-                case "mi":
-                case "wed":
-                case "wednesday":
-                    ToWeekday = DayOfWeek.Wednesday;
-                    break;
-
-                case "th":
-                case "do":
-                case "thu":
-                case "thursday":
-                    ToWeekday = DayOfWeek.Thursday;
-                    break;
-
-                case "fr":
-                case "fri":
-                case "friday":
-                    ToWeekday = DayOfWeek.Friday;
-                    break;
-
-                case "sa":
-                case "sat":
-                case "saturday":
-                    ToWeekday = DayOfWeek.Saturday;
-                    break;
-
-                case "su":
-                case "so":
-                case "sun":
-                case "sunday":
-                    ToWeekday = DayOfWeek.Sunday;
-                    break;
-
-                default:
-                    return false;
-
-            }
-
-            #endregion
-
-            #region Parse hours...
-
-            if (HourMin.TryParse(match.Groups[4].Value, out HourMin begin) &&
-                HourMin.TryParse(match.Groups[5].Value, out HourMin end))
-            {
-                OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday, begin, end);
+            if (OpeningTimes.RegularOpenings.Any())
                 return true;
-            }
-
-            #endregion
-
-            #region ...or parse "open"
-
-            else if (match.Groups[3].Value == "open")
-            {
-                OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday);
-                return true;
-            }
-
-            #endregion
-
-            #region ...or parse "closed"
-
-            else if (match.Groups[3].Value == "closed")
-            {
-                OpeningTimes = new OpeningTimes(false, Text);
-                return true;
-            }
-
-            #endregion
 
             return false;
 
@@ -576,7 +632,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-
         #region (static) Open24Hours
 
         /// <summary>
@@ -584,7 +639,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static OpeningTimes Open24Hours
 
-            => new (IsOpen24Hours: true);
+            => new ();
+
+        #endregion
+
+        #region (static) FromFreeText(Text)
+
+        /// <summary>
+        /// The opening times are described within the free text.
+        /// </summary>
+        public static OpeningTimes FromFreeText(String Text)
+
+            => new (Text);
 
         #endregion
 

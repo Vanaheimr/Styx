@@ -43,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNeitherNullNorEmpty(this I18NString Text)
 
             => Text is not null &&
-               Text.IsNeitherNullNorEmpty();
+               Text.Any();
 
         /// <summary>
         /// Return the first string of a multi-language string.

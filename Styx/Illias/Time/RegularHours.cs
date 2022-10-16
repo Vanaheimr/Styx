@@ -214,7 +214,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 return "";
 
-            return String.Concat(DayOfWeek.ToString(), "s from ", PeriodBegin.ToString(), " to ", PeriodEnd.ToString());
+            return String.Concat(DayOfWeek.ToString(), "s from ", PeriodBegin.ToString(), "h to ", PeriodEnd.ToString(), "h");
 
         }
 

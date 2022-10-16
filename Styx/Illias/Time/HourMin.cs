@@ -126,15 +126,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 try
                 {
 
-                    var Splited = Text.Split(':');
+                    var splited = Text.Split(':');
 
-                    if (Splited.Length != 2)
+                    if (splited.Length != 2)
                         return false;
 
-                    if (!Byte.TryParse(Splited[0], out Byte Hour))
+                    if (!Byte.TryParse(splited[0], out Byte Hour))
                         return false;
 
-                    if (!Byte.TryParse(Splited[1], out Byte Minute))
+                    if (!Byte.TryParse(splited[1], out Byte Minute))
                         return false;
 
                     HourMin = new HourMin(Hour, Minute);
