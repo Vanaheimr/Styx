@@ -34,30 +34,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The multi-language string is empty.
         /// </summary>
         public static Boolean IsNullOrEmpty(this I18NString Text)
-            => Text == null || !Text.Any();
+
+            => Text is null || !Text.Any();
 
         /// <summary>
         /// The multi-language string is neither null nor empty.
         /// </summary>
         public static Boolean IsNeitherNullNorEmpty(this I18NString Text)
-            => Text != null && Text.Any();
+
+            => Text is not null &&
+               Text.IsNeitherNullNorEmpty();
 
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
         public static String FirstText(this I18NString Text)
-            => Text != null && Text.Any()
+
+            => Text is not null && Text.IsNeitherNullNorEmpty()
                    ? Text.First().Text
-                   : null;
+                   : String.Empty;
+
 
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
         public static I18NString ToI18NString(this String  Text,
                                               Languages    Language = Languages.en)
-            => Text.IsNotNullOrEmpty()
+
+            => Text is not null && Text.IsNotNullOrEmpty()
                    ? I18NString.Create(Language, Text)
-                   : null;
+                   : I18NString.Empty;
 
 
         #region SubstringMax(this I18NText, Length)
@@ -70,8 +76,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static I18NString SubstringMax(this I18NString I18NText, Int32 Length)
         {
 
-            if (I18NText == null)
-                return null;
+            if (I18NText is null)
+                return I18NString.Empty;
 
             return new I18NString(I18NText.Select(text => new I18NPair(
                                                               text.Language,
@@ -91,8 +97,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static I18NString TrimAll(this I18NString I18NText)
         {
 
-            if (I18NText == null)
-                return null;
+            if (I18NText is null)
+                return I18NString.Empty;
 
             return new I18NString(I18NText.Select(text => new I18NPair(
                                                               text.Language,
