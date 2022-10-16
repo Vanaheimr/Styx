@@ -18,7 +18,6 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-using System.IO;
 
 #endregion
 
@@ -558,7 +557,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Address Address1, Address Address2)
+        public static Boolean operator == (Address? Address1,
+                                           Address? Address2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -582,7 +582,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Address Address1, Address Address2)
+        public static Boolean operator != (Address? Address1,
+                                           Address? Address2)
 
             => !(Address1 == Address2);
 
@@ -596,7 +597,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Address Address1, Address Address2)
+        public static Boolean operator < (Address? Address1,
+                                          Address? Address2)
         {
 
             if (Address1 is null)
@@ -616,7 +618,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Address Address1, Address Address2)
+        public static Boolean operator <= (Address? Address1,
+                                           Address? Address2)
+
             => !(Address1 > Address2);
 
         #endregion
@@ -629,7 +633,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Address Address1, Address Address2)
+        public static Boolean operator > (Address? Address1,
+                                          Address? Address2)
         {
 
             if (Address1 is null)
@@ -649,7 +654,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Address Address1, Address Address2)
+        public static Boolean operator >= (Address? Address1,
+                                           Address? Address2)
+
             => !(Address1 < Address2);
 
         #endregion

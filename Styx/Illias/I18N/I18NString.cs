@@ -165,6 +165,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     }
 
+
     /// <summary>
     /// An internationalized (I18N) multi-language text/string.
     /// </summary>
@@ -528,11 +529,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        public static I18NString Parse(String Text)
+        public static I18NString? Parse(String Text)
         {
 
-            if (TryParse(Text, out I18NString I18NText))
-                return I18NText;
+            if (TryParse(Text, out I18NString? i18NText))
+                return i18NText;
 
             return Empty;
 
@@ -719,7 +720,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="I18NString1">A I18N-string.</param>
         /// <param name="I18NString2">Another I18N-string.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (I18NString I18NString1, I18NString I18NString2)
+        public static Boolean operator == (I18NString? I18NString1,
+                                           I18NString? I18NString2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -727,7 +729,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) I18NString1 == null) || ((Object) I18NString2 == null))
+            if (I18NString1 is null || I18NString2 is null)
                 return false;
 
             return I18NString1.Equals(I18NString2);
@@ -744,10 +746,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="I18NString1">A I18N-string.</param>
         /// <param name="I18NString2">Another I18N-string.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (I18NString I18NString1, I18NString I18NString2)
-        {
-            return !(I18NString1 == I18NString2);
-        }
+        public static Boolean operator != (I18NString? I18NString1,
+                                           I18NString? I18NString2)
+
+            => !(I18NString1 == I18NString2);
 
         #endregion
 
@@ -762,7 +764,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
 
             => Object is I18NString i18NString &&
                   Equals(i18NString);
@@ -774,20 +776,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two I18NString for equality.
         /// </summary>
-        /// <param name="i18NString">An I18NString to compare with.</param>
+        /// <param name="OtherI18NString">An I18NString to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(I18NString i18NString)
+        public Boolean Equals(I18NString? OtherI18NString)
         {
 
-            if (!(i18NString is I18NString))
+            if (OtherI18NString is null)
                 return false;
 
-            if (i18NStrings.Count != i18NString.Count())
+            if (i18NStrings.Count != OtherI18NString.Count)
                 return false;
 
-            foreach (var I18N in i18NStrings)
+            foreach (var kvp in i18NStrings)
             {
-                if (I18N.Value != i18NString[I18N.Key])
+                if (kvp.Value != OtherI18NString[kvp.Key])
                     return false;
             }
 
