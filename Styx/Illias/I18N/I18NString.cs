@@ -377,6 +377,89 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Set(Language, Text)
+
+        /// <summary>
+        /// Add or replace a new language-text-pair to the given
+        /// internationalized (I18N) multi-language string.
+        /// </summary>
+        /// <param name="Language">The internationalized (I18N) language.</param>
+        /// <param name="Text">The internationalized (I18N) text.</param>
+        public I18NString Set(Languages  Language,
+                              String     Text)
+        {
+
+            if (!i18NStrings.ContainsKey(Language))
+            {
+
+                i18NStrings.Add(Language, Text);
+
+                OnPropertyChanged?.Invoke(Timestamp.Now,
+                                          EventTracking_Id.New,
+                                          this,
+                                          "",
+                                          null,
+                                          new Tuple<Languages, String>(Language, Text));
+
+            }
+
+            else
+            {
+
+                var oldText = i18NStrings[Language];
+
+                i18NStrings[Language] = Text;
+
+                OnPropertyChanged?.Invoke(Timestamp.Now,
+                                          EventTracking_Id.New,
+                                          this,
+                                          "",
+                                          new Tuple<Languages, String>(Language, oldText),
+                                          new Tuple<Languages, String>(Language, Text));
+
+            }
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region Set(I18NPair)
+
+        /// <summary>
+        /// Add or replace a new language-text-pair to the given
+        /// internationalized (I18N) multi-language string.
+        /// </summary>
+        /// <param name="I18NPair">The internationalized (I18N) text.</param>
+        public I18NString Set(I18NPair I18NPair)
+
+            => Set(I18NPair.Language,
+                   I18NPair.Text);
+
+        #endregion
+
+        #region Set(I18NPairs)
+
+        /// <summary>
+        /// Add or replace a new language-text-pair to the given
+        /// internationalized (I18N) multi-language string.
+        /// </summary>
+        /// <param name="I18NPairs">An enumeration of internationalized (I18N) texts.</param>
+        public I18NString Set(IEnumerable<I18NPair> I18NPairs)
+        {
+
+            foreach (var I18NPair in I18NPairs)
+                Set(I18NPair.Language,
+                    I18NPair.Text);
+
+            return this;
+
+        }
+
+        #endregion
+
+
         #region has(Language)
 
         /// <summary>
@@ -403,8 +486,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
 
-                if (i18NStrings.TryGetValue(Language, out String Text))
-                    return Text;
+                if (i18NStrings.TryGetValue(Language, out var text))
+                    return text;
 
                 return String.Empty;
 
@@ -450,33 +533,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static I18NString Parse(JObject JSON)
+        public static I18NString? Parse(JObject JSON)
         {
 
-            if (TryParse(JSON, out I18NString I18NText))
-                return I18NText;
+            if (TryParse(JSON, out I18NString? i18NText))
+                return i18NText;
 
             return Empty;
 
         }
 
 
-        public static T Parse<T>(JObject JSON)
-            where T : I18NString, new()
+        public static TI18NString? Parse<TI18NString>(JObject JSON)
+            where TI18NString : I18NString, new()
         {
 
-            if (TryParse(JSON, out T I18NText))
-                return I18NText;
+            if (TryParse(JSON, out TI18NString? i18NText))
+                return i18NText;
 
-            return new T();
+            return new TI18NString();
 
         }
 
-        public static Boolean TryParse<T>(String Text, out T I18NText)
-            where T : I18NString, new()
+        public static Boolean TryParse<TI18NString>(String Text, out TI18NString? I18NText)
+            where TI18NString : I18NString, new()
         {
 
-            I18NText = new T();
+            I18NText = new TI18NString();
 
             if (Text.IsNullOrEmpty())
                 return false;
@@ -492,13 +575,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean TryParse<T>(JObject JSON, out T I18NText)
-            where T : I18NString, new()
+        public static Boolean TryParse<TI18NString>(JObject JSON, out TI18NString? I18NText)
+            where TI18NString : I18NString, new()
         {
 
-            I18NText = new T();
+            I18NText = new TI18NString();
 
-            if (JSON == null)
+            if (JSON is null)
                 return true;
 
             foreach (var JSONProperty in JSON)
@@ -507,11 +590,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 try
                 {
 
-                    I18NText.Add(LanguagesExtensions.Parse(JSONProperty.Key),
-                                 JSONProperty.Value.Value<String>());
+                    if (JSONProperty.Key is not null             &&
+                        JSONProperty.Key.IsNeitherNullNorEmpty() &&
+                        JSONProperty.Value is not null           &&
+                        JSONProperty.Value.Type == JTokenType.String)
+                    {
+
+                        var value = JSONProperty.Value.Value<String>();
+
+                        if (value is not null &&
+                            LanguagesExtensions.TryParse(JSONProperty.Key, out var language))
+                        {
+                            I18NText.Add(language, value);
+                        }
+
+                    }
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     I18NText = null;
                     return false;

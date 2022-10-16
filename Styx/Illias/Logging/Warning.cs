@@ -17,11 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Xml.Linq;
-using System.Diagnostics;
-using System.Globalization;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -29,26 +24,42 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    /// <summary>
+    /// Extensions methods for warnings.
+    /// </summary>
     public static class WarningsExtensions
     {
 
         public static Boolean IsNeitherNullNorEmpty(this Warning Warning)
-            => Warning != null && Warning.Text.IsNeitherNullNorEmpty();
+
+            => Warning is not null &&
+               Warning.Text.IsNeitherNullNorEmpty();
 
         public static IList<Warning> AddAndReturnList(this IList<Warning>  Warnings,
                                                       I18NString           Text)
-            => Warnings?.AddAndReturnList(Warning.Create(Text));
+
+            => Warnings.AddAndReturnList(Warning.Create(Text));
 
     }
 
+    /// <summary>
+    /// A warning.
+    /// </summary>
     public class Warning
     {
 
+        #region Properties
+
         public I18NString  Text      { get; }
-        public Object      Context   { get; }
+
+        public Object?     Context   { get; }
+
+        #endregion
+
+        #region Constructor(s)
 
         private Warning(I18NString  Text,
-                        Object      Context  = null)
+                        Object?     Context  = null)
         {
 
             this.Text     = Text;
@@ -56,6 +67,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+
+        #region ToJSON()
 
         public JObject ToJSON()
 
@@ -63,20 +78,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                    new JProperty("text",            Text.   ToJSON()),
 
-                   Context != null
+                   Context is not null
                        ? new JProperty("context",   Context.ToString())
                        : null);
 
+        #endregion
+
+
+        #region Create(Text,           Context = null)
 
         public static Warning Create(I18NString  Text,
-                                     Object      Warning  = null)
+                                     Object?     Context  = null)
 
-            => new Warning(Text,
-                           Warning);
+            => new (Text,
+                    Context);
+
+        #endregion
+
+        #region Create(Language, Text, Context = null)
+
+        public static Warning Create(Languages   Language,
+                                     String      Text,
+                                     Object?     Context  = null)
+
+            => new (I18NString.Create(Language, Text),
+                    Context);
+
+        #endregion
 
 
+        #region ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
         public override String ToString()
             => Text.FirstText();
+
+        #endregion
 
     }
 
