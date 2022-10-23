@@ -414,15 +414,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var oldText = i18NStrings[Language];
+                if (oldText != Text)
+                {
 
-                i18NStrings[Language] = Text;
+                    i18NStrings[Language] = Text;
 
-                OnPropertyChanged?.Invoke(Timestamp.Now,
-                                          EventTracking_Id.New,
-                                          this,
-                                          "",
-                                          new Tuple<Languages, String>(Language, oldText),
-                                          new Tuple<Languages, String>(Language, Text));
+                    OnPropertyChanged?.Invoke(Timestamp.Now,
+                                              EventTracking_Id.New,
+                                              this,
+                                              "",
+                                              new Tuple<Languages, String>(Language, oldText),
+                                              new Tuple<Languages, String>(Language, Text));
+
+                }
 
             }
 
