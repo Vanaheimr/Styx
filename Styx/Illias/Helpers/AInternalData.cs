@@ -29,7 +29,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// An abstract data structure for internal customer-specific data.
     /// </summary>
-    public abstract class AInternalData
+    public abstract class AInternalData : IInternalData
     {
 
         #region Properties
