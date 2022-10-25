@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         event OnPropertyChangedDelegate? OnPropertyChanged;
 
-        void DeleteProperty<T>(ref T FieldToChange, [CallerMemberName] String PropertyName = "");
+        void DeleteProperty<T>(ref T? FieldToChange, [CallerMemberName] String PropertyName = "");
         Object? GetInternalData(String Key);
         T? GetInternalDataAs<T>(String Key);
         void IfDefined(String Key, Action<Object> ValueDelegate);

@@ -105,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region SetProperty<T>(ref FieldToChange, NewValue, EventTrackingId = null, [CallerMemberName])
+        #region SetProperty<T>(ref FieldToChange, NewValue, EventTrackingId = null, [CallerMemberName] PropertyName = "")
 
         /// <summary>
         /// Change the given field and call the OnPropertyChanged event.
@@ -124,11 +124,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
             {
 
-                var OldValue       = FieldToChange;
+                var oldValue       = FieldToChange;
                     FieldToChange  = NewValue;
 
                 PropertyChanged(PropertyName,
-                                OldValue,
+                                oldValue,
                                 NewValue,
                                 EventTrackingId ?? EventTracking_Id.New);
 
@@ -138,7 +138,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
+        #region DeleteProperty<T>(ref FieldToChange, [CallerMemberName] PropertyName = "")
 
         /// <summary>
         /// Delete the given field and call the OnPropertyChanged event.
@@ -146,17 +146,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <typeparam name="T">The type of the field to be deleted.</typeparam>
         /// <param name="FieldToChange">A reference to the field to be deleted.</param>
         /// <param name="PropertyName">The name of the property to be deleted (set by the compiler!)</param>
-        public void DeleteProperty<T>(ref                T       FieldToChange,
-                                      [CallerMemberName] String  PropertyName = "")
+        public void DeleteProperty<T>(ref                T?      FieldToChange,
+                                      [CallerMemberName] String  PropertyName   = "")
         {
 
-            if (FieldToChange != null)
+            if (FieldToChange is not null)
             {
 
-                var OldValue       = FieldToChange;
-                    FieldToChange  = default(T);
+                var oldValue   = FieldToChange;
 
-                PropertyChanged(PropertyName, OldValue, default(T));
+                FieldToChange  = default;
+
+                PropertyChanged(PropertyName,
+                                oldValue,
+                                default);
 
             }
 
@@ -244,10 +247,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 NewValue,
                                 OldValue,
                                 EventTrackingId);
-
-
-        //public IEnumerable<KeyValuePair<String, Object>> InternalData2
-        //        => InternalData;
 
 
 
