@@ -134,12 +134,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Item is not null)
             {
 
+                var added = false;
+
                 lock (internalSet)
                 {
-                    internalSet.Add(Item);
+                    if (!internalSet.Contains(Item))
+                    {
+                        internalSet.Add(Item);
+                        added = true;
+                    }
                 }
 
-                OnItemAdded?.Invoke(Timestamp.Now, this, Item);
+                if (added)
+                    OnItemAdded?.Invoke(Timestamp.Now,
+                                        this,
+                                        Item);
 
             }
 
@@ -175,19 +184,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Items is not null && Items.Any())
             {
 
-                lock(internalSet)
+                var newHashSet = Items.ToHashSet();
+
+                foreach (var item in Items)
                 {
-                    foreach (var item in Items)
-                        internalSet.Add(item);
+                    if (internalSet.Contains(item))
+                        newHashSet.Remove(item);
                 }
 
-                var timestamp = Timestamp.Now;
+                if (newHashSet.Any())
+                {
 
-                if (!OnlyOneEvent)
-                    foreach (var item in Items)
-                        OnItemAdded?.Invoke(timestamp, this, item);
+                    lock (internalSet)
+                    {
+                        foreach (var item in newHashSet)
+                            internalSet.Add(item);
+                    }
 
-                OnSetChanged?.Invoke(timestamp, this, Items);
+                    var timestamp = Timestamp.Now;
+
+                    if (!OnlyOneEvent)
+                        foreach (var item in Items)
+                            OnItemAdded?.Invoke(timestamp, this, item);
+
+                    OnSetChanged?.Invoke(timestamp, this, Items);
+
+                }
 
             }
 
@@ -208,8 +230,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                   Boolean         OnlyOneEvent = false)
         {
 
-            if (Items is not null &&
-                Items.Any())
+            if (Items is not null && Items.Any())
             {
 
                 var toAdd     = new List<T>();
@@ -242,7 +263,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                OnSetChanged?.Invoke(timestamp, this, toAdd.Concat(toRemove));
+                if (toAdd.Any() || toRemove.Any())
+                    OnSetChanged?.Invoke(timestamp,
+                                         this,
+                                         toAdd.Concat(toRemove));
 
             }
 
@@ -266,23 +290,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Items is not null && Items.Any())
             {
 
-                lock (internalSet)
+                var newHashSet = Items.ToHashSet();
+
+                foreach (var item in Items)
                 {
-
-                    internalSet.Clear();
-
-                    foreach (var item in Items)
-                        internalSet.Add(item);
-
+                    if (internalSet.Contains(item))
+                        newHashSet.Remove(item);
                 }
 
-                var timestamp = Timestamp.Now;
+                if (newHashSet.Any())
+                {
 
-                if (!OnlyOneEvent)
-                    foreach (var item in Items)
-                        OnItemAdded?.Invoke(timestamp, this, item);
+                    lock (internalSet)
+                    {
 
-                OnSetChanged?.Invoke(timestamp, this, Items);
+                        internalSet.Clear();
+
+                        foreach (var item in Items)
+                            internalSet.Add(item);
+
+                    }
+
+                    var timestamp = Timestamp.Now;
+
+                    if (!OnlyOneEvent)
+                        foreach (var item in Items)
+                            OnItemAdded?.Invoke(timestamp, this, item);
+
+                    OnSetChanged?.Invoke(timestamp, this, Items);
+
+                }
 
             }
 
@@ -516,7 +553,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object? Object)
 
             => Object is ReactiveSet<T> reactiveSet &&
-                  Equals(reactiveSet);
+                   Equals(reactiveSet);
 
         #endregion
 
