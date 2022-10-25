@@ -1708,7 +1708,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Enum.TryParse(i18nProperty.Key, true, out Languages language) &&
                     i18nProperty.Value.Value<String>() is String text)
                 {
-                    I18NText.Add(language, text);
+                    I18NText.Set(language, text);
                 }
                 else
                 {
@@ -4099,11 +4099,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out I18NText,                out ErrorResponse)
 
-        public static Boolean ParseOptional(this JObject    JSON,
-                                            String          PropertyName,
-                                            String          PropertyDescription,
-                                            out I18NString  I18NText,
-                                            out String      ErrorResponse)
+        public static Boolean ParseOptional(this JObject     JSON,
+                                            String           PropertyName,
+                                            String           PropertyDescription,
+                                            out I18NString?  I18NText,
+                                            out String?      ErrorResponse)
 
         {
 
@@ -4122,12 +4122,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (!(JSONToken is JObject i18NJSON))
+                if (JSONToken is not JObject i18NJSON)
                 {
                     ErrorResponse = "JSON property '" + (PropertyDescription ?? PropertyName) + "' is not a I18N string!";
                     return true;
@@ -4139,8 +4139,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     try
                     {
 
-                        I18NText.Add((Languages) Enum.Parse(typeof(Languages), jproperty.Key),
-                                     jproperty.Value.Value<String>());
+                        if (Enum.TryParse<Languages>(jproperty.Key, out var language))
+                        {
+
+                            if (jproperty.Value?.Value<String>() is String text)
+                            {
+                                I18NText.Set(language, text);
+                            }
+                            else
+                            {
+                                ErrorResponse = "Invalid text value '" + jproperty.Value + "'!";
+                                return true;
+                            }
+
+                        }
+                        else
+                        {
+                            ErrorResponse = "Invalid language '" + jproperty.Key + "'!";
+                            return true;
+                        }
 
                     }
                     catch (Exception)

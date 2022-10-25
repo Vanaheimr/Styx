@@ -30,41 +30,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class I18NStringExtensions
     {
 
+        #region IsNullOrEmpty(this I18NText)
+
         /// <summary>
         /// The multi-language string is empty.
         /// </summary>
-        public static Boolean IsNullOrEmpty(this I18NString Text)
+        public static Boolean IsNullOrEmpty(this I18NString I18NText)
 
-            => Text is null || !Text.Any();
+            => I18NText is null || !I18NText.Any();
+
+        #endregion
+
+        #region IsNeitherNullNorEmpty(this Text)
 
         /// <summary>
         /// The multi-language string is neither null nor empty.
         /// </summary>
-        public static Boolean IsNeitherNullNorEmpty(this I18NString Text)
+        public static Boolean IsNeitherNullNorEmpty(this I18NString I18NText)
 
-            => Text is not null &&
-               Text.Any();
+            => I18NText is not null &&
+               I18NText.Any();
+
+        #endregion
+
+        #region FirstText(this I18NText)
 
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
-        public static String FirstText(this I18NString Text)
+        public static String FirstText(this I18NString I18NText)
 
-            => Text is not null && Text.IsNeitherNullNorEmpty()
-                   ? Text.First().Text
+            => I18NText is not null && I18NText.IsNeitherNullNorEmpty()
+                   ? I18NText.First().Text
                    : String.Empty;
 
+        #endregion
+
+        #region ToI18NString(this I18NText, Language = Languages.en)
 
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
-        public static I18NString ToI18NString(this String  Text,
+        public static I18NString ToI18NString(this String  I18NText,
                                               Languages    Language = Languages.en)
 
-            => Text is not null && Text.IsNotNullOrEmpty()
-                   ? I18NString.Create(Language, Text)
+            => I18NText is not null && I18NText.IsNotNullOrEmpty()
+                   ? I18NString.Create(Language, I18NText)
                    : I18NString.Empty;
 
+        #endregion
 
         #region SubstringMax(this I18NText, Length)
 
@@ -301,88 +315,49 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Add(Language, Text)
+        #region this[Language]
 
         /// <summary>
-        /// Add a new language-text-pair to the given
-        /// internationalized (I18N) multi-language string.
+        /// Set the text specified by the given language.
         /// </summary>
         /// <param name="Language">The internationalized (I18N) language.</param>
-        /// <param name="Text">The internationalized (I18N) text.</param>
-        public I18NString Add(Languages  Language,
-                              String     Text)
+        public String this[Languages Language]
         {
 
-            if (!i18NStrings.ContainsKey(Language))
+            get
             {
 
-                i18NStrings.Add(Language, Text);
 
-                OnPropertyChanged?.Invoke(Timestamp.Now,
-                                          EventTracking_Id.New,
-                                          this,
-                                          "",
-                                          null,
-                                          new Tuple<Languages, String>(Language, Text));
+                if (i18NStrings.TryGetValue(Language, out var text))
+                    return text;
+
+                return String.Empty;
 
             }
 
-            else
+            set
             {
 
                 var oldText = i18NStrings[Language];
+                if (oldText != value)
+                {
 
-                i18NStrings[Language] = Text;
+                    i18NStrings[Language] = value;
 
-                OnPropertyChanged?.Invoke(Timestamp.Now,
-                                          EventTracking_Id.New,
-                                          this,
-                                          "",
-                                          new Tuple<Languages, String>(Language, oldText),
-                                          new Tuple<Languages, String>(Language,    Text));
+                    OnPropertyChanged?.Invoke(Timestamp.Now,
+                                              EventTracking_Id.New,
+                                              this,
+                                              "",
+                                              new Tuple<Languages, String>(Language, oldText),
+                                              new Tuple<Languages, String>(Language, value));
+
+                }
 
             }
 
-            return this;
-
         }
 
         #endregion
-
-        #region Add(I18NPair)
-
-        /// <summary>
-        /// Add a new language-text-pair to the given
-        /// internationalized (I18N) multi-language string.
-        /// </summary>
-        /// <param name="I18NPair">The internationalized (I18N) text.</param>
-        public I18NString Add(I18NPair I18NPair)
-
-            => Add(I18NPair.Language,
-                   I18NPair.Text);
-
-        #endregion
-
-        #region Add(I18NPairs)
-
-        /// <summary>
-        /// Add a new language-text-pair to the given
-        /// internationalized (I18N) multi-language string.
-        /// </summary>
-        /// <param name="I18NPairs">An enumeration of internationalized (I18N) texts.</param>
-        public I18NString Add(IEnumerable<I18NPair> I18NPairs)
-        {
-
-            foreach (var I18NPair in I18NPairs)
-                Add(I18NPair.Language,
-                    I18NPair.Text);
-
-            return this;
-
-        }
-
-        #endregion
-
 
         #region Set(Language, Text)
 
@@ -471,7 +446,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region has(Language)
+        #region has  (Language)
 
         /// <summary>
         /// Checks if the given language representation exists.
@@ -483,56 +458,54 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region this[Language]
+        #region Is   (Language, Value)
 
-        /// <summary>
-        /// Get the text specified by the given language.
-        /// </summary>
-        /// <param name="Language">The internationalized (I18N) language.</param>
-        /// <returns>The internationalized (I18N) text or String.Empty</returns>
-        public String this[Languages Language]
+        public Boolean Is(Languages  Language,
+                          String     Value)
         {
 
-            get
-            {
+            if (!i18NStrings.ContainsKey(Language))
+                return false;
 
-
-                if (i18NStrings.TryGetValue(Language, out var text))
-                    return text;
-
-                return String.Empty;
-
-            }
-
-            set
-            {
-                i18NStrings[Language] = value;
-            }
+            return i18NStrings[Language].Equals(Value);
 
         }
 
         #endregion
 
+        #region IsNot(Language, Value)
 
-        #region Remove(Language)
-
-        /// <summary>
-        /// Remove the given language from the internationalized (I18N) multi-language text.
-        /// </summary>
-        /// <param name="Language">The internationalized (I18N) language.</param>
-        public I18NString Remove(Languages Language)
+        public Boolean IsNot(Languages  Language,
+                             String     Value)
         {
 
-            if (i18NStrings.ContainsKey(Language))
-                i18NStrings.Remove(Language);
+            if (!i18NStrings.ContainsKey(Language))
+                return true;
 
-            return this;
+            return !i18NStrings[Language].Equals(Value);
 
         }
 
         #endregion
 
+        #region Matches(Match, IgnoreCase = false)
 
+        public Boolean Matches(String   Match,
+                               Boolean  IgnoreCase  = false)
+
+            => i18NStrings.Any(kvp => IgnoreCase
+                                          ? kvp.Value.IndexOf(Match, StringComparison.OrdinalIgnoreCase) >= 0
+                                          : kvp.Value.IndexOf(Match) >= 0);
+
+        #endregion
+
+
+        #region Parse(Text)
+
+        /// <summary>
+        /// Parse the given text as a JSON representation of a multi-language string.
+        /// </summary>
+        /// <param name="Text">A string of a JSON representation of a multi-language string.</param>
         public static I18NString? Parse(String Text)
         {
 
@@ -543,7 +516,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
 
+        #region Parse(JSON)
+
+        /// <summary>
+        /// Parse the given JSON object as a JSON representation of a multi-language string.
+        /// </summary>
+        /// <param name="JSON">A JSON representation of a multi-language string.</param>
         public static I18NString? Parse(JObject JSON)
         {
 
@@ -554,7 +534,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
 
+        #region Parse<TI18NString>(JSON)
+
+        /// <summary>
+        /// Parse the given JSON object as a JSON representation of a multi-language string.
+        /// </summary>
+        /// <param name="JSON">A JSON representation of a multi-language string.</param>
         public static TI18NString? Parse<TI18NString>(JObject JSON)
             where TI18NString : I18NString, new()
         {
@@ -566,6 +553,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region TryParse(Text, out I18NText)
+
+        /// <summary>
+        /// Try to parse the given text as a JSON representation of a multi-language string.
+        /// </summary>
+        /// <param name="Text">A string of a JSON representation of a multi-language string.</param>
+        /// <param name="I18NText"></param>
         public static Boolean TryParse<TI18NString>(String Text, out TI18NString? I18NText)
             where TI18NString : I18NString, new()
         {
@@ -586,6 +582,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region TryParse(JSON, out I18NText)
+
+        /// <summary>
+        /// Try to parse the given JSON object as a JSON representation of a multi-language string.
+        /// </summary>
+        /// <param name="JSON">A JSON representation of a multi-language string.</param>
         public static Boolean TryParse<TI18NString>(JObject JSON, out TI18NString? I18NText)
             where TI18NString : I18NString, new()
         {
@@ -612,7 +616,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         if (value is not null &&
                             LanguagesExtensions.TryParse(JSONProperty.Key, out var language))
                         {
-                            I18NText.Add(language, value);
+                            I18NText.Set(language, value);
                         }
 
                     }
@@ -630,17 +634,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        #region Count
-
-        /// <summary>
-        /// The number of language/value pairs.
-        /// </summary>
-        public UInt32 Count
-
-            => (UInt32) i18NStrings.Count;
-
         #endregion
-
 
         #region ToJSON()
 
@@ -650,8 +644,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public JObject ToJSON()
 
             => i18NStrings.Any()
-                   ? new JObject(i18NStrings.SafeSelect(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
+                   ? new JObject(i18NStrings.Select(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
                    : new JObject();
+
+        #endregion
+
+
+        #region Remove(Language)
+
+        /// <summary>
+        /// Remove the given language from the internationalized (I18N) multi-language text.
+        /// </summary>
+        /// <param name="Language">The internationalized (I18N) language.</param>
+        public I18NString Remove(Languages Language)
+        {
+
+            if (i18NStrings.ContainsKey(Language))
+                i18NStrings.Remove(Language);
+
+            return this;
+
+        }
+
+        #endregion
+
+
+        #region Count
+
+        /// <summary>
+        /// The number of language/value pairs.
+        /// </summary>
+        public UInt32 Count
+
+            => (UInt32) i18NStrings.Count;
 
         #endregion
 
@@ -665,37 +690,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => new I18NString(i18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
 
         #endregion
-
-
-        public Boolean Is(Languages  Language,
-                          String     Value)
-        {
-
-            if (!i18NStrings.ContainsKey(Language))
-                return false;
-
-            return i18NStrings[Language].Equals(Value);
-
-        }
-
-        public Boolean IsNot(Languages  Language,
-                             String     Value)
-        {
-
-            if (!i18NStrings.ContainsKey(Language))
-                return true;
-
-            return !i18NStrings[Language].Equals(Value);
-
-        }
-
-
-        public Boolean Matches(String   Match,
-                               Boolean  IgnoreCase  = false)
-
-            => i18NStrings.Any(kvp => IgnoreCase
-                                          ? kvp.Value.IndexOf(Match, StringComparison.OrdinalIgnoreCase) >= 0
-                                          : kvp.Value.IndexOf(Match) >= 0);
 
 
         #region GetEnumerator()

@@ -55,6 +55,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Deconstruct(out Language, out Text)
+
+        public void Deconstruct(out Languages Language, out String Text)
+        {
+            Language = this.Language;
+            Text     = this.Text;
+        }
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (I18NPair1, I18NPair2)
@@ -115,8 +126,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(I18NPair I18NPair)
 
             => Language.Equals(I18NPair.Language) &&
-                   String.Equals(Text,
-                                 I18NPair.Text);
+               String.Equals(Text,
+                             I18NPair.Text,
+                             StringComparison.Ordinal);
 
         #endregion
 
