@@ -53,8 +53,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         private DateTime lastChange;
 
         /// <summary>
-        /// The timestamp of the last changes within this ChargingPool.
-        /// Can be used as a HTTP ETag.
+        /// The timestamp of the last changes within this object.
+        /// Can e.g. also be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
         public DateTime LastChange
@@ -67,9 +67,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             set
             {
-                SetProperty(ref lastChange,
-                            value,
-                            EventTracking_Id.New);
+
+                if (lastChange != value)
+                    SetProperty(ref lastChange,
+                                value,
+                                EventTracking_Id.New);
+
             }
 
         }
@@ -92,7 +95,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Create a new data structure for customer specific data.
         /// </summary>
-        /// <param name="InternalData">An optional dictionary of internal data.</param>
+        /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
+        /// <param name="InternalData">Optional internal data.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData)
         {

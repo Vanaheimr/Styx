@@ -122,6 +122,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region From(Items = null)
+
+        public static ReactiveSet<T> From(IEnumerable<T>? Items = null)
+
+            => Items is null
+                   ? new ()
+                   : new (Items);
+
+        #endregion
+
+
         #region AddAndReturn(Item)
 
         /// <summary>
