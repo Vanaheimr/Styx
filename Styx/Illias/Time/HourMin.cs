@@ -15,17 +15,11 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A HourMin.
+    /// A hour with minutes.
     /// </summary>
     public readonly struct HourMin : IEquatable<HourMin>,
                                      IComparable<HourMin>,
@@ -40,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public readonly Byte Hour     { get; }
 
         /// <summary>
-        /// The minute.
+        /// The minutes.
         /// </summary>
         public readonly Byte Minute   { get; }
 
@@ -49,10 +43,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Constructor(s)
 
         /// <summary>
-        /// Create new hour/minute.
+        /// Create new hour with minutes.
         /// </summary>
         /// <param name="Hour">The hour.</param>
-        /// <param name="Minute">The minute.</param>
+        /// <param name="Minute">The minutes.</param>
         public HourMin(Byte  Hour,
                        Byte  Minute)
         {
@@ -193,7 +187,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator != (HourMin HourMin1,
                                            HourMin HourMin2)
 
-            => !(HourMin1 == HourMin2);
+            => !HourMin1.Equals(HourMin2);
 
         #endregion
 
@@ -223,7 +217,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator <= (HourMin HourMin1,
                                            HourMin HourMin2)
 
-            => !(HourMin1 > HourMin2);
+            => HourMin1.CompareTo(HourMin2) <= 0;
 
         #endregion
 
@@ -253,7 +247,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator >= (HourMin HourMin1,
                                            HourMin HourMin2)
 
-            => !(HourMin1 < HourMin2);
+            => HourMin1.CompareTo(HourMin2) >= 0;
 
         #endregion
 
@@ -264,28 +258,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two hours with minutes.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A hour with minutes to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object is HourMin hourMin)
-                return CompareTo(hourMin);
-
-            throw new ArgumentException("The given object is not a HourMin!",
-                                        nameof(Object));
-
-        }
+            => Object is HourMin hourMin
+                   ? CompareTo(hourMin)
+                   : throw new ArgumentException("The given object is not a hour with minutes!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(HourMin)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two hours with minutes.
         /// </summary>
-        /// <param name="HourMin">An object to compare with.</param>
+        /// <param name="HourMin">A hour with minutes to compare with.</param>
         public Int32 CompareTo(HourMin HourMin)
         {
 
@@ -307,29 +297,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two hours with minutes for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="HourMin">A hour with minutes to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is HourMin HourMin)
-                return Equals(HourMin);
-
-            return false;
-
-        }
+            => Object is HourMin hourMin
+                   && Equals(hourMin);
 
         #endregion
 
         #region Equals(HourMin)
 
         /// <summary>
-        /// Compares two HourMins for equality.
+        /// Compares two hours with minutes for equality.
         /// </summary>
-        /// <param name="HourMin">A HourMin to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="HourMin">A hour with minutes to compare with.</param>
         public Boolean Equals(HourMin HourMin)
 
             => Hour.  Equals(HourMin.Hour) &&

@@ -18,7 +18,6 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
-using System;
 
 #endregion
 
@@ -28,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Regular recurring operation or access hours.
     /// </summary>
-    public struct RegularHours : IEquatable<RegularHours>
+    public readonly struct RegularHours : IEquatable<RegularHours>
     {
 
         #region Properties
@@ -36,17 +35,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Day of the week.
         /// </summary>
-        public DayOfWeek  DayOfWeek     { get; }
+        public DayOfWeek  DayOfWeek      { get; }
 
         /// <summary>
         /// Begin of the regular period.
         /// </summary>
-        public HourMin    PeriodBegin   { get; }
+        public HourMin    PeriodBegin    { get; }
 
         /// <summary>
         /// End of the regular period.
         /// </summary>
-        public HourMin    PeriodEnd     { get; }
+        public HourMin    PeriodEnd      { get; }
 
         #endregion
 
@@ -65,12 +64,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (PeriodEnd.Hour < PeriodBegin.Hour ||
+            if (PeriodEnd.Hour    < PeriodBegin.Hour ||
 
                (PeriodEnd.Hour   == PeriodBegin.Hour &&
                 PeriodEnd.Minute  < PeriodBegin.Minute))
-
+            {
                 throw new ArgumentException("The end period must be after the start period!", nameof(PeriodEnd));
+            }
 
             #endregion
 
@@ -83,38 +83,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region ToJSON(CustomPeriodSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
         public JObject ToJSON()
 
             => JSONObject.Create(
-                   new JProperty("begin", PeriodBegin.ToString()),
-                   new JProperty("end",   PeriodEnd.  ToString())
+                   new JProperty("begin",  PeriodBegin.ToString()),
+                   new JProperty("end",    PeriodEnd.  ToString())
                );
+
+        #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (RegularHours1, RegularHours2)
+        #region Operator == (RegularHour1, RegularHour2)
 
         /// <summary>
         /// Compares two regular hourss for equality.
         /// </summary>
-        /// <param name="RegularHours1">A regular hours.</param>
-        /// <param name="RegularHours2">Another regular hours.</param>
+        /// <param name="RegularHour1">A regular hour.</param>
+        /// <param name="RegularHour2">Another regular hour.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (RegularHours RegularHours1, RegularHours RegularHours2)
-        {
+        public static Boolean operator == (RegularHours RegularHour1,
+                                           RegularHours RegularHour2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(RegularHours1, RegularHours2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) RegularHours1 == null) || ((Object) RegularHours2 == null))
-                return false;
-
-            return RegularHours1.Equals(RegularHours2);
-
-        }
+            => RegularHour1.Equals(RegularHour2);
 
         #endregion
 
@@ -123,12 +120,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two regular hourss for inequality.
         /// </summary>
-        /// <param name="RegularHours1">A regular hours.</param>
-        /// <param name="RegularHours2">Another regular hours.</param>
+        /// <param name="RegularHours1">A regular hour.</param>
+        /// <param name="RegularHours2">Another regular hour.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (RegularHours RegularHours1, RegularHours RegularHours2)
+        public static Boolean operator != (RegularHours RegularHour1,
+                                           RegularHours RegularHour2)
 
-            => !(RegularHours1 == RegularHours2);
+            => !RegularHour1.Equals(RegularHour2);
 
         #endregion
 
@@ -143,40 +141,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is a regular hours object.
-            if (!(Object is RegularHours))
-                return false;
-
-            return this.Equals((RegularHours) Object);
-
-        }
+            => Object is RegularHours regularHour
+                   && Equals(regularHour);
 
         #endregion
 
-        #region Equals(RegularHours)
+        #region Equals(regularHour)
 
         /// <summary>
         /// Compares two regular hours objects for equality.
         /// </summary>
-        /// <param name="RegularHours">A regular hours object to compare with.</param>
+        /// <param name="regularHour">A regular hours object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RegularHours RegularHours)
-        {
+        public Boolean Equals(RegularHours RegularHour)
 
-            if ((Object) RegularHours == null)
-                return false;
-
-            return DayOfWeek.Equals(RegularHours.DayOfWeek)       &&
-                   PeriodBegin.  Equals(RegularHours.PeriodBegin) &&
-                   PeriodEnd.    Equals(RegularHours.PeriodEnd);
-
-        }
+            => DayOfWeek.  Equals(RegularHour.DayOfWeek)   &&
+               PeriodBegin.Equals(RegularHour.PeriodBegin) &&
+               PeriodEnd.  Equals(RegularHour.PeriodEnd);
 
         #endregion
 
@@ -192,7 +175,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return DayOfWeek.GetHashCode() * 23 ^ PeriodBegin.GetHashCode() * 17 ^ PeriodEnd.GetHashCode();
+
+                return DayOfWeek.  GetHashCode() * 5 ^
+                       PeriodBegin.GetHashCode() * 3 ^
+                       PeriodEnd.  GetHashCode();
+
             }
         }
 
@@ -204,19 +191,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            if (DayOfWeek           == DayOfWeek.Sunday &&
-                PeriodBegin.Hour    == 0                &&
-                PeriodBegin.Minute  == 0                &&
-                PeriodEnd.  Hour    == 0                &&
-                PeriodEnd.  Minute  == 0)
-
-                return "";
-
-            return String.Concat(DayOfWeek.ToString(), "s from ", PeriodBegin.ToString(), "h to ", PeriodEnd.ToString(), "h");
-
-        }
+            => DayOfWeek           == DayOfWeek.Sunday &&
+               PeriodBegin.Hour    == 0                &&
+               PeriodBegin.Minute  == 0                &&
+               PeriodEnd.  Hour    == 0                &&
+               PeriodEnd.  Minute  == 0
+               ? ""
+               : String.Concat(DayOfWeek.ToString(), "s from ", PeriodBegin.ToString(), "h to ", PeriodEnd.ToString(), "h");
 
         #endregion
 
