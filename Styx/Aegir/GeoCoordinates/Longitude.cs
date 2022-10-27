@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
-    /// A geographical longitude.
+    /// A geographical longitude (parallel to equator).
     /// </summary>
     public readonly struct Longitude : IEquatable<Longitude>,
                                        IComparable<Longitude>,
@@ -38,14 +38,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Returns the value of the longitude.
         /// </summary>
-        public Double  Value   { get; }
+        public Double  Value    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new longitude.
+        /// Create a new geographical longitude (parallel to equator).
         /// </summary>
         /// <param name="Value">The value of the longitude.</param>
         public Longitude(Double Value)
@@ -56,39 +56,65 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
+        #region (static) Parse   (Value)
+
+        /// <summary>
+        /// Parse the given string as a geographical longitude (parallel to equator).
+        /// </summary>
+        /// <param name="Text">A text-representation of a longitude.</param>
         public static Longitude Parse(Double Value)
         {
 
-            if (Value < -180 || Value > 180)
-                throw new ArgumentException("Invalid longitude value '" + Value + "'! Must be between -180 and 180!", nameof(Value));
+            if (TryParse(Value, out var longitude))
+                return longitude;
 
-            return new Longitude(Value);
+            throw new ArgumentException("Invalid longitude '" + Value + "'! The value must be between -180 and 180!", nameof(Value));
 
         }
 
+        #endregion
+
+        #region (static) TryParse(Value)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical longitude (parallel to equator).
+        /// </summary>
+        /// <param name="Text">A text-representation of a longitude.</param>
         public static Longitude? TryParse(Double Value)
         {
 
-            if (TryParse(Value, out Longitude _Longitude))
-                return _Longitude;
+            if (TryParse(Value, out var longitude))
+                return longitude;
 
-            return new Longitude?();
+            return null;
 
         }
 
+        #endregion
+
+        #region (static) TryParse(Value, out Longitude)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical longitude (parallel to equator).
+        /// </summary>
+        /// <param name="Value">A nummeric representation of a longitude.</param>
+        /// <param name="Longitude">The parsed longitude.</param>
         public static Boolean TryParse(Double Value, out Longitude Longitude)
         {
 
-            if (Value < -180 || Value > 180)
+            if (Value >= -180 && Value <= 180)
             {
-                Longitude = default;
-                return false;
+                Longitude = new Longitude(Value);
+                return true;
             }
 
-            Longitude = new Longitude(Value);
-            return true;
+            Longitude = default;
+            return false;
 
         }
+
+        #endregion
+
 
         public static Longitude Parse(String Value)
             => Parse(Double.Parse(Value, CultureInfo.InvariantCulture));
@@ -106,46 +132,57 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Longitude? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Longitude _Longitude))
-                return _Longitude;
+            if (TryParse(Text, out Longitude longitude))
+                return longitude;
 
-            return new Longitude?();
+            return null;
 
         }
 
-        public static Longitude? TryParse(String Text, Func<Double, Double> ValueMapper)
+        public static Longitude? TryParse(String Text, Func<Double, Double>? ValueMapper)
         {
 
-            if (TryParse(Text, out Longitude _Longitude, ValueMapper))
-                return _Longitude;
+            if (TryParse(Text, out Longitude longitude, ValueMapper))
+                return longitude;
 
-            return new Longitude?();
+            return null;
 
         }
 
         public static Boolean TryParse(String Text, out Longitude Longitude)
-            => TryParse(Text, out Longitude, null);
 
-        public static Boolean TryParse(String Text, out Longitude Longitude, Func<Double, Double> ValueMapper = null)
+            => TryParse(Text,
+                        out Longitude,
+                        null);
+
+        public static Boolean TryParse(String                 Text,
+                                       out Longitude          Longitude,
+                                       Func<Double, Double>?  ValueMapper)
         {
 
-            try
-            {
-                if (Double.TryParse(Text, NumberStyles.Any, CultureInfo.InvariantCulture, out Double Value))
-                {
-                    Longitude = new Longitude(ValueMapper != null ? ValueMapper(Value) : Value);
-                    return true;
-                }
-            }
-            catch (Exception)
-            { }
-
             Longitude = default;
+
+            if (Double.TryParse(Text,
+                                NumberStyles.Any,
+                                CultureInfo.InvariantCulture,
+                                out var Value))
+            {
+
+                Longitude = new Longitude(ValueMapper is not null
+                                              ? ValueMapper(Value)
+                                              : Value);
+
+                return true;
+
+            }
+
             return false;
 
         }
 
-        public static Boolean TryParseNMEA(String Text, out Longitude Longitude, Func<Double, Double> ValueMapper = null)
+        public static Boolean TryParseNMEA(String                 Text,
+                                           out Longitude          Longitude,
+                                           Func<Double, Double>?  ValueMapper   = null)
         {
 
             try
@@ -159,8 +196,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                 if (space > 0 &&
                     (sign == 'e' || sign == 'E' || sign == 'w' || sign == 'W') &&
-                    Double.TryParse(Text.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out Double degrees) &&
-                    Double.TryParse(Text.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out Double minutes))
+                    Double.TryParse(Text.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out var degrees) &&
+                    Double.TryParse(Text.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out var minutes))
                 {
 
                     var value = degrees + (minutes / 60);
@@ -168,7 +205,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (sign == 'w' || sign == 'W')
                         value *= -1;
 
-                    return TryParse(ValueMapper != null
+                    return TryParse(ValueMapper is not null
                                         ? ValueMapper(value)
                                         : value,
                                     out Longitude);

@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Globalization;
 
 #endregion
@@ -26,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
-    /// A geographical latitude.
+    /// A geographical latitude (south to nord).
     /// </summary>
     public readonly struct Latitude : IEquatable<Latitude>,
                                       IComparable<Latitude>,
@@ -36,18 +35,18 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Properties
 
         /// <summary>
-        /// Returns the value of the latitude.
+        /// The nummeric value of the latitude.
         /// </summary>
-        public Double  Value   { get; }
+        public Double  Value    { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new latitude.
+        /// Create a new geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Value">The value of the latitude.</param>
+        /// <param name="Value">The nummeric value of the latitude.</param>
         private Latitude(Double Value)
         {
             this.Value = Value;
@@ -56,39 +55,69 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
+        #region (static) Parse   (Value)
+
+        /// <summary>
+        /// Parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Text">A text-representation of a latitude.</param>
         public static Latitude Parse(Double Value)
         {
 
-            if (Value < -90 || Value > 90)
-                throw new ArgumentException("Invalid latitude value '" + Value + "'! Must be between -90 and 90!", nameof(Value));
+            if (TryParse(Value, out var latitude))
+                return latitude;
 
-            return new Latitude(Value);
+            throw new ArgumentException("Invalid latitude '" + Value + "'! The value must be between -90 and 90!", nameof(Value));
 
         }
 
+        #endregion
+
+        #region (static) TryParse(Value)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Text">A text-representation of a latitude.</param>
         public static Latitude? TryParse(Double Value)
         {
 
-            if (TryParse(Value, out Latitude _Latitude))
-                return _Latitude;
+            if (TryParse(Value, out var latitude))
+                return latitude;
 
-            return new Latitude?();
+            return null;
 
         }
 
+        #endregion
+
+        #region (static) TryParse(Value, out Latitude)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Value">A nummeric representation of a latitude.</param>
+        /// <param name="ClearingHouseId">The parsed latitude.</param>
         public static Boolean TryParse(Double Value, out Latitude Latitude)
         {
 
-            if (Value < -90 || Value > 90)
+            if (Value >= -90 && Value <= 90)
             {
-                Latitude = default;
-                return false;
+                Latitude = new Latitude(Value);
+                return true;
             }
 
-            Latitude = new Latitude(Value);
-            return true;
+            Latitude = default;
+            return false;
 
         }
+
+        #endregion
+
+
+
+
+
 
         public static Latitude Parse(String Value)
             => Parse(Double.Parse(Value, CultureInfo.InvariantCulture));
@@ -105,46 +134,51 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Latitude? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Latitude _Latitude))
-                return _Latitude;
+            if (TryParse(Text, out var latitude))
+                return latitude;
 
-            return new Latitude?();
+            return null;
 
         }
 
         public static Latitude? TryParse(String Text, Func<Double, Double> ValueMapper)
         {
 
-            if (TryParse(Text, out Latitude _Latitude, ValueMapper))
-                return _Latitude;
+            if (TryParse(Text, out var latitude, ValueMapper))
+                return latitude;
 
-            return new Latitude?();
+            return null;
 
         }
 
         public static Boolean TryParse(String Text, out Latitude Latitude)
-            => TryParse(Text, out Latitude, null);
 
-        public static Boolean TryParse(String Text, out Latitude Latitude, Func<Double, Double> ValueMapper = null)
+            => TryParse(Text,
+                        out Latitude,
+                        null);
+
+        public static Boolean TryParse(String                 Text,
+                                       out Latitude           Latitude,
+                                       Func<Double, Double>?  ValueMapper)
         {
 
-            try
-            {
-                if (Double.TryParse(Text, NumberStyles.Any, CultureInfo.InvariantCulture, out Double Value))
-                {
-                    Latitude = new Latitude(ValueMapper != null ? ValueMapper(Value) : Value);
-                    return true;
-                }
-            }
-            catch (Exception)
-            { }
-
             Latitude = default;
-            return false;
+
+            return Double.TryParse(Text,
+                                   NumberStyles.Any,
+                                   CultureInfo.InvariantCulture,
+                                   out var Value) &&
+
+                   TryParse(ValueMapper is not null
+                                ? ValueMapper(Value)
+                                : Value,
+                            out Latitude);
 
         }
 
-        public static Boolean TryParseNMEA(String Text, out Latitude Latitude, Func<Double, Double> ValueMapper = null)
+        public static Boolean TryParseNMEA(String                 Text,
+                                           out Latitude           Latitude,
+                                           Func<Double, Double>?  ValueMapper   = null)
         {
 
             try
@@ -158,8 +192,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                 if (space > 0 &&
                     (sign == 'n' || sign == 'N' || sign == 's' || sign == 'S') &&
-                    Double.TryParse(Text.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out Double degrees) &&
-                    Double.TryParse(Text.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out Double minutes))
+                    Double.TryParse(Text.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out var degrees) &&
+                    Double.TryParse(Text.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out var minutes))
                 {
 
                     var value = degrees + (minutes / 60);
@@ -167,7 +201,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (sign == 's' || sign == 'S')
                         value *= -1;
 
-                    return TryParse(ValueMapper != null
+                    return TryParse(ValueMapper is not null
                                         ? ValueMapper(value)
                                         : value,
                                     out Latitude);
@@ -192,9 +226,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="OtherLatitude">Another latitude.</param>
         /// <returns>The distance between a and b.</returns>
         public Double DistanceTo(Latitude OtherLatitude)
-        {
-            return Math.Abs(Value - OtherLatitude.Value);
-        }
+
+            => Math.Abs(Value - OtherLatitude.Value);
 
         #endregion
 
@@ -209,20 +242,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude1">A latitude.</param>
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Latitude Latitude1, Latitude Latitude2)
-        {
+        public static Boolean operator == (Latitude Latitude1,
+                                           Latitude Latitude2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(Latitude1, Latitude2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) Latitude1 == null) || ((Object) Latitude2 == null))
-                return false;
-
-            return Latitude1.Equals(Latitude2);
-
-        }
+            => Latitude1.Equals(Latitude2);
 
         #endregion
 
@@ -234,8 +257,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude1">A latitude.</param>
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Latitude Latitude1, Latitude Latitude2)
-            => !(Latitude1 == Latitude2);
+        public static Boolean operator != (Latitude Latitude1,
+                                           Latitude Latitude2)
+
+            => !Latitude1.Equals(Latitude2);
 
         #endregion
 
@@ -247,18 +272,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude1">A latitude.</param>
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator  < (Latitude Latitude1, Latitude Latitude2)
-        {
+        public static Boolean operator  < (Latitude Latitude1,
+                                           Latitude Latitude2)
 
-            if ((Object) Latitude1 == null)
-                throw new ArgumentNullException("The given Latitude1 must not be null!");
-
-            if ((Object) Latitude2 == null)
-                throw new ArgumentNullException("The given Latitude2 must not be null!");
-
-            return Latitude1.CompareTo(Latitude2) < 0;
-
-        }
+            => Latitude1.CompareTo(Latitude2) < 0;
 
         #endregion
 
@@ -270,8 +287,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude1">A latitude.</param>
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Latitude Latitude1, Latitude Latitude2)
-            => !(Latitude1 > Latitude2);
+        public static Boolean operator <= (Latitude Latitude1,
+                                           Latitude Latitude2)
+
+            => Latitude1.CompareTo(Latitude2) <= 0;
 
         #endregion
 
@@ -283,18 +302,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude1">A latitude.</param>
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator  > (Latitude Latitude1, Latitude Latitude2)
-        {
+        public static Boolean operator  > (Latitude Latitude1,
+                                           Latitude Latitude2)
 
-            if ((Object) Latitude1 == null)
-                throw new ArgumentNullException("The given Latitude1 must not be null!");
-
-            if ((Object) Latitude2 == null)
-                throw new ArgumentNullException("The given Latitude2 must not be null!");
-
-            return Latitude1.CompareTo(Latitude2) > 0;
-
-        }
+            => Latitude1.CompareTo(Latitude2) > 0;
 
         #endregion
 
@@ -306,42 +317,38 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude1">A latitude.</param>
         /// <param name="Latitude2">Another latitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Latitude Latitude1, Latitude Latitude2)
-            => !(Latitude1 < Latitude2);
+        public static Boolean operator >= (Latitude Latitude1,
+                                           Latitude Latitude2)
+
+            => Latitude1.CompareTo(Latitude2) >= 0;
 
         #endregion
 
         #endregion
 
-        #region IComparable Members
+        #region IComparable<Latitude> Members
 
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geographical latitudes.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">Another geographical latitude.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given Object must not be null!");
-
-            if (!(Object is Latitude Latitude))
-                throw new ArgumentException("The given object is not a latitude!", nameof(Object));
-
-            return CompareTo(Latitude);
-
-        }
+            => Object is Latitude latitude
+                   ? CompareTo(latitude)
+                   : throw new ArgumentException("The given object is not a geographical latitude!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(Latitude)
 
         /// <summary>
-        /// Compares two latitudes.
+        /// Compares two geographical latitudes.
         /// </summary>
-        /// <param name="Latitude">Another latitude.</param>
+        /// <param name="Latitude">Another geographical latitude.</param>
         public Int32 CompareTo(Latitude Latitude)
 
             => Value.CompareTo(Latitude.Value);
@@ -350,37 +357,27 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region IEquatable Members
+        #region IEquatable<Latitude> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geographical latitudes for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Another geographical latitude.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is Latitude Latitude))
-                return false;
-
-            return Equals(Latitude);
-
-        }
+            => Object is Latitude latitude &&
+                   Equals(latitude);
 
         #endregion
 
         #region Equals(Latitude)
 
         /// <summary>
-        /// Compares two latitudes for equality.
+        /// Compares two geographical latitudes for equality.
         /// </summary>
-        /// <param name="Latitude">Another latitude.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
+        /// <param name="Latitude">Another geographical latitude.</param>
         public Boolean Equals(Latitude Latitude)
 
             => Value.Equals(Latitude.Value);
@@ -396,6 +393,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()
+
             => Value.GetHashCode();
 
         #endregion
@@ -431,7 +429,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Format">A composite format string</param>
         public String ToString(String Format)
 
-            => String.Format(Format, Value);
+            => String.Format(Format,
+                             Value);
 
         #endregion
 

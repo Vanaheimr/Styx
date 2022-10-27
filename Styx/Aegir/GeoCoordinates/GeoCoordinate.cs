@@ -141,75 +141,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public static class GeoCoordinateExtensions
     {
 
-        #region ToJSON(this GeoLocation)
-
-        /// <summary>
-        /// Return a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="GeoLocation">A geographical location.</param>
-        public static JObject ToJSON(this GeoCoordinate GeoLocation)
-        {
-
-            if (GeoLocation == default(GeoCoordinate))
-                return null;
-
-            return JSONObject.Create(
-                       GeoLocation.Projection != GravitationalModel.WGS84 ? new JProperty("projection", GeoLocation.Projection.ToString()) : null,
-                       new JProperty("lat", GeoLocation.Latitude. Value),
-                       new JProperty("lng", GeoLocation.Longitude.Value),
-                       GeoLocation.Altitude.HasValue                      ? new JProperty("alt",        GeoLocation.Altitude.Value.Value)  : null
-                   );
-
-        }
-
-
-        /// <summary>
-        /// Return a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="GeoLocation">A geographical location.</param>
-        public static JObject ToJSON(this GeoCoordinate? GeoLocation)
-            => GeoLocation?.ToJSON();
-
-        #endregion
-
-        #region ToJSON(this GeoLocation, JPropertyKey)
-
-        /// <summary>
-        /// Return a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="GeoLocation">A geographical location.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoCoordinate GeoLocation, String JPropertyKey)
-        {
-
-            if (GeoLocation == default)
-                return null;
-
-            return new JProperty(JPropertyKey,
-                                 GeoLocation.ToJSON());
-
-        }
-
-
-        /// <summary>
-        /// Return a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="GeoLocation">A GeoLocation.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoCoordinate? GeoLocation, String JPropertyKey)
-        {
-
-            if (!GeoLocation.HasValue)
-                return null;
-
-            return new JProperty(JPropertyKey,
-                                 GeoLocation.Value.ToJSON());
-
-        }
-
-        #endregion
-
-
         public static Boolean TryParseGeoCoordinate(this String Text, out GeoCoordinate GeoLocation)
             => GeoCoordinate.TryParse(JObject.Parse(Text), out GeoLocation);
 
@@ -266,22 +197,22 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// A regular expression for matching decimal geo positions/coordinates.
         /// </summary>
-        public static readonly Regex  IsDecimalRegExpr                    = new Regex(IsDecimal_RegExprString);
+        public static readonly Regex  IsDecimalRegExpr                    = new (IsDecimal_RegExprString);
 
         /// <summary>
         /// A regular expression for matching decimal geo positions/coordinates.
         /// </summary>
-        public static readonly Regex  IsDecimalGeoPositionRegExpr         = new Regex(IsDecimalGeoPosition_RegExprString);
+        public static readonly Regex  IsDecimalGeoPositionRegExpr         = new (IsDecimalGeoPosition_RegExprString);
 
         /// <summary>
         /// A regular expression for matching signed decimal geo positions/coordinates.
         /// </summary>
-        public static readonly Regex  IsSignedDecimalGeoPositionRegExpr   = new Regex(IsSignedDecimalGeoPosition_RegExprString);
+        public static readonly Regex  IsSignedDecimalGeoPositionRegExpr   = new (IsSignedDecimalGeoPosition_RegExprString);
 
         /// <summary>
         /// A regular expression for matching sexagesimal geo positions/coordinates.
         /// </summary>
-        public static readonly Regex  IsSexagesimalGeoPositionRegExpr     = new Regex(IsSexagesimalGeoPosition_RegExprString);
+        public static readonly Regex  IsSexagesimalGeoPositionRegExpr     = new (IsSexagesimalGeoPosition_RegExprString);
 
         #endregion
 
@@ -290,27 +221,27 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// The planet.
         /// </summary>
-        public Planets             Planet       { get; }
+        public Planets             Planet        { get; }
 
         /// <summary>
         /// The Latitude (south to nord).
         /// </summary>
-        public Latitude            Latitude     { get; }
+        public Latitude            Latitude      { get; }
 
         /// <summary>
         /// The Longitude (parallel to equator).
         /// </summary>
-        public Longitude           Longitude    { get; }
+        public Longitude           Longitude     { get; }
 
         /// <summary>
         /// The Altitude.
         /// </summary>
-        public Altitude?           Altitude     { get; }
+        public Altitude?           Altitude      { get; }
 
         /// <summary>
         /// The gravitational model.
         /// </summary>
-        public GravitationalModel  Projection   { get; }
+        public GravitationalModel  Projection    { get; }
 
         #endregion
 
@@ -326,14 +257,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Planet">The planet.</param>
         public GeoCoordinate(Latitude            Latitude,
                              Longitude           Longitude,
-                             Altitude?           Altitude    = null,
-                             GravitationalModel  Projection  = GravitationalModel.WGS84,
-                             Planets             Planet      = Planets.Earth)
+                             Altitude?           Altitude     = null,
+                             GravitationalModel  Projection   = GravitationalModel.WGS84,
+                             Planets             Planet       = Planets.Earth)
         {
 
             this.Latitude    = Latitude;
             this.Longitude   = Longitude;
-            this.Altitude    = Altitude ?? new Altitude?();
+            this.Altitude    = Altitude;
             this.Projection  = Projection;
             this.Planet      = Planet;
 
@@ -402,7 +333,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                                Double   Longitude,
                                                Double?  Altitude = null)
 
-            => new GeoCoordinate(
+            => new (
                    Aegir.Latitude. Parse(Latitude),
                    Aegir.Longitude.Parse(Longitude),
                    Altitude.HasValue
@@ -424,7 +355,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                                Double   Latitude,
                                                Double?  Altitude = null)
 
-            => new GeoCoordinate(
+            => new (
                    Aegir.Latitude. Parse(Latitude),
                    Aegir.Longitude.Parse(Longitude),
                    Altitude.HasValue
@@ -443,21 +374,21 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="LatitudeString">The Latitude (south to nord).</param>
         /// <param name="LongitudeString">The Longitude (parallel to equator).</param>
         /// <param name="AltitudeString">The Altitude.</param>
-        public static GeoCoordinate Parse(String  LatitudeString,
-                                          String  LongitudeString,
-                                          String  AltitudeString = null)
+        public static GeoCoordinate Parse(String   LatitudeString,
+                                          String   LongitudeString,
+                                          String?  AltitudeString   = null)
         {
 
-            if (!Latitude. TryParse(LatitudeString,  out Latitude  latitude))
+            if (!Latitude. TryParse(LatitudeString,  out var latitude))
                 throw new Exception("Invalid 'latitude' value!");
 
-            if (!Longitude.TryParse(LongitudeString, out Longitude longitude))
+            if (!Longitude.TryParse(LongitudeString, out var longitude))
                 throw new Exception("Invalid 'longitude' value!");
 
-            if (AltitudeString.IsNeitherNullNorEmpty())
+            if (AltitudeString is not null && AltitudeString.IsNeitherNullNorEmpty())
             {
 
-                if (!Aegir.Altitude.TryParse(AltitudeString, out Altitude altitude))
+                if (!Aegir.Altitude.TryParse(AltitudeString, out var altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
                 return new GeoCoordinate(latitude,
@@ -481,21 +412,21 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="LatitudeDouble">The Latitude (south to nord).</param>
         /// <param name="LongitudeDouble">The Longitude (parallel to equator).</param>
         /// <param name="AltitudeDouble">The Altitude.</param>
-        public static GeoCoordinate Parse(Double  LatitudeDouble,
-                                          Double  LongitudeDouble,
-                                          Double? AltitudeDouble = null)
+        public static GeoCoordinate Parse(Double   LatitudeDouble,
+                                          Double   LongitudeDouble,
+                                          Double?  AltitudeDouble   = null)
         {
 
-            if (!Latitude. TryParse(LatitudeDouble,  out Latitude  latitude))
+            if (!Latitude. TryParse(LatitudeDouble,  out var latitude))
                 throw new Exception("Invalid 'latitude' value!");
 
-            if (!Longitude.TryParse(LongitudeDouble, out Longitude longitude))
+            if (!Longitude.TryParse(LongitudeDouble, out var longitude))
                 throw new Exception("Invalid 'longitude' value!");
 
             if (AltitudeDouble.HasValue)
             {
 
-                if (!Aegir.Altitude.TryParse(AltitudeDouble.Value, out Altitude altitude))
+                if (!Aegir.Altitude.TryParse(AltitudeDouble.Value, out var altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
                 return new GeoCoordinate(latitude,
@@ -525,13 +456,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             GeoCoordinate = default;
 
-            if (!Latitude. TryParse(LatitudeString,  out Latitude  latitude))
+            if (!Latitude. TryParse(LatitudeString,  out var latitude))
                 return false;
 
-            if (!Longitude.TryParse(LongitudeString, out Longitude longitude))
+            if (!Longitude.TryParse(LongitudeString, out var longitude))
                 return false;
 
-            GeoCoordinate = new GeoCoordinate(latitude, longitude);
+            GeoCoordinate = new GeoCoordinate(latitude,
+                                              longitude);
 
             return true;
 
@@ -556,13 +488,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             GeoCoordinate = default;
 
-            if (!Latitude.      TryParse(LatitudeString,  out Latitude  latitude))
+            if (!Latitude.      TryParse(LatitudeString,  out var latitude))
                 return false;
 
-            if (!Longitude.     TryParse(LongitudeString, out Longitude longitude))
+            if (!Longitude.     TryParse(LongitudeString, out var longitude))
                 return false;
 
-            if (!Aegir.Altitude.TryParse(AltitudeString,  out Altitude  altitude))
+            if (!Aegir.Altitude.TryParse(AltitudeString,  out var altitude))
                 return false;
 
             GeoCoordinate = new GeoCoordinate(latitude,
@@ -586,8 +518,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate ParseString(String GeoString)
         {
 
-            if (TryParseString(GeoString, out GeoCoordinate GeoCoordinate))
-                return GeoCoordinate;
+            if (TryParseString(GeoString, out var geoCoordinate))
+                return geoCoordinate;
 
             return default;
 
@@ -711,10 +643,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate? TryParse(JObject JSON)
         {
 
-            if (TryParse(JSON, out GeoCoordinate geoCoordinate))
+            if (TryParse(JSON, out var geoCoordinate))
                 return geoCoordinate;
 
-            return default(GeoCoordinate);
+            return default;
 
         }
 
@@ -756,23 +688,21 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return a JSON representation of this object.
         /// </summary>
         public JObject ToJSON()
-        {
 
-            var JSON = JSONObject.Create(
+            => JSONObject.Create(
 
-                           new JProperty("lat",  Latitude. Value),
-                           new JProperty("lng",  Longitude.Value),
+                   new JProperty("lat",  Latitude. Value),
+                   new JProperty("lng",  Longitude.Value),
 
-                           Altitude.HasValue
-                               ? new JProperty("alt",  Altitude.Value)
-                               : null
+                   Altitude.HasValue
+                       ? new JProperty("alt",         Altitude.Value.Value)
+                       : null,
 
-                       );
+                   Projection != GravitationalModel.WGS84
+                       ? new JProperty("projection",  Projection.ToString())
+                       : null
 
-
-            return JSON;
-
-        }
+               );
 
         #endregion
 
@@ -938,20 +868,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoCoordinate1">A geo coordinate.</param>
         /// <param name="GeoCoordinate2">Another geo coordinate.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GeoCoordinate GeoCoordinate1, GeoCoordinate GeoCoordinate2)
-        {
+        public static Boolean operator == (GeoCoordinate GeoCoordinate1,
+                                           GeoCoordinate GeoCoordinate2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(GeoCoordinate1, GeoCoordinate2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) GeoCoordinate1 == null) || ((Object) GeoCoordinate2 == null))
-                return false;
-
-            return GeoCoordinate1.Equals(GeoCoordinate2);
-
-        }
+            => GeoCoordinate1.Equals(GeoCoordinate2);
 
         #endregion
 
@@ -963,35 +883,29 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoCoordinate1">A geo coordinate.</param>
         /// <param name="GeoCoordinate2">Another geo coordinate.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GeoCoordinate GeoCoordinate1, GeoCoordinate GeoCoordinate2)
-        {
-            return !(GeoCoordinate1 == GeoCoordinate2);
-        }
+        public static Boolean operator != (GeoCoordinate GeoCoordinate1,
+                                           GeoCoordinate GeoCoordinate2)
+
+            => !GeoCoordinate1.Equals(GeoCoordinate2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingStation_Id> Members
+        #region IComparable<GeoCoordinate/IGeoCoordinate> Members
 
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geo coordinates.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">Another geo coordinate.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException(nameof(Object), "The given Object must not be null!");
-
-            if (!(Object is GeoCoordinate GeoCoordinate))
-                throw new ArgumentException("The given object is not a GeoCoordinate!", nameof(Object));
-
-            return CompareTo(GeoCoordinate);
-
-        }
+            => Object is GeoCoordinate geoCoordinate
+                   ? CompareTo(geoCoordinate)
+                   : throw new ArgumentException("The given object is not a geo coordinate!",
+                                                 nameof(Object));
 
         #endregion
 
@@ -1004,12 +918,42 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Int32 CompareTo(GeoCoordinate GeoCoordinate)
         {
 
-            var lat = GeoCoordinate.Latitude.Value.CompareTo(Latitude.Value);
+            var c = Latitude. Value.CompareTo(GeoCoordinate.Latitude. Value);
 
-            if (lat != 0)
-                return lat;
+            if (c == 0)
+                c = Longitude.Value.CompareTo(GeoCoordinate.Longitude.Value);
 
-            return GeoCoordinate.Longitude.Value.CompareTo(Longitude.Value);
+            if (c == 0 && Altitude.HasValue && GeoCoordinate.Altitude.HasValue)
+                c = Altitude. Value.CompareTo(GeoCoordinate.Altitude. Value);
+
+            return c;
+
+        }
+
+        #endregion
+
+        #region CompareTo(IGeoCoordinate)
+
+        /// <summary>
+        /// Compares two geo coordinates.
+        /// </summary>
+        /// <param name="IGeoCoordinate">Another geo coordinate.</param>
+        public Int32 CompareTo(IGeoCoordinate? IGeoCoordinate)
+        {
+
+            if (IGeoCoordinate is null)
+                throw new ArgumentNullException(nameof(IGeoCoordinate),
+                                                "The given object is not a geo coordinate!");
+
+            var c = Latitude. Value.CompareTo(IGeoCoordinate.Latitude. Value);
+
+            if (c == 0)
+                c = Longitude.Value.CompareTo(IGeoCoordinate.Longitude.Value);
+
+            //if (c == 0 && Altitude.HasValue && IGeoCoordinate.Altitude.HasValue)
+            //    c = Altitude. Value.CompareTo(IGeoCoordinate.Altitude. Value);
+
+            return c;
 
         }
 
@@ -1017,7 +961,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region IEquatable<GeoCoordinate> Members
+        #region IEquatable<GeoCoordinate/IGeoCoordinate> Members
 
         #region Equals(Object)
 
@@ -1025,41 +969,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two geo coordinates for equality.
         /// </summary>
         /// <param name="Object">Another geo coordinate.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
-        {
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is GeoCoordinate GeoCoordinate))
-                return false;
-
-            return Equals(GeoCoordinate);
-
-        }
-
-        #endregion
-
-        #region Equals(IGeoCoordinate)
-
-        /// <summary>
-        /// Compares two geo coordinates for equality.
-        /// </summary>
-        /// <param name="IGeoCoordinate">Another geo coordinate.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
-        public Boolean Equals(IGeoCoordinate IGeoCoordinate)
-        {
-
-            if (IGeoCoordinate.Latitude. Value != Latitude. Value)
-                return false;
-
-            if (IGeoCoordinate.Longitude.Value != Longitude.Value)
-                return false;
-
-            return true;
-
-        }
+            => Object is GeoCoordinate geoCoordinate &&
+                   Equals(geoCoordinate);
 
         #endregion
 
@@ -1069,19 +982,24 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two geo coordinates for equality.
         /// </summary>
         /// <param name="GeoCoordinate">Another geo coordinate.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
         public Boolean Equals(GeoCoordinate GeoCoordinate)
-        {
 
-            if (GeoCoordinate.Latitude.Value  != Latitude.Value)
-                return false;
+            => Latitude. Equals(GeoCoordinate.Latitude) &&
+               Longitude.Equals(GeoCoordinate.Longitude);
 
-            if (GeoCoordinate.Longitude.Value != Longitude.Value)
-                return false;
+        #endregion
 
-            return true;
+        #region Equals(IGeoCoordinate)
 
-        }
+        /// <summary>
+        /// Compares two geo coordinates for equality.
+        /// </summary>
+        /// <param name="IGeoCoordinate">Another geo coordinate.</param>
+        public Boolean Equals(IGeoCoordinate? IGeoCoordinate)
+
+            => IGeoCoordinate is not null                &&
+               Latitude. Equals(IGeoCoordinate.Latitude) &&
+               Longitude.Equals(IGeoCoordinate.Longitude);
 
         #endregion
 

@@ -16,22 +16,19 @@
  */
 
 /*
- * Based upon: http://github.com/sharonjl/geohash-net
+ * Based upon: http://github.com/sharonjl/geoHash-net
  * 2011 (c) Sharon Lourduraj
  * Distributed under the MIT License
  */
 
 #region Usings
 
-using System;
 using System.Text;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
-
-    #region GeoHashExtensions
 
     /// <summary>
     /// Extension methods for the GeoHash data structure.
@@ -40,39 +37,37 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     {
 
         /// <summary>
-        /// Transform the given geo coordinate into a geohash64.
+        /// Transform the given geo coordinate into a geo hash.
         /// </summary>
         /// <param name="GeoCoordinate">The geo coordinate.</param>
-        /// <param name="Precision">An optional precision aka number of characters of the resulting geohash.</param>
-        public static GeoHash ToGeoHash(this GeoCoordinate GeoCoordinate, Byte Precision = 12)
-        {
-            return new GeoHash(GeoCoordinate, Precision);
-        }
+        /// <param name="Precision">An optional precision aka number of characters of the resulting geo hash.</param>
+        public static GeoHash ToGeoHash(this GeoCoordinate  GeoCoordinate,
+                                        Byte                Precision   = 12)
+
+            => new (GeoCoordinate,
+                    Precision);
 
     }
 
-    #endregion
-
-    #region GeoHash
 
     /// <summary>
-    /// A base32-encoded alphanumeric geohash.
+    /// A base32-encoded alphanumeric geo hash.
     /// </summary>
-    public struct GeoHash : IGeoHash<String>,
-                            IGeoCoordinate,
-                            IEquatable<GeoHash>,
-                            IComparable<GeoHash>
+    public readonly struct GeoHash : IGeoHash<String>,
+                                     IGeoCoordinate,
+                                     IEquatable<GeoHash>,
+                                     IComparable<GeoHash>
 
     {
 
-        #region Direction enum
+        #region (enum) Direction
 
         public enum Direction
         {
-            Top    = 0,
-            Right  = 1,
-            Bottom = 2,
-            Left   = 3
+            Top     = 0,
+            Right   = 1,
+            Bottom  = 2,
+            Left    = 3
         }
 
         #endregion
@@ -107,82 +102,37 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public const String GeoHashAlphabet = "0123456789bcdefghjkmnpqrstuvwxyz";
 
         /// <summary>
-        /// The internal geohash.
+        /// The internal geo hash.
         /// </summary>
-        private readonly String InternalGeoHash;
+        private readonly String internalGeoHash;
 
         #endregion
 
         #region Properties
 
-        #region Digits
-
-        private Byte _Digits;
-
         /// <summary>
         /// Rounds the double-precision value to the given number of fractional digits.
         /// </summary>
-        public Byte Digits
-        {
-
-            get
-            {
-                return _Digits;
-            }
-
-            set
-            {
-                _Digits = value;
-            }
-
-        }
-
-        #endregion
-
-        #region Latitude
+        public Byte       Digits    { get; }
 
         /// <summary>
         /// The latitude (south to nord).
         /// </summary>
-        public Latitude Latitude
-        {
-            get
-            {
-                return Decode((lat, lon) => lat, Digits);
-            }
-        }
-
-        #endregion
-
-        #region Longitude
+        public Latitude   Latitude
+            => Decode((lat, lon) => lat, Digits);
 
         /// <summary>
         /// The longitude (parallel to equator).
         /// </summary>
-        public Longitude Longitude
-        {
-            get
-            {
-                return Decode((lat, lon) => lon, Digits);
-            }
-        }
+        public Longitude  Longitude
+            => Decode((lat, lon) => lon, Digits);
 
-        #endregion
-
-        #region Value
 
         /// <summary>
-        /// Returns the value of the geohash.
+        /// Returns the value of the geo hash.
         /// </summary>
-        public String Value
-        {
-            get
-            {
-                return this.InternalGeoHash;
-            }
-        }
-
-        #endregion
+        public String     Value
+            => internalGeoHash;
 
         #endregion
 
@@ -192,8 +142,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         private GeoHash(String GeoHash)
         {
-            InternalGeoHash = GeoHash;
-            _Digits         = 12;
+            internalGeoHash  = GeoHash;
+            Digits           = 12;
         }
 
         #endregion
@@ -201,12 +151,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region GeoHash(GeoCoordinate, Precision = 12)
 
         /// <summary>
-        /// Create a new base32-encoded alphanumeric geohash.
+        /// Create a new base32-encoded alphanumeric geo hash.
         /// </summary>
         /// <param name="GeoCoordinate">A geocoordinate.</param>
-        /// <param name="Precision">An optional precision aka number of characters of the resulting geohash.</param>
-        public GeoHash(GeoCoordinate GeoCoordinate, Byte Precision = 12)
-            : this(Encode(GeoCoordinate.Latitude, GeoCoordinate.Longitude, Precision))
+        /// <param name="Precision">An optional precision aka number of characters of the resulting geo hash.</param>
+        public GeoHash(GeoCoordinate  GeoCoordinate,
+                       Byte           Precision   = 12)
+
+            : this(Encode(GeoCoordinate.Latitude,
+                          GeoCoordinate.Longitude,
+                          Precision))
+
         { }
 
         #endregion
@@ -214,13 +169,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region GeoHash(Latitude, Longitude, Precision = 12)
 
         /// <summary>
-        /// Create a new base32-encoded alphanumeric geohash.
+        /// Create a new base32-encoded alphanumeric geo hash.
         /// </summary>
         /// <param name="Latitude">The latitude.</param>
         /// <param name="Longitude">The longitude.</param>
-        /// <param name="Precision">An optional precision aka number of characters of the resulting geohash.</param>
-        public GeoHash(Latitude Latitude, Longitude Longitude, Byte Precision = 12)
-            : this(Encode(Latitude, Longitude, Precision))
+        /// <param name="Precision">An optional precision aka number of characters of the resulting geo hash.</param>
+        public GeoHash(Latitude   Latitude,
+                       Longitude  Longitude,
+                       Byte       Precision   = 12)
+
+            : this(Encode(Latitude,
+                          Longitude,
+                          Precision))
+
         { }
 
         #endregion
@@ -231,12 +192,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (private) (static) Encode(Latitude, Longitude, Precision = 12)
 
         /// <summary>
-        /// Encode the given latitude and longitude as geohash.
+        /// Encode the given latitude and longitude as geo hash.
         /// </summary>
         /// <param name="Latitude">The latitude.</param>
         /// <param name="Longitude">The longitude.</param>
-        /// <param name="Precision">An optional precision aka number of characters of the resulting geohash.</param>
-        /// <returns>The latitude and longitude encoded as geohash.</returns>
+        /// <param name="Precision">An optional precision aka number of characters of the resulting geo hash.</param>
+        /// <returns>The latitude and longitude encoded as geo hash.</returns>
         private static String Encode(Latitude Latitude, Longitude Longitude, Byte Precision = 12)
         {
 
@@ -328,7 +289,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
         /// <summary>
-        /// Decode the geohash into latitude and longitude using the given
+        /// Decode the geo hash into latitude and longitude using the given
         /// delegate to transfor it into the resulting data structure.
         /// </summary>
         /// <typeparam name="T">The type of the resulting data structure.</typeparam>
@@ -351,7 +312,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             Double[] LatitudeInterval  = {  -90,  90 };
             Double[] LongitudeInterval = { -180, 180 };
 
-            foreach (var Character in InternalGeoHash)
+            foreach (var Character in internalGeoHash)
             {
 
                 //ToDo: Faster GeoHashAlphabet lookup!
@@ -387,12 +348,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region CalculateAdjacent(Direction)
 
         /// <summary>
-        /// Calculate the adjacent geohashes.
+        /// Calculate the adjacent geo hashes.
         /// </summary>
         /// <param name="Direction">The direction.</param>
         public String CalculateAdjacent(Direction Direction)
         {
-            return CalculateAdjacent_private(this.InternalGeoHash, Direction);
+            return CalculateAdjacent_private(this.internalGeoHash, Direction);
         }
 
         private String CalculateAdjacent_private(String hash, Direction Direction)
@@ -417,49 +378,39 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Operator overloading
 
-        #region Operator == (GeoHash1, GeoHash2)
+        #region Operator == (Left, Right)
 
         /// <summary>
-        /// Compares two geohashs for equality.
+        /// Compares two geo hashs for equality.
         /// </summary>
-        /// <param name="GeoHash1">A geohash.</param>
-        /// <param name="GeoHash2">Another geohash.</param>
+        /// <param name="Left">A geo hash.</param>
+        /// <param name="Right">Another geo hash.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (GeoHash GeoHash1, GeoHash GeoHash2)
-        {
+        public static Boolean operator == (GeoHash Left,
+                                           GeoHash Right)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(GeoHash1, GeoHash2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) GeoHash1 == null) || ((Object) GeoHash2 == null))
-                return false;
-
-            return GeoHash1.Equals(GeoHash2);
-
-        }
+            => Left.Equals(Right);
 
         #endregion
 
-        #region Operator != (GeoHash1, GeoHash2)
+        #region Operator != (Left, Right)
 
         /// <summary>
         /// Compares two vertices for inequality.
         /// </summary>
-        /// <param name="GeoHash1">A geohash.</param>
-        /// <param name="GeoHash2">Another geohash.</param>
+        /// <param name="Left">A geo hash.</param>
+        /// <param name="Right">Another geo hash.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (GeoHash GeoHash1, GeoHash GeoHash2)
-        {
-            return !(GeoHash1 == GeoHash2);
-        }
+        public static Boolean operator != (GeoHash Left,
+                                           GeoHash Right)
+
+            => !Left.Equals(Right);
 
         #endregion
 
         #endregion
 
-        #region IComparable Members
+        #region IComparable<GeoHash/IGeoCoordinate> Members
 
         #region CompareTo(Object)
 
@@ -467,58 +418,80 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given Object must not be null!");
-
-            return CompareTo((GeoHash32)Object);
-
-        }
+            => Object is GeoHash geoHash
+                   ? CompareTo(geoHash)
+                   : throw new ArgumentException("The given object is not a geo hash!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(GeoHash)
 
         /// <summary>
-        /// Compares two geohashes.
+        /// Compares two geo hashes.
         /// </summary>
-        /// <param name="GeoHash">Another geohash.</param>
+        /// <param name="GeoHash">Another geo hash.</param>
         public Int32 CompareTo(GeoHash GeoHash)
+
+            => Value.CompareTo(GeoHash.Value);
+
+        #endregion
+
+        #region CompareTo(IGeoCoordinate)
+
+        /// <summary>
+        /// Compares two geo coordinates.
+        /// </summary>
+        /// <param name="IGeoCoordinate">Another geo coordinate.</param>
+        public Int32 CompareTo(IGeoCoordinate? IGeoCoordinate)
         {
-            return this.Value.CompareTo(GeoHash.Value);
+
+            if (IGeoCoordinate is null)
+                throw new ArgumentNullException(nameof(IGeoCoordinate),
+                                                "The given object is not a geo coordinate!");
+
+            var c = Latitude. Value.CompareTo(IGeoCoordinate.Latitude. Value);
+
+            if (c == 0)
+                c = Longitude.Value.CompareTo(IGeoCoordinate.Longitude.Value);
+
+            //if (c == 0 && Altitude.HasValue && IGeoCoordinate.Altitude.HasValue)
+            //    c = Altitude. Value.CompareTo(IGeoCoordinate.Altitude. Value);
+
+            return c;
+
         }
 
         #endregion
 
         #endregion
 
-        #region IEquatable Members
+        #region IEquatable<GeoHash/IGeoCoordinate> Members
 
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geo hashes for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Another geo hash.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
+            => Object is GeoHash geoHash &&
+                   Equals(geoHash);
 
-            try
-            {
-                return this.Equals((GeoHash32)Object);
-            }
-            catch (InvalidCastException)
-            {
-                return false;
-            }
+        #endregion
 
-        }
+        #region Equals(GeoHash)
+
+        /// <summary>
+        /// Compares two geo hashes for equality.
+        /// </summary>
+        /// <param name="GeoHash">Another geo hash.</param>
+        public Boolean Equals(GeoHash GeoHash)
+
+            => Value.Equals(GeoHash.Value);
 
         #endregion
 
@@ -528,33 +501,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two geo coordinates for equality.
         /// </summary>
         /// <param name="IGeoCoordinate">Another geo coordinate.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
-        public Boolean Equals(IGeoCoordinate IGeoCoordinate)
-        {
+        public Boolean Equals(IGeoCoordinate? IGeoCoordinate)
 
-            if (IGeoCoordinate.Latitude.Value != this.Latitude.Value)
-                return false;
-
-            if (IGeoCoordinate.Longitude.Value != this.Longitude.Value)
-                return false;
-
-            return true;
-
-        }
-
-        #endregion
-
-        #region Equals(GeoHash)
-
-        /// <summary>
-        /// Compares two geohashes for equality.
-        /// </summary>
-        /// <param name="GeoHash">Another geohash.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
-        public Boolean Equals(GeoHash GeoHash)
-        {
-            return this.Value.Equals(GeoHash.Value);
-        }
+            => IGeoCoordinate is not null                &&
+               Latitude. Equals(IGeoCoordinate.Latitude) &&
+               Longitude.Equals(IGeoCoordinate.Longitude);
 
         #endregion
 
@@ -567,9 +518,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()
-        {
-            return this.InternalGeoHash.GetHashCode();
-        }
+
+            => internalGeoHash.GetHashCode();
 
         #endregion
 
@@ -579,14 +529,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Returns a string representation of the given object.
         /// </summary>
         public override String ToString()
-        {
-            return this.InternalGeoHash;
-        }
+
+            => internalGeoHash;
 
         #endregion
 
     }
-
-    #endregion
 
 }

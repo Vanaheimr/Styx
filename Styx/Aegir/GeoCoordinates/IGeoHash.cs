@@ -15,16 +15,8 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
-
-    #region IGeoHashExtensions
 
     /// <summary>
     /// Extensionmethods for the IGeoHash interface.
@@ -32,24 +24,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public static class IGeoHashExtensions
     {
 
-        #region ToGeoCoordinate(Digits = 12)
-
         /// <summary>
         /// Decode this geohash to a geocoordinate.
         /// </summary>
         /// <param name="Digits">Rounds the double-precision value to the given number of fractional digits.</param>
         public static GeoCoordinate ToGeoCoordinate<T>(this IGeoHash<T> GeoHash, Byte Digits = 12)
-        {
-            return GeoHash.Decode((lat, lon) => new GeoCoordinate(lat, lon), Digits);
-        }
 
-        #endregion
+            => GeoHash.Decode((lat, lon) => new GeoCoordinate(lat, lon), Digits);
 
     }
 
-    #endregion
-
-    #region IGeoHash<T>
 
     /// <summary>
     /// The common interface for all geohashes.
@@ -73,7 +57,5 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         T Value { get; }
 
     }
-
-    #endregion
 
 }

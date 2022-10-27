@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
@@ -28,18 +22,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     /// The interface for all latitude/longitude/altitude based geo coordinates.
     /// </summary>
     public interface IGeoCoordinate : IEquatable<IGeoCoordinate>,
+                                      IComparable<IGeoCoordinate>,
                                       IComparable
     {
 
         /// <summary>
-        /// The latitude (south to nord).
+        /// The geographical latitude (south to nord).
         /// </summary>
-        Latitude  Latitude  { get; }
+        Latitude   Latitude     { get; }
 
         /// <summary>
-        /// The longitude (parallel to equator).
+        /// The geographical longitude (parallel to equator).
         /// </summary>
-        Longitude Longitude { get; }
+        Longitude  Longitude    { get; }
 
 
         /// <summary>
