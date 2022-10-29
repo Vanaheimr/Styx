@@ -109,14 +109,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Parse the given string as an system identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an system identification.</param>
+        /// <param name="Text">A text representation of an system identification.</param>
         public static System_Id Parse(String Text)
         {
 
             if (TryParse(Text, out System_Id systemId))
                 return systemId;
 
-            throw new ArgumentException("Invalid text-representation of an system identification: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of an system identification: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -128,7 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as an system identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an system identification.</param>
+        /// <param name="Text">A text representation of an system identification.</param>
         public static System_Id? TryParse(String Text)
         {
 
@@ -146,7 +146,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as an system identification.
         /// </summary>
-        /// <param name="Text">A text-representation of an system identification.</param>
+        /// <param name="Text">A text representation of an system identification.</param>
         /// <param name="SystemId">The parsed system identification.</param>
         public static Boolean TryParse(String Text, out System_Id SystemId)
         {
@@ -360,7 +360,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

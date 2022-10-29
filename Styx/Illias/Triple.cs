@@ -169,7 +169,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

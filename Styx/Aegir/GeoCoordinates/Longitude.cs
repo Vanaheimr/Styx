@@ -61,7 +61,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Parse the given string as a geographical longitude (parallel to equator).
         /// </summary>
-        /// <param name="Text">A text-representation of a longitude.</param>
+        /// <param name="Text">A text representation of a longitude.</param>
         public static Longitude Parse(Double Value)
         {
 
@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Try to parse the given string as a geographical longitude (parallel to equator).
         /// </summary>
-        /// <param name="Text">A text-representation of a longitude.</param>
+        /// <param name="Text">A text representation of a longitude.</param>
         public static Longitude? TryParse(Double Value)
         {
 

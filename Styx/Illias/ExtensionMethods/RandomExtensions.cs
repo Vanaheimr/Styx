@@ -30,19 +30,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class RandomExtensions
     {
 
+#pragma warning disable SCS0005 // Weak random number generator.
+
         #region GetBytes          (NumberOfBytes)
 
         /// <summary>
         /// Get an array of random bytes.
         /// </summary>
-        /// <param name="Random">The source of randomness.</param>
         /// <param name="NumberOfBytes">The number of random bytes to genrate.</param>
         public static Byte[] GetBytes(UInt16 NumberOfBytes)
         {
 
             var ByteArray = new Byte[NumberOfBytes];
             Random.Shared.NextBytes(ByteArray);
-
             return ByteArray;
 
         }
@@ -54,7 +54,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Get random string [a-zA-Z1-9]{Length} (without 'I', 'l', 'O', '0') of the given length.
         /// </summary>
-        /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The expected length of the random string.</param>
         public static String RandomString(UInt16 Length)
         {
@@ -62,7 +61,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var tryAgain  = false;
             var ByteArray = new Byte[Length];
             Random.Shared.NextBytes(ByteArray);
-
 
             for (var i = 0; i < Length; i++)
             {
@@ -100,7 +98,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Get random string [A-F0-9]{Length} of the given length.
         /// </summary>
-        /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The expected length of the random string.</param>
         public static String RandomHexString(UInt16 Length)
         {
@@ -119,7 +116,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Get random number as string [0-9]{Length} of the given length.
         /// </summary>
-        /// <param name="Random">The source of randomness.</param>
         /// <param name="Length">The the length of the string.</param>
         public static String RandomNumberString(UInt16 Length)
         {
@@ -134,6 +130,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+#pragma warning restore SCS0005 // Weak random number generator.
 
     }
 

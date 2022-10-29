@@ -91,14 +91,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Parse   (Text)
 
         /// <summary>
-        /// Return the appropriate money for the given text-representation of money.
+        /// Return the appropriate money for the given text representation of money.
         /// </summary>
         /// <param name="Text">The value of the money and the ISO code or name of a currency.</param>
         public static Money Parse(String Text)
         {
 
             if (!TryParse(Text, out Money money))
-                throw new ArgumentException("The given text '" + Text + "' is not a valid text-representation of money!", nameof(Text));
+                throw new ArgumentException("The given text '" + Text + "' is not a valid text representation of money!", nameof(Text));
 
             return money;
 
@@ -111,7 +111,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Return the appropriate money for the given string.
         /// </summary>
-        /// <param name="Text">The text-representation of the money value and ISO code or name of a currency.</param>
+        /// <param name="Text">The text representation of the money value and ISO code or name of a currency.</param>
         public static Money? TryParse(String Text)
         {
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Return the appropriate money for the given string.
         /// </summary>
-        /// <param name="Text">The text-representation of the money value and ISO code or name of a currency.</param>
+        /// <param name="Text">The text representation of the money value and ISO code or name of a currency.</param>
         /// <param name="Money">The parsed Money</param>
         public static Boolean TryParse(String Text, out Money Money)
         {

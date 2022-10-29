@@ -111,14 +111,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Parse the given string as a phone number.
         /// </summary>
-        /// <param name="Text">A text-representation of a phone number.</param>
+        /// <param name="Text">A text representation of a phone number.</param>
         public static PhoneNumber Parse(String Text)
         {
 
             if (TryParse(Text, out PhoneNumber phoneNumber))
                 return phoneNumber;
 
-            throw new ArgumentException("Invalid text-representation of a phone number: '" + Text + "'!",
+            throw new ArgumentException("Invalid text representation of a phone number: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -130,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as a phone number.
         /// </summary>
-        /// <param name="Text">A text-representation of a phone number.</param>
+        /// <param name="Text">A text representation of a phone number.</param>
         public static PhoneNumber? TryParse(String Text)
         {
 
@@ -148,7 +148,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as a phone number.
         /// </summary>
-        /// <param name="Text">A text-representation of a phone number.</param>
+        /// <param name="Text">A text representation of a phone number.</param>
         /// <param name="PhoneNumber">The parsed phone number.</param>
         public static Boolean TryParse(String Text, out PhoneNumber PhoneNumber)
         {
@@ -363,7 +363,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 

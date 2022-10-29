@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Parse the given string as a geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Text">A text-representation of a latitude.</param>
+        /// <param name="Text">A text representation of a latitude.</param>
         public static Latitude Parse(Double Value)
         {
 
@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Try to parse the given string as a geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Text">A text-representation of a latitude.</param>
+        /// <param name="Text">A text representation of a latitude.</param>
         public static Latitude? TryParse(Double Value)
         {
 

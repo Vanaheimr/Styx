@@ -84,14 +84,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Parse the given string as a time zone identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a time zone identification.</param>
+        /// <param name="Text">A text representation of a time zone identification.</param>
         public static Time_Zone Parse(String Text)
         {
 
             if (TryParse(Text, out Time_Zone timeZone))
                 return timeZone;
 
-            throw new ArgumentException("Invalid text-representation of a time zone identification: '" + Text + "'!", nameof(Text));
+            throw new ArgumentException("Invalid text representation of a time zone identification: '" + Text + "'!", nameof(Text));
 
         }
 
@@ -102,7 +102,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as a time zone identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a time zone identification.</param>
+        /// <param name="Text">A text representation of a time zone identification.</param>
         public static Time_Zone? TryParse(String Text)
         {
 
@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as a time zone identification.
         /// </summary>
-        /// <param name="Text">A text-representation of a time zone identification.</param>
+        /// <param name="Text">A text representation of a time zone identification.</param>
         /// <param name="TimeZone">The parsed time zone identification.</param>
         public static Boolean TryParse(String Text, out Time_Zone TimeZone)
         {
@@ -331,7 +331,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text-representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
             => InternalId;
