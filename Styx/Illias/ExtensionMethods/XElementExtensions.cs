@@ -334,7 +334,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String                                  ExceptionMessage  = null)
         {
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 if (OnException != null)
                     OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
@@ -355,6 +355,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     throw new Exception(ExceptionMessage);
 
             return Mapper(_XElement, OnException);
+
+        }
+
+        public static Boolean MapElementOrFail<T>(this XElement      ParentXElement,
+                                                  XName              XName,
+                                                  Func<XElement, T>  Mapper,
+                                                  out T?             Element,
+                                                  out String?        ErrorResponse)
+        {
+
+            if (ParentXElement is null)
+            {
+                Element        = default;
+                ErrorResponse  = "The parent XML element must not be null!";
+                return false;
+            }
+
+            if (Mapper is null)
+            {
+                Element        = default;
+                ErrorResponse  = "The mapper delegate must not be null!";
+                return false;
+            }
+
+            var xElement = ParentXElement.Element(XName);
+
+            if (xElement is null)
+            {
+                Element        = default;
+                ErrorResponse  = "The XML element was not found!";
+                return false;
+            }
+
+            Element        = Mapper(xElement);
+            ErrorResponse  = null;
+            return true;
 
         }
 
