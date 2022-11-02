@@ -27,7 +27,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Regular recurring operation or access hours.
     /// </summary>
-    public readonly struct RegularHours : IEquatable<RegularHours>
+    public readonly struct RegularHours : IEquatable<RegularHours>,
+                                          IComparable<RegularHours>,
+                                          IComparable
     {
 
         #region Properties
@@ -64,12 +66,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (PeriodEnd.Hour    < PeriodBegin.Hour ||
+            if ((PeriodEnd.Hour    < PeriodBegin.Hour   &&
+                 PeriodEnd.Hour   != 0) ||
 
-               (PeriodEnd.Hour   == PeriodBegin.Hour &&
-                PeriodEnd.Minute  < PeriodBegin.Minute))
+                (PeriodEnd.Hour   == PeriodBegin.Hour   &&
+                 PeriodEnd.Minute  < PeriodBegin.Minute &&
+                 PeriodEnd.Minute != 0))
             {
-                throw new ArgumentException("The end period must be after the start period!", nameof(PeriodEnd));
+
+                throw new ArgumentException("The end period '" + PeriodEnd + "h' must be after the start period '" + PeriodBegin + "h'!",
+                                            nameof(PeriodEnd));
+
             }
 
             #endregion
@@ -130,6 +137,108 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Operator <  (RegularHours1, RegularHours2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RegularHours1">A regular hour.</param>
+        /// <param name="RegularHours2">Another regular hour.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (RegularHours RegularHour1,
+                                          RegularHours RegularHour2)
+
+            => RegularHour1.CompareTo(RegularHour2) < 0;
+
+        #endregion
+
+        #region Operator <= (RegularHours1, RegularHours2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RegularHours1">A regular hour.</param>
+        /// <param name="RegularHours2">Another regular hour.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (RegularHours RegularHour1,
+                                           RegularHours RegularHour2)
+
+            => RegularHour1.CompareTo(RegularHour2) <= 0;
+
+        #endregion
+
+        #region Operator >  (RegularHours1, RegularHours2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RegularHours1">A regular hour.</param>
+        /// <param name="RegularHours2">Another regular hour.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (RegularHours RegularHour1,
+                                          RegularHours RegularHour2)
+
+            => RegularHour1.CompareTo(RegularHour2) > 0;
+
+        #endregion
+
+        #region Operator >= (RegularHours1, RegularHours2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RegularHours1">A regular hour.</param>
+        /// <param name="RegularHours2">Another regular hour.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (RegularHours RegularHour1,
+                                           RegularHours RegularHour2)
+
+            => RegularHour1.CompareTo(RegularHour2) >= 0;
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<RegularHours> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two regular hours objects for equality.
+        /// </summary>
+        /// <param name="Object">A regular hour to compare with.</param>
+        public Int32 CompareTo(Object? Object)
+
+            => Object is RegularHours regularHour
+                   ? CompareTo(regularHour)
+                   : throw new ArgumentException("The given object is not a regular hour!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(HourMin)
+
+        /// <summary>
+        /// Compares two regular hours objects for equality.
+        /// </summary>
+        /// <param name="RegularHour">A regular hour to compare with.</param>
+        public Int32 CompareTo(RegularHours RegularHour)
+        {
+
+            var c = DayOfWeek.  CompareTo(RegularHour.DayOfWeek);
+
+            if (c == 0)
+                c = PeriodBegin.CompareTo(RegularHour.PeriodBegin);
+
+            if (c == 0)
+                c = PeriodEnd.  CompareTo(RegularHour.PeriodEnd);
+
+            return c;
+
+        }
+
+        #endregion
+
         #endregion
 
         #region IEquatable<RegularHours> Members
@@ -137,10 +246,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two regular hours objects for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">A regular hour to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is RegularHours regularHour
@@ -148,13 +256,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Equals(regularHour)
+        #region Equals(RegularHour)
 
         /// <summary>
         /// Compares two regular hours objects for equality.
         /// </summary>
-        /// <param name="regularHour">A regular hours object to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="RegularHour">A regular hour to compare with.</param>
         public Boolean Equals(RegularHours RegularHour)
 
             => DayOfWeek.  Equals(RegularHour.DayOfWeek)   &&

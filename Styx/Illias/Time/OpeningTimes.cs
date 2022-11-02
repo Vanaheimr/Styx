@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!regularOpenings.ContainsKey((DayOfWeek) (weekday % 7)))
                     regularOpenings.Add((DayOfWeek) (weekday % 7), new List<RegularHours>());
 
-                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek)(weekday % 7),
+                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek) (weekday % 7),
                                                                                 Begin,
                                                                                 End));
 
