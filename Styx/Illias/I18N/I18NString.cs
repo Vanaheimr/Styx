@@ -509,7 +509,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static I18NString? Parse(String Text)
         {
 
-            if (TryParse(Text, out I18NString? i18NText))
+            if (TryParse(Text, out I18NString? i18NText, out _))
                 return i18NText;
 
             return Empty;
@@ -527,7 +527,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static I18NString? Parse(JObject JSON)
         {
 
-            if (TryParse(JSON, out I18NString? i18NText))
+            if (TryParse(JSON, out I18NString? i18NText, out _))
                 return i18NText;
 
             return Empty;
@@ -546,7 +546,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             where TI18NString : I18NString, new()
         {
 
-            if (TryParse(JSON, out TI18NString? i18NText))
+            if (TryParse(JSON, out TI18NString? i18NText, out _))
                 return i18NText;
 
             return new TI18NString();
@@ -562,18 +562,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A string of a JSON representation of a multi-language string.</param>
         /// <param name="I18NText"></param>
-        public static Boolean TryParse<TI18NString>(String Text, out TI18NString? I18NText)
+        public static Boolean TryParse<TI18NString>(String Text, out TI18NString? I18NText, out String? ErrorResponse)
             where TI18NString : I18NString, new()
         {
 
-            I18NText = new TI18NString();
+            I18NText       = new TI18NString();
+            ErrorResponse  = null;
 
             if (Text.IsNullOrEmpty())
                 return false;
 
             try
             {
-                return TryParse(JObject.Parse(Text), out I18NText);
+                return TryParse(JObject.Parse(Text), out I18NText, out ErrorResponse);
             }
             catch (Exception)
             {
@@ -590,11 +591,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given JSON object as a JSON representation of a multi-language string.
         /// </summary>
         /// <param name="JSON">A JSON representation of a multi-language string.</param>
-        public static Boolean TryParse<TI18NString>(JObject JSON, out TI18NString? I18NText)
+        public static Boolean TryParse<TI18NString>(JObject JSON, out TI18NString? I18NText, out String? ErrorResponse)
             where TI18NString : I18NString, new()
         {
 
-            I18NText = new TI18NString();
+            I18NText       = new TI18NString();
+            ErrorResponse  = null;
 
             if (JSON is null)
                 return true;
