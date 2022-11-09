@@ -3134,8 +3134,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptional(this JObject  JSON,
                                             String        PropertyName,
                                             String        PropertyDescription,
-                                            out String    StringValue,
-                                            out String    ErrorResponse)
+                                            out String?   StringValue,
+                                            out String?   ErrorResponse)
         {
 
             StringValue    = null;
@@ -3153,7 +3153,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
                 JSONToken      != null &&
                 JSONToken.Type != JTokenType.Null)
             {
@@ -4872,8 +4872,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         String              PropertyName,
                                                         String              PropertyDescription,
                                                         TryJArrayParser<T>  JArrayParser,
-                                                        out T               Value,
-                                                        out String          ErrorResponse)
+                                                        out T?              Value,
+                                                        out String?         ErrorResponse)
         {
 
             Value          = default;
@@ -4891,14 +4891,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
                 if (JSONToken == null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSON2))
+                if (JSONToken is not JArray JSON2)
                     ErrorResponse  = "Invalid " + PropertyDescription + "!";
 
                 else if (!JArrayParser(JSON2, out Value))
