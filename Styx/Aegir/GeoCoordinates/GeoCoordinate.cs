@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
@@ -141,8 +140,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public static class GeoCoordinateExtensions
     {
 
-        public static Boolean TryParseGeoCoordinate(this String Text, out GeoCoordinate GeoLocation)
-            => GeoCoordinate.TryParse(JObject.Parse(Text), out GeoLocation);
+        public static Boolean TryParseGeoCoordinate(this String        Text,
+                                                    out GeoCoordinate  GeoLocation,
+                                                    out String?        ErrorResponse)
+
+            => GeoCoordinate.TryParse(JObject.Parse(Text),
+                                      out GeoLocation,
+                                      out ErrorResponse);
 
     }
 
@@ -555,7 +559,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoString">A string to parse.</param>
         /// <param name="GeoCoordinate">The parsed geo coordinate.</param>
         /// <returns>True if success, false otherwise</returns>
-        public static Boolean TryParseString(String GeoString, out GeoCoordinate GeoCoordinate)
+        public static Boolean TryParseString(String             GeoString,
+                                             out GeoCoordinate  GeoCoordinate)
 
             => TryParseString(GeoString, (lat, lng) => new GeoCoordinate(lat, lng), out GeoCoordinate);
 
@@ -569,7 +574,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoString">A string to parse.</param>
         /// <param name="Processor">A delegate to process the parsed latitude and longitude.</param>
         /// <returns>True if success, false otherwise</returns>
-        public static Boolean TryParseString(String GeoString, Action<Latitude, Longitude> Processor)
+        public static Boolean TryParseString(String                       GeoString,
+                                             Action<Latitude, Longitude>  Processor)
 
             => TryParseString(GeoString,
                               (lat, lng) => {
@@ -590,7 +596,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Processor">A delegate to process the parsed latitude and longitude.</param>
         /// <param name="Value">The processed value.</param>
         /// <returns>True if success, false otherwise</returns>
-        public static Boolean TryParseString<T>(String GeoString, Func<Latitude, Longitude, T> Processor, out T Value)
+        public static Boolean TryParseString<T>(String                        GeoString,
+                                                Func<Latitude, Longitude, T>  Processor,
+                                                out T                         Value)
         {
 
             var Match = IsDecimalGeoPositionRegExpr.Match(GeoString);
@@ -637,21 +645,34 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate? TryParseJSON(String Text)
             => TryParse(JObject.Parse(Text));
 
-        public static Boolean TryParseJSON(String Text, out GeoCoordinate GeoCoordinate)
-            => TryParse(JObject.Parse(Text), out GeoCoordinate);
+        public static Boolean TryParseJSON(String             Text,
+                                           out GeoCoordinate  GeoCoordinate,
+                                           out String?        ErrorResponse)
+
+            => TryParse(JObject.Parse(Text),
+                        out GeoCoordinate,
+                        out ErrorResponse);
 
         public static GeoCoordinate? TryParse(JObject JSON)
         {
 
-            if (TryParse(JSON, out var geoCoordinate))
+            if (TryParse(JSON,
+                         out var geoCoordinate,
+                         out _))
+            {
                 return geoCoordinate;
+            }
 
             return default;
 
         }
 
-        public static Boolean TryParse(JObject JSON, out GeoCoordinate GeoLocation)
+        public static Boolean TryParse(JObject            JSON,
+                                       out GeoCoordinate  GeoLocation,
+                                       out String?        ErrorResponse)
         {
+
+            ErrorResponse   = default;
 
             var lat         = JSON["lat"] ?? JSON["latitude"];
             var lng         = JSON["lng"] ?? JSON["longitude"];
