@@ -35,9 +35,13 @@ using System.Threading.Tasks;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    public delegate T        CustomTextParserDelegate<T>       (String  Text,       T       DataObject);
+
     public delegate T        CustomJObjectParserDelegate<T>    (JObject JSON,       T       DataObject);
 
     public delegate T        CustomJArrayParserDelegate<T>     (JArray  JSON,       T       DataObject);
+
+    public delegate String   CustomTextSerializerDelegate<T>   (T       DataObject, String  Text);
 
     public delegate JObject  CustomJObjectSerializerDelegate<T>(T       DataObject, JObject JSON);
 
@@ -2950,104 +2954,106 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                          String              PropertyName,
                                                          String              PropertyDescription,
                                                          TryJArrayParser<T>  TryJArrayParser,
-                                                         out T               Value,
-                                                         out String          ErrorResponse)
+                                                         out T?              Value,
+                                                         out String?         ErrorResponse)
         {
 
-            Value = default;
+            Value  = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
-                ErrorResponse = "Invalid JSON provided!";
+                ErrorResponse  = "Invalid JSON provided!";
                 return false;
             }
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property name provided!";
+                ErrorResponse  = "Invalid JSON property name provided!";
                 return false;
             }
 
-            if (TryJArrayParser == null)
+            if (TryJArrayParser is null)
             {
-                ErrorResponse = "Invalid mapper provided!";
+                ErrorResponse  = "Invalid parser provided!";
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!(JSONToken is JArray JSONValue))
+            if (JSONToken is not JArray JSONValue)
             {
-                ErrorResponse = "Invalid JSON array '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = "Invalid JSON array '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!TryJArrayParser(JSONValue, out T value))
+            if (!TryJArrayParser(JSONValue, out var value))
             {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                Value          = default;
+                ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
                 return false;
             }
 
-            Value         = value;
-            ErrorResponse = null;
+            Value          = value;
+            ErrorResponse  = null;
             return true;
 
         }
 
-        public static Boolean ParseMandatoryJSONArray2<T>(this JObject         JSON,
-                                                          String               PropertyName,
-                                                          String               PropertyDescription,
-                                                          TryJArrayParser2<T>  TryJArrayParser,
-                                                          out T                Value,
-                                                          out String           ErrorResponse)
+        public static Boolean ParseMandatoryJSONArray<T>(this JObject         JSON,
+                                                         String               PropertyName,
+                                                         String               PropertyDescription,
+                                                         TryJArrayParser2<T>  TryJArrayParser,
+                                                         out T?               Value,
+                                                         out String?          ErrorResponse)
         {
 
-            Value = default;
+            Value  = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
-                ErrorResponse = "Invalid JSON provided!";
+                ErrorResponse  = "Invalid JSON provided!";
                 return false;
             }
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property name provided!";
+                ErrorResponse  = "Invalid JSON property name provided!";
                 return false;
             }
 
-            if (TryJArrayParser == null)
+            if (TryJArrayParser is null)
             {
-                ErrorResponse = "Invalid mapper provided!";
+                ErrorResponse  = "Invalid parser provided!";
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!(JSONToken is JArray JSONValue))
+            if (JSONToken is not JArray JSONValue)
             {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
                 return false;
             }
 
-            if (!TryJArrayParser(JSONValue, out T value, out string errrr))
+            if (!TryJArrayParser(JSONValue,
+                                 out var value,
+                                 out var errorResponse))
             {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
+                Value          = default;
+                ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
                 return false;
             }
 
-            Value         = value;
-            ErrorResponse = null;
+            Value          = value;
+            ErrorResponse  = null;
             return true;
 
         }
@@ -5443,14 +5449,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    String                PropertyDescription,
                                                    TryJObjectParser2<T>  Parser,
                                                    out IEnumerable<T>    EnumerableT,
-                                                   out String            ErrorResponse)
+                                                   out String?           ErrorResponse)
 
         {
 
-            EnumerableT    = null;
+            EnumerableT    = Array.Empty<T>();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5462,14 +5468,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
                     return true;
@@ -5481,22 +5487,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
-                    {
-                        ErrorResponse = "A given value within the array is null!";
-                        return true;
-                    }
-
-                    if (!(element is JObject JSONObject))
+                    if (element is not JObject JSONObject)
                     {
                         ErrorResponse = "The given token is not a valid JSON object!";
                         return true;
                     }
 
-                    if (Parser(element as JObject, out T itemT, out String errorResponse))
+                    if (Parser(JSONObject,
+                               out var itemT,
+                               out var errorResponse) && itemT is not null)
+                    {
                         list.Add(itemT);
+                    }
                     else
-                        errorResponses.Add(errorResponse);
+                        errorResponses.Add(errorResponse ?? "Could not parse the given item!");
 
                 }
 
@@ -5518,14 +5522,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                             String                PropertyDescription,
                                                             TryJObjectParser2<T>  Parser,
                                                             out IEnumerable<T>    EnumerableT,
-                                                            out String            ErrorResponse)
+                                                            out String?           ErrorResponse)
 
         {
 
-            EnumerableT    = null;
+            EnumerableT    = Array.Empty<T>();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5537,14 +5541,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
                     return true;
@@ -5553,27 +5557,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var list            = new List<T>();
                 var errorResponses  = new List<String>();
 
-                Parallel.ForEach(JSONArray, element =>
+                foreach (var element in JSONArray)
                 {
 
-                    //if (element == null)
-                    //{
-                    //    ErrorResponse = "A given value within the array is null!";
-                    //    return true;
-                    //}
+                    if (element is not JObject JSONObject)
+                    {
+                        ErrorResponse = "The given token is not a valid JSON object!";
+                        return true;
+                    }
 
-                    //if (!(element is JObject JSONObject))
-                    //{
-                    //    ErrorResponse = "The given token is not a valid JSON object!";
-                    //    return true;
-                    //}
-
-                    if (Parser(element as JObject, out T itemT, out String errorResponse))
+                    if (Parser(JSONObject,
+                               out var itemT,
+                               out var errorResponse) && itemT is not null)
+                    {
                         list.Add(itemT);
+                    }
                     else
-                        errorResponses.Add(errorResponse);
+                        errorResponses.Add(errorResponse ?? "Could not parse the given item!");
 
-                });
+                }
 
                 EnumerableT = list;
 
@@ -5666,14 +5668,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                       String          PropertyDescription,
                                                       TryParser<T>    Parser,
                                                       out HashSet<T>  HashSet,
-                                                      out String      ErrorResponse)
+                                                      out String?     ErrorResponse)
 
         {
 
-            HashSet        = null;
+            HashSet        = new HashSet<T>();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5685,45 +5687,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
                     return true;
                 }
 
-                var item = "";
-                HashSet = new HashSet<T>();
+
+                var errorResponses = new List<String>();
 
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
+                    if (element is null)
                     {
                         ErrorResponse = "A given value within the array is null!";
                         return true;
                     }
 
-                    item = element.Value<String>();
-                    if (item != null)
+                    var item = element.Value<String>();
+                    if (item is not null)
                         item = item.Trim();
 
-                    if (item.IsNullOrEmpty())
+                    if (item is null || item.IsNullOrEmpty())
                     {
                         ErrorResponse = "A given value within the array is null or empty!";
                         return true;
                     }
 
-                    if (Parser(item, out T itemT))
+                    if (Parser(item,
+                               out var itemT) && itemT is not null)
+                    {
                         HashSet.Add(itemT);
+                    }
+                    else
+                        errorResponses.Add("Could not parse the given item!");
 
                 }
+
+                if (errorResponses.Any())
+                    ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
 
@@ -5737,16 +5747,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalHashSet<T>(this JObject    JSON,
                                                       String          PropertyName,
                                                       String          PropertyDescription,
-                                                      TryParser2<T>    Parser,
+                                                      TryParser2<T>   Parser,
                                                       out HashSet<T>  HashSet,
-                                                      out String      ErrorResponse)
+                                                      out String?     ErrorResponse)
 
         {
 
-            HashSet        = null;
+            HashSet        = new HashSet<T>();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5758,45 +5768,54 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
                     return true;
                 }
 
-                var item = "";
-                HashSet = new HashSet<T>();
+
+                var errorResponses = new List<String>();
 
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
+                    if (element is null)
                     {
                         ErrorResponse = "A given value within the array is null!";
                         return true;
                     }
 
-                    item = element.Value<String>();
-                    if (item != null)
+                    var item = element.Value<String>();
+                    if (item is not null)
                         item = item.Trim();
 
-                    if (item.IsNullOrEmpty())
+                    if (item is null || item.IsNullOrEmpty())
                     {
                         ErrorResponse = "A given value within the array is null or empty!";
                         return true;
                     }
 
-                    if (Parser(item, out T itemT, out ErrorResponse))
+                    if (Parser(item,
+                               out var itemT,
+                               out var errorResponse) && itemT is not null)
+                    {
                         HashSet.Add(itemT);
+                    }
+                    else
+                        errorResponses.Add(errorResponse ?? "Could not parse the given item!");
 
                 }
+
+                if (errorResponses.Any())
+                    ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
 
@@ -5805,82 +5824,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return false;
 
         }
-
-
-        public static Boolean ParseOptionalHashSet<T>(this JObject         JSON,
-                                                      String               PropertyName,
-                                                      String               PropertyDescription,
-                                                      TryParser4<T>         Parser,
-                                                      out HashSet<T>       HashSet,
-                                                      out String           ErrorResponse,
-                                                      OnExceptionDelegate  OnException)
-
-        {
-
-            HashSet        = null;
-            ErrorResponse  = null;
-
-            if (JSON == null)
-            {
-                ErrorResponse = "The given JSON object must not be null!";
-                return true;
-            }
-
-            if (PropertyName.IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return true;
-            }
-
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
-            {
-
-                // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
-                    return false;
-
-                if (!(JSONToken is JArray JSONArray))
-                {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
-                    return true;
-                }
-
-                var item = "";
-                HashSet = new HashSet<T>();
-
-                foreach (var element in JSONArray)
-                {
-
-                    if (element == null)
-                    {
-                        ErrorResponse = "A given value within the array is null!";
-                        return true;
-                    }
-
-                    item = element.Value<String>();
-                    if (item != null)
-                        item = item.Trim();
-
-                    if (item.IsNullOrEmpty())
-                    {
-                        ErrorResponse = "A given value within the array is null or empty!";
-                        return true;
-                    }
-
-                    if (Parser(item, out T itemT, OnException))
-                        HashSet.Add(itemT);
-
-                }
-
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-
 
 
         //public static Boolean ParseOptionalHashSet<T>(this JObject    JSON,
@@ -5955,14 +5898,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                       String                PropertyDescription,
                                                       TryJObjectParser2<T>  Parser,
                                                       out HashSet<T>        HashSet,
-                                                      out String            ErrorResponse)
+                                                      out String?           ErrorResponse)
 
         {
 
-            HashSet        = null;
+            HashSet        = new HashSet<T>();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5974,40 +5917,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
                     return true;
                 }
 
-                HashSet = new HashSet<T>();
+
+                var errorResponses = new List<String>();
 
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
-                    {
-                        ErrorResponse = "A given value within the array is null!";
-                        return true;
-                    }
-
-                    if (!(element is JObject JSONObject))
+                    if (element is not JObject JSONObject)
                     {
                         ErrorResponse = "The given token is not a valid JSON object!";
                         return true;
                     }
 
-                    if (Parser(element as JObject, out T itemT, out ErrorResponse))
+                    if (Parser(JSONObject,
+                               out var itemT,
+                               out var errorResponse) && itemT is not null)
+                    {
                         HashSet.Add(itemT);
+                    }
+                    else
+                        errorResponses.Add(errorResponse ?? "Could not parse the given item!");
 
                 }
+
+                if (errorResponses.Any())
+                    ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
 

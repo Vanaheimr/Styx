@@ -1000,14 +1000,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Aggregate(this EnumerationOfStrings, DefaultValue = "")
+        #region Aggregate    (this EnumerationOfStrings, DefaultValue = "")
 
         public static String Aggregate(this IEnumerable<String>  EnumerationOfStrings,
                                        String                    DefaultValue = "")
         {
 
-            if (DefaultValue is null)
-                DefaultValue = "";
+            DefaultValue ??= "";
 
             if (EnumerationOfStrings is null)
                 return DefaultValue;
