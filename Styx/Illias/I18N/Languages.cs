@@ -30,10 +30,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Languages Parse(String Text)
         {
 
-            if (TryParse(Text, out Languages language))
+            if (TryParse(Text, out var language))
                 return language;
 
             throw new ArgumentException("Unknown language '" + Text + "'!", nameof(Text));
+
+        }
+
+        public static Languages? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var language))
+                return language;
+
+            return null;
 
         }
 
