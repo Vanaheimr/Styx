@@ -870,20 +870,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValue">The default value to return for an empty enumeration.</param>
         public static T? AggregateOrDefault<T>(this IEnumerable<T>  Enumeration,
                                                Func<T, T, T>        AggreationDelegate,
-                                               T?                   DefaultValue = default)
+                                               T?                   DefaultValue   = default)
         {
 
             if (Enumeration is null)
                 return DefaultValue;
 
-            var Array = Enumeration.ToArray();
+            var array = Enumeration.ToArray();
 
-            if (Array.Length == 0)
+            if (array.Length == 0)
                 return DefaultValue;
 
             try
             {
-                return Array.Aggregate(AggreationDelegate);
+                return array.Aggregate(AggreationDelegate);
             }
             catch
             {
@@ -976,24 +976,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValue">The default value to return for an empty enumeration.</param>
         public static String AggregateWith<T>(this IEnumerable<T>  Enumeration,
                                               String               Seperator,
-                                              String               DefaultValue = "")
+                                              String               DefaultValue   = "")
         {
 
-            if (DefaultValue is null)
-                DefaultValue = "";
+            DefaultValue ??= "";
 
-            if (Enumeration is null)
+            if (!Enumeration.Any())
                 return DefaultValue;
 
-            var Array = Enumeration.Where(_ => !EqualityComparer<T>.Default.Equals(_, default)).ToArray();
-
-            if (Array.Length == 0)
-                return DefaultValue;
-
-            return Array.
-                       Select(v => v.ToString()).
-                       AggregateOrDefault((a, b) => a + Seperator + b, DefaultValue)
-
+            return Enumeration.Where (element => !EqualityComparer<T>.Default.Equals(element, default)).
+                               Select(element => element?.ToString()).
+                               AggregateOrDefault((a, b) => a + Seperator + b,
+                                                  DefaultValue)
                        ?? DefaultValue;
 
         }

@@ -2129,10 +2129,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!TryJObjectParser(JSONValue, out T value, out var errorResponse))
+            if (!TryJObjectParser(JSONValue,
+                                  out var value,
+                                  out var errorResponse))
             {
-                Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
+                Value          = default;
+                ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
                 return false;
             }
 
@@ -2141,7 +2143,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return true;
  
         }
-
 
         public static Boolean ParseMandatoryJSONS<T>(this JObject          JSON,
                                                     String                PropertyName,
