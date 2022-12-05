@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -149,30 +141,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Euro, €
         /// </summary>
-        public static readonly Currency EUR = new Currency("Euro",              "EUR", 978, "€",   Symbol_Location.behind,   Country.Belgium, Country.Germany,   Country.Estonia,  Country.Finland,  Country.Luxembourg,
-                                                                                                                             Country.Greece,  Country.Ireland,   Country.Italy,    Country.Latvia,   Country.Montenegro,
-                                                                                                                             Country.Malta,   Country.Austria,   Country.Portugal, Country.Slovakia, Country.VaticanState,
-                                                                                                                             Country.Spain,   Country.Cyprus,    Country.Andorra,  Country.Monaco,   Country.Netherlands,
-                                                                                                                             Country.France,  Country.SanMarino, Country.Slovenia, Country.Lithuania);
+        public static readonly Currency EUR = new ("Euro",              "EUR", 978, "€",   Symbol_Location.behind,   Country.Belgium, Country.Germany,   Country.Estonia,  Country.Finland,  Country.Luxembourg,
+                                                                                                                     Country.Greece,  Country.Ireland,   Country.Italy,    Country.Latvia,   Country.Montenegro,
+                                                                                                                     Country.Malta,   Country.Austria,   Country.Portugal, Country.Slovakia, Country.VaticanState,
+                                                                                                                     Country.Spain,   Country.Cyprus,    Country.Andorra,  Country.Monaco,   Country.Netherlands,
+                                                                                                                     Country.France,  Country.SanMarino, Country.Slovenia, Country.Lithuania);
 
         /// <summary>
         /// Schweizer Franken
         /// </summary>
-        public static readonly Currency CHF = new Currency("Schweizer Franken", "CHF", 756,  null, Symbol_Location.NoSymbol, Country.Switzerland);
+        public static readonly Currency CHF = new ("Schweizer Franken", "CHF", 756,  null, Symbol_Location.NoSymbol, Country.Switzerland);
 
         /// <summary>
         /// US Dollar, $
         /// </summary>
-        public static readonly Currency USD = new Currency("US Dollar",         "USD", 840, "$",   Symbol_Location.before,   Country.UnitedStatesOfAmerica);
+        public static readonly Currency USD = new ("US Dollar",         "USD", 840, "$",   Symbol_Location.before,   Country.UnitedStatesOfAmerica);
 
-        public static readonly Currency CZK = new Currency("Kronen",            "CZK", 203,  null, Symbol_Location.NoSymbol, Country.CzechRepublic);
-        public static readonly Currency GBP = new Currency("Pfund",             "GBP", 826,  null, Symbol_Location.NoSymbol, Country.UnitedKingdom);
-        public static readonly Currency HRK = new Currency("Kuna",              "HRK", 191,  null, Symbol_Location.NoSymbol, Country.Croatia);
-        public static readonly Currency PLN = new Currency("Zloty",             "PLN", 985,  null, Symbol_Location.NoSymbol, Country.Poland);
-        public static readonly Currency RON = new Currency("Leu",               "RON", 946,  null, Symbol_Location.NoSymbol, Country.Romania);
-        public static readonly Currency RSD = new Currency("Dinar",             "RSD", 941,  null, Symbol_Location.NoSymbol, Country.Serbia);
-        public static readonly Currency RUB = new Currency("Rubel",             "RUB", 643,  null, Symbol_Location.NoSymbol, Country.RussianFederation);
-        public static readonly Currency SEK = new Currency("Krone",             "SEK", 752,  null, Symbol_Location.NoSymbol, Country.Sweden);
+        public static readonly Currency CZK = new ("Kronen",            "CZK", 203,  null, Symbol_Location.NoSymbol, Country.CzechRepublic);
+        public static readonly Currency GBP = new ("Pfund",             "GBP", 826,  null, Symbol_Location.NoSymbol, Country.UnitedKingdom);
+        public static readonly Currency HRK = new ("Kuna",              "HRK", 191,  null, Symbol_Location.NoSymbol, Country.Croatia);
+        public static readonly Currency PLN = new ("Zloty",             "PLN", 985,  null, Symbol_Location.NoSymbol, Country.Poland);
+        public static readonly Currency RON = new ("Leu",               "RON", 946,  null, Symbol_Location.NoSymbol, Country.Romania);
+        public static readonly Currency RSD = new ("Dinar",             "RSD", 941,  null, Symbol_Location.NoSymbol, Country.Serbia);
+        public static readonly Currency RUB = new ("Rubel",             "RUB", 643,  null, Symbol_Location.NoSymbol, Country.RussianFederation);
+        public static readonly Currency SEK = new ("Krone",             "SEK", 752,  null, Symbol_Location.NoSymbol, Country.Sweden);
 
         #endregion
 
@@ -186,11 +178,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Currency Parse(String Text)
         {
 
-            return (from   _FieldInfo in typeof(Currency).GetFields()
-                    let    __Currency = _FieldInfo.GetValue(null) as Currency
-                    where  __Currency != null
-                    where  __Currency.ISOCode == Text || __Currency.Name == Text
-                    select __Currency).FirstOrDefault();
+            if (TryParse(Text,
+                         out var currency))
+            {
+                return currency!;
+            }
+
+            throw new ArgumentException("The given JSON representation of a currency is invalid!",
+                                        nameof(Text));
 
         }
 
@@ -204,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Text">The ISO code or name of a currency.</param>
         /// <param name="Currency">The parsed Currency</param>
         /// <returns>true or false</returns>
-        public static Boolean TryParse(String Text, out Currency Currency)
+        public static Boolean TryParse(String Text, out Currency? Currency)
         {
 
             Currency = default;
@@ -216,11 +211,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Currency = (from   _FieldInfo in typeof(Currency).GetFields()
                         let    __Currency = _FieldInfo.GetValue(null) as Currency
-                        where  __Currency != null
-                        where (__Currency.ISOCode == Text || __Currency.Symbol == Text || __Currency.Name == Text)
+                        where  __Currency is not null
+                        where  __Currency.ISOCode == Text || __Currency.Symbol == Text || __Currency.Name == Text
                         select __Currency).FirstOrDefault();
 
-            return Currency != null
+            return Currency is not null
                        ? true
                        : false;
 

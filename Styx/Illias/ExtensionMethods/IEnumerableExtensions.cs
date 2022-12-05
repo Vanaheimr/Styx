@@ -86,6 +86,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region CalcHashCode(this IEnumerable)
+
+        /// <summary>
+        /// Calculates the hash code of the given enumeration.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="IEnumerable">An enumeration of T.</param>
+        /// <returns>The combined GetHashCode() results of all elements of the given enumeration.</returns>
+        public static Int32 CalcHashCode<T>(this IEnumerable<T> IEnumerable)
+        {
+
+            var hashCode = 3;
+
+            foreach (var value in IEnumerable)
+                hashCode ^= value!.GetHashCode();
+
+            return hashCode;
+
+        }
+
+        #endregion
+
+
         #region ForEach<T>(this IEnumerable, Action)
 
         /// <summary>
