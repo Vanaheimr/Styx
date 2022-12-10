@@ -30,16 +30,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Tags
 
         /// <summary>
-        /// The "Choice" group.
+        /// The "choice" group.
         /// </summary>
         public String  Group    { get; }
 
         #endregion
 
         /// <summary>
-        /// Create a new 'mandatory'-tag having the given tags.
+        /// Create a new 'mandatory'-tag having the choice group.
         /// </summary>
-        /// <param name="Group">The "Choice" group.</param>
+        /// <param name="Group">The "choice" group.</param>
         public MandatoryChoiceAttribute(String Group)
         {
             this.Group = Group;

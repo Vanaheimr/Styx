@@ -838,8 +838,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             unchecked
             {
 
-                return Street.         GetHashCode()       * 29 ^
-                       PostalCode.     GetHashCode()       * 27 ^
+                return Street.         GetHashCode()       * 31 ^
+                       PostalCode.     GetHashCode()       * 29 ^
                        City.           GetHashCode()       * 23 ^
                        Country.        GetHashCode()       * 17 ^
 
