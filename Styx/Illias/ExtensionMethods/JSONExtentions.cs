@@ -205,7 +205,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
@@ -332,7 +332,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
