@@ -436,7 +436,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
@@ -445,7 +445,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var JSONValue = JSONToken?.Value<String>()?.Trim();
 
             if (JSONValue.IsNeitherNullNorEmpty() &&
-                TryParser(JSONValue, out Value, out String errorResponse))
+                TryParser(JSONValue, out Value, out var errorResponse))
             {
                 ErrorResponse = errorResponse;
                 return true;
@@ -511,13 +511,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //}
 
 
-        public static Boolean ParseMandatory<T>(this JObject                    JSON,
-                                                String                          PropertyName,
-                                                String                          PropertyDescription,
-                                                TryParser3<T>                   TryParser,
-                                                out T                           Value,
-                                                out String                      ErrorResponse,
-                                                CustomJObjectParserDelegate<T>  CustomParser = null)
+        public static Boolean ParseMandatory<T>(this JObject                     JSON,
+                                                String                           PropertyName,
+                                                String                           PropertyDescription,
+                                                TryParser3<T>                    TryParser,
+                                                out T                            Value,
+                                                out String                       ErrorResponse,
+                                                CustomJObjectParserDelegate<T>?  CustomParser = null)
         {
 
             Value = default;
@@ -540,7 +540,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
@@ -549,7 +549,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var JSONValue = JSONToken?.Value<String>()?.Trim();
 
             if (JSONValue.IsNeitherNullNorEmpty() &&
-                TryParser(JSONValue, out Value, out String errorResponse, CustomParser))
+                TryParser(JSONValue, out Value, out var errorResponse, CustomParser))
             {
                 ErrorResponse = errorResponse;
                 return true;
@@ -591,7 +591,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
