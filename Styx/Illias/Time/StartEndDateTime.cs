@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -35,12 +29,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The start time.
         /// </summary>
-        public DateTime   StartTime   { get; }
+        public DateTime   StartTime    { get; }
 
         /// <summary>
         /// The end time.
         /// </summary>
-        public DateTime?  EndTime     { get; set; }
+        public DateTime?  EndTime      { get; set; }
 
         /// <summary>
         /// The duration.
@@ -64,12 +58,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 DateTime?  EndTime = null)
         {
 
-            #region Initial checks
-
             if (EndTime.HasValue && StartTime > EndTime)
                 throw new ArgumentException("The start time must not be after the end time!");
-
-            #endregion
 
             this.StartTime  = StartTime;
             this.EndTime    = EndTime;
@@ -79,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Now
+        #region (static) Now
 
         /// <summary>
         /// Return a StartEndDateTime object which start time
@@ -87,19 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static StartEndDateTime Now
 
-            => new StartEndDateTime(DateTime.Now);
-
-        #endregion
-
-        #region UtcNow
-
-        /// <summary>
-        /// Return a StartEndDateTime object which start time
-        /// is set to the current UTC date and time.
-        /// </summary>
-        public static StartEndDateTime UtcNow
-
-            => new StartEndDateTime(DateTime.UtcNow);
+            => new (Timestamp.Now);
 
         #endregion
 
@@ -113,7 +91,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             unchecked
             {
-                return StartTime.GetHashCode() * 17 ^ EndTime.GetHashCode();
+
+                return StartTime.GetHashCode() * 3 ^
+                       EndTime?. GetHashCode() ?? 0;
+
             }
         }
 
@@ -126,7 +107,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat(StartTime.ToIso8601(), " -> ", EndTime.HasValue ? EndTime.Value.ToIso8601() : "...");
+            => String.Concat(
+
+                   StartTime.ToIso8601(),
+
+                   EndTime.HasValue
+                       ? " -> " + EndTime.Value.ToIso8601()
+                       : "..."
+
+               );
 
         #endregion
 
