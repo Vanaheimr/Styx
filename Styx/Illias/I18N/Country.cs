@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A country.
+    /// An ISO 3166-1 country.
     /// https://laendercode.net
     /// </summary>
     public class Country : IEquatable <Country>,
@@ -52,17 +52,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString  CountryName    { get; }
 
         /// <summary>
-        /// The ISO Alpha-2 code of the country.
+        /// The ISO 3166-1 Alpha-2 code of the country.
         /// </summary>
         public String      Alpha2Code     { get; }
 
         /// <summary>
-        /// The ISO Alpha-3 code of the country.
+        /// The ISO 3166-1 Alpha-3 code of the country.
         /// </summary>
         public String      Alpha3Code     { get; }
 
         /// <summary>
-        /// The ISO numeric code UN M49 numerical code of the country.
+        /// The ISO 3166-1 numeric code UN M49 numerical code of the country.
         /// </summary>
         public UInt16      NumericCode    { get; }
 
@@ -106,7 +106,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An unknown country.
         /// </summary>
-        public static readonly Country unknown = new Country(new I18NString(Languages.en, "unknown"), "", "", 000, 00);
+        public static readonly Country unknown = new (new I18NString(Languages.en, "unknown"), "", "", 000, 00);
 
         #region List of countries
 
