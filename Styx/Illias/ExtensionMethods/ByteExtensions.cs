@@ -349,7 +349,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The beginning of the UNIX universe.
         /// </summary>
-        public static DateTime UNIXTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+        public static DateTime UNIXTime = new (1970, 1, 1, 0, 0, 0, 0);
 
         #region ToDateTime32s<T>(this IEnumerable, NetworkByteOrder = true)
 
