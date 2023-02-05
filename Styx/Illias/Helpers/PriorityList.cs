@@ -119,7 +119,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public async Task<T2> WhenFirst<T2>(Func<T, Task<T2>>   Work,
                                             Func<T2, Boolean>   VerifyResult,
                                             TimeSpan            Timeout,
-                                            Action<Exception>   OnException,
+                                            Action<Exception>?  OnException,
                                             Func<TimeSpan, T2>  DefaultResult)
 
         {
