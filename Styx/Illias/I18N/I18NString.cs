@@ -300,7 +300,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static I18NString Create(Languages  Language,
                                         String     Text)
 
-            => new I18NString(Language, Text);
+            => new (Language, Text);
 
         #endregion
 
@@ -310,7 +310,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create an empty internationalized (I18N) multi-language string.
         /// </summary>
         public static I18NString Empty
-            => new I18NString();
+
+            => new ();
 
         #endregion
 
