@@ -17,13 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Collections;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -39,8 +33,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private readonly Dictionary<UInt32, T>  _PriorityList;
-        private T[]                             _SortedList;
+        private readonly Dictionary<UInt32, T>  priorityList;
+        private T[]                             sortedList;
 
         #endregion
 
@@ -52,8 +46,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public PriorityList()
         {
 
-            this._PriorityList  = new Dictionary<UInt32, T>();
-            this._SortedList    = new T[0];
+            this.priorityList  = new Dictionary<UInt32, T>();
+            this.sortedList    = Array.Empty<T>();
 
         }
 
@@ -68,15 +62,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Service">A service.</param>
         public void Add(T Service)
         {
-            lock (_PriorityList)
+            lock (priorityList)
             {
 
-                _PriorityList.Add(_PriorityList.Count > 0
-                                    ? _PriorityList.Keys.Max() + 1
+                priorityList.Add(priorityList.Count > 0
+                                    ? priorityList.Keys.Max() + 1
                                     : 1,
                                   Service);
 
-                _SortedList = _PriorityList.
+                sortedList = priorityList.
                                   OrderBy(kvp => kvp.Key).
                                   Select (kvp => kvp.Value).
                                   ToArray();
@@ -97,10 +91,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Task<T2[]> WhenAll<T2>(Func<T, Task<T2>> Work)
         {
 
-            if (Work == null)
-                return Task.FromResult(new T2[0]);
+            if (Work is null)
+                return Task.FromResult(Array.Empty<T2>());
 
-            return Task.WhenAll(_SortedList.Select(service => Work(service)));
+            return Task.WhenAll(sortedList.Select(service => Work(service)));
 
         }
 
@@ -126,29 +120,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (DefaultResult == null)
-                return default;
-
-            if (Work == null || VerifyResult == null)
-                return DefaultResult(TimeSpan.Zero);
-
-            Task<T2> WorkDone;
-            Task<T2> Result;
+            Task<T2> workDone;
+            Task<T2> result;
 
             #endregion
 
-            var StartTime    = DateTime.UtcNow;
+            var startTime    = DateTime.UtcNow;
 
-            var ToDoList     = _SortedList.
+            var toDoList     = sortedList.
                                    Select(service => Work(service)).
                                    ToList();
 
-            var TimeoutTask  = Task.Run(() => {
-                                                  System.Threading.Thread.Sleep(Timeout);
-                                                  return DefaultResult(Timeout) ?? default;
+            var timeoutTask  = Task.Run(() => {
+                                                  Thread.Sleep(Timeout);
+                                                  return DefaultResult(Timeout);
                                               });
 
-            ToDoList.Add(TimeoutTask);
+            if (timeoutTask is not null)
+                toDoList.Add(timeoutTask);
 
             do
             {
@@ -157,34 +146,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
 
                     // Remove all faulted tasks from a previous run of the loop
-                    foreach (var errorTask in ToDoList.Where(_ => _.Status == TaskStatus.Faulted).ToArray())
+                    foreach (var errorTask in toDoList.Where(_ => _.Status == TaskStatus.Faulted).ToArray())
                     {
 
-                        ToDoList.Remove(errorTask);
+                        toDoList.Remove(errorTask);
 
-                        foreach (var exception in errorTask.Exception.InnerExceptions)
-                        {
-                            OnException?.Invoke(exception);
-                            DebugX.LogT(exception.Message);
-                        }
+                        if (errorTask.Exception?.InnerExceptions is not null)
+                            foreach (var exception in errorTask.Exception.InnerExceptions)
+                                OnException?.Invoke(exception);
 
                     }
 
-                    WorkDone = await Task.WhenAny(ToDoList).
+                    workDone = await Task.WhenAny(toDoList).
                                           ConfigureAwait(false);
 
-                    ToDoList.Remove(WorkDone);
+                    toDoList.Remove(workDone);
 
-                    if (WorkDone != TimeoutTask)
+                    if (workDone != timeoutTask)
                     {
 
-                        Result = WorkDone as Task<T2>;
+                        result = workDone;
 
-                        if (Result != null &&
-                            !EqualityComparer<T2>.Default.Equals(Result.Result, default) &&
-                            VerifyResult(Result.Result))
+                        if (result != null &&
+                            !EqualityComparer<T2>.Default.Equals(result.Result, default) &&
+                            VerifyResult(result.Result))
                         {
-                            return Result.Result;
+                            return result.Result;
                         }
 
                     }
@@ -193,13 +180,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 catch (Exception e)
                 {
                     DebugX.LogT(e.Message);
-                    WorkDone = null;
+                    workDone = Task.FromResult(DefaultResult(Timestamp.Now - startTime));
                 }
 
             }
-            while (WorkDone != TimeoutTask && ToDoList.Count > 1);
+            while (workDone != timeoutTask && toDoList.Count > 1);
 
-            return DefaultResult(DateTime.UtcNow - StartTime);
+            return DefaultResult(Timestamp.Now - startTime);
 
         }
 
@@ -212,13 +199,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Returns an enumerator iterating through the priority list.
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
-            => _SortedList.GetEnumerator();
+            => sortedList.GetEnumerator();
 
         /// <summary>
         /// Returns an enumerator iterating through the priority list.
         /// </summary>
         public IEnumerator<T> GetEnumerator()
-            => ((IEnumerable<T>) _SortedList).GetEnumerator();
+            => ((IEnumerable<T>) sortedList).GetEnumerator();
 
         #endregion
 
