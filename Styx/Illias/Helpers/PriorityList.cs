@@ -125,7 +125,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            var startTime    = DateTime.UtcNow;
+            var startTime    = Timestamp.Now;
 
             var toDoList     = sortedList.
                                    Select(service => Work(service)).
