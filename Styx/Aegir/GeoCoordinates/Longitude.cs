@@ -222,6 +222,18 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public Longitude Clone()
+
+            => new (Value);
+
+        #endregion
+
+
         #region Distance(OtherLongitude)
 
         /// <summary>

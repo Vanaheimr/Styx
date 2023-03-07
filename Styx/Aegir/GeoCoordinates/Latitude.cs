@@ -217,6 +217,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public Latitude Clone()
+
+            => new (Value);
+
+        #endregion
+
 
         #region Distance(OtherLatitude)
 

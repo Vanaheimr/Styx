@@ -728,6 +728,22 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this object.
+        /// </summary>
+        public GeoCoordinate Clone()
+
+            => new (Latitude. Clone(),
+                    Longitude.Clone(),
+                    Altitude?.Clone(),
+                    Projection,
+                    Planet);
+
+        #endregion
+
+
         #region DistanceTo(Target)
 
         /// <summary>
