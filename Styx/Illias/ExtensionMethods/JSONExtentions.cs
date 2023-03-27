@@ -56,6 +56,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult?  arg, out String? ErrorResponse, CustomJObjectParserDelegate<TResult>? CustomParser = null);
     public delegate Boolean  TryParser4        <TResult>(String  Input, out TResult?  arg, OnExceptionDelegate OnException);
 
+
+    public delegate Boolean  TryNumericParser  <TResult>(UInt64  Input, out TResult?  arg);
+
     //public delegate Boolean  TryJObjectParser  <TResult>     (JObject Input, out TResult? arg);
     public delegate Boolean  TryJObjectParser1 <TResult>     (JObject Input, out TResult  arg, out String? ErrorResponse);
     public delegate Boolean  TryJObjectParser2 <TResult>     (JObject Input, out TResult? arg, out String? ErrorResponse);
@@ -2661,6 +2664,74 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     if (item.Type == JTokenType.String)
                         HashSetOfT.Add(Parser(item?.Value<String>() ?? ""));
+                }
+
+            }
+            catch (Exception)
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+        public static Boolean ParseMandatoryNumericHashSet<T>(this JObject         JSON,
+                                                              String               PropertyName,
+                                                              String               PropertyDescription,
+                                                              TryNumericParser<T>  TryParser,
+                                                              out HashSet<T>       HashSetOfT,
+                                                              out String?          ErrorResponse)
+        {
+
+            HashSetOfT = new HashSet<T>();
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    if (item is not null &&
+                        item.Type == JTokenType.Integer)
+                    {
+
+                        if (TryParser(item.Value<UInt64>(), out var ItemT) && ItemT is not null)
+                            HashSetOfT.Add(ItemT);
+
+                        else
+                        {
+                            ErrorResponse = "Invalid value '" + (item.Value<String>() ?? "") + "' for '" + (PropertyDescription ?? PropertyName) + "'!";
+                            return false;
+                        }
+
+                    }
                 }
 
             }
