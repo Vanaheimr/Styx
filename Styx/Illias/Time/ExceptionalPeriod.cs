@@ -15,21 +15,13 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
     /// Specifies one exceptional period for opening or access hours.
     /// </summary>
-    public struct ExceptionalPeriod : IEquatable<ExceptionalPeriod>
+    public readonly struct ExceptionalPeriod : IEquatable<ExceptionalPeriod>
     {
 
         #region Properties
@@ -75,20 +67,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionalPeriod1">An exceptional period.</param>
         /// <param name="ExceptionalPeriod2">Another exceptional period.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (ExceptionalPeriod ExceptionalPeriod1, ExceptionalPeriod ExceptionalPeriod2)
-        {
+        public static Boolean operator == (ExceptionalPeriod ExceptionalPeriod1,
+                                           ExceptionalPeriod ExceptionalPeriod2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ExceptionalPeriod1, ExceptionalPeriod2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) ExceptionalPeriod1 == null) || ((Object) ExceptionalPeriod2 == null))
-                return false;
-
-            return ExceptionalPeriod1.Equals(ExceptionalPeriod2);
-
-        }
+            => ExceptionalPeriod1.Equals(ExceptionalPeriod2);
 
         #endregion
 
@@ -100,9 +82,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionalPeriod1">An exceptional period.</param>
         /// <param name="ExceptionalPeriod2">Another exceptional period.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (ExceptionalPeriod ExceptionalPeriod1, ExceptionalPeriod ExceptionalPeriod2)
+        public static Boolean operator != (ExceptionalPeriod ExceptionalPeriod1,
+                                           ExceptionalPeriod ExceptionalPeriod2)
 
-            => !(ExceptionalPeriod1 == ExceptionalPeriod2);
+            => !ExceptionalPeriod1.Equals(ExceptionalPeriod2);
 
         #endregion
 
@@ -113,23 +96,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two exceptional periods for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">An exceptional period to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            // Check if the given object is an exceptional period.
-            if (!(Object is ExceptionalPeriod))
-                return false;
-
-            return this.Equals((ExceptionalPeriod) Object);
-
-        }
+            => Object is ExceptionalPeriod exceptionalPeriod &&
+                   Equals(exceptionalPeriod);
 
         #endregion
 
@@ -139,17 +112,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two exceptional periods for equality.
         /// </summary>
         /// <param name="ExceptionalPeriod">An exceptional period to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ExceptionalPeriod ExceptionalPeriod)
-        {
 
-            if ((Object) ExceptionalPeriod == null)
-                return false;
-
-            return Begin.Equals(ExceptionalPeriod.Begin) &&
-                   End.  Equals(ExceptionalPeriod.End);
-
-        }
+            => Begin.Equals(ExceptionalPeriod.Begin) &&
+               End.  Equals(ExceptionalPeriod.End);
 
         #endregion
 
@@ -166,7 +132,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             unchecked
             {
 
-                return Begin.GetHashCode() * 11 ^
+                return Begin.GetHashCode() * 3 ^
                        End.  GetHashCode();
 
             }
@@ -181,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Begin.ToIso8601(), " -> ", End.ToIso8601());
+            => $"{Begin.ToIso8601()} -> {End.ToIso8601()}";
 
         #endregion
 
