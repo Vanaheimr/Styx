@@ -49,6 +49,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region RandomUInt32      (MaxValue)
+
+        /// <summary>
+        /// Get a random UInt32.
+        /// </summary>
+        /// <param name="MaxValue">The optional exclusive upper bound of the random number to be generated. Its value must be greater than or equal to 0. If null then Int32.MaxValue will be used.</param>
+        public static UInt32 RandomUInt32(Int32? MaxValue = null)
+
+            => (UInt32) Random.Shared.Next(MaxValue ?? Int32.MaxValue);
+
+        #endregion
+
         #region RandomUInt64      (MaxValue)
 
         /// <summary>
