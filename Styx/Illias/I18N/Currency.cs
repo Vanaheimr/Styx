@@ -209,15 +209,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Text = Text.Trim();
 
-            Currency = (from   _FieldInfo in typeof(Currency).GetFields()
-                        let    __Currency = _FieldInfo.GetValue(null) as Currency
-                        where  __Currency is not null
-                        where  __Currency.ISOCode == Text || __Currency.Symbol == Text || __Currency.Name == Text
-                        select __Currency).FirstOrDefault();
+            Currency = (from   fieldInfo in typeof(Currency).GetFields()
+                        let    currency = fieldInfo.GetValue(null) as Currency
+                        where  currency is not null
+                        where  currency.ISOCode == Text || currency.Symbol == Text || currency.Name == Text
+                        select currency).FirstOrDefault();
 
-            return Currency is not null
-                       ? true
-                       : false;
+            return Currency is not null;
 
         }
 
