@@ -724,21 +724,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValues">A default value.</param>
         public static IEnumerable<TResult> SafeSelect<TSource, TResult>(this IEnumerable<TSource>  IEnumerable,
                                                                         Func<TSource, TResult>     SelectionDelegate,
-                                                                        IEnumerable<TResult>       DefaultValues = null)
+                                                                        IEnumerable<TResult>?      DefaultValues   = null)
         {
 
-            if (DefaultValues == null)
-                DefaultValues = new TResult[0];
+            DefaultValues ??= Array.Empty<TResult>();
 
-            if (IEnumerable == null || SelectionDelegate == null)
+            if (IEnumerable is null || SelectionDelegate is null)
                 return DefaultValues;
 
-            var Items = IEnumerable.ToArray();
+            var items = IEnumerable.ToArray();
 
-            if (Items.Length == 0)
+            if (items.Length == 0)
                 return DefaultValues;
 
-            return Items.Select(SelectionDelegate);
+            return items.Select(SelectionDelegate);
 
         }
 
@@ -756,8 +755,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                               Func<TSource, Boolean>     Filter)
         {
 
-            if (IEnumerable == null || Filter == null)
-                return new TSource[0];
+            if (IEnumerable is null || Filter is null)
+                return Array.Empty<TSource>();
 
             return IEnumerable.Where(Filter);
 
@@ -795,55 +794,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValues">A default value.</param>
         public static IEnumerable<TResult> SelectIgnoreErrors<TSource, TResult>(this IEnumerable<TSource>   IEnumerable,
                                                                                 Func<TSource, TResult>      SelectionDelegate,
-                                                                                IEnumerable<TResult>        DefaultValues = null)
+                                                                                IEnumerable<TResult>?       DefaultValues   = null)
         {
 
-            if (DefaultValues == null)
-                DefaultValues = new TResult[0];
+            DefaultValues ??= Array.Empty<TResult>();
 
-            if (IEnumerable == null || SelectionDelegate == null)
+            if (IEnumerable is null || SelectionDelegate is null)
                 return DefaultValues;
 
-            var Items = IEnumerable.ToArray();
+            var items = IEnumerable.ToArray();
 
-            if (!Items.Any())
+            if (!items.Any())
                 return DefaultValues;
 
-            return Items.Select(item => {
-                                    try
-                                    {
-                                        return SelectionDelegate(item);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        return default(TResult);
-                                    }
-                                }).
-                        Where(item => !item.Equals(default(TResult)));
+            var outItems = new List<TResult>();
 
-        }
+            foreach (var item in items)
+            {
+                try
+                {
+                    outItems.Add(SelectionDelegate(item));
+                }
+                catch (Exception)
+                { }
+            }
 
-        #endregion
-
-        #region MapReduce(this IEnumerable, MapDelegate)
-
-        /// <summary>
-        /// Safely selects the given enumeration.
-        /// </summary>
-        /// <typeparam name="T">The type of the enumeration.</typeparam>
-        /// <typeparam name="TResult">The type of the resulting enumeration.</typeparam>
-        /// <param name="IEnumerable">An enumeration.</param>
-        /// <param name="MapDelegate">The delegate to select the given enumeration.</param>
-        public static String MapReduce<T>(this IEnumerable<T>  IEnumerable,
-                                          Func<T, String>      MapDelegate,
-                                          String               Seperator = ", ",
-                                          String               Default   = "")
-        {
-
-            if (IEnumerable == null)
-                return null;
-
-            return IEnumerable.Select(MapDelegate).AggregateOrDefault((a, b) => a + Seperator + b, Default);
+            return outItems;
 
         }
 
@@ -860,19 +836,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SelectionDelegate">The delegate to select the given enumeration.</param>
         public static IEnumerable<TResult> SafeSelectMany<TSource, TResult>(this IEnumerable<TSource>            IEnumerable,
                                                                             Func<TSource, IEnumerable<TResult>>  SelectionDelegate,
-                                                                            IEnumerable<TResult>                 DefaultValues = null)
+                                                                            IEnumerable<TResult>?                DefaultValues   = null)
         {
 
-            if (DefaultValues == null)
-                DefaultValues = new TResult[0];
+            if (DefaultValues is null)
+                DefaultValues = Array.Empty<TResult>();
 
-            if (IEnumerable == null || SelectionDelegate == null)
+            if (IEnumerable is null || SelectionDelegate is null)
                 return DefaultValues;
 
             var Items = IEnumerable.ToArray();
 
             if (!Items.Any())
-                return new TResult[0];
+                return Array.Empty<TResult>();
 
             return Items.SelectMany(SelectionDelegate);
 
@@ -966,20 +942,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                               String               DefaultValue = "")
         {
 
-            if (DefaultValue is null)
-                DefaultValue = "";
+            DefaultValue ??= "";
 
             if (Enumeration is null)
                 return DefaultValue;
 
-            var Array = Enumeration.ToArray();
-
-            if (Array.Length == 0)
+            if (!Enumeration.Any())
                 return DefaultValue;
 
-            return Array.
-                       Select(v => v?.ToString() ?? "").
-                       AggregateOrDefault((a, b) => a + Seperator + b, DefaultValue)
+            return Enumeration.
+                       //Where (element => !EqualityComparer<T>.Default.Equals(element, default)).
+                       Select(element => element?.ToString() ?? "").
+                       AggregateOrDefault((a, b) => a + Seperator + b,
+                                          DefaultValue)
 
                        ?? DefaultValue;
 
@@ -1007,10 +982,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (!Enumeration.Any())
                 return DefaultValue;
 
-            return Enumeration.Where (element => !EqualityComparer<T>.Default.Equals(element, default)).
-                               Select(element => element?.ToString()).
-                               AggregateOrDefault((a, b) => a + Seperator + b,
-                                                  DefaultValue)
+            return Enumeration.
+                       //Where (element => !EqualityComparer<T>.Default.Equals(element, default)).
+                       Select(element => element?.ToString() ?? "").
+                       AggregateOrDefault((a, b) => a + Seperator + b,
+                                          DefaultValue)
+
                        ?? DefaultValue;
 
         }
@@ -1025,15 +1002,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             DefaultValue ??= "";
 
-            if (EnumerationOfStrings is null)
+            if (!EnumerationOfStrings.Any())
                 return DefaultValue;
 
-            var Array = EnumerationOfStrings.ToArray();
-
-            if (Array.Length == 0)
-                return DefaultValue;
-
-            return String.Concat(Array);
+            return String.Concat(EnumerationOfStrings);
 
         }
 
@@ -1061,7 +1033,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (EnumerationOfStrings is null)
                 return Prefix + Suffix;
 
-            return String.Concat(Prefix, EnumerationOfStrings.Aggregate((a, b) => a + ", " + b), Suffix);
+            return String.Concat(
+                       Prefix,
+                       EnumerationOfStrings.Aggregate((a, b) => a + ", " + b),
+                       Suffix);
 
         }
 
