@@ -70,8 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (lastChange != value)
                     SetProperty(ref lastChange,
-                                value,
-                                EventTracking_Id.New);
+                                value);
 
             }
 
@@ -121,6 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
         public void SetProperty<T>(ref                T                  FieldToChange,
                                                       T                  NewValue,
+                                                      String?            DataSource        = null,
                                                       EventTracking_Id?  EventTrackingId   = null,
                                    [CallerMemberName] String             PropertyName      = "")
         {
@@ -132,8 +132,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     FieldToChange  = NewValue;
 
                 PropertyChanged(PropertyName,
-                                oldValue,
                                 NewValue,
+                                oldValue,
+                                DataSource,
                                 EventTrackingId ?? EventTracking_Id.New);
 
             }
@@ -182,17 +183,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="NewValue">The new value of the changed property.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         public void PropertyChanged<T>(String             PropertyName,
-                                       T                  OldValue,
                                        T                  NewValue,
-                                       EventTracking_Id?  EventTrackingId = null)
+                                       T                  OldValue,
+                                       String?            DataSource        = null,
+                                       EventTracking_Id?  EventTrackingId   = null)
         {
-
-            #region Initial checks
-
-            if (PropertyName is null)
-                throw new ArgumentNullException(nameof(PropertyName), "The given property name must not be null!");
-
-            #endregion
 
             this.lastChange = Timestamp.Now;
 
@@ -200,8 +195,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                       EventTrackingId ?? EventTracking_Id.New,
                                       this,
                                       PropertyName,
+                                      NewValue,
                                       OldValue,
-                                      NewValue);
+                                      DataSource);
 
         }
 
@@ -245,11 +241,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public SetPropertyResult SetInternalData(String             Key,
                                                  Object?            NewValue,
                                                  Object?            OldValue          = null,
+                                                 String?            DataSource        = null,
                                                  EventTracking_Id?  EventTrackingId   = null)
 
             => InternalData.Set(Key,
                                 NewValue,
                                 OldValue,
+                                DataSource,
                                 EventTrackingId);
 
 
@@ -338,11 +336,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public SetPropertyResult SetInternalData(String             Key,
                                                      Object?            NewValue,
                                                      Object?            OldValue          = null,
+                                                     String?            DataSource        = null,
                                                      EventTracking_Id?  EventTrackingId   = null)
 
                 => InternalData.Set(Key,
                                     NewValue,
                                     OldValue,
+                                    DataSource,
                                     EventTrackingId);
 
 

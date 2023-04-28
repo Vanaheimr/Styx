@@ -31,14 +31,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="Sender">The changed object.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
-    /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
+    /// <param name="OldValue">The old value of the changed property.</param>
+    /// <param name="DataSource">An optional data source or context for this status change.</param>
     public delegate Task OnPropertyChangedDelegate(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    Object            Sender,
                                                    String            PropertyName,
-                                                   Object?           OldValue,
-                                                   Object?           NewValue);
+                                                   Object?           NewValue,
+                                                   Object?           OldValue     = null,
+                                                   String?           DataSource   = null);
 
 
     /// <summary>
@@ -50,12 +52,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
+    /// <param name="DataSource">An optional data source or context for this status change.</param>
     public delegate Task OnPropertyChangedDelegate<TSender>(DateTime          Timestamp,
                                                             EventTracking_Id  EventTrackingId,
                                                             TSender           Sender,
                                                             String            PropertyName,
-                                                            Object?           OldValue,
-                                                            Object?           NewValue)
+                                                            Object?           NewValue,
+                                                            Object?           OldValue     = null,
+                                                            String?           DataSource   = null)
 
         where TSender: class, IHasId;
 
@@ -129,11 +133,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Set(Key, NewValue, OldValue = null, EventTrackingId = null)
+        #region Set(Key, NewValue, OldValue = null, DataSource = null, EventTrackingId = null)
 
         public SetPropertyResult Set(String             Key,
                                      Object?            NewValue,
                                      Object?            OldValue          = null,
+                                     String?            DataSource        = null,
                                      EventTracking_Id?  EventTrackingId   = null)
         {
 
@@ -143,7 +148,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 var eventTrackingId = EventTrackingId ?? EventTracking_Id.New;
 
-                if (!InternalDictionary.TryGetValue(Key, out Object? currentValue))
+                if (!InternalDictionary.TryGetValue(Key, out var currentValue))
                 {
 
                     InternalDictionary.Add(Key, NewValue);
@@ -152,8 +157,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                               eventTrackingId,
                                               this,
                                               Key,
+                                              NewValue,
                                               OldValue,
-                                              NewValue);
+                                              DataSource);
 
                     return SetPropertyResult.Added;
 
@@ -171,8 +177,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                               eventTrackingId,
                                               this,
                                               Key,
+                                              NewValue,
                                               OldValue,
-                                              NewValue);
+                                              DataSource);
 
                     return SetPropertyResult.Changed;
 
@@ -185,8 +192,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           eventTrackingId,
                                           this,
                                           Key,
+                                          null,
                                           OldValue,
-                                          null);
+                                          DataSource);
 
                 return SetPropertyResult.Removed;
 

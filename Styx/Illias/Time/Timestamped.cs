@@ -30,11 +30,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class TimestampedExtensions
     {
 
+        #region Deduplicate<T>(this Enumeration)
+
         public static IEnumerable<Timestamped<T>> Deduplicate<T>(this IEnumerable<Timestamped<T>> Enumeration)
         {
 
             var OrderedEnumeration = Enumeration.
-                                         OrderBy(TVP => TVP.Timestamp).
+                                         OrderBy(TVP => TVP.Timestamp.ToIso8601()).
                                          ToArray();
 
             if (OrderedEnumeration.Length > 0)
@@ -51,18 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-
-        /// <summary>
-        /// Return a JSON representation of the given timestamped value.
-        /// </summary>
-        /// <param name="TimestampedT">A timestamped value.</param>
-        public static JObject ToJSON<T>(this Timestamped<T> TimestampedT)
-
-            => new (
-                   new JProperty("timestamp", TimestampedT.Timestamp.ToIso8601()),
-                   new JProperty("value",     TimestampedT.Value?.   ToString())
-               );
-
+        #endregion
 
     }
 
@@ -70,7 +61,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     #region Timestamped<T>
 
     /// <summary>
-    /// A value with its creation timestamp.
+    /// A value with a timestamp.
     /// </summary>
     /// <typeparam name="TValue">The type of the timestamped value.</typeparam>
     public readonly struct Timestamped<TValue> : IEquatable<TValue>,
@@ -94,13 +85,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
+        #region Timestamped(Value)
+
         /// <summary>
         /// Create a new timestamped value.
         /// </summary>
         /// <param name="Value">The value.</param>
         public Timestamped(TValue Value)
-            : this(Illias.Timestamp.Now, Value)
+
+            : this(Illias.Timestamp.Now,
+                   Value)
+
         { }
+
+        #endregion
+
+        #region Timestamped(Timestamp, Value)
 
         /// <summary>
         /// Create a new timestamped value.
@@ -110,16 +110,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Timestamped(DateTime  Timestamp,
                            TValue    Value)
         {
-            this.Value      = Value;
+
             this.Timestamp  = Timestamp;
+            this.Value      = Value;
+
+            json = new JObject(
+
+                       new JProperty("timestamp",  this.Timestamp.ToIso8601()),
+
+                       new JProperty("value",      Value is Byte    ||
+                                                   Value is Single  ||
+                                                   Value is Double  ||
+                                                   Value is Decimal ||
+                                                   Value is SByte   ||
+                                                   Value is Int16   ||
+                                                   Value is Int32   ||
+                                                   Value is Int64   ||
+                                                   Value is Int128  ||
+                                                   Value is UInt16  ||
+                                                   Value is UInt32  ||
+                                                   Value is UInt64  ||
+                                                   Value is UInt128
+                                                       ? Value
+                                                       : Value?.ToString())
+                   );
+
+            unchecked
+            {
+
+                hashCode = Timestamp.GetHashCode() * 3 ^
+                          (Value?.   GetHashCode() ?? 0);
+
+            }
+
         }
 
         #endregion
 
+        #endregion
 
-        #region Deconstruct(out Value, out Percent)
 
-        public void Deconstruct(out DateTime Timestamp, out TValue Value)
+        #region Deconstruct(out Timestamp, out Value)
+
+        /// <summary>
+        /// Deconstruct the given timestamped value into its timestamp and value.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp.</param>
+        /// <param name="Value">The value.</param>
+        public void Deconstruct(out DateTime  Timestamp,
+                                out TValue    Value)
         {
             Timestamp  = this.Timestamp;
             Value      = this.Value;
@@ -141,6 +180,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region ToJSON()
+
+        private readonly JObject json;
+
+        public JObject ToJSON()
+            => json;
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (Timestamped1, Timestamped2)
@@ -151,7 +200,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Timestamped<TValue> Timestamped1, Timestamped<TValue> Timestamped2)
+        public static Boolean operator == (Timestamped<TValue> Timestamped1,
+                                           Timestamped<TValue> Timestamped2)
 
             => Timestamped1.Equals(Timestamped2);
 
@@ -165,7 +215,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped">A timestamped value.</param>
         /// <param name="Value">Another value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Timestamped<TValue> Timestamped, TValue Value)
+        public static Boolean operator == (Timestamped<TValue>  Timestamped,
+                                           TValue               Value)
 
             => Timestamped.Value?.Equals(Value) == true;
 
@@ -179,7 +230,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped">A timestamped value.</param>
         /// <param name="Timestamp">Another timestamp.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Timestamped<TValue> Timestamped, DateTime Timestamp)
+        public static Boolean operator == (Timestamped<TValue>  Timestamped,
+                                           DateTime             Timestamp)
 
             => Timestamped.Timestamp.Equals(Timestamp);
 
@@ -193,7 +245,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Timestamped<TValue> Timestamped1, Timestamped<TValue> Timestamped2)
+        public static Boolean operator != (Timestamped<TValue>  Timestamped1,
+                                           Timestamped<TValue>  Timestamped2)
 
             => !Timestamped1.Equals(Timestamped2);
 
@@ -207,7 +260,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Value">Another value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Timestamped<TValue> Timestamped1, TValue Value)
+        public static Boolean operator != (Timestamped<TValue>  Timestamped1,
+                                           TValue               Value)
 
             => !(Timestamped1.Value?.Equals(Value) == true);
 
@@ -221,7 +275,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped">A timestamped value.</param>
         /// <param name="Timestamp">Another timestamp.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Timestamped<TValue> Timestamped, DateTime Timestamp)
+        public static Boolean operator != (Timestamped<TValue>  Timestamped,
+                                           DateTime             Timestamp)
 
             => !Timestamped.Timestamp.Equals(Timestamp);
 
@@ -236,7 +291,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Timestamped<TValue> Timestamped1, Timestamped<TValue> Timestamped2)
+        public static Boolean operator < (Timestamped<TValue>  Timestamped1,
+                                          Timestamped<TValue>  Timestamped2)
 
             => Timestamped1.CompareTo(Timestamped2) < 0;
 
@@ -250,7 +306,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Timestamped<TValue> Timestamped1, Timestamped<TValue> Timestamped2)
+        public static Boolean operator <= (Timestamped<TValue>  Timestamped1,
+                                           Timestamped<TValue>  Timestamped2)
 
             => Timestamped1.CompareTo(Timestamped2) <= 0;
 
@@ -264,7 +321,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Timestamped<TValue> Timestamped1, Timestamped<TValue> Timestamped2)
+        public static Boolean operator > (Timestamped<TValue>  Timestamped1,
+                                          Timestamped<TValue>  Timestamped2)
 
             => Timestamped1.CompareTo(Timestamped2) > 0;
 
@@ -278,7 +336,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamped1">A timestamped value.</param>
         /// <param name="Timestamped2">Another timestamped value.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Timestamped<TValue> Timestamped1, Timestamped<TValue> Timestamped2)
+        public static Boolean operator >= (Timestamped<TValue>  Timestamped1,
+                                           Timestamped<TValue>  Timestamped2)
 
             => Timestamped1.CompareTo(Timestamped2) >= 0;
 
@@ -330,11 +389,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two timestamped values for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A timestamped value to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Timestamped<TValue> timestamped &&
                    Equals(timestamped);
@@ -346,9 +404,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two timestamped values for equality.
         /// </summary>
-        /// <param name="OtherValue"></param>
-        /// <returns></returns>
-        public Boolean Equals(TValue OtherValue)
+        /// <param name="OtherValue">A timestamped value to compare with.</param>
+        public Boolean Equals(TValue? OtherValue)
         {
 
             if (Value == null && OtherValue == null)
@@ -369,17 +426,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two timestamped values for equality.
         /// </summary>
         /// <param name="Timestamped">A timestamped value to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Timestamped<TValue> Timestamped)
         {
 
-            if (Timestamp != Timestamped.Timestamp)
+            if (Timestamp.ToIso8601() != Timestamped.Timestamp.ToIso8601())
                 return false;
 
-            if (Value == null && Timestamped.Value == null)
+            if (Value is null && Timestamped.Value is null)
                 return true;
 
-            if (Value == null)
+            if (Value is null)
                 return false;
 
             return Value.Equals(Timestamped.Value);
@@ -392,20 +448,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (override) GetHashCode()
 
+        private readonly Int32 hashCode;
+
         /// <summary>
-        /// Return the HashCode of this object.
+        /// Return the hash code of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
+        /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Timestamp.GetHashCode() * 3 ^
-                      (Value?.   GetHashCode() ?? 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -416,9 +466,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Timestamp.ToIso8601(),
-                             " -> ",
-                             Value?.ToString() ?? "");
+            => $"'{Value?.ToString() ?? ""}' @ {Timestamp.ToIso8601()}";
 
         #endregion
 

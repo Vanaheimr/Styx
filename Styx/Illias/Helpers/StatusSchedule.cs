@@ -53,7 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Timestamped<T> CurrentStatus
 
-            => CheckCurrentStatus();
+            => currentStatus;
 
         #endregion
 
@@ -113,11 +113,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="StatusSchedule">The status schedule.</param>
         /// <param name="NewStatus">The new timestamped status.</param>
         /// <param name="OldStatus">The old timestamped status.</param>
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
         public delegate Task OnStatusChangedDelegate(DateTime           Timestamp,
                                                      EventTracking_Id   EventTrackingId,
                                                      StatusSchedule<T>  StatusSchedule,
                                                      Timestamped<T>     NewStatus,
-                                                     Timestamped<T>     OldStatus);
+                                                     Timestamped<T>     OldStatus,
+                                                     String?            DataSource);
 
         /// <summary>
         /// An event fired whenever the current status changed.
@@ -226,41 +228,47 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Insert(NewStatus)
+        #region Insert(NewStatus, DataSource = null)
 
         /// <summary>
         /// Insert a new status entry.
         /// </summary>
         /// <param name="NewStatus">A new status.</param>
-        public StatusSchedule<T> Insert(T NewStatus)
+        public StatusSchedule<T> Insert(T        NewStatus,
+                                        String?  DataSource   = null)
 
             => Insert(NewStatus,
-                      Timestamp.Now);
+                      Timestamp.Now,
+                      DataSource);
 
         #endregion
 
-        #region Insert(NewTimestampedStatus)
+        #region Insert(NewTimestampedStatus, DataSource = null)
 
         /// <summary>
         /// Insert a new status entry.
         /// </summary>
         /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public StatusSchedule<T> Insert(Timestamped<T> NewTimestampedStatus)
+        public StatusSchedule<T> Insert(Timestamped<T>  NewTimestampedStatus,
+                                        String?         DataSource   = null)
 
             => Insert(NewTimestampedStatus.Value,
-                      NewTimestampedStatus.Timestamp);
+                      NewTimestampedStatus.Timestamp,
+                      DataSource);
 
         #endregion
 
-        #region Insert(Value, Timestamp)
+        #region Insert(Value, Timestamp, DataSource = null)
 
         /// <summary>
         /// Insert a new status entry.
         /// </summary>
         /// <param name="Value">The value of the new status entry.</param>
         /// <param name="Timestamp">The timestamp of the new status entry.</param>
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
         public StatusSchedule<T> Insert(T         Value,
-                                        DateTime  Timestamp)
+                                        DateTime  Timestamp,
+                                        String?   DataSource   = null)
         {
 
             lock (statusSchedule)
@@ -286,7 +294,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 Take(MaxStatusHistorySize));
 
                     // Will also call the change-events!
-                    CheckCurrentStatus();
+                    CheckCurrentStatus(null, DataSource);
 
                 }
 
@@ -298,13 +306,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Insert (StatusList)
+        #region Insert (StatusList, DataSource = null)
 
         /// <summary>
         /// Insert the given enumeration of status entries.
         /// </summary>
         /// <param name="StatusList">An enumeration of status entries.</param>
-        public StatusSchedule<T> Insert(IEnumerable<Timestamped<T>> StatusList)
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        public StatusSchedule<T> Insert(IEnumerable<Timestamped<T>>  StatusList,
+                                        String?                      DataSource   = null)
         {
 
             lock (statusSchedule)
@@ -324,7 +334,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 statusSchedule.AddRange(newStatusSchedule);
 
-                CheckCurrentStatus(oldStatus);
+                CheckCurrentStatus(oldStatus,
+                                   DataSource);
 
             }
 
@@ -334,39 +345,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Set    (StatusList, ChangeMethod = Replace)
+        #region Set    (StatusList, ChangeMethod = Replace, DataSource = null)
 
         /// <summary>
         /// Set the given enumeration of status entries.
         /// </summary>
         /// <param name="StatusList">An enumeration of status entries.</param>
         /// <param name="ChangeMethod">A change method.</param>
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
         public StatusSchedule<T> Set(IEnumerable<Timestamped<T>>  StatusList,
-                                     ChangeMethods                ChangeMethod  = ChangeMethods.Replace)
-        {
+                                     ChangeMethods                ChangeMethod   = ChangeMethods.Replace,
+                                     String?                      DataSource     = null)
 
-            switch (ChangeMethod)
-            {
-
-                case ChangeMethods.Insert:
-                    return Insert(StatusList);
-
-                default:
-                    return Replace(StatusList);
-
-            }
-
-        }
+            => ChangeMethod == ChangeMethods.Insert
+                   ? Insert (StatusList, DataSource)
+                   : Replace(StatusList, DataSource);
 
         #endregion
 
-        #region Replace(StatusList)
+        #region Replace(StatusList, DataSource = null)
 
         /// <summary>
         /// Insert the given enumeration of status entries.
         /// </summary>
         /// <param name="StatusList">An enumeration of status entries.</param>
-        public StatusSchedule<T> Replace(IEnumerable<Timestamped<T>> StatusList)
+        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        public StatusSchedule<T> Replace(IEnumerable<Timestamped<T>>  StatusList,
+                                         String?                      DataSource   = null)
         {
 
             lock (statusSchedule)
@@ -387,7 +392,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 statusSchedule.Clear();
                 statusSchedule.AddRange(newStatusSchedule);
 
-                CheckCurrentStatus(oldStatus);
+                CheckCurrentStatus(oldStatus,
+                                   DataSource);
 
             }
 
@@ -398,9 +404,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private) CheckCurrentStatus(OldStatus = null)
+        #region (private) CheckCurrentStatus(OldStatus = null, DataSource = null)
 
-        private Timestamped<T> CheckCurrentStatus(Timestamped<T>? OldStatus = null)
+        private Timestamped<T> CheckCurrentStatus(Timestamped<T>?  OldStatus    = null,
+                                                  String?          DataSource   = null)
         {
 
             var callChangeEvents  = false;
@@ -429,7 +436,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         EventTracking_Id.New,
                                         this,
                                         currentStatus,
-                                        oldStatus);
+                                        oldStatus,
+                                        DataSource);
 
             return currentStatus;
 
@@ -467,7 +475,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => CurrentStatus.ToString();
+            => currentStatus.ToString();
 
         #endregion
 

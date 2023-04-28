@@ -43,9 +43,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         void IfDefinedAs<T>(String Key, Action<T> ValueDelegate);
         Boolean IsDefined(String Key);
         Boolean IsDefined(String Key, Object? Value);
-        void PropertyChanged<T>(String PropertyName, T OldValue, T NewValue, EventTracking_Id? EventTrackingId = null);
-        SetPropertyResult SetInternalData(String Key, Object? NewValue, Object? OldValue = null, EventTracking_Id? EventTrackingId = null);
-        void SetProperty<T>(ref T FieldToChange, T NewValue, EventTracking_Id? EventTrackingId = null, [CallerMemberName] String PropertyName = "");
+        void PropertyChanged<T>(String PropertyName, T OldValue, T NewValue, String? DataSource = null, EventTracking_Id ? EventTrackingId = null);
+        SetPropertyResult SetInternalData(String Key, Object? NewValue, Object? OldValue = null, String? DataSource = null, EventTracking_Id? EventTrackingId = null);
+        void SetProperty<T>(ref T FieldToChange, T NewValue, String? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] String PropertyName = "");
         Boolean TryGetInternalData(String Key, out Object? Value);
         Boolean TryGetInternalDataAs<T>(String Key, out T? Value);
 

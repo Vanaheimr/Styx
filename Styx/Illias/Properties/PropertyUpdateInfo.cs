@@ -24,27 +24,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public String   PropertyName    { get; }
         public Object?  NewValue        { get; }
         public Object?  OldValue        { get; }
+        public String?  DataSource      { get; }
 
         public PropertyUpdateInfo(String   PropertyName,
                                   Object?  NewValue,
-                                  Object?  OldValue   = null)
+                                  Object?  OldValue     = null,
+                                  String?  DataSource   = null)
         {
 
             this.PropertyName  = PropertyName;
             this.NewValue      = NewValue;
             this.OldValue      = OldValue;
+            this.DataSource    = DataSource;
 
         }
 
         public override String ToString()
 
-            => String.Concat(
-                   "Update of '", PropertyName, "' '",
-                   OldValue != null ? OldValue.ToString() : "",
-                   "' -> '",
-                   NewValue != null ? NewValue.ToString() : "",
-                   "'!"
-               );
+            => $"Update of '{PropertyName}' '{OldValue?.ToString() ?? ""}' -> '{NewValue?.ToString() ?? ""}' {(DataSource is not null ? $"'{DataSource}'" : "")}!";
 
     }
 
@@ -57,25 +54,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public PropertyUpdateInfo(TId      Id,
                                   String   PropertyName,
                                   Object?  NewValue,
-                                  Object?  OldValue   = null)
+                                  Object?  OldValue     = null,
+                                  String?  DataSource   = null)
 
             : base(PropertyName,
                    NewValue,
-                   OldValue)
+                   OldValue,
+                   DataSource)
 
         {
+
             this.Id = Id;
+
         }
 
         public override String ToString()
 
-            => String.Concat(
-                   "Update of '", Id, "'.'", PropertyName, "' '",
-                   OldValue != null ? OldValue.ToString() : "",
-                   "' -> '",
-                   NewValue != null ? NewValue.ToString() : "",
-                   "'!"
-               );
+            => $"Update of '{Id}'.'{PropertyName}' '{OldValue?.ToString() ?? ""}' -> '{NewValue?.ToString() ?? ""}' {(DataSource is not null ? $"'{DataSource}'" : "")}!";
 
     }
 
