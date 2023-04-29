@@ -26,6 +26,224 @@ using Newtonsoft.Json.Linq;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    public class Context : AInternalData,
+                           IEquatable<Context>,
+                           IComparable<Context>,
+                           IComparable
+    {
+
+        String? DataSource { get; }
+
+        public Context(String?                 DataSource     = null,
+                       JObject?                CustomData     = null,
+                       UserDefinedDictionary?  InternalData   = null)
+
+            : base(CustomData,
+                   InternalData)
+
+        {
+
+            this.DataSource = DataSource;
+
+            unchecked
+            {
+
+                hashCode = DataSource?.GetHashCode() ?? 0;
+
+            }
+
+        }
+
+
+        #region Operator overloading
+
+        #region Operator == (Context1, Context2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Context1">A context.</param>
+        /// <param name="Context2">Another context.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (Context Context1,
+                                           Context Context2)
+
+            => Context1.Equals(Context2);
+
+        #endregion
+
+        #region Operator != (Context1, Context2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Context1">A context.</param>
+        /// <param name="Context2">Another context.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (Context Context1,
+                                           Context Context2)
+
+            => !Context1.Equals(Context2);
+
+        #endregion
+
+        #region Operator <  (Context1, Context2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Context1">A context.</param>
+        /// <param name="Context2">Another context.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (Context Context1,
+                                          Context Context2)
+
+            => Context1.CompareTo(Context2) < 0;
+
+        #endregion
+
+        #region Operator <= (Context1, Context2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Context1">A context.</param>
+        /// <param name="Context2">Another context.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (Context Context1,
+                                           Context Context2)
+
+            => Context1.CompareTo(Context2) <= 0;
+
+        #endregion
+
+        #region Operator >  (Context1, Context2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Context1">A context.</param>
+        /// <param name="Context2">Another context.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (Context Context1,
+                                          Context Context2)
+
+            => Context1.CompareTo(Context2) > 0;
+
+        #endregion
+
+        #region Operator >= (Context1, Context2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Context1">A context.</param>
+        /// <param name="Context2">Another context.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (Context Context1,
+                                           Context Context2)
+
+            => Context1.CompareTo(Context2) >= 0;
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<Context> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two context.
+        /// </summary>
+        /// <param name="Object">A context to compare with.</param>
+        public Int32 CompareTo(Object? Object)
+
+            => Object is Context context
+                   ? CompareTo(context)
+                   : throw new ArgumentException("The given object is not a context!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(Context)
+
+        /// <summary>
+        /// Compares two context.
+        /// </summary>
+        /// <param name="Context">A context to compare with.</param>
+        public Int32 CompareTo(Context? Context)
+        {
+
+            if (DataSource is not null && Context?.DataSource is not null)
+                return DataSource.CompareTo(Context.DataSource);
+
+            return 0;
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<Context> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two context for equality.
+        /// </summary>
+        /// <param name="Object">A context to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is Context context &&
+                   Equals(context);
+
+        #endregion
+
+        #region Equals(Context)
+
+        /// <summary>
+        /// Compares two context for equality.
+        /// </summary>
+        /// <param name="Context">A context to compare with.</param>
+        public Boolean Equals(Context? Context)
+
+            => (DataSource is null     && Context?.DataSource is null) ||
+               (DataSource is not null && Context?.DataSource is not null && DataSource.Equals(Context.DataSource));
+
+        #endregion
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        private readonly Int32 hashCode;
+
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        /// <returns>The hash code of this object.</returns>
+        public override Int32 GetHashCode()
+            => hashCode;
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => DataSource;
+
+        #endregion
+
+
+    }
+
+
     /// <summary>
     /// An abstract data structure for internal customer-specific data.
     /// </summary>
@@ -120,7 +338,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
         public void SetProperty<T>(ref                T                  FieldToChange,
                                                       T                  NewValue,
-                                                      String?            DataSource        = null,
+                                                      Context?           DataSource        = null,
                                                       EventTracking_Id?  EventTrackingId   = null,
                                    [CallerMemberName] String             PropertyName      = "")
         {
@@ -185,7 +403,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public void PropertyChanged<T>(String             PropertyName,
                                        T                  NewValue,
                                        T                  OldValue,
-                                       String?            DataSource        = null,
+                                       Context?           DataSource        = null,
                                        EventTracking_Id?  EventTrackingId   = null)
         {
 
@@ -241,7 +459,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public SetPropertyResult SetInternalData(String             Key,
                                                  Object?            NewValue,
                                                  Object?            OldValue          = null,
-                                                 String?            DataSource        = null,
+                                                 Context?           DataSource        = null,
                                                  EventTracking_Id?  EventTrackingId   = null)
 
             => InternalData.Set(Key,
@@ -336,7 +554,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public SetPropertyResult SetInternalData(String             Key,
                                                      Object?            NewValue,
                                                      Object?            OldValue          = null,
-                                                     String?            DataSource        = null,
+                                                     Context?           DataSource        = null,
                                                      EventTracking_Id?  EventTrackingId   = null)
 
                 => InternalData.Set(Key,

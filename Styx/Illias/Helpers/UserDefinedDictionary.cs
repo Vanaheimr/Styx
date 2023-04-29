@@ -33,14 +33,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
-    /// <param name="DataSource">An optional data source or context for this status change.</param>
+    /// <param name="DataSource">An optional data source or context for the status update.</param>
     public delegate Task OnPropertyChangedDelegate(DateTime          Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    Object            Sender,
                                                    String            PropertyName,
                                                    Object?           NewValue,
                                                    Object?           OldValue     = null,
-                                                   String?           DataSource   = null);
+                                                   Context?          DataSource   = null);
 
 
     /// <summary>
@@ -52,14 +52,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    /// <param name="DataSource">An optional data source or context for this status change.</param>
+    /// <param name="DataSource">An optional data source or context for the status update.</param>
     public delegate Task OnPropertyChangedDelegate<TSender>(DateTime          Timestamp,
                                                             EventTracking_Id  EventTrackingId,
                                                             TSender           Sender,
                                                             String            PropertyName,
                                                             Object?           NewValue,
                                                             Object?           OldValue     = null,
-                                                            String?           DataSource   = null)
+                                                            Context?          DataSource   = null)
 
         where TSender: class, IHasId;
 
@@ -138,7 +138,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public SetPropertyResult Set(String             Key,
                                      Object?            NewValue,
                                      Object?            OldValue          = null,
-                                     String?            DataSource        = null,
+                                     Context?           DataSource        = null,
                                      EventTracking_Id?  EventTrackingId   = null)
         {
 

@@ -113,13 +113,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="StatusSchedule">The status schedule.</param>
         /// <param name="NewStatus">The new timestamped status.</param>
         /// <param name="OldStatus">The old timestamped status.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public delegate Task OnStatusChangedDelegate(DateTime           Timestamp,
                                                      EventTracking_Id   EventTrackingId,
                                                      StatusSchedule<T>  StatusSchedule,
                                                      Timestamped<T>     NewStatus,
                                                      Timestamped<T>     OldStatus,
-                                                     String?            DataSource);
+                                                     Context?           DataSource);
 
         /// <summary>
         /// An event fired whenever the current status changed.
@@ -234,8 +234,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Insert a new status entry.
         /// </summary>
         /// <param name="NewStatus">A new status.</param>
-        public StatusSchedule<T> Insert(T        NewStatus,
-                                        String?  DataSource   = null)
+        public StatusSchedule<T> Insert(T         NewStatus,
+                                        Context?  DataSource   = null)
 
             => Insert(NewStatus,
                       Timestamp.Now,
@@ -250,7 +250,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="NewTimestampedStatus">A new timestamped status.</param>
         public StatusSchedule<T> Insert(Timestamped<T>  NewTimestampedStatus,
-                                        String?         DataSource   = null)
+                                        Context?        DataSource   = null)
 
             => Insert(NewTimestampedStatus.Value,
                       NewTimestampedStatus.Timestamp,
@@ -265,10 +265,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value of the new status entry.</param>
         /// <param name="Timestamp">The timestamp of the new status entry.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public StatusSchedule<T> Insert(T         Value,
                                         DateTime  Timestamp,
-                                        String?   DataSource   = null)
+                                        Context?  DataSource   = null)
         {
 
             lock (statusSchedule)
@@ -312,9 +312,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Insert the given enumeration of status entries.
         /// </summary>
         /// <param name="StatusList">An enumeration of status entries.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public StatusSchedule<T> Insert(IEnumerable<Timestamped<T>>  StatusList,
-                                        String?                      DataSource   = null)
+                                        Context?                     DataSource   = null)
         {
 
             lock (statusSchedule)
@@ -352,10 +352,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="StatusList">An enumeration of status entries.</param>
         /// <param name="ChangeMethod">A change method.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public StatusSchedule<T> Set(IEnumerable<Timestamped<T>>  StatusList,
                                      ChangeMethods                ChangeMethod   = ChangeMethods.Replace,
-                                     String?                      DataSource     = null)
+                                     Context?                     DataSource     = null)
 
             => ChangeMethod == ChangeMethods.Insert
                    ? Insert (StatusList, DataSource)
@@ -369,9 +369,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Insert the given enumeration of status entries.
         /// </summary>
         /// <param name="StatusList">An enumeration of status entries.</param>
-        /// <param name="DataSource">An optional data source or context for this status change.</param>
+        /// <param name="DataSource">An optional data source or context for the status update.</param>
         public StatusSchedule<T> Replace(IEnumerable<Timestamped<T>>  StatusList,
-                                         String?                      DataSource   = null)
+                                         Context?                     DataSource   = null)
         {
 
             lock (statusSchedule)
@@ -407,7 +407,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (private) CheckCurrentStatus(OldStatus = null, DataSource = null)
 
         private Timestamped<T> CheckCurrentStatus(Timestamped<T>?  OldStatus    = null,
-                                                  String?          DataSource   = null)
+                                                  Context?         DataSource   = null)
         {
 
             var callChangeEvents  = false;

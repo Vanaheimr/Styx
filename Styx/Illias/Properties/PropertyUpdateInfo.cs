@@ -21,15 +21,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public class PropertyUpdateInfo
     {
 
-        public String   PropertyName    { get; }
-        public Object?  NewValue        { get; }
-        public Object?  OldValue        { get; }
-        public String?  DataSource      { get; }
+        public String    PropertyName    { get; }
+        public Object?   NewValue        { get; }
+        public Object?   OldValue        { get; }
+        public Context?  DataSource      { get; }
 
-        public PropertyUpdateInfo(String   PropertyName,
-                                  Object?  NewValue,
-                                  Object?  OldValue     = null,
-                                  String?  DataSource   = null)
+        public PropertyUpdateInfo(String    PropertyName,
+                                  Object?   NewValue,
+                                  Object?   OldValue     = null,
+                                  Context?  DataSource   = null)
         {
 
             this.PropertyName  = PropertyName;
@@ -51,11 +51,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public TId  Id    { get; }
 
-        public PropertyUpdateInfo(TId      Id,
-                                  String   PropertyName,
-                                  Object?  NewValue,
-                                  Object?  OldValue     = null,
-                                  String?  DataSource   = null)
+        public PropertyUpdateInfo(TId       Id,
+                                  String    PropertyName,
+                                  Object?   NewValue,
+                                  Object?   OldValue     = null,
+                                  Context?  DataSource   = null)
 
             : base(PropertyName,
                    NewValue,
