@@ -33,12 +33,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => DateTime.UtcNow + timeTravel;
 
         /// <summary>
-        /// Travel in time.
+        /// Travel back in time.
         /// </summary>
-        /// <param name="TimeTravel">The amount of time you want to travel.</param>
-        public static void TimeTravel(TimeSpan TimeTravel)
+        /// <param name="TimeTravel">The amount of time you want to travel back in time.</param>
+        public static void TravelBackInTime(TimeSpan TimeTravel)
         {
-            timeTravel = TimeTravel;
+            timeTravel += TimeTravel.Negate();
+        }
+
+        /// <summary>
+        /// Travel forward in time.
+        /// </summary>
+        /// <param name="TimeTravel">The amount of time you want to travel forward in time.</param>
+        public static void TravelForwardInTime(TimeSpan TimeTravel)
+        {
+            timeTravel += TimeTravel;
         }
 
         /// <summary>
