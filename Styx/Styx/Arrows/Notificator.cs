@@ -387,6 +387,71 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
 
 
+    public class Notificator<T1, T2, T3, T4, T5, T6> : ANotificator, INotificator<T1, T2, T3, T4, T5, T6>, IArrowSender<T1, T2, T3, T4, T5, T6>
+    {
+
+        public event NotificationEventHandler<T1, T2, T3, T4, T5, T6> OnNotification;
+
+        public void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6)
+        {
+            OnNotification?.Invoke(Message1, Message2, Message3, Message4, Message5, Message6);
+        }
+
+    }
+
+    public class VotingNotificator<T1, T2, T3, T4, T5, T6, V> : Notificator<T1, T2, T3, T4, T5, T6>, IVotingNotificator<T1, T2, T3, T4, T5, T6, V>, IVotingSender<T1, T2, T3, T4, T5, T6, V>
+    {
+
+        #region Data
+
+        private readonly Func<IVote<V>> VoteCreator;
+        private readonly V              DefaultValue;
+
+        #endregion
+
+        #region Events
+
+        public event VotingEventHandler<T1, T2, T3, T4, T5, T6, V> OnVoting;
+
+        #endregion
+
+
+        public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
+        {
+            this.VoteCreator   = VoteCreator ?? throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
+            this.DefaultValue  = DefaultValue;
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6)
+        {
+
+            if (OnVoting == null)
+                return DefaultValue;
+
+            var Vote = VoteCreator();
+
+            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Message6, Vote);
+
+            return Vote.Result;
+
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, IVote<V> Vote)
+        {
+
+            if (OnVoting == null)
+                return Vote.Result;
+
+            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Message6, Vote);
+
+            return Vote.Result;
+
+        }
+
+    }
+
+
+
 
 
     public delegate void AggregatedNotificationEventHandler<T>(DateTime DateTime, T Message);
