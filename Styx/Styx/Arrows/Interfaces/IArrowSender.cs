@@ -15,26 +15,22 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     #region Delegates
 
-    public delegate void    NotificationEventHandler<T>                  (T Message);
-    public delegate void    NotificationEventHandler<T1, T2>             (T1 Message1, T2 Message2);
-    public delegate void    NotificationEventHandler<T1, T2, T3>         (T1 Message1, T2 Message2, T3 Message3);
-    public delegate void    NotificationEventHandler<T1, T2, T3, T4>     (T1 Message1, T2 Message2, T3 Message3, T4 Message4);
-    public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5> (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
+    public delegate void    NotificationEventHandler<T>                          (T Message);
+    public delegate void    NotificationEventHandler<T1, T2>                     (T1 Message1, T2 Message2);
+    public delegate void    NotificationEventHandler<T1, T2, T3>                 (T1 Message1, T2 Message2, T3 Message3);
+    public delegate void    NotificationEventHandler<T1, T2, T3, T4>             (T1 Message1, T2 Message2, T3 Message3, T4 Message4);
+    public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5>         (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
+    public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5, T6>     (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6);
+    public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5, T6, T7> (T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7);
 
-    public delegate void    StartedEventHandler                          (Object Sender, DateTime Timestamp, String?   Message = null);
-    public delegate void    ExceptionOccuredEventHandler                 (Object Sender, DateTime Timestamp, Exception Exception);
-    public delegate void    CompletedEventHandler                        (Object Sender, DateTime Timestamp, String?   Message = null);
+    public delegate void    StartedEventHandler                                  (Object Sender, DateTime Timestamp, String?   Message = null);
+    public delegate void    ExceptionOccuredEventHandler                         (Object Sender, DateTime Timestamp, Exception Exception);
+    public delegate void    CompletedEventHandler                                (Object Sender, DateTime Timestamp, String?   Message = null);
 
     #endregion
 
@@ -114,5 +110,24 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     }
 
     #endregion
+
+    #region IArrowSender<T1, T2, T3, T4, T5, T6>
+
+    public interface IArrowSender<T1, T2, T3, T4, T5, T6> : IArrowSender
+    {
+        event NotificationEventHandler<T1, T2, T3, T4, T5, T6> OnNotification;
+    }
+
+    #endregion
+
+    #region IArrowSender<T1, T2, T3, T4, T5, T6, T7>
+
+    public interface IArrowSender<T1, T2, T3, T4, T5, T6, T7> : IArrowSender
+    {
+        event NotificationEventHandler<T1, T2, T3, T4, T5, T6, T7> OnNotification;
+    }
+
+    #endregion
+
 
 }

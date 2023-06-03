@@ -17,10 +17,7 @@
 
 #region Usings
 
-using System;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
-using System.Collections.Generic;
-using System.Threading;
 
 #endregion
 
@@ -31,11 +28,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public abstract class ANotificator : IArrowSender
     {
 
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?           OnStarted;
 
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?  OnExceptionOccured;
 
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?         OnCompleted;
 
         public void SignalStarted(Object Sender, DateTime Timestamp, String Message)
         {
@@ -66,7 +63,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         }
 
     }
-
 
     public class VotingNotificator<T, V> : Notificator<T>, IVotingNotificator<T, V>, IVotingSender<T, V>
     {
@@ -122,6 +118,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     }
 
 
+
     public class Notificator<T1, T2> : ANotificator, INotificator<T1, T2>, IArrowSender<T1, T2>
     {
 
@@ -135,7 +132,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         }
 
     }
-
 
     public class VotingNotificator<T1, T2, V> : Notificator<T1, T2>, IVotingNotificator<T1, T2, V>, IVotingSender<T1, T2, V>
     {
@@ -258,6 +254,141 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
 
 
+
+    public class Notificator<T1, T2, T3, T4> : ANotificator, INotificator<T1, T2, T3, T4>, IArrowSender<T1, T2, T3, T4>
+    {
+
+        public event NotificationEventHandler<T1, T2, T3, T4> OnNotification;
+
+        public void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4)
+        {
+            OnNotification?.Invoke(Message1, Message2, Message3, Message4);
+        }
+
+    }
+
+    public class VotingNotificator<T1, T2, T3, T4, V> : Notificator<T1, T2, T3, T4>, IVotingNotificator<T1, T2, T3, T4, V>, IVotingSender<T1, T2, T3, T4, V>
+    {
+
+        #region Data
+
+        private readonly Func<IVote<V>> VoteCreator;
+        private readonly V              DefaultValue;
+
+        #endregion
+
+        #region Events
+
+        public event VotingEventHandler<T1, T2, T3, T4, V> OnVoting;
+
+        #endregion
+
+
+        public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
+        {
+            this.VoteCreator   = VoteCreator ?? throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
+            this.DefaultValue  = DefaultValue;
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4)
+        {
+
+            if (OnVoting == null)
+                return DefaultValue;
+
+            var Vote = VoteCreator();
+
+            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Vote);
+
+            return Vote.Result;
+
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, IVote<V> Vote)
+        {
+
+            if (OnVoting == null)
+                return Vote.Result;
+
+            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Vote);
+
+            return Vote.Result;
+
+        }
+
+    }
+
+
+
+
+    public class Notificator<T1, T2, T3, T4, T5> : ANotificator, INotificator<T1, T2, T3, T4, T5>, IArrowSender<T1, T2, T3, T4, T5>
+    {
+
+        public event NotificationEventHandler<T1, T2, T3, T4, T5> OnNotification;
+
+        public void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5)
+        {
+            OnNotification?.Invoke(Message1, Message2, Message3, Message4, Message5);
+        }
+
+    }
+
+    public class VotingNotificator<T1, T2, T3, T4, T5, V> : Notificator<T1, T2, T3, T4, T5>, IVotingNotificator<T1, T2, T3, T4, T5, V>, IVotingSender<T1, T2, T3, T4, T5, V>
+    {
+
+        #region Data
+
+        private readonly Func<IVote<V>> VoteCreator;
+        private readonly V              DefaultValue;
+
+        #endregion
+
+        #region Events
+
+        public event VotingEventHandler<T1, T2, T3, T4, T5, V> OnVoting;
+
+        #endregion
+
+
+        public VotingNotificator(Func<IVote<V>> VoteCreator, V DefaultValue)
+        {
+            this.VoteCreator   = VoteCreator ?? throw new ArgumentNullException(nameof(VoteCreator), "The given VoteCreator delegate must not be null!");
+            this.DefaultValue  = DefaultValue;
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5)
+        {
+
+            if (OnVoting == null)
+                return DefaultValue;
+
+            var Vote = VoteCreator();
+
+            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Vote);
+
+            return Vote.Result;
+
+        }
+
+        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, IVote<V> Vote)
+        {
+
+            if (OnVoting == null)
+                return Vote.Result;
+
+            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Vote);
+
+            return Vote.Result;
+
+        }
+
+    }
+
+
+
+
+
+
     public delegate void AggregatedNotificationEventHandler<T>(DateTime DateTime, T Message);
 
     public class AggregatedNotificator<T>
@@ -316,5 +447,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         }
 
     }
+
 
 }

@@ -43,4 +43,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
     }
 
+    public interface INotificator<T1, T2, T3, T4, T5, T6> : IArrowSender<T1, T2, T3, T4, T5, T6>
+    {
+        void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6);
+    }
+
+    public interface INotificator<T1, T2, T3, T4, T5, T6, T7> : IArrowSender<T1, T2, T3, T4, T5, T6, T7>
+    {
+        void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7);
+    }
+
 }

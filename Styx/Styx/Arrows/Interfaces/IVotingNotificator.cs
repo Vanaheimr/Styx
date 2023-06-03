@@ -29,30 +29,49 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     {
         V SendVoting(T Message);
         V SendVoting(T Message, IVote<V> Vote);
+
     }
 
     public interface IVotingNotificator<T1, T2, V> : INotificator<T1, T2>, IVotingSender<T1, T2, V>
     {
         V SendVoting(T1 Message1, T2 Message2);
         V SendVoting(T1 Message1, T2 Message2, IVote<V> Vote);
+
     }
 
     public interface IVotingNotificator<T1, T2, T3, V> : INotificator<T1, T2, T3>, IVotingSender<T1, T2, T3, V>
     {
         V SendVoting(T1 Message1, T2 Message2, T3 Message3);
         V SendVoting(T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote);
+
     }
 
     public interface IVotingNotificator<T1, T2, T3, T4, V> : INotificator<T1, T2, T3, T4>, IVotingSender<T1, T2, T3, T4, V>
     {
         V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4);
         V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, IVote<V> Vote);
+
     }
 
     public interface IVotingNotificator<T1, T2, T3, T4, T5, V> : INotificator<T1, T2, T3, T4, T5>, IVotingSender<T1, T2, T3, T4, T5, V>
     {
         V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
         V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, IVote<V> Vote);
+
+    }
+
+    public interface IVotingNotificator<T1, T2, T3, T4, T5, T6, V> : INotificator<T1, T2, T3, T4, T5, T6>, IVotingSender<T1, T2, T3, T4, T5, T6, V>
+    {
+        V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6);
+        V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, IVote<V> Vote);
+
+    }
+
+    public interface IVotingNotificator<T1, T2, T3, T4, T5, T6, T7, V> : INotificator<T1, T2, T3, T4, T5, T6, T7>, IVotingSender<T1, T2, T3, T4, T5, T6, T7, V>
+    {
+        V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7);
+        V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7, IVote<V> Vote);
+
     }
 
 }
