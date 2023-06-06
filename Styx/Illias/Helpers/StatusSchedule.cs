@@ -140,7 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             this.MaxStatusHistorySize  = MaxStatusListSize;
-            this.statusSchedule       = new List<Timestamped<T>>();
+            this.statusSchedule        = new List<Timestamped<T>>();
 
         }
 
