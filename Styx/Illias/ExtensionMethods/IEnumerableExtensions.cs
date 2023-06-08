@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Collections;
 
 using org.GraphDefined.Vanaheimr.Illias.Collections;
