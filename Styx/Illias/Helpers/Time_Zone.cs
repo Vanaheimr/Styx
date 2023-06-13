@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -88,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time_Zone Parse(String Text)
         {
 
-            if (TryParse(Text, out Time_Zone timeZone))
+            if (TryParse(Text, out var timeZone))
                 return timeZone;
 
             throw new ArgumentException("Invalid text representation of a time zone identification: '" + Text + "'!", nameof(Text));
@@ -106,10 +100,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time_Zone? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Time_Zone timeZone))
+            if (TryParse(Text, out var timeZone))
                 return timeZone;
 
-            return new Time_Zone?();
+            return null;
 
         }
 
@@ -129,7 +123,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             TimeZone = default;
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
                 return false;
@@ -141,12 +135,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 TimeZone = new Time_Zone(Text);
                 return true;
             }
-
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception)
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            catch
             { }
 
             return false;
@@ -169,6 +158,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        /// <summary>
+        /// Time zones of Europe.
+        /// </summary>
+        public static class Europe
+        {
+
+            public static readonly Time_Zone Berlin = new ("Europe/Berlin");
+
+        }
+
+
         #region Operator overloading
 
         #region Operator == (TimeZone1, TimeZone2)
@@ -179,7 +179,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeZone1">A time zone identification.</param>
         /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Time_Zone TimeZone1, Time_Zone TimeZone2)
+        public static Boolean operator == (Time_Zone TimeZone1,
+                                           Time_Zone TimeZone2)
+
             => TimeZone1.Equals(TimeZone2);
 
         #endregion
@@ -192,7 +194,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeZone1">A time zone identification.</param>
         /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Time_Zone TimeZone1, Time_Zone TimeZone2)
+        public static Boolean operator != (Time_Zone TimeZone1,
+                                           Time_Zone TimeZone2)
+
             => !TimeZone1.Equals(TimeZone2);
 
         #endregion
@@ -205,7 +209,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeZone1">A time zone identification.</param>
         /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Time_Zone TimeZone1, Time_Zone TimeZone2)
+        public static Boolean operator < (Time_Zone TimeZone1,
+                                          Time_Zone TimeZone2)
+
             => TimeZone1.CompareTo(TimeZone2) < 0;
 
         #endregion
@@ -218,7 +224,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeZone1">A time zone identification.</param>
         /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Time_Zone TimeZone1, Time_Zone TimeZone2)
+        public static Boolean operator <= (Time_Zone TimeZone1,
+                                           Time_Zone TimeZone2)
+
             => TimeZone1.CompareTo(TimeZone2) <= 0;
 
         #endregion
@@ -231,7 +239,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeZone1">A time zone identification.</param>
         /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Time_Zone TimeZone1, Time_Zone TimeZone2)
+        public static Boolean operator > (Time_Zone TimeZone1,
+                                          Time_Zone TimeZone2)
+
             => TimeZone1.CompareTo(TimeZone2) > 0;
 
         #endregion
@@ -244,7 +254,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeZone1">A time zone identification.</param>
         /// <param name="TimeZone2">Another time zone identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Time_Zone TimeZone1, Time_Zone TimeZone2)
+        public static Boolean operator >= (Time_Zone TimeZone1,
+                                           Time_Zone TimeZone2)
+
             => TimeZone1.CompareTo(TimeZone2) >= 0;
 
         #endregion
@@ -256,10 +268,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two time zone identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A time zone identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Time_Zone timeZone
                    ? CompareTo(timeZone)
@@ -271,9 +283,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(TimeZone)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two time zone identifications.
         /// </summary>
-        /// <param name="TimeZone">An object to compare with.</param>
+        /// <param name="TimeZone">A time zone identification to compare with.</param>
         public Int32 CompareTo(Time_Zone TimeZone)
 
             => String.Compare(InternalId,
@@ -289,11 +301,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two time zone identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A time zone identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Time_Zone timeZone &&
                    Equals(timeZone);
@@ -303,10 +314,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(TimeZone)
 
         /// <summary>
-        /// Compares two TimeZones for equality.
+        /// Compares two time zone identifications for equality.
         /// </summary>
         /// <param name="TimeZone">A time zone identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Time_Zone TimeZone)
 
             => String.Equals(InternalId,
@@ -324,6 +334,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <returns>The hash code of this object.</returns>
         public override Int32 GetHashCode()
+
             => InternalId.GetHashCode();
 
         #endregion
@@ -334,6 +345,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
+
             => InternalId;
 
         #endregion

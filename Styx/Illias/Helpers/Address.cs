@@ -132,10 +132,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        I18NString?                  Comment             = null,
 
                        JObject?                     CustomData          = null,
-                       UserDefinedDictionary?       InternalData        = null)
+                       UserDefinedDictionary?       InternalData        = null,
+                       DateTime?                    LastChange          = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   LastChange ?? Timestamp.Now)
 
         {
 

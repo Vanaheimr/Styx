@@ -36,10 +36,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public Context(String?                 DataSource     = null,
                        JObject?                CustomData     = null,
-                       UserDefinedDictionary?  InternalData   = null)
+                       UserDefinedDictionary?  InternalData   = null,
+                       DateTime?               LastChange     = null)
 
             : base(CustomData,
-                   InternalData)
+                   InternalData,
+                   LastChange ?? Timestamp.Now)
 
         {
 
@@ -314,12 +316,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">Optional internal data.</param>
+        /// <param name="LastChange">The timestamp of the last changes within this object.</param>
         protected AInternalData(JObject?                CustomData,
-                                UserDefinedDictionary?  InternalData)
+                                UserDefinedDictionary?  InternalData,
+                                DateTime                LastChange)
         {
 
             this.CustomData    = CustomData   ?? new JObject();
             this.InternalData  = InternalData ?? new UserDefinedDictionary();
+            this.lastChange    = LastChange;
 
         }
 

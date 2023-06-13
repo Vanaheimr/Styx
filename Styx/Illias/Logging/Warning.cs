@@ -70,22 +70,147 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToJSON()
+        #region (static) Parse   (JSON, CustomWarningParser = null)
 
-        public JObject ToJSON()
+        /// <summary>
+        /// Parse the given JSON representation of a warning.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="CustomWarningParser">A delegate to parse custom warning JSON objects.</param>
+        public static Warning Parse(JObject                                JSON,
+                                    CustomJObjectParserDelegate<Warning>?  CustomWarningParser   = null)
+        {
 
-            => JSONObject.Create(
+            if (TryParse(JSON,
+                         out var warning,
+                         out var errorResponse,
+                         CustomWarningParser))
+            {
+                return warning!;
+            }
 
-                   new JProperty("text",            Text.   ToJSON()),
+            throw new ArgumentException("The given JSON representation of a warning is invalid: " + errorResponse, nameof(JSON));
 
-                   Context is not null
-                       ? new JProperty("context",   Context.ToString())
-                       : null);
+        }
+
+        #endregion
+
+        #region (static) TryParse(JSON, out Warning, out ErrorResponse, CustomCDRParser = null)
+
+        // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a warning.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="Warning">The parsed warning.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject       JSON,
+                                       out Warning?  Warning,
+                                       out String?   ErrorResponse)
+
+            => TryParse(JSON,
+                        out Warning,
+                        out ErrorResponse,
+                        null);
+
+
+        /// <summary>
+        /// Try to parse the given JSON representation of a warning.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="Warning">The parsed warning.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="CustomWarningParser">A delegate to parse custom warning JSON objects.</param>
+        public static Boolean TryParse(JObject                                JSON,
+                                       out Warning?                           Warning,
+                                       out String?                            ErrorResponse,
+                                       CustomJObjectParserDelegate<Warning>?  CustomWarningParser   = null)
+        {
+
+            try
+            {
+
+                Warning = default;
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse Text       [mandatory]
+
+                if (!JSON.ParseMandatoryJSON("text",
+                                             "warning text",
+                                             I18NString.TryParse,
+                                             out I18NString? Text,
+                                             out ErrorResponse) ||
+                     Text is null)
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse Context    [optional]
+
+                var Context = JSON.GetString("context");
+
+                #endregion
+
+
+                Warning = new Warning(Text,
+                                      Context);
+
+
+                if (CustomWarningParser is not null)
+                    Warning = CustomWarningParser(JSON,
+                                                  Warning);
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Warning        = default;
+                ErrorResponse  = "The given JSON representation of a warning is invalid: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToJSON(CustomWarningSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        /// <param name="CustomWarningSerializer">A delegate to serialize custom warning JSON objects.</param>
+        public JObject ToJSON(CustomJObjectSerializerDelegate<Warning>?  CustomWarningSerializer   = null)
+        {
+
+            var json = JSONObject.Create(
+
+                                 new JProperty("text",      Text.   ToJSON()),
+
+                           Context is not null
+                               ? new JProperty("context",   Context.ToString())
+                               : null
+
+                       );
+
+            return CustomWarningSerializer is not null
+                       ? CustomWarningSerializer(this, json)
+                       : json;
+
+        }
 
         #endregion
 
 
-        #region Create(Text,           Context = null)
+        #region (static) Create(Text,           Context = null)
 
         public static Warning Create(I18NString  Text,
                                      Object?     Context  = null)
@@ -95,7 +220,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Create(Language, Text, Context = null)
+        #region (static) Create(Language, Text, Context = null)
 
         public static Warning Create(Languages   Language,
                                      String      Text,
