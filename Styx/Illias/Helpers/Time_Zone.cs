@@ -164,6 +164,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static class Europe
         {
 
+            /// <summary>
+            /// Europe/Berlin
+            /// </summary>
             public static readonly Time_Zone Berlin = new ("Europe/Berlin");
 
         }
