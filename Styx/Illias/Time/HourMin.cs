@@ -134,7 +134,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return true;
 
                 }
-                catch (Exception)
+                catch
                 { }
             }
 

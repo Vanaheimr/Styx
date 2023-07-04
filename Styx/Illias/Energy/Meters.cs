@@ -196,7 +196,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     }
 
                 }
-                catch (Exception)
+                catch
                 { }
             }
 
@@ -224,7 +224,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Meter = new Meter(Number, IsKiloMeters: false);
                     return true;
                 }
-                catch (Exception)
+                catch
                 { }
             }
 
@@ -248,7 +248,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Meter = new Meter(Number, IsKiloMeters: false);
                     return true;
                 }
-                catch (Exception)
+                catch
                 { }
             }
 

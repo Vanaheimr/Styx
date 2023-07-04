@@ -177,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                     OnErrorLocal(this, Timestamp, Exception);
 
             }
-            catch (Exception)
+            catch
             { }
 
         }

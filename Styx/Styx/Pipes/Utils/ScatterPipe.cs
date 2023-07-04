@@ -104,7 +104,7 @@
 //                            _CurrentElement = (E) (Object) _S;
 //                            return true;
 //                        }
-//                        catch (Exception)
+//                        catch
 //                        {
 //                            return false;
 //                        }

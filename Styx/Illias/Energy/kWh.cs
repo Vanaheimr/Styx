@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             }
-            catch (Exception)
+            catch
             {
                 kWh = default(kWh);
                 return false;
@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             }
-            catch (Exception)
+            catch
             {
                 kWh = default(kWh);
                 return false;

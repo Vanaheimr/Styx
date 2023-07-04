@@ -118,7 +118,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, out PhoneNumber phoneNumber))
                 return phoneNumber;
 
-            throw new ArgumentException("Invalid text representation of a phone number: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of a phone number: '" + Text + "'!",
                                         nameof(Text));
 
         }

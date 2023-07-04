@@ -213,7 +213,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 }
 
             }
-            catch (Exception)
+            catch
             { }
 
             Longitude = default;

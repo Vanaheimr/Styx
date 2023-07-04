@@ -59,7 +59,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The length of the event tracking identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -142,7 +142,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EventTrackingId = new EventTracking_Id(Text);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 EventTrackingId = null;
                 return false;

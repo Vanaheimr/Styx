@@ -97,7 +97,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                     }
 
-                    catch (Exception)
+                    catch
                     {
                         return false;
                     }

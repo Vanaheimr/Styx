@@ -165,7 +165,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -229,7 +229,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 #pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-            catch (Exception)
+            catch
 #pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 #pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
@@ -292,7 +292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 //            }
 //#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
 //#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-//            catch (Exception)
+//            catch
 //#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 //#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
 //            { }
@@ -1609,7 +1609,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     timestamp = timestamp.ToUniversalTime();
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -1659,7 +1659,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 TimeSpan = TimeSpan.FromSeconds(JSONToken.Value<UInt32>());
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -1813,7 +1813,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JObject = JSONToken as JObject;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -1861,7 +1861,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JArray = JSONToken as JArray;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -1915,7 +1915,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EnumerationOfStrings = JArray.SafeSelect(item => item.Value<String>()).ToArray();
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2536,7 +2536,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EnumerationOfT = ListOfT;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2608,7 +2608,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EnumerationOfT = ListOfT;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2667,7 +2667,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2735,7 +2735,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2803,7 +2803,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2875,7 +2875,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -2947,7 +2947,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -3010,7 +3010,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        EnumerationOfT = ListOfT;
 
         //    }
-        //    catch (Exception)
+        //    catch
         //    {
         //        ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
         //        return false;
@@ -3079,7 +3079,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EnumerationOfT = ListOfT;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -3148,7 +3148,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EnumerationOfT = ListOfT;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -3220,7 +3220,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 EnumerationOfT = ListOfT;
 
             }
-            catch (Exception)
+            catch
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -3279,7 +3279,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        EnumerationOfT = ListOfT;
 
         //    }
-        //    catch (Exception)
+        //    catch
         //    {
         //        ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
         //        return false;
@@ -3463,7 +3463,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return !TOut.Equals(InvalidResult);
 
                 }
-                catch (Exception)
+                catch
                 { }
 
             }
@@ -3513,7 +3513,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     StringValue = JSONToken?.Value<String>();
                 }
-                catch (Exception)
+                catch
                 {
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
                 }
@@ -3563,7 +3563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     BooleanValue = JSONToken?.Value<Boolean>();
                 }
-                catch (Exception)
+                catch
                 {
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
                 }
@@ -4439,7 +4439,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     Timestamp = JSONToken.Value<DateTime>();
                 }
-                catch (Exception)
+                catch
                 {
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
                 }
@@ -4493,7 +4493,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return true;
 
                 }
-                catch (Exception)
+                catch
                 {
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
                 }
@@ -4539,7 +4539,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     Timespan = TimeSpan.FromSeconds(JSONToken.Value<UInt64>());
                 }
-                catch (Exception)
+                catch
                 {
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
                 }
@@ -4617,7 +4617,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         }
 
                     }
-                    catch (Exception)
+                    catch
                     {
                         ErrorResponse = "Invalid I18N value for '" + (PropertyDescription ?? PropertyName) + "'!";
                         return true;
@@ -4755,7 +4755,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          : Mapper(JSONToken.ToString());
 
                 }
-                catch (Exception)
+                catch
                 {
                     ErrorResponse = "Invalid " + PropertyDescription + "!";
                 }
@@ -4809,7 +4809,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                 : Mapper(JSONToken.ToString());
 
         //        }
-        //        catch (Exception)
+        //        catch
         //        {
         //            ErrorResponse = "Invalid " + PropertyDescription + "!";
         //        }
@@ -6340,7 +6340,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 #pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
-                catch (Exception)
+                catch
 #pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 { }
 
@@ -6454,7 +6454,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return true;
 
         //    }
-        //    catch (Exception)
+        //    catch
         //    {
         //        return false;
         //    }
@@ -6486,7 +6486,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return true;
 
         //    }
-        //    catch (Exception)
+        //    catch
         //    {
         //        return false;
         //    }
@@ -6592,7 +6592,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 #pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
 #pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
-                catch (Exception)
+                catch
 #pragma warning restore RECS0022
 #pragma warning restore RCS1075
                 { }

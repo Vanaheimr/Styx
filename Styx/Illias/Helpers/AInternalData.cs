@@ -616,7 +616,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             //            if (internalData.TryGetValue(Key, out Object? value))
             //                return (T) value;
             //        }
-            //        catch (Exception)
+            //        catch
             //        { }
 
             //        return default;

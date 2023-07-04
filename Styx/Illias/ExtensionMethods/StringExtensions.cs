@@ -170,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             }
-            catch (Exception)
+            catch
             { }
 
             Decoded = default;
@@ -199,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 Decoded = Convert.FromBase64String(Text);
                 return true;
             }
-            catch (Exception)
+            catch
             { }
 
             Decoded = default;

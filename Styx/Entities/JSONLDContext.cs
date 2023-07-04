@@ -131,7 +131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     JSONLDContext = new JSONLDContext(Text.Trim());
                     return true;
                 }
-                catch (Exception)
+                catch
                 { }
             }
 

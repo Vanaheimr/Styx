@@ -362,7 +362,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, out OpeningTimes? openingTimes))
                 return openingTimes;
 
-            throw new ArgumentException("Invalid text representation of opening times: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of opening times: '" + Text + "'!",
                                         nameof(Text));
 
         }
@@ -377,7 +377,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Texts, out OpeningTimes? openingTimes))
                 return openingTimes;
 
-            throw new ArgumentException("Invalid text representation of opening times: '" + Texts.AggregateWith(",") + "'!",
+            throw new ArgumentException($"Invalid text representation of opening times: '" + Texts.AggregateWith(",") + "'!",
                                         nameof(Texts));
 
         }

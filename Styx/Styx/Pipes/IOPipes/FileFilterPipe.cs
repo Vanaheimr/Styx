@@ -124,7 +124,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                           GetEnumerator();
 
                     }
-                    catch (Exception)
+                    catch
                     {
                         return false;
                     }

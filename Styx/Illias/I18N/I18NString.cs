@@ -577,7 +577,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
                 return TryParse(JObject.Parse(Text), out I18NText, out ErrorResponse);
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -625,7 +625,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     }
 
                 }
-                catch (Exception)
+                catch
                 {
                     I18NText = null;
                     return false;

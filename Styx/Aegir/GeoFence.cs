@@ -171,7 +171,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     GeoFence = new GeoFence(Meter.Parse(radius));
                     return true;
                 }
-                catch (Exception)
+                catch
                 { }
 
             }

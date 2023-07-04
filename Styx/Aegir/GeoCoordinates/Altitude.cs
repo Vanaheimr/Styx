@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     return true;
                 }
             }
-            catch (Exception)
+            catch
             { }
 
             Altitude = default;
@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 Altitude = new Altitude(Value);
                 return true;
             }
-            catch (Exception)
+            catch
             { }
 
             Altitude = default;

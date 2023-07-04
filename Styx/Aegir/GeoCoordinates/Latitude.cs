@@ -209,7 +209,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 }
 
             }
-            catch (Exception)
+            catch
             { }
 
             Latitude = default;

@@ -812,7 +812,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     outItems.Add(SelectionDelegate(item));
                 }
-                catch (Exception)
+                catch
                 { }
             }
 

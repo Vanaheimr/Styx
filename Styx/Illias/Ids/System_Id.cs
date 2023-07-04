@@ -116,7 +116,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, out System_Id systemId))
                 return systemId;
 
-            throw new ArgumentException("Invalid text representation of an system identification: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of an system identification: '{Text}'!",
                                         nameof(Text));
 
         }

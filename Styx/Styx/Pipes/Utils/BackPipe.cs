@@ -113,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 {
                     _CurrentElement = (S) this.Path.ElementAt(_ReturnPosition);
                 }
-                catch (Exception)
+                catch
                 {
                     throw new Exception("Invalid type of element within path!");
                 }

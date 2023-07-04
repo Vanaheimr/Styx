@@ -692,7 +692,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     return true;
 
                 }
-                catch (Exception)
+                catch
                 { }
 
             }
