@@ -98,8 +98,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Events
 
-        public event MemoryMonitorHandler?    LowMemory;
-        public event DiskSpaceMonitorHandler? LowDiskSpace;
+        public event MemoryMonitorHandler?     LowMemory;
+        public event DiskSpaceMonitorHandler?  LowDiskSpace;
 
         #endregion
 
@@ -253,6 +253,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
 
     }
 
