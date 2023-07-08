@@ -47,6 +47,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return List;
         }
 
+        /// <summary>
+        /// Another way to add an element to a list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="List">A list of elements.</param>
+        /// <param name="Element">The element to be added to the list.</param>
+        /// <returns>The changed list.</returns>
+        public static List<T> AddAndReturnList<T>(this List<T> List, T Element)
+        {
+            List.Add(Element);
+            return List;
+        }
+
         #endregion
 
         #region AddAndReturnList(this List, Elements)
