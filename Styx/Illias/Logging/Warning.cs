@@ -212,6 +212,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) Create(Text,           Context = null)
 
+        public static Warning Create(String      Text,
+                                     Object?     Context  = null)
+
+            => new (I18NString.Create(Languages.en, Text),
+                    Context);
+
         public static Warning Create(I18NString  Text,
                                      Object?     Context  = null)
 
