@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new data structure for customer specific data.
         /// </summary>
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
-        /// <param name="InternalData">Optional internal data.</param>
+        /// <param name="InternalData">Optional internal customer specific data, e.g. in combination with custom parsers and serializers, which will not be serialized.</param>
         /// <param name="LastChange">The timestamp of the last changes within this object.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData,
