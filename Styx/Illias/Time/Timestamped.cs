@@ -473,13 +473,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     #endregion
 
-    #region Timestamped_RW<T>
+    #region Timestamped_RW<TValue>
 
     /// <summary>
     /// A value with its creation timestamp.
     /// </summary>
-    /// <typeparam name="T">The type of the timestamped value.</typeparam>
-    public struct Timestamped_RW<T>
+    /// <typeparam name="TValue">The type of the timestamped value.</typeparam>
+    public struct Timestamped_RW<TValue> : IEquatable<TValue>,
+                                           IEquatable<Timestamped_RW<TValue>>,
+                                           IComparable<Timestamped_RW<TValue>>
     {
 
         #region Properties
@@ -487,12 +489,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The timestamp of the value creation.
         /// </summary>
-        public DateTime  Timestamp    { get; private set; }
+        public DateTime  Timestamp    { get; set; }
 
         /// <summary>
         /// The value.
         /// </summary>
-        public T         Value        { get; }
+        public TValue    Value        { get; set; }
 
         #endregion
 
@@ -504,7 +506,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new timestamped value.
         /// </summary>
         /// <param name="Value">The value.</param>
-        public Timestamped_RW(T Value)
+        public Timestamped_RW(TValue Value)
             : this(Value, Illias.Timestamp.Now)
         { }
 
@@ -517,7 +519,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value.</param>
         /// <param name="Timestamp">The timestamp.</param>
-        public Timestamped_RW(T         Value,
+        public Timestamped_RW(TValue    Value,
                               DateTime  Timestamp)
         {
             this.Value      = Value;
@@ -529,10 +531,314 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        public void UpdateTimestamp()
+        #region Deconstruct(out Timestamp, out Value)
+
+        /// <summary>
+        /// Deconstruct the given timestamped value into its timestamp and value.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp.</param>
+        /// <param name="Value">The value.</param>
+        public void Deconstruct(out DateTime  Timestamp,
+                                out TValue    Value)
         {
-            this.Timestamp = DateTime.UtcNow;
+            Timestamp  = this.Timestamp;
+            Value      = this.Value;
         }
+
+        #endregion
+
+        #region Value -implicit-> Timestamped_RW<Value>
+
+        /// <summary>
+        /// Implicit conversatiuon from an non-timestamped value
+        /// to a timestamped value.
+        /// </summary>
+        /// <param name="Value">The value to be timestamped.</param>
+        public static implicit operator Timestamped_RW<TValue>(TValue Value)
+
+            => new (Value);
+
+        #endregion
+
+
+        #region Operator overloading
+
+        #region Operator == (Timestamped1, Timestamped2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped2">Another timestamped value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (Timestamped_RW<TValue>  Timestamped1,
+                                           Timestamped_RW<TValue>  Timestamped2)
+
+            => Timestamped1.Equals(Timestamped2);
+
+        #endregion
+
+        #region Operator == (Timestamped,  Value)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped">A timestamped value.</param>
+        /// <param name="Value">Another value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (Timestamped_RW<TValue>  Timestamped,
+                                           TValue                  Value)
+
+            => Timestamped.Value?.Equals(Value) == true;
+
+        #endregion
+
+        #region Operator == (Timestamped,  Timestamp)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped">A timestamped value.</param>
+        /// <param name="Timestamp">Another timestamp.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (Timestamped_RW<TValue>  Timestamped,
+                                           DateTime                Timestamp)
+
+            => Timestamped.Timestamp.Equals(Timestamp);
+
+        #endregion
+
+        #region Operator != (Timestamped1, Timestamped2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped2">Another timestamped value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (Timestamped_RW<TValue>  Timestamped1,
+                                           Timestamped_RW<TValue>  Timestamped2)
+
+            => !Timestamped1.Equals(Timestamped2);
+
+        #endregion
+
+        #region Operator != (Timestamped,  Value)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Value">Another value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (Timestamped_RW<TValue>  Timestamped1,
+                                           TValue                  Value)
+
+            => !(Timestamped1.Value?.Equals(Value) == true);
+
+        #endregion
+
+        #region Operator != (Timestamped,  Timestamp)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped">A timestamped value.</param>
+        /// <param name="Timestamp">Another timestamp.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (Timestamped_RW<TValue>  Timestamped,
+                                           DateTime                Timestamp)
+
+            => !Timestamped.Timestamp.Equals(Timestamp);
+
+        #endregion
+
+
+        #region Operator <  (Timestamped1, Timestamped2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped2">Another timestamped value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (Timestamped_RW<TValue>  Timestamped1,
+                                          Timestamped_RW<TValue>  Timestamped2)
+
+            => Timestamped1.CompareTo(Timestamped2) < 0;
+
+        #endregion
+
+        #region Operator <= (Timestamped1, Timestamped2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped2">Another timestamped value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (Timestamped_RW<TValue>  Timestamped1,
+                                           Timestamped_RW<TValue>  Timestamped2)
+
+            => Timestamped1.CompareTo(Timestamped2) <= 0;
+
+        #endregion
+
+        #region Operator >  (Timestamped1, Timestamped2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped2">Another timestamped value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (Timestamped_RW<TValue>  Timestamped1,
+                                          Timestamped_RW<TValue>  Timestamped2)
+
+            => Timestamped1.CompareTo(Timestamped2) > 0;
+
+        #endregion
+
+        #region Operator >= (Timestamped1, Timestamped2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped1">A timestamped value.</param>
+        /// <param name="Timestamped2">Another timestamped value.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (Timestamped_RW<TValue>  Timestamped1,
+                                           Timestamped_RW<TValue>  Timestamped2)
+
+            => Timestamped1.CompareTo(Timestamped2) >= 0;
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<Timestamped_RW<T>> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        public Int32 CompareTo(Object Object)
+
+            => Object is Timestamped_RW<TValue> timestamped
+                   ? CompareTo(timestamped)
+                   : throw new ArgumentException("The given object is not a timestamped value!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(Timestamped)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Timestamped">An object to compare with.</param>
+        public Int32 CompareTo(Timestamped_RW<TValue> Timestamped)
+        {
+
+            var c = Timestamp.CompareTo(Timestamped.Timestamp);
+
+            if (c == 0)
+                c = (Value?.ToString() ?? "").CompareTo(Timestamped.Value?.ToString() ?? "");
+
+            return c;
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<Timestamped_RW<T>> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two timestamped values for equality.
+        /// </summary>
+        /// <param name="Object">A timestamped value to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is Timestamped_RW<TValue> timestamped &&
+                   Equals(timestamped);
+
+        #endregion
+
+        #region Equals(OtherValue)
+
+        /// <summary>
+        /// Compares two timestamped values for equality.
+        /// </summary>
+        /// <param name="OtherValue">A timestamped value to compare with.</param>
+        public Boolean Equals(TValue? OtherValue)
+        {
+
+            if (Value == null && OtherValue == null)
+                return true;
+
+            if (Value == null)
+                return false;
+
+            return Value.Equals(OtherValue);
+
+        }
+
+        #endregion
+
+        #region Equals(Timestamped)
+
+        /// <summary>
+        /// Compares two timestamped values for equality.
+        /// </summary>
+        /// <param name="Timestamped">A timestamped value to compare with.</param>
+        public Boolean Equals(Timestamped_RW<TValue> Timestamped)
+        {
+
+            if (Timestamp.ToIso8601() != Timestamped.Timestamp.ToIso8601())
+                return false;
+
+            if (Value is null && Timestamped.Value is null)
+                return true;
+
+            if (Value is null)
+                return false;
+
+            return Value.Equals(Timestamped.Value);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        private readonly Int32 hashCode;
+
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => $"'{Value?.ToString() ?? ""}' @ {Timestamp.ToIso8601()}";
+
+        #endregion
 
     }
 
