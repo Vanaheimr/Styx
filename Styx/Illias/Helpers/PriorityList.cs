@@ -167,7 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                         result = workDone;
 
-                        if (result != null &&
+                        if (result is not null &&
                             !EqualityComparer<T2>.Default.Equals(result.Result, default) &&
                             VerifyResult(result.Result))
                         {
