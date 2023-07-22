@@ -770,7 +770,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-
         #region ContainsIgnoreCase(Strings, Text)
 
         /// <summary>
@@ -796,6 +795,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        #region Repeat(Text, Times)
+
+        public static String Repeat(this String Text, Int64 Times)
+            => String.Concat(Enumerable.Repeat(Text, (Int32)Times));
+
+        public static String Repeat(this String Text, UInt32 Times)
+            => String.Concat(Enumerable.Repeat(Text, (Int32)Times));
+
+        public static String Repeat(this String Text, UInt64 Times)
+            => String.Concat(Enumerable.Repeat(Text, (Int32)Times));
+
+        public static String Repeat(this String Text, Int32 Times)
+            => String.Concat(Enumerable.Repeat(Text, Math.Max(0, Times)));
+
+        #endregion
+
 
     }
 
