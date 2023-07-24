@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -78,6 +72,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.Minute  = Minute;
             this.Second  = Second;
 
+            unchecked
+            {
+
+                hashCode = Hour.   GetHashCode() * 5 ^
+                           Minute. GetHashCode() * 3 ^
+                          (Second?.GetHashCode() ?? 0);
+
+            }
+
         }
 
         #endregion
@@ -91,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Hour">The hour.</param>
         public static Time FromHour(Byte Hour)
 
-            => new Time(Hour);
+            => new (Hour);
 
         #endregion
 
@@ -102,10 +105,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Hour">The hour.</param>
         /// <param name="Minute">The minute</param>
-        public static Time FromHourMin(Byte Hour, Byte Minute)
+        public static Time FromHourMin(Byte Hour,
+                                       Byte Minute)
 
-            => new Time(Hour,
-                        Minute);
+            => new (Hour,
+                    Minute);
 
         #endregion
 
@@ -117,11 +121,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Hour">The hour.</param>
         /// <param name="Minute">The minute</param>
         /// <param name="Second">The second.</param>
-        public static Time FromHourMinSec(Byte Hour, Byte Minute, Byte Second)
+        public static Time FromHourMinSec(Byte Hour,
+                                          Byte Minute,
+                                          Byte Second)
 
-            => new Time(Hour,
-                        Minute,
-                        Second);
+            => new (Hour,
+                    Minute,
+                    Second);
 
         #endregion
 
@@ -135,10 +141,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time Parse(String Text)
         {
 
-            if (TryParse(Text, out Time time))
+            if (TryParse(Text, out var time))
                 return time;
 
-            throw new ArgumentException("Could not parse the given text as a time.!");
+            throw new ArgumentException($"Invalid text representation of a time: '{Text}'!",
+                                        nameof(Text));
 
         }
 
@@ -153,7 +160,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Time? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Time time))
+            if (TryParse(Text, out var time))
                 return time;
 
             return null;
@@ -182,7 +189,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             else if (Fragments.Length == 1)
             {
 
-                if (!Byte.TryParse(Fragments[0], out Byte Hour))
+                if (!Byte.TryParse(Fragments[0], out var Hour))
                     return false;
 
                 Time = Time.FromHour(Hour);
@@ -193,10 +200,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             else if (Fragments.Length == 2)
             {
 
-                if (!Byte.TryParse(Fragments[0], out Byte Hour))
+                if (!Byte.TryParse(Fragments[0], out var Hour))
                     return false;
 
-                if (!Byte.TryParse(Fragments[1], out Byte Minute))
+                if (!Byte.TryParse(Fragments[1], out var Minute))
                     return false;
 
                 Time = Time.FromHourMin(Hour, Minute);
@@ -207,13 +214,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             else if (Fragments.Length == 3)
             {
 
-                if (!Byte.TryParse(Fragments[0], out Byte Hour))
+                if (!Byte.TryParse(Fragments[0], out var Hour))
                     return false;
 
-                if (!Byte.TryParse(Fragments[1], out Byte Minute))
+                if (!Byte.TryParse(Fragments[1], out var Minute))
                     return false;
 
-                if (!Byte.TryParse(Fragments[2], out Byte Second))
+                if (!Byte.TryParse(Fragments[2], out var Second))
                     return false;
 
                 Time = Time.FromHourMinSec(Hour, Minute, Second);
@@ -391,10 +398,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two times.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A time to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Time time
                    ? CompareTo(time)
@@ -406,9 +413,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Time)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two times.
         /// </summary>
-        /// <param name="Time">An object to compare with.</param>
+        /// <param name="Time">A time to compare with.</param>
         public Int32 CompareTo(Time Time)
         {
 
@@ -433,11 +440,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two times for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A time to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Time time &&
                    Equals(time);
@@ -447,10 +453,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Time)
 
         /// <summary>
-        /// Compares two price components for equality.
+        /// Compares two times for equality.
         /// </summary>
         /// <param name="Time">A time to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Time Time)
 
             => Hour.  Equals(Time.Hour)   &&
@@ -461,25 +466,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
+
+        private readonly Int32 hashCode;
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Hour.  GetHashCode() * 5 ^
-                       Minute.GetHashCode() * 3 ^
-
-                       (Second.HasValue
-                            ? Second.GetHashCode()
-                            : 0);
-
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -490,16 +485,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat(
-
-                   Hour.  ToString("D2"), ":",
-                   Minute.ToString("D2"),
-
-                   Second.HasValue
-                       ? ":" + Second.Value.ToString("D2")
-                       : ""
-
-               );
+            => $"{Hour:D2}:{Minute:D2}{(Second.HasValue
+                                            ? $":{Second.Value:D2}"
+                                            : "")}";
 
         #endregion
 

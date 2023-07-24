@@ -24,13 +24,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class Timestamp
     {
 
+        #region Data
+
         private static TimeSpan timeTravel = TimeSpan.Zero;
+
+        #endregion
+
+
+        #region (static) Now
 
         /// <summary>
         /// The current time stamp respecting time travels.
         /// </summary>
         public static DateTime Now
+
             => DateTime.UtcNow + timeTravel;
+
+        #endregion
+
+        #region (static) TravelBackInTime   (TimeTravel)
 
         /// <summary>
         /// Travel back in time.
@@ -38,8 +50,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeTravel">The amount of time you want to travel back in time.</param>
         public static void TravelBackInTime(TimeSpan TimeTravel)
         {
-            timeTravel += TimeTravel.Negate();
+
+            if (TimeTravel.Ticks < 0)
+                TimeTravel.Negate();
+
+            timeTravel += TimeTravel;
+
         }
+
+        #endregion
+
+        #region (static) TravelForwardInTime(TimeTravel)
 
         /// <summary>
         /// Travel forward in time.
@@ -47,8 +68,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="TimeTravel">The amount of time you want to travel forward in time.</param>
         public static void TravelForwardInTime(TimeSpan TimeTravel)
         {
+
+            if (TimeTravel.Ticks < 0)
+                TimeTravel.Negate();
+
             timeTravel += TimeTravel;
+
         }
+
+        #endregion
+
+        #region (static) Reset()
 
         /// <summary>
         /// Return to normal time.
@@ -57,6 +87,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             timeTravel = TimeSpan.Zero;
         }
+
+        #endregion
+
 
     }
 

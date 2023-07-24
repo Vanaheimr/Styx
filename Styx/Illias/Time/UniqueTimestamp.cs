@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Threading;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -34,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private static Int64 _LastTimestamp;
+        private static Int64 lastTimestamp;
 
         #endregion
 
@@ -46,12 +39,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Returns an unique timestamp as a DateTime object
         /// </summary>
         public static DateTime Now
-        {
-            get
-            {
-                return new DateTime((Int64) GetUniqueTimestamp);
-            }
-        }
+
+            => new ((Int64) GetUniqueTimestamp);
 
         #endregion
 
@@ -61,12 +50,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Returns an unique timestamp as an UInt64
         /// </summary>
         public static UInt64 Ticks
-        {
-            get
-            {
-                return GetUniqueTimestamp;
-            }
-        }
+
+            => GetUniqueTimestamp;
 
         #endregion
 
@@ -84,29 +69,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
             get
             {
 
-                Int64 _InitialValue, _NewValue;
+                Int64 initialValue, newValue;
 
                 do
                 {
 
                     // Save the last known timestamp in a local variable.
-                    _InitialValue = _LastTimestamp;
+                    initialValue  = lastTimestamp;
 
-                    _NewValue     = Math.Max(DateTime.Now.Ticks, _InitialValue + 1);
+                    newValue      = Math.Max(DateTime.Now.Ticks, initialValue + 1);
 
                 }
                 // Use CompareExchange to avoid locks!
-                while (_InitialValue != Interlocked.CompareExchange(ref _LastTimestamp, _NewValue, _InitialValue));
+                while (initialValue != Interlocked.CompareExchange(ref lastTimestamp, newValue, initialValue));
 
-                // Return _NewValue, as _LastTimestamp might
+                // Return newValue, as lastTimestamp might
                 // already be changed by yet another thread!
-                return (UInt64) _NewValue;
+                return (UInt64) newValue;
 
             }
 
         }
 
         #endregion
+
 
     }
 

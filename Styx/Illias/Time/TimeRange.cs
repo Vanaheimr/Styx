@@ -15,14 +15,56 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+    /// <summary>
+    /// Extension methods for time ranges.
+    /// </summary>
+    public static class TimeRangeExtensions
+    {
+
+        #region To(this TimeRange, EndTime)
+
+        /// <summary>
+        /// Return a new time range having the end time set to the given value.
+        /// </summary>
+        /// <param name="TimeRange">A time range object.</param>
+        /// <param name="EndTime">The new ending time.</param>
+        public static TimeRange To(this TimeRange  TimeRange,
+                                   Time            EndTime)
+
+            => new (TimeRange.StartTime,
+                    EndTime);
+
+
+        /// <summary>
+        /// Return a new time range having the end time set to the given value.
+        /// </summary>
+        /// <param name="TimeRange">A time range object.</param>
+        /// <param name="EndTime">The new ending time.</param>
+        public static TimeRange To(this TimeRange  TimeRange,
+                                   Byte            EndTime)
+
+            => new (TimeRange.StartTime,
+                    Time.FromHour(EndTime));
+
+
+        /// <summary>
+        /// Return a new time range having the end time set to the given value.
+        /// </summary>
+        /// <param name="TimeRange">A time range object.</param>
+        /// <param name="EndTime">The new ending time.</param>
+        public static TimeRange To(this TimeRange  TimeRange,
+                                   String          EndTime)
+
+            => new (TimeRange.StartTime,
+                    Time.Parse(EndTime));
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// A structure to store a start and end time.
@@ -74,13 +116,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (StartTime.HasValue && EndTime.HasValue && StartTime > EndTime)
+            if (StartTime.HasValue &&
+                EndTime.HasValue &&
+                StartTime > EndTime)
+            {
                 throw new ArgumentException("The starting time of the time range must not be after the ending time!");
+            }
 
             #endregion
 
             this.StartTime  = StartTime;
             this.EndTime    = EndTime;
+
+            unchecked
+            {
+                hashCode = (StartTime?.GetHashCode() ?? 0) * 3 ^
+                           (EndTime?.  GetHashCode() ?? 0);
+            }
 
         }
 
@@ -94,43 +146,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="StartTime">The starting time.</param>
         public static TimeRange From(Time StartTime)
-        {
-            return new TimeRange(StartTime, null);
-        }
+
+            => new (StartTime,
+                    null);
+
 
         /// <summary>
         /// Create a new time range having the given starting time.
         /// </summary>
         /// <param name="StartTime">The starting time.</param>
         public static TimeRange From(Byte StartTime)
-        {
-            return new TimeRange(Time.FromHour(StartTime), null);
-        }
+
+            => new (Time.FromHour(StartTime),
+                    null);
+
 
         /// <summary>
         /// Create a new time range having the given starting time.
         /// </summary>
         /// <param name="StartTime">The starting time.</param>
         public static TimeRange From(String StartTime)
-        {
-            return new TimeRange(Time.Parse(StartTime), null);
-        }
+
+            => new (Time.Parse(StartTime),
+                    null);
 
         #endregion
 
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
+
+        private readonly Int32 hashCode;
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-                return StartTime.GetHashCode() * 17 ^ EndTime.GetHashCode();
-            }
-        }
+            => hashCode;
 
         #endregion
 

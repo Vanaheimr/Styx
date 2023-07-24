@@ -93,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 return StartTime.GetHashCode() * 3 ^
-                       EndTime?. GetHashCode() ?? 0;
+                      (EndTime?. GetHashCode() ?? 0);
 
             }
         }

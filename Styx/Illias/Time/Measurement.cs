@@ -15,19 +15,13 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
     /// This class represents a timestamp value pair of a measurement.
     /// </summary>
-    public struct Measurement<TValue>
+    public readonly struct Measurement<TValue, TUnits>
     {
 
         #region Data
@@ -35,28 +29,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The timestamp of the measurement;
         /// </summary>
-        public readonly DateTime Timestamp;
+        public DateTime  Timestamp    { get; }
 
         /// <summary>
         /// The value of the measurement;
         /// </summary>
-        public readonly TValue Value;
+        public TValue    Value        { get; }
+
+        /// <summary>
+        /// The unit of the measurement;
+        /// </summary>
+        public TUnits    Unit         { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region Measurement(Timestamp, Value)
+        #region Measurement(           Value, Unit)
 
         /// <summary>
-        /// Create a new timestamp value pair of a measurement.
+        /// Create a new timestamped measurement with units.
+        /// </summary>
+        /// <param name="Value">The value of the measurement.</param>
+        /// <param name="Unit">The unit of the measurement.</param>
+        public Measurement(TValue    Value,
+                           TUnits    Unit)
+        {
+
+            this.Timestamp  = Illias.Timestamp.Now;
+            this.Value      = Value;
+            this.Unit       = Unit;
+
+        }
+
+        #endregion
+
+        #region Measurement(Timestamp, Value, Unit)
+
+        /// <summary>
+        /// Create a new timestamped measurement with units.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the measurement.</param>
         /// <param name="Value">The value of the measurement.</param>
-        public Measurement(DateTime Timestamp, TValue Value)
+        /// <param name="Unit">The unit of the measurement.</param>
+        public Measurement(DateTime  Timestamp,
+                           TValue    Value,
+                           TUnits    Unit)
         {
-            this.Timestamp = Timestamp;
-            this.Value     = Value;
+
+            this.Timestamp  = Timestamp;
+            this.Value      = Value;
+            this.Unit       = Unit;
+
         }
 
         #endregion

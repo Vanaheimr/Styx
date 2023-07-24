@@ -15,52 +15,26 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
     /// Min/Max values for TimeSpans.
     /// </summary>
-    public struct TimeSpanMinMax
+    public readonly struct TimeSpanMinMax
     {
 
-        #region Min
-
-        private readonly TimeSpan? _Min;
+        #region Properties
 
         /// <summary>
         /// The minimum value or lower bound.
         /// </summary>
-        public TimeSpan? Min
-        {
-            get
-            {
-                return _Min;
-            }
-        }
-
-        #endregion
-
-        #region Max
-
-        private readonly TimeSpan? _Max;
+        public TimeSpan?  Min    { get; }
 
         /// <summary>
         /// The maximum value or upper bound.
         /// </summary>
-        public TimeSpan? Max
-        {
-            get
-            {
-                return _Max;
-            }
-        }
+        public TimeSpan?  Max    { get; }
 
         #endregion
 
@@ -71,63 +45,71 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Min">The minimum value or lower bound.</param>
         /// <param name="Max">The maximum value or upper bound.</param>
-        public TimeSpanMinMax(TimeSpan? Min, TimeSpan? Max)
+        public TimeSpanMinMax(TimeSpan? Min,
+                              TimeSpan? Max)
         {
 
             #region Initial checks
 
-            if (Min > Max)
+            if (Min.HasValue &&
+                Max.HasValue &&
+                Min > Max)
+            {
                 throw new ArgumentException("The minimum must not be larger than the maximum!");
+            }
 
             #endregion
 
-            _Min = Min;
-            _Max = Max;
+            this.Min = Min;
+            this.Max = Max;
+
+            unchecked
+            {
+                hashCode = (Min?.GetHashCode() ?? 0) * 3 ^
+                           (Max?.GetHashCode() ?? 0);
+            }
 
         }
 
         #endregion
 
 
-        #region (static) FromMin(MinValue)
+        #region (static) FromMin(Min)
 
         /// <summary>
         /// Create a new half-open definition having just a minimum value.
         /// </summary>
-        /// <param name="MinValue">The minimum value.</param>
-        public static TimeSpanMinMax FromMin(TimeSpan MinValue)
-        {
-            return new TimeSpanMinMax(MinValue, null);
-        }
+        /// <param name="Min">The minimum value.</param>
+        public static TimeSpanMinMax FromMin(TimeSpan Min)
+
+            => new (Min,
+                    null);
 
         #endregion
 
-        #region (static) FromMax(MaxValue)
+        #region (static) FromMax(Max)
 
         /// <summary>
         /// Create a new half-open definition having just a maximum value.
         /// </summary>
-        /// <param name="MaxValue">The maximum value.</param>
-        public static TimeSpanMinMax FromMax(TimeSpan MaxValue)
-        {
-            return new TimeSpanMinMax(null, MaxValue);
-        }
+        /// <param name="Max">The maximum value.</param>
+        public static TimeSpanMinMax FromMax(TimeSpan Max)
+
+            => new (null,
+                    Max);
 
         #endregion
 
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
+
+        private readonly Int32 hashCode;
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-                return _Min.GetHashCode() * 17 ^ _Max.GetHashCode();
-            }
-        }
+            => hashCode;
 
         #endregion
 
@@ -137,9 +119,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat(_Min.ToString(), " -> ", _Max.ToString());
-        }
+
+            => $"{Min?.ToString() ?? "-"} -> {Max?.ToString() ?? "-"}";
 
         #endregion
 

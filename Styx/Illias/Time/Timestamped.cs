@@ -819,13 +819,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (override) GetHashCode()
 
-        private readonly Int32 hashCode;
-
         /// <summary>
         /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
-            => hashCode;
+
+            => Timestamp.GetHashCode() * 3 ^
+              (Value?.   GetHashCode() ?? 0);
 
         #endregion
 
