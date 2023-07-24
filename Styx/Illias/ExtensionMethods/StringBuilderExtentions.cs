@@ -63,4 +63,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     }
 
+
+    public static class NewLine
+    {
+
+        public static String Concat(params String[] Lines)
+        {
+
+            var sb = new StringBuilder();
+
+            foreach (var line in Lines)
+                sb.AppendLine(line);
+
+            return sb.ToString();
+
+        }
+
+    }
+
+
 }
