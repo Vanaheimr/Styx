@@ -220,6 +220,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of this object.
+        /// </summary>
+        public const String JSONLDContext = "https://opendata.social/contexts/UsersAPI+json/geoCoordinate";
+
+        #endregion
+
         #region Properties
 
         /// <summary>
@@ -703,24 +712,29 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
 
-        #region ToJSON()
+        #region ToJSON(Embedded = true)
 
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public JObject ToJSON()
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
+        public JObject ToJSON(Boolean Embedded = true)
 
             => JSONObject.Create(
 
-                   new JProperty("lat",  Latitude. Value),
-                   new JProperty("lng",  Longitude.Value),
+                   !Embedded
+                       ? new JProperty("@context",     JSONLDContext.ToString())
+                       : null,
+
+                         new JProperty("lat",          Latitude. Value),
+                         new JProperty("lng",          Longitude.Value),
 
                    Altitude.HasValue
-                       ? new JProperty("alt",         Altitude.Value.Value)
+                       ? new JProperty("alt",          Altitude.Value.Value)
                        : null,
 
                    Projection != GravitationalModel.WGS84
-                       ? new JProperty("projection",  Projection.ToString())
+                       ? new JProperty("projection",   Projection.ToString())
                        : null
 
                );

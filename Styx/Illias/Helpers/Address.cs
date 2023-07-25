@@ -498,13 +498,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var JSON = JSONObject.Create(
 
                            !Embedded
-                               ? new JProperty("@context", JSONLDContext.ToString())
+                               ? new JProperty("@context",            JSONLDContext.ToString())
                                : null,
 
-                           new JProperty("street",                    Street),
-                           new JProperty("postalCode",                PostalCode),
-                           new JProperty("city",                      City.ToJSON()),
-                           new JProperty("country",                   Country.Alpha3Code),
+                                 new JProperty("street",              Street),
+                                 new JProperty("postalCode",          PostalCode),
+                                 new JProperty("city",                City.ToJSON()),
+                                 new JProperty("country",             Country.Alpha3Code),
 
                            HouseNumber.IsNotNullOrEmpty()
                                ? new JProperty("houseNumber",         HouseNumber)
