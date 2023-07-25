@@ -27,8 +27,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate Task RAMUsageMonitorHandler        (ResourcesMonitor  Sender,
                                                         DateTime          Timestamp,
-                                                        UInt64            RAMUsage,
-                                                        UInt64            RAMUsageThreshold);
+                                                        UInt64            RAMUsageShared,
+                                                        UInt64            RAMUsagePrivate,
+                                                        UInt64            RAMUsagePrivateThreshold);
 
     public delegate Task FreeSystemMemoryMonitorHandler(ResourcesMonitor  Sender,
                                                         DateTime          Timestamp,
@@ -104,28 +105,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The checking interval.
         /// </summary>
-        public TimeSpan                            CheckInterval                 { get; set; }
+        public TimeSpan                            CheckInterval                     { get; set; }
 
         /// <summary>
         /// The current process identification.
         /// </summary>
-        public Int32                               ProcessId                     { get; }
+        public Int32                               ProcessId                         { get; }
 
         /// <summary>
         /// The current process.
         /// </summary>
-        public Process                             Process                       { get; }
+        public Process                             Process                           { get; }
 
 
         /// <summary>
         /// The threshold in MBytes of RAM used before the OnHighRAMUsage event will be triggered.
         /// </summary>
-        public UInt64                              HighRAMUsageThreshold         { get; }
+        public UInt64                              HighPrivateRAMUsageThreshold      { get; }
 
         /// <summary>
         /// The threshold in % of free RAM left before the OnLowSystemMemory event will be triggered.
         /// </summary>
-        public Double                              FreeSystemMemoryThreshold     { get; }
+        public Double                              FreeSystemMemoryThreshold         { get; }
 
         /// <summary>
         /// The threshold in % of free hard disc space left before the OnLowDiskSpace event will be triggered.
@@ -134,19 +135,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// The latest current RAM usage.
+        /// The latest current shared RAM usage.
         /// </summary>
-        public UInt64                              CurrentRAMUsage               { get; private set; }
+        public UInt64                              CurrentSharedRAMUsage             { get; private set; }
+
+        /// <summary>
+        /// The latest current private RAM usage.
+        /// </summary>
+        public UInt64                              CurrentPrivateRAMUsage            { get; private set; }
 
         /// <summary>
         /// The latest free system memory metrics.
         /// </summary>
-        public MemoryMetrics?                      FreeSystemMemoryMetrics       { get; private set; }
+        public MemoryMetrics?                      FreeSystemMemoryMetrics           { get; private set; }
 
         /// <summary>
         /// The latest free disc space percentage.
         /// </summary>
-        public Double                              FreeDiscSpacePercentage       { get; private set; }
+        public Double                              FreeDiscSpacePercentage           { get; private set; }
 
         #endregion
 
@@ -179,23 +185,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Create a new resources monitor.
         /// </summary>
-        /// <param name="HighRAMUsageThreshold">An threshold in MBytes of RAM used before the OnHighRAMUsage event will be triggered.</param>
+        /// <param name="HighPrivateRAMUsageThreshold">An threshold in MBytes of private RAM used before the OnHighRAMUsage event will be triggered.</param>
         /// <param name="FreeSystemMemoryThreshold">An threshold in % of free RAM left before the OnLowSystemMemory event will be triggered.</param>
         /// <param name="PathAndFreeSpaceThresholds">An threshold in % of free hard disc space left before the OnLowDiskSpace event will be triggered.</param>
         /// <param name="CheckInterval">An optional checking interval.</param>
-        public ResourcesMonitor(UInt64                              HighRAMUsageThreshold,
+        public ResourcesMonitor(UInt64                              HighPrivateRAMUsageThreshold,
                                 Double                              FreeSystemMemoryThreshold,
                                 IEnumerable<Tuple<String, Double>>  PathAndFreeSpaceThresholds,
                                 TimeSpan?                           CheckInterval   = null)
         {
 
-            this.CheckInterval               = CheckInterval ?? TimeSpan.FromMinutes(1);
+            this.CheckInterval                   = CheckInterval ?? TimeSpan.FromMinutes(1);
 
-            this.ProcessId                   = Environment.ProcessId;
-            this.Process                     = Process.GetProcessById(ProcessId);
+            this.ProcessId                       = Environment.ProcessId;
+            this.Process                         = Process.GetProcessById(ProcessId);
 
-            this.HighRAMUsageThreshold       = HighRAMUsageThreshold;
-            this.FreeSystemMemoryThreshold   = FreeSystemMemoryThreshold;
+            this.HighPrivateRAMUsageThreshold    = HighPrivateRAMUsageThreshold;
+            this.FreeSystemMemoryThreshold       = FreeSystemMemoryThreshold;
             this.PathAndFreeDiscSpaceThresholds  = PathAndFreeSpaceThresholds.Distinct();
 
             if (CheckInterval.HasValue)
@@ -215,10 +221,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region RAM usage of this process (MBytes)
 
-            CurrentRAMUsage = (UInt64) Process.WorkingSet64 / (1024 * 1024);
+            CurrentSharedRAMUsage   = (UInt64) Process.WorkingSet64        / (1024 * 1024);
+            CurrentPrivateRAMUsage  = (UInt64) Process.PrivateMemorySize64 / (1024 * 1024);
 
             // High RAM usage
-            if (CurrentRAMUsage > HighRAMUsageThreshold)
+            if (CurrentSharedRAMUsage > HighPrivateRAMUsageThreshold)
             {
 
                 var onHighRAMUsage = OnHighRAMUsage?.GetInvocationList()?.Cast<RAMUsageMonitorHandler>()
@@ -229,8 +236,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Select(async ramUsageMonitorHandler => {
                                            await ramUsageMonitorHandler(this,
                                                                         now,
-                                                                        CurrentRAMUsage,
-                                                                        HighRAMUsageThreshold);
+                                                                        CurrentSharedRAMUsage,
+                                                                        CurrentPrivateRAMUsage,
+                                                                        HighPrivateRAMUsageThreshold);
                                        })).
                                        ConfigureAwait(false);
 
@@ -245,8 +253,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                    Select(async ramUsageMonitorHandler => {
                                        await ramUsageMonitorHandler(this,
                                                                     now,
-                                                                    CurrentRAMUsage,
-                                                                    HighRAMUsageThreshold);
+                                                                    CurrentSharedRAMUsage,
+                                                                    CurrentPrivateRAMUsage,
+                                                                    HighPrivateRAMUsageThreshold);
                                    })).
                                    ConfigureAwait(false);
 
