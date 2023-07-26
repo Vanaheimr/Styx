@@ -27,15 +27,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate Task RAMUsageMonitorHandler        (ResourcesMonitor  Sender,
                                                         DateTime          Timestamp,
+                                                        UInt64            RAMUsageByOS,
                                                         UInt64            RAMUsageShared,
                                                         UInt64            RAMUsagePrivate,
                                                         UInt64            RAMUsagePrivateThreshold);
 
     public delegate Task FreeSystemMemoryMonitorHandler(ResourcesMonitor  Sender,
                                                         DateTime          Timestamp,
-                                                        MemoryMetrics     MemoryMetrics);
+                                                        MemoryMetrics     MemoryMetrics,
+                                                        Double            FreeSystemMemoryThreshold);
 
-    public delegate Task LowDiskSpaceMonitorHandler    (ResourcesMonitor  Sender,
+    public delegate Task DiskSpaceMonitorHandler       (ResourcesMonitor  Sender,
                                                         DateTime          Timestamp,
                                                         Double            FreeDiscSpacePercentage);
 
@@ -54,11 +56,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
-        #region MemoryMetrics(Total, Free, Used)
+        #region MemoryMetrics(Total, Used, Free)
 
         public MemoryMetrics(Double  Total,
-                             Double  Free,
-                             Double  Used)
+                             Double  Used,
+                             Double  Free)
         {
 
             this.Total           = Total;
@@ -108,11 +110,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public TimeSpan                            CheckInterval                     { get; set; }
 
         /// <summary>
-        /// The current process identification.
-        /// </summary>
-        public Int32                               ProcessId                         { get; }
-
-        /// <summary>
         /// The current process.
         /// </summary>
         public Process                             Process                           { get; }
@@ -129,10 +126,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Double                              FreeSystemMemoryThreshold         { get; }
 
         /// <summary>
-        /// The threshold in % of free hard disc space left before the OnLowDiskSpace event will be triggered.
+        /// The threshold in % of free hard disk space left before the OnLowDiskSpace event will be triggered.
         /// </summary>
         public IEnumerable<Tuple<String, Double>>  PathAndFreeDiscSpaceThresholds    { get; }
 
+
+
+        /// <summary>
+        /// The latest current RAM usage as reported by the operating system.
+        /// </summary>
+        public UInt64                              CurrentRAMUsageByOS               { get; private set; }
 
         /// <summary>
         /// The latest current shared RAM usage.
@@ -150,7 +153,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public MemoryMetrics?                      FreeSystemMemoryMetrics           { get; private set; }
 
         /// <summary>
-        /// The latest free disc space percentage.
+        /// The latest free disk space percentage.
         /// </summary>
         public Double                              FreeDiscSpacePercentage           { get; private set; }
 
@@ -159,7 +162,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Events
 
         /// <summary>
-        /// An event called whenever the current RAM usage has changed.
+        /// An event called whenever the current RAM usage was reported.
         /// </summary>
         public event RAMUsageMonitorHandler?          OnCurrentRAMUsage;
 
@@ -168,15 +171,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public event RAMUsageMonitorHandler?          OnHighRAMUsage;
 
+
+        /// <summary>
+        /// An event called whenever the current free system memory was reported.
+        /// </summary>
+        public event FreeSystemMemoryMonitorHandler?  OnSystemMemory;
+
         /// <summary>
         /// An event called whenever the current free system memory is below its threshold.
         /// </summary>
         public event FreeSystemMemoryMonitorHandler?  OnLowSystemMemory;
 
+
         /// <summary>
-        /// An event called whenever the current free disc space is below its threshold.
+        /// An event called whenever the current free disk space was reported.
         /// </summary>
-        public event LowDiskSpaceMonitorHandler?      OnLowDiskSpace;
+        public event DiskSpaceMonitorHandler?      OnDiskSpace;
+
+        /// <summary>
+        /// An event called whenever the current free disk space is below its threshold.
+        /// </summary>
+        public event DiskSpaceMonitorHandler?      OnLowDiskSpace;
 
         #endregion
 
@@ -187,7 +202,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="HighPrivateRAMUsageThreshold">An threshold in MBytes of private RAM used before the OnHighRAMUsage event will be triggered.</param>
         /// <param name="FreeSystemMemoryThreshold">An threshold in % of free RAM left before the OnLowSystemMemory event will be triggered.</param>
-        /// <param name="PathAndFreeSpaceThresholds">An threshold in % of free hard disc space left before the OnLowDiskSpace event will be triggered.</param>
+        /// <param name="PathAndFreeSpaceThresholds">An threshold in % of free hard disk space left before the OnLowDiskSpace event will be triggered.</param>
         /// <param name="CheckInterval">An optional checking interval.</param>
         public ResourcesMonitor(UInt64                              HighPrivateRAMUsageThreshold,
                                 Double                              FreeSystemMemoryThreshold,
@@ -197,8 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             this.CheckInterval                   = CheckInterval ?? TimeSpan.FromMinutes(1);
 
-            this.ProcessId                       = Environment.ProcessId;
-            this.Process                         = Process.GetProcessById(ProcessId);
+            this.Process                         = Process.GetProcessById(Environment.ProcessId);
 
             this.HighPrivateRAMUsageThreshold    = HighPrivateRAMUsageThreshold;
             this.FreeSystemMemoryThreshold       = FreeSystemMemoryThreshold;
@@ -221,6 +235,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region RAM usage of this process (MBytes)
 
+            Process.Refresh();
+
+            CurrentRAMUsageByOS     = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ||
+                                      RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+                                          ? GetRAMUsageOnUnix()
+                                          : GetRAMUsageOnWindows();
+
             CurrentSharedRAMUsage   = (UInt64) Process.WorkingSet64        / (1024 * 1024);
             CurrentPrivateRAMUsage  = (UInt64) Process.PrivateMemorySize64 / (1024 * 1024);
 
@@ -234,11 +255,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (onHighRAMUsage.Any())
                     await Task.WhenAll(onHighRAMUsage.
                                        Select(async ramUsageMonitorHandler => {
-                                           await ramUsageMonitorHandler(this,
-                                                                        now,
-                                                                        CurrentSharedRAMUsage,
-                                                                        CurrentPrivateRAMUsage,
-                                                                        HighPrivateRAMUsageThreshold);
+                                           try
+                                           {
+                                               await ramUsageMonitorHandler(this,
+                                                                            now,
+                                                                            CurrentRAMUsageByOS,
+                                                                            CurrentSharedRAMUsage,
+                                                                            CurrentPrivateRAMUsage,
+                                                                            HighPrivateRAMUsageThreshold);
+                                           }
+                                           catch
+                                           { }
                                        })).
                                        ConfigureAwait(false);
 
@@ -251,11 +278,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (onCurrentRAMUsage.Any())
                 await Task.WhenAll(onCurrentRAMUsage.
                                    Select(async ramUsageMonitorHandler => {
-                                       await ramUsageMonitorHandler(this,
-                                                                    now,
-                                                                    CurrentSharedRAMUsage,
-                                                                    CurrentPrivateRAMUsage,
-                                                                    HighPrivateRAMUsageThreshold);
+                                       try
+                                       {
+                                           await ramUsageMonitorHandler(this,
+                                                                        now,
+                                                                        CurrentRAMUsageByOS,
+                                                                        CurrentSharedRAMUsage,
+                                                                        CurrentPrivateRAMUsage,
+                                                                        HighPrivateRAMUsageThreshold);
+                                       }
+                                       catch
+                                       { }
                                    })).
                                    ConfigureAwait(false);
 
@@ -268,27 +301,56 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           ? GetMemoryMetricsOnUnix()
                                           : GetMemoryMetricsOnWindows();
 
-            if (FreeSystemMemoryMetrics is not null &&
-                FreeSystemMemoryMetrics.FreePercentage < FreeSystemMemoryThreshold)
+            if (FreeSystemMemoryMetrics is not null)
             {
 
-                var onLowSystemMemory = OnLowSystemMemory?.GetInvocationList()?.Cast<FreeSystemMemoryMonitorHandler>()
+                var onFreeSystemMemory = OnSystemMemory?.GetInvocationList()?.Cast<FreeSystemMemoryMonitorHandler>()
                                              ?? Array.Empty<FreeSystemMemoryMonitorHandler>();
 
-                if (onLowSystemMemory.Any())
-                    await Task.WhenAll(onLowSystemMemory.
+                if (onFreeSystemMemory.Any())
+                    await Task.WhenAll(onFreeSystemMemory.
                                        Select(async freeSystemMemoryMonitorHandler => {
-                                           await freeSystemMemoryMonitorHandler(this,
-                                                                                now,
-                                                                                FreeSystemMemoryMetrics);
+                                           try
+                                           {
+                                               await freeSystemMemoryMonitorHandler(this,
+                                                                                    now,
+                                                                                    FreeSystemMemoryMetrics,
+                                                                                    FreeSystemMemoryThreshold);
+                                           }
+                                           catch
+                                           { }
                                        })).
                                        ConfigureAwait(false);
+
+
+                if (FreeSystemMemoryMetrics.FreePercentage < FreeSystemMemoryThreshold)
+                {
+
+                    var onLowSystemMemory = OnLowSystemMemory?.GetInvocationList()?.Cast<FreeSystemMemoryMonitorHandler>()
+                                                 ?? Array.Empty<FreeSystemMemoryMonitorHandler>();
+
+                    if (onLowSystemMemory.Any())
+                        await Task.WhenAll(onLowSystemMemory.
+                                           Select(async freeSystemMemoryMonitorHandler => {
+                                               try
+                                               {
+                                                   await freeSystemMemoryMonitorHandler(this,
+                                                                                        now,
+                                                                                        FreeSystemMemoryMetrics,
+                                                                                        FreeSystemMemoryThreshold);
+                                               }
+                                               catch
+                                               { }
+                                           })).
+                                           ConfigureAwait(false);
+
+                }
 
             }
 
             #endregion
 
-            #region Free disc space           (%)
+            #region Free disk space           (%)
 
             foreach (var pathAndFreeDiscSpaceThreshold in PathAndFreeDiscSpaceThresholds)
             {
@@ -296,18 +358,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var driveInfo            = new DriveInfo(pathAndFreeDiscSpaceThreshold.Item1);
                 FreeDiscSpacePercentage  = (Double) driveInfo.AvailableFreeSpace / driveInfo.TotalSize * 100;
 
+
+                var onDiskSpace = OnDiskSpace?.GetInvocationList()?.Cast<DiskSpaceMonitorHandler>()
+                                      ?? Array.Empty<DiskSpaceMonitorHandler>();
+
+                if (onDiskSpace.Any())
+                    await Task.WhenAll(onDiskSpace.
+                                       Select(async diskSpaceMonitorHandler => {
+                                           try
+                                           {
+                                               await diskSpaceMonitorHandler(this,
+                                                                             now,
+                                                                             FreeDiscSpacePercentage);
+                                           }
+                                           catch
+                                           { }
+                                       })).
+                                       ConfigureAwait(false);
+
+
                 if (FreeDiscSpacePercentage < pathAndFreeDiscSpaceThreshold.Item2)
                 {
 
-                    var onLowDiskSpace = OnLowDiskSpace?.GetInvocationList()?.Cast<LowDiskSpaceMonitorHandler>()
-                                             ?? Array.Empty<LowDiskSpaceMonitorHandler>();
+                    var onLowDiskSpace = OnLowDiskSpace?.GetInvocationList()?.Cast<DiskSpaceMonitorHandler>()
+                                             ?? Array.Empty<DiskSpaceMonitorHandler>();
 
                     if (onLowDiskSpace.Any())
                         await Task.WhenAll(onLowDiskSpace.
-                                           Select(async lowDiskSpaceMonitorHandler => {
-                                               await lowDiskSpaceMonitorHandler(this,
-                                                                                now,
-                                                                                FreeDiscSpacePercentage);
+                                           Select(async diskSpaceMonitorHandler => {
+                                               try
+                                               {
+                                                   await diskSpaceMonitorHandler(this,
+                                                                                 now,
+                                                                                 FreeDiscSpacePercentage);
+                                               }
+                                               catch
+                                               { }
                                            })).
                                            ConfigureAwait(false);
 
@@ -320,6 +406,72 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        #region (private) GetRAMUsageOnWindows()
+
+        /// <summary>
+        /// Get RAM usage of this process on Windows.
+        /// </summary>
+        private UInt64 GetRAMUsageOnWindows()
+{
+
+            var processInfo  = new ProcessStartInfo("cmd.exe", $"/c wmic process where processid='{Process.Id}' get WorkingSetSize") {
+                                   RedirectStandardOutput  = true,
+                                   UseShellExecute         = false,
+                                   CreateNoWindow          = true
+                               };
+
+            using (var process = Process.Start(processInfo))
+            {
+
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
+                                 ?? Array.Empty<String>();
+
+                if (output.Length >= 2 && UInt64.TryParse(output[1].Trim(), out var ramUsage))
+                    return ramUsage;
+
+            }
+
+            return 0;
+
+        }
+
+        #endregion
+
+        #region (private) GetRAMUsageOnUnix()
+
+        /// <summary>
+        /// Get RAM usage of this process on UNIX.
+        /// </summary>
+        private UInt64 GetRAMUsageOnUnix()
+        {
+
+            var cmd          = $"ps -o rss= -p {Process.Id} |awk '{{print $1/1024}}'";
+
+            var processInfo  = new ProcessStartInfo("/bin/bash", $"-c \"{cmd}\"") {
+                                   RedirectStandardOutput  = true,
+                                   UseShellExecute         = false,
+                                   CreateNoWindow          = true
+                               };
+
+            using (var process = Process.Start(processInfo))
+            {
+
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
+                                 ?? Array.Empty<String>();
+
+                if (output.Length >= 1 && Double.TryParse(output[0], out var ramUsage))
+                    return (UInt64) ramUsage;
+
+            }
+
+            return 0;
+
+        }
+
+        #endregion
+
 
         #region (private static) GetMemoryMetricsOnWindows()
 
@@ -335,25 +487,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                   RedirectStandardOutput  = true
                               };
 
-            var output = "";
-
             using (var process = Process.Start(processInfo))
             {
-                output = process?.StandardOutput.ReadToEnd() ?? "";
-            }
 
-            var lines = output.Trim().Split("\n");
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
+                                 ?? Array.Empty<String>();
 
-            if (lines.Length == 2)
-            {
+                if (output.Length == 2)
+                {
 
-                var freeMemoryParts   = lines[0].Split("=", StringSplitOptions.RemoveEmptyEntries);
-                var totalMemoryParts  = lines[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
+                    var freeMemoryParts   = output[0].Split("=", StringSplitOptions.RemoveEmptyEntries);
+                    var totalMemoryParts  = output[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
 
-                return new MemoryMetrics(
-                           Total: Math.Round(Double.Parse(totalMemoryParts[1]) / 1024, 0),
-                           Free:  Math.Round(Double.Parse(freeMemoryParts[1])  / 1024, 0)
-                       );
+                    return new MemoryMetrics(
+                               Total: Math.Round(Double.Parse(totalMemoryParts[1]) / 1024, 0),
+                               Free:  Math.Round(Double.Parse(freeMemoryParts[1])  / 1024, 0)
+                           );
+
+                }
 
             }
 
@@ -371,31 +522,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         private static MemoryMetrics? GetMemoryMetricsOnUnix()
         {
 
-            var processInfo = new ProcessStartInfo("free -m") {
-                                  FileName                = "/bin/bash",
-                                  Arguments               = "-c \"free -m\"",
-                                  RedirectStandardOutput  = true
-                              };
+            var cmd          = "free -m";
 
-            var output = "";
+            var processInfo  = new ProcessStartInfo("/bin/bash", $"-c \"{cmd}\"") {
+                                   RedirectStandardOutput  = true,
+                                   UseShellExecute         = false,
+                                   CreateNoWindow          = true
+                               };
 
             using (var process = Process.Start(processInfo))
             {
-                output = process?.StandardOutput.ReadToEnd() ?? "";
-            }
 
-            var lines = output.Split("\n");
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
+                                 ?? Array.Empty<String>();
 
-            if (lines.Length == 2)
-            {
+                if (output.Length == 2)
+                {
 
-                var memory  = lines[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    var memory = output[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
-                return new MemoryMetrics(
-                           Total: Double.Parse(memory[1]),
-                           Free:  Double.Parse(memory[3]),
-                           Used:  Double.Parse(memory[2])
-                       );
+                    if (memory.Length >= 4)
+                        return new MemoryMetrics(
+                                   Total: Double.Parse(memory[1]),
+                                   Used:  Double.Parse(memory[2]),
+                                   Free:  Double.Parse(memory[3])
+                               );
+
+                }
 
             }
 
@@ -404,6 +557,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
 
 
         #region StartMonitoring()
