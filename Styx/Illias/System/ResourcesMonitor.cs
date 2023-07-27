@@ -212,7 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             this.CheckInterval                   = CheckInterval ?? TimeSpan.FromMinutes(1);
 
-            this.Process                         = Process.GetProcessById(Environment.ProcessId);
+            this.Process                         = Process.GetCurrentProcess();
 
             this.HighPrivateRAMUsageThreshold    = HighPrivateRAMUsageThreshold;
             this.FreeSystemMemoryThreshold       = FreeSystemMemoryThreshold;
@@ -473,12 +473,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) GetMemoryMetricsOnWindows()
+        #region (static) GetMemoryMetricsOnWindows()
 
         /// <summary>
         /// Get memory metrics on Windows.
         /// </summary>
-        private static MemoryMetrics? GetMemoryMetricsOnWindows()
+        public static MemoryMetrics? GetMemoryMetricsOnWindows()
         {
 
             var processInfo = new ProcessStartInfo {
@@ -514,12 +514,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (private static) GetMemoryMetricsOnUnix()
+        #region (static) GetMemoryMetricsOnUnix()
 
         /// <summary>
         /// Get memory metrics on UNIX.
         /// </summary>
-        private static MemoryMetrics? GetMemoryMetricsOnUnix()
+        public static MemoryMetrics? GetMemoryMetricsOnUnix()
         {
 
             var cmd          = "free -m";
