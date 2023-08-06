@@ -135,21 +135,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AutoDiscovery(Autostart, IdentificatorFunc = null)
+        #region AutoDiscovery(AutoStart, IdentificatorFunc = null)
 
         /// <summary>
         /// Create a new AutoDiscovery instance. An automatic discovery
         /// can be avoided.
         /// </summary>
-        /// <param name="Autostart">Automatically start the reflection process.</param>
+        /// <param name="AutoStart">Automatically start the reflection process.</param>
         /// <param name="IdentificatorFunc">A transformation delegate to provide an unique identification for every matching class.</param>
-        public AutoDiscovery(Boolean Autostart, Func<TClass, String> IdentificatorFunc = null)
+        public AutoDiscovery(Boolean AutoStart, Func<TClass, String> IdentificatorFunc = null)
         {
 
             _TypeLookup     = new ConcurrentDictionary<String, Type>();
             _InstanceLookup = new ConcurrentDictionary<String, TClass>();
 
-            if (Autostart)
+            if (AutoStart)
                 FindAndRegister(IdentificatorFunc: IdentificatorFunc);
 
         }

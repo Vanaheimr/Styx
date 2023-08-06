@@ -41,43 +41,43 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
 #else
 
-        #region ToSniper(this IEnumerable, Autostart = false, StartAsTask = false, InitialDelay = null)
+        #region ToSniper(this IEnumerable, AutoStart = false, StartAsTask = false, InitialDelay = null)
 
         /// <summary>
         /// Creates a new Sniper fireing the content of the given IEnumerable.
         /// </summary>
         /// <typeparam name="TMessage">The type of the emitted messages/objects.</typeparam>
         /// <param name="IEnumerable">An enumeration of messages/objects to send.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
         public static Sniper<TMessage> ToSniper<TMessage>(this IEnumerable<TMessage>  IEnumerable,
-                                                          Boolean                     Autostart     = false,
+                                                          Boolean                     AutoStart     = false,
                                                           Boolean                     StartAsTask   = false,
                                                           Nullable<TimeSpan>          InitialDelay  = null)
         {
-            return new Sniper<TMessage>(IEnumerable, Autostart, StartAsTask, InitialDelay);
+            return new Sniper<TMessage>(IEnumerable, AutoStart, StartAsTask, InitialDelay);
         }
 
         #endregion
 
-        #region ToSniper(this IEnumerator, Autostart = false, StartAsTask = false, InitialDelay = null)
+        #region ToSniper(this IEnumerator, AutoStart = false, StartAsTask = false, InitialDelay = null)
 
         /// <summary>
         /// Creates a new Sniper fireing the content of the given IEnumerable.
         /// </summary>
         /// <typeparam name="TMessage">The type of the emitted messages/objects.</typeparam>
         /// <param name="IEnumerator">An enumerator of messages/objects to send.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
         /// <returns>A new Sniper.</returns>
         public static Sniper<TMessage> ToSniper<TMessage>(this IEnumerator<TMessage>  IEnumerator,
-                                                          Boolean                     Autostart     = false,
+                                                          Boolean                     AutoStart     = false,
                                                           Boolean                     StartAsTask   = false,
                                                           Nullable<TimeSpan>          InitialDelay  = null)
         {
-            return new Sniper<TMessage>(IEnumerator, Autostart, StartAsTask, InitialDelay);
+            return new Sniper<TMessage>(IEnumerator, AutoStart, StartAsTask, InitialDelay);
         }
 
         #endregion
@@ -204,18 +204,18 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Constructor(s)
 
-        #region Sniper(IEnumerable, Autostart = false, StartAsTask = false, InitialDelay = 0)
+        #region Sniper(IEnumerable, AutoStart = false, StartAsTask = false, InitialDelay = 0)
 
         /// <summary>
         /// The Sniper fetches messages/objects from the given IEnumerable
         /// and sends them to the recipients.
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
         public Sniper(IEnumerable<TOut>      IEnumerable,
-                      Boolean                Autostart    = false,
+                      Boolean                AutoStart    = false,
                       Boolean                StartAsTask  = false,
                       Nullable<TimeSpan>     InitialDelay = null)
         {
@@ -236,25 +236,25 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.Intervall               = TimeSpan.FromSeconds(10);
             this.ThrottlingSleepDuration = 1000;
 
-            if (Autostart)
+            if (AutoStart)
                 StartToFire(StartAsTask);
 
         }
 
         #endregion
 
-        #region Sniper(IEnumerator, Autostart = false, StartAsTask = false, InitialDelay = 0)
+        #region Sniper(IEnumerator, AutoStart = false, StartAsTask = false, InitialDelay = 0)
 
         /// <summary>
         /// The Sniper fetches messages/objects from the given IEnumerator
         /// and sends them to the recipients.
         /// </summary>
         /// <param name="IEnumerator">An IEnumerator&lt;S&gt; as element source.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
         public Sniper(IEnumerator<TOut>      IEnumerator,
-                      Boolean                Autostart    = false,
+                      Boolean                AutoStart    = false,
                       Boolean                StartAsTask  = false,
                       Nullable<TimeSpan>     InitialDelay = null)
         {
@@ -271,25 +271,25 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.Intervall               = TimeSpan.FromSeconds(10);
             this.ThrottlingSleepDuration = 1000;
 
-            if (Autostart)
+            if (AutoStart)
                 StartToFire(StartAsTask);
 
         }
 
         #endregion
 
-        #region Sniper(Func, Autostart = false, StartAsTask = false, InitialDelay = 0)
+        #region Sniper(Func, AutoStart = false, StartAsTask = false, InitialDelay = 0)
 
         /// <summary>
         /// The Sniper fetches messages/objects from the given IEnumerable
         /// and sends them to the recipients.
         /// </summary>
         /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
-        /// <param name="Autostart">Start the sniper automatically.</param>
+        /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
         public Sniper(Func<TOut>         Func,
-                      Boolean            Autostart    = false,
+                      Boolean            AutoStart    = false,
                       Boolean            StartAsTask  = false,
                       Nullable<TimeSpan> InitialDelay = null)
         {
@@ -306,7 +306,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.Intervall               = TimeSpan.FromSeconds(10);
             this.ThrottlingSleepDuration = 1000;
 
-            if (Autostart)
+            if (AutoStart)
                 StartToFire(StartAsTask);
 
         }
