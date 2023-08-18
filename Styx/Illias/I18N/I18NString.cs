@@ -30,10 +30,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class I18NStringExtensions
     {
 
-        #region IsNullOrEmpty(this I18NText)
+        #region IsNullOrEmpty   (this I18NText)
 
         /// <summary>
-        /// The multi-language string is empty.
+        /// The multi-language string is null or empty.
         /// </summary>
         public static Boolean IsNullOrEmpty(this I18NString I18NText)
 
@@ -41,32 +41,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IsNeitherNullNorEmpty(this Text)
+        #region IsNotNullOrEmpty(this I18NText)
 
         /// <summary>
-        /// The multi-language string is neither null nor empty.
+        /// The multi-language string is NOT null nor empty.
         /// </summary>
-        public static Boolean IsNeitherNullNorEmpty(this I18NString I18NText)
+        public static Boolean IsNotNullOrEmpty(this I18NString I18NText)
 
             => I18NText is not null &&
                I18NText.Any();
 
         #endregion
 
-        #region FirstText(this I18NText)
+        #region FirstText       (this I18NText)
 
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
         public static String FirstText(this I18NString I18NText)
 
-            => I18NText is not null && I18NText.IsNeitherNullNorEmpty()
+            => I18NText is not null && I18NText.IsNotNullOrEmpty()
                    ? I18NText.First().Text
                    : String.Empty;
 
         #endregion
 
-        #region ToI18NString(this I18NText, Language = Languages.en)
+        #region ToI18NString    (this I18NText, Language = Languages.en)
 
         /// <summary>
         /// Return the first string of a multi-language string.
@@ -80,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region SubstringMax(this I18NText, Length)
+        #region SubstringMax    (this I18NText, Length)
 
         /// <summary>
         /// Return a substring of the given maximum length.
@@ -102,7 +102,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TrimAll(this I18NText)
+        #region TrimAll         (this I18NText)
 
         /// <summary>
         /// Trim all texts.
@@ -123,7 +123,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToHTML(this I18NString)
+        #region ToHTML          (this I18NString)
 
         /// <summary>
         /// Convert the given internationalized (I18N) text/string to HTML.
@@ -140,7 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToHTML(this I18NString, Prefix, Postfix)
+        #region ToHTML          (this I18NString, Prefix, Postfix)
 
         /// <summary>
         /// Convert the given internationalized (I18N) text/string to HTML.
@@ -159,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToHTMLLink(this I18NString, String URI)
+        #region ToHTMLLink      (this I18NString, String URI)
 
         /// <summary>
         /// Convert the given internationalized (I18N) text/string to a HTML link.

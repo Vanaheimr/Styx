@@ -27,11 +27,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
     public interface IInternalData
     {
+
         JObject CustomData { get; }
         UserDefinedDictionary InternalData { get; }
         Boolean IsEmpty { get; }
         Boolean IsNotEmpty { get; }
-        DateTime LastChange { get; set; }
+        DateTime LastChangeDate { get; set; }
 
 
         event OnPropertyChangedDelegate? OnPropertyChanged;

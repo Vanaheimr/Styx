@@ -108,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                            new JProperty("geoCoordinate",          GeoCoordinate.ToJSON()),
 
-                           Description.IsNeitherNullNorEmpty()
+                           Description.IsNotNullOrEmpty()
                                ? new JProperty("description",      Description.  ToJSON())
                                : null,
 

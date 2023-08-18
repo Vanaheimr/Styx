@@ -277,7 +277,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Can e.g. also be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime LastChange
+        public DateTime LastChangeDate
         {
 
             get
@@ -316,15 +316,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">Optional internal customer specific data, e.g. in combination with custom parsers and serializers, which will not be serialized.</param>
-        /// <param name="LastChange">The timestamp of the last changes within this object.</param>
+        /// <param name="LastChange">The optional timestamp of the last changes within this object.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData,
-                                DateTime                LastChange)
+                                DateTime?               LastChange   = null)
         {
 
             this.CustomData    = CustomData   ?? new JObject();
             this.InternalData  = InternalData ?? new UserDefinedDictionary();
-            this.lastChange    = LastChange;
+            this.lastChange    = LastChange   ?? Timestamp.Now;
 
         }
 
@@ -414,7 +414,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             this.lastChange = Timestamp.Now;
 
-            OnPropertyChanged?.Invoke(LastChange,
+            OnPropertyChanged?.Invoke(LastChangeDate,
                                       EventTrackingId ?? EventTracking_Id.New,
                                       this,
                                       PropertyName,
@@ -478,7 +478,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An abstract builder for internal customer-specific data.
         /// </summary>
-        public abstract class Builder
+        public abstract class Builder : IInternalData
         {
 
             #region Properties
@@ -501,7 +501,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// Can be used as a HTTP ETag.
             /// </summary>
             [Mandatory]
-            public DateTime?              LastChange      { get; }
+            public DateTime               LastChangeDate      { get; set; }
+
+            #endregion
+
+            #region Events
+
+            public event OnPropertyChangedDelegate? OnPropertyChanged;
 
             #endregion
 
@@ -512,15 +518,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// </summary>
             /// <param name="InternalData">An optional dictionary of internal data.</param>
             protected Builder(JObject?                CustomData,
-                              UserDefinedDictionary?  InternalData)
+                              UserDefinedDictionary?  InternalData,
+                              DateTime?               LastChange   = null)
             {
 
                 this.CustomData    = CustomData   ?? new JObject();
                 this.InternalData  = InternalData ?? new UserDefinedDictionary();
+                this.LastChangeDate    = LastChange   ?? Timestamp.Now;
 
             }
 
             #endregion
+
 
             public Boolean IsEmpty
                 => InternalData.IsEmpty;
@@ -568,6 +577,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                     DataSource,
                                     EventTrackingId);
 
+
+            public void DeleteProperty<T>(ref T? FieldToChange,
+                                          [CallerMemberName] String PropertyName = "")
+            {
+                
+            }
+
+
+            public void PropertyChanged<T>(String PropertyName, T OldValue, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null)
+            {
+                
+            }
+
+
+            public void SetProperty<T>(ref T FieldToChange, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] String PropertyName = "")
+            {
+                
+            }
 
 
 

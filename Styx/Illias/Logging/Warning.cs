@@ -33,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNeitherNullNorEmpty(this Warning Warning)
 
             => Warning is not null &&
-               Warning.Text.IsNeitherNullNorEmpty();
+               Warning.Text.IsNotNullOrEmpty();
 
         public static IList<Warning> AddAndReturnList(this IList<Warning>  Warnings,
                                                       I18NString           Text)

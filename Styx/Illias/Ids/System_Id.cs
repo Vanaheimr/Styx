@@ -27,14 +27,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Indicates whether this system identification is null or empty.
         /// </summary>
-        /// <param name="SystemId">An system identification.</param>
+        /// <param name="SystemId">A system identification.</param>
         public static Boolean IsNullOrEmpty(this System_Id? SystemId)
             => !SystemId.HasValue || SystemId.Value.IsNullOrEmpty;
 
         /// <summary>
         /// Indicates whether this system identification is NOT null or empty.
         /// </summary>
-        /// <param name="SystemId">An system identification.</param>
+        /// <param name="SystemId">A system identification.</param>
         public static Boolean IsNotNullOrEmpty(this System_Id? SystemId)
             => SystemId.HasValue && SystemId.Value.IsNotNullOrEmpty;
 
@@ -75,7 +75,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The length of the system identificator.
         /// </summary>
         public UInt64 Length
-            => (UInt64) InternalId?.Length;
+            => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
 
@@ -92,31 +92,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Random(Length)
+        #region (static) NewRandom(Length)
 
         /// <summary>
         /// Create a new system identification.
         /// </summary>
         /// <param name="Length">The expected length of the system identification.</param>
-        public static System_Id Random(Byte Length = 15)
+        public static System_Id NewRandom(Byte Length = 15)
 
-            => new System_Id(RandomExtensions.RandomString(Length).ToUpper());
+            => new (RandomExtensions.RandomString(Length).ToUpper());
 
         #endregion
 
         #region Parse   (Text)
 
         /// <summary>
-        /// Parse the given string as an system identification.
+        /// Parse the given string as a system identification.
         /// </summary>
-        /// <param name="Text">A text representation of an system identification.</param>
+        /// <param name="Text">A text representation of a system identification.</param>
         public static System_Id Parse(String Text)
         {
 
-            if (TryParse(Text, out System_Id systemId))
+            if (TryParse(Text, out var systemId))
                 return systemId;
 
-            throw new ArgumentException($"Invalid text representation of an system identification: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of a system identification: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -126,13 +126,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region TryParse(Text)
 
         /// <summary>
-        /// Try to parse the given string as an system identification.
+        /// Try to parse the given string as a system identification.
         /// </summary>
-        /// <param name="Text">A text representation of an system identification.</param>
+        /// <param name="Text">A text representation of a system identification.</param>
         public static System_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out System_Id systemId))
+            if (TryParse(Text, out var systemId))
                 return systemId;
 
             return null;
@@ -144,14 +144,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region TryParse(Text, out SystemId)
 
         /// <summary>
-        /// Try to parse the given string as an system identification.
+        /// Try to parse the given string as a system identification.
         /// </summary>
-        /// <param name="Text">A text representation of an system identification.</param>
+        /// <param name="Text">A text representation of a system identification.</param>
         /// <param name="SystemId">The parsed system identification.</param>
         public static Boolean TryParse(String Text, out System_Id SystemId)
         {
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty())
             {
@@ -178,7 +178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public System_Id Clone
 
-            => new System_Id(
+            => new (
                    new String(InternalId?.ToCharArray())
                );
 
@@ -187,93 +187,93 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Operator overloading
 
-        #region Operator == (SystemIdId1, SystemIdId2)
+        #region Operator == (SystemId1, SystemId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SystemIdId1">An system identification.</param>
-        /// <param name="SystemIdId2">Another system identification.</param>
+        /// <param name="SystemId1">A system identification.</param>
+        /// <param name="SystemId2">Another system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (System_Id SystemIdId1,
-                                           System_Id SystemIdId2)
+        public static Boolean operator == (System_Id SystemId1,
+                                           System_Id SystemId2)
 
-            => SystemIdId1.Equals(SystemIdId2);
+            => SystemId1.Equals(SystemId2);
 
         #endregion
 
-        #region Operator != (SystemIdId1, SystemIdId2)
+        #region Operator != (SystemId1, SystemId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SystemIdId1">An system identification.</param>
-        /// <param name="SystemIdId2">Another system identification.</param>
+        /// <param name="SystemId1">A system identification.</param>
+        /// <param name="SystemId2">Another system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (System_Id SystemIdId1,
-                                           System_Id SystemIdId2)
+        public static Boolean operator != (System_Id SystemId1,
+                                           System_Id SystemId2)
 
-            => !SystemIdId1.Equals(SystemIdId2);
+            => !SystemId1.Equals(SystemId2);
 
         #endregion
 
-        #region Operator <  (SystemIdId1, SystemIdId2)
+        #region Operator <  (SystemId1, SystemId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SystemIdId1">An system identification.</param>
-        /// <param name="SystemIdId2">Another system identification.</param>
+        /// <param name="SystemId1">A system identification.</param>
+        /// <param name="SystemId2">Another system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (System_Id SystemIdId1,
-                                          System_Id SystemIdId2)
+        public static Boolean operator < (System_Id SystemId1,
+                                          System_Id SystemId2)
 
-            => SystemIdId1.CompareTo(SystemIdId2) < 0;
+            => SystemId1.CompareTo(SystemId2) < 0;
 
         #endregion
 
-        #region Operator <= (SystemIdId1, SystemIdId2)
+        #region Operator <= (SystemId1, SystemId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SystemIdId1">An system identification.</param>
-        /// <param name="SystemIdId2">Another system identification.</param>
+        /// <param name="SystemId1">A system identification.</param>
+        /// <param name="SystemId2">Another system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (System_Id SystemIdId1,
-                                           System_Id SystemIdId2)
+        public static Boolean operator <= (System_Id SystemId1,
+                                           System_Id SystemId2)
 
-            => SystemIdId1.CompareTo(SystemIdId2) <= 0;
+            => SystemId1.CompareTo(SystemId2) <= 0;
 
         #endregion
 
-        #region Operator >  (SystemIdId1, SystemIdId2)
+        #region Operator >  (SystemId1, SystemId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SystemIdId1">An system identification.</param>
-        /// <param name="SystemIdId2">Another system identification.</param>
+        /// <param name="SystemId1">A system identification.</param>
+        /// <param name="SystemId2">Another system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (System_Id SystemIdId1,
-                                          System_Id SystemIdId2)
+        public static Boolean operator > (System_Id SystemId1,
+                                          System_Id SystemId2)
 
-            => SystemIdId1.CompareTo(SystemIdId2) > 0;
+            => SystemId1.CompareTo(SystemId2) > 0;
 
         #endregion
 
-        #region Operator >= (SystemIdId1, SystemIdId2)
+        #region Operator >= (SystemId1, SystemId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="SystemIdId1">An system identification.</param>
-        /// <param name="SystemIdId2">Another system identification.</param>
+        /// <param name="SystemId1">A system identification.</param>
+        /// <param name="SystemId2">Another system identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (System_Id SystemIdId1,
-                                           System_Id SystemIdId2)
+        public static Boolean operator >= (System_Id SystemId1,
+                                           System_Id SystemId2)
 
-            => SystemIdId1.CompareTo(SystemIdId2) >= 0;
+            => SystemId1.CompareTo(SystemId2) >= 0;
 
         #endregion
 
@@ -284,14 +284,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two system identifications.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A system identification to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is System_Id systemId
                    ? CompareTo(systemId)
-                   : throw new ArgumentException("The given object is not an system identification!",
+                   : throw new ArgumentException("The given object is not a system identification!",
                                                  nameof(Object));
 
         #endregion
@@ -299,9 +299,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(SystemId)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two system identifications.
         /// </summary>
-        /// <param name="SystemId">An object to compare with.</param>
+        /// <param name="SystemId">A system identification to compare with.</param>
         public Int32 CompareTo(System_Id SystemId)
 
             => String.Compare(InternalId,
@@ -317,11 +317,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two system identifications for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A system identification to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is System_Id systemId &&
                    Equals(systemId);
@@ -331,10 +330,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(SystemId)
 
         /// <summary>
-        /// Compares two SystemIds for equality.
+        /// Compares two system identifications for equality.
         /// </summary>
-        /// <param name="SystemId">An system identification to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
+        /// <param name="SystemId">A system identification to compare with.</param>
         public Boolean Equals(System_Id SystemId)
 
             => String.Equals(InternalId,

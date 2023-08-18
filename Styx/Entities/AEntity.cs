@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System.Text;
-using System.Security.Cryptography;
-
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -33,37 +30,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public interface ICustomData
     { }
 
-    /// <summary>
-    /// The generic interface for custom data stored with an entity.
-    /// </summary>
-    /// <typeparam name="TCustomData">The type of the custom data.</typeparam>
-    public interface ICustomData<TCustomData> : ICustomData
-    {
+    ///// <summary>
+    ///// The generic interface for custom data stored with an entity.
+    ///// </summary>
+    ///// <typeparam name="TCustomData">The type of the custom data.</typeparam>
+    //public interface ICustomData<TCustomData> : ICustomData
+    //{
 
-        /// <summary>
-        /// Custom data stored within this entity.
-        /// </summary>
-        TCustomData?  CustomData    { get; }
+    //    /// <summary>
+    //    /// Custom data stored within this entity.
+    //    /// </summary>
+    //    TCustomData?  CustomData    { get; }
 
-    }
+    //}
 
 
     /// <summary>
     /// The interface of an entity.
     /// </summary>
-    public interface IEntity : IComparable
+    public interface IEntity : IInternalData,
+                               IComparable
     {
 
-        /// <summary>
-        /// The timestamp of the last changes within this entity.
-        /// Can e.g. be used as a HTTP ETag.
-        /// </summary>
-        DateTime  LastChangeDate    { get; }
+        I18NString  Name               { get; }
+
+        I18NString  Description        { get; }
+
+        String?     DataSource         { get; }
 
 
-        event OnPropertyChangedDelegate? OnPropertyChanged;
+        //event OnPropertyChangedDelegate? OnPropertyChanged;
 
     }
+
+
+    /// <summary>
+    /// The common generic interface of an entity having one or multiple unique identification(s).
+    /// </summary>
+    /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
+    public interface IEntity<TId> : IEntity, IHasId<TId>
+
+        where TId : IId
+
+    {
+
+    }
+
 
     /// <summary>
     /// The generic interface of an entity.
@@ -72,51 +84,41 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TCustomData">The type of the custom data.</typeparam>
     /// <typeparam name="TDataSource">The type of the data source.</typeparam>
-    public interface IEntity<TId,
-                             TEntity,
-                             TCustomData,
-                             TDataSource> : IEntityBuilder<TId,
-                                                           TEntity,
-                                                           TCustomData,
-                                                           TDataSource>,
-                                            IEquatable<TEntity>,
-                                            IComparable<TEntity>
+    public interface IEntity<TId, TEntity> : IEntity,
+                                             IHasId<TId>,
+                                             IEquatable<TEntity>,
+                                             IComparable<TEntity>
 
         where TId     : IId
         where TEntity : IHasId<TId>
 
-    {
+    { }
 
-
-    }
 
     /// <summary>
     /// The generic interface of an entity.
     /// </summary>
     /// <typeparam name="TId">The type of the entity identification.</typeparam>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TCustomData">The type of the custom data.</typeparam>
-    /// <typeparam name="TDataSource">The type of the data source.</typeparam>
-    public interface IEntityBuilder<TId,
-                                    TEntity,
-                                    TCustomData,
-                                    TDataSource> : IEntity,
-                                                   ICustomData<TCustomData>
+    public interface IEntityBuilder<TId, TEntity> : IEntity,
+                                                    IHasId<TId>,
+                                                    IEquatable<TEntity>,
+                                                    IComparable<TEntity>
 
         where TId     : IId
         where TEntity : IHasId<TId>
 
     {
 
-        /// <summary>
-        /// The unique identification of this entity.
-        /// </summary>
-        TId           Id            { get; }
+        ///// <summary>
+        ///// The unique identification of this entity.
+        ///// </summary>
+        //TId           Id            { get; }
 
-        /// <summary>
-        /// The data source of this entity, e.g. an automatic importer.
-        /// </summary>
-        TDataSource?  DataSource    { get; }
+        ///// <summary>
+        ///// The data source of this entity, e.g. an automatic importer.
+        ///// </summary>
+        //TDataSource?  DataSource    { get; }
 
 
         void CopyAllLinkedDataFrom(TEntity OldEnity);
@@ -130,104 +132,97 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     /// <typeparam name="TId">The type of the entity identification.</typeparam>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class AEntity<TId,
-                                  TEntity> : AEntity<TId,
-                                                     TEntity,
-                                                     JObject,
-                                                     String>,
-                                             IHasId<TId>
+    //public abstract class AEntity<TId,
+    //                              TEntity> : AEntity<TId,
+    //                                                 TEntity,
+    //                                                 JObject,
+    //                                                 String>,
+    //                                         IHasId<TId>
 
-        where TId     : IId
-        where TEntity : IHasId<TId>
+    //    where TId     : IId
+    //    where TEntity : IHasId<TId>
 
-    {
+    //{
 
-        /// <summary>
-        /// Create a new abstract entity.
-        /// </summary>
-        /// <param name="Id">The unique identification of this entity.</param>
-        /// <param name="JSONLDContext">The JSON-LD context of this entity.</param>
-        /// <param name="CustomData">Custom data stored within this entity.</param>
-        /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
-        /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
-        protected AEntity(TId                      Id,
-                          JSONLDContext            JSONLDContext,
-                          DateTime?                LastChange   = default,
-                          IEnumerable<Signature>?  Signatures   = default,
-                          JObject?                 CustomData   = default,
-                          String?                  DataSource   = default)
+    //    /// <summary>
+    //    /// Create a new abstract entity.
+    //    /// </summary>
+    //    /// <param name="Id">The unique identification of this entity.</param>
+    //    /// <param name="JSONLDContext">The JSON-LD context of this entity.</param>
+    //    /// <param name="CustomData">Custom data stored within this entity.</param>
+    //    /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
+    //    /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
+    //    protected AEntity(TId                      Id,
+    //                      JSONLDContext            JSONLDContext,
+    //                      DateTime?                LastChange   = default,
+    //                      IEnumerable<Signature>?  Signatures   = default,
+    //                      JObject?                 CustomData   = default,
+    //                      String?                  DataSource   = default)
 
-            : base(Id,
-                   JSONLDContext,
-                   LastChange,
-                   Signatures,
-                   CustomData,
-                   DataSource)
+    //        : base(Id,
+    //               JSONLDContext,
+    //               LastChange,
+    //               Signatures,
+    //               CustomData,
+    //               DataSource)
 
-        { }
+    //    { }
 
 
         #region (protected) ToJSON(JSONLDContext, ...)
 
-        protected JObject ToJSON(Boolean                  Embedded,
-                                 Boolean                  IncludeLastChange,
-                                 Func<JObject, JObject>?  CustomAEntitySerializer   = null,
-                                 params JProperty?[]      JSONProperties)
-        {
+        //protected JObject ToJSON(Boolean                  Embedded,
+        //                         Boolean                  IncludeLastChange,
+        //                         Func<JObject, JObject>?  CustomAEntitySerializer   = null,
+        //                         params JProperty?[]      JSONProperties)
+        //{
 
-            var JSON = JSONObject.Create(
+        //    var JSON = JSONObject.Create(
 
-                           new JProperty?[] {
+        //                   new JProperty?[] {
 
-                               new JProperty("@id",                    Id.            ToString()),
+        //                       new JProperty("@id",                    Id.            ToString()),
 
-                               Embedded
-                                   ? null
-                                   : new JProperty("@context",         JSONLDContext. ToString()),
+        //                       Embedded
+        //                           ? null
+        //                           : new JProperty("@context",         JSONLDContext. ToString()),
 
-                               CustomData is not null
-                                   ? new JProperty("customData",       CustomData)
-                                   : null,
+        //                       CustomData is not null
+        //                           ? new JProperty("customData",       CustomData)
+        //                           : null,
 
-                               DataSource.IsNotNullOrEmpty()
-                                   ? new JProperty("dataSource",       DataSource)
-                                   : null,
+        //                       DataSource.IsNotNullOrEmpty()
+        //                           ? new JProperty("dataSource",       DataSource)
+        //                           : null,
 
-                               IncludeLastChange
-                                   ? new JProperty("lastChangeDate",   LastChangeDate.ToIso8601())
-                                   : null
+        //                       IncludeLastChange
+        //                           ? new JProperty("lastChangeDate",   LastChange.ToIso8601())
+        //                           : null
 
-                           }.
+        //                   }.
 
-                           Concat(JSONProperties)
+        //                   Concat(JSONProperties)
 
-                       );
+        //               );
 
-            return CustomAEntitySerializer is not null
-                       ? CustomAEntitySerializer(JSON)
-                       : JSON;
+        //    return CustomAEntitySerializer is not null
+        //               ? CustomAEntitySerializer(JSON)
+        //               : JSON;
 
-        }
+        //}
 
         #endregion
 
 
-    }
+    //}
 
     /// <summary>
     /// An abstract entity.
     /// </summary>
     /// <typeparam name="TId">The type of the entity identification.</typeparam>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TCustomData">The type of the custom data.</typeparam>
-    /// <typeparam name="TDataSource">The type of the data source.</typeparam>
-    public abstract class AEntity<TId,
-                                  TEntity,
-                                  TCustomData,
-                                  TDataSource> : IEntity<TId,
-                                                         TEntity,
-                                                         TCustomData,
-                                                         TDataSource>
+    public abstract class AEntity<TId, TEntity> : AInternalData,
+                                                  IEntity<TId, TEntity>
 
         where TId     : IId
         where TEntity : IHasId<TId>
@@ -243,17 +238,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public TId                      Id               { get; }
 
         /// <summary>
+        /// The multi-language name of this entity.
+        /// </summary>
+        [Optional]
+        public I18NString               Name             { get; }
+
+        /// <summary>
+        /// The multi-language description of this entity.
+        /// </summary>
+        [Optional]
+        public I18NString               Description      { get; }
+
+        /// <summary>
         /// The JSON-LD context of this entity.
         /// </summary>
         [Mandatory]
         public JSONLDContext            JSONLDContext    { get; }
 
-        /// <summary>
-        /// The timestamp of the last changes within this entity.
-        /// Can e.g. be used as a HTTP ETag.
-        /// </summary>
-        [Mandatory]
-        public DateTime                 LastChangeDate   { get; protected set; }
+        ///// <summary>
+        ///// The timestamp of the last changes within this entity.
+        ///// Can e.g. be used as a HTTP ETag.
+        ///// </summary>
+        //[Mandatory]
+        //public DateTime                 LastChange   { get; protected set; }
 
         /// <summary>
         /// All signatures of this blog posting.
@@ -261,17 +268,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         [Optional]
         public IEnumerable<Signature>?  Signatures       { get; }
 
-        /// <summary>
-        /// Custom data stored within this entity.
-        /// </summary>
-        [Optional]
-        public TCustomData?             CustomData       { get; }
+        ///// <summary>
+        ///// Custom data stored within this entity.
+        ///// </summary>
+        //[Optional]
+        //public TCustomData?             CustomData       { get; }
 
         /// <summary>
         /// The data source of this entity, e.g. an automatic importer.
         /// </summary>
         [Optional]
-        public TDataSource?             DataSource       { get; }
+        public String?             DataSource       { get; }
 
         #endregion
 
@@ -290,13 +297,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSONLDContext">The JSON-LD context of this entity.</param>
         /// <param name="CustomData">Custom data stored within this entity.</param>
         /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
-        /// <param name="LastChangeDate">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
+        /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
         protected AEntity(TId                      Id,
                           JSONLDContext            JSONLDContext,
-                          DateTime?                LastChangeDate   = default,
-                          IEnumerable<Signature>?  Signatures       = default,
-                          TCustomData?             CustomData       = default,
-                          TDataSource?             DataSource       = default)
+                          I18NString?              Name           = null,
+                          I18NString?              Description    = null,
+                          IEnumerable<Signature>?  Signatures     = default,
+                          JObject?                 CustomData     = null,
+                          UserDefinedDictionary?   InternalData   = null,
+                          DateTime?                LastChange     = null,
+                          String?                  DataSource     = default)
+
+            : base(CustomData,
+                   InternalData,
+                   LastChange)
 
         {
 
@@ -308,9 +322,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             this.Id              = Id;
             this.JSONLDContext   = JSONLDContext;
-            this.LastChangeDate  = LastChangeDate ?? Timestamp.Now;
+            this.Name            = Name        ?? I18NString.Empty;
+            this.Description     = Description ?? I18NString.Empty;
             this.Signatures      = Signatures;
-            this.CustomData      = CustomData;
             this.DataSource      = DataSource;
 
         }
@@ -457,6 +471,50 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (protected) ToJSON(JSONLDContext, ...)
+
+        protected JObject ToJSON(Boolean                  Embedded,
+                                 Boolean                  IncludeLastChange,
+                                 Func<JObject, JObject>?  CustomAEntitySerializer   = null,
+                                 params JProperty?[]      JSONProperties)
+        {
+
+            var JSON = JSONObject.Create(
+
+                           new JProperty?[] {
+
+                                     new JProperty("@id",          Id.            ToString()),
+
+                               Embedded
+                                   ? null
+                                   : new JProperty("@context",     JSONLDContext. ToString()),
+
+                               CustomData is not null
+                                   ? new JProperty("customData",   CustomData)
+                                   : null,
+
+                               DataSource.IsNotNullOrEmpty()
+                                   ? new JProperty("dataSource",   DataSource)
+                                   : null,
+
+                               IncludeLastChange
+                                   ? new JProperty("lastChange",   LastChangeDate.ToIso8601())
+                                   : null
+
+                           }.
+
+                           Concat(JSONProperties)
+
+                       );
+
+            return CustomAEntitySerializer is not null
+                       ? CustomAEntitySerializer(JSON)
+                       : JSON;
+
+        }
+
+        #endregion
+
 
         #region CalcHash()
 
@@ -494,18 +552,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        public abstract Boolean Equals   (TEntity other);
+        public abstract Boolean Equals   (TEntity? other);
 
-        public abstract Int32   CompareTo(TEntity other);
+        public abstract Int32   CompareTo(TEntity? other);
 
-        public abstract Int32   CompareTo(Object  obj);
+        public abstract Int32   CompareTo(Object?  obj);
 
 
 
-        public ComparizionResult CompareWith(AEntity<TId,
-                                                     TEntity,
-                                                     TCustomData,
-                                                     TDataSource> Entity)
+        public ComparizionResult CompareWith(AEntity<TId, TEntity> Entity)
         {
 
             var Added    = new List<ComparizionResult.PropertyWithValue>();
@@ -552,10 +607,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An abstract builder.
         /// </summary>
-        public abstract class Builder : IEntityBuilder<TId,
-                                                       TEntity,
-                                                       TCustomData,
-                                                       TDataSource>
+        public abstract new class Builder : AInternalData.Builder,
+                                            IEntityBuilder<TId, TEntity>
         {
 
             #region Properties
@@ -567,17 +620,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public  TId                Id               { get; set; }
 
             /// <summary>
+            /// The multi-language name of this entity.
+            /// </summary>
+            [Optional]
+            public I18NString?         Name             { get; set; }
+
+            /// <summary>
+            /// The multi-language description of this entity.
+            /// </summary>
+            [Optional]
+            public I18NString?         Description      { get; set; }
+
+            /// <summary>
             /// The JSON-LD context of this entity.
             /// </summary>
             [Mandatory]
             public JSONLDContext       JSONLDContext    { get; set; }
 
-            /// <summary>
-            /// The timestamp of the last changes within this entity.
-            /// Can e.g. be used as a HTTP ETag.
-            /// </summary>
-            [Mandatory]
-            public DateTime            LastChangeDate   { get; set; }
+            ///// <summary>
+            ///// The timestamp of the last changes within this entity.
+            ///// Can e.g. be used as a HTTP ETag.
+            ///// </summary>
+            //[Mandatory]
+            //public DateTime            LastChange   { get; set; }
 
             /// <summary>
             /// All signatures of this blog posting.
@@ -585,17 +650,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             [Optional]
             public HashSet<Signature>  Signatures       { get; }
 
-            /// <summary>
-            /// Custom data stored within this entity.
-            /// </summary>
-            [Optional]
-            public TCustomData?        CustomData       { get; set; }
+            ///// <summary>
+            ///// Custom data stored within this entity.
+            ///// </summary>
+            //[Optional]
+            //public TCustomData?        CustomData       { get; set; }
 
             /// <summary>
             /// The data source of this entity, e.g. an automatic importer.
             /// </summary>
             [Optional]
-            public TDataSource?        DataSource       { get; set; }
+            public String?        DataSource       { get; set; }
 
             #endregion
 
@@ -614,13 +679,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// <param name="JSONLDContext">The JSON-LD context of this entity.</param>
             /// <param name="CustomData">Custom data stored within this entity.</param>
             /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
-            /// <param name="LastChangeDate">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
+            /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
             public Builder(TId                      Id,
                            JSONLDContext            JSONLDContext,
-                           DateTime?                LastChangeDate   = default,
-                           IEnumerable<Signature>?  Signatures       = default,
-                           TCustomData?             CustomData       = default,
-                           TDataSource?             DataSource       = default)
+                           DateTime?                LastChange     = default,
+                           IEnumerable<Signature>?  Signatures     = default,
+                           JObject?                 CustomData     = null,
+                           UserDefinedDictionary?   InternalData   = null,
+                           String?                  DataSource     = default)
+
+                : base(CustomData,
+                       InternalData,
+                       LastChange)
 
             {
 
@@ -629,8 +699,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 this.Signatures      = Signatures is not null
                                            ? new HashSet<Signature>(Signatures)
                                            : new HashSet<Signature>();
-                this.LastChangeDate  = LastChangeDate ?? Timestamp.Now;
-                this.CustomData      = CustomData;
                 this.DataSource      = DataSource;
 
             }
@@ -649,11 +717,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 => Id.Equals(OtherId);
 
 
-            //public abstract bool Equals(TEntity other);
+            public abstract Boolean Equals   (TEntity? other);
 
-            //public abstract int CompareTo(TEntity other);
+            public abstract Int32   CompareTo(TEntity? other);
 
-            public abstract Int32 CompareTo(Object obj);
+            public abstract Int32   CompareTo(Object?  obj);
 
 
         }

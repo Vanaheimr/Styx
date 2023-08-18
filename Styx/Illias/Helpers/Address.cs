@@ -530,7 +530,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                ? new JProperty("officialLanguages",   new JArray(OfficialLanguages.Select(language => language.ToString())))
                                : null,
 
-                           Comment is not null && Comment.IsNeitherNullNorEmpty()
+                           Comment is not null && Comment.IsNotNullOrEmpty()
                                ? new JProperty("comment",             Comment.ToJSON())
                                : null,
 
