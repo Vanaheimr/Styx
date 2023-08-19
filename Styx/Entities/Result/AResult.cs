@@ -19,57 +19,59 @@
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// An abstract result.
+    /// An abstract command result.
     /// </summary>
     /// <typeparam name="T">The type of the result.</typeparam>
-    public abstract class AResult<T>
+    public abstract class AResult<T> : IResult<T>
     {
 
         #region Properties
 
-        public     CommandResult         Result             { get; }
+        /// <summary>
+        /// The result of the command.
+        /// </summary>
+        public  CommandResult         Result             { get; }
 
         /// <summary>
-        /// The optionalunqiue identification of the sender.
+        /// The optional unqiue identification of the sender.
         /// </summary>
-        public     IId?                  SenderId           { get; }
+        public  IId?                  SenderId           { get; }
 
         /// <summary>
         /// The optional sender of this result.
         /// </summary>
-        public     Object?               Sender             { get; }
+        public  Object?               Sender             { get; }
 
         /// <summary>
-        /// The object of the operation.
+        /// The optional object of the operation.
         /// </summary>
-        protected  T?                    Object             { get; }
+        public T?                     Entity             { get; }
 
         /// <summary>
         /// The unique event tracking identification for correlating this request with other events.
         /// </summary>
-        public     EventTracking_Id      EventTrackingId    { get; }
-
-        //public    String?               Argument           { get; }
-
-        public     I18NString            Description        { get; }
+        public  EventTracking_Id      EventTrackingId    { get; }
 
         /// <summary>
-        /// Optional warnings or additional information.
+        /// An optional description of the result.
         /// </summary>
-        public     IEnumerable<Warning>  Warnings           { get; }
+        public  I18NString            Description        { get; }
+
+        /// <summary>
+        /// Optional warnings.
+        /// </summary>
+        public  IEnumerable<Warning>  Warnings           { get; }
 
         /// <summary>
         /// The runtime of the command till this result.
         /// </summary>
-        public     TimeSpan              Runtime            { get;  }
+        public  TimeSpan              Runtime            { get;  }
 
         #endregion
 
@@ -96,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        TimeSpan?              Runtime           = null)
         {
 
-            this.Object            = Entity;
+            this.Entity            = Entity;
             this.Result            = Result;
             this.EventTrackingId   = EventTrackingId ?? EventTracking_Id.New;
             this.SenderId          = SenderId;
@@ -110,27 +112,123 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region ToJSON(AdditionalJSONProperties      = null, CustomResultSerializer = null)
 
-        public JObject ToJSON()
+        /// <summary>
+        /// Return a JSON representation of this command result.
+        /// </summary>
+        /// <param name="AdditionalJSONProperties">Optional additional JSON properties.</param>
+        /// <param name="CustomResultSerializer">A delegate to serialize custom command result JSON objects.</param>
+        public JObject ToJSON(IEnumerable<JProperty>?                    AdditionalJSONProperties   = null,
+                              CustomJObjectSerializerDelegate<IResult>?  CustomResultSerializer     = null)
+        {
 
-            => JSONObject.Create(
-                   Description is not null
-                       ? Description.Count == 1
-                             ? new JProperty("description",  Description.FirstText())
-                             : new JProperty("description",  Description.ToJSON())
-                       : null
-               );
+            var json = JSONObject.Create(
+
+                                 new JProperty("result",            Result.         ToString()),
+
+                           SenderId is not null
+                               ? new JProperty("senderId",          SenderId.       ToString())
+                               : null,
+
+                                 new JProperty("eventTrackingId",   EventTrackingId.ToString()),
+
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",       Description.    ToJSON())
+                               : null,
+
+                           Warnings.Any()
+                               ? new JProperty("warnings",          Warnings.       ToJSON())
+                               : null,
+
+                                 new JProperty("runtime",           Math.Round(Runtime.TotalMilliseconds, 2))
+
+                       );
+
+            if (AdditionalJSONProperties is not null)
+            {
+                foreach (var additionalJSONProperty in AdditionalJSONProperties)
+                {
+                    try
+                    {
+                        json.Add(additionalJSONProperty);
+                    }
+                    catch { }
+                }
+            }
+
+            return CustomResultSerializer is not null
+                       ? CustomResultSerializer(this, json)
+                       : json;
+
+        }
+
+        #endregion
+
+        #region ToJSON(AdditionalJSONPropertyCreator = null, CustomResultSerializer = null)
+
+        /// <summary>
+        /// Return a JSON representation of this command result.
+        /// </summary>
+        /// <param name="AdditionalJSONPropertyCreator">Optional additional JSON properties.</param>
+        /// <param name="CustomResultSerializer">A delegate to serialize custom command result JSON objects.</param>
+        public JObject ToJSON(Func<IResult<T>, IEnumerable<JProperty>>   AdditionalJSONPropertyCreator,
+                              CustomJObjectSerializerDelegate<IResult>?  CustomResultSerializer   = null)
+        {
+
+            var json = JSONObject.Create(
+
+                                 new JProperty("result",            Result.         ToString()),
+
+                           SenderId is not null
+                               ? new JProperty("senderId",          SenderId.       ToString())
+                               : null,
+
+                                 new JProperty("eventTrackingId",   EventTrackingId.ToString()),
+
+                           Description.IsNotNullOrEmpty()
+                               ? new JProperty("description",       Description.    ToJSON())
+                               : null,
+
+                           Warnings.Any()
+                               ? new JProperty("warnings",          Warnings.       ToJSON())
+                               : null,
+
+                                 new JProperty("runtime",           Math.Round(Runtime.TotalMilliseconds, 2))
+
+                       );
+
+            if (AdditionalJSONPropertyCreator is not null)
+            {
+                foreach (var additionalJSONProperty in AdditionalJSONPropertyCreator(this))
+                {
+                    try
+                    {
+                        json.Add(additionalJSONProperty);
+                    }
+                    catch { }
+                }
+            }
+
+            return CustomResultSerializer is not null
+                       ? CustomResultSerializer(this, json)
+                       : json;
+
+        }
+
+        #endregion
 
 
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a text representation of this object.
+        /// </summary>
         public override String ToString()
 
             => Result.ToString();
 
-            //=> IsSuccess
-            //        ? "Success"
-            //        : "Failed" + (Description is not null && Description.IsNullOrEmpty()
-            //                          ? ": " + Description.FirstText()
-            //                          : "!");
+        #endregion
 
     }
 

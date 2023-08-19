@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #region Properties
 
             public TEntity?               Entity
-                => Object;
+                => base.Entity;
 
             public TParentDataStructure?  ParentDataStructure    { get; internal set; }
 

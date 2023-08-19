@@ -40,6 +40,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => Warnings.AddAndReturnList(Warning.Create(Text));
 
+
+        public static JArray ToJSON(this IEnumerable<Warning>                  Warnings,
+                                    CustomJObjectSerializerDelegate<Warning>?  CustomWarningSerializer   = null)
+
+            => Warnings.Any()
+                   ? new JArray(Warnings.Select(warning => warning.ToJSON(CustomWarningSerializer)))
+                   : new JArray();
+
+
     }
 
     /// <summary>

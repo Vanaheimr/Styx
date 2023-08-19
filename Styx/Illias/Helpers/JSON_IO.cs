@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new JObject();
 
             var data = JProperties.
-                           Where(jproperty => jproperty is not null).
+                           Where(jProperty => jProperty is not null).
                            Cast<JProperty>().
                            ToArray();
 
@@ -70,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new JObject();
 
             var data = JProperties.
-                           Where(jproperty => jproperty is not null).
+                           Where(jProperty => jProperty is not null).
                            Cast<JProperty>().
                            ToArray();
 
@@ -170,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new JArray();
 
             var data = JProperties.
-                           Where(jproperty => jproperty is not null).
+                           Where(jProperty => jProperty is not null).
                            Cast<JProperty>().
                            ToArray();
 
@@ -195,7 +195,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new JArray();
 
             var data = JProperties.
-                           Where(jproperty => jproperty is not null).
+                           Where(jProperty => jProperty is not null).
                            Cast<JProperty>().
                            ToArray();
 
@@ -218,6 +218,40 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new Byte[0];
 
             return Encoding.UTF8.GetBytes(JSONArray.ToString(Format));
+
+        }
+
+        #endregion
+
+    }
+
+
+    /// <summary>
+    /// Extension methods for JSON properties.
+    /// </summary>
+    public static class JSONProperties
+    {
+
+        #region Create(params JProperties)
+
+        /// <summary>
+        /// Create a JSON object using the given JSON properties, but filter null values.
+        /// </summary>
+        /// <param name="JProperties">JSON properties.</param>
+        public static IEnumerable<JProperty> Create(params JProperty?[] JProperties)
+        {
+
+            if (JProperties is null || !JProperties.Any())
+                return Array.Empty<JProperty>();
+
+            var data = JProperties.
+                           Where(jProperty => jProperty is not null).
+                           Cast<JProperty>().
+                           ToArray();
+
+            return data.Length > 0
+                       ? data
+                       : Array.Empty<JProperty>();
 
         }
 
