@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -39,12 +33,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Properties
 
-        public CommandResult   Result             { get; }
+        public CommandResult         Result             { get; }
         public IEnumerable<TResult>  SuccessfulItems    { get; }
         public IEnumerable<TResult>  RejectedItems      { get; }
-
-        public IId?                  AuthId             { get; }
-        public Object?               Sender        { get; }
+        public IId?                  SenderId           { get; }
+        public Object?               Sender             { get; }
         public EventTracking_Id      EventTrackingId    { get; }
         public I18NString            Description        { get; }
         public IEnumerable<Warning>  Warnings           { get; }
@@ -62,11 +55,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="IsSuccess">Whether the operation was successful, or not.</param>
         /// <param name="Argument"></param>
         /// <param name="ErrorDescription"></param>
-        public AEnititiesResult(CommandResult    Result,
+        public AEnititiesResult(CommandResult          Result,
                                 IEnumerable<TResult>?  SuccessfulEVSEs   = null,
                                 IEnumerable<TResult>?  RejectedEVSEs     = null,
-                                IId?                   AuthId            = null,
-                                Object?                Sender       = null,
+                                IId?                   SenderId          = null,
+                                Object?                Sender            = null,
                                 EventTracking_Id?      EventTrackingId   = null,
                                 I18NString?            Description       = null,
                                 IEnumerable<Warning>?  Warnings          = null,
@@ -76,8 +69,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.Result           = Result;
             this.SuccessfulItems  = SuccessfulEVSEs ?? Array.Empty<TResult>();
             this.RejectedItems    = RejectedEVSEs   ?? Array.Empty<TResult>();
-            this.AuthId           = AuthId;
-            this.Sender      = Sender;
+            this.SenderId         = SenderId;
+            this.Sender           = Sender;
             this.EventTrackingId  = EventTrackingId ?? EventTracking_Id.New;
             this.Description      = Description     ?? I18NString.Empty;
             this.Warnings         = Warnings        ?? Array.Empty<Warning>();

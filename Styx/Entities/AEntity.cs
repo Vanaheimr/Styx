@@ -121,7 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //TDataSource?  DataSource    { get; }
 
 
-        void CopyAllLinkedDataFrom(TEntity OldEnity);
+        void CopyAllLinkedDataFromBase(TEntity OldEnity);
 
 
     }
@@ -457,7 +457,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //#endregion
 
 
-        public abstract void CopyAllLinkedDataFrom(TEntity OldEnity);
+        public abstract void CopyAllLinkedDataFromBase(TEntity OldEnity);
 
 
 
@@ -706,7 +706,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #endregion
 
 
-            public abstract void CopyAllLinkedDataFrom(TEntity OldEnity);
+            public abstract void CopyAllLinkedDataFromBase(TEntity OldEnity);
 
 
 
