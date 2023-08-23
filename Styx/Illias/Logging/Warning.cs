@@ -30,16 +30,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class WarningsExtensions
     {
 
+        #region IsNeitherNullNorEmpty(this Warning)
+
         public static Boolean IsNeitherNullNorEmpty(this Warning Warning)
 
             => Warning is not null &&
                Warning.Text.IsNotNullOrEmpty();
+
+        #endregion
+
+        #region AddAndReturnList(this Warnings, Text)
 
         public static IList<Warning> AddAndReturnList(this IList<Warning>  Warnings,
                                                       I18NString           Text)
 
             => Warnings.AddAndReturnList(Warning.Create(Text));
 
+        #endregion
+
+        #region ToJSON(this Warnings, CustomWarningSerializer = null)
 
         public static JArray ToJSON(this IEnumerable<Warning>                  Warnings,
                                     CustomJObjectSerializerDelegate<Warning>?  CustomWarningSerializer   = null)
@@ -48,8 +57,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    ? new JArray(Warnings.Select(warning => warning.ToJSON(CustomWarningSerializer)))
                    : new JArray();
 
+        #endregion
+
+        #region ToWarning(this Text, Language = Languages.en)
+
+        public static Warning ToWarning(this String  Text,
+                                        Languages    Language = Languages.en)
+
+            => Warning.Create(Language,
+                              Text);
+
+        #endregion
 
     }
+
 
     /// <summary>
     /// A warning.
