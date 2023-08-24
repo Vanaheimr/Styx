@@ -686,7 +686,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -698,13 +698,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
@@ -737,7 +737,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String                 PropertyDescription,
                                                  TryParserNullable1<T>  TryParser,
                                                  out T                  Value,
-                                                 out String             ErrorResponse)
+                                                 out String?            ErrorResponse)
 
             where T : struct
 
@@ -745,7 +745,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -757,13 +757,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
@@ -845,7 +845,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String                 PropertyDescription,
                                                  TryParserNullable2<T>  TryParser,
                                                  out T                  Value,
-                                                 out String             ErrorResponse)
+                                                 out String?            ErrorResponse)
 
             where T : struct
 
@@ -853,7 +853,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -865,13 +865,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
@@ -880,7 +880,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var JSONValue = JSONToken?.Value<String>()?.Trim();
 
             if (JSONValue.IsNeitherNullNorEmpty() &&
-                TryParser(JSONValue, out T? ValueNullable, out String errorResponse) &&
+                TryParser(JSONValue, out T? ValueNullable, out var errorResponse) &&
                 ValueNullable.HasValue)
             {
                 Value          = ValueNullable.Value;
@@ -953,7 +953,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String                 PropertyDescription,
                                                  TryParserNullable3<T>  TryParser,
                                                  out T                  Value,
-                                                 out String             ErrorResponse,
+                                                 out String?            ErrorResponse,
                                                  OnExceptionDelegate    OnException)
 
             where T : struct
@@ -962,7 +962,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -974,13 +974,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
