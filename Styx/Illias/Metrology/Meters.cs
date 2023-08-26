@@ -101,6 +101,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
+        public static Meter Parse(Double Number)
+        {
+
+            if (TryParse(Number, out var meter))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a Meter: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a Meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a Meter.</param>
         public static Meter Parse(Byte Number)
         {
 
@@ -139,6 +155,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
         public static Meter? TryParse(Decimal Number)
+        {
+
+            if (TryParse(Number, out var meter))
+                return meter;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a Meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a Meter.</param>
+        public static Meter? TryParse(Double Number)
         {
 
             if (TryParse(Number, out var meter))
@@ -216,6 +247,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             Meter = new Meter(Number);
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a Meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a Meter.</param>
+        /// <param name="Meter">The parsed Meter.</param>
+        public static Boolean TryParse(Double Number, out Meter Meter)
+        {
+
+            Meter = new Meter(Convert.ToDecimal(Number));
 
             return true;
 
