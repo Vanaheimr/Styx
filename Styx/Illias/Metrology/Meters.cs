@@ -244,7 +244,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone this Meter.
         /// </summary>
         public Meter Clone
-            => new Meter(Value, IsKiloMeters);
+
+            => new (Value);
 
         #endregion
 
