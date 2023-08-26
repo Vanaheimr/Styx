@@ -397,7 +397,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the hashcode of this object.

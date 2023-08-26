@@ -343,7 +343,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the hash code of this object.

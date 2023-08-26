@@ -18,7 +18,7 @@
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
-    public readonly struct Percentage<TValue>
+    public readonly struct PercentageOf<TValue>
 
         where TValue : IEquatable<TValue>
 
@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value.</param>
         /// <param name="Percent">The percentage.</param>
-        public Percentage(TValue Value, Single Percent)
+        public PercentageOf(TValue Value, Single Percent)
         {
             this.Value    = Value;
             this.Percent  = Percent;
@@ -75,8 +75,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Left">A percentage.</param>
         /// <param name="Right">Another percentage.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Percentage<TValue> Left,
-                                           Percentage<TValue> Right)
+        public static Boolean operator == (PercentageOf<TValue> Left,
+                                           PercentageOf<TValue> Right)
 
             => Left.Equals(Right);
 
@@ -90,8 +90,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Left">A percentage.</param>
         /// <param name="Right">Another percentage.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Percentage<TValue> Left,
-                                           Percentage<TValue> Right)
+        public static Boolean operator != (PercentageOf<TValue> Left,
+                                           PercentageOf<TValue> Right)
 
             => Left.Equals(Right);
 
@@ -109,7 +109,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A percentage to compare with.</param>
         public override Boolean Equals(Object? Triple)
 
-            => Triple is Percentage<TValue> percentage &&
+            => Triple is PercentageOf<TValue> percentage &&
                Equals(percentage);
 
         #endregion
@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two percentages for equality.
         /// </summary>
         /// <param name="Triple">A percentage to compare with.</param>
-        public Boolean Equals(Percentage<TValue> Triple)
+        public Boolean Equals(PercentageOf<TValue> Triple)
 
             => Value.  Equals(Triple.Value) &&
                Percent.Equals(Triple.Percent);
@@ -129,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the hash code of this object.
