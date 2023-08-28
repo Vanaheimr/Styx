@@ -124,12 +124,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String        PropertyName,
                                                  String        PropertyDescription,
                                                  out String    Text,
-                                                 out String    ErrorResponse)
+                                                 out String?   ErrorResponse)
         {
 
             Text = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -141,7 +141,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
@@ -190,7 +190,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -253,7 +253,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 //            Value = null;
 
-//            if (JSON == null)
+//            if (JSON is null)
 //            {
 //                ErrorResponse = "Invalid JSON provided!";
 //                return false;
@@ -271,7 +271,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 //                return false;
 //            }
 
-//            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+//            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
 //            {
 //                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
 //                return false;
@@ -312,12 +312,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String        PropertyDescription,
                                                 TryParser<T>  TryParser,
                                                 out T         Value,
-                                                out String    ErrorResponse)
+                                                out String?   ErrorResponse)
         {
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -362,7 +362,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                        String        PropertyDescription,
         //                                        TryParser<T>  TryParser,
         //                                        out T?        Value,
-        //                                        out String    ErrorResponse)
+        //                                        out String?   ErrorResponse)
 
         //    where T : struct
 
@@ -370,7 +370,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -388,7 +388,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
         //        return false;
@@ -416,12 +416,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String        PropertyDescription,
                                                 TryParser2<T> TryParser,
                                                 out T         Value,
-                                                out String    ErrorResponse)
+                                                out String?   ErrorResponse)
         {
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -465,7 +465,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                        String        PropertyDescription,
         //                                        TryParser2<T> TryParser,
         //                                        out T?        Value,
-        //                                        out String    ErrorResponse)
+        //                                        out String?   ErrorResponse)
 
         //    where T : struct
 
@@ -473,7 +473,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -491,7 +491,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
         //        return false;
@@ -525,7 +525,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -576,7 +576,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -629,7 +629,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -647,7 +647,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
         //        return false;
@@ -791,7 +791,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                        String        PropertyDescription,
         //                                        TryParser<T>  TryParser,
         //                                        out T?        Value,
-        //                                        out String    ErrorResponse)
+        //                                        out String?   ErrorResponse)
 
         //    where T : struct
 
@@ -799,7 +799,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -817,7 +817,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
         //        return false;
@@ -899,7 +899,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                        String        PropertyDescription,
         //                                        TryParser2<T> TryParser,
         //                                        out T?        Value,
-        //                                        out String    ErrorResponse)
+        //                                        out String?   ErrorResponse)
 
         //    where T : struct
 
@@ -907,7 +907,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -925,7 +925,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
         //        return false;
@@ -1017,7 +1017,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -1035,7 +1035,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
         //        return false;
@@ -1069,12 +1069,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Boolean   BooleanValue,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             BooleanValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1086,13 +1086,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+            if (JSONToken is null || JSONToken.Type == JTokenType.Null)
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                 return false;
@@ -1121,12 +1121,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Single    SingleValue,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             SingleValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1138,13 +1138,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Single.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out SingleValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1161,12 +1161,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Double    DoubleValue,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             DoubleValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1178,13 +1178,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Double.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out DoubleValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1204,12 +1204,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Decimal   DecimalValue,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             DecimalValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1221,13 +1221,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out DecimalValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1247,12 +1247,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Byte      ByteValue,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             ByteValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1264,13 +1264,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Byte.TryParse(JSONToken.Value<String>(), out ByteValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1287,12 +1287,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out SByte     SByteValue,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             SByteValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1304,13 +1304,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !SByte.TryParse(JSONToken.Value<String>(), out SByteValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1330,12 +1330,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Int16     Int16Value,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             Int16Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1347,13 +1347,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Int16.TryParse(JSONToken.Value<String>(), out Int16Value))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1370,12 +1370,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out UInt16    UInt16Value,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             UInt16Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1387,13 +1387,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !UInt16.TryParse(JSONToken.Value<String>(), out UInt16Value))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1410,12 +1410,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Int32     Int32Value,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             Int32Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1427,13 +1427,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Int32.TryParse(JSONToken.Value<String>(), out Int32Value))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1450,12 +1450,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out UInt32    UInt32Value,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             UInt32Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1467,13 +1467,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !UInt32.TryParse(JSONToken.Value<String>(), out UInt32Value))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1490,12 +1490,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out Int64     Int64Value,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             Int64Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1507,13 +1507,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Int64.TryParse(JSONToken.Value<String>(), out Int64Value))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1530,12 +1530,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out UInt64    UInt64Value,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             UInt64Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1547,13 +1547,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !UInt64.TryParse(JSONToken.Value<String>(), out UInt64Value))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1561,6 +1561,359 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Ampere,                 out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out Ampere    AmpereValue,
+                                             out String?   ErrorResponse)
+        {
+
+            AmpereValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            AmpereValue    = Ampere.Parse(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Hertz,                  out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out Hertz     HertzValue,
+                                             out String?   ErrorResponse)
+        {
+
+            HertzValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            HertzValue     = Hertz.Parse(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Meter,                  out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out Meter     MeterValue,
+                                             out String?   ErrorResponse)
+        {
+
+            MeterValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            MeterValue     = Meter.Parse(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Percentage,             out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject    JSON,
+                                             String          PropertyName,
+                                             String          PropertyDescription,
+                                             out Percentage  PercentageValue,
+                                             out String?     ErrorResponse)
+        {
+
+            PercentageValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            PercentageValue  = Percentage.Parse(decimalValue);
+            ErrorResponse    = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out PercentageInt,          out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject       JSON,
+                                             String             PropertyName,
+                                             String             PropertyDescription,
+                                             out PercentageInt  PercentageValue,
+                                             out String?        ErrorResponse)
+        {
+
+            PercentageValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var byteValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            PercentageValue  = PercentageInt.Parse(byteValue);
+            ErrorResponse    = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Volt,                   out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out Volt      VoltValue,
+                                             out String?   ErrorResponse)
+        {
+
+            VoltValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            VoltValue      = Volt.Parse(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Watt,                   out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out Watt      WattValue,
+                                             out String?   ErrorResponse)
+        {
+
+            WattValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            WattValue      = Watt.Parse(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out WattHour,               out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject  JSON,
+                                             String        PropertyName,
+                                             String        PropertyDescription,
+                                             out WattHour  WattHourValue,
+                                             out String?   ErrorResponse)
+        {
+
+            WattHourValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            WattHourValue  = WattHour.Parse(decimalValue);
+            ErrorResponse    = null;
             return true;
 
         }
@@ -1581,7 +1934,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Timestamp = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1629,13 +1982,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out TimeSpan  TimeSpan,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
 
         {
 
             TimeSpan = TimeSpan.MinValue;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1647,7 +2000,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
@@ -1737,7 +2090,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         String        PropertyName,
                                                         String        PropertyDescription,
                                                         out TEnum     EnumValue,
-                                                        out String    ErrorResponse)
+                                                        out String?   ErrorResponse)
 
              where TEnum : struct
 
@@ -1745,7 +2098,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             EnumValue = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1757,13 +2110,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
                 return false;
             }
 
-            if (JSONToken == null ||
+            if (JSONToken is null ||
                 !Enum.TryParse(JSONToken.Value<String>(), true, out EnumValue))
             {
                 ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -1784,12 +2137,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out JObject   JObject,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             JObject = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1832,12 +2185,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String        PropertyName,
                                              String        PropertyDescription,
                                              out JArray    JArray,
-                                             out String    ErrorResponse)
+                                             out String?   ErrorResponse)
         {
 
             JArray = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1885,7 +2238,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             EnumerationOfStrings = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -1941,7 +2294,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = default;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2048,7 +2401,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = default;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2216,7 +2569,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Value = default;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -2272,7 +2625,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = default;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2290,7 +2643,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
         //        return false;
@@ -2328,7 +2681,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = default;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2384,7 +2737,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = default;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2402,7 +2755,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
         //        return false;
@@ -2441,7 +2794,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    Value = default;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2459,7 +2812,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
         //        return false;
@@ -2972,7 +3325,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    EnumerationOfT = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -2984,7 +3337,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing property '" + PropertyName + "'!";
         //        return false;
@@ -3032,7 +3385,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             EnumerationOfT = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -3044,7 +3397,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
@@ -3101,7 +3454,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             EnumerationOfT = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -3113,7 +3466,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
@@ -3173,7 +3526,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             EnumerationOfT = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "Invalid JSON provided!";
                 return false;
@@ -3185,7 +3538,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
                 ErrorResponse = "Missing property '" + PropertyName + "'!";
                 return false;
@@ -3241,7 +3594,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    EnumerationOfT = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "Invalid JSON provided!";
         //        return false;
@@ -3253,7 +3606,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (!JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (!JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
         //        ErrorResponse = "Missing property '" + PropertyName + "'!";
         //        return false;
@@ -3416,7 +3769,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            out IEnumerable<String>  Values)
         {
 
-            if (JSON.TryGetValue(Key, out JToken JSONToken) && 
+            if (JSON.TryGetValue(Key, out var JSONToken) && 
                 JSONToken is JArray _Values)
             {
 
@@ -3492,7 +3845,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             StringValue    = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3505,7 +3858,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
-                JSONToken      != null &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3536,13 +3889,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Boolean?  BooleanValue,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             BooleanValue   = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3554,8 +3907,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3587,13 +3940,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Single?   SingleValue,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             SingleValue    = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3605,8 +3958,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3629,13 +3982,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Double?   DoubleValue,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             DoubleValue    = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3647,8 +4000,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3674,13 +4027,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Decimal?  DecimalValue,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             DecimalValue   = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3692,8 +4045,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3719,13 +4072,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Byte?     ByteValue,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             ByteValue      = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3737,8 +4090,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3761,13 +4114,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out SByte?    SByteValue,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             SByteValue     = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3779,8 +4132,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3806,13 +4159,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Int16?    Int16Value,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             Int16Value     = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3824,8 +4177,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3848,13 +4201,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out UInt16?   UInt16Value,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             UInt16Value    = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3866,8 +4219,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3890,13 +4243,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Int32?    Int32Value,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             Int32Value     = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3908,8 +4261,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3932,13 +4285,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out UInt32?   UInt32Value,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             UInt32Value    = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3950,8 +4303,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -3974,13 +4327,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Int64?    Int64Value,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             Int64Value     = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -3992,8 +4345,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -4016,13 +4369,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out UInt64?   UInt64Value,
-                                            out String    ErrorResponse)
+                                            out String?   ErrorResponse)
         {
 
             UInt64Value    = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4034,13 +4387,374 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
                 if (UInt64.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out UInt64 value))
                     UInt64Value = value;
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Ampere,                 out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Ampere?   AmpereValue,
+                                            out String?   ErrorResponse)
+        {
+
+            AmpereValue    = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    AmpereValue   = Ampere.Parse(decimalValue);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Hertz,                  out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Hertz?    HertzValue,
+                                            out String?   ErrorResponse)
+        {
+
+            HertzValue     = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    HertzValue    = Hertz.Parse(decimalValue);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Meter,                  out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Meter?    MeterValue,
+                                            out String?   ErrorResponse)
+        {
+
+            MeterValue     = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    MeterValue    = Meter.Parse(decimalValue);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Percentage,             out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject     JSON,
+                                            String           PropertyName,
+                                            String           PropertyDescription,
+                                            out Percentage?  PercentageValue,
+                                            out String?      ErrorResponse)
+        {
+
+            PercentageValue  = default;
+            ErrorResponse    = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    PercentageValue = Percentage.Parse(decimalValue);
+
+                else
+                    ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out PercentageInt,          out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject        JSON,
+                                            String              PropertyName,
+                                            String              PropertyDescription,
+                                            out PercentageInt?  PercentageValue,
+                                            out String?         ErrorResponse)
+        {
+
+            PercentageValue  = default;
+            ErrorResponse    = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var byteValue))
+                    PercentageValue = PercentageInt.Parse(byteValue);
+
+                else
+                    ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Volt,                   out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Volt?     VoltValue,
+                                            out String?   ErrorResponse)
+        {
+
+            VoltValue      = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    VoltValue     = Volt.Parse(decimalValue);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Watt,                   out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Watt?     WattValue,
+                                            out String?   ErrorResponse)
+        {
+
+            WattValue      = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    WattValue     = Watt.Parse(decimalValue);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out WattHour,               out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject   JSON,
+                                            String         PropertyName,
+                                            String         PropertyDescription,
+                                            out WattHour?  WattHourValue,
+                                            out String?    ErrorResponse)
+        {
+
+            WattHourValue  = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    WattHourValue = WattHour.Parse(decimalValue);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4073,7 +4787,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value         = default;//new TStruct?();
             ErrorResponse = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4124,7 +4838,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value         = new TStruct?();
             ErrorResponse = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -4136,8 +4850,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -4178,7 +4892,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value         = new TStruct?();
             ErrorResponse = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -4224,7 +4938,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                        String        PropertyName,
                                                        String        PropertyDescription,
                                                        out TEnum?    EnumValue,
-                                                       out String    ErrorResponse)
+                                                       out String?   ErrorResponse)
 
             where TEnum : struct
 
@@ -4233,7 +4947,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             EnumValue      = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4245,8 +4959,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -4355,7 +5069,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Values         = new T[0];
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4367,8 +5081,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -4418,7 +5132,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Timestamp      = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4430,8 +5144,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -4463,7 +5177,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Timestamps     = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4475,8 +5189,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
                 JSONToken.Type == JTokenType.Array)
             {
 
@@ -4512,13 +5226,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String         PropertyName,
                                             String         PropertyDescription,
                                             out TimeSpan?  Timespan,
-                                            out String     ErrorResponse)
+                                            out String?    ErrorResponse)
         {
 
             Timespan       = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4530,9 +5244,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken) &&
-                JSONToken      != null &&
-                JSONToken.Type != JTokenType.Null)
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type is not JTokenType.Null)
             {
 
                 try
@@ -4567,7 +5281,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             I18NText       = I18NString.Empty;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4651,7 +5365,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             IEnumerableOfI18N  = null;
             ErrorResponse      = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -4664,7 +5378,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
-                JSONToken      != null &&
+                JSONToken      is not null &&
                 JSONToken.Type != JTokenType.Null)
             {
 
@@ -4837,7 +5551,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -4853,7 +5567,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!Parser(JSONToken.Type == JTokenType.String
@@ -4887,7 +5601,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -4903,7 +5617,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!Parser(JSONToken.Type == JTokenType.String
@@ -4941,7 +5655,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    Value          = default;
         //    ErrorResponse  = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "The given JSON object must not be null!";
         //        return false;
@@ -4953,11 +5667,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
 
         //        // "propertyKey": null -> will be ignored!
-        //        if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+        //        if (JSONToken is null || JSONToken.Type == JTokenType.Null)
         //            return false;
 
         //        if (!(JSONToken is JObject JSON2))
@@ -4988,7 +5702,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    Value          = null;
         //    ErrorResponse  = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "The given JSON object must not be null!";
         //        return false;
@@ -5000,11 +5714,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
 
         //        // "propertyKey": null -> will be ignored!
-        //        if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+        //        if (JSONToken is null || JSONToken.Type == JTokenType.Null)
         //            return false;
 
         //        if (JSONToken is JObject JSON2 &&
@@ -5035,7 +5749,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5051,7 +5765,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JObject JSON2))
@@ -5082,7 +5796,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5098,7 +5812,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JObject JSON2))
@@ -5130,7 +5844,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    Value          = default;
         //    ErrorResponse  = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "The given JSON object must not be null!";
         //        return false;
@@ -5142,11 +5856,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
 
         //        // "propertyKey": null -> will be ignored!
-        //        if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+        //        if (JSONToken is null || JSONToken.Type == JTokenType.Null)
         //            return false;
 
         //        if (!(JSONToken is JObject JSON2))
@@ -5178,7 +5892,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5194,7 +5908,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (JSONToken is not JArray JSON2)
@@ -5225,7 +5939,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5237,11 +5951,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (JSONToken is JArray JSON2 &&
@@ -5272,7 +5986,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5284,11 +5998,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSON2))
@@ -5319,7 +6033,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5331,11 +6045,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSON2))
@@ -5370,7 +6084,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             JSONObject     = new JObject();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return false;
@@ -5382,11 +6096,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 JSONObject = JSONToken as JObject;
@@ -5417,7 +6131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             JSONArray      = new JArray();
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5429,11 +6143,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 JSONArray = JSONToken as JArray;
@@ -5465,7 +6179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             EnumerableT    = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5477,11 +6191,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSONArray))
@@ -5536,7 +6250,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             EnumerableT    = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5548,11 +6262,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSONArray))
@@ -5608,7 +6322,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             EnumerableT    = null;
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -5620,11 +6334,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSONArray))
@@ -5681,7 +6395,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    EnumerableT    = null;
         //    ErrorResponse  = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "The given JSON object must not be null!";
         //        return true;
@@ -5693,11 +6407,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return true;
         //    }
 
-        //    if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
 
         //        // "propertyKey": null -> will be ignored!
-        //        if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+        //        if (JSONToken is null || JSONToken.Type == JTokenType.Null)
         //            return false;
 
         //        if (!(JSONToken is JArray JSONArray))
@@ -5896,7 +6610,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    EnumerableT    = null;
         //    ErrorResponse  = null;
 
-        //    if (JSON == null)
+        //    if (JSON is null)
         //    {
         //        ErrorResponse = "The given JSON object must not be null!";
         //        return true;
@@ -5908,11 +6622,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return true;
         //    }
 
-        //    if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+        //    if (JSON.TryGetValue(PropertyName, out var JSONToken))
         //    {
 
         //        // "propertyKey": null -> will be ignored!
-        //        if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+        //        if (JSONToken is null || JSONToken.Type == JTokenType.Null)
         //            return false;
 
         //        if (!(JSONToken is JArray JSONArray))
@@ -6280,10 +6994,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          String        PropertyName)
         {
 
-            if (JSON == null)
+            if (JSON is null)
                 return String.Empty;
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
                 return JSONToken.Value<String>();
 
             return String.Empty;
@@ -6304,7 +7018,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Values         = new String[0];
             ErrorResponse  = null;
 
-            if (JSON == null)
+            if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
                 return true;
@@ -6316,11 +7030,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken JSONToken))
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken == null || JSONToken.Type == JTokenType.Null)
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
                 if (!(JSONToken is JArray JSONArray))

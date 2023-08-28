@@ -31,12 +31,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value of the Meter.
         /// </summary>
-        public Decimal  Value           { get; }
+        public Decimal  Value    { get; }
 
         /// <summary>
         /// The value of the Amperes as Int32.
         /// </summary>
-        public Int32    IntegerValue    { get; }
+        public Int32    IntegerValue
+            => (Int32) Value;
 
 
         /// <summary>
@@ -50,8 +51,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Meter.
+        /// Create a new Meter based on the given number.
         /// </summary>
+        /// <param name="Value">A numeric representation of a Meter.</param>
         private Meter(Decimal Value)
         {
             this.Value = Value;

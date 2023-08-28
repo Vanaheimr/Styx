@@ -36,7 +36,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value of the Amperes as Int32.
         /// </summary>
-        public Int32    IntegerValue    { get; }
+        public Int32    IntegerValue
+            => (Int32) Value;
 
 
         /// <summary>
@@ -56,9 +57,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Watt value.
+        /// Create a new Watt based on the given number.
         /// </summary>
-        /// <param name="Value">The value of the Watt.</param>
+        /// <param name="Value">A numeric representation of a Watt.</param>
         private Watt(Decimal Value)
         {
             this.Value = Value;
@@ -76,8 +77,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Watt Parse(String Text)
         {
 
-            if (TryParse(Text, out var Watt))
-                return Watt;
+            if (TryParse(Text, out var watt))
+                return watt;
 
             throw new ArgumentException($"Invalid text representation of a Watt: '{Text}'!",
                                         nameof(Text));
@@ -95,8 +96,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Watt Parse(Decimal Number)
         {
 
-            if (TryParse(Number, out var Watt))
-                return Watt;
+            if (TryParse(Number, out var watt))
+                return watt;
 
             throw new ArgumentException($"Invalid numeric representation of a Watt: '{Number}'!",
                                         nameof(Number));
@@ -111,8 +112,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Watt Parse(Byte Number)
         {
 
-            if (TryParse(Number, out var Watt))
-                return Watt;
+            if (TryParse(Number, out var watt))
+                return watt;
 
             throw new ArgumentException($"Invalid numeric representation of a Watt: '{Number}'!",
                                         nameof(Number));
@@ -130,8 +131,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Watt? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var Watt))
-                return Watt;
+            if (TryParse(Text, out var watt))
+                return watt;
 
             return null;
 
@@ -148,8 +149,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Watt? TryParse(Decimal Number)
         {
 
-            if (TryParse(Number, out var Watt))
-                return Watt;
+            if (TryParse(Number, out var watt))
+                return watt;
 
             return null;
 
@@ -163,8 +164,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Watt? TryParse(Byte Number)
         {
 
-            if (TryParse(Number, out var Watt))
-                return Watt;
+            if (TryParse(Number, out var watt))
+                return watt;
 
             return null;
 
@@ -257,7 +258,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone this Watt.
         /// </summary>
         public Watt Clone
-            => new Watt(Value);
+
+            => new (Value);
 
         #endregion
 

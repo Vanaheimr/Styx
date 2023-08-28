@@ -36,7 +36,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value of the Amperes as Int32.
         /// </summary>
-        public Int32    IntegerValue    { get; }
+        public Int32    IntegerValue
+            => (Int32) Value;
 
 
         /// <summary>
@@ -56,9 +57,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new WattHour value.
+        /// Create a new WattHour based on the given number.
         /// </summary>
-        /// <param name="Value">The value of the WattHour.</param>
+        /// <param name="Value">A numeric representation of a WattHour.</param>
         private WattHour(Decimal Value)
         {
             this.Value = Value;
@@ -257,7 +258,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone this WattHour.
         /// </summary>
         public WattHour Clone
-            => new WattHour(Value);
+
+            => new (Value);
 
         #endregion
 

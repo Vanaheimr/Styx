@@ -22,43 +22,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// An Ampere value.
     /// </summary>
     public readonly struct Ampere : IEquatable <Ampere>,
-                                  IComparable<Ampere>,
-                                  IComparable
+                                    IComparable<Ampere>,
+                                    IComparable
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the Amperes.
+        /// The value of the Ampere.
         /// </summary>
         public Decimal  Value           { get; }
 
         /// <summary>
-        /// The value of the Amperes as Int32.
+        /// The value of the Ampere as Int32.
         /// </summary>
-        public Int32    IntegerValue    { get; }
-
-
-        /// <summary>
-        /// The value as KiloAmperes.
-        /// </summary>
-        public Decimal  KW
-            => Value / 1000;
-
-        /// <summary>
-        /// The value as MegaAmperes.
-        /// </summary>
-        public Decimal  MW
-            => Value / 1000000;
+        public Int32    IntegerValue
+            => (Int32) Value;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Ampere value.
+        /// Create a new Ampere based on the given number.
         /// </summary>
-        /// <param name="Value">The value of the Ampere.</param>
+        /// <param name="Value">A numeric representation of an Ampere.</param>
         private Ampere(Decimal Value)
         {
             this.Value = Value;
@@ -257,7 +245,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Clone this Ampere.
         /// </summary>
         public Ampere Clone
-            => new Ampere(Value);
+
+            => new (Value);
 
         #endregion
 

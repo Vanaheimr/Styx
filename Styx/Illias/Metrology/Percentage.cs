@@ -31,19 +31,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value of the percentage.
         /// </summary>
-        public Decimal  Value           { get; }
+        public Decimal  Value    { get; }
 
         /// <summary>
-        /// The value of the Amperes as Int32.
+        /// The value of the percentage as Int32.
         /// </summary>
-        public Int32    IntegerValue    { get; }
-
-
-        /// <summary>
-        /// The integer value of the percentage.
-        /// </summary>
-        public Byte    IntValue
-            => (Byte) Math.Round(Value);
+        public Int32    IntegerValue
+            => (Int32) Value;
 
         #endregion
 
