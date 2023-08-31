@@ -188,15 +188,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Text = Text.Trim();
 
-                var factor = 0;
+                var factor = 1;
 
-                if (Text.EndsWith("kW") || Text.EndsWith("KW"))
+                if (Text.EndsWith("kV") || Text.EndsWith("KV"))
                     factor = 1000;
 
-                if (Text.EndsWith("MW"))
+                if (Text.EndsWith("MV"))
                     factor = 1000000;
 
-                if (Text.EndsWith("GW"))
+                if (Text.EndsWith("GV"))
                     factor = 1000000;
 
                 if (Decimal.TryParse(Text, out var value))

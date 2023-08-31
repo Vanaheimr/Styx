@@ -213,7 +213,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Text = Text.Trim();
 
-                var factor = 0;
+                var factor = 1;
 
                 if (Text.EndsWith("km"))
                     factor = 1000;

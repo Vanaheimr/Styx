@@ -175,7 +175,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Text = Text.Trim();
 
-                var factor = 0;
+                var factor = 1;
 
                 if (Text.EndsWith("kW") || Text.EndsWith("KW"))
                     factor = 1000;
