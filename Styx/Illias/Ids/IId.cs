@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -48,30 +41,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public interface IId : IComparable
     {
 
-        //global::org.GraphDefined.WWCP.ChargingPool_Id Clone { get; }
-        //int CompareTo(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
-        //bool Equals(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
-        //int GetHashCode();
+        /// <summary>
+        /// Indicates whether this identification is null or empty.
+        /// </summary>
+        Boolean  IsNullOrEmpty       { get; }
 
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        Boolean IsNullOrEmpty       { get; }
-
-        ///// <summary>
-        ///// Indicates whether this identification is null or empty.
-        ///// </summary>
-        //Boolean IsNotNullOrEmpty    { get; }
+        Boolean  IsNotNullOrEmpty    { get; }
 
         /// <summary>
         /// The length of the identification.
         /// </summary>
-        UInt64  Length              { get; }
+        UInt64   Length              { get; }
 
         /// <summary>
         /// Return a text representation of this object.
         /// </summary>
-        String ToString();
+        String   ToString();
 
     }
 
