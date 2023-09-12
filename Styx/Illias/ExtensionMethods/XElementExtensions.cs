@@ -336,13 +336,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (ParentXElement is null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
             if (Mapper == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception("Mapper delegate must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
@@ -350,7 +350,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (_XElement == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage));
+                    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage));
                 else
                     throw new Exception(ExceptionMessage);
 
@@ -573,13 +573,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (ParentXElement == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
             if (Mapper == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception("Mapper delegate must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
@@ -594,7 +594,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (OnException != null)
                 {
 
-                    OnException(DateTime.UtcNow,
+                    OnException(Timestamp.Now,
                                 ParentXElement,
                                 new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                                   ? ExceptionMessage
@@ -629,13 +629,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (ParentXElement == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception("The parent XML element must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
             if (Mapper == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception("Mapper delegate must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
@@ -645,7 +645,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (_XElement == null)
                 if (OnException != null)
-                    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
+                    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 else
                     throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!");
 
@@ -653,7 +653,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (_XElements == null)
                 //if (OnException != null)
-                //    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
+                //    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 //else
                 //    throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!");
                 return new T[0];
@@ -662,7 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (__XElements.Length == 0)
                 //if (OnException != null)
-                //    OnException(DateTime.UtcNow, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
+                //    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 //else
                 //    throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given array of XML elements must not be empty!");
                 return new T[0];
@@ -817,28 +817,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapValueOrFail<T>(this XElement    ParentXElement,
                                           XName            XName,
                                           Func<String, T>  ValueMapper,
-                                          String           ExceptionMessage = null)
+                                          String?          ExceptionMessage   = null)
         {
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper    is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
 
 
-            var _XElement = ParentXElement.Element(XName);
+            var xElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (xElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value.IsNullOrEmpty())
+            if (xElement.Value.IsNullOrEmpty())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -847,7 +847,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                return ValueMapper(_XElement.Value);
+                return ValueMapper(xElement.Value);
 
             }
             catch (Exception e)
@@ -862,32 +862,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static T MapValueOrFail<T>(this XElement                         ParentXElement,
-                                          XName                                 XName,
-                                          Func<String, OnExceptionDelegate, T>  ValueMapper,
-                                          OnExceptionDelegate                   OnException       = null,
-                                          String                                ExceptionMessage  = null)
+
+        public static T MapValueOrFail<T>(this XElement                          ParentXElement,
+                                          XName                                  XName,
+                                          Func<String, OnExceptionDelegate?, T>  ValueMapper,
+                                          OnExceptionDelegate?                   OnException        = null,
+                                          String?                                ExceptionMessage   = null)
         {
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper    is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
 
 
-            var _XElement = ParentXElement.Element(XName);
+            var xElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (xElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (xElement.Value is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -896,14 +897,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                return ValueMapper(_XElement.Value, OnException);
+                return ValueMapper(xElement.Value, OnException);
 
             }
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow,
-                                    _XElement,
+                OnException?.Invoke(Timestamp.Now,
+                                    xElement,
                                     e);
 
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
@@ -915,11 +916,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static T MapValueOrFail<T>(this XElement                          ParentXElement,
-                                          XName                                  XName,
-                                          Func<String, OnExceptionDelegate, T?>  ValueMapper,
-                                          OnExceptionDelegate                    OnException       = null,
-                                          String                                 ExceptionMessage  = null)
+        public static T MapValueOrFail<T>(this XElement                           ParentXElement,
+                                          XName                                   XName,
+                                          Func<String, OnExceptionDelegate?, T?>  ValueMapper,
+                                          OnExceptionDelegate?                    OnException        = null,
+                                          String?                                 ExceptionMessage   = null)
 
             where T : struct
 
@@ -927,23 +928,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper    is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
 
 
-            var _XElement = ParentXElement.Element(XName);
+            var xElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (xElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (xElement.Value is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -953,7 +954,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Value = ValueMapper(_XElement.Value, OnException);
+                Value = ValueMapper(xElement.Value, OnException);
 
                 if (!Value.HasValue)
                     throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
@@ -964,8 +965,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow,
-                                    _XElement,
+                OnException?.Invoke(Timestamp.Now,
+                                    xElement,
                                     e);
 
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
@@ -1032,7 +1033,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow,
+                OnException?.Invoke(Timestamp.Now,
                                     _XElement,
                                     e);
 
@@ -1310,7 +1311,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow,
+                OnException?.Invoke(Timestamp.Now,
                                     _XElement,
                                     e);
 
@@ -1362,7 +1363,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
 
-                OnException?.Invoke(DateTime.UtcNow,
+                OnException?.Invoke(Timestamp.Now,
                                     _XElement,
                                     e);
 
