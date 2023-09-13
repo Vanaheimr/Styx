@@ -6990,17 +6990,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region GetOptional(this JSON, Key)
 
-        public static String GetOptional(this JObject  JSON,
-                                         String        PropertyName)
+        public static String? GetOptional(this JObject  JSON,
+                                          String        PropertyName)
         {
 
             if (JSON is null)
-                return String.Empty;
+                return null;
 
             if (JSON.TryGetValue(PropertyName, out var JSONToken))
                 return JSONToken.Value<String>();
 
-            return String.Empty;
+            return null;
 
         }
 
@@ -7012,10 +7012,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           String                   PropertyName,
                                           String                   PropertyDescription,
                                           out IEnumerable<String>  Values,
-                                          out String               ErrorResponse)
+                                          out String?              ErrorResponse)
         {
 
-            Values         = new String[0];
+            Values         = Array.Empty<String>();
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7037,7 +7037,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
                     ErrorResponse = "The given property '" + (PropertyDescription ?? PropertyName) + "' is not a valid JSON array!";
                     return true;
@@ -7048,14 +7048,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     Values = JSONArray.AsEnumerable().
                                  Select(jtoken => jtoken?.Value<String>()).
-                                 Where (value  => value != null);
+                                 Where (value  => value is not null).
+                                 Cast<String>().
+                                 ToArray() ?? Array.Empty<String>();
 
                     return true;
 
                 }
-#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
                 catch
-#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
                 { }
 
                 return true;
