@@ -49,6 +49,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region RandomInt32       (MaxValue)
+
+        /// <summary>
+        /// Get a random Int32.
+        /// </summary>
+        /// <param name="MaxValue">The optional exclusive upper bound of the random number to be generated. Its value must be greater than or equal to 0. If null then Int32.MaxValue will be used.</param>
+        public static Int32 RandomInt32(Int32? MaxValue = null)
+
+            => Random.Shared.Next(MaxValue ?? Int32.MaxValue);
+
+        #endregion
+
         #region RandomUInt32      (MaxValue)
 
         /// <summary>
@@ -58,6 +71,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static UInt32 RandomUInt32(Int32? MaxValue = null)
 
             => (UInt32) Random.Shared.Next(MaxValue ?? Int32.MaxValue);
+
+        #endregion
+
+        #region RandomInt64       (MaxValue)
+
+        /// <summary>
+        /// Get a random Int64.
+        /// </summary>
+        /// <param name="MaxValue">The optional exclusive upper bound of the random number to be generated. Its value must be greater than or equal to 0. If null then Int32.MaxValue will be used.</param>
+        public static Int64 RandomInt64(Int32? MaxValue = null)
+
+            => (Int64) Random.Shared.Next(MaxValue ?? Int32.MaxValue);
 
         #endregion
 
@@ -72,6 +97,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => (UInt64) Random.Shared.Next(MaxValue ?? Int32.MaxValue);
 
         #endregion
+
 
         #region RandomString      (Length)
 
