@@ -814,6 +814,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region FirstCharToLower(this Text)
+
+        /// <summary>
+        /// Converts the first character of the given text to lower case.
+        /// </summary>
+        /// <param name="Text">A given text.</param>
+        public static String FirstCharToLower(this String Text)
+
+            => char.ToLower(Text[0]) + Text[1..];
+
+        #endregion
+
+
     }
 
 }
