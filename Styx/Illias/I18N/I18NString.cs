@@ -304,6 +304,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) Create(          Text)
+
+        /// <summary>
+        /// Create a new internationalized (I18N) multi-language string
+        /// based on english and the given string.
+        /// </summary>
+        /// <param name="Text">The internationalized (I18N) text.</param>
+        public static I18NString Create(String Text)
+
+            => new (Languages.en, Text);
+
+        #endregion
+
         #region (static) Empty
 
         /// <summary>
