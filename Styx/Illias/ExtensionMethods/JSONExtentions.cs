@@ -3380,10 +3380,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                     String                PropertyDescription,
                                                     TryJObjectParser2<T>  TryJObjectParser,
                                                     out IEnumerable<T>    EnumerationOfT,
-                                                    out String            ErrorResponse)
+                                                    out String?           ErrorResponse)
         {
 
-            EnumerationOfT = null;
+            EnumerationOfT = Array.Empty<T>();
 
             if (JSON is null)
             {
@@ -3406,7 +3406,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                if (!(JSONToken is JArray JArray))
+                if (JSONToken is not JArray JArray)
                 {
                     ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
@@ -3418,10 +3418,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var item in JArray)
                 {
 
-                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out errorResponse))
-                        ListOfT.Add(ItemT);
+                    if (item is JObject itemJObject &&
+                        TryJObjectParser(itemJObject, out var itemT, out errorResponse) &&
+                        itemT is not null)
+                    {
+                        ListOfT.Add(itemT);
+                    }
 
-                    if (errorResponse != null)
+                    if (errorResponse is not null)
                     {
                         ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
                         return false;
@@ -3443,16 +3447,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean ParseMandatoryJSON<T>(this JObject                    JSON,
-                                                    String                          PropertyName,
-                                                    String                          PropertyDescription,
-                                                    TryJObjectParser3a<T>           TryJObjectParser,
-                                                    out IEnumerable<T>              EnumerationOfT,
-                                                    out String                      ErrorResponse,
-                                                    CustomJObjectParserDelegate<T>  CustomParser = null)
+        public static Boolean ParseMandatoryJSON<T>(this JObject                     JSON,
+                                                    String                           PropertyName,
+                                                    String                           PropertyDescription,
+                                                    TryJObjectParser3a<T>            TryJObjectParser,
+                                                    out IEnumerable<T>               EnumerationOfT,
+                                                    out String?                      ErrorResponse,
+                                                    CustomJObjectParserDelegate<T>?  CustomParser = null)
         {
 
-            EnumerationOfT = null;
+            EnumerationOfT = Array.Empty<T>();
 
             if (JSON is null)
             {
@@ -3475,7 +3479,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                if (!(JSONToken is JArray JArray))
+                if (JSONToken is not JArray JArray)
                 {
                     ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
@@ -3487,10 +3491,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var item in JArray)
                 {
 
-                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out errorResponse, CustomParser))
-                        ListOfT.Add(ItemT);
+                    if (item is JObject itemJObject &&
+                        TryJObjectParser(itemJObject, out var itemT, out errorResponse, CustomParser) &&
+                        itemT is not null)
+                    {
+                        ListOfT.Add(itemT);
+                    }
 
-                    if (errorResponse != null)
+                    if (errorResponse is not null)
                     {
                         ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
                         return false;
@@ -3512,19 +3520,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean ParseMandatoryJSON<T, TId>(this JObject                    JSON,
-                                                         String                          PropertyName,
-                                                         String                          PropertyDescription,
-                                                         TryJObjectParser3b<T, TId>      TryJObjectParser,
-                                                         out IEnumerable<T>              EnumerationOfT,
-                                                         out String                      ErrorResponse,
-                                                         CustomJObjectParserDelegate<T>  CustomParser = null)
+        public static Boolean ParseMandatoryJSON<T, TId>(this JObject                     JSON,
+                                                         String                           PropertyName,
+                                                         String                           PropertyDescription,
+                                                         TryJObjectParser3b<T, TId>       TryJObjectParser,
+                                                         out IEnumerable<T>               EnumerationOfT,
+                                                         out String?                      ErrorResponse,
+                                                         CustomJObjectParserDelegate<T>?  CustomParser = null)
 
             where TId : struct
 
         {
 
-            EnumerationOfT = null;
+            EnumerationOfT = Array.Empty<T>();
 
             if (JSON is null)
             {
@@ -3547,7 +3555,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                if (!(JSONToken is JArray JArray))
+                if (JSONToken is not JArray JArray)
                 {
                     ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
                     return false;
@@ -3559,10 +3567,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var item in JArray)
                 {
 
-                    if (item is JObject && TryJObjectParser(item as JObject, out T ItemT, out errorResponse, null, CustomParser))
-                        ListOfT.Add(ItemT);
+                    if (item is JObject itemJObject &&
+                        TryJObjectParser(itemJObject, out var itemT, out errorResponse, null, CustomParser) &&
+                        itemT is not null)
+                    {
+                        ListOfT.Add(itemT);
+                    }
 
-                    if (errorResponse != null)
+                    if (errorResponse is not null)
                     {
                         ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
                         return false;
