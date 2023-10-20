@@ -93,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     #region (class) GeoCalculations
 
     /// <summary>
-    /// A bunch of extention methods to transform
+    /// A bunch of extension methods to transform
     /// geo coordinates into shape definitions.
     /// </summary>
     public static partial class GeoCalculations

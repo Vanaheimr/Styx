@@ -80,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The symbol of the currency, e.g. '€' or '$'.
         /// </summary>
-        public String                Symbol            { get; }
+        public String?               Symbol            { get; }
 
         /// <summary>
         /// The location of the currency symbol in relation to its numeric value.
@@ -113,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Currency(String            Name,
                         String            ISOCode,
                         UInt16            Numeric,
-                        String            Symbol,
+                        String?           Symbol,
                         Symbol_Location   SymbolLocation,
                         params Country[]  Countries)
         {
@@ -221,6 +221,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Clone
+
+        /// <summary>
+        /// Clone this currency.
+        /// </summary>
+        public Currency Clone
+
+            => new (Name,
+                    ISOCode,
+                    Numeric,
+                    Symbol,
+                    SymbolLocation,
+                    Countries.ToArray());
+
+        #endregion
+
 
         #region Operator overloading
 
@@ -229,9 +245,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object for equality.
         /// </summary>
-        /// <param name="Currency1">A currency object.</param>
-        /// <param name="Currency2">Another currency object.</param>
-        public static Boolean operator == (Currency Currency1, Currency Currency2)
+        /// <param name="Currency1">A currency.</param>
+        /// <param name="Currency2">Another currency.</param>
+        public static Boolean operator == (Currency Currency1,
+                                           Currency Currency2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -239,7 +256,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object)Currency1 == null) || ((Object)Currency2 == null))
+            if (Currency1 is null || Currency2 is null)
                 return false;
 
             return Currency1.Equals(Currency2);
@@ -253,9 +270,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object for inequality.
         /// </summary>
-        /// <param name="Currency1">A currency object.</param>
-        /// <param name="Currency2">Another currency object.</param>
-        public static Boolean operator != (Currency Currency1, Currency Currency2)
+        /// <param name="Currency1">A currency.</param>
+        /// <param name="Currency2">Another currency.</param>
+        public static Boolean operator != (Currency Currency1,
+                                           Currency Currency2)
+
             => !(Currency1 == Currency2);
 
         #endregion
@@ -267,35 +286,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two currencies.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">A currency to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object is null)
-                throw new ArgumentNullException("The given object must not be null!");
-
-            if (!(Object is Currency Currency))
-                throw new ArgumentException("The given object is not a currency!");
-
-            return CompareTo(Currency);
-
-        }
+            => Object is Currency currency
+                   ? CompareTo(currency)
+                   : throw new ArgumentException("The given object is not a currency!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(Currency)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two currencies.
         /// </summary>
-        /// <param name="Currency">An object to compare with.</param>
-        public Int32 CompareTo(Currency Currency)
+        /// <param name="Currency">A currency to compare with.</param>
+        public Int32 CompareTo(Currency? Currency)
         {
 
             if (Currency is null)
-                throw new ArgumentNullException("The given Currency must not be null!");
+                throw new ArgumentNullException(nameof(Currency), "The given currency must not be null!");
 
             var c = ISOCode.CompareTo(Currency.ISOCode);
 
@@ -318,22 +331,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two currencies for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">A currency to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object is null)
-                return false;
-
-            if (!(Object is Currency Currency))
-                return false;
-
-            return Equals(Currency);
-
-        }
+            => Object is Currency currency &&
+                  Equals(currency);
 
         #endregion
 
@@ -342,18 +346,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two currencies for equality.
         /// </summary>
-        /// <param name="Currency">An Currency to compare with.</param>
-        public Boolean Equals(Currency Currency)
-        {
+        /// <param name="Currency">A currency to compare with.</param>
+        public Boolean Equals(Currency? Currency)
 
-            if (Currency is null)
-                return false;
+            => Currency is not null &&
 
-            return ISOCode == Currency.ISOCode &&
-                   Numeric == Currency.Numeric &&
-                   Name    == Currency.Name;
-
-        }
+               ISOCode == Currency.ISOCode &&
+               Numeric == Currency.Numeric &&
+               Name    == Currency.Name;
 
         #endregion
 

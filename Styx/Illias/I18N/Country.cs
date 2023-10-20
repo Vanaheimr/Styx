@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -36,11 +35,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private static readonly Dictionary<I18NString, Country> CountryNames  = new Dictionary<I18NString, Country>();
-        private static readonly Dictionary<String,     Country> Alpha2Codes   = new Dictionary<String,    Country>();
-        private static readonly Dictionary<String,     Country> Alpha3Codes   = new Dictionary<String,    Country>();
-        private static readonly Dictionary<UInt16,     Country> NumericCodes  = new Dictionary<UInt16,    Country>();
-        private static readonly Dictionary<UInt16,     Country> TelefonCodes  = new Dictionary<UInt16,    Country>();
+        /// <summary>
+        /// The regular expression for parsing a country alpha-2 code used for unknown country codes only:
+        /// ^[A-Za-z]{2}$
+        /// </summary>
+        public  static readonly Regex                            Alpha2Codes_RegEx  = new(@"^[A-Za-z]{2}$",
+                                                                                          RegexOptions.IgnorePatternWhitespace);
+
+        private static readonly Dictionary<I18NString, Country>  CountryNames       = new();
+        private static readonly Dictionary<String,     Country>  Alpha2Codes        = new();
+        private static readonly Dictionary<String,     Country>  Alpha3Codes        = new();
+        private static readonly Dictionary<UInt16,     Country>  NumericCodes       = new();
+        private static readonly Dictionary<UInt16,     Country>  TelefonCodes       = new();
 
         #endregion
 
@@ -395,27 +401,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (CountryNames.Count == 0)
                 {
-
-                    Country _Country;
-
-                    foreach (var _FieldInfo in typeof(Country).GetFields())
+                    foreach (var fieldInfo in typeof(Country).GetFields())
                     {
+                        if (fieldInfo.GetValue(null) is Country country)
+                        {
 
-                        _Country = _FieldInfo.GetValue(null) as Country;
+                            if (country.CountryName == unknown.CountryName)
+                                continue;
 
-                        if (_Country.CountryName == unknown.CountryName)
-                            continue;
+                            CountryNames.Add(country.CountryName,
+                                             country);
 
-                        CountryNames.Add(_Country.CountryName,            _Country);
-                        Alpha2Codes. Add(_Country.Alpha2Code?.ToLower(),  _Country);
-                        Alpha3Codes. Add(_Country.Alpha3Code?.ToLower(),  _Country);
-                        NumericCodes.Add(_Country.NumericCode,            _Country);
+                            NumericCodes.Add(country.NumericCode,
+                                             country);
 
-                        if (!TelefonCodes.ContainsKey(_Country.TelefonCode))
-                            TelefonCodes.Add(_Country.TelefonCode, _Country);
+                            if (country.Alpha2Code is not null)
+                                Alpha2Codes.Add(country.Alpha2Code.ToLower(),
+                                                country);
 
+                            if (country.Alpha3Code is not null)
+                                Alpha3Codes.Add(country.Alpha3Code.ToLower(),
+                                                country);
+
+                            if (!TelefonCodes.ContainsKey(country.TelefonCode))
+                                TelefonCodes.Add(country.TelefonCode,
+                                                 country);
+
+                        }
                     }
-
                 }
 
             }

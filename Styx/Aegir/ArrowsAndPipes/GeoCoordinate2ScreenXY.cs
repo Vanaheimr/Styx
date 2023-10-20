@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     #region (class) GeoCalculations
 
     /// <summary>
-    /// A bunch of extention methods to transform geo coordinates
+    /// A bunch of extension methods to transform geo coordinates
     /// into their corresponding screen positions.
     /// </summary>
     public static partial class GeoCalculations
