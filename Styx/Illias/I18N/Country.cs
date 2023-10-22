@@ -104,6 +104,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.NumericCode  = NumericCode;
             this.TelefonCode  = TelefonCode;
 
+            unchecked
+            {
+
+                hashCode = CountryName.         GetHashCode() ^
+                           Alpha2Code.ToLower().GetHashCode() ^
+                           Alpha3Code.ToLower().GetHashCode() ^
+                           NumericCode.         GetHashCode() ^
+                           TelefonCode.         GetHashCode();
+
+            }
+
         }
 
         #endregion
@@ -813,11 +824,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Country Clone
 
-            => new Country(CountryName.Clone,
-                           Alpha2Code != null ? new String(Alpha2Code.ToCharArray()) : null,
-                           Alpha3Code != null ? new String(Alpha3Code.ToCharArray()) : null,
-                           NumericCode,
-                           TelefonCode);
+            => new (
+                   CountryName.Clone(),
+                   new String(Alpha2Code.ToCharArray()),
+                   new String(Alpha3Code.ToCharArray()),
+                   NumericCode,
+                   TelefonCode
+               );
 
         #endregion
 
@@ -929,28 +942,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two countries.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        /// <param name="Object">A country to compare with.</param>
+        public Int32 CompareTo(Object? Object)
 
             => Object is Country country
                    ? CompareTo(country)
-                   : throw new ArgumentException("The given object is not a country!");
+                   : throw new ArgumentException("The given object is not a country!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(Country)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two countries.
         /// </summary>
-        /// <param name="Country">An object to compare with.</param>
-        public Int32 CompareTo(Country Country)
+        /// <param name="Country">A country to compare with.</param>
+        public Int32 CompareTo(Country? Country)
+        {
 
-            => Country is null
-                   ? throw new ArgumentNullException(nameof(Country), "The given country must not be null!")
-                   : String.Compare(Alpha2Code, Country.Alpha2Code, StringComparison.OrdinalIgnoreCase);
+            if (Country is null)
+                throw new ArgumentNullException(nameof(Country), "The given country must not be null!");
+
+            return String.Compare(Alpha2Code,
+                                  Country.Alpha2Code,
+                                  StringComparison.OrdinalIgnoreCase);
+
+        }
 
         #endregion
 
@@ -961,11 +981,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two countries for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">A country to compare with.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Country country &&
                    Equals(country);
@@ -975,15 +994,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Country)
 
         /// <summary>
-        /// Compares two Countrys for equality.
+        /// Compares two countries for equality.
         /// </summary>
-        /// <param name="Country">A Country to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Country Country)
+        /// <param name="Country">A country to compare with.</param>
+        public Boolean Equals(Country? Country)
 
-            => (!(Country is null)) &&
+            => Country is not null &&
 
-               Alpha2Code.ToLower() == Country.Alpha2Code.ToLower();
+               String.Equals(Alpha2Code,
+                             Country.Alpha2Code,
+                             StringComparison.OrdinalIgnoreCase);
 
         #endregion
 
@@ -991,17 +1011,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (override) GetHashCode()
 
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        /// <returns>The HashCode of this object.</returns>
-        public override Int32 GetHashCode()
+        private readonly Int32 hashCode;
 
-            => CountryName.         GetHashCode() ^
-               Alpha2Code.ToLower().GetHashCode() ^
-               Alpha3Code.ToLower().GetHashCode() ^
-               NumericCode.         GetHashCode() ^
-               TelefonCode.         GetHashCode();
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 
@@ -1012,11 +1028,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat(CountryName, ", ",
-                             Alpha2Code,  ", ",
-                             Alpha3Code,  ", ",
-                             NumericCode, ", +",
-                             TelefonCode);
+            => $"{CountryName}, {Alpha2Code}, {Alpha3Code}, {NumericCode}, +{TelefonCode}";
 
         #endregion
 

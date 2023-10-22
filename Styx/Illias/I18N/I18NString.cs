@@ -227,7 +227,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString(Languages Language, String Text)
             : this()
         {
+
             i18NStrings.Add(Language, Text);
+
+            GenerateHashCode();
+
         }
 
         #endregion
@@ -242,9 +246,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             : this()
         {
 
-            if (Texts != null)
+            if (Texts is not null)
                 foreach (var Text in Texts)
                     i18NStrings.Add(Text.Key, Text.Value);
+
+            GenerateHashCode();
 
         }
 
@@ -260,9 +266,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             : this()
         {
 
-            if (I18NPairs != null)
+            if (I18NPairs is not null)
                 foreach (var Text in I18NPairs)
                     i18NStrings.Add(Text.Language, Text.Text);
+
+            GenerateHashCode();
 
         }
 
@@ -278,9 +286,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             : this()
         {
 
-            if (I18NPairs != null)
+            if (I18NPairs is not null)
                 foreach (var Text in I18NPairs)
                     i18NStrings.Add(Text.Language, Text.Text);
+
+            GenerateHashCode();
 
         }
 
@@ -418,6 +428,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
+
+            GenerateHashCode();
 
             return this;
 
@@ -665,6 +677,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Clone()
+
+        /// <summary>
+        /// Clone this internationalized (I18N) multi-language text/string.
+        /// </summary>
+        public I18NString Clone()
+
+            => new (i18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
+
+        #endregion
+
 
         #region Remove(Language)
 
@@ -675,15 +698,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString Remove(Languages Language)
         {
 
-            if (i18NStrings.ContainsKey(Language))
-                i18NStrings.Remove(Language);
+            if (i18NStrings.Remove(Language))
+                GenerateHashCode();
 
             return this;
 
         }
 
         #endregion
-
 
         #region Count
 
@@ -693,17 +715,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UInt32 Count
 
             => (UInt32) i18NStrings.Count;
-
-        #endregion
-
-        #region Clone
-
-        /// <summary>
-        /// Clone this energy source.
-        /// </summary>
-        public I18NString Clone
-
-            => new I18NString(i18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
 
         #endregion
 
@@ -815,25 +826,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (override) GetHashCode()
+        #region GenerateHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Generate the hashcode of this object.
         /// </summary>
-        public override Int32 GetHashCode()
+        public void GenerateHashCode()
         {
 
-            Int32 returnValue = 0;
+            hashCode = 0;
 
-            foreach (var Value in i18NStrings.
-                                      Select(I18N => I18N.Key.GetHashCode() ^ I18N.Value.GetHashCode()))
+            foreach (var Value in i18NStrings.Select(I18N => I18N.Key.GetHashCode() ^ I18N.Value.GetHashCode()))
             {
-                returnValue ^= Value;
+                hashCode ^= Value;
             }
 
-            return returnValue;
-
         }
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        private Int32 hashCode;
+
+        /// <summary>
+        /// Return the hash code of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+            => hashCode;
 
         #endregion
 
