@@ -4427,7 +4427,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Ampere?   AmpereValue,
-                                            out String?   ErrorResponse)
+                                            out String?   ErrorResponse,
+                                            Int32?        Multiplicator = null)
         {
 
             AmpereValue    = default;
@@ -4451,7 +4452,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    AmpereValue   = Ampere.Parse(decimalValue);
+                    AmpereValue   = Ampere.Parse(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4472,7 +4473,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Hertz?    HertzValue,
-                                            out String?   ErrorResponse)
+                                            out String?   ErrorResponse,
+                                            Int32?        Multiplicator = null)
         {
 
             HertzValue     = default;
@@ -4496,7 +4498,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    HertzValue    = Hertz.Parse(decimalValue);
+                    HertzValue    = Hertz.Parse(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4517,7 +4519,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Meter?    MeterValue,
-                                            out String?   ErrorResponse)
+                                            out String?   ErrorResponse,
+                                            Int32?        Multiplicator = null)
         {
 
             MeterValue     = default;
@@ -4541,7 +4544,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    MeterValue    = Meter.Parse(decimalValue);
+                    MeterValue    = Meter.Parse(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4652,7 +4655,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Volt?     VoltValue,
-                                            out String?   ErrorResponse)
+                                            out String?   ErrorResponse,
+                                            Int32?        Multiplicator = null)
         {
 
             VoltValue      = default;
@@ -4676,7 +4680,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    VoltValue     = Volt.Parse(decimalValue);
+                    VoltValue     = Volt.Parse(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4697,7 +4701,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String        PropertyName,
                                             String        PropertyDescription,
                                             out Watt?     WattValue,
-                                            out String?   ErrorResponse)
+                                            out String?   ErrorResponse,
+                                            Int32?        Multiplicator = null)
         {
 
             WattValue      = default;
@@ -4721,7 +4726,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    WattValue     = Watt.Parse(decimalValue);
+                    WattValue     = Watt.Parse(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4742,7 +4747,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String         PropertyName,
                                             String         PropertyDescription,
                                             out WattHour?  WattHourValue,
-                                            out String?    ErrorResponse)
+                                            out String?    ErrorResponse,
+                                            Int32?         Multiplicator = null)
         {
 
             WattHourValue  = default;
@@ -4766,7 +4772,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    WattHourValue = WattHour.Parse(decimalValue);
+                    WattHourValue = WattHour.TryParse(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";

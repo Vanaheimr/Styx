@@ -74,16 +74,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number)
+        #region (static) Parse   (Number, Multiplicator = null)
 
         /// <summary>
         /// Parse the given number as a frequency.
         /// </summary>
         /// <param name="Number">A numeric representation of a frequency.</param>
-        public static Hertz Parse(Decimal Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Hertz Parse(Decimal  Number,
+                                  Int32?   Multiplicator = null)
         {
 
-            if (TryParse(Number, out var hertz))
+            if (TryParse(Number, out var hertz, Multiplicator))
                 return hertz;
 
             throw new ArgumentException($"Invalid numeric representation of a frequency: '{Number}'!",
@@ -96,10 +98,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a frequency.
         /// </summary>
         /// <param name="Number">A numeric representation of a frequency.</param>
-        public static Hertz Parse(Byte Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Hertz Parse(Byte    Number,
+                                  Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var hertz))
+            if (TryParse(Number, out var hertz, Multiplicator))
                 return hertz;
 
             throw new ArgumentException($"Invalid numeric representation of a frequency: '{Number}'!",
@@ -127,16 +131,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number)
+        #region (static) TryParse(Number, Multiplicator = null)
 
         /// <summary>
         /// Try to parse the given number as a frequency.
         /// </summary>
         /// <param name="Number">A numeric representation of a frequency.</param>
-        public static Hertz? TryParse(Decimal Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Hertz? TryParse(Decimal  Number,
+                                      Int32?   Multiplicator = null)
         {
 
-            if (TryParse(Number, out var hertz))
+            if (TryParse(Number, out var hertz, Multiplicator))
                 return hertz;
 
             return null;
@@ -148,10 +154,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a frequency.
         /// </summary>
         /// <param name="Number">A numeric representation of a frequency.</param>
-        public static Hertz? TryParse(Byte Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Hertz? TryParse(Byte    Number,
+                                      Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var hertz))
+            if (TryParse(Number, out var hertz, Multiplicator))
                 return hertz;
 
             return null;
@@ -206,19 +214,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out Hertz)
+        #region (static) TryParse(Number, out Hertz, Multiplicator = null)
 
         /// <summary>
         /// Parse the given number as a frequency.
         /// </summary>
         /// <param name="Number">A numeric representation of a frequency.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
-        public static Boolean TryParse(Byte Number, out Hertz Hertz)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Boolean TryParse(Byte       Number,
+                                       out Hertz  Hertz,
+                                       Int32?     Multiplicator = null)
         {
 
-            Hertz = new Hertz(Number);
+            try
+            {
 
-            return true;
+                Hertz = new Hertz(Number * (10 ^ (Multiplicator ?? 0)));
+
+                return true;
+
+            }
+            catch
+            {
+                Hertz = default;
+                return false;
+            }
 
         }
 
@@ -228,12 +249,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a frequency.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
-        public static Boolean TryParse(Decimal Number, out Hertz Hertz)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Boolean TryParse(Decimal    Number,
+                                       out Hertz  Hertz,
+                                       Int32?     Multiplicator = null)
         {
 
-            Hertz = new Hertz(Number);
+            try
+            {
 
-            return true;
+                Hertz = new Hertz(Number * (10 ^ (Multiplicator ?? 0)));
+
+                return true;
+
+            }
+            catch
+            {
+                Hertz = default;
+                return false;
+            }
 
         }
 

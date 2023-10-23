@@ -74,16 +74,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number)
+        #region (static) Parse   (Number, Multiplicator = null)
 
         /// <summary>
         /// Parse the given number as an Ampere.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
-        public static Ampere Parse(Decimal Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Ampere Parse(Decimal  Number,
+                                   Int32?   Multiplicator = null)
         {
 
-            if (TryParse(Number, out var ampere))
+            if (TryParse(Number, out var ampere, Multiplicator))
                 return ampere;
 
             throw new ArgumentException($"Invalid numeric representation of an Ampere: '{Number}'!",
@@ -96,10 +98,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as an Ampere.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
-        public static Ampere Parse(Byte Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Ampere Parse(Byte    Number,
+                                   Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var ampere))
+            if (TryParse(Number, out var ampere, Multiplicator))
                 return ampere;
 
             throw new ArgumentException($"Invalid numeric representation of an Ampere: '{Number}'!",
@@ -127,16 +131,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number)
+        #region (static) TryParse(Number, Multiplicator = null)
 
         /// <summary>
         /// Try to parse the given number as an Ampere.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
-        public static Ampere? TryParse(Decimal Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Ampere? TryParse(Decimal  Number,
+                                       Int32?   Multiplicator = null)
         {
 
-            if (TryParse(Number, out var ampere))
+            if (TryParse(Number, out var ampere, Multiplicator))
                 return ampere;
 
             return null;
@@ -148,10 +154,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as an Ampere.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
-        public static Ampere? TryParse(Byte Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Ampere? TryParse(Byte    Number,
+                                       Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var ampere))
+            if (TryParse(Number, out var ampere, Multiplicator))
                 return ampere;
 
             return null;
@@ -206,19 +214,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out Ampere)
+        #region (static) TryParse(Number, out Ampere, Multiplicator = null)
 
         /// <summary>
         /// Parse the given number as an Ampere.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
-        public static Boolean TryParse(Byte Number, out Ampere Ampere)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Boolean TryParse(Byte        Number,
+                                       out Ampere  Ampere,
+                                       Int32?      Multiplicator = null)
         {
 
-            Ampere = new Ampere(Number);
+            try
+            {
 
-            return true;
+                Ampere = new Ampere(Number * (10 ^ (Multiplicator ?? 0)));
+
+                return true;
+
+            }
+            catch
+            {
+                Ampere = default;
+                return false;
+            }
 
         }
 
@@ -228,12 +249,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
-        public static Boolean TryParse(Decimal Number, out Ampere Ampere)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Boolean TryParse(Decimal     Number,
+                                       out Ampere  Ampere,
+                                       Int32?      Multiplicator = null)
         {
 
-            Ampere = new Ampere(Number);
+            try
+            {
 
-            return true;
+                Ampere = new Ampere(Number * (10 ^ (Multiplicator ?? 0)));
+
+                return true;
+
+            }
+            catch
+            {
+                Ampere = default;
+                return false;
+            }
 
         }
 

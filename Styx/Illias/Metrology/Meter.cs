@@ -81,16 +81,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number)
+        #region (static) Parse   (Number, Multiplicator = null)
 
         /// <summary>
         /// Parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
-        public static Meter Parse(Decimal Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Meter Parse(Decimal  Number,
+                                  Int32?   Multiplicator = null)
         {
 
-            if (TryParse(Number, out var meter))
+            if (TryParse(Number, out var meter, Multiplicator))
                 return meter;
 
             throw new ArgumentException($"Invalid numeric representation of a Meter: '{Number}'!",
@@ -103,10 +105,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
-        public static Meter Parse(Double Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Meter Parse(Double  Number,
+                                  Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var meter))
+            if (TryParse(Number, out var meter, Multiplicator))
                 return meter;
 
             throw new ArgumentException($"Invalid numeric representation of a Meter: '{Number}'!",
@@ -119,10 +123,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
-        public static Meter Parse(Byte Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Meter Parse(Byte    Number,
+                                  Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var meter))
+            if (TryParse(Number, out var meter, Multiplicator))
                 return meter;
 
             throw new ArgumentException($"Invalid numeric representation of a Meter: '{Number}'!",
@@ -150,16 +156,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number)
+        #region (static) TryParse(Number, Multiplicator = null)
 
         /// <summary>
         /// Try to parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
-        public static Meter? TryParse(Decimal Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Meter? TryParse(Decimal  Number,
+                                      Int32?   Multiplicator = null)
         {
 
-            if (TryParse(Number, out var meter))
+            if (TryParse(Number, out var meter, Multiplicator))
                 return meter;
 
             return null;
@@ -171,10 +179,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
-        public static Meter? TryParse(Double Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Meter? TryParse(Double  Number,
+                                      Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var meter))
+            if (TryParse(Number, out var meter, Multiplicator))
                 return meter;
 
             return null;
@@ -186,10 +196,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
-        public static Meter? TryParse(Byte Number)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Meter? TryParse(Byte    Number,
+                                      Int32?  Multiplicator = null)
         {
 
-            if (TryParse(Number, out var meter))
+            if (TryParse(Number, out var meter, Multiplicator))
                 return meter;
 
             return null;
@@ -238,14 +250,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out Meter)
+        #region (static) TryParse(Number, out Meter, Multiplicator = null)
 
         /// <summary>
         /// Parse the given number as a Meter.
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParse(Byte Number, out Meter Meter)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Boolean TryParse(Byte       Number,
+                                       out Meter  Meter,
+                                       Int32?     Multiplicator = null)
         {
 
             Meter = new Meter(Number);
@@ -260,12 +275,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParse(Double Number, out Meter Meter)
+        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        public static Boolean TryParse(Double     Number,
+                                       out Meter  Meter,
+                                       Int32?     Multiplicator = null)
         {
 
-            Meter = new Meter(Convert.ToDecimal(Number));
+            try
+            {
 
-            return true;
+                Meter = new Meter((Decimal) (Number * (10 ^ (Multiplicator ?? 0))));
+
+                return true;
+
+            }
+            catch
+            {
+                Meter = default;
+                return false;
+            }
 
         }
 
@@ -275,12 +303,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParse(Decimal Number, out Meter Meter)
+        public static Boolean TryParse(Decimal    Number,
+                                       out Meter  Meter,
+                                       Int32?     Multiplicator = null)
         {
 
-            Meter = new Meter(Number);
+            try
+            {
 
-            return true;
+                Meter = new Meter(Number * (10 ^ (Multiplicator ?? 0)));
+
+                return true;
+
+            }
+            catch
+            {
+                Meter = default;
+                return false;
+            }
 
         }
 
