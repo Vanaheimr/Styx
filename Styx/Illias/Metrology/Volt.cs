@@ -87,18 +87,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number, Multiplicator = null)
+        #region (static) Parse   (Number, Exponent = null)
 
         /// <summary>
         /// Parse the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Volt Parse(Decimal  Number,
-                                 Int32?   Multiplicator = null)
+                                 Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var volt, Multiplicator))
+            if (TryParse(Number, out var volt, Exponent))
                 return volt;
 
             throw new ArgumentException($"Invalid numeric representation of a Volt: '{Number}'!",
@@ -111,12 +111,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Volt Parse(Byte    Number,
-                                 Int32?  Multiplicator = null)
+                                 Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var volt, Multiplicator))
+            if (TryParse(Number, out var volt, Exponent))
                 return volt;
 
             throw new ArgumentException($"Invalid numeric representation of a Volt: '{Number}'!",
@@ -144,18 +144,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, Multiplicator = null)
+        #region (static) TryParse(Number, Exponent = null)
 
         /// <summary>
         /// Try to parse the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Volt? TryParse(Decimal  Number,
-                                     Int32?   Multiplicator = null)
+                                     Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var volt, Multiplicator))
+            if (TryParse(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -167,12 +167,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Volt? TryParse(Byte    Number,
-                                     Int32?  Multiplicator = null)
+                                     Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var volt, Multiplicator))
+            if (TryParse(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -227,23 +227,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out Volt, Multiplicator = null)
+        #region (static) TryParse(Number, out Volt, Exponent = null)
 
         /// <summary>
         /// Parse the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Volt">The parsed Volt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParse(Byte      Number,
                                        out Volt  Volt,
-                                       Int32?    Multiplicator = null)
+                                       Int32?    Exponent = null)
         {
 
             try
             {
 
-                Volt = new Volt(Number * (10 ^ (Multiplicator ?? 0)));
+                Volt = new Volt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
 
                 return true;
 
@@ -262,16 +262,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Volt">The parsed Volt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParse(Decimal   Number,
                                        out Volt  Volt,
-                                       Int32?    Multiplicator = null)
+                                       Int32?    Exponent = null)
         {
 
             try
             {
 
-                Volt = new Volt(Number * (10 ^ (Multiplicator ?? 0)));
+                Volt = new Volt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
 
                 return true;
 

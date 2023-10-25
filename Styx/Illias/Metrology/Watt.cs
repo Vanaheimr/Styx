@@ -87,18 +87,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number, Multiplicator = null)
+        #region (static) Parse   (Number, Exponent = null)
 
         /// <summary>
         /// Parse the given number as a Watt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Watt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt Parse(Decimal  Number,
-                                 Int32?   Multiplicator = null)
+                                 Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var watt, Multiplicator))
+            if (TryParse(Number, out var watt, Exponent))
                 return watt;
 
             throw new ArgumentException($"Invalid numeric representation of a Watt: '{Number}'!",
@@ -111,12 +111,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a Watt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Watt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt Parse(Byte    Number,
-                                 Int32?  Multiplicator = null)
+                                 Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var watt, Multiplicator))
+            if (TryParse(Number, out var watt, Exponent))
                 return watt;
 
             throw new ArgumentException($"Invalid numeric representation of a Watt: '{Number}'!",
@@ -144,18 +144,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, Multiplicator = null)
+        #region (static) TryParse(Number, Exponent = null)
 
         /// <summary>
         /// Try to parse the given number as a Watt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Watt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryParse(Decimal  Number,
-                                     Int32?   Multiplicator = null)
+                                     Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var watt, Multiplicator))
+            if (TryParse(Number, out var watt, Exponent))
                 return watt;
 
             return null;
@@ -167,12 +167,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a Watt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Watt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryParse(Byte    Number,
-                                     Int32?  Multiplicator = null)
+                                     Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var watt, Multiplicator))
+            if (TryParse(Number, out var watt, Exponent))
                 return watt;
 
             return null;
@@ -227,23 +227,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out Watt, Multiplicator = null)
+        #region (static) TryParse(Number, out Watt, Exponent = null)
 
         /// <summary>
         /// Parse the given number as a Watt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Watt.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParse(Byte      Number,
                                        out Watt  Watt,
-                                       Int32?    Multiplicator = null)
+                                       Int32?    Exponent = null)
         {
 
             try
             {
 
-                Watt = new Watt(Number * (10 ^ (Multiplicator ?? 0)));
+                Watt = new Watt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
 
                 return true;
 
@@ -262,16 +262,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Watt.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParse(Decimal   Number,
                                        out Watt  Watt,
-                                       Int32?    Multiplicator = null)
+                                       Int32?    Exponent = null)
         {
 
             try
             {
 
-                Watt = new Watt(Number * (10 ^ (Multiplicator ?? 0)));
+                Watt = new Watt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
 
                 return true;
 

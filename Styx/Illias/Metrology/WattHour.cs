@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+using System.Net.WebSockets;
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -87,18 +89,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number, Multiplicator = null)
+        #region (static) Parse   (Number, Exponent = null)
 
         /// <summary>
         /// Parse the given number as a WattHour.
         /// </summary>
         /// <param name="Number">A numeric representation of a WattHour.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static WattHour Parse(Decimal  Number,
-                                     Int32?   Multiplicator = null)
+                                     Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var wattHour, Multiplicator))
+            if (TryParse(Number, out var wattHour, Exponent))
                 return wattHour;
 
             throw new ArgumentException($"Invalid numeric representation of a WattHour: '{Number}'!",
@@ -111,12 +113,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a WattHour.
         /// </summary>
         /// <param name="Number">A numeric representation of a WattHour.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static WattHour Parse(Byte    Number,
-                                     Int32?  Multiplicator = null)
+                                     Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var wattHour, Multiplicator))
+            if (TryParse(Number, out var wattHour, Exponent))
                 return wattHour;
 
             throw new ArgumentException($"Invalid numeric representation of a WattHour: '{Number}'!",
@@ -144,18 +146,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, Multiplicator = null)
+        #region (static) TryParse(Number, Exponent = null)
 
         /// <summary>
         /// Try to parse the given number as a WattHour.
         /// </summary>
         /// <param name="Number">A numeric representation of a WattHour.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static WattHour? TryParse(Decimal  Number,
-                                         Int32?   Multiplicator = null)
+                                         Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var wattHour, Multiplicator))
+            if (TryParse(Number, out var wattHour, Exponent))
                 return wattHour;
 
             return null;
@@ -167,12 +169,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a WattHour.
         /// </summary>
         /// <param name="Number">A numeric representation of a WattHour.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static WattHour? TryParse(Byte    Number,
-                                         Int32?  Multiplicator = null)
+                                         Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var wattHour, Multiplicator))
+            if (TryParse(Number, out var wattHour, Exponent))
                 return wattHour;
 
             return null;
@@ -227,23 +229,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out WattHour, Multiplicator = null)
+        #region (static) TryParse(Number, out WattHour, Exponent = null)
 
         /// <summary>
         /// Parse the given number as a WattHour.
         /// </summary>
         /// <param name="Number">A numeric representation of a WattHour.</param>
         /// <param name="WattHour">The parsed WattHour.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParse(Byte          Number,
                                        out WattHour  WattHour,
-                                       Int32?        Multiplicator = null)
+                                       Int32?        Exponent = null)
         {
 
             try
             {
 
-                WattHour = new WattHour(Number * (10 ^ (Multiplicator ?? 0)));
+                WattHour = new WattHour(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
 
                 return true;
 
@@ -262,16 +264,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a WattHour.</param>
         /// <param name="WattHour">The parsed WattHour.</param>
-        /// <param name="Multiplicator">An optional 10^n multiplicator.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParse(Decimal       Number,
                                        out WattHour  WattHour,
-                                       Int32?        Multiplicator = null)
+                                       Int32?        Exponent = null)
         {
 
             try
             {
 
-                WattHour = new WattHour(Number * (10 ^ (Multiplicator ?? 0)));
+                WattHour = new WattHour(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
 
                 return true;
 
