@@ -980,7 +980,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return DefaultValue;
 
             return Enumeration.
-                       //Where (element => !EqualityComparer<T>.Default.Equals(element, default)).
                        Select(element => element?.ToString() ?? "").
                        AggregateOrDefault((a, b) => a + Seperator + b,
                                           DefaultValue)
