@@ -300,6 +300,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public static WattHour Zero
+            => new (0);
+
+
         #region Operator overloading
 
         #region Operator == (WattHour1, WattHour2)

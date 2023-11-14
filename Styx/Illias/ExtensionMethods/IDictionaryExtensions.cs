@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -31,7 +24,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class IDictionaryExtensions
     {
 
-        #region AddAndReturnDictionary(this Dictionary, K, V)
+        #region AddAndReturnDictionary(this Dictionary, Key, Value)
 
         /// <summary>
         /// Another way to add an element to a dictionary.
@@ -39,7 +32,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="Key">The element key.</param>
         /// <param name="Value">The element value.</param>
-        /// <returns>The changed dictionary.</returns>
         public static IDictionary<K, V> AddAndReturnDictionary<K, V>(this IDictionary<K, V> Dictionary, K Key, V Value)
         {
             Dictionary.Add(Key, Value);
@@ -48,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnDictionary(this Dictionary, KeyCreator, V)
+        #region AddAndReturnDictionary(this Dictionary, KeyCreator, Value)
 
         /// <summary>
         /// Another way to add an element to a dictionary.
@@ -56,12 +48,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="KeyCreator">A delegate providing the key.</param>
         /// <param name="Value">The element value.</param>
-        /// <returns>The changed dictionary.</returns>
         public static IDictionary<K, V> AddAndReturnDictionary<K, V>(this IDictionary<K, V> Dictionary, Func<V, K> KeyCreator, V Value)
         {
-
-            if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
 
             Dictionary.Add(KeyCreator(Value), Value);
 
@@ -72,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region AddAndReturnKeyValuePair(this Dictionary, K, V)
+        #region AddAndReturnKeyValuePair(this Dictionary, Key, Value)
 
         /// <summary>
         /// Another way to add an value to a dictionary.
@@ -80,7 +68,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="Key">The element key.</param>
         /// <param name="Value">The element value.</param>
-        /// <returns>The element as key value pair.</returns>
         public static KeyValuePair<K, V> AddAndReturnKeyValuePair<K, V>(this IDictionary<K, V> Dictionary, K Key, V Value)
         {
             Dictionary.Add(Key, Value);
@@ -89,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnKeyValuePair(this Dictionary, KeyCreator, V)
+        #region AddAndReturnKeyValuePair(this Dictionary, KeyCreator, Value)
 
         /// <summary>
         /// Another way to add an value to a dictionary.
@@ -97,25 +84,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="KeyCreator">A delegate providing the key.</param>
         /// <param name="Value">The element value.</param>
-        /// <returns>The element as key value pair.</returns>
         public static KeyValuePair<K, V> AddAndReturnKeyValuePair<K, V>(this IDictionary<K, V> Dictionary, Func<V, K> KeyCreator, V Value)
         {
 
-            if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
+            var keyValuePair = new KeyValuePair<K, V>(KeyCreator(Value), Value);
 
-            var KeyValuePair = new KeyValuePair<K, V>(KeyCreator(Value), Value);
+            Dictionary.Add(keyValuePair);
 
-            Dictionary.Add(KeyValuePair);
-
-            return KeyValuePair;
+            return keyValuePair;
 
         }
 
         #endregion
 
 
-        #region AddAndReturnKey(this Dictionary, K, V)
+        #region AddAndReturnKey(this Dictionary, Key, Value)
 
         /// <summary>
         /// Another way to add an value to a dictionary.
@@ -132,7 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnKey(this Dictionary, KeyCreator, V)
+        #region AddAndReturnKey(this Dictionary, KeyCreator, Value)
 
         /// <summary>
         /// Another way to add an value to a dictionary.
@@ -144,21 +127,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static K AddAndReturnKey<K, V>(this IDictionary<K, V> Dictionary, Func<V, K> KeyCreator, V Value)
         {
 
-            if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
+            var key = KeyCreator(Value);
 
-            // Just call it once... as you never know what happens when you do it twice ;)!
-            var Key = KeyCreator(Value);
-            Dictionary.Add(Key, Value);
+            Dictionary.Add(key, Value);
 
-            return Key;
+            return key;
 
         }
 
         #endregion
 
 
-        #region AddAndReturnValue(this Dictionary, K, V)
+        #region AddAndReturnValue(this Dictionary, Key,        Value)
 
         /// <summary>
         /// Another way to add an value to a dictionary.
@@ -166,7 +146,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="Key">The element key.</param>
         /// <param name="Value">The element value.</param>
-        /// <returns>The element value.</returns>
         public static V AddAndReturnValue<K, V>(this IDictionary<K, V> Dictionary, K Key, V Value)
         {
             Dictionary.Add(Key, Value);
@@ -175,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnValue(this Dictionary, KeyCreator, V)
+        #region AddAndReturnValue(this Dictionary, KeyCreator, Value)
 
         /// <summary>
         /// Another way to add an value to a dictionary.
@@ -183,12 +162,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="KeyCreator">A delegate providing the key.</param>
         /// <param name="Value">The element value.</param>
-        /// <returns>The element value.</returns>
         public static V AddAndReturnValue<K, V>(this IDictionary<K, V> Dictionary, Func<V, K> KeyCreator, V Value)
         {
-
-            if (KeyCreator != null)
-                throw new ArgumentNullException("The given delegate must not be null!", "KeyCreator");
 
             Dictionary.Add(KeyCreator(Value), Value);
 
@@ -206,11 +181,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Dictionary">A dictionary.</param>
         /// <param name="Key">The element key.</param>
-        /// <returns>The element value.</returns>
-        public static V RemoveAndReturnValue<K, V>(this IDictionary<K, V> Dictionary, K Key)
+        public static V? RemoveAndReturnValue<K, V>(this IDictionary<K, V> Dictionary, K Key)
         {
 
-            if (Dictionary.TryGetValue(Key, out V value))
+            if (Dictionary.TryGetValue(Key, out var value))
                 return value;
 
             return default;
@@ -232,11 +206,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static TValue? TryGet<TKey, TValue>(this IDictionary<TKey, TValue> Dictionary, TKey Key)
         {
 
-            if (Dictionary is not null &&
-                Dictionary.TryGetValue(Key, out TValue? value))
-            {
+            if (Dictionary.TryGetValue(Key, out var value))
                 return value;
-            }
 
             return default;
 
