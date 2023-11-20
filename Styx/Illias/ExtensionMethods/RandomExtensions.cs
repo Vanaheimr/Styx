@@ -32,24 +32,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 #pragma warning disable SCS0005 // Weak random number generator.
 
-        #region GetBytes          (NumberOfBytes)
-
-        /// <summary>
-        /// Get an array of random bytes.
-        /// </summary>
-        /// <param name="NumberOfBytes">The number of random bytes to genrate.</param>
-        public static Byte[] GetBytes(UInt16 NumberOfBytes)
-        {
-
-            var ByteArray = new Byte[NumberOfBytes];
-            Random.Shared.NextBytes(ByteArray);
-            return ByteArray;
-
-        }
-
-        #endregion
-
-
         #region RandomInt32       (MaxValue)
 
         /// <summary>
@@ -98,6 +80,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region RandomBytes       (Length)
+
+        /// <summary>
+        /// Fill a byte array of the given length with random bytes.
+        /// </summary>
+        /// <param name="Length">The expected length of the random byte array.</param>
+        public static Byte[] RandomBytes(UInt16 Length)
+        {
+
+            var byteArray = new Byte[Length];
+            Random.Shared.NextBytes(byteArray);
+
+            return byteArray;
+
+        }
+
+        #endregion
 
         #region RandomString      (Length)
 

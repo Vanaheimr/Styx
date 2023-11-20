@@ -28,6 +28,10 @@ using System.Threading.Tasks;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    public delegate T       CustomBinaryParserDelegate<T>    (Byte[]  Binary,     T       DataObject);
+
+    public delegate Byte[]  CustomBinarySerializerDelegate<T>(T       DataObject, Byte[]  Binary);
+
     /// <summary>
     /// Extensions for byte and byte arrays.
     /// </summary>
@@ -142,8 +146,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ByteArray">An array of bytes.</param>
         public static Byte[] Reverse(this Byte[] ByteArray)
         {
-            Array.Reverse(ByteArray, 0, ByteArray.Length);
-            return ByteArray;
+
+            var response = new Byte[ByteArray.Length];
+
+            Array.Copy   (ByteArray, response, ByteArray.Length);
+            Array.Reverse(response, 0, response.Length);
+
+            return response;
+
         }
 
         #endregion
