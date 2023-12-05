@@ -225,7 +225,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                 //var Locations     = new List<HTTPPath>();
 
-                //var ContentType   = HTTPContentType.JSONLD_UTF8;
+                //var ContentType   = HTTPContentType.Application.JSONLD_UTF8;
 
                 //var Size          = 0UL;
 
