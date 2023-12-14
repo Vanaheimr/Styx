@@ -126,7 +126,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             );
 
-            return CustomNamedGeoCoordinateSerializer != null
+            return CustomNamedGeoCoordinateSerializer is not null
                        ? CustomNamedGeoCoordinateSerializer(this, JSON)
                        : JSON;
 
