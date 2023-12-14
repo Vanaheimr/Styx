@@ -50,8 +50,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(_Counter, 10);
-            //Assert.AreEqual(_Sum,     55);
+            //ClassicAssert.AreEqual(_Counter, 10);
+            //ClassicAssert.AreEqual(_Sum,     55);
 
         }
 
@@ -69,10 +69,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //_Pipe.SetSourceCollection(_Numbers);
 
             //var _Counter = 0;
-            //Assert.IsFalse(_Pipe.Any());
-            //Assert.AreEqual(_Counter, 0);
-            //Assert.AreEqual(_Sum,     0);
-            //Assert.IsFalse(_Pipe.Any());
+            //ClassicAssert.IsFalse(_Pipe.Any());
+            //ClassicAssert.AreEqual(_Counter, 0);
+            //ClassicAssert.AreEqual(_Sum,     0);
+            //ClassicAssert.IsFalse(_Pipe.Any());
 
         }
 

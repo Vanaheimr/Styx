@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(_Counter, 100);
+            //ClassicAssert.AreEqual(_Counter, 100);
 
         }
 
@@ -66,9 +66,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //_Pipe.SetSourceCollection(_UUIDs);
 
             //var _Counter = 0;
-            //Assert.IsFalse(_Pipe.Any());
-            //Assert.AreEqual(_Counter, 0);
-            //Assert.IsFalse(_Pipe.Any());
+            //ClassicAssert.IsFalse(_Pipe.Any());
+            //ClassicAssert.AreEqual(_Counter, 0);
+            //ClassicAssert.IsFalse(_Pipe.Any());
 
         }
 
@@ -91,7 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(_Counter, 4);
+            //ClassicAssert.AreEqual(_Counter, 4);
 
         }
 

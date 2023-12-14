@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.util
             //    ClassicAssert.IsTrue(_Pipe.Current);
             //}
             
-            //Assert.AreEqual(4, _Counter);
+            //ClassicAssert.AreEqual(4, _Counter);
 
         }
 

@@ -54,8 +54,8 @@ namespace org.GraphDefined.Vanaheimr.Balder.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(3, _Counter);
-            //Assert.AreEqual(1, _Counter2);
+            //ClassicAssert.AreEqual(3, _Counter);
+            //ClassicAssert.AreEqual(1, _Counter2);
 
         }
 

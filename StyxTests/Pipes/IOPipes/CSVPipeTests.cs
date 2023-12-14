@@ -53,7 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(_Counter, 2);
+            //ClassicAssert.AreEqual(_Counter, 2);
 
         }
 
@@ -104,7 +104,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(_Counter, 2);
+            //ClassicAssert.AreEqual(_Counter, 2);
 
         }
 

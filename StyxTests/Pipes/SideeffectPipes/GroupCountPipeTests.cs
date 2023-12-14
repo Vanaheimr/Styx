@@ -48,12 +48,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(6UL, _Counter);
-            //Assert.AreEqual(1UL, _Pipe.SideEffect["marko"]);
-            //Assert.AreEqual(2UL, _Pipe.SideEffect["josh"]);
-            //Assert.AreEqual(3UL, _Pipe.SideEffect["peter"]);
+            //ClassicAssert.AreEqual(6UL, _Counter);
+            //ClassicAssert.AreEqual(1UL, _Pipe.SideEffect["marko"]);
+            //ClassicAssert.AreEqual(2UL, _Pipe.SideEffect["josh"]);
+            //ClassicAssert.AreEqual(3UL, _Pipe.SideEffect["peter"]);
 
-            //Assert.IsFalse(_Pipe.SideEffect.ContainsKey("povel"));
+            //ClassicAssert.IsFalse(_Pipe.SideEffect.ContainsKey("povel"));
 
         }
 
@@ -69,8 +69,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //var _Pipe  = new GroupCountPipe<String>();
             //_Pipe.SetSourceCollection(_Names);
 
-            //Assert.IsFalse(_Pipe.MoveNext());
-            //Assert.IsFalse(_Pipe.SideEffect.ContainsKey("povel"));
+            //ClassicAssert.IsFalse(_Pipe.MoveNext());
+            //ClassicAssert.IsFalse(_Pipe.SideEffect.ContainsKey("povel"));
 
         }
 

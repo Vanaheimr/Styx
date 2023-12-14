@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    ClassicAssert.IsNull(_Pipe.Current);
             //}
             
-            //Assert.AreEqual(1, _Counter);
+            //ClassicAssert.AreEqual(1, _Counter);
     
             
             //_Pipe = new ObjectFilterPipe<String>(null, ComparisonFilter.EQUAL);
@@ -62,7 +62,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    ClassicAssert.IsTrue(_String.Equals("marko") || _String.Equals("pavel"));
             //}
             
-            //Assert.AreEqual(2, _Counter);
+            //ClassicAssert.AreEqual(2, _Counter);
     
             
             //_Pipe = new ObjectFilterPipe<String>(null, ComparisonFilter.GREATER_THAN);
@@ -74,7 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(0, _Counter);
+            //ClassicAssert.AreEqual(0, _Counter);
     
         }
 
@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(2, _Counter);
+            //ClassicAssert.AreEqual(2, _Counter);
     
             
             //_Pipe = new ObjectFilterPipe<String>("marko", ComparisonFilter.NOT_EQUAL);
@@ -112,7 +112,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(1, _Counter);
+            //ClassicAssert.AreEqual(1, _Counter);
 
         }
 
@@ -136,7 +136,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(1, _Counter);
+            //ClassicAssert.AreEqual(1, _Counter);
 
             //// -----------------------
             
@@ -151,7 +151,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(2, _Counter);
+            //ClassicAssert.AreEqual(2, _Counter);
 
             //// -----------------------
             
@@ -166,7 +166,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(1, _Counter);
+            //ClassicAssert.AreEqual(1, _Counter);
 
             //// -----------------------
 
@@ -181,7 +181,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //    _Counter++;
             //}
             
-            //Assert.AreEqual(2, _Counter);
+            //ClassicAssert.AreEqual(2, _Counter);
 
         }
 

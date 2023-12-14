@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_AndFilterPipe.MoveNext())
             //    _Counter++;
 
-            //Assert.AreEqual(0, _Counter);
+            //ClassicAssert.AreEqual(0, _Counter);
 
         }
 
@@ -69,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_AndFilterPipe.MoveNext())
             //    _Counter++;
 
-            //Assert.AreEqual(2, _Counter);
+            //ClassicAssert.AreEqual(2, _Counter);
 
         }
 

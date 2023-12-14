@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    ClassicAssert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
             //}
             
-            //Assert.AreEqual(counter, 3UL);
+            //ClassicAssert.AreEqual(counter, 3UL);
             //pipe.SetSourceCollection(names);
             //counter = 0UL;
             
@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //    counter++;
             //}
             
-            //Assert.AreEqual(counter, 3UL);
+            //ClassicAssert.AreEqual(counter, 3UL);
 
         }
 

@@ -46,9 +46,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(6, _Counter);
-            //Assert.AreEqual(_Counter, _Pipe.SideEffect.Count);
-            //Assert.AreEqual(_Counter, _List.Count);
+            //ClassicAssert.AreEqual(6, _Counter);
+            //ClassicAssert.AreEqual(_Counter, _Pipe.SideEffect.Count);
+            //ClassicAssert.AreEqual(_Counter, _List.Count);
             
             //for (int i = 0; i < _Counter; i++)
             //{
@@ -75,7 +75,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //while (_Pipeline.MoveNext())
             //    _Counter++;
 
-            //Assert.AreEqual(6, _Counter);
+            //ClassicAssert.AreEqual(6, _Counter);
 
 
             //_Pipe1    = new AggregatorPipe<String>(new List<String>());
@@ -87,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //while (_Pipeline.MoveNext())
             //    _Counter++;
 
-            //Assert.AreEqual(0, _Counter);
+            //ClassicAssert.AreEqual(0, _Counter);
 
         }
 
@@ -105,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             var _Counter = 0;
             while (_Enumerator.MoveNext())
                 _Counter++;
-            
+
             ClassicAssert.AreEqual(6, _Counter);
             ClassicAssert.IsFalse(_Enumerator.MoveNext());
 

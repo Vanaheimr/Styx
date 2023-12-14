@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
                 _Counter++;
                 ClassicAssert.AreEqual(_Counter, _Pipe.SideEffect);
             }
-            
+
             ClassicAssert.AreEqual(6UL, _Pipe.SideEffect);
 
         }

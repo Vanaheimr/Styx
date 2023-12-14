@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Balder.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //    _Counter++;
 
-            //Assert.AreEqual(100, _Counter);
+            //ClassicAssert.AreEqual(100, _Counter);
 
         }
 
@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Balder.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //    _Counter++;
 
-            //Assert.AreEqual(0, _Counter);
+            //ClassicAssert.AreEqual(0, _Counter);
 
         }
 

@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.util
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(3, _Counter);
+            //ClassicAssert.AreEqual(3, _Counter);
 
         }
 
@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.util
             //    _Counter++;
             //}
 
-            //Assert.AreEqual(6, _Counter);
+            //ClassicAssert.AreEqual(6, _Counter);
 
         }
 
