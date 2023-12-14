@@ -17,10 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -39,23 +37,23 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Enumerators
 
             var _Enumerator = new ExpandableEnumerator<Int32>((new List<Int32>() { 1, 2, 3 }).GetEnumerator());
 
-            Assert.IsTrue(_Enumerator.MoveNext());
-            Assert.AreEqual(1, _Enumerator.Current);
+            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(1, _Enumerator.Current);
 
             _Enumerator.Add(4);
-            Assert.IsTrue(_Enumerator.MoveNext());
-            Assert.AreEqual(4, _Enumerator.Current);
+            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(4, _Enumerator.Current);
             _Enumerator.Add(5);
             _Enumerator.Add(6);
-            Assert.IsTrue(_Enumerator.MoveNext());
-            Assert.AreEqual(5, _Enumerator.Current);
-            Assert.IsTrue(_Enumerator.MoveNext());
-            Assert.AreEqual(6, _Enumerator.Current);
-            Assert.IsTrue(_Enumerator.MoveNext());
-            Assert.AreEqual(2, _Enumerator.Current);
-            Assert.IsTrue(_Enumerator.MoveNext());
-            Assert.AreEqual(3, _Enumerator.Current);
-            Assert.IsFalse(_Enumerator.MoveNext());
+            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(5, _Enumerator.Current);
+            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(6, _Enumerator.Current);
+            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(2, _Enumerator.Current);
+            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(3, _Enumerator.Current);
+            ClassicAssert.IsFalse(_Enumerator.MoveNext());
 
         }
 

@@ -40,12 +40,12 @@
 
 //            var _Enumerator = new SingleEnumerator<String>("marko");
 
-//            Assert.IsTrue(_Enumerator.MoveNext());
-//            Assert.AreEqual("marko", _Enumerator.Current);
-//            Assert.IsFalse(_Enumerator.MoveNext());
+//            ClassicAssert.IsTrue(_Enumerator.MoveNext());
+//            ClassicAssert.AreEqual("marko", _Enumerator.Current);
+//            ClassicAssert.IsFalse(_Enumerator.MoveNext());
 
 //            // Will throw an InvalidOperationException!
-//            Assert.AreEqual(null, _Enumerator.Current);
+//            ClassicAssert.AreEqual(null, _Enumerator.Current);
 
 //        }
 
@@ -71,7 +71,7 @@
 //            while (_ListEnumerator.MoveNext())
 //                _List2.Add(_ListEnumerator.Current);
 
-//            Assert.AreEqual(_List1.Count, _List2.Count);
+//            ClassicAssert.AreEqual(_List1.Count, _List2.Count);
 
 //        }
 

@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //var _Counter = 0;
             //while (_Pipe.MoveNext())
             //{
-            //    Assert.IsTrue(_Pipe.Current[1] == "Alice" | _Pipe.Current[1] == "Bob");
+            //    ClassicAssert.IsTrue(_Pipe.Current[1] == "Alice" | _Pipe.Current[1] == "Bob");
             //    _Counter++;
             //}
 
@@ -73,9 +73,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
         //                          TrimColumns:                true).
         //                  ToArray();
 
-        //    Assert.AreEqual(2, _Result.Length);
-        //    Assert.AreEqual("Alice", _Result[0][1]);
-        //    Assert.AreEqual("Bob",   _Result[1][1]);
+        //    ClassicAssert.AreEqual(2, _Result.Length);
+        //    ClassicAssert.AreEqual("Alice", _Result[0][1]);
+        //    ClassicAssert.AreEqual("Bob",   _Result[1][1]);
 
         }
 
@@ -99,8 +99,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //var _Counter = 0;
             //while (_Pipe.MoveNext())
             //{
-            //    Assert.IsTrue(_Pipe.Current[1] == "Alice" | _Pipe.Current[1] == "Bob");
-            //    Assert.IsTrue(_Pipe.Current[3] == "b"     | _Pipe.Current[3] == "g");
+            //    ClassicAssert.IsTrue(_Pipe.Current[1] == "Alice" | _Pipe.Current[1] == "Bob");
+            //    ClassicAssert.IsTrue(_Pipe.Current[3] == "b"     | _Pipe.Current[3] == "g");
             //    _Counter++;
             //}
 

@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //{
             //    _Counter++;
             //    var _Name = _Pipe1.Current;
-            //    Assert.IsTrue(_Name.Equals("marko") || _Name.Equals("pavel"));
+            //    ClassicAssert.IsTrue(_Name.Equals("marko") || _Name.Equals("pavel"));
             //}
             
             //Assert.AreEqual(4, _Counter);
@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //{
             //    _Counter++;
             //    var _Name = _Pipe1.Current;
-            //    Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
+            //    ClassicAssert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
             //}
             
             //Assert.AreEqual(2, _Counter);

@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //var _Counter = 0;
             //foreach (var name in _Pipe)
             //{
-            //    Assert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
+            //    ClassicAssert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
             //    _Counter++;
             //}
 

@@ -17,11 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -45,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             //int _Counter = 0;
             //while (_Pipe.MoveNext())
             //{
-            //    Assert.AreEqual(_List[_Counter], _Pipe.Current);
+            //    ClassicAssert.AreEqual(_List[_Counter], _Pipe.Current);
             //    _Counter++;
             //}
 
@@ -55,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             
             //for (int i = 0; i < _Counter; i++)
             //{
-            //    Assert.AreEqual(_Pipe.SideEffect.ToArray()[i], _List[i]);
+            //    ClassicAssert.AreEqual(_Pipe.SideEffect.ToArray()[i], _List[i]);
             //}
 
         }
@@ -109,8 +106,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             while (_Enumerator.MoveNext())
                 _Counter++;
             
-            Assert.AreEqual(6, _Counter);
-            Assert.IsFalse(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(6, _Counter);
+            ClassicAssert.IsFalse(_Enumerator.MoveNext());
 
 
             _List = new List<String>() { null, null, null, null, null, null };
@@ -120,8 +117,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             while (_Enumerator.MoveNext())
                 _Counter++;
 
-            Assert.AreEqual(6, _Counter);
-            Assert.IsFalse(_Enumerator.MoveNext());
+            ClassicAssert.AreEqual(6, _Counter);
+            ClassicAssert.IsFalse(_Enumerator.MoveNext());
 
         }
 

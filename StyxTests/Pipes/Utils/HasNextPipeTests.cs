@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.util
             //while (_Pipe.MoveNext())
             //{
             //    _Counter++;
-            //    Assert.IsTrue(_Pipe.Current);
+            //    ClassicAssert.IsTrue(_Pipe.Current);
             //}
             
             //Assert.AreEqual(4, _Counter);

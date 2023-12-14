@@ -47,11 +47,11 @@
 //            var _Counter = 0;
 //            while (_Pipe.MoveNext())
 //            {
-//                Assert.AreEqual(_Pipe.Current, _Strings.ElementAt(_Counter) + "-" + _Numbers.ElementAt(_Counter));
+//                ClassicAssert.AreEqual(_Pipe.Current, _Strings.ElementAt(_Counter) + "-" + _Numbers.ElementAt(_Counter));
 //                _Counter++;
 //            }
 
-//            Assert.AreEqual(_Counter, 10);
+//            ClassicAssert.AreEqual(_Counter, 10);
 
 //        }
 
@@ -70,9 +70,9 @@
 //            _Pipe.SetSourceCollection2(_Numbers);
 
 //            var _Counter = 0;
-//            Assert.IsFalse(_Pipe.Any());
-//            Assert.AreEqual(_Counter, 0);
-//            Assert.IsFalse(_Pipe.Any());
+//            ClassicAssert.IsFalse(_Pipe.Any());
+//            ClassicAssert.AreEqual(_Counter, 0);
+//            ClassicAssert.IsFalse(_Pipe.Any());
 
 //        }
 
@@ -91,9 +91,9 @@
 //            _Pipe.SetSourceCollection2(_Numbers);
 
 //            var _Counter = 0;
-//            Assert.IsFalse(_Pipe.Any());
-//            Assert.AreEqual(_Counter, 0);
-//            Assert.IsFalse(_Pipe.Any());
+//            ClassicAssert.IsFalse(_Pipe.Any());
+//            ClassicAssert.AreEqual(_Counter, 0);
+//            ClassicAssert.IsFalse(_Pipe.Any());
 
 //        }
 
@@ -112,9 +112,9 @@
 //            _Pipe.SetSourceCollection2(_Numbers);
 
 //            var _Counter = 0;
-//            Assert.IsFalse(_Pipe.Any());
-//            Assert.AreEqual(_Counter, 0);
-//            Assert.IsFalse(_Pipe.Any());
+//            ClassicAssert.IsFalse(_Pipe.Any());
+//            ClassicAssert.AreEqual(_Counter, 0);
+//            ClassicAssert.IsFalse(_Pipe.Any());
 
 //        }
 

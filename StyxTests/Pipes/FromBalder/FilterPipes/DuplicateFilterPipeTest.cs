@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Balder.UnitTests.FilterPipes
             //while (_dfp.MoveNext())
             //{
             //    var next = _dfp.Current;
-            //    Assert.IsTrue(next.Equals("josh") || next.Equals("peter") || next.Equals("marko"));
+            //    ClassicAssert.IsTrue(next.Equals("josh") || next.Equals("peter") || next.Equals("marko"));
             //    if (next.Equals("marko"))
             //        _Counter2++;
             //    _Counter++;

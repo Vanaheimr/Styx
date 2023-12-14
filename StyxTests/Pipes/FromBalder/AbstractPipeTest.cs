@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //{
             //    counter++;
             //    String name = pipe.Current;
-            //    Assert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
+            //    ClassicAssert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
             //}
             
             //Assert.AreEqual(counter, 3UL);
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             
             //foreach (var name in pipe)
             //{
-            //    Assert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
+            //    ClassicAssert.IsTrue(name.Equals("marko") || name.Equals("josh") || name.Equals("peter"));
             //    counter++;
             //}
             
@@ -103,38 +103,38 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
 
         //        var path = _Pipe3.Path;
 
-        //        Assert.AreEqual(_Marko,                 path[0]);
-        //        Assert.AreEqual(typeof(IGenericPropertyEdge<UInt64, Int64, String, String, Object,
+        //        ClassicAssert.AreEqual(_Marko,                 path[0]);
+        //        ClassicAssert.AreEqual(typeof(IGenericPropertyEdge<UInt64, Int64, String, String, Object,
         //                                                    UInt64, Int64, String, String, Object,
         //                                                    UInt64, Int64, String, String, Object,
         //                                                    UInt64, Int64, String, String, Object>), path[1].GetType());
 
-        //        Assert.AreEqual(typeof(IGenericPropertyVertex<UInt64, Int64, String, String, Object,
+        //        ClassicAssert.AreEqual(typeof(IGenericPropertyVertex<UInt64, Int64, String, String, Object,
         //                                                      UInt64, Int64, String, String, Object,
         //                                                      UInt64, Int64, String, String, Object,
         //                                                      UInt64, Int64, String, String, Object>), path[2].GetType());
 
-        //        Assert.AreEqual(typeof(String),         path[3].GetType());
+        //        ClassicAssert.AreEqual(typeof(String),         path[3].GetType());
 
         //        if (_Name.ToString() == "vadas")
         //        {
-        //            Assert.AreEqual(_Graph.EdgeById(7),     path[1]);
-        //            Assert.AreEqual(_Graph.VertexById(2), path[2]);
-        //            Assert.AreEqual("vadas", path[3]);
+        //            ClassicAssert.AreEqual(_Graph.EdgeById(7),     path[1]);
+        //            ClassicAssert.AreEqual(_Graph.VertexById(2), path[2]);
+        //            ClassicAssert.AreEqual("vadas", path[3]);
         //        }
 
         //        else if (_Name.ToString() == "lop")
         //        {
-        //            Assert.AreEqual(_Graph.EdgeById(9),     path[1]);
-        //            Assert.AreEqual(_Graph.VertexById(3), path[2]);
-        //            Assert.AreEqual("lop", path[3]);
+        //            ClassicAssert.AreEqual(_Graph.EdgeById(9),     path[1]);
+        //            ClassicAssert.AreEqual(_Graph.VertexById(3), path[2]);
+        //            ClassicAssert.AreEqual("lop", path[3]);
         //        }
 
         //        else if (_Name.ToString() == "josh")
         //        {
-        //            Assert.AreEqual(_Graph.EdgeById(8),     path[1]);
-        //            Assert.AreEqual(_Graph.VertexById(4), path[2]);
-        //            Assert.AreEqual("josh", path[3]);
+        //            ClassicAssert.AreEqual(_Graph.EdgeById(8),     path[1]);
+        //            ClassicAssert.AreEqual(_Graph.VertexById(4), path[2]);
+        //            ClassicAssert.AreEqual("josh", path[3]);
         //        }
 
         //        else

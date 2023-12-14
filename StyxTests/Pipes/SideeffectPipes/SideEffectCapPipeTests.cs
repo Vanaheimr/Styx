@@ -44,9 +44,9 @@
 //            var _Pipe = new SideEffectCapPipe<String, Int64>(new CountPipe<String>());
 //            _Pipe.SetSourceCollection(_List);
 
-//            Assert.IsTrue(_Pipe.MoveNext());
-//            Assert.AreEqual(6UL, _Pipe.Current);
-//            Assert.IsFalse(_Pipe.MoveNext());
+//            ClassicAssert.IsTrue(_Pipe.MoveNext());
+//            ClassicAssert.AreEqual(6UL, _Pipe.Current);
+//            ClassicAssert.IsFalse(_Pipe.MoveNext());
 
 //        }
 
@@ -62,9 +62,9 @@
 //            var _Pipe = new SideEffectCapPipe<String, Int64>(new CountPipe<String>());
 //            _Pipe.SetSourceCollection(_List);
 
-//            Assert.IsTrue(_Pipe.MoveNext());
-//            Assert.AreEqual(0UL, _Pipe.Current);
-//            Assert.IsFalse(_Pipe.MoveNext());
+//            ClassicAssert.IsTrue(_Pipe.MoveNext());
+//            ClassicAssert.AreEqual(0UL, _Pipe.Current);
+//            ClassicAssert.IsFalse(_Pipe.MoveNext());
 
 //        }
 

@@ -36,37 +36,37 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
     //    public void testComparisons()
     //    {	
 
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(1, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(1, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(1, 2));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(1, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(1, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(1, 2));
 	
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(2, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(2, 2));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(2, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(2, 2));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(1, 2));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(2, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(2, 2));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(2, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(2, 2));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(1, 2));
 	
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(2, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(2, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, 2));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(2, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(2, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(1, 2));
 	
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(2, 1));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, 2));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(1, 1));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(2, 1));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, 2));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(1, 1));
 	
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(null, null));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(null, null));
-    //        Assert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(1, null));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(1, null));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(null, null));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(null, null));
+    //        ClassicAssert.IsFalse(new BasicComparisonFilterPipe(ComparisonFilter.EQUAL).CompareObjects(1, null));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.NOT_EQUAL).CompareObjects(1, null));
 	
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, null));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(null, 1));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(1, null));
-    //        Assert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(null, 1));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN_EQUAL).CompareObjects(1, null));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN_EQUAL).CompareObjects(null, 1));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.GREATER_THAN).CompareObjects(1, null));
+    //        ClassicAssert.IsTrue(new BasicComparisonFilterPipe(ComparisonFilter.LESS_THAN).CompareObjects(null, 1));
 
     //    }
 

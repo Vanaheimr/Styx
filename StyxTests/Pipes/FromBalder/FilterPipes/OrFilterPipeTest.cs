@@ -48,11 +48,11 @@
 //            while (_ORFilterPipe.MoveNext())
 //            {
 //                var name = _ORFilterPipe.Current;
-//                Assert.IsTrue(name.Equals("marko") || name.Equals("povel"));
+//                ClassicAssert.IsTrue(name.Equals("marko") || name.Equals("povel"));
 //                _Counter++;
 //            }
 
-//            Assert.AreEqual(4, _Counter);
+//            ClassicAssert.AreEqual(4, _Counter);
 
 //        }
 
@@ -119,12 +119,12 @@
 //        //    while (_Pipeline.MoveNext())
 //        //    {
 //        //        var _Edge = _Pipeline.Current;
-//        //        Assert.IsTrue(_Edge.Id.Equals(8) || _Edge.Id.Equals(9) || _Edge.Id.Equals(12));
-//        //        Assert.IsTrue(((Double)_Edge.GetProperty("weight")) > 0.5f || _Edge.Label.Equals("created"));
+//        //        ClassicAssert.IsTrue(_Edge.Id.Equals(8) || _Edge.Id.Equals(9) || _Edge.Id.Equals(12));
+//        //        ClassicAssert.IsTrue(((Double)_Edge.GetProperty("weight")) > 0.5f || _Edge.Label.Equals("created"));
 //        //        _Counter++;
 //        //    }
 
-//        //    Assert.AreEqual(5, _Counter);
+//        //    ClassicAssert.AreEqual(5, _Counter);
 
 //        //}
 
@@ -208,12 +208,12 @@
 //        //    while (_Pipeline.MoveNext())
 //        //    {
 //        //        var _Edge = _Pipeline.Current;
-//        //        Assert.IsTrue(_Edge.Id.Equals(8) || _Edge.Id.Equals(9));
-//        //        Assert.IsTrue(_Edge.Label.Equals("created") || (((Double)_Edge.GetProperty("weight")) > 0.5 && _Edge.Label.Equals("knows")));
+//        //        ClassicAssert.IsTrue(_Edge.Id.Equals(8) || _Edge.Id.Equals(9));
+//        //        ClassicAssert.IsTrue(_Edge.Label.Equals("created") || (((Double)_Edge.GetProperty("weight")) > 0.5 && _Edge.Label.Equals("knows")));
 //        //        _Counter++;
 //        //    }
 
-//        //    Assert.AreEqual(2, _Counter);
+//        //    ClassicAssert.AreEqual(2, _Counter);
 
 //        //}
 
@@ -237,10 +237,10 @@
 //            {
 //                var name = _Pipeline.Current;
 //                _Counter++;
-//                Assert.IsTrue((name.Equals("marko") || name.Equals("peter")) && !name.Equals("josh") && !name.Equals("jake"));
+//                ClassicAssert.IsTrue((name.Equals("marko") || name.Equals("peter")) && !name.Equals("josh") && !name.Equals("jake"));
 //            }
 
-//            Assert.AreEqual(5, _Counter);
+//            ClassicAssert.AreEqual(5, _Counter);
 
 //        }
 
@@ -313,11 +313,11 @@
 //        //    while (_Pipeline.MoveNext())
 //        //    {
 //        //        var name = _Pipeline.Current;
-//        //        Assert.AreEqual("marko", name);
+//        //        ClassicAssert.AreEqual("marko", name);
 //        //        _Counter++;
 //        //    }
             
-//        //    Assert.AreEqual(1, _Counter);
+//        //    ClassicAssert.AreEqual(1, _Counter);
 
 //        //}
 
@@ -395,11 +395,11 @@
 //        //    while (_Pipeline.MoveNext())
 //        //    {
 //        //        var _Name = _Pipeline.Current;
-//        //        Assert.IsTrue(_Name.Equals("vadas") || _Name.Equals("lop") || _Name.Equals("josh"));
+//        //        ClassicAssert.IsTrue(_Name.Equals("vadas") || _Name.Equals("lop") || _Name.Equals("josh"));
 //        //        _Counter++;
 //        //    }
 
-//        //    Assert.AreEqual(3, _Counter);
+//        //    ClassicAssert.AreEqual(3, _Counter);
 
 //        //}
 
@@ -487,11 +487,11 @@
 //        //    while (_Pipeline.MoveNext())
 //        //    {
 //        //        var _Name = _Pipeline.Current;
-//        //        Assert.IsTrue(_Name.Equals("vadas") || _Name.Equals("lop") || _Name.Equals("josh"));
+//        //        ClassicAssert.IsTrue(_Name.Equals("vadas") || _Name.Equals("lop") || _Name.Equals("josh"));
 //        //        _Counter++;
 //        //    }
 
-//        //    Assert.AreEqual(3, _Counter);
+//        //    ClassicAssert.AreEqual(3, _Counter);
 
 //        //}
 

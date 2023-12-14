@@ -17,10 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -47,10 +45,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Enumerators
             while (_Enumerator.MoveNext())
             {
                 _Counter++;
-                Assert.AreEqual(_Counter, _Enumerator.Current);
+                ClassicAssert.AreEqual(_Counter, _Enumerator.Current);
             }
 
-            Assert.AreEqual(_Counter, 8);
+            ClassicAssert.AreEqual(_Counter, 8);
 
         }
 
@@ -68,7 +66,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Enumerators
             while (_Enumerator.MoveNext())
                 _Counter++;
 
-            Assert.AreEqual(0, _Counter);
+            ClassicAssert.AreEqual(0, _Counter);
 
         }
 

@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
             //var _Counter = 0;
             //while (_Pipe.MoveNext())
             //{
-            //    Assert.AreEqual(_Pipe.Current , (_Numbers.ElementAt(_Counter) * _Numbers.ElementAt(_Counter)).ToString());
+            //    ClassicAssert.AreEqual(_Pipe.Current , (_Numbers.ElementAt(_Counter) * _Numbers.ElementAt(_Counter)).ToString());
             //    _Counter++;
             //}
 

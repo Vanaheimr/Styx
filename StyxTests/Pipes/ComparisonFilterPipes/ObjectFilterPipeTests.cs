@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    _Counter++;
-            //    Assert.IsNull(_Pipe.Current);
+            //    ClassicAssert.IsNull(_Pipe.Current);
             //}
             
             //Assert.AreEqual(1, _Counter);
@@ -59,7 +59,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //{
             //    _Counter++;
             //    var _String = _Pipe.Current;
-            //    Assert.IsTrue(_String.Equals("marko") || _String.Equals("pavel"));
+            //    ClassicAssert.IsTrue(_String.Equals("marko") || _String.Equals("pavel"));
             //}
             
             //Assert.AreEqual(2, _Counter);
@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    var next = _Pipe.Current;
-            //    Assert.IsTrue(next.Equals("josh") || next.Equals("peter"));
+            //    ClassicAssert.IsTrue(next.Equals("josh") || next.Equals("peter"));
             //    _Counter++;
             //}
             
@@ -108,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    var next = _Pipe.Current;
-            //    Assert.IsTrue(next.Equals("marko"));
+            //    ClassicAssert.IsTrue(next.Equals("marko"));
             //    _Counter++;
             //}
             
@@ -132,7 +132,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    var next = _Pipe.Current;
-            //    Assert.IsTrue(next.Equals(1));
+            //    ClassicAssert.IsTrue(next.Equals(1));
             //    _Counter++;
             //}
 
@@ -147,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    var next = _Pipe.Current;
-            //    Assert.IsTrue(next.Equals(1) || next.Equals(7));
+            //    ClassicAssert.IsTrue(next.Equals(1) || next.Equals(7));
             //    _Counter++;
             //}
             
@@ -162,7 +162,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    var next = _Pipe.Current;
-            //    Assert.IsTrue(next.Equals(32));
+            //    ClassicAssert.IsTrue(next.Equals(32));
             //    _Counter++;
             //}
             
@@ -177,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //while (_Pipe.MoveNext())
             //{
             //    var next = _Pipe.Current;
-            //    Assert.IsTrue(next.Equals(7) || next.Equals(32));
+            //    ClassicAssert.IsTrue(next.Equals(7) || next.Equals(32));
             //    _Counter++;
             //}
             

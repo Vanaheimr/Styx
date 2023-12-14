@@ -86,12 +86,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
                 
         //        _Counter++;
 
-        //        Assert.IsTrue(_Object.Equals(_Graph.VertexById(6)) ||
+        //        ClassicAssert.IsTrue(_Object.Equals(_Graph.VertexById(6)) ||
         //                      _Object.Equals(_Graph.VertexById(4)));
 
         //    }
 
-        //    Assert.AreEqual(2, _Counter);
+        //    ClassicAssert.AreEqual(2, _Counter);
 
         //}
 

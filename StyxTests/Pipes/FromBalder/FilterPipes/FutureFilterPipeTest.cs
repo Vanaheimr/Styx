@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
             //{
             //    _Counter++;
             //    var _Name = _Pipe.Current;
-            //    Assert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
+            //    ClassicAssert.IsTrue(_Name.Equals("peter") || _Name.Equals("josh"));
             //}
 
             //Assert.AreEqual(2, _Counter);

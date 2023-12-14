@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.util
             //while (_Scatter.MoveNext())
             //{
             //    var _Object = _Scatter.Current;
-            //    Assert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3));
+            //    ClassicAssert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3));
             //    _Counter++;
             //}
 
@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.util
             //while (_Scatter.MoveNext())
             //{
             //    var _Object = _Scatter.Current;
-            //    Assert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3) || _Object.Equals(4) || _Object.Equals(5) || _Object.Equals(6));
+            //    ClassicAssert.IsTrue(_Object.Equals(1) || _Object.Equals(2) || _Object.Equals(3) || _Object.Equals(4) || _Object.Equals(5) || _Object.Equals(6));
             //    _Counter++;
             //}
 
