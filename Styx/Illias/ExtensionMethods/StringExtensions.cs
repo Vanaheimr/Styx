@@ -252,14 +252,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToUTF8Bytes(this Text)
 
         public static Byte[] ToUTF8Bytes(this String? Text)
-        {
 
-            if (Text is null)
-                return Array.Empty<Byte>();
-
-            return Encoding.UTF8.GetBytes(Text);
-
-        }
+            => Text is null
+                   ? []
+                   : Encoding.UTF8.GetBytes(Text);
 
         #endregion
 
