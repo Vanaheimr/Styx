@@ -17,11 +17,8 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
-using System;
-using System.Buffers.Binary;
-using System.IO;
 using System.Text;
+using System.Buffers.Binary;
 
 #endregion
 
@@ -29,12 +26,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extensions to the Span class.
+    /// Extensions to memory streams.
     /// </summary>
     public static class MemoryStreamExtensions
     {
 
-        #region ReadUInt16(this Stream)
+        #region ReadUInt16 (this Stream)
 
         public static UInt16 ReadUInt16(this MemoryStream Stream)
         {
@@ -58,17 +55,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static void WriteUInt16(this MemoryStream Stream, UInt16 Number)
         {
-
             Span<Byte> buffer = stackalloc Byte[2];
             BinaryPrimitives.WriteUInt16BigEndian(buffer, Number);
             Stream.Write(buffer);
-
         }
 
         #endregion
 
 
-        #region ReadUInt32(this Stream)
+        #region ReadUInt32 (this Stream)
 
         public static UInt32 ReadUInt32(this MemoryStream Stream)
         {
@@ -92,17 +87,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static void WriteUInt32(this MemoryStream Stream, UInt32 Number)
         {
-
             Span<Byte> buffer = stackalloc Byte[4];
             BinaryPrimitives.WriteUInt32BigEndian(buffer, Number);
             Stream.Write(buffer);
-
         }
 
         #endregion
 
 
-        #region ReadUInt64(this Stream)
+        #region ReadUInt64 (this Stream)
 
         public static UInt64 ReadUInt64(this MemoryStream Stream)
         {
@@ -126,11 +119,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static void WriteUInt64(this MemoryStream Stream, UInt64 Number)
         {
-
             Span<Byte> buffer = stackalloc Byte[8];
             BinaryPrimitives.WriteUInt64BigEndian(buffer, Number);
             Stream.Write(buffer);
-
         }
 
         #endregion
@@ -142,6 +133,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String ReadUTF8String(this MemoryStream  Stream,
                                             UInt16             Length)
         {
+
+            if (Length == 0)
+                return String.Empty;
 
             if (Stream.Length - Stream.Position < Length)
                 throw new InvalidOperationException($"Not enough data in the stream to read a string of length {Length}!");
@@ -158,11 +152,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ReadBytes(this Stream, Length)
+        #region ReadBytes     (this Stream, Length)
 
         public static Byte[] ReadBytes(this MemoryStream  Stream,
                                        UInt64             Length)
         {
+
+            if (Length == 0)
+                return [];
 
             if (Stream.Length - Stream.Position < (Int32) Length)
                 throw new InvalidOperationException($"Not enough data in the stream to read a byte array of length {Length}!");
