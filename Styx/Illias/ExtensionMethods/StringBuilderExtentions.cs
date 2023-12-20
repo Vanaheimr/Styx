@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Text;
 
 #endregion
@@ -33,31 +30,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class StringBuilderExtensions
     {
 
-        #region AppendCSV(this StringBuilder, IEnumerable)
+        #region AppendCSV  (this StringBuilder, IEnumerable)
 
-        public static StringBuilder AppendCSV(this StringBuilder StringBuilder, IEnumerable<String> IEnumerable)
-        {
+        public static StringBuilder AppendCSV(this StringBuilder   StringBuilder,
+                                              IEnumerable<String>  IEnumerable)
 
-            if (StringBuilder == null)
-                throw new ArgumentNullException();
-
-            return StringBuilder.Append(IEnumerable.CSVAggregate());
-
-        }
+            => StringBuilder.Append(IEnumerable.CSVAggregate());
 
         #endregion
 
-        #region AppendCSV(this StringBuilder, Prefix, IEnumerable, Suffix)
+        #region AppendCSV  (this StringBuilder, Prefix, IEnumerable, Suffix)
 
-        public static StringBuilder AppendCSV(this StringBuilder StringBuilder, String Prefix, IEnumerable<String> IEnumerable, String Suffix)
-        {
+        public static StringBuilder AppendCSV(this StringBuilder   StringBuilder,
+                                              String               Prefix,
+                                              IEnumerable<String>  IEnumerable,
+                                              String               Suffix)
 
-            if (StringBuilder == null)
-                throw new ArgumentNullException();
+            => StringBuilder.Append(IEnumerable.CSVAggregate(Prefix, Suffix));
 
-            return StringBuilder.Append(IEnumerable.CSVAggregate(Prefix, Suffix));
+        #endregion
 
-        }
+        #region ToUTF8Bytes(this StringBuilder)
+
+        public static Byte[] ToUTF8Bytes(this StringBuilder StringBuilder)
+
+            => Encoding.UTF8.GetBytes(StringBuilder.ToString());
 
         #endregion
 
