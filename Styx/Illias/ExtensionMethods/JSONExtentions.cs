@@ -1746,11 +1746,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out PercentageInt,          out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject       JSON,
-                                             String             PropertyName,
-                                             String             PropertyDescription,
-                                             out PercentageInt  PercentageValue,
-                                             out String?        ErrorResponse)
+        public static Boolean ParseMandatory(this JObject        JSON,
+                                             String              PropertyName,
+                                             String              PropertyDescription,
+                                             out PercentageByte  PercentageValue,
+                                             out String?         ErrorResponse)
         {
 
             PercentageValue = default;
@@ -1780,7 +1780,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            PercentageValue  = PercentageInt.Parse(byteValue);
+            PercentageValue  = PercentageByte.Parse(byteValue);
             ErrorResponse    = null;
             return true;
 
@@ -4604,13 +4604,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out PercentageInt,          out ErrorResponse)
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out PercentageByte,         out ErrorResponse)
 
-        public static Boolean ParseOptional(this JObject        JSON,
-                                            String              PropertyName,
-                                            String              PropertyDescription,
-                                            out PercentageInt?  PercentageValue,
-                                            out String?         ErrorResponse)
+        public static Boolean ParseOptional(this JObject         JSON,
+                                            String               PropertyName,
+                                            String               PropertyDescription,
+                                            out PercentageByte?  PercentageValue,
+                                            out String?          ErrorResponse)
         {
 
             PercentageValue  = default;
@@ -4634,7 +4634,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var byteValue))
-                    PercentageValue = PercentageInt.Parse(byteValue);
+                    PercentageValue = PercentageByte.Parse(byteValue);
+
+                else
+                    ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out PercentageDouble,       out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject           JSON,
+                                            String                 PropertyName,
+                                            String                 PropertyDescription,
+                                            out PercentageDouble?  PercentageValue,
+                                            out String?            ErrorResponse)
+        {
+
+            PercentageValue  = default;
+            ErrorResponse    = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Double.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleValue))
+                    PercentageValue = PercentageDouble.Parse(doubleValue);
 
                 else
                     ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";

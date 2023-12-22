@@ -19,11 +19,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A percentage (Internal Byte variant).
+    /// A percentage (Internal Double variant).
     /// </summary>
-    public readonly struct PercentageInt : IEquatable <PercentageInt>,
-                                           IComparable<PercentageInt>,
-                                           IComparable
+    public readonly struct PercentageDouble : IEquatable <PercentageDouble>,
+                                              IComparable<PercentageDouble>,
+                                              IComparable
     {
 
         #region Properties
@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value of the percentage.
         /// </summary>
-        public Byte  Value    { get; }
+        public Double Value    { get; }
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new percentage based on the given number.
         /// </summary>
         /// <param name="Value">A numeric representation of a percentage.</param>
-        private PercentageInt(Byte Value)
+        private PercentageDouble(Double Value)
         {
             this.Value = Value;
         }
@@ -55,7 +55,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given string as a percentage.
         /// </summary>
         /// <param name="Text">A text representation of a percentage.</param>
-        public static PercentageInt Parse(String Text)
+        public static PercentageDouble Parse(String Text)
         {
 
             if (TryParse(Text, out var percentage))
@@ -74,23 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given number as a percentage.
         /// </summary>
         /// <param name="Number">A numeric representation of a percentage.</param>
-        public static PercentageInt Parse(Decimal Number)
-        {
-
-            if (TryParse(Number, out var percentage))
-                return percentage;
-
-            throw new ArgumentException($"Invalid numeric representation of a percentage: '{Number}'!",
-                                        nameof(Number));
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a percentage.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a percentage.</param>
-        public static PercentageInt Parse(Byte Number)
+        public static PercentageDouble Parse(Double Number)
         {
 
             if (TryParse(Number, out var percentage))
@@ -109,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as a percentage.
         /// </summary>
         /// <param name="Text">A text representation of a percentage.</param>
-        public static PercentageInt? TryParse(String Text)
+        public static PercentageDouble? TryParse(String Text)
         {
 
             if (TryParse(Text, out var percentage))
@@ -127,22 +111,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given number as a percentage.
         /// </summary>
         /// <param name="Number">A numeric representation of a percentage.</param>
-        public static PercentageInt? TryParse(Decimal Number)
-        {
-
-            if (TryParse(Number, out var percentage))
-                return percentage;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as a percentage.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a percentage.</param>
-        public static PercentageInt? TryParse(Byte Number)
+        public static PercentageDouble? TryParse(Double Number)
         {
 
             if (TryParse(Number, out var percentage))
@@ -161,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of a percentage.</param>
         /// <param name="Percentage">The parsed percentage.</param>
-        public static Boolean TryParse(String Text, out PercentageInt Percentage)
+        public static Boolean TryParse(String Text, out PercentageDouble Percentage)
         {
 
             try
@@ -169,11 +138,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Text = Text.Trim();
 
-                if (Byte.TryParse(Text, out var value) &&
+                if (Double.TryParse(Text, out var value) &&
+                    value >=   0 &&
                     value <= 100)
                 {
 
-                    Percentage = new PercentageInt(value);
+                    Percentage = new PercentageDouble(value);
 
                     return true;
 
@@ -197,37 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a percentage.</param>
         /// <param name="Percentage">The parsed Percentage.</param>
-        public static Boolean TryParse(Byte Number, out PercentageInt Percentage)
-        {
-
-            try
-            {
-
-                if (Number <= 100)
-                {
-
-                    Percentage = new PercentageInt(Number);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
-            Percentage = default;
-            return false;
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a percentage.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a percentage.</param>
-        /// <param name="Percentage">The parsed Percentage.</param>
-        public static Boolean TryParse(Decimal Number, out PercentageInt Percentage)
+        public static Boolean TryParse(Double Number, out PercentageDouble Percentage)
         {
 
             try
@@ -237,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Number <= 100)
                 {
 
-                    Percentage = new PercentageInt(Convert.ToByte(Number));
+                    Percentage = new PercentageDouble(Number);
 
                     return true;
 
@@ -259,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Clone this Percentage.
         /// </summary>
-        public PercentageInt Clone
+        public PercentageDouble Clone
 
             => new (Value);
 
@@ -276,8 +216,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (PercentageInt Percentage1,
-                                           PercentageInt Percentage2)
+        public static Boolean operator == (PercentageDouble Percentage1,
+                                           PercentageDouble Percentage2)
 
             => Percentage1.Equals(Percentage2);
 
@@ -291,8 +231,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (PercentageInt Percentage1,
-                                           PercentageInt Percentage2)
+        public static Boolean operator != (PercentageDouble Percentage1,
+                                           PercentageDouble Percentage2)
 
             => !Percentage1.Equals(Percentage2);
 
@@ -306,8 +246,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (PercentageInt Percentage1,
-                                          PercentageInt Percentage2)
+        public static Boolean operator < (PercentageDouble Percentage1,
+                                          PercentageDouble Percentage2)
 
             => Percentage1.CompareTo(Percentage2) < 0;
 
@@ -321,8 +261,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (PercentageInt Percentage1,
-                                           PercentageInt Percentage2)
+        public static Boolean operator <= (PercentageDouble Percentage1,
+                                           PercentageDouble Percentage2)
 
             => Percentage1.CompareTo(Percentage2) <= 0;
 
@@ -336,8 +276,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (PercentageInt Percentage1,
-                                          PercentageInt Percentage2)
+        public static Boolean operator > (PercentageDouble Percentage1,
+                                          PercentageDouble Percentage2)
 
             => Percentage1.CompareTo(Percentage2) > 0;
 
@@ -351,8 +291,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (PercentageInt Percentage1,
-                                           PercentageInt Percentage2)
+        public static Boolean operator >= (PercentageDouble Percentage1,
+                                           PercentageDouble Percentage2)
 
             => Percentage1.CompareTo(Percentage2) >= 0;
 
@@ -365,10 +305,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
-        public static PercentageInt operator + (PercentageInt Percentage1,
-                                                PercentageInt Percentage2)
+        public static PercentageDouble operator + (PercentageDouble Percentage1,
+                                                 PercentageDouble Percentage2)
 
-            => Parse(Math.Min(Percentage1.Value + Percentage2.Value, 100));
+            => Parse((Byte) Math.Min(Percentage1.Value + Percentage2.Value, 100));
 
         #endregion
 
@@ -379,10 +319,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
-        public static PercentageInt operator - (PercentageInt Percentage1,
-                                                PercentageInt Percentage2)
+        public static PercentageDouble operator - (PercentageDouble Percentage1,
+                                                 PercentageDouble Percentage2)
 
-            => Parse(Math.Max(Percentage1.Value - Percentage2.Value, 0));
+            => Parse((Byte) Math.Max(Percentage1.Value - Percentage2.Value, 0));
 
         #endregion
 
@@ -398,7 +338,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A percentage to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is PercentageInt percentage
+            => Object is PercentageDouble percentage
                    ? CompareTo(percentage)
                    : throw new ArgumentException("The given object is not a percentage!",
                                                  nameof(Object));
@@ -411,7 +351,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two percentages.
         /// </summary>
         /// <param name="Percentage">A percentage to compare with.</param>
-        public Int32 CompareTo(PercentageInt Percentage)
+        public Int32 CompareTo(PercentageDouble Percentage)
 
             => Value.CompareTo(Percentage.Value);
 
@@ -429,7 +369,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A percentage to compare with.</param>
         public override Boolean Equals(Object? Object)
 
-            => Object is PercentageInt percentage &&
+            => Object is PercentageDouble percentage &&
                    Equals(percentage);
 
         #endregion
@@ -440,7 +380,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two percentages for equality.
         /// </summary>
         /// <param name="Percentage">A percentage to compare with.</param>
-        public Boolean Equals(PercentageInt Percentage)
+        public Boolean Equals(PercentageDouble Percentage)
 
             => Value.Equals(Percentage.Value);
 
