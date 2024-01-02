@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2010-2024 GraphDefined GmbH <achim.friedland@graphdefined.com> <achim.friedland@graphdefined.com>WattHours
+ * Copyright (c) 2010-2024 GraphDefined GmbH <achim.friedland@graphdefined.com>WattHours
  * This file is part of Illias <https://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
