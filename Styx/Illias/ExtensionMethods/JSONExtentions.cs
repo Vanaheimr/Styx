@@ -17,18 +17,12 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Xml.Linq;
 using System.Globalization;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.ConsoleLog;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -307,12 +301,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory<T>    (this JSON, PropertyName, PropertyDescription,                   TryParser,  out Value,                  out ErrorResponse)
 
-        public static Boolean ParseMandatory<T>(this JObject  JSON,
-                                                String        PropertyName,
-                                                String        PropertyDescription,
-                                                TryParser<T>  TryParser,
-                                                out T         Value,
-                                                out String?   ErrorResponse)
+        public static Boolean ParseMandatory<T>(this JObject                       JSON,
+                                                String                             PropertyName,
+                                                String                             PropertyDescription,
+                                                TryParser<T>                       TryParser,
+                                                [NotNullWhen(true)]  out T         Value,
+                                                [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
             Value = default;
@@ -411,12 +405,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //}
 
-        public static Boolean ParseMandatory<T>(this JObject  JSON,
-                                                String        PropertyName,
-                                                String        PropertyDescription,
-                                                TryParser2<T> TryParser,
-                                                out T         Value,
-                                                out String?   ErrorResponse)
+        public static Boolean ParseMandatory<T>(this JObject                       JSON,
+                                                String                             PropertyName,
+                                                String                             PropertyDescription,
+                                                TryParser2<T>                      TryParser,
+                                                [NotNullWhen(true)]  out T         Value,
+                                                [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
             Value = default;
@@ -518,8 +512,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String                           PropertyName,
                                                 String                           PropertyDescription,
                                                 TryParser3<T>                    TryParser,
-                                                out T                            Value,
-                                                out String                       ErrorResponse,
+                                                [NotNullWhen(true)]  out T       Value,
+                                                [NotNullWhen(false)] out String  ErrorResponse,
                                                 CustomJObjectParserDelegate<T>?  CustomParser = null)
         {
 
@@ -565,13 +559,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory3<T>(this JObject         JSON,
-                                                 String               PropertyName,
-                                                 String               PropertyDescription,
-                                                 TryParser4<T>        TryParser,
-                                                 out T                Value,
-                                                 out String           ErrorResponse,
-                                                 OnExceptionDelegate  OnException)
+        public static Boolean ParseMandatory3<T>(this JObject                     JSON,
+                                                 String                           PropertyName,
+                                                 String                           PropertyDescription,
+                                                 TryParser4<T>                    TryParser,
+                                                 [NotNullWhen(true)]  out T       Value,
+                                                 [NotNullWhen(false)] out String  ErrorResponse,
+                                                 OnExceptionDelegate              OnException)
         {
 
             Value = default;
@@ -673,12 +667,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory_<T>   (this JSON, PropertyName, PropertyDescription,                   TryParser,  out Value,                  out ErrorResponse)
 
-        public static Boolean ParseMandatory_<T>(this JObject       JSON,
-                                                 String             PropertyName,
-                                                 String             PropertyDescription,
-                                                 ParserNullable<T>  TryParser,
-                                                 out T              Value,
-                                                 out String?        ErrorResponse)
+        public static Boolean ParseMandatory_<T>(this JObject                      JSON,
+                                                 String                            PropertyName,
+                                                 String                            PropertyDescription,
+                                                 ParserNullable<T>                 TryParser,
+                                                 [NotNullWhen(true)]  out T        Value,
+                                                 [NotNullWhen(false)] out String?  ErrorResponse)
 
             where T : struct
 
