@@ -55,7 +55,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     //public delegate Boolean  TryJObjectParser  <TResult>     (JObject Input, out TResult? arg);
     public delegate Boolean  TryJObjectParser1 <TResult>     (JObject Input, out TResult  arg, out String? ErrorResponse);
-    public delegate Boolean  TryJObjectParser2 <TResult>     (JObject Input, out TResult? arg, out String? ErrorResponse);
+    public delegate Boolean  TryJObjectParser2 <TResult>     (JObject Input, [NotNullWhen(true)]  out TResult? arg, [NotNullWhen(false)] out String? ErrorResponse);
     public delegate Boolean  TryJObjectParser3a<TResult>     (JObject Input, out TResult? arg, out String? ErrorResponse,                 CustomJObjectParserDelegate<TResult>? CustomParser = null);
     public delegate Boolean  TryJObjectParser3b<TResult, TId>(JObject Input, out TResult? arg, out String? ErrorResponse, TId? Id = null, CustomJObjectParserDelegate<TResult>? CustomParser = null) where TId: struct;
 
@@ -114,11 +114,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatoryText   (this JSON, PropertyName, PropertyDescription,                               out Text,                   out ErrorResponse)
 
-        public static Boolean ParseMandatoryText(this JObject  JSON,
-                                                 String        PropertyName,
-                                                 String        PropertyDescription,
-                                                 out String    Text,
-                                                 out String?   ErrorResponse)
+        public static Boolean ParseMandatoryText(this JObject                      JSON,
+                                                 String                            PropertyName,
+                                                 String                            PropertyDescription,
+                                                 [NotNullWhen(true)]  out String?  Text,
+                                                 [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Text = null;
@@ -2439,12 +2439,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //}
 
 
-        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
-                                                    String                PropertyName,
-                                                    String                PropertyDescription,
-                                                    TryJObjectParser2<T>  TryJObjectParser,
-                                                    out T?                Value,
-                                                    out String?           ErrorResponse)
+        public static Boolean ParseMandatoryJSON<T>(this JObject                      JSON,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    TryJObjectParser2<T>              TryJObjectParser,
+                                                    [NotNullWhen(true)]  out T?       Value,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Value = default;
@@ -5795,12 +5795,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //}
 
 
-        public static Boolean ParseOptionalJSON<T>(this JObject          JSON,
-                                                   String                PropertyName,
-                                                   String                PropertyDescription,
-                                                   TryJObjectParser2<T>  JObjectParser,
-                                                   out T                 Value,
-                                                   out String?           ErrorResponse)
+        public static Boolean ParseOptionalJSON<T>(this JObject                      JSON,
+                                                   String                            PropertyName,
+                                                   String                            PropertyDescription,
+                                                   TryJObjectParser2<T>              JObjectParser,
+                                                   [NotNullWhen(true)]  out T?       Value,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Value          = default;
@@ -5823,18 +5823,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 // "propertyKey": null -> will be ignored!
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                {
+                    ErrorResponse = $"JSON property '{PropertyName}' must not be null!";
                     return false;
+                }
 
-                if (!(JSONToken is JObject JSON2))
-                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+                if (JSONToken is not JObject JSON2)
+                {
+                    ErrorResponse  = $"JSON property '{PropertyName}' is not an object!";
+                    return false;
+                }
 
-                else if (!JObjectParser(JSON2, out Value, out var errorResponse2))
-                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse2;
+                if (JObjectParser(JSON2, out Value, out var errorResponse2))
+                    return true;
 
-                return true;
+                ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
+                return false;
 
             }
 
+            ErrorResponse = "Invalid JSON property!";
             return false;
 
         }

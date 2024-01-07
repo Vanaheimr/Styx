@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -154,6 +148,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
                );
 
         #endregion
+
+
+        public Boolean StartsWith(JSONLDContext Context)
+            => InternalContext.StartsWith(Context.InternalContext);
+
+
+        public Boolean Matches(JSONLDContext Context)
+        {
+
+            if (Context.InternalContext.EndsWith("..."))
+            {
+
+                var context = Context.InternalContext[..^3];
+
+                return InternalContext.StartsWith(context);
+
+            }
+
+            return false;
+
+        }
 
 
         #region Operator overloading
