@@ -59,6 +59,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region IsEqualToWithinTolerance(this Timestamp1, Timestamp2, Tolerance = 1 second)
+
+        /// <summary>
+        /// Compares two timestamps with a specified tolerance.
+        /// </summary>
+        /// <param name="Timestamp1">The first timestamp.</param>
+        /// <param name="Timestamp2">The second timestamp.</param>
+        /// <param name="Tolerance">An optional tolerance within which the timestamps are considered equal (default: 1 second).</param>
+        public static Boolean IsEqualToWithinTolerance(this DateTime  Timestamp1,
+                                                       DateTime       Timestamp2,
+                                                       TimeSpan?      Tolerance   = null)
+
+            => Math.Abs((Timestamp1 - Timestamp2).Ticks) <= (Tolerance ?? TimeSpan.FromSeconds(1)).Ticks;
+
+        #endregion
+
+
         #region ToIso8601(this DateTime, Fractions = true)
 
         /// <summary>
