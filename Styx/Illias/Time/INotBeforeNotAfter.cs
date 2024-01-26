@@ -103,12 +103,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     {
 
         /// <summary>
-        /// The object is not valid before this optional timestamp.
+        /// The optional timestamp when this object becomes active/valid.
+        /// Typically used for a new object that already exists, before it becomes active/valid.
         /// </summary>
         public DateTime?  NotBefore    { get; }
 
         /// <summary>
-        /// The object is not valid after this optional timestamp.
+        /// The optional timestamp after which this object is no longer active/valid.
+        /// Typically used when an object is is replaced automatically with a new version
+        /// of the object after this timestamp has passed.
         /// </summary>
         public DateTime?  NotAfter     { get; }
 

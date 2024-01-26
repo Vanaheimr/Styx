@@ -1194,11 +1194,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Decimal,                out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Decimal   DecimalValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out Decimal                       DecimalValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             DecimalValue = default;
@@ -1440,11 +1440,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out UInt32    UInt32Value,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                       JSON,
+                                             String                             PropertyName,
+                                             String                             PropertyDescription,
+                                             [NotNullWhen(true)]  out UInt32    UInt32Value,
+                                             [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
             UInt32Value = default;
@@ -1918,11 +1918,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Timestamp,              out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out DateTime  Timestamp,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out DateTime                      Timestamp,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
 
         {
 
@@ -5279,11 +5279,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out TimeSpan,                out ErrorResponse)
 
-        public static Boolean ParseOptional(this JObject   JSON,
-                                            String         PropertyName,
-                                            String         PropertyDescription,
-                                            out TimeSpan?  Timespan,
-                                            out String?    ErrorResponse)
+        public static Boolean ParseOptional(this JObject                        JSON,
+                                            String                              PropertyName,
+                                            String                              PropertyDescription,
+                                                                 out TimeSpan?  Timespan,
+                                            [NotNullWhen(false)] out String?    ErrorResponse)
         {
 
             Timespan       = default;
@@ -5297,7 +5297,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = $"Invalid JSON property '{PropertyDescription ?? PropertyName}' provided!";
                 return true;
             }
 
@@ -5312,13 +5312,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch
                 {
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription ?? PropertyName}'!";
                 }
 
                 return true;
 
             }
 
+            ErrorResponse = $"Invalid value for '{PropertyDescription ?? PropertyName}'!";
             return false;
 
         }
