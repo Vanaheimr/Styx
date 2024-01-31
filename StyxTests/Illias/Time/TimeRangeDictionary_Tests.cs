@@ -110,10 +110,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             Assert.That(dict.TryAdd     (key, thing),                               Is.True);
 
-            Assert.That(dict.TryGetValue(key, now - TimeSpan.FromDays (1), out _),  Is.False);
-            Assert.That(dict.TryGetValue(key, now,                         out _),  Is.True);
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromHours(6), out _),  Is.True);
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromDays (2), out _),  Is.False);
+            Assert.That(dict.TryGetValue(key, out _, now - TimeSpan.FromDays (1)),  Is.False);
+            Assert.That(dict.TryGetValue(key, out _, now                        ),  Is.True);
+            Assert.That(dict.TryGetValue(key, out _, now + TimeSpan.FromHours(6)),  Is.True);
+            Assert.That(dict.TryGetValue(key, out _, now + TimeSpan.FromDays (2)),  Is.False);
 
         }
 
@@ -137,24 +137,24 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(dict.TryAdd     (key, thing1),                                    Is.True);
             Assert.That(dict.TryAdd     (key, thing2),                                    Is.True);
 
-            Assert.That(dict.TryGetValue(key, now - TimeSpan.FromDays (1),  out _),       Is.False);
+            Assert.That(dict.TryGetValue(key, out _,      now - TimeSpan.FromDays (1)),   Is.False);
 
-            Assert.That(dict.TryGetValue(key, now,                          out var t1),  Is.True);
+            Assert.That(dict.TryGetValue(key, out var t1, now),  Is.True);
             Assert.That(t1?.Name, Is.EqualTo("1"));
 
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromHours(6),  out var t2),  Is.True);
+            Assert.That(dict.TryGetValue(key, out var t2, now + TimeSpan.FromHours(6)),   Is.True);
             Assert.That(t2?.Name, Is.EqualTo("1"));
 
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromDays (1),  out var t3),  Is.True);
+            Assert.That(dict.TryGetValue(key, out var t3, now + TimeSpan.FromDays (1)),   Is.True);
             Assert.That(t3?.Name, Is.EqualTo("2"));
 
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromHours(30), out var t4),  Is.True);
+            Assert.That(dict.TryGetValue(key, out var t4, now + TimeSpan.FromHours(30)),  Is.True);
             Assert.That(t4?.Name, Is.EqualTo("2"));
 
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromDays (2),  out var t5),  Is.True);
+            Assert.That(dict.TryGetValue(key, out var t5, now + TimeSpan.FromDays (2)),   Is.True);
             Assert.That(t5?.Name, Is.EqualTo("2"));
 
-            Assert.That(dict.TryGetValue(key, now + TimeSpan.FromDays (3),  out _),       Is.False);
+            Assert.That(dict.TryGetValue(key, out _,      now + TimeSpan.FromDays (3)),   Is.False);
 
         }
 
