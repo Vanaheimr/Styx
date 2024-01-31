@@ -6979,16 +6979,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseOptionalHashSet<T>(this JObject          JSON,
-                                                      String                PropertyName,
-                                                      String                PropertyDescription,
-                                                      TryJObjectParser2<T>  Parser,
-                                                      out HashSet<T>        HashSet,
-                                                      out String?           ErrorResponse)
+        public static Boolean ParseOptionalHashSet<T>(this JObject                         JSON,
+                                                      String                               PropertyName,
+                                                      String                               PropertyDescription,
+                                                      TryJObjectParser2<T>                 Parser,
+                                                      [NotNullWhen(true)]  out HashSet<T>  HashSet,
+                                                                           out String?     ErrorResponse)
 
         {
 
-            HashSet        = new HashSet<T>();
+            HashSet        = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7012,7 +7012,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
                     return true;
                 }
 
