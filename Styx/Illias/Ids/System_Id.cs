@@ -185,6 +185,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public static System_Id  Local     { get; }
+            = Parse("local");
+
+        public static System_Id  Remote    { get; }
+            = Parse("remote");
+
+
         #region Operator overloading
 
         #region Operator == (SystemId1, SystemId2)
