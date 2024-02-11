@@ -52,8 +52,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             // Check if the timespans overlap considering the tolerance
-            return newStart.Subtract(tolerance) < existingEnd.  Add     (tolerance) &&
-                   newEnd.  Add     (tolerance) > existingStart.Subtract(tolerance);
+            return ((newStart          - DateTime.MinValue > tolerance)
+                         ? newStart.     Subtract(tolerance)
+                         : newStart)
+
+                     <
+
+                   ((DateTime.MaxValue - existingEnd       > tolerance)
+                         ? existingEnd.  Add     (tolerance)
+                         : existingEnd)
+
+
+                       &&
+
+
+                   ((DateTime.MaxValue - newEnd            > tolerance)
+                         ? newEnd.       Add     (tolerance)
+                         : newEnd)
+
+                     >
+
+                   ((existingStart     - DateTime.MinValue > tolerance)
+                         ? existingStart.Subtract(tolerance)
+                         : existingStart);
 
         }
 
@@ -70,8 +91,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNotBeforeWithinRange(this INotBeforeNotAfter  NotBeforeNotAfter,
                                                      DateTime                 Timestamp,
                                                      TimeSpan?                Tolerance   = null)
+        {
 
-            => Timestamp >= (NotBeforeNotAfter.NotBefore ?? DateTime.MinValue).Subtract(Tolerance ?? TimeSpan.FromSeconds(1));
+            var tolerance  = Tolerance                   ?? TimeSpan.FromSeconds(1);
+            var notBefore  = NotBeforeNotAfter.NotBefore ?? DateTime.MinValue;
+
+            return Timestamp >= ((notBefore - DateTime.MinValue) > tolerance
+                                     ? notBefore.Subtract(tolerance)
+                                     : DateTime.MinValue);
+
+        }
 
         #endregion
 
@@ -87,8 +116,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNotAfterWithinRange(this INotBeforeNotAfter  NotBeforeNotAfter,
                                                     DateTime                 Timestamp,
                                                     TimeSpan?                Tolerance   = null)
+        {
 
-            => Timestamp <= (NotBeforeNotAfter.NotAfter ?? DateTime.MaxValue).Add(Tolerance ?? TimeSpan.FromSeconds(1));
+            var tolerance  = Tolerance                  ?? TimeSpan.FromSeconds(1);
+            var notAfter   = NotBeforeNotAfter.NotAfter ?? DateTime.MaxValue;
+
+            return Timestamp <= ((DateTime.MaxValue - notAfter) > tolerance
+                                     ? notAfter.Add(tolerance)
+                                     : DateTime.MaxValue);
+
+        }
 
         #endregion
 

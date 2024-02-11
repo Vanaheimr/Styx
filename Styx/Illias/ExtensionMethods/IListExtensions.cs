@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -32,7 +24,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class IListExtensions
     {
 
-        #region AddAndReturnList(this List, Element)
+        #region AddAndReturnList      (this List, Element)
 
         /// <summary>
         /// Another way to add an element to a list.
@@ -62,7 +54,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnList(this List, Elements)
+        #region AddAndReturnList      (this List, Elements)
+
+        /// <summary>
+        /// Another way to add an element to a list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="List">A list of elements.</param>
+        /// <param name="Elements">Another list to be added to this list.</param>
+        /// <returns>The changed list.</returns>
+        public static List<T> AddAndReturnList<T>(this List<T> List, IEnumerable<T> Elements)
+        {
+
+            foreach (var element in Elements)
+                List.Add(element);
+
+            return List;
+
+        }
 
         /// <summary>
         /// Another way to add an element to a list.
@@ -83,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnElement(this List, Element)
+        #region AddAndReturnElement   (this List, Element)
 
         /// <summary>
         /// Another way to add an value to a list.
@@ -101,10 +110,47 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region RemoveAndReturnElement(this Element)
+        #region RemoveAndReturnList   (this List, Element)
 
         /// <summary>
-        /// Remove and return an element of the given list;
+        /// Remove the given element and return the updated list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="List">A list of elements.</param>
+        /// <param name="Element">An element of the given list.</param>
+        public static List<T> RemoveAndReturnList<T>(this List<T>  List,
+                                                     T             Element)
+        {
+
+            List.Remove(Element);
+
+            return List;
+
+        }
+
+
+        /// <summary>
+        /// Remove the given element and return the updated list.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="List">A list of elements.</param>
+        /// <param name="Element">An element of the given list.</param>
+        public static IList<T> RemoveAndReturnList<T>(this IList<T>  List,
+                                                      T              Element)
+        {
+
+            List.Remove(Element);
+
+            return List;
+
+        }
+
+        #endregion
+
+        #region RemoveAndReturnElement(this List, Element)
+
+        /// <summary>
+        /// Remove the given element and return the element.
         /// </summary>
         /// <typeparam name="T">The type of the elements.</typeparam>
         /// <param name="List">A list of elements.</param>
@@ -131,10 +177,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T RemoveAndReturnFirst<T>(this IList<T> List)
         {
 
-            var Element = List[0];
-            List.Remove(Element);
+            var element = List[0];
+            List.Remove(element);
 
-            return Element;
+            return element;
 
         }
 
@@ -150,10 +196,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T RemoveAndReturnLast<T>(this IList<T> List)
         {
 
-            var Element = List.Last();
-            List.Remove(Element);
+            var element = List.Last();
+            List.Remove(element);
 
-            return Element;
+            return element;
 
         }
 

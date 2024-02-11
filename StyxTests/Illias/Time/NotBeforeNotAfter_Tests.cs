@@ -115,6 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+
         #region Overlap_Overlap_SmallTolerance_Test1()
 
         /// <summary>
@@ -158,6 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+
         #region Overlap_NoGap_Test1()
 
         /// <summary>
@@ -171,6 +173,49 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var now     = DateTime.Now;
             var thing1  = new Things("1", now - TimeSpan.FromDays(1), now);
             var thing2  = new Things("2", now,                        now + TimeSpan.FromDays(1));
+
+            Assert.That(thing1.IsOverlapping(thing2, Tolerance), Is.False);
+            Assert.That(thing2.IsOverlapping(thing1, Tolerance), Is.False);
+
+        }
+
+        #endregion
+
+        #region Overlap_NoGap_Infinite_Test1()
+
+        /// <summary>
+        /// :- thing1 -|
+        /// ............|- thing2 -:
+        /// </summary>
+        [Test]
+        public void Overlap_NoGap_Infinite_Test1()
+        {
+
+            var now     = DateTime.Now;
+            var thing1  = new Things("1", null, now);
+            var thing2  = new Things("2", now,  null);
+
+            Assert.That(thing1.IsOverlapping(thing2, Tolerance), Is.False);
+            Assert.That(thing2.IsOverlapping(thing1, Tolerance), Is.False);
+
+        }
+
+        #endregion
+
+
+        #region Overlap_Gap_Infinite_Test1()
+
+        /// <summary>
+        /// :- thing1 -|
+        /// ..............|- thing2 -:
+        /// </summary>
+        [Test]
+        public void Overlap_Gap_Infinite_Test1()
+        {
+
+            var now     = DateTime.Now;
+            var thing1  = new Things("1", null, now - TimeSpan.FromDays(1));
+            var thing2  = new Things("2", now,  null);
 
             Assert.That(thing1.IsOverlapping(thing2, Tolerance), Is.False);
             Assert.That(thing2.IsOverlapping(thing1, Tolerance), Is.False);
@@ -200,6 +245,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+
         #region Overlap_Included_Test1()
 
         /// <summary>
@@ -220,6 +266,28 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         }
 
         #endregion
+
+        #region Overlap_Included_Infinite_Test1()
+
+        /// <summary>
+        /// :--- thing1 ---:
+        /// ..|- thing2 -|
+        /// </summary>
+        [Test]
+        public void Overlap_Included_Infinite_Test1()
+        {
+
+            var now     = DateTime.Now;
+            var thing1  = new Things("1", null,                       null);
+            var thing2  = new Things("2", now - TimeSpan.FromDays(1), now + TimeSpan.FromDays(1));
+
+            Assert.That(thing1.IsOverlapping(thing2, Tolerance), Is.True);
+            Assert.That(thing2.IsOverlapping(thing1, Tolerance), Is.True);
+
+        }
+
+        #endregion
+
 
         #region Overlap_Overlapping_Test1()
 
@@ -242,9 +310,29 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Overlap_Overlapping_Infinite_Test1()
+
+        /// <summary>
+        /// :--- thing1 ---|
+        /// ..|- thing2 ------:
+        /// </summary>
+        [Test]
+        public void Overlap_Overlapping_Infinite_Test1()
+        {
+
+            var now     = DateTime.Now;
+            var thing1  = new Things("1", null,                       now + TimeSpan.FromDays(1));
+            var thing2  = new Things("2", now - TimeSpan.FromDays(1), null);
+
+            Assert.That(thing1.IsOverlapping(thing2, Tolerance), Is.True);
+            Assert.That(thing2.IsOverlapping(thing1, Tolerance), Is.True);
+
+        }
+
+        #endregion
+
 
         //ToDo: Check whether timezone setting may affect these tests!
-        //ToDo: Test with null values
         //ToDo: Zero-Length durations (should be checked by the parent object, but you never know ;) )
         //ToDo: NotAfter < NotBefore (should be checked by the parent object, but you never know ;) )
 
