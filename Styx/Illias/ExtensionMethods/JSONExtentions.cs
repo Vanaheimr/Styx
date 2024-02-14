@@ -135,33 +135,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            if (!JSON.TryGetValue(PropertyName, out var jsonToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            if (jsonToken.Type != JTokenType.String)
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
             try
             {
-
-                if (JSONToken.ToString() == "{}")
-                {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
-                    return true;
-                }
-
-                Text = JSONToken?.Value<String>();
-
-                if (Text == null)
-                {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
-                    return false;
-                }
-
+                Text = jsonToken?.Value<String>()?.Trim();
             }
             catch
+            { }
+
+            if (Text is null)
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -5843,7 +5838,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            ErrorResponse = "Invalid JSON property!";
+            //ErrorResponse = "Invalid JSON property!";
             return false;
 
         }
