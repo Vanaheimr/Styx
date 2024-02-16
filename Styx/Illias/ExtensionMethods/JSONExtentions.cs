@@ -191,7 +191,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (Mapper == null)
+            if (Mapper is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
@@ -254,7 +254,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 //                return false;
 //            }
 
-//            if (Mapper == null)
+//            if (Mapper is null)
 //            {
 //                ErrorResponse = "Invalid mapper provided!";
 //                return false;
@@ -371,7 +371,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryParser == null)
+        //    if (TryParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -422,7 +422,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
@@ -474,7 +474,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryParser == null)
+        //    if (TryParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -526,7 +526,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
@@ -577,7 +577,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryParser == null)
+            if (TryParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
@@ -630,7 +630,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryParser == null)
+        //    if (TryParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -800,7 +800,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryParser == null)
+        //    if (TryParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -908,7 +908,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryParser == null)
+        //    if (TryParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -1018,7 +1018,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryParser == null)
+        //    if (TryParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2271,7 +2271,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                   TryJObjectParser,  out Value,           out ErrorResponse)
+        #region ParseMandatoryJSON      (this JSON, PropertyName, PropertyDescription,                   TryJObjectParser,  out Value,           out ErrorResponse)
 
         //public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
         //                                            String               PropertyName,
@@ -2295,7 +2295,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryJObjectParser == null)
+        //    if (TryJObjectParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2402,7 +2402,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryJObjectParser == null)
+        //    if (TryJObjectParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2464,13 +2464,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse = $"Missing JSON property '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (JSONToken is not JObject JSONValue)
             {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse = $"Invalid JSON object '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
@@ -2479,7 +2479,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                   out var errorResponse))
             {
                 Value          = default;
-                ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
+                ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse}";
                 return false;
             }
 
@@ -2489,12 +2489,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
  
         }
 
-        public static Boolean ParseMandatoryJSONS<T>(this JObject          JSON,
-                                                    String                PropertyName,
-                                                    String                PropertyDescription,
-                                                    TryJObjectParser2<T>  TryJObjectParser,
-                                                    out T?                Value,
-                                                    out String?           ErrorResponse)
+        public static Boolean ParseMandatoryJSONS<T>(this JObject                     JSON,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    TryJObjectParser2<T>              TryJObjectParser,
+                                                    [NotNullWhen(true)]  out T?       Value,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
 
             where T : struct
 
@@ -2522,20 +2522,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse = $"Missing JSON property '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (JSONToken is not JObject JSONValue)
             {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse = $"Invalid JSON object '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (!TryJObjectParser(JSONValue, out T value, out var errorResponse))
             {
                 Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
+                ErrorResponse = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse}";
                 return false;
             }
 
@@ -2545,12 +2545,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
  
         }
 
-        public static Boolean ParseMandatoryJSONStruct<T>(this JObject          JSON,
-                                                          String                PropertyName,
-                                                          String                PropertyDescription,
-                                                          TryJObjectParser2<T>  TryJObjectParser,
-                                                          out T                 Value,
-                                                          out String?           ErrorResponse)
+        public static Boolean ParseMandatoryJSONStruct<T>(this JObject                      JSON,
+                                                          String                            PropertyName,
+                                                          String                            PropertyDescription,
+                                                          TryJObjectParser2<T>              TryJObjectParser,
+                                                          [NotNullWhen(true)]  out T        Value,
+                                                          [NotNullWhen(false)] out String?  ErrorResponse)
 
             where T : struct
 
@@ -2570,7 +2570,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (TryJObjectParser == null)
+            if (TryJObjectParser is null)
             {
                 ErrorResponse = "Invalid mapper provided!";
                 return false;
@@ -2578,20 +2578,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse = $"Missing JSON property '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (!(JSONToken is JObject JSONValue))
             {
-                ErrorResponse = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse = $"Invalid JSON object '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (!TryJObjectParser(JSONValue, out T value, out var errorResponse))
             {
                 Value         = default;
-                ErrorResponse = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
+                ErrorResponse = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse}";
                 return false;
             }
 
@@ -2626,7 +2626,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryJObjectParser == null)
+        //    if (TryJObjectParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2682,7 +2682,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryJObjectParser == null)
+        //    if (TryJObjectParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2738,7 +2738,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryJObjectParser == null)
+        //    if (TryJObjectParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2795,7 +2795,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return false;
         //    }
 
-        //    if (TryJObjectParser == null)
+        //    if (TryJObjectParser is null)
         //    {
         //        ErrorResponse = "Invalid mapper provided!";
         //        return false;
@@ -2828,17 +2828,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
+        #region ParseMandatory          (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
 
-        public static Boolean ParseMandatory<T>(this JObject         JSON,
-                                                String               PropertyName,
-                                                String               PropertyDescription,
-                                                Parser<T>            Parser,
-                                                out IEnumerable<T>   EnumerationOfT,
-                                                out String?          ErrorResponse)
+        public static Boolean ParseMandatory<T>(this JObject                             JSON,
+                                                String                                   PropertyName,
+                                                String                                   PropertyDescription,
+                                                Parser<T>                                Parser,
+                                                [NotNullWhen(true)]  out IEnumerable<T>  EnumerationOfT,
+                                                [NotNullWhen(false)] out String?         ErrorResponse)
         {
 
-            EnumerationOfT = Array.Empty<T>();
+            EnumerationOfT = [];
 
             if (JSON is null)
             {
@@ -2854,7 +2854,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -2863,7 +2863,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -2880,7 +2880,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -2890,15 +2890,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory<T>(this JObject         JSON,
-                                                String               PropertyName,
-                                                String               PropertyDescription,
-                                                TryParser<T>         TryParser,
-                                                out IEnumerable<T>   EnumerationOfT,
-                                                out String?          ErrorResponse)
+        public static Boolean ParseMandatory<T>(this JObject                             JSON,
+                                                String                                   PropertyName,
+                                                String                                   PropertyDescription,
+                                                TryParser<T>                             TryParser,
+                                                [NotNullWhen(true)]  out IEnumerable<T>  EnumerationOfT,
+                                                [NotNullWhen(false)] out String?         ErrorResponse)
         {
 
-            EnumerationOfT = Array.Empty<T>();
+            EnumerationOfT = [];
 
             if (JSON is null)
             {
@@ -2914,7 +2914,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -2923,7 +2923,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -2940,7 +2940,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                         else
                         {
-                            ErrorResponse = "Invalid value '" + (item.Value<String>() ?? "") + "' for '" + (PropertyDescription ?? PropertyName) + "'!";
+                            ErrorResponse = $"Invalid value '{item.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}'!";
                             return false;
                         }
 
@@ -2952,7 +2952,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -2963,17 +2963,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatoryHashSet(this JSON, PropertyName, PropertyDescription,                               out HashSetOfT,             out ErrorResponse)
+        #region ParseMandatoryHashSet   (this JSON, PropertyName, PropertyDescription,                               out HashSetOfT,             out ErrorResponse)
 
-        public static Boolean ParseMandatoryHashSet<T>(this JObject    JSON,
-                                                       String          PropertyName,
-                                                       String          PropertyDescription,
-                                                       Parser<T>       Parser,
-                                                       out HashSet<T>  HashSetOfT,
-                                                       out String?     ErrorResponse)
+        public static Boolean ParseMandatoryHashSet<T>(this JObject                         JSON,
+                                                       String                               PropertyName,
+                                                       String                               PropertyDescription,
+                                                       Parser<T>                            Parser,
+                                                       [NotNullWhen(true)]  out HashSet<T>  HashSetOfT,
+                                                       [NotNullWhen(false)] out String?     ErrorResponse)
         {
 
-            HashSetOfT = new HashSet<T>();
+            HashSetOfT = [];
 
             if (JSON is null)
             {
@@ -2989,7 +2989,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -2998,7 +2998,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3011,7 +3011,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3021,15 +3021,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatoryNumericHashSet<T>(this JObject         JSON,
-                                                              String               PropertyName,
-                                                              String               PropertyDescription,
-                                                              TryNumericParser<T>  TryParser,
-                                                              out HashSet<T>       HashSetOfT,
-                                                              out String?          ErrorResponse)
+        public static Boolean ParseMandatoryNumericHashSet<T>(this JObject                         JSON,
+                                                              String                               PropertyName,
+                                                              String                               PropertyDescription,
+                                                              TryNumericParser<T>                  TryParser,
+                                                              [NotNullWhen(true)]  out HashSet<T>  HashSetOfT,
+                                                              [NotNullWhen(false)] out String?     ErrorResponse)
         {
 
-            HashSetOfT = new HashSet<T>();
+            HashSetOfT = [];
 
             if (JSON is null)
             {
@@ -3045,7 +3045,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3054,7 +3054,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3069,7 +3069,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                         else
                         {
-                            ErrorResponse = "Invalid value '" + (item.Value<String>() ?? "") + "' for '" + (PropertyDescription ?? PropertyName) + "'!";
+                            ErrorResponse = $"Invalid value '{item?.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}'!";
                             return false;
                         }
 
@@ -3079,7 +3079,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3089,15 +3089,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatoryHashSet<T>(this JObject    JSON,
-                                                       String          PropertyName,
-                                                       String          PropertyDescription,
-                                                       TryParser<T>    TryParser,
-                                                       out HashSet<T>  HashSetOfT,
-                                                       out String?     ErrorResponse)
+        public static Boolean ParseMandatoryHashSet<T>(this JObject                         JSON,
+                                                       String                               PropertyName,
+                                                       String                               PropertyDescription,
+                                                       TryParser<T>                         TryParser,
+                                                       [NotNullWhen(true)]  out HashSet<T>  HashSetOfT,
+                                                       [NotNullWhen(false)] out String?     ErrorResponse)
         {
 
-            HashSetOfT = new HashSet<T>();
+            HashSetOfT = [];
 
             if (JSON is null)
             {
@@ -3113,7 +3113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3122,7 +3122,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3137,7 +3137,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                         else
                         {
-                            ErrorResponse = "Invalid value '" + (item.Value<String>() ?? "") + "' for '" + (PropertyDescription ?? PropertyName) + "'!";
+                            ErrorResponse = $"Invalid value '{item?.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}'!";
                             return false;
                         }
 
@@ -3147,7 +3147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3157,15 +3157,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatoryHashSet<T>(this JObject    JSON,
-                                                       String          PropertyName,
-                                                       String          PropertyDescription,
-                                                       TryParser2<T>   TryParser,
-                                                       out HashSet<T>  HashSetOfT,
-                                                       out String?     ErrorResponse)
+        public static Boolean ParseMandatoryHashSet<T>(this JObject                         JSON,
+                                                       String                               PropertyName,
+                                                       String                               PropertyDescription,
+                                                       TryParser2<T>                        TryParser,
+                                                       [NotNullWhen(true)]  out HashSet<T>  HashSetOfT,
+                                                       [NotNullWhen(false)] out String?     ErrorResponse)
         {
 
-            HashSetOfT = new HashSet<T>();
+            HashSetOfT = [];
 
             if (JSON is null)
             {
@@ -3181,7 +3181,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3190,7 +3190,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3209,7 +3209,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                         else
                         {
-                            ErrorResponse = "Invalid value '" + (item.Value<String>() ?? "") + "' for '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                            ErrorResponse = $"Invalid value '{item?.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}': {errorResponse}";
                             return false;
                         }
 
@@ -3219,7 +3219,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3229,15 +3229,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatoryHashSet<T>(this JObject          JSON,
-                                                       String                PropertyName,
-                                                       String                PropertyDescription,
-                                                       TryJObjectParser2<T>  TryParser,
-                                                       out HashSet<T>        HashSetOfT,
-                                                       out String?           ErrorResponse)
+        public static Boolean ParseMandatoryHashSet<T>(this JObject                         JSON,
+                                                       String                               PropertyName,
+                                                       String                               PropertyDescription,
+                                                       TryJObjectParser2<T>                 TryParser,
+                                                       [NotNullWhen(true)]  out HashSet<T>  HashSetOfT,
+                                                       [NotNullWhen(false)] out String?     ErrorResponse)
         {
 
-            HashSetOfT = new HashSet<T>();
+            HashSetOfT = [];
 
             if (JSON is null)
             {
@@ -3253,7 +3253,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3262,7 +3262,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3281,7 +3281,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                         else
                         {
-                            ErrorResponse = "Invalid value '" + (item.Value<String>() ?? "") + "' for '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                            ErrorResponse = $"Invalid value '{item.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}': {errorResponse}";
                             return false;
                         }
 
@@ -3291,7 +3291,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3302,7 +3302,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ParseMandatoryJSON   (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
+        #region ParseMandatoryJSON      (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
 
         //public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
         //                                            String               PropertyName,
@@ -3364,15 +3364,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //}
 
 
-        public static Boolean ParseMandatoryJSON<T>(this JObject          JSON,
-                                                    String                PropertyName,
-                                                    String                PropertyDescription,
-                                                    TryJObjectParser2<T>  TryJObjectParser,
-                                                    out IEnumerable<T>    EnumerationOfT,
-                                                    out String?           ErrorResponse)
+        public static Boolean ParseMandatoryJSON<T>(this JObject                             JSON,
+                                                    String                                   PropertyName,
+                                                    String                                   PropertyDescription,
+                                                    TryJObjectParser2<T>                     TryJObjectParser,
+                                                    [NotNullWhen(true)]  out IEnumerable<T>  EnumerationOfT,
+                                                    [NotNullWhen(false)] out String?         ErrorResponse)
         {
 
-            EnumerationOfT = Array.Empty<T>();
+            EnumerationOfT = [];
 
             if (JSON is null)
             {
@@ -3388,7 +3388,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3401,7 +3401,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                var ListOfT        = new List<T>();
+                var listOfT        = new List<T>();
                 var errorResponse  = "";
 
                 foreach (var item in JArray)
@@ -3411,23 +3411,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         TryJObjectParser(itemJObject, out var itemT, out errorResponse) &&
                         itemT is not null)
                     {
-                        ListOfT.Add(itemT);
+                        listOfT.Add(itemT);
                     }
 
                     if (errorResponse is not null)
                     {
-                        ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                        ErrorResponse = $"Invalid JSON property '{PropertyDescription ?? PropertyName}': {errorResponse}";
                         return false;
                     }
 
                 }
 
-                EnumerationOfT = ListOfT;
+                EnumerationOfT = listOfT;
 
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3436,16 +3436,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean ParseMandatoryJSON<T>(this JObject                     JSON,
-                                                    String                           PropertyName,
-                                                    String                           PropertyDescription,
-                                                    TryJObjectParser3a<T>            TryJObjectParser,
-                                                    out IEnumerable<T>               EnumerationOfT,
-                                                    out String?                      ErrorResponse,
-                                                    CustomJObjectParserDelegate<T>?  CustomParser = null)
+        public static Boolean ParseMandatoryJSON<T>(this JObject                             JSON,
+                                                    String                                   PropertyName,
+                                                    String                                   PropertyDescription,
+                                                    TryJObjectParser3a<T>                    TryJObjectParser,
+                                                    [NotNullWhen(true)]  out IEnumerable<T>  EnumerationOfT,
+                                                    [NotNullWhen(false)] out String?         ErrorResponse,
+                                                    CustomJObjectParserDelegate<T>?          CustomParser = null)
         {
 
-            EnumerationOfT = Array.Empty<T>();
+            EnumerationOfT = [];
 
             if (JSON is null)
             {
@@ -3461,7 +3461,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3470,7 +3470,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3489,7 +3489,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (errorResponse is not null)
                     {
-                        ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                        ErrorResponse = $"Invalid JSON property '{PropertyDescription ?? PropertyName}': {errorResponse}";
                         return false;
                     }
 
@@ -3500,7 +3500,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3509,19 +3509,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean ParseMandatoryJSON<T, TId>(this JObject                     JSON,
-                                                         String                           PropertyName,
-                                                         String                           PropertyDescription,
-                                                         TryJObjectParser3b<T, TId>       TryJObjectParser,
-                                                         out IEnumerable<T>               EnumerationOfT,
-                                                         out String?                      ErrorResponse,
-                                                         CustomJObjectParserDelegate<T>?  CustomParser = null)
+        public static Boolean ParseMandatoryJSON<T, TId>(this JObject                             JSON,
+                                                         String                                   PropertyName,
+                                                         String                                   PropertyDescription,
+                                                         TryJObjectParser3b<T, TId>               TryJObjectParser,
+                                                         [NotNullWhen(true)]  out IEnumerable<T>  EnumerationOfT,
+                                                         [NotNullWhen(false)] out String?         ErrorResponse,
+                                                         CustomJObjectParserDelegate<T>?          CustomParser = null)
 
             where TId : struct
 
         {
 
-            EnumerationOfT = Array.Empty<T>();
+            EnumerationOfT = [];
 
             if (JSON is null)
             {
@@ -3537,7 +3537,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
@@ -3546,7 +3546,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                     return false;
                 }
 
@@ -3565,7 +3565,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (errorResponse is not null)
                     {
-                        ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "': " + errorResponse;
+                        ErrorResponse = $"Invalid JSON property '{PropertyDescription ?? PropertyName}': {errorResponse}";
                         return false;
                     }
 
@@ -3576,7 +3576,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
                 return false;
             }
 
@@ -3647,17 +3647,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ParseMandatoryJSONArray(this JSON, PropertyName, PropertyDescription,                 TryJArrayParser,   out Value,           out ErrorResponse)
+        #region ParseMandatoryJSONArray (this JSON, PropertyName, PropertyDescription,            TryJArrayParser,   out Value,                  out ErrorResponse)
 
-        public static Boolean ParseMandatoryJSONArray<T>(this JObject        JSON,
-                                                         String              PropertyName,
-                                                         String              PropertyDescription,
-                                                         TryJArrayParser<T>  TryJArrayParser,
-                                                         out T?              Value,
-                                                         out String?         ErrorResponse)
+        public static Boolean ParseMandatoryJSONArray<T>(this JObject                      JSON,
+                                                         String                            PropertyName,
+                                                         String                            PropertyDescription,
+                                                         TryJArrayParser<T>                TryJArrayParser,
+                                                         [NotNullWhen(true)]  out T?       Value,
+                                                         [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            Value  = default;
+            Value = default;
 
             if (JSON is null)
             {
@@ -3679,38 +3679,37 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse  = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = $"Missing JSON property '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (JSONToken is not JArray JSONValue)
             {
-                ErrorResponse  = "Invalid JSON array '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = $"Invalid JSON array '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
-            if (!TryJArrayParser(JSONValue, out var value))
+            if (TryJArrayParser(JSONValue, out var value))
             {
-                Value          = default;
-                ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed!";
-                return false;
+                Value          = value;
+                ErrorResponse  = null;
+                return true;
             }
 
-            Value          = value;
-            ErrorResponse  = null;
-            return true;
+            ErrorResponse = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed!";
+            return false;
 
         }
 
-        public static Boolean ParseMandatoryJSONArray<T>(this JObject         JSON,
-                                                         String               PropertyName,
-                                                         String               PropertyDescription,
-                                                         TryJArrayParser2<T>  TryJArrayParser,
-                                                         out T?               Value,
-                                                         out String?          ErrorResponse)
+        public static Boolean ParseMandatoryJSONArray<T>(this JObject                      JSON,
+                                                         String                            PropertyName,
+                                                         String                            PropertyDescription,
+                                                         TryJArrayParser2<T>               TryJArrayParser,
+                                                         [NotNullWhen(true)]  out T?       Value,
+                                                         [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            Value  = default;
+            Value = default;
 
             if (JSON is null)
             {
@@ -3732,28 +3731,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse  = "Missing JSON property '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = $"Missing JSON property '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
             if (JSONToken is not JArray JSONValue)
             {
-                ErrorResponse  = "Invalid JSON object '" + PropertyName + "' (" + PropertyDescription + ")!";
+                ErrorResponse  = $"Invalid JSON object '{PropertyName}' ({PropertyDescription})!";
                 return false;
             }
 
-            if (!TryJArrayParser(JSONValue,
-                                 out var value,
-                                 out var errorResponse))
+            if (TryJArrayParser(JSONValue,
+                                out var value,
+                                out var errorResponse))
             {
-                Value          = default;
-                ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse;
-                return false;
+                Value          = value;
+                ErrorResponse  = null;
+                return true;
             }
 
-            Value          = value;
-            ErrorResponse  = null;
-            return true;
+            ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse}";
+            return false;
 
         }
 
@@ -3798,9 +3796,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 out T             TOut)
         {
 
-            if (JSON == null ||
+            if (JSON is null ||
                 PropertyName.IsNullOrEmpty() ||
-                Mapper == null)
+                Mapper is null)
             {
                 TOut = default;
                 return false;
@@ -5017,7 +5015,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var JSONValue = JSONToken?.Value<String>();
-                if (JSONValue == null)
+                if (JSONValue is null)
                 {
                     ErrorResponse  = "Unknown '" + (PropertyDescription ?? PropertyName) + "'!";
                     EnumValue      = null;
@@ -5446,14 +5444,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
+                    if (element is null)
                     {
                         ErrorResponse = "A given value within the array is null!";
                         return true;
                     }
 
                     var item = element.Value<JObject>();
-                    if (item == null)
+                    if (item is null)
                     {
                         ErrorResponse = "A given value within the array is null or empty!";
                         return true;
@@ -6166,7 +6164,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 JSONObject = JSONToken as JObject;
 
-                if (JSONObject == null)
+                if (JSONObject is null)
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON object!";
 
                 return true;
@@ -6213,7 +6211,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 JSONArray = JSONToken as JArray;
 
-                if (JSONArray == null)
+                if (JSONArray is null)
                     ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
 
                 return true;
@@ -6270,7 +6268,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
+                    if (element is null)
                     {
                         ErrorResponse = "A given value within the array is null!";
                         return true;
@@ -6341,7 +6339,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
+                    if (element is null)
                     {
                         ErrorResponse = "A given value within the array is null!";
                         return true;
@@ -6413,7 +6411,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var element in JSONArray)
                 {
 
-                    if (element == null)
+                    if (element is null)
                     {
                         ErrorResponse = "A given value within the array is null!";
                         return true;
@@ -6486,7 +6484,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        foreach (var element in JSONArray)
         //        {
 
-        //            if (element == null)
+        //            if (element is null)
         //            {
         //                ErrorResponse = "A given value within the array is null!";
         //                return true;
@@ -6701,7 +6699,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        foreach (var element in JSONArray)
         //        {
 
-        //            if (element == null)
+        //            if (element is null)
         //            {
         //                ErrorResponse = "A given value within the array is null!";
         //                return true;
@@ -7142,7 +7140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    var jobject = JToken as JObject;
 
-        //    if (jobject == null)
+        //    if (jobject is null)
         //        throw new ArgumentException("The given JSON token is not a JSON object!", nameof(JToken));
 
         //    return jobject.ParseI18NString();
@@ -7178,7 +7176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    var jobject = JObject[PropertyKey] as JObject;
 
-        //    if (jobject == null)
+        //    if (jobject is null)
         //        return I18NString.Empty;
 
         //    var i18NString = I18NString.Empty;
@@ -7200,7 +7198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    var jobject = JToken as JObject;
 
-        //    if (jobject == null)
+        //    if (jobject is null)
         //    {
         //        I18NString = null;
         //        return false;
@@ -7286,7 +7284,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentJObject == null)
+            if (ParentJObject is null)
                 return DefaultValue;
 
             #endregion
@@ -7317,7 +7315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentJObject == null)
+            if (ParentJObject is null)
                 throw new ArgumentNullException(nameof(ParentJObject),  "The given JSON object must not be null!");
 
             #endregion
@@ -7351,7 +7349,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentJObject == null)
+            if (ParentJObject is null)
                 return DefaultValue;
 
             #endregion
@@ -7398,10 +7396,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentJObject == null)
+            if (ParentJObject is null)
                 throw new ArgumentNullException(nameof(ParentJObject),  "The given JSON object must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),    "The given JSON value mapper delegate must not be null!");
 
             #endregion

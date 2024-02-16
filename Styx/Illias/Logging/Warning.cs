@@ -106,7 +106,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given JSON representation of a warning.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomWarningParser">A delegate to parse custom warning JSON objects.</param>
+        /// <param name="CustomWarningParser">An optional delegate to parse custom warning JSON objects.</param>
         public static Warning Parse(JObject                                JSON,
                                     CustomJObjectParserDelegate<Warning>?  CustomWarningParser   = null)
         {
@@ -151,7 +151,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Warning">The parsed warning.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomWarningParser">A delegate to parse custom warning JSON objects.</param>
+        /// <param name="CustomWarningParser">An optional delegate to parse custom warning JSON objects.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        out Warning?                           Warning,
                                        out String?                            ErrorResponse,

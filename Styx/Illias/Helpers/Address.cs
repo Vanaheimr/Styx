@@ -165,7 +165,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given JSON representation of an address.
         /// </summary>
         /// <param name="JSON">The JSON to parse.</param>
-        /// <param name="CustomAddressParser">A delegate to parse custom address JSON objects.</param>
+        /// <param name="CustomAddressParser">An optional delegate to parse custom address JSON objects.</param>
         public static Address Parse(JObject                                JSON,
                                     CustomJObjectParserDelegate<Address>?  CustomAddressParser   = null)
         {
@@ -190,7 +190,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given text representation of an address.
         /// </summary>
         /// <param name="Text">The text to parse.</param>
-        /// <param name="CustomAddressParser">A delegate to parse custom address JSON objects.</param>
+        /// <param name="CustomAddressParser">An optional delegate to parse custom address JSON objects.</param>
         public static Address Parse(String                                 Text,
                                     CustomJObjectParserDelegate<Address>?  CustomAddressParser   = null)
         {
@@ -235,7 +235,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Address">The parsed address.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddressParser">A delegate to parse custom addresss JSON objects.</param>
+        /// <param name="CustomAddressParser">An optional delegate to parse custom addresss JSON objects.</param>
         public static Boolean TryParse(JObject                                JSON,
                                        out Address?                           Address,
                                        out String?                            ErrorResponse,
@@ -457,7 +457,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Text">The text to parse.</param>
         /// <param name="Address">The parsed address.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        /// <param name="CustomAddressParser">A delegate to parse custom addresss JSON objects.</param>
+        /// <param name="CustomAddressParser">An optional delegate to parse custom addresss JSON objects.</param>
         public static Boolean TryParse(String                                 Text,
                                        out Address?                           Address,
                                        out String?                            ErrorResponse,
