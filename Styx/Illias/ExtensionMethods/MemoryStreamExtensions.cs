@@ -131,6 +131,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ReadUTF8String(this Stream, Length)
 
         public static String ReadUTF8String(this MemoryStream  Stream,
+                                            Byte               Length)
+        {
+
+            if (Length == 0)
+                return String.Empty;
+
+            if (Stream.Length - Stream.Position < Length)
+                throw new InvalidOperationException($"Not enough data in the stream to read a string of length {Length}!");
+
+            Span<Byte> buffer = stackalloc Byte[Length];
+            var read = Stream.Read(buffer);
+
+            if (read < Length)
+                throw new InvalidOperationException($"Not enough data in the stream to read a string of length {Length}!");
+
+            return Encoding.UTF8.GetString(buffer);
+
+        }
+
+        public static String ReadUTF8String(this MemoryStream  Stream,
                                             UInt16             Length)
         {
 
