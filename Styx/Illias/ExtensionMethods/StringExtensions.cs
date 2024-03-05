@@ -20,6 +20,7 @@
 using System.Text;
 using System.Runtime.CompilerServices;
 using System;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -819,6 +820,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String FirstCharToLower(this String Text)
 
             => char.ToLower(Text[0]) + Text[1..];
+
+        #endregion
+
+
+        #region FixedTimeEquals(Text1, Text2)
+
+        /// <summary>
+        /// Determine the equality of two texts in an amount of time which depends on
+        /// the length of the sequences, but not the values.
+        /// </summary>
+        /// <param name="Text1">The first text.</param>
+        /// <param name="Text2">The second text.</param>
+        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        public static Boolean FixedTimeEquals(this String Text1, String? Text2)
+        {
+
+            var byteArray1    = Encoding.UTF8.GetBytes(Text1);
+            var byteArray2    = Encoding.UTF8.GetBytes(Text2 ?? "");
+
+            // It's important to ensure the byte arrays are of equal length to avoid timing attacks.
+            // You could pad the shorter one to match the length of the longer one, but ensure that
+            // this process does not introduce timing vulnerabilities itself.
+            var length        = Math.Max(byteArray1.Length, byteArray2.Length);
+            var paddedArray1  = new Byte[length];
+            var paddedArray2  = new Byte[length];
+
+            Buffer.BlockCopy(byteArray1, 0, paddedArray1, 0, byteArray1.Length);
+            Buffer.BlockCopy(byteArray2, 0, paddedArray2, 0, byteArray2.Length);
+
+            return CryptographicOperations.FixedTimeEquals(paddedArray1, paddedArray2);
+
+        }
 
         #endregion
 
