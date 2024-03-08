@@ -245,7 +245,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Warning Create(String      Text,
                                      Object?     Context  = null)
 
-            => new (I18NString.Create(Languages.en, Text),
+            => new (I18NString.Create(Text),
                     Context);
 
         public static Warning Create(I18NString  Text,

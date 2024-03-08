@@ -37,7 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static Boolean IsNullOrEmpty(this I18NString I18NText)
 
-            => I18NText is null || !I18NText.Any();
+            => I18NText is null || I18NText.Count == 0;
 
         #endregion
 
@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsNotNullOrEmpty(this I18NString I18NText)
 
             => I18NText is not null &&
-               I18NText.Any();
+               I18NText.Count != 0;
 
         #endregion
 
@@ -95,7 +95,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             return new I18NString(I18NText.Select(text => new I18NPair(
                                                               text.Language,
-                                                              text.Text.Substring(0, Math.Min(text.Text.Length, Length))
+                                                              text.Text[..Math.Min(text.Text.Length, Length)]
                                                           )));
 
         }
@@ -211,7 +211,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public I18NString()
         {
-            this.i18NStrings = new Dictionary<Languages, String>();
+            this.i18NStrings = [];
         }
 
         #endregion
@@ -395,7 +395,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               String     Text)
         {
 
-            if (!i18NStrings.ContainsKey(Language))
+            if (!i18NStrings.TryGetValue(Language, out var value))
             {
 
                 i18NStrings.Add(Language, Text);
@@ -412,8 +412,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             else
             {
 
-                var oldText = i18NStrings[Language];
-                if (oldText != Text)
+                var oldText = value;
+                if (!String.Equals(oldText, Text))
                 {
 
                     i18NStrings[Language] = Text;
@@ -472,13 +472,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region has  (Language)
+        #region Has  (Language)
 
         /// <summary>
         /// Checks if the given language representation exists.
         /// </summary>
         /// <param name="Language">The internationalized (I18N) language.</param>
-        public Boolean has(Languages Language)
+        public Boolean Has(Languages Language)
 
             => i18NStrings.ContainsKey(Language);
 
@@ -490,10 +490,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           String     Value)
         {
 
-            if (!i18NStrings.ContainsKey(Language))
+            if (!i18NStrings.TryGetValue(Language, out var value))
                 return false;
 
-            return i18NStrings[Language].Equals(Value);
+            return String.Equals(value, Value);
 
         }
 
@@ -505,10 +505,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                              String     Value)
         {
 
-            if (!i18NStrings.ContainsKey(Language))
+            if (!i18NStrings.TryGetValue(Language, out var value))
                 return true;
 
-            return !i18NStrings[Language].Equals(Value);
+            return !String.Equals(value, Value);
 
         }
 
@@ -520,8 +520,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                Boolean  IgnoreCase  = false)
 
             => i18NStrings.Any(kvp => IgnoreCase
-                                          ? kvp.Value.IndexOf(Match, StringComparison.OrdinalIgnoreCase) >= 0
-                                          : kvp.Value.IndexOf(Match) >= 0);
+                                          ? kvp.Value.Contains(Match, StringComparison.OrdinalIgnoreCase)
+                                          : kvp.Value.Contains(Match, StringComparison.CurrentCulture));
 
         #endregion
 
@@ -671,9 +671,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public JObject ToJSON()
 
-            => i18NStrings.Any()
+            => i18NStrings.Count != 0
                    ? new JObject(i18NStrings.Select(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
-                   : new JObject();
+                   : [];
 
         #endregion
 

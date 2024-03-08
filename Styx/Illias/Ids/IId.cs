@@ -28,9 +28,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Determines whether the beginning of this string instance matches the specified string.
         /// </summary>
         /// <param name="Id">An identificator.</param>
-        /// <param name="Prefix"></param>
+        /// <param name="Prefix">A prefix</param>
         public static Boolean StartsWith(this IId Id, String Prefix)
             => Id.ToString().StartsWith(Prefix);
+
+        /// <summary>
+        /// Determines whether the end of this string instance matches the specified string.
+        /// </summary>
+        /// <param name="Id">An identificator.</param>
+        /// <param name="Suffix">A suffix.</param>
+        public static Boolean EndsWith(this IId Id, String Suffix)
+            => Id.ToString().EndsWith(Suffix);
 
     }
 
