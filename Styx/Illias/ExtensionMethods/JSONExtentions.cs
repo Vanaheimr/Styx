@@ -1054,11 +1054,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Boolean,                out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Boolean   BooleanValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out Boolean                       BooleanValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             BooleanValue = default;
@@ -1106,11 +1106,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Single/Double,          out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Single    SingleValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out Single                        SingleValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             SingleValue = default;
@@ -1232,11 +1232,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out (S)Byte,                out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Byte      ByteValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out Byte                          ByteValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             ByteValue = default;
@@ -1315,11 +1315,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out (U)Int16/32/64,         out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Int16     Int16Value,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out Int16                         Int16Value,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Int16Value = default;
@@ -1355,11 +1355,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out UInt16    UInt16Value,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out UInt16                        UInt16Value,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             UInt16Value = default;
@@ -1395,11 +1395,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Int32     Int32Value,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             out Int32                         Int32Value,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Int32Value = default;
