@@ -18,6 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -526,6 +527,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Remove(Language)
+
+        /// <summary>
+        /// Remove the given language from the internationalized (I18N) multi-language text.
+        /// </summary>
+        /// <param name="Language">The internationalized (I18N) language.</param>
+        public I18NString Remove(Languages Language)
+        {
+
+            if (i18NStrings.Remove(Language))
+                GenerateHashCode();
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region GetEnumerator()
+
+        /// <summary>
+        /// Enumerate all internationalized (I18N) texts.
+        /// </summary>
+        public IEnumerator<I18NPair> GetEnumerator()
+            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
+
+        /// <summary>
+        /// Enumerate all internationalized (I18N) texts.
+        /// </summary>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
+
+        #endregion
+
+        #region Count
+
+        /// <summary>
+        /// The number of language/value pairs.
+        /// </summary>
+        public UInt32 Count
+
+            => (UInt32) i18NStrings.Count;
+
+        #endregion
+
+
         #region Parse(Text)
 
         /// <summary>
@@ -581,29 +628,43 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text, out I18NText)
+        #region TryParse(Text, out I18NText, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text as a JSON representation of a multi-language string.
         /// </summary>
         /// <param name="Text">A string of a JSON representation of a multi-language string.</param>
-        /// <param name="I18NText"></param>
-        public static Boolean TryParse<TI18NString>(String Text, out TI18NString? I18NText, out String? ErrorResponse)
+        /// <param name="I18NText">The parsed multi-language string.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse<TI18NString>(String                                 Text,
+                                                    [NotNullWhen(true)]  out TI18NString?  I18NText,
+                                                    [NotNullWhen(false)] out String?       ErrorResponse)
+
             where TI18NString : I18NString, new()
+
         {
 
-            I18NText       = new TI18NString();
-            ErrorResponse  = null;
+            I18NText = null;
 
             if (Text.IsNullOrEmpty())
+            {
+                ErrorResponse = "Empty input!";
                 return false;
+            }
 
             try
             {
-                return TryParse(JObject.Parse(Text), out I18NText, out ErrorResponse);
+
+                return TryParse(
+                           JObject.Parse(Text),
+                           out I18NText,
+                           out ErrorResponse
+                       );
+
             }
-            catch
+            catch (Exception e)
             {
+                ErrorResponse = e.Message;
                 return false;
             }
 
@@ -611,21 +672,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(JSON, out I18NText)
+        #region TryParse(JSON, out I18NText, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON object as a JSON representation of a multi-language string.
         /// </summary>
         /// <param name="JSON">A JSON representation of a multi-language string.</param>
-        public static Boolean TryParse<TI18NString>(JObject JSON, out TI18NString? I18NText, out String? ErrorResponse)
+        /// <param name="I18NText">The parsed multi-language string.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse<TI18NString>(JObject                                JSON,
+                                                    [NotNullWhen(true)]  out TI18NString?  I18NText,
+                                                    [NotNullWhen(false)] out String?       ErrorResponse)
+
             where TI18NString : I18NString, new()
+
         {
+
+            if (JSON is null)
+            {
+                I18NText       = null;
+                ErrorResponse  = "Empty input!";
+                return false;
+            }
 
             I18NText       = new TI18NString();
             ErrorResponse  = null;
-
-            if (JSON is null)
-                return true;
 
             foreach (var JSONProperty in JSON)
             {
@@ -650,9 +721,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     }
 
                 }
-                catch
+                catch (Exception e)
                 {
-                    I18NText = null;
+                    I18NText      = null;
+                    ErrorResponse = e.Message;
                     return false;
                 }
 
@@ -689,71 +761,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Remove(Language)
-
-        /// <summary>
-        /// Remove the given language from the internationalized (I18N) multi-language text.
-        /// </summary>
-        /// <param name="Language">The internationalized (I18N) language.</param>
-        public I18NString Remove(Languages Language)
-        {
-
-            if (i18NStrings.Remove(Language))
-                GenerateHashCode();
-
-            return this;
-
-        }
-
-        #endregion
-
-        #region Count
-
-        /// <summary>
-        /// The number of language/value pairs.
-        /// </summary>
-        public UInt32 Count
-
-            => (UInt32) i18NStrings.Count;
-
-        #endregion
-
-
-        #region GetEnumerator()
-
-        /// <summary>
-        /// Enumerate all internationalized (I18N) texts.
-        /// </summary>
-        public IEnumerator<I18NPair> GetEnumerator()
-            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
-
-        /// <summary>
-        /// Enumerate all internationalized (I18N) texts.
-        /// </summary>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
-
-        #endregion
-
         #region Operator overloading
 
         #region Operator == (I18NString1, I18NString2)
 
         /// <summary>
-        /// Compares two I18N-strings for equality.
+        /// Compares two internationalized (I18N) multi-language text/strings for equality.
         /// </summary>
-        /// <param name="I18NString1">A I18N-string.</param>
-        /// <param name="I18NString2">Another I18N-string.</param>
+        /// <param name="I18NString1">An internationalized (I18N) multi-language text/string.</param>
+        /// <param name="I18NString2">Another internationalized (I18N) multi-language text/string.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (I18NString? I18NString1,
                                            I18NString? I18NString2)
         {
 
-            // If both are null, or both are same instance, return true.
             if (Object.ReferenceEquals(I18NString1, I18NString2))
                 return true;
 
-            // If one is null, but not both, return false.
             if (I18NString1 is null || I18NString2 is null)
                 return false;
 
@@ -766,10 +790,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator != (I18NString1, I18NString2)
 
         /// <summary>
-        /// Compares two I18N-strings for inequality.
+        /// Compares two internationalized (I18N) multi-language text/strings for inequality.
         /// </summary>
-        /// <param name="I18NString1">A I18N-string.</param>
-        /// <param name="I18NString2">Another I18N-string.</param>
+        /// <param name="I18NString1">An internationalized (I18N) multi-language text/string.</param>
+        /// <param name="I18NString2">Another internationalized (I18N) multi-language text/string.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (I18NString? I18NString1,
                                            I18NString? I18NString2)
@@ -836,9 +860,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             hashCode = 0;
 
-            foreach (var Value in i18NStrings.Select(I18N => I18N.Key.GetHashCode() ^ I18N.Value.GetHashCode()))
+            foreach (var subHashCode in i18NStrings.Select(I18N => I18N.Key.GetHashCode() ^ I18N.Value.GetHashCode()))
             {
-                hashCode ^= Value;
+                hashCode ^= subHashCode;
             }
 
         }
@@ -863,16 +887,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            if (i18NStrings.Count == 0)
-                return String.Empty;
+            => i18NStrings.Count > 0
 
-            return i18NStrings.
-                       Select(I18N => I18N.Key.ToString() + ": " + I18N.Value).
-                       AggregateWith("; ");
+                   ? i18NStrings.
+                         Select(I18N => $"{I18N.Key}: {I18N.Value}").
+                         AggregateWith("; ")
 
-        }
+                   : String.Empty;
 
         #endregion
 

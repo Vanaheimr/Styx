@@ -17,12 +17,42 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+    /// <summary>
+    /// Warnings
+    /// </summary>
+    public static class Warnings
+    {
+
+        #region (static) Create(Text,           Context = null)
+
+        /// <summary>
+        /// Create a new enumeration of warnings based on the given warning.
+        /// </summary>
+        /// <param name="Text">The text of the warning.</param>
+        /// <param name="Context">An optional context of the warning.</param>
+        public static IEnumerable<Warning> Create(String      Text,
+                                                  Object?     Context  = null)
+
+            => [
+                    Warning.Create(
+                        I18NString.Create(Text),
+                        Context
+                    )
+               ];
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// Extensions methods for warnings.
@@ -135,9 +165,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Warning">The parsed warning.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject       JSON,
-                                       out Warning?  Warning,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out Warning?  Warning,
+                                       [NotNullWhen(false)] out String?   ErrorResponse)
 
             => TryParse(JSON,
                         out Warning,
@@ -153,8 +183,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomWarningParser">An optional delegate to parse custom warning JSON objects.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       out Warning?                           Warning,
-                                       out String?                            ErrorResponse,
+                                       [NotNullWhen(true)]  out Warning?      Warning,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
                                        CustomJObjectParserDelegate<Warning>?  CustomWarningParser   = null)
         {
 
@@ -190,8 +220,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #endregion
 
 
-                Warning = new Warning(Text,
-                                      Context);
+                Warning = new Warning(
+                              Text,
+                              Context
+                          );
 
 
                 if (CustomWarningParser is not null)
@@ -240,14 +272,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Create(Text,           Context = null)
+        #region (static) Create(          Text, Context = null)
 
+        /// <summary>
+        /// Create a new warning.
+        /// </summary>
+        /// <param name="Text">The text of the warning.</param>
+        /// <param name="Context">An optional context of the warning.</param>
         public static Warning Create(String      Text,
                                      Object?     Context  = null)
 
             => new (I18NString.Create(Text),
                     Context);
 
+
+        /// <summary>
+        /// Create a new warning.
+        /// </summary>
+        /// <param name="Text">The text of the warning.</param>
+        /// <param name="Context">An optional context of the warning.</param>
         public static Warning Create(I18NString  Text,
                                      Object?     Context  = null)
 
@@ -258,6 +301,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) Create(Language, Text, Context = null)
 
+        /// <summary>
+        /// Create a new warning.
+        /// </summary>
+        /// <param name="Language">The language of the warning.</param>
+        /// <param name="Text">The text of the warning.</param>
+        /// <param name="Context">An optional context of the warning.</param>
         public static Warning Create(Languages   Language,
                                      String      Text,
                                      Object?     Context  = null)
