@@ -33,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, out var language))
                 return language;
 
-            throw new ArgumentException("Unknown language '" + Text + "'!", nameof(Text));
+            throw new ArgumentException($"Unknown language '{Text}'!", nameof(Text));
 
         }
 
