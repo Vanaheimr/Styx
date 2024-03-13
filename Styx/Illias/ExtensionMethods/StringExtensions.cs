@@ -810,6 +810,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region TrimToNull(this Text)
+
+        /// <summary>
+        /// Trims the whitespace from both ends of the string.
+        /// When the resulting string is empty, then it will be converted to null.
+        /// </summary>
+        /// <param name="Text">A given text.</param>
+        public static String? TrimToNull(this String? Text)
+        {
+
+            var trimmed = Text?.Trim();
+
+            return Text?.Length > 0
+                       ? trimmed
+                       : null;
+
+        }
+
+        #endregion
+
         #region FirstCharToLower(this Text)
 
         /// <summary>
