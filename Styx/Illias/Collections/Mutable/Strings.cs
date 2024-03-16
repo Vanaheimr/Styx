@@ -243,10 +243,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="MultiString">A MultiString to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(MultiString OtherMultiString)
+        public Boolean Equals(MultiString? OtherMultiString)
         {
 
-            if ((Object) OtherMultiString == null)
+            if (OtherMultiString is null)
                 return false;
 
             // Compare the length of the MultiStrings

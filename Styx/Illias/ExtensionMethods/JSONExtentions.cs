@@ -2075,11 +2075,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatoryEnum   (this JSON, PropertyName, PropertyDescription,                               out EnumValue,              out ErrorResponse)
 
-        public static Boolean ParseMandatoryEnum<TEnum>(this JObject  JSON,
-                                                        String        PropertyName,
-                                                        String        PropertyDescription,
-                                                        out TEnum     EnumValue,
-                                                        out String?   ErrorResponse)
+        public static Boolean ParseMandatoryEnum<TEnum>(this JObject                      JSON,
+                                                        String                            PropertyName,
+                                                        String                            PropertyDescription,
+                                                        [NotNullWhen(true)]  out TEnum    EnumValue,
+                                                        [NotNullWhen(false)] out String?  ErrorResponse)
 
              where TEnum : struct
 
@@ -2101,7 +2101,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing JSON property '{PropertyName}'!";
                 return false;
             }
 
@@ -2122,11 +2122,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out JObject,                out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out JObject   JObject,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             [NotNullWhen(true)]  out JObject  JObject,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             JObject = null;
@@ -2170,11 +2170,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out JArray,                 out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out JArray    JArray,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             [NotNullWhen(true)]  out JArray   JArray,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             JArray = null;
@@ -5272,11 +5272,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                            out TimeSpan,                out ErrorResponse)
 
-        public static Boolean ParseOptional(this JObject                        JSON,
-                                            String                              PropertyName,
-                                            String                              PropertyDescription,
-                                                                 out TimeSpan?  Timespan,
-                                            [NotNullWhen(false)] out String?    ErrorResponse)
+        public static Boolean ParseOptional(this JObject   JSON,
+                                            String         PropertyName,
+                                            String         PropertyDescription,
+                                            out TimeSpan?  Timespan,
+                                            out String?    ErrorResponse)
         {
 
             Timespan       = default;
@@ -6510,12 +6510,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //}
 
-        public static Boolean ParseOptionalJSON<T>(this JObject          JSON,
-                                                   String                PropertyName,
-                                                   String                PropertyDescription,
-                                                   TryJObjectParser2<T>  Parser,
-                                                   out IEnumerable<T>    EnumerableT,
-                                                   out String?           ErrorResponse)
+        public static Boolean ParseOptionalJSON<T>(this JObject                             JSON,
+                                                   String                                   PropertyName,
+                                                   String                                   PropertyDescription,
+                                                   TryJObjectParser2<T>                     Parser,
+                                                   [NotNullWhen(true)]  out IEnumerable<T>  EnumerableT,
+                                                   [NotNullWhen(false)] out String?         ErrorResponse)
 
         {
 
@@ -7279,7 +7279,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValue">A default value.</param>
         public static JToken ValueOrDefault(this JObject  ParentJObject,
                                             String        PropertyName,
-                                            String        DefaultValue = null)
+                                            String?       DefaultValue = null)
         {
 
             #region Initial checks
@@ -7289,10 +7289,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            JToken JSONValue = null;
-
-            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
-                return JSONValue;
+            if (ParentJObject.TryGetValue(PropertyName, out var jsonValue))
+                return jsonValue;
 
             return DefaultValue;
 
@@ -7310,7 +7308,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionMessage">An optional exception message.</param>
         public static JToken ValueOrFail(this JObject  ParentJObject,
                                          String        PropertyName,
-                                         String        ExceptionMessage = null)
+                                         String?       ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -7320,10 +7318,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            JToken JSONValue = null;
-
-            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
-                return JSONValue;
+            if (ParentJObject.TryGetValue(PropertyName, out var jsonValue))
+                return jsonValue;
 
             throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given JSON property does not exist!");
 
