@@ -20,6 +20,7 @@
 using System.Text;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -38,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Indicates whether the given (trimmed) string is null or empty.
         /// </summary>
         /// <param name="GivenString">A string.</param>
-        public static Boolean IsNullOrEmpty(this String? GivenString)
+        public static Boolean IsNullOrEmpty([NotNullWhen(false)] this String? GivenString)
 
             => String.IsNullOrEmpty(GivenString?.Trim());
 
@@ -50,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Indicates whether the given (trimmed) string is not null or empty.
         /// </summary>
         /// <param name="GivenString">A string.</param>
-        public static Boolean IsNotNullOrEmpty(this String? GivenString)
+        public static Boolean IsNotNullOrEmpty([NotNullWhen(true)] this String? GivenString)
 
             => !String.IsNullOrEmpty(GivenString?.Trim());
 
