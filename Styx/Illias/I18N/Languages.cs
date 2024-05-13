@@ -15,14 +15,11 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+    // Alternatives: https://lh.2xlibre.net/locales/
+    //               https://datatracker.ietf.org/doc/html/rfc5646
 
     public static class LanguagesExtensions
     {

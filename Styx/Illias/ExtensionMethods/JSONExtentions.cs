@@ -1967,11 +1967,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out TimeSpan,               out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out TimeSpan  TimeSpan,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                       JSON,
+                                             String                             PropertyName,
+                                             String                             PropertyDescription,
+                                             [NotNullWhen(true)]  out TimeSpan  TimeSpan,
+                                             [NotNullWhen(false)] out String?   ErrorResponse)
 
         {
 
@@ -2016,11 +2016,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out I18NText,               out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject    JSON,
-                                             String          PropertyName,
-                                             String          PropertyDescription,
-                                             out I18NString  I18NText,
-                                             out String?     ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                         JSON,
+                                             String                               PropertyName,
+                                             String                               PropertyDescription,
+                                             [NotNullWhen(true)]  out I18NString  I18NText,
+                                             [NotNullWhen(false)] out String?     ErrorResponse)
 
         {
 
@@ -2489,12 +2489,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
  
         }
 
-        public static Boolean ParseMandatoryJSONS<T>(this JObject                     JSON,
-                                                    String                            PropertyName,
-                                                    String                            PropertyDescription,
-                                                    TryJObjectParser2<T>              TryJObjectParser,
-                                                    [NotNullWhen(true)]  out T?       Value,
-                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        public static Boolean ParseMandatoryJSONS<T>(this JObject                      JSON,
+                                                     String                            PropertyName,
+                                                     String                            PropertyDescription,
+                                                     TryJObjectParser2<T>              TryJObjectParser,
+                                                     [NotNullWhen(true)]  out T?       Value,
+                                                     [NotNullWhen(false)] out String?  ErrorResponse)
 
             where T : struct
 

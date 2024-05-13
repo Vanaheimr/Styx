@@ -15,14 +15,31 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Diagnostics.CodeAnalysis;
+
+using Newtonsoft.Json.Linq;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A structure to store a start and end time.
+    /// A structure to store a start and optional end time.
     /// </summary>
     public class StartEndDateTime
     {
+
+        #region Data
+
+        /// <summary>
+        /// The JSON-LD context of the object.
+        /// </summary>
+        public const String JSONLDContext  = "https://graphdefined.com/contexts/vanaheimr+json/startEndDateTime";
+
+        #endregion
 
         #region Properties
 
@@ -78,6 +95,108 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static StartEndDateTime Now
 
             => new (Timestamp.Now);
+
+        #endregion
+
+
+        #region ToJSON(Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation of the given start and optional end time.
+        /// </summary>
+        /// <param name="Embedded">Whether this data structure is embedded into another data structure.</param>
+        /// <param name="CustomStartEndDateTimeSerializer">A custom start and optional end time serializer.</param>
+        public JObject ToJSON(Boolean                                             Embedded                           = false,
+                              CustomJObjectSerializerDelegate<StartEndDateTime>?  CustomStartEndDateTimeSerializer   = null)
+        {
+
+            var json = JSONObject.Create(
+
+                           Embedded
+                               ? null
+                               : new JProperty("@context",   JSONLDContext),
+
+                                 new JProperty("start",      StartTime.    ToIso8601()),
+
+                           EndTime.HasValue
+                               ? new JProperty("end",        EndTime.Value.ToIso8601())
+                               : null
+                       );
+
+            return CustomStartEndDateTimeSerializer is not null
+                       ? CustomStartEndDateTimeSerializer(this, json)
+                       : json;
+
+        }
+
+        #endregion
+
+        #region TryParse(JSON, out StartEndDateTime, out ErrorResponse)
+
+        public static Boolean TryParse(JObject                                     JSON,
+                                       [NotNullWhen(true)]  out StartEndDateTime?  StartEndDateTime,
+                                       [NotNullWhen(false)] out String?            ErrorResponse)
+        {
+
+            StartEndDateTime = null;
+
+            try
+            {
+
+                if (JSON?.HasValues != true)
+                {
+                    ErrorResponse = "The given JSON object must not be null or empty!";
+                    return false;
+                }
+
+                #region Parse Context    [mandatory]
+
+                var context = JSON["@context"]?.Value<String>();
+
+                #endregion
+
+                #region Parse Start      [mandatory]
+
+                if (!JSON.ParseMandatory("start",
+                                         "start timestamp",
+                                         out DateTime Start,
+                                         out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+                #region Parse End        [optional]
+
+                if (JSON.ParseOptional("end",
+                                       "end timestamp",
+                                       out DateTime? End,
+                                       out ErrorResponse))
+                {
+                    return false;
+                }
+
+                #endregion
+
+
+                StartEndDateTime = new StartEndDateTime(
+                                       Start,
+                                       End
+                                   );
+
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                StartEndDateTime  = null;
+                ErrorResponse     = "The given JSON representation of a start and optional end time is invalid: " + e.Message;
+            }
+
+            return false;
+
+        }
 
         #endregion
 
