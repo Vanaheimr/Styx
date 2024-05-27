@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -113,18 +114,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region HexStringToByteArray(this HexValue)
 
         /// <summary>
-        /// Convert a hex representation of an array of bytes
-        /// back into an array of bytes.
+        /// Convert the given hex representation of a byte array
+        /// into an array of bytes.
         /// </summary>
         /// <param name="HexValue">hex representation of a byte array.</param>
         public static Byte[] HexStringToByteArray(this String HexValue)
         {
 
             if (HexValue.IsNullOrEmpty())
-                return new Byte[0];
+                return [];
 
-            if (HexValue != null)
-                HexValue = HexValue.Trim();
+            HexValue = HexValue.Trim();
 
             if (HexValue.Length % 2 == 1)
                 throw new ArgumentException("Wrong size of the input string!", nameof(HexValue));
@@ -133,6 +133,49 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               Where (x => x % 2 == 0).
                               Select(x => Convert.ToByte(HexValue.Substring(x, 2), 16)).
                               ToArray();
+
+        }
+
+        #endregion
+
+        #region HexStringToByteArray(this HexString, out ByteArray, out ErrorResponse)
+
+        /// <summary>
+        /// Convert the given hex representation of a byte array
+        /// into an array of bytes.
+        /// </summary>
+        /// <param name="HexString">hex representation of a byte array.</param>
+        /// <param name="ByteArray">The parsed array of bytes.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseHexBytes(String                            HexString,
+                                               [NotNullWhen(true)]  out Byte[]?  ByteArray,
+                                               [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            if (HexString.IsNullOrEmpty())
+            {
+                ByteArray      = [];
+                ErrorResponse  = "The given hex-representation of a byte array must not be null!";
+                return false;
+            }
+
+            HexString = HexString.Trim();
+
+            if (HexString.Length % 2 == 1)
+            {
+                ByteArray      = [];
+                ErrorResponse  = "The length of the given hex-representation of a byte array is invalid!";
+                return false;
+            }
+
+            ByteArray = Enumerable.Range  (0, HexString.Length).
+                                   Where  (x => x % 2 == 0).
+                                   Select (x => Convert.ToByte(HexString.Substring(x, 2), 16)).
+                                   ToArray();
+
+            ErrorResponse = null;
+
+            return true;
 
         }
 
