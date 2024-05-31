@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public ConcurrentList()
         {
-            internalList = new();
+            internalList = [];
         }
 
         public ConcurrentList(Int32 Capacity)
