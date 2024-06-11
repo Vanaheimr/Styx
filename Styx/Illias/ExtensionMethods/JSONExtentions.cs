@@ -1593,7 +1593,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            AmpereValue    = Ampere.Parse(decimalValue);
+            AmpereValue    = Ampere.ParseA(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1637,7 +1637,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            HertzValue     = Hertz.Parse(decimalValue);
+            HertzValue     = Hertz.ParseHz(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1681,7 +1681,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            MeterValue     = Meter.Parse(decimalValue);
+            MeterValue     = Meter.ParseM(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1813,7 +1813,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            VoltValue      = Volt.Parse(decimalValue);
+            VoltValue      = Volt.ParseV(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1857,7 +1857,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            WattValue      = Watt.Parse(decimalValue);
+            WattValue      = Watt.ParseW(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1901,7 +1901,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            WattHourValue  = WattHour.Parse(decimalValue);
+            WattHourValue  = WattHour.ParseWh(decimalValue);
             ErrorResponse    = null;
             return true;
 
@@ -4439,7 +4439,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    AmpereValue   = Ampere.Parse(decimalValue, Multiplicator);
+                    AmpereValue   = Ampere.ParseA(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4485,7 +4485,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    HertzValue    = Hertz.Parse(decimalValue, Multiplicator);
+                    HertzValue    = Hertz.ParseHz(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4531,7 +4531,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    MeterValue    = Meter.Parse(decimalValue, Multiplicator);
+                    MeterValue    = Meter.ParseM(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4712,7 +4712,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    VoltValue     = Volt.Parse(decimalValue, Multiplicator);
+                    VoltValue     = Volt.ParseV(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4758,7 +4758,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    WattValue     = Watt.Parse(decimalValue, Multiplicator);
+                    WattValue     = Watt.ParseW(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -4804,7 +4804,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    WattHourValue = WattHour.TryParse(decimalValue, Multiplicator);
+                    WattHourValue = WattHour.TryParseWh(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";

@@ -15,8 +15,39 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Globalization;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
+
+    /// <summary>
+    /// Extension methods for Amperes.
+    /// </summary>
+    public static class AmpereExtensions
+    {
+
+        /// <summary>
+        /// The sum of the given Ampere values.
+        /// </summary>
+        /// <param name="Amperes">An enumeration of Ampere values.</param>
+        public static Ampere Sum(this IEnumerable<Ampere> Amperes)
+        {
+
+            var sum = Ampere.Zero;
+
+            foreach (var ampere in Amperes)
+                sum = sum + ampere;
+
+            return sum;
+
+        }
+
+    }
+
 
     /// <summary>
     /// An Ampere value.
@@ -55,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse   (Text)
+        #region (static) Parse      (Text)
 
         /// <summary>
         /// Parse the given string as an Ampere.
@@ -74,18 +105,57 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Number, Exponent = null)
+        #region (static) ParseA     (Text)
+
+        /// <summary>
+        /// Parse the given string as an Ampere.
+        /// </summary>
+        /// <param name="Text">A text representation of an Ampere.</param>
+        public static Ampere ParseA(String Text)
+        {
+
+            if (TryParseA(Text, out var ampere))
+                return ampere;
+
+            throw new ArgumentException($"Invalid text representation of an Ampere: '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) ParseKA    (Text)
+
+        /// <summary>
+        /// Parse the given string as a kA.
+        /// </summary>
+        /// <param name="Text">A text representation of a kA.</param>
+        public static Ampere ParseKA(String Text)
+        {
+
+            if (TryParseKA(Text, out var ampere))
+                return ampere;
+
+            throw new ArgumentException($"Invalid text representation of a kA: '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+
+        #region (static) ParseA     (Number, Exponent = null)
 
         /// <summary>
         /// Parse the given number as an Ampere.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere Parse(Decimal  Number,
-                                   Int32?   Exponent = null)
+        public static Ampere ParseA(Decimal  Number,
+                                    Int32?   Exponent = null)
         {
 
-            if (TryParse(Number, out var ampere, Exponent))
+            if (TryParseA(Number, out var ampere, Exponent))
                 return ampere;
 
             throw new ArgumentException($"Invalid numeric representation of an Ampere: '{Number}'!",
@@ -99,11 +169,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere Parse(Byte    Number,
-                                   Int32?  Exponent = null)
+        public static Ampere ParseA(Byte    Number,
+                                    Int32?  Exponent = null)
         {
 
-            if (TryParse(Number, out var ampere, Exponent))
+            if (TryParseA(Number, out var ampere, Exponent))
                 return ampere;
 
             throw new ArgumentException($"Invalid numeric representation of an Ampere: '{Number}'!",
@@ -113,7 +183,47 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Text)
+        #region (static) ParseKA    (Number, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a kA.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere ParseKA(Decimal  Number,
+                                     Int32?   Exponent = null)
+        {
+
+            if (TryParseKA(Number, out var ampere, Exponent))
+                return ampere;
+
+            throw new ArgumentException($"Invalid numeric representation of a kA: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a kA.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere ParseKA(Byte    Number,
+                                     Int32?  Exponent = null)
+        {
+
+            if (TryParseKA(Number, out var ampere, Exponent))
+                return ampere;
+
+            throw new ArgumentException($"Invalid numeric representation of a KA: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParse   (Text)
 
         /// <summary>
         /// Try to parse the given text as an Ampere.
@@ -131,35 +241,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, Exponent = null)
+        #region (static) TryParseA  (Text)
 
         /// <summary>
-        /// Try to parse the given number as an Ampere.
+        /// Try to parse the given text as an Ampere.
         /// </summary>
-        /// <param name="Number">A numeric representation of an Ampere.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere? TryParse(Decimal  Number,
-                                       Int32?   Exponent = null)
+        /// <param name="Text">A text representation of an Ampere.</param>
+        public static Ampere? TryParseA(String Text)
         {
 
-            if (TryParse(Number, out var ampere, Exponent))
-                return ampere;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as an Ampere.
-        /// </summary>
-        /// <param name="Number">A numeric representation of an Ampere.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere? TryParse(Byte    Number,
-                                       Int32?  Exponent = null)
-        {
-
-            if (TryParse(Number, out var ampere, Exponent))
+            if (TryParseA(Text, out var ampere))
                 return ampere;
 
             return null;
@@ -168,7 +259,101 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Text,   out Ampere)
+        #region (static) TryParseKA (Text)
+
+        /// <summary>
+        /// Try to parse the given text as a kA.
+        /// </summary>
+        /// <param name="Text">A text representation of a kA.</param>
+        public static Ampere? TryParseKA(String Text)
+        {
+
+            if (TryParseKA(Text, out var ampere))
+                return ampere;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParseA  (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to parse the given number as an Ampere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an Ampere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere? TryParseA(Decimal  Number,
+                                        Int32?   Exponent = null)
+        {
+
+            if (TryParseA(Number, out var ampere, Exponent))
+                return ampere;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as an Ampere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of an Ampere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere? TryParseA(Byte    Number,
+                                        Int32?  Exponent = null)
+        {
+
+            if (TryParseA(Number, out var ampere, Exponent))
+                return ampere;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseKA (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to parse the given number as a kA.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere? TryParseKA(Decimal  Number,
+                                         Int32?   Exponent = null)
+        {
+
+            if (TryParseKA(Number, out var ampere, Exponent))
+                return ampere;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a kA.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere? TryParseKA(Byte    Number,
+                                         Int32?  Exponent = null)
+        {
+
+            if (TryParseKA(Number, out var ampere, Exponent))
+                return ampere;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParse   (Text,   out Ampere)
 
         /// <summary>
         /// Parse the given string as an Ampere.
@@ -185,19 +370,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 var factor = 1;
 
-                if (Text.EndsWith("kW") || Text.EndsWith("KW"))
+                if (Text.EndsWith("kA") || Text.EndsWith("KA"))
                     factor = 1000;
 
-                if (Text.EndsWith("MW"))
-                    factor = 1000000;
-
-                if (Text.EndsWith("GW"))
-                    factor = 1000000;
-
-                if (Decimal.TryParse(Text, out var value))
+                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
                 {
 
-                    Ampere = new Ampere(value / factor);
+                    Ampere = new Ampere(factor * value);
 
                     return true;
 
@@ -214,7 +393,74 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Number, out Ampere, Exponent = null)
+        #region (static) TryParseA  (Text,   out Ampere)
+
+        /// <summary>
+        /// Parse the given string as an Ampere.
+        /// </summary>
+        /// <param name="Text">A text representation of an Ampere.</param>
+        /// <param name="Ampere">The parsed Ampere.</param>
+        public static Boolean TryParseA(String Text, out Ampere Ampere)
+        {
+
+            try
+            {
+
+                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
+                {
+
+                    Ampere = new Ampere(value);
+
+                    return true;
+
+                }
+
+            }
+            catch
+            { }
+
+            Ampere = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseKA (Text,   out Ampere)
+
+        /// <summary>
+        /// Parse the given string as an Ampere.
+        /// </summary>
+        /// <param name="Text">A text representation of an Ampere.</param>
+        /// <param name="Ampere">The parsed Ampere.</param>
+        public static Boolean TryParseKA(String Text, out Ampere Ampere)
+        {
+
+            try
+            {
+
+                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
+                {
+
+                    Ampere = new Ampere(1000 * value);
+
+                    return true;
+
+                }
+
+            }
+            catch
+            { }
+
+            Ampere = default;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParseA  (Number, out Ampere, Exponent = null)
 
         /// <summary>
         /// Parse the given number as an Ampere.
@@ -222,9 +468,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParse(Byte        Number,
-                                       out Ampere  Ampere,
-                                       Int32?      Exponent = null)
+        public static Boolean TryParseA(Byte        Number,
+                                        out Ampere  Ampere,
+                                        Int32?      Exponent = null)
         {
 
             try
@@ -250,9 +496,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParse(Decimal     Number,
-                                       out Ampere  Ampere,
-                                       Int32?      Exponent = null)
+        public static Boolean TryParseA(Decimal     Number,
+                                        out Ampere  Ampere,
+                                        Int32?      Exponent = null)
         {
 
             try
@@ -272,6 +518,66 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+        #region (static) TryParseKA (Number, out Ampere, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a kA.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Ampere">The parsed kA.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseKA(Byte        Number,
+                                         out Ampere  Ampere,
+                                         Int32?      Exponent = null)
+        {
+
+            try
+            {
+
+                Ampere = new Ampere(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+
+                return true;
+
+            }
+            catch
+            {
+                Ampere = default;
+                return false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a kA.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Ampere">The parsed kA.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseKA(Decimal     Number,
+                                         out Ampere  Ampere,
+                                         Int32?      Exponent = null)
+        {
+
+            try
+            {
+
+                Ampere = new Ampere(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+
+                return true;
+
+            }
+            catch
+            {
+                Ampere = default;
+                return false;
+            }
+
+        }
+
+        #endregion
+
 
         #region Clone
 
@@ -283,6 +589,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => new (Value);
 
         #endregion
+
+
+        public static Ampere Zero
+            => new (0);
 
 
         #region Operator overloading
@@ -387,7 +697,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Ampere operator + (Ampere Ampere1,
                                        Ampere Ampere2)
 
-            => Ampere.Parse(Ampere1.Value + Ampere2.Value);
+            => new (Ampere1.Value + Ampere2.Value);
 
         #endregion
 
@@ -401,7 +711,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Ampere operator - (Ampere Ampere1,
                                        Ampere Ampere2)
 
-            => Ampere.Parse(Ampere1.Value - Ampere2.Value);
+            => new (Ampere1.Value - Ampere2.Value);
 
         #endregion
 
