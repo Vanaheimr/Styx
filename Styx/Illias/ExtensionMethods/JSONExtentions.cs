@@ -1146,11 +1146,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Double    DoubleValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             [NotNullWhen(true)]  out Double   DoubleValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             DoubleValue = default;

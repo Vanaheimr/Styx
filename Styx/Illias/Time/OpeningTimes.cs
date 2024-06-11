@@ -116,7 +116,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// 24/7 open...
         /// </summary>
         public Boolean  IsOpen24Hours
-            => !regularOpenings.Any();
+            => regularOpenings.Count == 0;
 
         /// <summary>
         /// An additoonal free text.
@@ -132,9 +132,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public OpeningTimes(String  FreeText = "")
         {
 
-            this.regularOpenings      = new Dictionary<DayOfWeek, List<RegularHours>>();
-            this.exceptionalOpenings  = new List<ExceptionalPeriod>();
-            this.exceptionalClosings  = new List<ExceptionalPeriod>();
+            this.regularOpenings      = [];
+            this.exceptionalOpenings  = [];
+            this.exceptionalClosings  = [];
             this.FreeText             = FreeText;
 
         }
@@ -418,7 +418,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Parse(Text)
+        #region Parse    (Text)
 
         public static OpeningTimes? Parse(String Text)
         {
@@ -433,7 +433,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Parse(Texts)
+        #region Parse    (Texts)
 
         public static OpeningTimes? Parse(IEnumerable<String> Texts)
         {
@@ -448,12 +448,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text)
+        #region TryParse (Text)
 
         public static OpeningTimes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out var openingTimes, out var errorResponse))
+            if (TryParse(Text, out var openingTimes, out _))
                 return openingTimes;
 
             return null;
@@ -462,7 +462,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text,  out OpeningTimes, out ErrorResponse)
+        #region TryParse (Text,  out OpeningTimes, out ErrorResponse)
 
         public static Boolean TryParse(String                                  Text,
                                        [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
@@ -474,7 +474,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Texts, out OpeningTimes)
+        #region TryParse (Texts, out OpeningTimes)
 
         public static Boolean TryParse(IEnumerable<String>                     Texts,
                                        [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
@@ -702,28 +702,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                            new JProperty("24/7", IsOpen24Hours),
 
-                           regularOpenings.Any()
-                               ? new JProperty("regularOpenings",      new JArray(regularOpenings.Select(regularOpening =>
-                                                                           new JObject(
-                                                                               new JProperty(
-                                                                                   OpeningTimesExtensions.AsString(regularOpening.Key),
-                                                                                   new JArray(regularOpening.Value.Select(regularHours => regularHours.ToJSON()))
-                                                                               )
-                                                                           )
-                                                                       ))
+                           regularOpenings.Count != 0
+                               ? new JProperty("regularOpenings",       new JArray(regularOpenings.Select(regularOpening =>
+                                                                            new JObject(
+                                                                                new JProperty(
+                                                                                    OpeningTimesExtensions.AsString(regularOpening.Key),
+                                                                                    new JArray(regularOpening.Value.Select(regularHours => regularHours.ToJSON()))
+                                                                                )
+                                                                            )
+                                                                        ))
                                  )
                                : null,
 
-                           exceptionalOpenings.Any()
-                               ? new JProperty("exceptionalOpenings",  new JArray(exceptionalOpenings.Select(exceptionalOpening => exceptionalOpening.ToString())))
+                           exceptionalOpenings.Count != 0
+                               ? new JProperty("exceptionalOpenings",   new JArray(exceptionalOpenings.Select(exceptionalOpening => exceptionalOpening.ToString())))
                                : null,
 
-                           exceptionalClosings.Any()
-                               ? new JProperty("exceptionalClosings",  new JArray(exceptionalClosings.Select(exceptionalClosing => exceptionalClosing.ToString())))
+                           exceptionalClosings.Count != 0
+                               ? new JProperty("exceptionalClosings",   new JArray(exceptionalClosings.Select(exceptionalClosing => exceptionalClosing.ToString())))
                                : null,
 
                            FreeText.IsNotNullOrEmpty()
-                               ? new JProperty("freeText",             FreeText)
+                               ? new JProperty("freeText",              FreeText)
                                : null
 
                        );
@@ -741,7 +741,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Is open for 24 hours a day (7 days a week).
         /// </summary>
         public static OpeningTimes Open24Hours
-
             => new ();
 
         #endregion
@@ -752,7 +751,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The opening times are described within the free text.
         /// </summary>
         public static OpeningTimes FromFreeText(String Text)
-
             => new (Text);
 
         #endregion
@@ -793,15 +791,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="OpeningTime1">An opening time.</param>
         /// <param name="OpeningTime2">Another opening time.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (OpeningTimes OpeningTime1, OpeningTimes OpeningTime2)
+        public static Boolean operator == (OpeningTimes OpeningTime1,
+                                           OpeningTimes OpeningTime2)
         {
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(OpeningTime1, OpeningTime2))
+            if (ReferenceEquals(OpeningTime1, OpeningTime2))
                 return true;
 
-            // If one is null, but not both, return false.
-            if (((Object) OpeningTime1 == null) || ((Object) OpeningTime2 == null))
+            if (OpeningTime1 is null || OpeningTime2 is null)
                 return false;
 
             return OpeningTime1.Equals(OpeningTime2);
@@ -818,10 +815,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="OpeningTime1">An opening time.</param>
         /// <param name="OpeningTime2">Another opening time.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (OpeningTimes OpeningTime1, OpeningTimes OpeningTime2)
-        {
-            return !(OpeningTime1 == OpeningTime2);
-        }
+        public static Boolean operator != (OpeningTimes OpeningTime1,
+                                           OpeningTimes OpeningTime2)
+
+            => !(OpeningTime1 == OpeningTime2);
 
         #endregion
 
