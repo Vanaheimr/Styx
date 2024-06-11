@@ -74,7 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                  PeriodEnd.Minute != 0))
             {
 
-                throw new ArgumentException("The end period '" + PeriodEnd + "h' must be after the start period '" + PeriodBegin + "h'!",
+                throw new ArgumentException($"The end period '{PeriodEnd}h' must be after the start period '{PeriodBegin}h'!",
                                             nameof(PeriodEnd));
 
             }

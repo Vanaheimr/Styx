@@ -19,8 +19,11 @@
 
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
+
+using org.GraphDefined.Vanaheimr.Styx;
 
 #endregion
 
@@ -30,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class OpeningTimesExtensions
     {
 
-        public static String AsString(DayOfWeek dayOfWeek)
+        public static String AsString(this DayOfWeek dayOfWeek)
 
             => dayOfWeek switch {
                    DayOfWeek.Monday     => "monday",
@@ -40,6 +43,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    DayOfWeek.Friday     => "friday",
                    DayOfWeek.Saturday   => "saturday",
                    _                    => "sunday"
+               };
+
+
+        public static String AsFreeText(this DayOfWeek dayOfWeek)
+
+            => dayOfWeek switch {
+                   DayOfWeek.Monday     => "Monday",
+                   DayOfWeek.Tuesday    => "Tuesday",
+                   DayOfWeek.Wednesday  => "Wednesday",
+                   DayOfWeek.Thursday   => "Thursday",
+                   DayOfWeek.Friday     => "Friday",
+                   DayOfWeek.Saturday   => "Saturday",
+                   _                    => "Sunday"
                };
 
     }
@@ -252,12 +268,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                               HourMin    End)
         {
 
-            if (!regularOpenings.ContainsKey(Weekday))
-                regularOpenings.Add(Weekday, new List<RegularHours>());
+            // Ignore: Begin == End
 
-            regularOpenings[Weekday].Add(new RegularHours(Weekday,
-                                                          Begin,
-                                                          End));
+            if (Begin < End)
+            {
+
+                if (!regularOpenings.ContainsKey(Weekday))
+                    regularOpenings.Add(Weekday, []);
+
+                regularOpenings[Weekday].Add(
+                    new RegularHours(
+                        Weekday,
+                        Begin,
+                        End
+                    )
+                );
+
+            }
+
+            else if (Begin > End)
+            {
+
+                if (!regularOpenings.ContainsKey(Weekday))
+                    regularOpenings.Add(Weekday, []);
+
+                regularOpenings[Weekday].Add(
+                    new RegularHours(
+                        Weekday,
+                        Begin,
+                        HourMin.Midnight
+                    )
+                );
+
+
+                var dayAfter = (DayOfWeek) ((((Byte) Weekday) + 1) % 7);
+
+                if (!regularOpenings.ContainsKey(dayAfter))
+                    regularOpenings.Add(dayAfter, []);
+
+                regularOpenings[dayAfter].Add(
+                    new RegularHours(
+                        dayAfter,
+                        HourMin.Midnight,
+                        End
+                    )
+                );
+
+            }
 
             return this;
 
@@ -281,11 +338,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (!regularOpenings.ContainsKey((DayOfWeek) (weekday % 7)))
-                    regularOpenings.Add((DayOfWeek) (weekday % 7), new List<RegularHours>());
+                    regularOpenings.Add((DayOfWeek) (weekday % 7), []);
 
-                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek)(weekday % 7),
-                                                                                new HourMin(0, 0),
-                                                                                new HourMin(0, 0)));
+                regularOpenings[(DayOfWeek) (weekday % 7)].Add(
+                    new RegularHours(
+                        (DayOfWeek)(weekday % 7),
+                        new HourMin(0, 0),
+                        new HourMin(0, 0)
+                    )
+                );
 
             }
 
@@ -310,16 +371,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 toWeekday += 7;
 
             for (var weekday = fromWeekday; weekday <= toWeekday; weekday++)
-            {
-
-                if (!regularOpenings.ContainsKey((DayOfWeek) (weekday % 7)))
-                    regularOpenings.Add((DayOfWeek) (weekday % 7), new List<RegularHours>());
-
-                regularOpenings[(DayOfWeek) (weekday % 7)].Add(new RegularHours((DayOfWeek) (weekday % 7),
-                                                                                Begin,
-                                                                                End));
-
-            }
+                AddRegularOpening((DayOfWeek) weekday, Begin, End);
 
             return this;
 
@@ -329,10 +381,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region AddExceptionalClosing(StartTimestamp, EndTimestamp)
 
-        public OpeningTimes AddExceptionalOpening(DateTime StartTimestamp, DateTime EndTimestamp)
+        public OpeningTimes AddExceptionalOpening(DateTime  StartTimestamp,
+                                                  DateTime  EndTimestamp)
         {
 
-            exceptionalOpenings.Add(new ExceptionalPeriod(StartTimestamp, EndTimestamp));
+            exceptionalOpenings.Add(
+                new ExceptionalPeriod(
+                    StartTimestamp,
+                    EndTimestamp
+                )
+            );
 
             return this;
 
@@ -342,10 +400,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region AddExceptionalClosing(StartTimestamp, EndTimestamp)
 
-        public OpeningTimes AddExceptionalClosing(DateTime StartTimestamp, DateTime EndTimestamp)
+        public OpeningTimes AddExceptionalClosing(DateTime  StartTimestamp,
+                                                  DateTime  EndTimestamp)
         {
 
-            exceptionalClosings.Add(new ExceptionalPeriod(StartTimestamp, EndTimestamp));
+            exceptionalClosings.Add(
+                new ExceptionalPeriod(
+                    StartTimestamp,
+                    EndTimestamp
+                )
+            );
 
             return this;
 
@@ -359,10 +423,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static OpeningTimes? Parse(String Text)
         {
 
-            if (TryParse(Text, out OpeningTimes? openingTimes))
+            if (TryParse(Text, out var openingTimes, out var errorResponse))
                 return openingTimes;
 
-            throw new ArgumentException($"Invalid text representation of opening times: '" + Text + "'!",
+            throw new ArgumentException($"Invalid text representation of opening times: {errorResponse}",
                                         nameof(Text));
 
         }
@@ -374,10 +438,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static OpeningTimes? Parse(IEnumerable<String> Texts)
         {
 
-            if (TryParse(Texts, out OpeningTimes? openingTimes))
+            if (TryParse(Texts, out var openingTimes, out var errorResponse))
                 return openingTimes;
 
-            throw new ArgumentException($"Invalid text representation of opening times: '" + Texts.AggregateWith(",") + "'!",
+            throw new ArgumentException($"Invalid text representation of opening times: {errorResponse}",
                                         nameof(Texts));
 
         }
@@ -389,7 +453,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static OpeningTimes? TryParse(String Text)
         {
 
-            if (TryParse(Text, out OpeningTimes? openingTimes))
+            if (TryParse(Text, out var openingTimes, out var errorResponse))
                 return openingTimes;
 
             return null;
@@ -398,18 +462,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text,  out OpeningTimes)
+        #region TryParse(Text,  out OpeningTimes, out ErrorResponse)
 
-        public static Boolean TryParse(String Text, out OpeningTimes? OpeningTimes)
+        public static Boolean TryParse(String                                  Text,
+                                       [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
 
-            => TryParse(new String[] { Text }, out OpeningTimes);
+            => TryParse([ Text ],
+                        out OpeningTimes,
+                        out ErrorResponse);
 
         #endregion
 
         #region TryParse(Texts, out OpeningTimes)
 
-        public static Boolean TryParse(IEnumerable<String> Texts, out OpeningTimes? OpeningTimes)
+        public static Boolean TryParse(IEnumerable<String>                     Texts,
+                                       [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
         {
+
+            ErrorResponse = null;
 
             if (!Texts.Any() || Texts.First() == _24_7 || Texts.First() == "{}")
             {
@@ -426,9 +498,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 // "Monday - Sunday 06:00h - 21:00h"
                 var match = Regex.Match(text, "([a-zA-Z]+)( - ([a-zA-Z]+))* ((([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h)|open|closed)");
                 if (!match.Success)
+                {
+                    OpeningTimes   = null;
+                    ErrorResponse  = "Invalid opening times!";
                     return false;
+                }
 
-                #region Parse weekdays
+                #region Parse FromWeekday
 
                 DayOfWeek FromWeekday;
 
@@ -482,10 +558,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         break;
 
                     default:
+                        OpeningTimes   = null;
+                        ErrorResponse  = $"Invalid FromWeekday '{match.Groups[1].Value.ToLower()}' opening times!";
                         return false;
 
                 }
 
+                #endregion
+
+                #region Parse ToWeekday
 
                 DayOfWeek ToWeekday;
 
@@ -543,6 +624,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         break;
 
                     default:
+                        OpeningTimes   = null;
+                        ErrorResponse  = $"Invalid ToWeekday '{match.Groups[3].Value.ToLower()}' opening times!";
                         return false;
 
                 }
@@ -551,10 +634,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 #region Parse hours...
 
-                if (HourMin.TryParse(match.Groups[6].Value, out HourMin begin) &&
-                    HourMin.TryParse(match.Groups[7].Value, out HourMin end))
+                if (HourMin.TryParse(match.Groups[6].Value, out var begin) &&
+                    HourMin.TryParse(match.Groups[7].Value, out var end))
                 {
-                    OpeningTimes.AddRegularOpenings(FromWeekday, ToWeekday, begin, end);
+
+                    // "Monday 07:00h - 07:00h"
+                    if (FromWeekday == ToWeekday && begin == end)
+                    {
+                        OpeningTimes   = null;
+                        ErrorResponse  = $"Invalid hours '{text}'!";
+                        return false;
+                    }
+
+                    OpeningTimes.AddRegularOpenings(
+                        FromWeekday,
+                        ToWeekday,
+                        begin,
+                        end
+                    );
+
                 }
 
                 #endregion
@@ -581,9 +679,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            if (OpeningTimes.RegularOpenings.Any())
+            if (OpeningTimes.regularOpenings.    Count != 0 ||
+                OpeningTimes.exceptionalOpenings.Count != 0)
+            {
                 return true;
+            }
 
+            OpeningTimes   = null;
+            ErrorResponse  = $"Invalid opening times!";
             return false;
 
         }
@@ -651,6 +754,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static OpeningTimes FromFreeText(String Text)
 
             => new (Text);
+
+        #endregion
+
+
+        #region AsFreeText()
+
+        /// <summary>
+        /// Return a free-text representation of this opening times.
+        /// </summary>
+        public String AsFreeText()
+        {
+
+            var list = new List<String>();
+
+            foreach (var regularOpening in regularOpenings)
+            {
+                foreach (var regularHours in regularOpening.Value)
+                {
+                    list.Add($"{regularHours.DayOfWeek.AsFreeText()} {regularHours.PeriodBegin}h - {regularHours.PeriodEnd}h");
+                }
+            }
+
+            return list.AggregateWith("; ");
+
+        }
 
         #endregion
 

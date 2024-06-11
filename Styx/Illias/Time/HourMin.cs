@@ -156,6 +156,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public static HourMin Midnight
+            => new (0, 0);
+
+
         #region Operator overloading
 
         #region Operator == (HourMin1, HourMin2)
