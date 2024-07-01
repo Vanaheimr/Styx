@@ -474,7 +474,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse (Texts, out OpeningTimes)
+        #region TryParse (Texts, out OpeningTimes, out ErrorResponse)
 
         public static Boolean TryParse(IEnumerable<String>                     Texts,
                                        [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
