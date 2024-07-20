@@ -17,8 +17,9 @@
 
 #region Usings
 
-using Newtonsoft.Json.Linq;
 using System.Diagnostics.CodeAnalysis;
+
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -36,9 +37,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The multi-language string is null or empty.
         /// </summary>
-        public static Boolean IsNullOrEmpty(this I18NString I18NText)
+        public static Boolean IsNullOrEmpty([NotNullWhen(false)] this I18NString? I18NText)
 
-            => I18NText is null || I18NText.Count == 0;
+            => I18NText is null ||
+               I18NText.Count == 0;
 
         #endregion
 
@@ -47,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The multi-language string is NOT null nor empty.
         /// </summary>
-        public static Boolean IsNotNullOrEmpty(this I18NString I18NText)
+        public static Boolean IsNotNullOrEmpty([NotNullWhen(true)] this I18NString? I18NText)
 
             => I18NText is not null &&
                I18NText.Count != 0;
@@ -59,24 +61,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
-        public static String FirstText(this I18NString I18NText)
+        public static String FirstText(this I18NString? I18NText)
 
-            => I18NText is not null && I18NText.IsNotNullOrEmpty()
+            => I18NText.IsNotNullOrEmpty()
                    ? I18NText.First().Text
                    : String.Empty;
 
         #endregion
 
-        #region ToI18NString    (this I18NText, Language = Languages.en)
+        #region ToI18NString    (this Text,     Language = Languages.en)
 
         /// <summary>
         /// Return the first string of a multi-language string.
         /// </summary>
-        public static I18NString ToI18NString(this String  I18NText,
-                                              Languages    Language = Languages.en)
+        public static I18NString ToI18NString(this String?  Text,
+                                              Languages     Language = Languages.en)
 
-            => I18NText is not null && I18NText.IsNotNullOrEmpty()
-                   ? I18NString.Create(Language, I18NText)
+            => Text.IsNotNullOrEmpty()
+                   ? I18NString.Create(Language, Text)
                    : I18NString.Empty;
 
         #endregion
@@ -88,18 +90,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="I18NText">A text.</param>
         /// <param name="Length">The maximum length of the substring.</param>
-        public static I18NString SubstringMax(this I18NString I18NText, Int32 Length)
-        {
+        public static I18NString SubstringMax(this I18NString?  I18NText,
+                                              Int32             Length)
 
-            if (I18NText is null)
-                return I18NString.Empty;
-
-            return new I18NString(I18NText.Select(text => new I18NPair(
-                                                              text.Language,
-                                                              text.Text[..Math.Min(text.Text.Length, Length)]
-                                                          )));
-
-        }
+            => I18NText.IsNotNullOrEmpty()
+                   ? new I18NString(
+                         I18NText.Select(text => new I18NPair(
+                                                     text.Language,
+                                                     text.Text[..Math.Min(text.Text.Length, Length)]
+                                                 )))
+                   : I18NString.Empty;
 
         #endregion
 
@@ -109,18 +109,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Trim all texts.
         /// </summary>
         /// <param name="I18NText">A text.</param>
-        public static I18NString TrimAll(this I18NString I18NText)
-        {
+        public static I18NString TrimAll(this I18NString? I18NText)
 
-            if (I18NText is null)
-                return I18NString.Empty;
-
-            return new I18NString(I18NText.Select(text => new I18NPair(
-                                                              text.Language,
-                                                              text.Text.Trim()
-                                                          )));
-
-        }
+            => I18NText.IsNotNullOrEmpty()
+                   ? new I18NString(
+                         I18NText.Select(text => new I18NPair(
+                                                     text.Language,
+                                                     text.Text.Trim()
+                                                 ))
+                     )
+                   : I18NString.Empty;
 
         #endregion
 
