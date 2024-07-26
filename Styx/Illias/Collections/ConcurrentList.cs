@@ -89,8 +89,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             lock (syncLock)
             {
 
-                if (internalList.Contains(Element))
-                    return false;
+                //if (internalList.Contains(Element))
+                //    return false;
 
                 internalList.Add(Element);
 
