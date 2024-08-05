@@ -19,9 +19,10 @@
 
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
-using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Illias.Votes;
 
 #endregion
 
@@ -965,7 +966,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryGet    (Id, out Entity)
 
-        public Boolean TryGet(TId Id, out TEntity? Entity)
+        public Boolean TryGet(TId Id, [NotNullWhen(true)] out TEntity? Entity)
         {
 
             if (lookup.TryGetValue(Id, out Entity))

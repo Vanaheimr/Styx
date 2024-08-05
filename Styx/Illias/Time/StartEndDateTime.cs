@@ -174,7 +174,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        out DateTime? End,
                                        out ErrorResponse))
                 {
-                    return false;
+                    if (ErrorResponse is not null)
+                        return false;
                 }
 
                 #endregion

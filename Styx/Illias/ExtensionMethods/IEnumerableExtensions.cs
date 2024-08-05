@@ -119,10 +119,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (IEnumerable == null)
+            if (IEnumerable is null)
                 return;
 
-            if (Action == null)
+            if (Action is null)
                 throw new ArgumentNullException(nameof(Action), "The given delegate must not be null!");
 
             #endregion
