@@ -6519,7 +6519,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            EnumerableT    = Array.Empty<T>();
+            EnumerableT    = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -6592,7 +6592,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            EnumerableT    = Array.Empty<T>();
+            EnumerableT    = [];
             ErrorResponse  = null;
 
             if (JSON is null)
