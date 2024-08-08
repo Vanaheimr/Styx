@@ -41,17 +41,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static JObject Create(params JProperty?[] JProperties)
         {
 
-            if (JProperties is null || !JProperties.Any())
-                return new JObject();
+            if (JProperties is null || JProperties.Length == 0)
+                return [];
 
             var data = JProperties.
-                           Where(jProperty => jProperty is not null).
+                           Where(jProperty => jProperty is not null && jProperty.Value is not null).
                            Cast<JProperty>().
                            ToArray();
 
             return data.Length > 0
                        ? new JObject(data)
-                       : new JObject();
+                       : [];
 
         }
 
@@ -67,16 +67,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (JProperties is null || !JProperties.Any())
-                return new JObject();
+                return [];
 
             var data = JProperties.
-                           Where(jProperty => jProperty is not null).
+                           Where(jProperty => jProperty is not null && jProperty.Value is not null).
                            Cast<JProperty>().
                            ToArray();
 
             return data.Length > 0
                        ? new JObject(data)
-                       : new JObject();
+                       : [];
 
         }
 
@@ -90,7 +90,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (JSONObject == null)
-                return new Byte[0];
+                return [];
 
             return Encoding.UTF8.GetBytes(JSONObject.ToString(Format));
 
