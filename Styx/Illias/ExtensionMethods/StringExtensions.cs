@@ -221,32 +221,37 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToUTF8String(this ArrayOfBytes, NumberOfBytes = -1)
+        #region ToUTF8String(this ArrayOfBytes, NumberOfBytes = null)
 
         public static String ToUTF8String(this Byte[]  ArrayOfBytes,
-                                          Int32        NumberOfBytes = -1)
+                                          UInt32?      NumberOfBytes = null)
 
             => ArrayOfBytes is null || ArrayOfBytes.Length == 0
                    ? String.Empty
-                   : Encoding.UTF8.GetString(ArrayOfBytes,
-                                             0,
-                                             NumberOfBytes > -1
-                                                 ? NumberOfBytes
-                                                 : ArrayOfBytes.Length);
+                   : Encoding.UTF8.GetString(
+                         ArrayOfBytes,
+                         0,
+                         NumberOfBytes.HasValue
+                             ? (Int32) NumberOfBytes.Value
+                             : ArrayOfBytes.Length
+                     );
 
         #endregion
 
-        #region ToUTF8String(this MemoryStream, NumberOfBytes = -1)
+        #region ToUTF8String(this MemoryStream, NumberOfBytes = null)
 
-        public static String ToUTF8String(this MemoryStream MemoryStream, Int32 NumberOfBytes = -1)
+        public static String ToUTF8String(this MemoryStream  MemoryStream,
+                                          UInt32?            NumberOfBytes = null)
 
              => MemoryStream is null || MemoryStream.Length == 0
                     ? String.Empty
-                    : Encoding.UTF8.GetString(MemoryStream.ToArray(),
-                                              0,
-                                              NumberOfBytes > -1
-                                                  ? NumberOfBytes
-                                                  : (Int32) MemoryStream.Length);
+                    : Encoding.UTF8.GetString(
+                          MemoryStream.ToArray(),
+                          0,
+                          NumberOfBytes.HasValue
+                              ? (Int32) NumberOfBytes.Value
+                              : (Int32) MemoryStream.Length
+                      );
 
         #endregion
 
