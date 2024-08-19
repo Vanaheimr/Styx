@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -83,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Generate a new unique event tracking identification.
         /// </summary>
         public static EventTracking_Id New
-            => EventTracking_Id.Parse(Guid.NewGuid().ToString());
+            => Parse(UUIDv7.Generate().ToString());
 
         #endregion
 
