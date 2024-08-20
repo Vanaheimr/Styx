@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -64,7 +63,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="JSONToken">A JSON token</param>
         public static Boolean IsJSONNullOrEmpty(this JToken JSONToken)
-            => JSONToken == null || JSONToken.Value<String>().IsNullOrEmpty();
+            => JSONToken is null || JSONToken.Type == JTokenType.Null;
+
+        #endregion
+
+        #region IsNotJSONNullOrEmpty(this JSONToken)
+
+        /// <summary>
+        /// Checks whether the given JSON token is NOT null or "null".
+        /// </summary>
+        /// <param name="JSONToken">A JSON token</param>
+        public static Boolean IsNotJSONNullOrEmpty(this JToken JSONToken)
+            => JSONToken is not null && JSONToken.Type != JTokenType.Null;
 
         #endregion
 

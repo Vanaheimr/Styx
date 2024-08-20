@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return [];
 
             var data = JProperties.
-                           Where(jProperty => jProperty is not null && jProperty.Value is not null).
+                           Where(jProperty => jProperty is not null && jProperty.Value.IsNotJSONNullOrEmpty()).
                            Cast<JProperty>().
                            ToArray();
 
@@ -98,6 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
     }
 
     /// <summary>
@@ -115,17 +116,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static JArray Create(params JObject?[] JObjects)
         {
 
-            if (JObjects is null || !JObjects.Any())
-                return new JArray();
+            if (JObjects is null || JObjects.Length == 0)
+                return [];
 
             var data = JObjects.
-                           Where(jobject => jobject is not null).
+                           Where(jObject => jObject is not null).
                            Cast<JObject>().
                            ToArray();
 
             return data.Length > 0
                        ? new JArray(data)
-                       : new JArray();
+                       : [];
 
         }
 
@@ -141,67 +142,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (JObjects is null || !JObjects.Any())
-                return new JArray();
+                return [];
 
             var data = JObjects.
-                           Where(jobject => jobject is not null).
+                           Where(jObject => jObject is not null).
                            Cast<JObject>().
                            ToArray();
 
             return data.Length > 0
                        ? new JArray(data)
-                       : new JArray();
-
-        }
-
-        #endregion
-
-
-        #region Create(params JProperties)
-
-        /// <summary>
-        /// Create a JSON array using the given JSON properties, but filter null values.
-        /// </summary>
-        /// <param name="JProperties">JSON properties.</param>
-        public static JArray Create(params JProperty[] JProperties)
-        {
-
-            if (JProperties is null || !JProperties.Any())
-                return new JArray();
-
-            var data = JProperties.
-                           Where(jProperty => jProperty is not null).
-                           Cast<JProperty>().
-                           ToArray();
-
-            return data.Length > 0
-                       ? new JArray(data)
-                       : new JArray();
-
-        }
-
-        #endregion
-
-        #region Create(JProperties)
-
-        /// <summary>
-        /// Create a JSON array using the given JSON properties, but filter null values.
-        /// </summary>
-        /// <param name="JProperties">JSON properties.</param>
-        public static JArray Create(IEnumerable<JProperty> JProperties)
-        {
-
-            if (JProperties is null || !JProperties.Any())
-                return new JArray();
-
-            var data = JProperties.
-                           Where(jProperty => jProperty is not null).
-                           Cast<JProperty>().
-                           ToArray();
-
-            return data.Length > 0
-                       ? new JArray(data)
-                       : new JArray();
+                       : [];
 
         }
 
@@ -212,16 +162,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static Byte[] ToUTF8Bytes(this JArray                 JSONArray,
                                          Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
-        {
 
-            if (JSONArray == null)
-                return new Byte[0];
-
-            return Encoding.UTF8.GetBytes(JSONArray.ToString(Format));
-
-        }
+            => JSONArray is not null
+                   ? Encoding.UTF8.GetBytes(JSONArray.ToString(Format))
+                   : [];
 
         #endregion
+
 
     }
 
@@ -232,17 +179,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class JSONProperties
     {
 
-        #region Create(params JProperties)
+        #region FilterNulls(params JProperties)
 
         /// <summary>
-        /// Create a JSON object using the given JSON properties, but filter null values.
+        /// Filter null values from the given JSON properties.
         /// </summary>
-        /// <param name="JProperties">JSON properties.</param>
-        public static IEnumerable<JProperty> Create(params JProperty?[] JProperties)
+        /// <param name="JProperties">A list of JSON properties.</param>
+        public static IEnumerable<JProperty> FilterNulls(params JProperty?[] JProperties)
         {
 
-            if (JProperties is null || !JProperties.Any())
-                return Array.Empty<JProperty>();
+            if (JProperties is null || JProperties.Length == 0)
+                return [];
 
             var data = JProperties.
                            Where(jProperty => jProperty is not null).
@@ -251,7 +198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             return data.Length > 0
                        ? data
-                       : Array.Empty<JProperty>();
+                       : [];
 
         }
 
