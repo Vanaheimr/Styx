@@ -61,6 +61,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate Boolean  TryJArrayParser   <TResult>     (JArray  Input, out TResult? arg);
     public delegate Boolean  TryJArrayParser2  <TResult>     (JArray  Input, out TResult? arg, out String? ErrorResponse);
+    public delegate Boolean  TryJArrayParser3  <T>           (JArray  Input, out StdDev<T>? arg, out String? ErrorResponse) where T: struct;
 
     public delegate TResult?    ParserNullable <TResult>(String  Input)                                                    where TResult: struct;
     public delegate Boolean  TryParserNullable1<TResult>(String  Input, out TResult? arg)                                  where TResult: struct;
@@ -6119,6 +6120,59 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 else
                     ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+
+        public static Boolean ParseOptionalJSONArrayX<T>(this JObject         JSON,
+                                                        String               PropertyName,
+                                                        String               PropertyDescription,
+                                                        TryJArrayParser3<T>  JArrayParser,
+                                                        Func<JToken, T>      Parser,
+                                                        out StdDev<T>?       Value,
+                                                        out String           ErrorResponse)
+
+            where T : struct
+
+        {
+
+            Value          = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+
+                // "propertyKey": null -> will be ignored!
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (!(JSONToken is JArray JSON2))
+                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+
+                //else if (JArrayParser(JSON2, out StdDev<T>? value, out String? ErrorResponse2, Parser))
+                //    Value = value;
+
+                //else
+                //    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
 
                 return true;
 

@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse      (Text)
+        #region (static) Parse       (Text)
 
         /// <summary>
         /// Parse the given string as a percentage.
@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseXXX   (Number)
+        #region (static) ParseXXX    (Number)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -119,7 +119,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Text)
+        #region (static) TryParse    (Text)
 
         /// <summary>
         /// Try to parse the given text as a percentage.
@@ -137,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseXXX(Number)
+        #region (static) TryParseXXX (Number)
 
         /// <summary>
         /// Try to parse the given number as a percentage.
@@ -185,7 +185,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Text,   out Percentage)
+        #region (static) TryParse    (Text,   out Percentage)
 
         /// <summary>
         /// Parse the given string as a percentage.
@@ -221,7 +221,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseXXX(Number, out Percentage)
+        #region (static) TryParseXXX (Number, out Percentage)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -316,6 +316,68 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+
+        #region (static) Parse       (Number, StdDev)
+
+        /// <summary>
+        /// Parse the given number as a percentage with standard deviation.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a percentage.</param>
+        /// <param name="StdDev">The standard deviation of the value.</param>
+        public static StdDev<PercentageByte> Parse(Byte Number,
+                                                   Byte StdDev)
+        {
+
+            if (TryParse(Number, StdDev, out var percentage))
+                return percentage;
+
+            throw new ArgumentException($"Invalid numeric representation of a percentage with standard deviation: '{Number} {StdDev}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse    (Number, StdDev, out Percentage, NumberExponent = null, StdDevExponent = null)
+
+        /// <summary>
+        /// Parse the given number as a percentage with standard deviation.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a percentage.</param>
+        /// <param name="StdDev">The standard deviation of the value.</param>
+        /// <param name="Percentage">The parsed percentage with standard deviation.</param>
+        /// <param name="NumberExponent">An optional 10^exponent for the number.</param>
+        /// <param name="StdDevExponent">An optional 10^exponent for the standard deviation.</param>
+        public static Boolean TryParse(Byte                        Number,
+                                       Byte                        StdDev,
+                                       out StdDev<PercentageByte>  Percentage,
+                                       Int32?                      NumberExponent = null,
+                                       Int32?                      StdDevExponent = null)
+        {
+
+            try
+            {
+                if (TryParse(Number, out var number) &&
+                    TryParse(StdDev, out var stddev))
+                {
+
+                    Percentage = new StdDev<PercentageByte>(number, stddev);
+
+                    return true;
+
+                }
+            }
+            catch
+            { }
+
+            Percentage = default;
+            return false;
+
+        }
+
+        #endregion
+
 
         #region Clone
 
