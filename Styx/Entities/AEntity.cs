@@ -266,7 +266,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// All signatures of this blog posting.
         /// </summary>
         [Optional]
-        public IEnumerable<Signature>?  Signatures       { get; }
+        public IEnumerable<Signature23>?  Signatures       { get; }
 
         ///// <summary>
         ///// Custom data stored within this entity.
@@ -302,7 +302,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           JSONLDContext            JSONLDContext,
                           I18NString?              Name           = null,
                           I18NString?              Description    = null,
-                          IEnumerable<Signature>?  Signatures     = default,
+                          IEnumerable<Signature23>?  Signatures     = default,
                           JObject?                 CustomData     = null,
                           UserDefinedDictionary?   InternalData   = null,
                           DateTime?                LastChange     = null,
@@ -648,7 +648,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// All signatures of this blog posting.
             /// </summary>
             [Optional]
-            public HashSet<Signature>  Signatures       { get; }
+            public HashSet<Signature23>  Signatures       { get; }
 
             ///// <summary>
             ///// Custom data stored within this entity.
@@ -683,7 +683,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public Builder(TId                      Id,
                            JSONLDContext            JSONLDContext,
                            DateTime?                LastChange     = default,
-                           IEnumerable<Signature>?  Signatures     = default,
+                           IEnumerable<Signature23>?  Signatures     = default,
                            JObject?                 CustomData     = null,
                            UserDefinedDictionary?   InternalData   = null,
                            String?                  DataSource     = default)
@@ -697,8 +697,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 this.Id              = Id;
                 this.JSONLDContext   = JSONLDContext;
                 this.Signatures      = Signatures is not null
-                                           ? new HashSet<Signature>(Signatures)
-                                           : new HashSet<Signature>();
+                                           ? new HashSet<Signature23>(Signatures)
+                                           : new HashSet<Signature23>();
                 this.DataSource      = DataSource;
 
             }

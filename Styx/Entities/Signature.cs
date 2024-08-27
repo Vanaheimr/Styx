@@ -18,6 +18,7 @@
 #region Usings
 
 using Newtonsoft.Json.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -27,7 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// An Open Data signature.
     /// </summary>
-    public class Signature
+    public class Signature23
     {
 
         #region Data
@@ -76,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Algorithm">The crypto algorithm used to calculate the signature.</param>
         /// <param name="OutputFormat">The output format of the signature.</param>
         /// <param name="Value">The value of the signature.</param>
-        public Signature(String  InputFormat,
+        public Signature23(String  InputFormat,
                          String  Algorithm,
                          String  OutputFormat,
                          String  Value)
@@ -92,6 +93,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+
+        public static Boolean TryParse(JObject                              JSON,
+                                       [NotNullWhen(true)]  out Signature23?  Signature,
+                                       [NotNullWhen(false)] out String?     ErrorResponse)
+
+            => TryParse(JSON,
+                        out Signature,
+                        out ErrorResponse,
+                        null);
+
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out Signature23?      Signature,
+                                       [NotNullWhen(false)] out String?         ErrorResponse,
+                                       CustomJObjectParserDelegate<Signature23>?  CustomChargingTicketParser   = null)
+        {
+
+            Signature = new Signature23("a", "b", "c", "d");
+            ErrorResponse = null;
+
+            return true;
+
+        }
 
         #region ToJSON(Embedded = false)
 
