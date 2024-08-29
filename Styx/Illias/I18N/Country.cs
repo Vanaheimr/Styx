@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -39,14 +40,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The regular expression for parsing a country alpha-2 code used for unknown country codes only:
         /// ^[A-Za-z]{2}$
         /// </summary>
-        public  static readonly Regex                            Alpha2Codes_RegEx  = new(@"^[A-Za-z]{2}$",
-                                                                                          RegexOptions.IgnorePatternWhitespace);
+        public  static readonly Regex                            Alpha2Codes_RegEx  = new (@"^[A-Za-z]{2}$", RegexOptions.IgnorePatternWhitespace);
 
-        private static readonly Dictionary<I18NString, Country>  CountryNames       = new();
-        private static readonly Dictionary<String,     Country>  Alpha2Codes        = new();
-        private static readonly Dictionary<String,     Country>  Alpha3Codes        = new();
-        private static readonly Dictionary<UInt16,     Country>  NumericCodes       = new();
-        private static readonly Dictionary<UInt16,     Country>  TelefonCodes       = new();
+        private static readonly Dictionary<I18NString, Country>  CountryNames       = [];
+        private static readonly Dictionary<String,     Country>  Alpha2Codes        = new (StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<String,     Country>  Alpha3Codes        = new (StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<UInt16,     Country>  NumericCodes       = [];
+        private static readonly Dictionary<UInt16,     Country>  TelefonCodes       = [];
 
         #endregion
 
@@ -82,6 +82,46 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
         #region Constructor(s)
+
+        #region (static) Country()
+
+        static Country()
+        {
+
+            foreach (var fieldInfo in typeof(Country).GetFields())
+            {
+                if (fieldInfo.GetValue(null) is Country country)
+                {
+
+                    if (country.CountryName == unknown.CountryName)
+                        continue;
+
+                    if (!CountryNames.TryAdd(country.CountryName, country))
+                        throw new Exception($"Duplicate country name: '{country.CountryName}'!");
+
+                    if (!NumericCodes.TryAdd(country.NumericCode, country))
+                        throw new Exception($"Duplicate numeric code: '{country.NumericCode}' for country '{country.CountryName}'!");
+
+                    if (country.TelefonCode != 0)
+                        TelefonCodes.TryAdd(country.TelefonCode, country);
+                           // throw new Exception($"Duplicate telefon code: '{country.TelefonCode}' for country '{country.CountryName}'!");
+
+                    if (country.Alpha2Code is not null)
+                        if (!Alpha2Codes.TryAdd(country.Alpha2Code, country))
+                            throw new Exception($"Duplicate alpha-2 code: '{country.Alpha2Code}' for country '{country.CountryName}'!");
+
+                    if (country.Alpha3Code is not null)
+                        if (!Alpha3Codes.TryAdd(country.Alpha3Code, country))
+                            throw new Exception($"Duplicate alpha-3 code: '{country.Alpha3Code}' for country '{country.CountryName}'!");
+
+                }
+            }
+
+        }
+
+        #endregion
+
+        #region Country(CountryName, Alpha2Code, Alpha3Code, NumericCode, TelefonCode)
 
         /// <summary>
         /// Creates a new country based on a country name and its codings.
@@ -119,13 +159,359 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #endregion
+
+
+        #region Parse(AnyString)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given string.
+        /// </summary>
+        /// <param name="AnyString">Any string.</param>
+        public static Country Parse(String AnyString)
+        {
+
+            if (TryParse(AnyString, out var countryName))
+                return countryName;
+
+            throw new ArgumentException("The given country is invalid!");
+
+        }
+
+        #endregion
+
+        #region TryParse(AnyString, out Country)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given string.
+        /// </summary>
+        /// <param name="AnyString">Any string.</param>
+        /// <param name="Country">The country.</param>
+        public static Boolean TryParse(String                            AnyString,
+                                       [NotNullWhen(true)] out Country?  Country)
+        {
+
+            if (AnyString.IsNullOrEmpty())
+            {
+                Country = default;
+                return false;
+            }
+
+            if (TryParseAlpha2Code (AnyString, out Country))
+                return true;
+
+            if (TryParseAlpha3Code (AnyString, out Country))
+                return true;
+
+            if (TryParseNumericCode(AnyString, out Country))
+                return true;
+
+            if (TryParseTelefonCode(AnyString, out Country))
+                return true;
+
+            if (TryParseCountryName(AnyString, out Country))
+                return true;
+
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ParseCountryName(CountryName)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given country name.
+        /// </summary>
+        /// <param name="CountryName">A country name.</param>
+        public static Country ParseCountryName(String CountryName)
+        {
+
+            if (TryParseCountryName(CountryName, out var countryName))
+                return countryName;
+
+            throw new ArgumentException("The given country name is invalid!");
+
+        }
+
+        #endregion
+
+        #region TryParseCountryName(CountryName, out Country)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given country name.
+        /// </summary>
+        /// <param name="CountryName">A country name.</param>
+        /// <param name="Country">The corresponding country.</param>
+        /// <returns>true, if successful; false otherwise.</returns>
+        public static Boolean TryParseCountryName(String                            CountryName,
+                                                  [NotNullWhen(true)] out Country?  Country)
+        {
+
+            if (CountryName.IsNullOrEmpty())
+            {
+                Country = null;
+                return false;
+            }
+
+            foreach (var countryName in CountryNames)
+                foreach (var I8Name in countryName.Key)
+                    if (I8Name.Text == CountryName)
+                    {
+                        Country = countryName.Value;
+                        return true;
+                    }
+
+            Country = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ParseAlpha2Code(Alpha2Code)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given alpha2code.
+        /// </summary>
+        /// <param name="Alpha2Code">An alpha2code for a country, e.g. "DE" for Germany.</param>
+        public static Country ParseAlpha2Code(String Alpha2Code)
+        {
+
+            if (Alpha2Codes.TryGetValue(Alpha2Code, out var country))
+                return country;
+
+            throw new ArgumentException("The given alpha2code is invalid!");
+
+        }
+
+        #endregion
+
+        #region TryParseAlpha2Code(Alpha2Code, out Country)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given alpha2code.
+        /// </summary>
+        /// <param name="Alpha2Code">An alpha2code for a country, e.g. "DE" for Germany.</param>
+        /// <param name="Country">The corresponding country.</param>
+        /// <returns>true, if successful; false otherwise.</returns>
+        public static Boolean TryParseAlpha2Code(String                            Alpha2Code,
+                                                 [NotNullWhen(true)] out Country?  Country)
+        {
+
+            if (Alpha2Code.IsNullOrEmpty())
+            {
+                Country = null;
+                return false;
+            }
+
+            return Alpha2Codes.TryGetValue(Alpha2Code, out Country);
+
+        }
+
+        #endregion
+
+
+        #region ParseAlpha3Code(Alpha3Code)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given alpha3code.
+        /// </summary>
+        /// <param name="Alpha3Code">An alpha3code for a country, e.g. "DEU" for Germany.</param>
+        public static Country ParseAlpha3Code(String Alpha3Code)
+        {
+
+            if (Alpha3Codes.TryGetValue(Alpha3Code, out var country))
+                return country;
+
+            throw new ArgumentException("The given alpha3code is invalid!");
+
+        }
+
+        #endregion
+
+        #region TryParseAlpha3Code(Alpha3Code, out Country)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given alpha3code.
+        /// </summary>
+        /// <param name="Alpha3Code">An alpha3code for a country, e.g. "DEU" for Germany.</param>
+        /// <param name="Country">The corresponding country.</param>
+        public static Boolean TryParseAlpha3Code(String                            Alpha3Code,
+                                                 [NotNullWhen(true)] out Country?  Country)
+        {
+
+            if (Alpha3Code.IsNullOrEmpty())
+            {
+                Country = null;
+                return false;
+            }
+
+            return Alpha3Codes.TryGetValue(Alpha3Code, out Country);
+
+        }
+
+        #endregion
+
+
+        #region ParseNumericCode(NumericCode)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given numeric code.
+        /// </summary>
+        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
+        public static Country ParseNumericCode(UInt16 NumericCode)
+        {
+
+            if (TryParseNumericCode(NumericCode, out var country))
+                return country;
+
+            throw new ArgumentException("The given numeric code is invalid!");
+
+        }
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given numeric code.
+        /// </summary>
+        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
+        public static Country ParseNumericCode(String NumericCode)
+        {
+
+            if (TryParseNumericCode(NumericCode, out var country))
+                return country;
+
+            throw new ArgumentException("The given numeric code is invalid!");
+
+        }
+
+        #endregion
+
+        #region TryParseNumericCode(NumericCode, out Country)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given numeric code.
+        /// </summary>
+        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
+        /// <param name="Country">The corresponding country.</param>
+        /// <returns>true, if successful; false otherwise.</returns>
+        public static Boolean TryParseNumericCode(UInt16                           NumericCode,
+                                                 [NotNullWhen(true)] out Country?  Country)
+
+            => NumericCodes.TryGetValue(NumericCode, out Country);
+
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given numeric code.
+        /// </summary>
+        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
+        /// <param name="Country">The corresponding country.</param>
+        /// <returns>true, if successful; false otherwise.</returns>
+        public static Boolean TryParseNumericCode(String                            NumericCode,
+                                                  [NotNullWhen(true)] out Country?  Country)
+        {
+
+            if (UInt16.TryParse(NumericCode, out var numericCode))
+                return NumericCodes.TryGetValue(numericCode, out Country);
+
+            Country = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ParseTelefonCode(TelefonCode)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given telefon code.
+        /// </summary>
+        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
+        public static Country ParseTelefonCode(UInt16 TelefonCode)
+        {
+
+            if (TryParseTelefonCode(TelefonCode, out var country))
+                return country;
+
+            throw new ArgumentException("The given telefon code is invalid!");
+
+        }
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given telefon code.
+        /// </summary>
+        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
+        public static Country ParseTelefonCode(String TelefonCode)
+        {
+
+            if (TryParseTelefonCode(TelefonCode, out var country))
+                return country;
+
+            throw new ArgumentException("The given telefon code is invalid!");
+
+        }
+
+        #endregion
+
+        #region TryParseTelefonCode(TelefonCode, out Country)
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given telefon code.
+        /// </summary>
+        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
+        /// <param name="Country">The corresponding country.</param>
+        public static Boolean TryParseTelefonCode(UInt16                            TelefonCode,
+                                                  [NotNullWhen(true)] out Country?  Country)
+
+            => TelefonCodes.TryGetValue(TelefonCode, out Country);
+
+
+        /// <summary>
+        /// Tries to find the appropriate country for the given telefon code.
+        /// </summary>
+        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
+        /// <param name="Country">The corresponding country.</param>
+        public static Boolean TryParseTelefonCode(String                            TelefonCode,
+                                                  [NotNullWhen(true)] out Country?  Country)
+        {
+
+            if (UInt16.TryParse(TelefonCode, out var telefonCode))
+                return TelefonCodes.TryGetValue(telefonCode, out Country);
+
+            Country = null;
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region Clone
+
+        /// <summary>
+        /// Clone this energy source.
+        /// </summary>
+        public Country Clone
+
+            => new (
+                   CountryName.Clone(),
+                   new String(Alpha2Code.ToCharArray()),
+                   new String(Alpha3Code.ToCharArray()),
+                   NumericCode,
+                   TelefonCode
+               );
+
+        #endregion
+
+
+        #region (static) List of all countries
 
         /// <summary>
         /// An unknown country.
         /// </summary>
-        public static readonly Country unknown = new (new I18NString(Languages.en, "unknown"), "", "", 000, 00);
-
-        #region List of countries
+        public static readonly Country unknown                                  = new (new I18NString(Languages.en, "unknown"),                                        "",   "",    000, 00);
 
         public static readonly Country Afghanistan                              = new (new I18NString(Languages.en, "Afghanistan"),                                    "AF", "AFG", 004, 93);
         public static readonly Country AlandIslands                             = new (new I18NString(Languages.en, "Åland Islands"),                                  "AX", "ALA", 248, 35818);
@@ -396,441 +782,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Country Zimbabwe                                 = new (new I18NString(Languages.en, "Zimbabwe"),                                       "ZW", "ZWE", 716, 263);
 
         public static readonly Country Testland                                 = new (new I18NString(Languages.en, "Testland"),                                       "YY", "YYY", 999, 999);
-
-        #endregion
-
-
-        #region Tools
-
-        #region (private) ReflectData()
-
-        private static void ReflectData()
-        {
-
-            lock (CountryNames)
-            {
-
-                if (CountryNames.Count == 0)
-                {
-                    foreach (var fieldInfo in typeof(Country).GetFields())
-                    {
-                        if (fieldInfo.GetValue(null) is Country country)
-                        {
-
-                            if (country.CountryName == unknown.CountryName)
-                                continue;
-
-                            CountryNames.Add(country.CountryName,
-                                             country);
-
-                            NumericCodes.Add(country.NumericCode,
-                                             country);
-
-                            if (country.Alpha2Code is not null)
-                                Alpha2Codes.Add(country.Alpha2Code.ToLower(),
-                                                country);
-
-                            if (country.Alpha3Code is not null)
-                                Alpha3Codes.Add(country.Alpha3Code.ToLower(),
-                                                country);
-
-                            if (!TelefonCodes.ContainsKey(country.TelefonCode))
-                                TelefonCodes.Add(country.TelefonCode,
-                                                 country);
-
-                        }
-                    }
-                }
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region Parse(AnyString)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given string.
-        /// </summary>
-        /// <param name="AnyString">Any string.</param>
-        public static Country Parse(String AnyString)
-        {
-
-            if (AnyString.IsNullOrEmpty())
-                return default;
-
-
-            if (AnyString.Length == 2)
-                return ParseAlpha2Code(AnyString);
-
-            if (AnyString.Length == 3)
-                return ParseAlpha3Code(AnyString);
-
-            if (TryParseNumericCode(AnyString, out Country _Country))
-                return _Country;
-
-            if (TryParseTelefonCode(AnyString, out _Country))
-                return _Country;
-
-            return ParseCountryName(AnyString);
-
-        }
-
-        #endregion
-
-        #region TryParse(AnyString, out Country)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given string.
-        /// </summary>
-        /// <param name="AnyString">Any string.</param>
-        /// <param name="Country">The country.</param>
-        public static Boolean TryParse(String AnyString, out Country Country)
-        {
-
-            if (AnyString.IsNullOrEmpty())
-            {
-                Country = default;
-                return false;
-            }
-
-            if (TryParseAlpha2Code (AnyString, out Country))
-                return true;
-
-            if (TryParseAlpha3Code (AnyString, out Country))
-                return true;
-
-            if (TryParseNumericCode(AnyString, out Country))
-                return true;
-
-            if (TryParseTelefonCode(AnyString, out Country))
-                return true;
-
-            if (TryParseCountryName(AnyString, out Country))
-                return true;
-
-            return false;
-
-        }
-
-        #endregion
-
-
-        #region ParseCountryName(CountryName)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given country name.
-        /// </summary>
-        /// <param name="CountryName">A country name.</param>
-        public static Country ParseCountryName(String CountryName)
-        {
-
-            if (CountryName.IsNullOrEmpty())
-                return default;
-
-            ReflectData();
-
-            foreach (var countryname in CountryNames)
-                foreach (var I8Name in countryname.Key)
-                    if (I8Name.Text == CountryName)
-                        return countryname.Value;
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region TryParseCountryName(CountryName, out Country)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given country name.
-        /// </summary>
-        /// <param name="CountryName">A country name.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseCountryName(String CountryName, out Country Country)
-        {
-
-            if (CountryName.IsNullOrEmpty())
-            {
-                Country = default;
-                return false;
-            }
-
-            ReflectData();
-
-            foreach (var _CountryName in CountryNames)
-                foreach (var I8Name in _CountryName.Key)
-                    if (I8Name.Text == CountryName)
-                    {
-                        Country = _CountryName.Value;
-                        return true;
-                    }
-
-            Country = null;
-            return false;
-
-        }
-
-        #endregion
-
-
-        #region ParseAlpha2Code(Alpha2Code)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given alpha2code.
-        /// </summary>
-        /// <param name="Alpha2Code">An alpha2code for a country, e.g. "DE" for Germany.</param>
-        public static Country ParseAlpha2Code(String Alpha2Code)
-        {
-
-            if (Alpha2Code.IsNullOrEmpty())
-                return default;
-
-            ReflectData();
-
-            if (Alpha2Codes.TryGetValue(Alpha2Code.ToLower(), out Country country))
-                return country;
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region TryParseAlpha2Code(Alpha2Code, out Country)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given alpha2code.
-        /// </summary>
-        /// <param name="Alpha2Code">An alpha2code for a country, e.g. "DE" for Germany.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseAlpha2Code(String Alpha2Code, out Country Country)
-        {
-
-            if (Alpha2Code.IsNullOrEmpty())
-            {
-                Country = default;
-                return false;
-            }
-
-            ReflectData();
-
-            return Alpha2Codes.TryGetValue(Alpha2Code.ToLower(), out Country);
-
-        }
-
-        #endregion
-
-
-        #region ParseAlpha3Code(Alpha3Code)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given alpha3code.
-        /// </summary>
-        /// <param name="Alpha3Code">An alpha3code for a country, e.g. "DEU" for Germany.</param>
-        public static Country ParseAlpha3Code(String Alpha3Code)
-        {
-
-            if (Alpha3Code.IsNullOrEmpty())
-                return default;
-
-            ReflectData();
-
-            if (Alpha3Codes.TryGetValue(Alpha3Code.ToLower(), out Country country))
-                return country;
-
-            return default;
-
-        }
-
-        #endregion
-
-        #region TryParseAlpha3Code(Alpha3Code, out Country)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given alpha3code.
-        /// </summary>
-        /// <param name="Alpha3Code">An alpha3code for a country, e.g. "DEU" for Germany.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseAlpha3Code(String Alpha3Code, out Country Country)
-        {
-
-            if (Alpha3Code.IsNullOrEmpty())
-            {
-                Country = default;
-                return false;
-            }
-
-            ReflectData();
-
-            return Alpha3Codes.TryGetValue(Alpha3Code.ToLower(), out Country);
-
-        }
-
-        #endregion
-
-
-        #region ParseNumericCode(NumericCode)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given numeric code.
-        /// </summary>
-        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
-        public static Country ParseNumericCode(UInt16 NumericCode)
-        {
-
-            ReflectData();
-
-            Country _Country;
-
-            if (NumericCodes.TryGetValue(NumericCode, out _Country))
-                return _Country;
-
-            return null;
-
-        }
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given numeric code.
-        /// </summary>
-        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
-        public static Country ParseNumericCode(String NumericCode)
-        {
-            ReflectData();
-            return NumericCodes[UInt16.Parse(NumericCode)];
-        }
-
-        #endregion
-
-        #region TryParseNumericCode(NumericCode, out Country)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given numeric code.
-        /// </summary>
-        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseNumericCode(UInt16 NumericCode, out Country Country)
-        {
-            ReflectData();
-            return NumericCodes.TryGetValue(NumericCode, out Country);
-        }
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given numeric code.
-        /// </summary>
-        /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseNumericCode(String NumericCode, out Country Country)
-        {
-
-            ReflectData();
-
-            UInt16 _NumericCode;
-
-            if (UInt16.TryParse(NumericCode, out _NumericCode))
-                return NumericCodes.TryGetValue(_NumericCode, out Country);
-
-            Country = unknown;
-            return false;
-
-        }
-
-        #endregion
-
-
-        #region ParseTelefonCode(TelefonCode)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given telefon code.
-        /// </summary>
-        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
-        public static Country ParseTelefonCode(UInt16 TelefonCode)
-        {
-
-            ReflectData();
-
-            Country _Country;
-
-            if (TelefonCodes.TryGetValue(TelefonCode, out _Country))
-                return _Country;
-
-            return null;
-
-        }
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given telefon code.
-        /// </summary>
-        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
-        public static Country ParseTelefonCode(String TelefonCode)
-        {
-            ReflectData();
-            return TelefonCodes[UInt16.Parse(TelefonCode)];
-        }
-
-        #endregion
-
-        #region TryParseTelefonCode(TelefonCode, out Country)
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given telefon code.
-        /// </summary>
-        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseTelefonCode(UInt16 TelefonCode, out Country Country)
-        {
-            ReflectData();
-            return TelefonCodes.TryGetValue(TelefonCode, out Country);
-        }
-
-        /// <summary>
-        /// Tries to find the appropriate country for the given telefon code.
-        /// </summary>
-        /// <param name="TelefonCode">A telefon code for a country, e.g. "49" for Germany.</param>
-        /// <param name="Country">The corresponding country.</param>
-        /// <returns>true, if successful; false otherwise.</returns>
-        public static Boolean TryParseTelefonCode(String TelefonCode, out Country Country)
-        {
-
-            ReflectData();
-
-            UInt16 _TelefonCode;
-
-            if (UInt16.TryParse(TelefonCode, out _TelefonCode))
-                return TelefonCodes.TryGetValue(_TelefonCode, out Country);
-
-            Country = unknown;
-            return false;
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Clone
-
-        /// <summary>
-        /// Clone this energy source.
-        /// </summary>
-        public Country Clone
-
-            => new (
-                   CountryName.Clone(),
-                   new String(Alpha2Code.ToCharArray()),
-                   new String(Alpha3Code.ToCharArray()),
-                   NumericCode,
-                   TelefonCode
-               );
 
         #endregion
 

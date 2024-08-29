@@ -808,7 +808,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} W";
+            => $"{Value} V";
 
         #endregion
 
