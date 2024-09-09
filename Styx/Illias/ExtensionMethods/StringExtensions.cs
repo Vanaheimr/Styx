@@ -21,6 +21,7 @@ using System.Text;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -33,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class StringExtensions
     {
 
-        #region IsNullOrEmpty(GivenString)
+        #region IsNullOrEmpty      (GivenString)
 
         /// <summary>
         /// Indicates whether the given (trimmed) string is null or empty.
@@ -45,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IsNotNullOrEmpty(GivenString)
+        #region IsNotNullOrEmpty   (GivenString)
 
         /// <summary>
         /// Indicates whether the given (trimmed) string is not null or empty.
@@ -57,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IfNotNullOrEmpty(GivenString, Mapper, DefaultValue)
+        #region IfNotNullOrEmpty   (GivenString, Mapper, DefaultValue)
 
         /// <summary>
         /// Mappes the given string if it is not null or empty, or returns the default value.
@@ -75,8 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-
-        #region IsNullOrWhiteSpace(GivenString)
+        #region IsNullOrWhiteSpace (GivenString)
 
         /// <summary>
         /// Indicates whether the given string is null, empty,
@@ -90,14 +90,301 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToBase64   (this Text)
 
-        public static String ToBase64(this String Text)
+        #region ToHexString         (this ByteArray, StartIndex  = 0, Length = null, ToLower = true)
+
+        /// <summary>
+        /// Converts an array of bytes into its hexadecimal string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
+        /// <param name="StartIndex">The zero-based starting byte position of a subsequence in this instance.</param>
+        /// <param name="Length">The number of bytes in the subsequence.</param>
+        /// <param name="ToLower">Whether to convert the resulting string to lower case.</param>
+        public static String ToHexString(this Byte[]  ByteArray,
+                                         UInt16       StartIndex  = 0,
+                                         UInt16?      Length      = null,
+                                         Boolean      ToLower     = true)
+        {
+
+            var length = Length ?? ByteArray.Length - StartIndex;
+
+            Byte _byte;
+            var  _char  = new Char[length * 2];
+            var  end    = StartIndex + length;
+
+            for (Int32 y= StartIndex, x= 0; y<end; ++y, ++x)
+            {
+                _byte      = (byte) (ByteArray[y] >> 4);
+                _char[x]   = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
+                _byte      = (byte) (ByteArray[y] & 0xF);
+                _char[++x] = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
+            }
+
+            return ToLower
+                ? new String(_char).ToLower()
+                : new String(_char);
+
+        }
+
+        #endregion
+
+        #region FromHEX             (this HexString)
+
+        /// <summary>
+        /// Convert the given hex representation of a byte array
+        /// into an array of bytes.
+        /// </summary>
+        /// <param name="HexString">hex representation of a byte array.</param>
+        public static Byte[] FromHEX(this String HexString)
+        {
+
+            if (TryParseHEX(HexString, out var byteArray, out var errorResponse))
+                return byteArray;
+
+            throw new ArgumentException(errorResponse, nameof(HexString));
+
+        }
+
+        #endregion
+
+        #region TryParseHEX         (this HexString,    out ByteArray,  out ErrorResponse)
+
+        // Regular expression for detecting Hex (even number of characters, optional 0x prefix)
+        public static readonly Regex HEXRegex = new Regex(@"^(0x)?[a-fA-F0-9]+$");
+
+        /// <summary>
+        /// Convert the given hex representation of a byte array
+        /// into an array of bytes.
+        /// </summary>
+        /// <param name="HexString">hex representation of a byte array.</param>
+        /// <param name="ByteArray">The parsed array of bytes.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParseHEX(this String                       HexString,
+                                          [NotNullWhen(true)]  out Byte[]?  ByteArray,
+                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            try
+            {
+
+                HexString = HexString.Trim();
+
+                if (HexString.IsNullOrEmpty())
+                    ErrorResponse = $"The given hex-representation of a byte array must not be null!";
+
+                else if (HexString.Length % 2 == 1)
+                    ErrorResponse = $"The length of the given hex-representation '{HexString}' of a byte array is invalid ({HexString.Length} characters)!";
+
+                else if (!HEXRegex.IsMatch(HexString))
+                    ErrorResponse = $"The given hex-representation '{HexString}' of a byte array is invalid!";
+
+                else
+                {
+
+                    ByteArray = Enumerable.Range  (0, HexString.Length).
+                                           Where  (x => x % 2 == 0).
+                                           Select (x => Convert.ToByte(HexString.Substring(x, 2), 16)).
+                                           ToArray();
+
+                    return true;
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The given string '{HexString}' could not be parsed as a hex-representation of a byte array: " + e.Message;
+            }
+
+            ErrorResponse ??= $"The given string '{HexString}' is not a valid hex-representation of a byte array!";
+            ByteArray       = [];
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ToBase32            (this ByteArray)
+
+        public static String ToBase32(this Byte[] ByteArray)
         {
 
             try
             {
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(Text));
+
+                if (ByteArray == null || ByteArray.Length == 0)
+                    return String.Empty;
+
+                var result          = new StringBuilder((ByteArray.Length + 7) * 8 / 5);
+
+                var currentByte     = 0;
+                var digit           = 0;
+                var index           = 0;
+                var bytesRemaining  = ByteArray.Length;
+
+                while (bytesRemaining > 0)
+                {
+                    currentByte = ByteArray[index++];
+                    bytesRemaining--;
+
+                    result.Append(Base32Chars[(currentByte >> 3) & 31]); // First 5 bits
+
+                    digit = (currentByte & 7) << 2; // Last 3 bits
+
+                    if (bytesRemaining > 0)
+                    {
+                        currentByte = ByteArray[index];
+                        digit |= (currentByte >> 6) & 3; // Next 2 bits
+
+                        result.Append(Base32Chars[digit]); // Append the result
+                        result.Append(Base32Chars[(currentByte >> 1) & 31]); // Next 5 bits
+
+                        digit = (currentByte & 1) << 4; // Last bit
+                    }
+
+                    if (bytesRemaining > 0)
+                    {
+                        currentByte = ByteArray[index++];
+                        bytesRemaining--;
+
+                        digit |= (currentByte >> 4) & 15; // Next 4 bits
+
+                        result.Append(Base32Chars[digit]); // Append the result
+                        result.Append(Base32Chars[(currentByte & 15) << 1]); // Remaining bits
+
+                        digit = (currentByte >> 7) & 1; // Last bit
+                    }
+
+                    if (bytesRemaining == 0)
+                    {
+                        result.Append(Base32Chars[digit]); // Final part of the encoding
+                        break;
+                    }
+                }
+
+                // Add padding to make it a multiple of 8 characters
+                int padding = (result.Length % 8 == 0) ? 0 : (8 - result.Length % 8);
+                return result.ToString().PadRight(result.Length + padding, '=');
+
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error in ToBase32" + e.Message);
+            }
+
+        }
+
+        #endregion
+
+        #region FromBASE32          (this Base32String)
+
+        public static Byte[] FromBASE32(this String Base32String)
+        {
+
+            if (TryParseBASE32(Base32String, out var byteArray, out var errorResponse))
+                return byteArray;
+
+            throw new ArgumentException(errorResponse, nameof(Base32String));
+
+        }
+
+        #endregion
+
+        #region TryParseBASE32      (this Base32String, out ByteArray,  out ErrorResponse)
+
+        // Regular expression for detecting Base32 (standard Base32 without line breaks)
+        public static readonly Regex Base32Regex = new Regex(@"^[a-zA-Z2-7]+=*$");
+
+        private static readonly string Base32Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+        public static Boolean TryParseBASE32(this String                       Base32String,
+                                             [NotNullWhen(true)]  out Byte[]?  ByteArray,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            try
+            {
+
+                Base32String   = Base32String.Trim();
+
+                if (Base32String.IsNullOrEmpty())
+                    ErrorResponse = "The given base32-representation of a byte array must not be null!";
+
+                else if (Base32String.Length % 8 != 0)
+                    ErrorResponse = $"The length of the given base32-representation '{Base32String}' of a byte array is invalid ({Base32String.Length} characters)!";
+
+                else if (!Base32Regex.IsMatch(Base32String))
+                    ErrorResponse = $"The given base32-representation '{Base32String}' of a byte array is invalid!";
+
+                else
+                {
+
+
+                    Base32String   = Base32String.TrimEnd('=');     // Remove padding characters
+
+                    var byteCount  = Base32String.Length * 5 / 8;   // Calculate the byte count
+                    ByteArray      = new Byte[byteCount];
+
+                    var buffer     = 0;
+                    var bitsLeft   = 0;
+                    var mask       = 0x1F; // 5 bits mask (Base32 has 32 characters, so 5 bits per char)
+
+                    var index      = 0;
+                    foreach (char c in Base32String.ToUpperInvariant())
+                    {
+
+                        var charValue = Base32Chars.IndexOf(c);
+
+                        //if (charValue < 0)
+                        //{
+                        //    ErrorResponse = $"Invalid Base32 character '{charValue}' in {Base32String}:{index}!";
+                        //    return false;
+                        //}
+
+                        buffer <<= 5;
+                        buffer |= charValue & mask;
+                        bitsLeft += 5;
+
+                        if (bitsLeft >= 8)
+                        {
+                            ByteArray[index++] = (byte) ((buffer >> (bitsLeft - 8)) & 0xFF);
+                            bitsLeft -= 8;
+                        }
+
+                    }
+
+                    return true;
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The given string '{Base32String}' could not be parsed as a base32-representation of a byte array: " + e.Message;
+            }
+
+            ErrorResponse ??= $"The given string '{Base32String}' is not a base32-representation of a byte array!";
+            ByteArray       = [];
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ToBase64            (this ByteArray)
+
+        public static String ToBase64(this Byte[] ByteArray)
+        {
+
+            try
+            {
+                return Convert.ToBase64String(ByteArray);
             }
 
             catch (Exception e)
@@ -109,14 +396,75 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToBase64   (this Bytes)
+        #region FromBASE64          (this Base64String)
 
-        public static String ToBase64(this Byte[] Bytes)
+        public static Byte[] FromBASE64(this String Base64String)
+        {
+
+            if (TryParseBASE64(Base64String, out var byteArray, out var errorResponse))
+                return byteArray;
+
+            throw new ArgumentException(errorResponse, nameof(Base64String));
+
+        }
+
+        #endregion
+
+        #region TryParseBASE64      (this Base64String, out ByteArray,  out ErrorResponse)
+
+        // Regular expression for detecting Base64 (standard Base64 without line breaks)
+        public static readonly Regex Base64Regex = new Regex(@"^[A-Za-z0-9+/]+={0,2}$");
+
+        public static Boolean TryParseBASE64(this String                       Base64String,
+                                             [NotNullWhen(true)]  out Byte[]?  ByteArray,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            try
+            {
+
+                Base64String = Base64String.Trim();
+
+                if (Base64String.IsNullOrEmpty())
+                    ErrorResponse = "The given base64-representation of a byte array must not be null!";
+
+                else if (Base64String.Length % 4 != 0)
+                    ErrorResponse = $"The length of the given base64-representation '{Base64String}' of a byte array is invalid ({Base64String.Length} characters)!";
+
+                else if (!Base64Regex.IsMatch(Base64String))
+                    ErrorResponse = $"The given base64-representation '{Base64String}' of a byte array is invalid!";
+
+                else
+                {
+                    ByteArray = Convert.FromBase64String(Base64String);
+                    return true;
+                }
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The given string '{Base64String}' could not be parsed as a base64-representation of a byte array: " + e.Message;
+            }
+
+            ErrorResponse ??= $"The given string '{Base64String}' is not a base64-representation of a byte array!";
+            ByteArray       = [];
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ToBase64            (this UTF8Text)
+
+        public static String ToBase64(this String UTF8Text)
         {
 
             try
             {
-                return Convert.ToBase64String(Bytes);
+                return Convert.ToBase64String(Encoding.UTF8.GetBytes(UTF8Text));
             }
 
             catch (Exception e)
@@ -128,87 +476,56 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region FromBase64_UTF8(this Text)
+        #region FromBASE64_UTF8     (this Base64String)
 
-        public static String FromBase64_UTF8(this String Text)
+        public static String FromBASE64_UTF8(this String Base64String)
         {
 
-            try
-            {
+            if (TryParseBASE64_UTF8(Base64String, out var utf8String, out var errorResponse))
+                return utf8String;
 
-                var utf8Decoder  = new UTF8Encoding().GetDecoder();
-                var bytes        = Convert.FromBase64String(Text);
-                var decodedChars = new Char[utf8Decoder.GetCharCount(bytes, 0, bytes.Length)];
-                utf8Decoder.GetChars(bytes, 0, bytes.Length, decodedChars, 0);
-
-                return new String(decodedChars);
-
-            }
-
-            catch (Exception e)
-            {
-                throw new Exception("Exception in FromBase64(...): " + e.Message);
-            }
+            throw new ArgumentException(errorResponse, nameof(Base64String));
 
         }
 
         #endregion
 
-        #region TryBase64Decode_UTF8(this Text, out Decoded)
+        #region TryParseBASE64_UTF8 (this Base64String, out UTF8String, out ErrorResponse)
 
-        public static Boolean TryBase64Decode_UTF8(this String Text, out String Decoded)
+        public static Boolean TryParseBASE64_UTF8(this String                       Base64String,
+                                                  [NotNullWhen(true)]  out String?  UTF8String,
+                                                  [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            try
+            ErrorResponse = null;
+
+            if (TryParseBASE64(Base64String, out var byteArray, out ErrorResponse))
             {
+                try
+                {
 
-                var utf8Decoder   = new UTF8Encoding().GetDecoder();
-                var bytes         = Convert.FromBase64String(Text);
-                var decodedChars  = new Char[utf8Decoder.GetCharCount(bytes, 0, bytes.Length)];
-                utf8Decoder.GetChars(bytes, 0, bytes.Length, decodedChars, 0);
+                    var utf8Decoder   = new UTF8Encoding().GetDecoder();
+                    var decodedChars  = new Char[utf8Decoder.GetCharCount(byteArray, 0, byteArray.Length)];
+                    utf8Decoder.GetChars(byteArray, 0, byteArray.Length, decodedChars, 0);
 
-                Decoded           =  new String(decodedChars);
-                return true;
+                    UTF8String        = new String(decodedChars);
+                    return true;
+
+                }
+                catch (Exception e)
+                {
+                    ErrorResponse = $"The given string '{Base64String}' could not be parsed as a base64-representation of an UTF8-string: " + e.Message;
+                }
 
             }
-            catch
-            { }
 
-            Decoded = default;
+            UTF8String = null;
             return false;
 
         }
 
         #endregion
 
-
-        #region FromBase64             (this Text)
-
-        public static Byte[] FromBase64(this String Text)
-
-            => Convert.FromBase64String(Text);
-
-        #endregion
-
-        #region TryBase64DecodeToByteArray(this Text, out Decoded)
-
-        public static Boolean TryBase64DecodeToByteArray(this String Text, out Byte[] Decoded)
-        {
-
-            try
-            {
-                Decoded = Convert.FromBase64String(Text);
-                return true;
-            }
-            catch
-            { }
-
-            Decoded = default;
-            return false;
-
-        }
-
-        #endregion
 
 
         #region EscapeForXMLandHTML(Text)

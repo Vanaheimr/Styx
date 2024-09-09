@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.BouncyCastle
                                                            Replace("-", "").
                                                            Replace(" ", "").
                                                            ToLower().
-                                                           HexStringToByteArray(),
+                                                           FromHEX(),
                                                        SizeX,
                                                        SizeY);
 
@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.BouncyCastle
                                                            Replace("-", "").
                                                            Replace(" ", "").
                                                            ToLower().
-                                                           HexStringToByteArray(),
+                                                           FromHEX(),
                                                        new List<UInt32>() { SizeY/2*SizeX + SizeX/2 },
                                                        (Data, CurrentPosition) => Data.Add(CurrentPosition),
                                                        SizeX,
@@ -149,7 +149,7 @@ namespace org.GraphDefined.Vanaheimr.BouncyCastle
                                                            Replace("-", "").
                                                            Replace(" ", "").
                                                            ToLower().
-                                                           HexStringToByteArray(),
+                                                           FromHEX(),
                                                        Data,
                                                        Delegate,
                                                        SizeX,

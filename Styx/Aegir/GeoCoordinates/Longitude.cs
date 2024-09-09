@@ -437,6 +437,20 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
+        #region Equals(Longitude, Epsilon = 1e-7)
+
+        /// <summary>
+        /// Compares two geographical longitudes for equality.
+        /// </summary>
+        /// <param name="Longitude">Another geographical longitude.</param>
+        /// <param name="Epsilon">An optional numeric tolerance.</param>
+        public Boolean EqualsWithTolerance(Longitude  Longitude,
+                              Double     Epsilon = 1e-7)
+
+            => Value - Longitude.Value < Epsilon;
+
+        #endregion
+
         #endregion
 
         #region (override) GetHashCode()

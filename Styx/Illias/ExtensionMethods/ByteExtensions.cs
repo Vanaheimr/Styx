@@ -15,17 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Diagnostics.CodeAnalysis;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -69,117 +58,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-
-        #region ToHexString(this ByteArray, StartIndex  = 0, Length = null, ToLower = true)
-
-        /// <summary>
-        /// Converts an array of bytes into its hexadecimal string representation.
-        /// </summary>
-        /// <param name="ByteArray">An array of bytes.</param>
-        /// <param name="StartIndex">The zero-based starting byte position of a subsequence in this instance.</param>
-        /// <param name="Length">The number of bytes in the subsequence.</param>
-        /// <param name="ToLower">Whether to convert the resulting string to lower case.</param>
-        public static String ToHexString(this Byte[]  ByteArray,
-                                         UInt16       StartIndex  = 0,
-                                         UInt16?      Length      = null,
-                                         Boolean      ToLower     = true)
-        {
-
-            if (ByteArray is null)
-                throw new ArgumentNullException(nameof(ByteArray), "The given byte array must not be null!");
-
-            var length = Length ?? ByteArray.Length - StartIndex;
-
-            Byte _byte;
-            var  _char  = new Char[length * 2];
-            var  end    = StartIndex + length;
-
-            for (Int32 y= StartIndex, x= 0; y<end; ++y, ++x)
-            {
-                _byte      = (byte) (ByteArray[y] >> 4);
-                _char[x]   = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
-                _byte      = (byte) (ByteArray[y] & 0xF);
-                _char[++x] = (char) (_byte>9 ? _byte+0x37 : _byte+0x30);
-            }
-
-            return ToLower
-                ? new String(_char).ToLower()
-                : new String(_char);
-
-        }
-
-        #endregion
-
-
-        #region HexStringToByteArray(this HexValue)
-
-        /// <summary>
-        /// Convert the given hex representation of a byte array
-        /// into an array of bytes.
-        /// </summary>
-        /// <param name="HexValue">hex representation of a byte array.</param>
-        public static Byte[] HexStringToByteArray(this String HexValue)
-        {
-
-            if (HexValue.IsNullOrEmpty())
-                return [];
-
-            HexValue = HexValue.Trim();
-
-            if (HexValue.Length % 2 == 1)
-                throw new ArgumentException("Wrong size of the input string!", nameof(HexValue));
-
-            return Enumerable.Range(0, HexValue.Length).
-                              Where (x => x % 2 == 0).
-                              Select(x => Convert.ToByte(HexValue.Substring(x, 2), 16)).
-                              ToArray();
-
-        }
-
-        #endregion
-
-        #region HexStringToByteArray(this HexString, out ByteArray, out ErrorResponse)
-
-        /// <summary>
-        /// Convert the given hex representation of a byte array
-        /// into an array of bytes.
-        /// </summary>
-        /// <param name="HexString">hex representation of a byte array.</param>
-        /// <param name="ByteArray">The parsed array of bytes.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParseHexBytes(String                            HexString,
-                                               [NotNullWhen(true)]  out Byte[]?  ByteArray,
-                                               [NotNullWhen(false)] out String?  ErrorResponse)
-        {
-
-            if (HexString.IsNullOrEmpty())
-            {
-                ByteArray      = [];
-                ErrorResponse  = "The given hex-representation of a byte array must not be null!";
-                return false;
-            }
-
-            HexString = HexString.Trim();
-
-            if (HexString.Length % 2 == 1)
-            {
-                ByteArray      = [];
-                ErrorResponse  = "The length of the given hex-representation of a byte array is invalid!";
-                return false;
-            }
-
-            ByteArray = Enumerable.Range  (0, HexString.Length).
-                                   Where  (x => x % 2 == 0).
-                                   Select (x => Convert.ToByte(HexString.Substring(x, 2), 16)).
-                                   ToArray();
-
-            ErrorResponse = null;
-
-            return true;
-
-        }
-
-        #endregion
 
         #region Reverse(this ByteArray)
 

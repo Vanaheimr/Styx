@@ -851,7 +851,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => OpeningTimes is not null &&
 
-               IsOpen24Hours && OpeningTimes.IsOpen24Hours &&
+               IsOpen24Hours.Equals(OpeningTimes.IsOpen24Hours) &&
 
                ((FreeText is     null && OpeningTimes.FreeText is     null) ||
                 (FreeText is not null && OpeningTimes.FreeText is not null && FreeText.Equals(OpeningTimes.FreeText)));

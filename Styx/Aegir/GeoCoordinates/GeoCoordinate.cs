@@ -148,6 +148,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                       out GeoLocation,
                                       out ErrorResponse);
 
+
+        public static Boolean EqualsWithTolerance(this GeoCoordinate?  GeoCoordinate1,
+                                                  GeoCoordinate?       GeoCoordinate2,
+                                                  Double               Epsilon = 1e-7)
+
+            => GeoCoordinate1.HasValue &&
+               GeoCoordinate2.HasValue &&
+               GeoCoordinate1.Value.EqualsWithTolerance(GeoCoordinate2.Value, Epsilon);
+
     }
 
 
@@ -1051,6 +1060,37 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             => IGeoCoordinate is not null                &&
                Latitude. Equals(IGeoCoordinate.Latitude) &&
                Longitude.Equals(IGeoCoordinate.Longitude);
+
+        #endregion
+
+        #region EqualsWithTolerance(GeoCoordinate,  Epsilon = 1e-7)
+
+        /// <summary>
+        /// Compares two geo coordinates for equality.
+        /// </summary>
+        /// <param name="GeoCoordinate">Another geo coordinate.</param>
+        /// <param name="Epsilon">An optional numeric tolerance.</param>
+        public Boolean EqualsWithTolerance(GeoCoordinate  GeoCoordinate,
+                                           Double         Epsilon = 1e-7)
+
+            => Latitude. EqualsWithTolerance(GeoCoordinate.Latitude,  Epsilon) &&
+               Longitude.EqualsWithTolerance(GeoCoordinate.Longitude, Epsilon);
+
+        #endregion
+
+        #region EqualsWithTolerance(IGeoCoordinate, Epsilon = 1e-7)
+
+        /// <summary>
+        /// Compares two geo coordinates for equality.
+        /// </summary>
+        /// <param name="IGeoCoordinate">Another geo coordinate.</param>
+        /// <param name="Epsilon">An optional numeric tolerance.</param>
+        public Boolean EqualsWithTolerance(IGeoCoordinate? IGeoCoordinate,
+                                           Double          Epsilon = 1e-7)
+
+            => IGeoCoordinate is not null &&
+               Latitude. EqualsWithTolerance(IGeoCoordinate.Latitude,  Epsilon) &&
+               Longitude.EqualsWithTolerance(IGeoCoordinate.Longitude, Epsilon);
 
         #endregion
 
