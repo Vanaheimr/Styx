@@ -171,6 +171,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
+        #region Static defaults
+
+        /// <summary>
+        /// Empty JSON-LD context.
+        /// </summary>
+        public static JSONLDContext Empty
+            => new("");
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (JSONLDContext1, JSONLDContext2)
