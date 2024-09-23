@@ -199,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Int32?  Exponent = null)
         {
 
-            if (TryParseKWh(Number, out var wattHour, Exponent))
+            if (TryParseWh(Number, out var wattHour, Exponent))
                 return wattHour;
 
             throw new ArgumentException($"Invalid numeric representation of a Wh: '{Number}'!",
