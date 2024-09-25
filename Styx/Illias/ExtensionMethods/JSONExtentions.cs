@@ -1516,11 +1516,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out UInt64    UInt64Value,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                             [NotNullWhen(true)]  out UInt64   UInt64Value,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             UInt64Value = default;
@@ -2949,6 +2949,345 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
                 EnumerationOfT = ListOfT;
+
+            }
+            catch
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatoryList      (this JSON, PropertyName, PropertyDescription,                               out ListOfT,                out ErrorResponse)
+
+        public static Boolean ParseMandatoryList<T>(this JObject                      JSON,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    Parser<T>                         Parser,
+                                                    [NotNullWhen(true)]  out List<T>  ListOfT,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ListOfT = [];
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = $"Missing property '{PropertyName}'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    if (item.Type == JTokenType.String)
+                        ListOfT.Add(Parser(item?.Value<String>() ?? ""));
+                }
+
+            }
+            catch
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+        public static Boolean ParseMandatoryNumericList<T>(this JObject                      JSON,
+                                                           String                            PropertyName,
+                                                           String                            PropertyDescription,
+                                                           TryNumericParser<T>               TryParser,
+                                                           [NotNullWhen(true)]  out List<T>  ListOfT,
+                                                           [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ListOfT = [];
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = $"Missing property '{PropertyName}'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    if (item is not null &&
+                        item.Type == JTokenType.Integer)
+                    {
+
+                        if (TryParser(item.Value<UInt64>(), out var ItemT) && ItemT is not null)
+                            ListOfT.Add(ItemT);
+
+                        else
+                        {
+                            ErrorResponse = $"Invalid value '{item?.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}'!";
+                            return false;
+                        }
+
+                    }
+                }
+
+            }
+            catch
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+        public static Boolean ParseMandatoryList<T>(this JObject                      JSON,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    TryParser<T>                      TryParser,
+                                                    [NotNullWhen(true)]  out List<T>  ListOfT,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ListOfT = [];
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = $"Missing property '{PropertyName}'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    if (item is not null &&
+                        item.Type == JTokenType.String)
+                    {
+
+                        if (TryParser(item.Value<String>() ?? "", out var ItemT) && ItemT is not null)
+                            ListOfT.Add(ItemT);
+
+                        else
+                        {
+                            ErrorResponse = $"Invalid value '{item?.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}'!";
+                            return false;
+                        }
+
+                    }
+                }
+
+            }
+            catch
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+        public static Boolean ParseMandatoryList<T>(this JObject                      JSON,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    TryParser2<T>                     TryParser,
+                                                    [NotNullWhen(true)]  out List<T>  ListOfT,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ListOfT = [];
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = $"Missing property '{PropertyName}'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    if (item is not null &&
+                        item.Type == JTokenType.String)
+                    {
+
+                        if (TryParser(item.Value<String>() ?? "",
+                                      out var ItemT,
+                                      out var errorResponse) && ItemT is not null)
+                        {
+                            ListOfT.Add(ItemT);
+                        }
+
+                        else
+                        {
+                            ErrorResponse = $"Invalid value '{item?.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}': {errorResponse}";
+                            return false;
+                        }
+
+                    }
+                }
+
+            }
+            catch
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+
+        public static Boolean ParseMandatoryList<T>(this JObject                      JSON,
+                                                    String                            PropertyName,
+                                                    String                            PropertyDescription,
+                                                    TryJObjectParser2<T>              TryParser,
+                                                    [NotNullWhen(true)]  out List<T>  ListOfT,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ListOfT = [];
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = $"Missing property '{PropertyName}'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    if (item.Type == JTokenType.Object &&
+                        item is JObject JSONObject)
+                    {
+
+                        if (TryParser(JSONObject,
+                                      out var ItemT,
+                                      out var errorResponse) && ItemT is not null)
+                        {
+                            ListOfT.Add(ItemT);
+                        }
+
+                        else
+                        {
+                            ErrorResponse = $"Invalid value '{item.Value<String>() ?? ""}' for '{PropertyDescription ?? PropertyName}': {errorResponse}";
+                            return false;
+                        }
+
+                    }
+                }
 
             }
             catch

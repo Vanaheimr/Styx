@@ -17,11 +17,8 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Text;
 using System.Xml.Linq;
-using System.Collections.Generic;
 
 #endregion
 
@@ -45,14 +42,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new Exception(Message.IsNotNullOrEmpty() ? Message : "The parent XML element must not be null!");
 
             #endregion
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(Message.IsNotNullOrEmpty() ? Message : "The XML element '" + XName.LocalName + "' was not found!");
 
             return _XElement;
@@ -70,14 +67,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new Exception(Message.IsNotNullOrEmpty() ? Message : "The parent XML element must not be null!");
 
             #endregion
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 throw new Exception(Message.IsNotNullOrEmpty() ? Message : "No XML element '" + XName.LocalName + "' could be found!");
 
             return _XElements;
@@ -95,17 +92,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || ElementAction == null)
+            if (ParentXElement is null || ElementAction is null)
                 return;
 
             #endregion
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return;
 
-            if (_XElement != null)
+            if (_XElement is not null)
                 ElementAction(_XElement);
 
         }
@@ -129,14 +126,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return DefaultValue;
 
             #endregion
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return DefaultValue;
 
             return _XElement.Value ?? DefaultValue;
@@ -161,17 +158,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    String         DefaultValue = null)
         {
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return DefaultValue;
 
             var _XElement1 = ParentXElement.Element(XName);
 
-            if (_XElement1 == null)
+            if (_XElement1 is null)
                 return DefaultValue;
 
             var _XElement2 = _XElement1.Element(NestedXName);
 
-            if (_XElement2 == null)
+            if (_XElement2 is null)
                 return DefaultValue;
 
             return _XElement2.Value;
@@ -196,7 +193,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new Exception(ExceptionMessage);
 
             #endregion
@@ -204,7 +201,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
             {
 
                 if (ExceptionMessage.IsNotNullOrEmpty())
@@ -231,14 +228,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || ValueAction == null)
+            if (ParentXElement is null || ValueAction is null)
                 return;
 
             #endregion
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return;
 
             if (_XElement.Value.IsNotNullOrEmpty())
@@ -257,14 +254,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return new String[0];
 
             #endregion
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new String[0];
 
             return _XElements.Select(xelement => xelement.Value);
@@ -278,48 +275,40 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region MapElement          (ParentXElement, XName, Mapper, Default = default(T))
 
-        public static T MapElement<T>(this XElement      ParentXElement,
-                                      XName              XName,
-                                      Func<XElement, T>  Mapper,
-                                      T                  Default = default(T))
+        public static T? MapElement<T>(this XElement      ParentXElement,
+                                       XName              XName,
+                                       Func<XElement, T>  Mapper,
+                                       T?                 Default   = default)
         {
 
-            #region Initial checks
-
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return Default;
 
-            #endregion
+            var xElement = ParentXElement.Element(XName);
 
-            var _XElement = ParentXElement.Element(XName);
-
-            if (_XElement == null)
+            if (xElement is null)
                 return Default;
 
-            return Mapper(_XElement);
+            return Mapper(xElement);
 
         }
 
-        public static T MapElement<T>(this XElement                           ParentXElement,
-                                      XName                                   XName,
-                                      Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                      OnExceptionDelegate                     OnException  = null,
-                                      T                                       Default      = default(T))
+        public static T? MapElement<T>(this XElement                           ParentXElement,
+                                       XName                                   XName,
+                                       Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                       OnExceptionDelegate?                    OnException   = null,
+                                       T?                                      Default       = default)
         {
 
-            #region Initial checks
-
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return Default;
 
-            #endregion
+            var xElement = ParentXElement.Element(XName);
 
-            var _XElement = ParentXElement.Element(XName);
-
-            if (_XElement == null)
+            if (xElement is null)
                 return Default;
 
-            return Mapper(_XElement, OnException);
+            return Mapper(xElement, OnException);
 
         }
 
@@ -330,33 +319,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapElementOrFail<T>(this XElement                           ParentXElement,
                                             XName                                   XName,
                                             Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                            OnExceptionDelegate                     OnException       = null,
-                                            String                                  ExceptionMessage  = null)
+                                            OnExceptionDelegate?                    OnException        = null,
+                                            String?                                 ExceptionMessage   = null)
         {
 
             if (ParentXElement is null)
-                if (OnException != null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
-            if (Mapper == null)
-                if (OnException != null)
+            if (Mapper is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
 
-            var _XElement = ParentXElement.Element(XName);
+            var xElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
-                if (OnException != null)
+            if (xElement is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage));
                 else
                     throw new Exception(ExceptionMessage);
 
-            return Mapper(_XElement, OnException);
+            return Mapper(xElement, OnException);
 
         }
+
+
+        public static T MapElementOrFail2<T>(this XElement      ParentXElement,
+                                             XName              XName,
+                                             Func<XElement, T>  Mapper)
+        {
+
+            if (ParentXElement is null)
+                throw new Exception("The parent XML element must not be null!");
+
+            if (Mapper is null)
+                throw new Exception("Mapper delegate must not be null!");
+
+            var xElement = ParentXElement.Element(XName)
+                             ?? throw new Exception("The XElement must not be null!");
+
+            return Mapper(xElement);
+
+        }
+
 
         public static Boolean MapElementOrFail<T>(this XElement      ParentXElement,
                                                   XName              XName,
@@ -408,14 +417,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return new T?();
 
             #endregion
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return new T?();
 
             return Mapper(_XElement);
@@ -433,14 +442,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return new T?();
 
             #endregion
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return new T?();
 
             return Mapper(_XElement, OnException);
@@ -462,14 +471,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return new T[0];
 
             #endregion
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML)).
@@ -485,14 +494,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return new T[0];
 
             #endregion
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML, OnException)).
@@ -513,17 +522,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return new T[0];
 
             #endregion
 
             var _XElement  = ParentXElement.Element(XWrapper);
-            if (_XElement == null)
+            if (_XElement is null)
                 return new T[0];
 
             var _XElements = _XElement.Elements(XName);
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML)).
@@ -540,17 +549,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null || Mapper == null)
+            if (ParentXElement is null || Mapper is null)
                 return new T[0];
 
             #endregion
 
             var _XElement  = ParentXElement.Element(XWrapper);
-            if (_XElement == null)
+            if (_XElement is null)
                 return new T[0];
 
             var _XElements = _XElement.Elements(XName);
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T[0];
 
             return _XElements.Select(XML   => Mapper(XML, OnException)).
@@ -565,20 +574,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> MapElementsOrFail<T>(this XElement                           ParentXElement,
                                                           XName                                   XName,
                                                           Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                                          OnExceptionDelegate                     OnException       = null,
-                                                          String                                  ExceptionMessage  = null)
+                                                          OnExceptionDelegate?                    OnException        = null,
+                                                          String?                                 ExceptionMessage   = null)
         {
 
             #region Initial checks
 
-            if (ParentXElement == null)
-                if (OnException != null)
+            if (ParentXElement is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
-            if (Mapper == null)
-                if (OnException != null)
+            if (Mapper is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
@@ -588,10 +597,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
             {
 
-                if (OnException != null)
+                if (OnException is not null)
                 {
 
                     OnException(Timestamp.Now,
@@ -600,7 +609,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                   ? ExceptionMessage
                                                   : "The given XML element must not be null!"));
 
-                    return new T[0];
+                    return [];
 
                 }
 
@@ -609,7 +618,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             return _XElements.Select(XML   => Mapper(XML, OnException)).
-                              Where (value => !EqualityComparer<T>.Default.Equals(value, default(T)));
+                              Where (value => !EqualityComparer<T>.Default.Equals(value, default));
+
+        }
+
+
+        public static IEnumerable<T> MapElementsOrFail2<T>(this XElement      ParentXElement,
+                                                           XName              XName,
+                                                           Func<XElement, T>  Mapper)
+        {
+
+            if (ParentXElement is null)
+                throw new Exception("The parent XML element must not be null!");
+
+            if (Mapper is null)
+                throw new Exception("Mapper delegate must not be null!");
+
+            var xElements = ParentXElement.Elements(XName);
+
+            if (xElements is null || !xElements.Any())
+                throw new Exception("The given XML elements must not be null!");
+
+            return xElements.Select(XML   => Mapper(XML)).
+                             Where (value => !EqualityComparer<T>.Default.Equals(value, default));
 
         }
 
@@ -621,20 +652,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                           XName                                   XWrapper,
                                                           XName                                   XName,
                                                           Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                                          OnExceptionDelegate                     OnException       = null,
-                                                          String                                  ExceptionMessage  = null)
+                                                          OnExceptionDelegate?                    OnException        = null,
+                                                          String?                                 ExceptionMessage   = null)
         {
 
             #region Initial checks
 
-            if (ParentXElement == null)
-                if (OnException != null)
+            if (ParentXElement is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception("The parent XML element must not be null!"));
                 else
                     throw new Exception("The parent XML element must not be null!");
 
-            if (Mapper == null)
-                if (OnException != null)
+            if (Mapper is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception("Mapper delegate must not be null!"));
                 else
                     throw new Exception("Mapper delegate must not be null!");
@@ -643,16 +674,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XWrapper);
 
-            if (_XElement == null)
-                if (OnException != null)
+            if (_XElement is null)
+                if (OnException is not null)
                     OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 else
                     throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!");
 
             var _XElements = _XElement.Elements(XName);
 
-            if (_XElements == null)
-                //if (OnException != null)
+            if (_XElements is null)
+                //if (OnException is not null)
                 //    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 //else
                 //    throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!");
@@ -661,7 +692,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var __XElements = _XElements.ToArray();
 
             if (__XElements.Length == 0)
-                //if (OnException != null)
+                //if (OnException is not null)
                 //    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given XML element must not be null!"));
                 //else
                 //    throw new Exception(ExceptionMessage.IsNotNullOrEmpty() ? ExceptionMessage : "The given array of XML elements must not be empty!");
@@ -684,7 +715,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             XName          XName)
         {
 
-            if (ParentXElement == null || XName == null)
+            if (ParentXElement is null || XName is null)
                 return null;
 
             return ParentXElement?.Element(XName)?.Value;
@@ -702,10 +733,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper    == null)
+            if (ValueMapper    is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -713,7 +744,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return default(T);
 
             if (_XElement.Value.IsNullOrEmpty())
@@ -738,10 +769,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper    == null)
+            if (ValueMapper    is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -749,7 +780,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null || _XElement.Value.IsNullOrEmpty())
+            if (_XElement is null || _XElement.Value.IsNullOrEmpty())
                 return new T?();
 
 
@@ -786,10 +817,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper    == null)
+            if (ValueMapper    is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -797,13 +828,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XWrapper = ParentXElement.Element(XWrapper);
 
-            if (_XWrapper == null)
+            if (_XWrapper is null)
                 return new T?();
 
 
             var _XElement = _XWrapper.Element(XName);
 
-            if (_XElement == null || _XElement.Value.IsNullOrEmpty())
+            if (_XElement is null || _XElement.Value.IsNullOrEmpty())
                 return new T?();
 
             return ValueMapper(_XElement.Value);
@@ -994,10 +1025,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1005,7 +1036,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XWrapper = ParentXElement.Element(XWrapper);
 
-            if (_XWrapper == null)
+            if (_XWrapper is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML wrapper element '" + XWrapper.LocalName + "'!");
@@ -1013,7 +1044,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = _XWrapper.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XWrapper.LocalName + "' > '" + XName.LocalName + "'!");
@@ -1055,10 +1086,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1066,7 +1097,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XWrapper = ParentXElement.Element(XWrapper);
 
-            if (_XWrapper == null)
+            if (_XWrapper is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML wrapper element '" + XWrapper.LocalName + "'!");
@@ -1074,12 +1105,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = _XWrapper.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XWrapper.LocalName + "' > '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (_XElement.Value is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XWrapper.LocalName + "' > '" + XName.LocalName + "' must not be null!");
@@ -1115,10 +1146,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return DefaultValue;
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 return DefaultValue;
 
             #endregion
@@ -1126,7 +1157,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return DefaultValue;
 
             if (_XElement.Value.IsNullOrEmpty())
@@ -1149,10 +1180,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return DefaultValue;
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 return DefaultValue;
 
             #endregion
@@ -1160,13 +1191,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XWrapper = ParentXElement.Element(XWrapper);
 
-            if (_XWrapper == null)
+            if (_XWrapper is null)
                 return DefaultValue;
 
 
             var _XElement = _XWrapper.Element(XName);
 
-            if (_XElement == null || _XElement.Value.IsNullOrEmpty())
+            if (_XElement is null || _XElement.Value.IsNullOrEmpty())
                 return DefaultValue;
 
 
@@ -1185,7 +1216,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement), "The given XML element must not be null!");
 
             #endregion
@@ -1193,12 +1224,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (_XElement.Value is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -1234,7 +1265,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return new Boolean?();
 
             #endregion
@@ -1242,7 +1273,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return new Boolean?();
 
             if (_XElement.Value.IsNullOrEmpty())
@@ -1279,7 +1310,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
             #endregion
@@ -1287,12 +1318,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (_XElement.Value is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -1336,7 +1367,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
             #endregion
@@ -1344,12 +1375,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing XML element '" + XName.LocalName + "'!");
 
-            if (_XElement.Value == null)
+            if (_XElement.Value is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The value of the given XML element '" + XName.LocalName + "' must not be null!");
@@ -1391,17 +1422,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return new T[0];
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 return new T[0];
 
             #endregion
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T[0];
 
             return _XElements.SafeSelect(xelement => ValueMapper(xelement.Value));
@@ -1420,22 +1451,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return new T[0];
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 return new T[0];
 
             #endregion
 
             var _XElement = ParentXElement.Element(XWrapperName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return new T[0];
 
             var _XElements = _XElement.Elements(XElementsName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T[0];
 
             return _XElements.SafeSelect(xelement => ValueMapper(xelement.Value));
@@ -1455,22 +1486,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return new T[1] { DefaultValue };
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 return new T[1] { DefaultValue };
 
             #endregion
 
             var _XElement = ParentXElement.Element(XWrapperName);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return new T[1] { DefaultValue };
 
             var _XElements = _XElement.Elements(XElementsName);
 
-            if (_XElements == null)
+            if (_XElements is null)
                 return new T[1] { DefaultValue };
 
             var __XElements = _XElements.ToArray();
@@ -1494,10 +1525,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1505,7 +1536,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing or empty XML elements '" + XName.LocalName + "'!");
@@ -1524,10 +1555,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1535,7 +1566,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XWrapper);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                             ? ExceptionMessage
                                             : "Missing XML element '" + XWrapper.LocalName + "'!");
@@ -1543,7 +1574,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = _XElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing or empty XML elements '" + XWrapper.LocalName + "' > '" + XName.LocalName + "'!");
@@ -1568,10 +1599,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1579,7 +1610,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return default(T);
 
 
@@ -1619,10 +1650,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1630,13 +1661,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XWrapper);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return default(T);
 
 
             var _XElements = _XElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return default(T);
 
 
@@ -1678,10 +1709,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1689,7 +1720,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T?();
 
 
@@ -1729,10 +1760,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1740,13 +1771,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XWrapper);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 return default(T);
 
 
             var _XElements = _XElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 return new T?();
 
 
@@ -1788,10 +1819,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1799,7 +1830,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = ParentXElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing or empty XML elements '" + XName.LocalName + "'!");
@@ -1839,10 +1870,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1850,7 +1881,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElement = ParentXElement.Element(XWrapper);
 
-            if (_XElement == null)
+            if (_XElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                             ? ExceptionMessage
                                             : "Missing XML element '" + XWrapper.LocalName + "'!");
@@ -1858,7 +1889,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = _XElement.Elements(XName);
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing or empty XML elements '" + XWrapper.LocalName + "' > '" + XName.LocalName + "'!");
@@ -1898,10 +1929,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML element mapper delegate must not be null!");
 
             #endregion
@@ -1909,7 +1940,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _WrapperXElements = ParentXElement.Elements(XWrapper);
 
-            if (_WrapperXElements == null)
+            if (_WrapperXElements is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                             ? ExceptionMessage
                                             : "Missing XML element(s) '" + XWrapper.LocalName + "'!");
@@ -1917,7 +1948,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XElements = _WrapperXElements.Select(xml => xml.Element(XName));
 
-            if (_XElements == null || !_XElements.Any())
+            if (_XElements is null || !_XElements.Any())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "Missing or empty XML elements '" + XWrapper.LocalName + "' > '" + XName.LocalName + "'!");
@@ -1967,14 +1998,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 return DefaultValue;
 
             #endregion
 
             var _XAttribute = ParentXElement.Attribute(XName);
 
-            if (_XAttribute == null)
+            if (_XAttribute is null)
                 return DefaultValue;
 
             return _XAttribute.Value;
@@ -1999,7 +2030,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
             #endregion
@@ -2007,7 +2038,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _XAttribute = ParentXElement.Attribute(XName);
 
-            if (_XAttribute == null)
+            if (_XAttribute is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The given XML attribute '" + XName.LocalName + "' was not found!");
@@ -2036,17 +2067,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML attribute mapper delegate must not be null!");
 
             #endregion
 
             var _XAttribute = ParentXElement.Attribute(XName);
 
-            if (_XAttribute == null)
+            if (_XAttribute is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : "The given XML attribute '" + XName.LocalName + "' was not found!");
@@ -2089,17 +2120,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML attribute mapper delegate must not be null!");
 
             #endregion
 
             var _XAttribute = ParentXElement.Attribute(XName);
 
-            if (_XAttribute == null)
+            if (_XAttribute is null)
                 return default(T);
 
 
@@ -2139,14 +2170,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
             #endregion
 
             var _XAttribute = ParentXElement.Attribute(XName);
 
-            if (_XAttribute == null)
+            if (_XAttribute is null)
                 return null;
 
             return _XAttribute.Value;
@@ -2175,17 +2206,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (ParentXElement == null)
+            if (ParentXElement is null)
                 throw new ArgumentNullException(nameof(ParentXElement),  "The given XML element must not be null!");
 
-            if (ValueMapper == null)
+            if (ValueMapper is null)
                 throw new ArgumentNullException(nameof(ValueMapper),     "The given XML attribute mapper delegate must not be null!");
 
             #endregion
 
             var _XAttribute = ParentXElement.Attribute(XName);
 
-            if (_XAttribute == null)
+            if (_XAttribute is null)
                 return new T?();
 
 
@@ -2218,7 +2249,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Byte[] ToUTF8Bytes(this XElement XML)
         {
 
-            if (XML == null)
+            if (XML is null)
                 return new Byte[0];
 
             return Encoding.UTF8.GetBytes(XML.ToString());
