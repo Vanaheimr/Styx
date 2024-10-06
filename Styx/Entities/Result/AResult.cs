@@ -104,7 +104,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.SenderId          = SenderId;
             this.Sender            = Sender;
             this.Description       = Description     ?? I18NString.Empty;
-            this.Warnings          = Warnings        ?? Array.Empty<Warning>();
+            this.Warnings          = Warnings        ?? [];
             this.Runtime           = Runtime         ?? TimeSpan.Zero;
 
         }
