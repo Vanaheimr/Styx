@@ -169,23 +169,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                HexString = HexString.Trim();
+                var hexString = HexString.Trim().
+                                          Replace(" ", "").
+                                          Replace(":", "").
+                                          Replace("-", "");
 
-                if (HexString.IsNullOrEmpty())
+                if (hexString.IsNullOrEmpty())
                     ErrorResponse = $"The given hex-representation of a byte array must not be null!";
 
-                else if (HexString.Length % 2 == 1)
-                    ErrorResponse = $"The length of the given hex-representation '{HexString}' of a byte array is invalid ({HexString.Length} characters)!";
+                else if (hexString.Length % 2 == 1)
+                    ErrorResponse = $"The length of the given hex-representation '{HexString}' of a byte array is invalid!";
 
-                else if (!HEXRegex.IsMatch(HexString))
+                else if (!HEXRegex.IsMatch(hexString))
                     ErrorResponse = $"The given hex-representation '{HexString}' of a byte array is invalid!";
 
                 else
                 {
 
-                    ByteArray = Enumerable.Range  (0, HexString.Length).
+                    ByteArray = Enumerable.Range  (hexString.StartsWith("0x") ? 2 : 0,
+                                                   hexString.Length).
                                            Where  (x => x % 2 == 0).
-                                           Select (x => Convert.ToByte(HexString.Substring(x, 2), 16)).
+                                           Select (x => Convert.ToByte(hexString.Substring(x, 2), 16)).
                                            ToArray();
 
                     return true;
