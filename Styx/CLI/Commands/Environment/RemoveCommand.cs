@@ -25,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 {
 
     public class RemoveCommand(CLI CLI) : ACLICommand(CLI),
-                                          ICLICommands
+                                          ICLICommand
     {
 
         public static readonly String CommandName = nameof(RemoveCommand)[..^7].ToLowerFirstChar();
@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
             if (args.Length == 1 &&
                 CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             if (args.Length == 2)
@@ -47,8 +47,21 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                 foreach (var key in cli.Environment.Keys)
                 {
-                    if (key.StartsWith(name, StringComparison.CurrentCultureIgnoreCase))
-                        keyList.Add(SuggestionResponse.Complete($"{CommandName} {key}"));
+
+                    if (key == name)
+                        keyList.Add(SuggestionResponse.ParameterCompleted($"{CommandName} {key}"));
+
+                    else if (key.StartsWith(name, StringComparison.CurrentCultureIgnoreCase))
+                        keyList.Add(SuggestionResponse.ParameterPrefix($"{CommandName} {key}"));
+
+                }
+
+                if (keyList.Count == 1 &&
+                    keyList.First().Info == SuggestionInfo.ParameterPrefix)
+                {
+                    var suggestion = keyList.First().Suggestion;
+                    keyList.Clear();
+                    keyList.Add(SuggestionResponse.ParameterCompleted(suggestion));
                 }
 
                 return keyList;

@@ -24,18 +24,18 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class QuitCommand(CLI CLI) : ACLICommand(CLI),
-                                        ICLICommands
+    public class HelpCommand(CLI CLI) : ACLICommand(CLI),
+                                        ICLICommand
     {
 
-        public static readonly String CommandName = nameof(QuitCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(HelpCommand)[..^7].ToLowerFirstChar();
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
             if (CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             return [];
@@ -46,9 +46,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            cli.QuitCLI = true;
+            var list = new List<String>() { "Available commands:" };
 
-            return Task.FromResult<String[]>([]);
+            foreach (var command in cli.Commands)
+                list.Add(command.Help());
+
+            return Task.FromResult(list.ToArray());
 
         }
 
@@ -58,7 +61,6 @@ namespace org.GraphDefined.Vanaheimr.CLI
         }
 
     }
-
 
 
 }

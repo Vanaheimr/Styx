@@ -17,244 +17,12 @@
 
 #region Usings
 
-using System.Net;
 using System.Reflection;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.CLI
 {
-
-    public enum SuggestionInfo
-    {
-        None,
-        Complete,
-        Prefix,
-        Error
-    }
-
-    public class SuggestionResponse : IComparable<SuggestionResponse>,
-                                      IEquatable<SuggestionResponse>
-    {
-
-        #region Properties
-
-        public String          Suggestion    { get; set; } = "";
-        public SuggestionInfo  Info          { get; set; }
-
-        #endregion
-
-
-        private SuggestionResponse(String          Suggestion,
-                                   SuggestionInfo  Info)
-        {
-            this.Suggestion  = Suggestion;
-            this.Info        = Info;
-        }
-
-
-
-        public static SuggestionResponse Complete(String Suggestion)
-
-            => new (Suggestion,
-                    SuggestionInfo.Complete);
-
-        public static SuggestionResponse Prefix(String Suggestion)
-
-            => new (Suggestion,
-                    SuggestionInfo.Prefix);
-
-
-
-        #region Operator overloading
-
-        #region Operator == (SuggestionResponse1, SuggestionResponse2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
-        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator == (SuggestionResponse SuggestionResponse1,
-                                           SuggestionResponse SuggestionResponse2)
-
-            => SuggestionResponse1.Equals(SuggestionResponse2);
-
-        #endregion
-
-        #region Operator != (SuggestionResponse1, SuggestionResponse2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
-        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator != (SuggestionResponse SuggestionResponse1,
-                                           SuggestionResponse SuggestionResponse2)
-
-            => !SuggestionResponse1.Equals(SuggestionResponse2);
-
-        #endregion
-
-        #region Operator <  (SuggestionResponse1, SuggestionResponse2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
-        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator < (SuggestionResponse SuggestionResponse1,
-                                          SuggestionResponse SuggestionResponse2)
-
-            => SuggestionResponse1.CompareTo(SuggestionResponse2) < 0;
-
-        #endregion
-
-        #region Operator <= (SuggestionResponse1, SuggestionResponse2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
-        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator <= (SuggestionResponse SuggestionResponse1,
-                                           SuggestionResponse SuggestionResponse2)
-
-            => SuggestionResponse1.CompareTo(SuggestionResponse2) <= 0;
-
-        #endregion
-
-        #region Operator >  (SuggestionResponse1, SuggestionResponse2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
-        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator > (SuggestionResponse SuggestionResponse1,
-                                          SuggestionResponse SuggestionResponse2)
-
-            => SuggestionResponse1.CompareTo(SuggestionResponse2) > 0;
-
-        #endregion
-
-        #region Operator >= (SuggestionResponse1, SuggestionResponse2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
-        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator >= (SuggestionResponse SuggestionResponse1,
-                                           SuggestionResponse SuggestionResponse2)
-
-            => SuggestionResponse1.CompareTo(SuggestionResponse2) >= 0;
-
-        #endregion
-
-        #endregion
-
-        #region IComparable<SuggestionResponse> Members
-
-        #region CompareTo(Object)
-
-        /// <summary>
-        /// Compares two SuggestionResponses.
-        /// </summary>
-        /// <param name="Object">A SuggestionResponse to compare with.</param>
-        public Int32 CompareTo(Object? Object)
-
-            => Object is SuggestionResponse ipSocket
-                   ? CompareTo(ipSocket)
-                   : throw new ArgumentException("The given object is not a SuggestionResponse!",
-                                                 nameof(Object));
-
-        #endregion
-
-        #region CompareTo(SuggestionResponse)
-
-        /// <summary>
-        /// Compares two SuggestionResponses.
-        /// </summary>
-        /// <param name="SuggestionResponse">A SuggestionResponse to compare with.</param>
-        public Int32 CompareTo(SuggestionResponse? SuggestionResponse)
-        {
-            return Suggestion.CompareTo(SuggestionResponse?.Suggestion ?? "");
-        }
-
-        #endregion
-
-        #endregion
-
-        #region IEquatable<SuggestionResponse> Members
-
-        #region Equals(Object)
-
-        /// <summary>
-        /// Compares two SuggestionResponses for equality.
-        /// </summary>
-        /// <param name="Object">A SuggestionResponse to compare with.</param>
-        public override Boolean Equals(Object? Object)
-
-            => Object is SuggestionResponse component &&
-                   Equals(component);
-
-        #endregion
-
-        #region Equals(SuggestionResponse)
-
-        /// <summary>
-        /// Compares two SuggestionResponses for equality.
-        /// </summary>
-        /// <param name="SuggestionResponse">A SuggestionResponse to compare with.</param>
-        public Boolean Equals(SuggestionResponse? SuggestionResponse)
-
-            => SuggestionResponse is not null &&
-               String.Equals(Suggestion, SuggestionResponse.Suggestion, StringComparison.OrdinalIgnoreCase) &&
-               Info.  Equals(SuggestionResponse.Info);
-
-        #endregion
-
-        #endregion
-
-        #region (override) GetHashCode()
-
-        /// <summary>
-        /// Return the HashCode of this object.
-        /// </summary>
-        public override Int32 GetHashCode()
-        {
-            unchecked
-            {
-
-                return Suggestion.GetHashCode() ^
-                       Info.      GetHashCode();
-
-            }
-        }
-
-        #endregion
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Returns a text representation of this object.
-        /// </summary>
-        public override String ToString()
-
-            => $"{Suggestion} [{Info}]";
-
-        #endregion
-
-
-    }
-
 
     /// <summary>
     /// A Command Line Interface for executing commands.
@@ -275,11 +43,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
         #endregion
 
 
-
-
         #region Data
 
-        private readonly  List<ICLICommands>          commands         = [];
+        private readonly  List<ICLICommand>          commands         = [];
         private readonly  List<String>                commandHistory   = [];
         private readonly  CancellationTokenSource     cts              = new();
 
@@ -293,7 +59,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// <summary>
         /// All registered commands.
         /// </summary>
-        public IEnumerable<ICLICommands> Commands
+        public IEnumerable<ICLICommand> Commands
             => commands;
 
         /// <summary>
@@ -340,21 +106,21 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 commands.AddRange(
                     assemblyWithCLICommands.
                         GetTypes().
-                        Where(type => typeof(ICLICommands).IsAssignableFrom(type) &&
+                        Where(type => typeof(ICLICommand).IsAssignableFrom(type) &&
                                       !type.IsAbstract &&
                                       !type.IsInterface &&
                                        type.GetConstructor(Type.EmptyTypes) is not null).
-                        Select(type => (ICLICommands)Activator.CreateInstance(type)!)
+                        Select(type => (ICLICommand)Activator.CreateInstance(type)!)
                 );
 
                 commands.AddRange(
                     assemblyWithCLICommands.
                         GetTypes().
-                        Where(type => typeof(ICLICommands).IsAssignableFrom(type) &&
+                        Where(type => typeof(ICLICommand).IsAssignableFrom(type) &&
                                       !type.IsAbstract &&
                                       !type.IsInterface &&
                                        type.GetConstructor([typeof(CLI)]) is not null).
-                        Select(type => (ICLICommands)Activator.CreateInstance(type, this)!)
+                        Select(type => (ICLICommand)Activator.CreateInstance(type, this)!)
                 );
 
             }
@@ -371,12 +137,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                 Prompt();
 
-                var inputArgs = ReadLineWithAutoCompletion(commands, out var cancelled);
+                var inputArgs = await ReadLineWithAutoCompletion(commands);
 
-                if (inputArgs?.Length > 0 && !cancelled)
+                if (inputArgs.Item1?.Length > 0 && !inputArgs.Item2)
                 {
 
-                    var responseLines = await Execute(inputArgs);
+                    var responseLines = await Execute(inputArgs.Item1);
 
                     foreach (var responseLine in responseLines)
                         Console.WriteLine(responseLine);
@@ -413,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #region Suggest(Command)
 
-        public SuggestionResponse[] Suggest(String Command)
+        public Task<SuggestionResponse[]> Suggest(String Command)
 
             => Suggest(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
@@ -421,14 +187,24 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #region Suggest(InputArguments)
 
-        public SuggestionResponse[] Suggest(String[] InputArguments)
+        public async Task<SuggestionResponse[]> Suggest(String[] InputArguments)
+        {
+            try
+            {
 
-            => InputArguments.Length == 0
+                return InputArguments.Length == 0
 
                      // An empty input suggest all commands...
                    ? [.. commands.SelectMany(c => c.Suggest([""])).Distinct().Order()]
 
                    : [.. commands.SelectMany(c => c.Suggest(InputArguments)).Distinct().Order()];
+
+            }
+            catch
+            {
+                return [];
+            }
+        }
 
         #endregion
 
@@ -477,6 +253,10 @@ namespace org.GraphDefined.Vanaheimr.CLI
             {
                 return ["Command execution cancelled"];
             }
+            catch (Exception e)
+            {
+                return [ e.Message ];
+            }
 
         }
 
@@ -495,16 +275,15 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #endregion
 
-        #region (private) ReadLineWithAutoCompletion(Commands, out Cancelled)
+        #region (private) ReadLineWithAutoCompletion(Commands)
 
-        private String[] ReadLineWithAutoCompletion(List<ICLICommands> Commands, out Boolean Cancelled)
+        private async Task<Tuple<String[], Boolean>> ReadLineWithAutoCompletion(List<ICLICommand> Commands)
         {
 
             var input           = new List<Char>();
             var cursorPosition  = 0;
             var historyIndex    = -1;
             var currentInput    = String.Empty;
-            Cancelled           = false;
 
             while (true)
             {
@@ -514,7 +293,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 if (key.Key == ConsoleKey.Tab)
                 {
 
-                    var suggestions = Suggest(new String(input.ToArray()).Split(' ', StringSplitOptions.RemoveEmptyEntries));
+                    var suggestions = await Suggest(new String(input.ToArray()).Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
                     if (suggestions.Length == 0)
                     {
@@ -526,8 +305,11 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                         input.AddRange(suggestions[0].Suggestion ?? "");
 
-                        if (suggestions[0].Info == SuggestionInfo.Complete)
+                        if (suggestions[0].Info == SuggestionInfo.CommandCompleted ||
+                            suggestions[0].Info == SuggestionInfo.ParameterCompleted)
+                        {
                             input.Add(' ');
+                        }
 
                         cursorPosition = input.Count;
                         ClearCurrentConsoleLine();
@@ -569,7 +351,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 else if (key.Key == ConsoleKey.Enter)
                 {
                     Console.WriteLine();
-                    return new String(input.ToArray()).Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    return new Tuple<String[], Boolean>(new String(input.ToArray()).Split(' ', StringSplitOptions.RemoveEmptyEntries), false);
                 }
 
                 else if (key.Key == ConsoleKey.Backspace && cursorPosition > 0)
@@ -653,9 +435,8 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                 else if (key.Key == ConsoleKey.Escape)
                 {
-                    Cancelled = true;
                     Console.WriteLine();
-                    return [];
+                    return new Tuple<String[], Boolean>([], true);
                 }
 
                 else if (!char.IsControl(key.KeyChar))

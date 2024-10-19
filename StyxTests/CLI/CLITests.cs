@@ -19,9 +19,6 @@
 
 using NUnit.Framework;
 
-using org.GraphDefined.Vanaheimr.CLI;
-using System.Linq;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.CLI.Tests
@@ -79,12 +76,12 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #region Suggest_()
 
         [Test]
-        public void Suggest_()
+        public async Task Suggest_()
         {
 
             var cli = new CLI();
 
-            var s1 = cli.Suggest("");
+            var s1  = await cli.Suggest("");
 
             Assert.That(s1.Length, Is.EqualTo(7));
 
@@ -95,14 +92,15 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #region Suggest_ad()
 
         [Test]
-        public void Suggest_ad()
+        public async Task Suggest_ad()
         {
 
             var cli = new CLI();
 
-            var s1 = cli.Suggest("ad");
+            var s1  = await cli.Suggest("ad");
 
-            Assert.That(s1[0], Is.EqualTo("add"));
+            Assert.That(s1[0].Suggestion,   Is.EqualTo("add"));
+            Assert.That(s1[0].Info,         Is.EqualTo(SuggestionInfo.CommandCompleted));
 
         }
 
@@ -111,15 +109,18 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #region Suggest_re()
 
         [Test]
-        public void Suggest_re()
+        public async Task Suggest_re()
         {
 
             var cli = new CLI();
 
-            var s1 = cli.Suggest("re");
+            var s1  = await cli.Suggest("re");
 
-            Assert.That(s1[0],  Is.EqualTo("remove"));
-            Assert.That(s1[1],  Is.EqualTo("removeAll"));
+            Assert.That(s1[0].Suggestion,   Is.EqualTo("remove"));
+            Assert.That(s1[0].Info,         Is.EqualTo(SuggestionInfo.CommandCompleted));
+
+            Assert.That(s1[1].Suggestion,   Is.EqualTo("removeAll"));
+            Assert.That(s1[1].Info,         Is.EqualTo(SuggestionInfo.CommandCompleted));
 
         }
 
@@ -128,17 +129,21 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #region Suggest_remove_a__oneKVP()
 
         [Test]
-        public void Suggest_remove_a__oneKVP()
+        public async Task Suggest_remove_a__oneKVP()
         {
 
             var cli = new CLI();
 
-            var e1 = cli.Execute("add a 1");
-            Assert.That(cli.Environment.   Count(),  Is.EqualTo(1));
-            Assert.That(cli.CommandHistory.First(),  Is.EqualTo("add a 1"));
+            var e1  = await cli.Execute("add a 1");
 
-            var s1 = cli.Suggest("remove a");
-            Assert.That(s1[0], Is.EqualTo("remove a"));
+            Assert.That(e1.First(),                   Is.EqualTo("Item added: a = 1"));
+
+            Assert.That(cli.Environment.   Count(),   Is.EqualTo(1));
+            Assert.That(cli.CommandHistory.First(),   Is.EqualTo("add a 1"));
+
+            var s1  = await cli.Suggest("remove a");
+            Assert.That(s1[0].Suggestion,             Is.EqualTo("remove a"));
+            Assert.That(s1[0].Info,                   Is.EqualTo(SuggestionInfo.ParameterCompleted));
 
         }
 
@@ -147,20 +152,56 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #region Suggest_remove_a__twoKVPs()
 
         [Test]
-        public void Suggest_remove_a__twoKVPs()
+        public async Task Suggest_remove_a__twoKVPs()
         {
 
             var cli = new CLI();
 
-            var e1 = cli.Execute("add aa1 1");
-            var e2 = cli.Execute("add aa2 2");
-            Assert.That(cli.Environment.   Count(),       Is.EqualTo(2));
-            Assert.That(cli.CommandHistory.ElementAt(0),  Is.EqualTo("add aa1 1"));
-            Assert.That(cli.CommandHistory.ElementAt(1),  Is.EqualTo("add aa2 2"));
+            var e1  = await cli.Execute("add aa1 1");
+            var e2  = await cli.Execute("add aa2 2");
 
-            var s1 = cli.Suggest("remove a");
-            Assert.That(s1[0], Is.EqualTo("remove aa1"));
-            Assert.That(s1[1], Is.EqualTo("remove aa2"));
+            Assert.That(e1.First(),                        Is.EqualTo("Item added: aa1 = 1"));
+            Assert.That(e2.First(),                        Is.EqualTo("Item added: aa2 = 2"));
+
+            Assert.That(cli.Environment.   Count(),        Is.EqualTo(2));
+            Assert.That(cli.CommandHistory.ElementAt(0),   Is.EqualTo("add aa1 1"));
+            Assert.That(cli.CommandHistory.ElementAt(1),   Is.EqualTo("add aa2 2"));
+
+            var s1  = await cli.Suggest("remove a");
+            Assert.That(s1[0].Suggestion,                  Is.EqualTo("remove aa1"));
+            Assert.That(s1[0].Info,                        Is.EqualTo(SuggestionInfo.ParameterPrefix));
+
+            Assert.That(s1[1].Suggestion,                  Is.EqualTo("remove aa2"));
+            Assert.That(s1[1].Info,                        Is.EqualTo(SuggestionInfo.ParameterPrefix));
+
+        }
+
+        #endregion
+
+        #region Suggest_remove_a__twoKVPs2()
+
+        [Test]
+        public async Task Suggest_remove_a__twoKVPs2()
+        {
+
+            var cli = new CLI();
+
+            var e1  = await cli.Execute("add a 1");
+            var e2  = await cli.Execute("add aa2 2");
+
+            Assert.That(e1.First(),                        Is.EqualTo("Item added: a = 1"));
+            Assert.That(e2.First(),                        Is.EqualTo("Item added: aa2 = 2"));
+
+            Assert.That(cli.Environment.   Count(),        Is.EqualTo(2));
+            Assert.That(cli.CommandHistory.ElementAt(0),   Is.EqualTo("add a 1"));
+            Assert.That(cli.CommandHistory.ElementAt(1),   Is.EqualTo("add aa2 2"));
+
+            var s1  = await cli.Suggest("remove a");
+            Assert.That(s1[0].Suggestion,                  Is.EqualTo("remove a"));
+            Assert.That(s1[0].Info,                        Is.EqualTo(SuggestionInfo.ParameterCompleted));
+
+            Assert.That(s1[1].Suggestion,                  Is.EqualTo("remove aa2"));
+            Assert.That(s1[1].Info,                        Is.EqualTo(SuggestionInfo.ParameterPrefix));
 
         }
 

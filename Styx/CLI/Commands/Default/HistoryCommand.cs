@@ -24,18 +24,21 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class HelpCommand(CLI CLI) : ACLICommand(CLI),
-                                        ICLICommands
+    public class HistoryCommand(CLI CLI) : ACLICommand(CLI),
+                                           ICLICommand
     {
 
-        public static readonly String CommandName = nameof(HelpCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(HistoryCommand)[..^7].ToLowerFirstChar();
+
+
+     //   private readonly IEnumerable<String> commandHistory = CLI.CommandHistory;
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
             if (CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             return [];
@@ -46,10 +49,14 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            var list = new List<String>() { "Available commands:" };
+            if (!cli.CommandHistory.Any())
+                return Task.FromResult<String[]>(["No commands in history!"]);
 
-            foreach (var command in cli.Commands)
-                list.Add(command.Help());
+
+            var list = new List<String>() { "Command History:" };
+
+            foreach (var command in cli.CommandHistory)
+                list.Add(command);
 
             return Task.FromResult(list.ToArray());
 
@@ -57,10 +64,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public override String Help()
         {
-            return "help - Displays this help message.";
+            return "history - Displays the command history.";
         }
 
     }
-
 
 }

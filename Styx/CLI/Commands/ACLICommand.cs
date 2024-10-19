@@ -18,11 +18,17 @@
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public interface ICLICommands
+    public abstract class ACLICommand(CLI CLI) : ICLICommand
     {
-        IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
-        Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
-        String Help();
+
+        protected readonly CLI cli = CLI;
+
+        public abstract IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
+
+        public abstract Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
+
+        public abstract String Help();
+
     }
 
 }

@@ -24,18 +24,18 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class ListCommand(CLI CLI) : ACLICommand(CLI),
-                                        ICLICommands
+    public class QuitCommand(CLI CLI) : ACLICommand(CLI),
+                                        ICLICommand
     {
 
-        public static readonly String CommandName = nameof(ListCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(QuitCommand)[..^7].ToLowerFirstChar();
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
             if (CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             return [];
@@ -46,22 +46,15 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            if (cli.Environment.Count == 0)
-                return Task.FromResult<String[]>(["No items to list!"]);
+            cli.QuitCLI = true;
 
-
-            var list = new List<String>() { "Listing all items:" };
-
-            foreach (var item in cli.Environment)
-                list.Add($"Name: {item.Key}, Value: {item.Value}");
-
-            return Task.FromResult(list.ToArray());
+            return Task.FromResult<String[]>([]);
 
         }
 
         public override String Help()
         {
-            return "list - Lists all items.";
+            return "help - Displays this help message.";
         }
 
     }

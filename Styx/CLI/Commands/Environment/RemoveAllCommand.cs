@@ -25,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 {
 
     public class RemoveAllCommand(CLI CLI) : ACLICommand(CLI),
-                                             ICLICommands
+                                             ICLICommand
     {
 
         public static readonly String CommandName = nameof(RemoveAllCommand)[..^7].ToLowerFirstChar();
@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
             if (args.Length == 1 &&
                 CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             return [];

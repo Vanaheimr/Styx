@@ -24,21 +24,19 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class HistoryCommand(CLI CLI) : ACLICommand(CLI),
-                                           ICLICommands
+    public class AddCommand(CLI CLI) : ACLICommand(CLI),
+                                       ICLICommand
     {
 
-        public static readonly String CommandName = nameof(HistoryCommand)[..^7].ToLowerFirstChar();
-
-
-     //   private readonly IEnumerable<String> commandHistory = CLI.CommandHistory;
+        public static readonly String CommandName = nameof(AddCommand)[..^7].ToLowerFirstChar();
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
-            if (CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
+            if (args.Length == 1 &&
+                CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             return [];
@@ -49,22 +47,25 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            if (!cli.CommandHistory.Any())
-                return Task.FromResult<String[]>(["No commands in history!"]);
+            if (Arguments.Length == 3)
+            {
 
+                var name  = Arguments[1];
+                var value = Arguments[2];
 
-            var list = new List<String>() { "Command History:" };
+                cli.Environment[name] = value;
 
-            foreach (var command in cli.CommandHistory)
-                list.Add(command);
+                return Task.FromResult<String[]>([$"Item added: {name} = {value}"]);
 
-            return Task.FromResult(list.ToArray());
+            }
+
+            return Task.FromResult<String[]>([$"Usage: {CommandName} <name> <value>"]);
 
         }
 
         public override String Help()
         {
-            return "history - Displays the command history.";
+            return $"{CommandName} <name> <value> - Adds an item with the specified name and value.";
         }
 
     }

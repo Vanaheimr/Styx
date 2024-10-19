@@ -24,19 +24,18 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class AddCommand(CLI CLI) : ACLICommand(CLI),
-                                       ICLICommands
+    public class ListCommand(CLI CLI) : ACLICommand(CLI),
+                                        ICLICommand
     {
 
-        public static readonly String CommandName = nameof(AddCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(ListCommand)[..^7].ToLowerFirstChar();
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
-            if (args.Length == 1 &&
-                CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
+            if (CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ SuggestionResponse.Complete(CommandName) ];
+                return [ SuggestionResponse.CommandCompleted(CommandName) ];
             }
 
             return [];
@@ -47,27 +46,26 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            if (Arguments.Length == 3)
-            {
+            if (cli.Environment.Count == 0)
+                return Task.FromResult<String[]>(["No items to list!"]);
 
-                var name  = Arguments[1];
-                var value = Arguments[2];
 
-                cli.Environment[name] = value;
+            var list = new List<String>() { "Listing all items:" };
 
-                return Task.FromResult<String[]>([$"Item added: {name} = {value}"]);
+            foreach (var item in cli.Environment)
+                list.Add($"Name: {item.Key}, Value: {item.Value}");
 
-            }
-
-            return Task.FromResult<String[]>([$"Usage: {CommandName} <name> <value>"]);
+            return Task.FromResult(list.ToArray());
 
         }
 
         public override String Help()
         {
-            return $"{CommandName} <name> <value> - Adds an item with the specified name and value.";
+            return "list - Lists all items.";
         }
 
     }
+
+
 
 }
