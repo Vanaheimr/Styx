@@ -17,7 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
+using System.Net;
 using System.Reflection;
 
 #endregion
@@ -25,27 +25,292 @@ using System.Reflection;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
+    public enum SuggestionInfo
+    {
+        None,
+        Complete,
+        Prefix,
+        Error
+    }
+
+    public class SuggestionResponse : IComparable<SuggestionResponse>,
+                                      IEquatable<SuggestionResponse>
+    {
+
+        #region Properties
+
+        public String          Suggestion    { get; set; } = "";
+        public SuggestionInfo  Info          { get; set; }
+
+        #endregion
+
+
+        private SuggestionResponse(String          Suggestion,
+                                   SuggestionInfo  Info)
+        {
+            this.Suggestion  = Suggestion;
+            this.Info        = Info;
+        }
+
+
+
+        public static SuggestionResponse Complete(String Suggestion)
+
+            => new (Suggestion,
+                    SuggestionInfo.Complete);
+
+        public static SuggestionResponse Prefix(String Suggestion)
+
+            => new (Suggestion,
+                    SuggestionInfo.Prefix);
+
+
+
+        #region Operator overloading
+
+        #region Operator == (SuggestionResponse1, SuggestionResponse2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
+        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (SuggestionResponse SuggestionResponse1,
+                                           SuggestionResponse SuggestionResponse2)
+
+            => SuggestionResponse1.Equals(SuggestionResponse2);
+
+        #endregion
+
+        #region Operator != (SuggestionResponse1, SuggestionResponse2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
+        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (SuggestionResponse SuggestionResponse1,
+                                           SuggestionResponse SuggestionResponse2)
+
+            => !SuggestionResponse1.Equals(SuggestionResponse2);
+
+        #endregion
+
+        #region Operator <  (SuggestionResponse1, SuggestionResponse2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
+        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (SuggestionResponse SuggestionResponse1,
+                                          SuggestionResponse SuggestionResponse2)
+
+            => SuggestionResponse1.CompareTo(SuggestionResponse2) < 0;
+
+        #endregion
+
+        #region Operator <= (SuggestionResponse1, SuggestionResponse2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
+        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (SuggestionResponse SuggestionResponse1,
+                                           SuggestionResponse SuggestionResponse2)
+
+            => SuggestionResponse1.CompareTo(SuggestionResponse2) <= 0;
+
+        #endregion
+
+        #region Operator >  (SuggestionResponse1, SuggestionResponse2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
+        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (SuggestionResponse SuggestionResponse1,
+                                          SuggestionResponse SuggestionResponse2)
+
+            => SuggestionResponse1.CompareTo(SuggestionResponse2) > 0;
+
+        #endregion
+
+        #region Operator >= (SuggestionResponse1, SuggestionResponse2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SuggestionResponse1">A SuggestionResponse.</param>
+        /// <param name="SuggestionResponse2">Another SuggestionResponse.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (SuggestionResponse SuggestionResponse1,
+                                           SuggestionResponse SuggestionResponse2)
+
+            => SuggestionResponse1.CompareTo(SuggestionResponse2) >= 0;
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<SuggestionResponse> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two SuggestionResponses.
+        /// </summary>
+        /// <param name="Object">A SuggestionResponse to compare with.</param>
+        public Int32 CompareTo(Object? Object)
+
+            => Object is SuggestionResponse ipSocket
+                   ? CompareTo(ipSocket)
+                   : throw new ArgumentException("The given object is not a SuggestionResponse!",
+                                                 nameof(Object));
+
+        #endregion
+
+        #region CompareTo(SuggestionResponse)
+
+        /// <summary>
+        /// Compares two SuggestionResponses.
+        /// </summary>
+        /// <param name="SuggestionResponse">A SuggestionResponse to compare with.</param>
+        public Int32 CompareTo(SuggestionResponse? SuggestionResponse)
+        {
+            return Suggestion.CompareTo(SuggestionResponse?.Suggestion ?? "");
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<SuggestionResponse> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two SuggestionResponses for equality.
+        /// </summary>
+        /// <param name="Object">A SuggestionResponse to compare with.</param>
+        public override Boolean Equals(Object? Object)
+
+            => Object is SuggestionResponse component &&
+                   Equals(component);
+
+        #endregion
+
+        #region Equals(SuggestionResponse)
+
+        /// <summary>
+        /// Compares two SuggestionResponses for equality.
+        /// </summary>
+        /// <param name="SuggestionResponse">A SuggestionResponse to compare with.</param>
+        public Boolean Equals(SuggestionResponse? SuggestionResponse)
+
+            => SuggestionResponse is not null &&
+               String.Equals(Suggestion, SuggestionResponse.Suggestion, StringComparison.OrdinalIgnoreCase) &&
+               Info.  Equals(SuggestionResponse.Info);
+
+        #endregion
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+
+                return Suggestion.GetHashCode() ^
+                       Info.      GetHashCode();
+
+            }
+        }
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Returns a text representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => $"{Suggestion} [{Info}]";
+
+        #endregion
+
+
+    }
+
+
+    /// <summary>
+    /// A Command Line Interface for executing commands.
+    /// </summary>
     public class CLI
     {
+
+        #region (static class) DefaultStrings
+
+        /// <summary>
+        /// Default strings.
+        /// </summary>
+        public static class DefaultStrings
+        {
+            public const String RemoteSystemId = "remoteSystemId";
+        }
+
+        #endregion
+
+
+
+
+        #region Data
 
         private readonly  List<ICLICommands>          commands         = [];
         private readonly  List<String>                commandHistory   = [];
         private readonly  CancellationTokenSource     cts              = new();
 
         public  readonly  Dictionary<String, String>  Environment      = [];
-
-        public            String                      RemoteSystemId   = "";
         public            Boolean                     QuitCLI          = false;
 
+        #endregion
 
+        #region Properties
+
+        /// <summary>
+        /// All registered commands.
+        /// </summary>
         public IEnumerable<ICLICommands> Commands
             => commands;
 
+        /// <summary>
+        /// The command history.
+        /// </summary>
         public IEnumerable<String> CommandHistory
             => commandHistory;
 
+        #endregion
 
-        public CLI()
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new command line interface.
+        /// </summary>
+        /// <param name="AssembliesWithCLICommands">The assemblies to search for commands.</param>
+        public CLI(params Assembly[] AssembliesWithCLICommands)
         {
 
             Console.CancelKeyPress += (sender, eventArgs) => {
@@ -53,19 +318,27 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 cts.Cancel();
             };
 
-            RegisterAssemblies(typeof(CLI).Assembly);
+            RegisterAssemblies([ typeof(CLI).Assembly, .. AssembliesWithCLICommands ]);
 
         }
 
+        #endregion
 
-        public void RegisterAssemblies(params Assembly[] Assemblies)
+
+        #region RegisterAssemblies(AssembliesWithCLICommands)
+
+        /// <summary>
+        /// Register all commands from the given assemblies.
+        /// </summary>
+        /// <param name="AssembliesWithCLICommands">An array of assemblies to search for commands.</param>
+        public void RegisterAssemblies(params Assembly[] AssembliesWithCLICommands)
         {
 
-            foreach (var assembly in Assemblies)
+            foreach (var assemblyWithCLICommands in AssembliesWithCLICommands)
             {
 
                 commands.AddRange(
-                    assembly.
+                    assemblyWithCLICommands.
                         GetTypes().
                         Where(type => typeof(ICLICommands).IsAssignableFrom(type) &&
                                       !type.IsAbstract &&
@@ -75,7 +348,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 );
 
                 commands.AddRange(
-                    assembly.
+                    assemblyWithCLICommands.
                         GetTypes().
                         Where(type => typeof(ICLICommands).IsAssignableFrom(type) &&
                                       !type.IsAbstract &&
@@ -87,6 +360,8 @@ namespace org.GraphDefined.Vanaheimr.CLI
             }
 
         }
+
+        #endregion
 
 
         public async Task Run()
@@ -116,11 +391,10 @@ namespace org.GraphDefined.Vanaheimr.CLI
         private String GetPrompt()
         {
 
-            if (RemoteSystemId.Length == 0)
-                return "Enter command: ";
+            if (Environment.TryGetValue(DefaultStrings.RemoteSystemId, out var remoteSystemId))
+                return $"[{remoteSystemId}] Enter command: ";
 
-
-            return $"[{RemoteSystemId}] Enter command: ";
+            return "Enter command: ";
 
         }
 
@@ -137,54 +411,65 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
 
 
+        #region Suggest(Command)
 
-        public String[] Suggest(String Command)
+        public SuggestionResponse[] Suggest(String Command)
 
             => Suggest(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
+        #endregion
 
-        public String[] Suggest(String[] Args)
+        #region Suggest(InputArguments)
 
-            => Args.Length == 0
+        public SuggestionResponse[] Suggest(String[] InputArguments)
+
+            => InputArguments.Length == 0
 
                      // An empty input suggest all commands...
                    ? [.. commands.SelectMany(c => c.Suggest([""])).Distinct().Order()]
 
-                   : [.. commands.SelectMany(c => c.Suggest(Args)).Distinct().Order()];
+                   : [.. commands.SelectMany(c => c.Suggest(InputArguments)).Distinct().Order()];
+
+        #endregion
 
 
+        #region Execute(Command)
 
         public Task<String[]> Execute(String Command)
 
             => Execute(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-        public async Task<String[]> Execute(String[] inputArgs)
+        #endregion
+
+        #region Execute(InputArguments)
+
+        public async Task<String[]> Execute(String[] InputArguments)
         {
 
             try
             {
 
-                var matchingCommands = commands.Where(c => String.Equals(c.Suggest([inputArgs[0]]).FirstOrDefault() ?? "", inputArgs[0], StringComparison.OrdinalIgnoreCase)).ToArray();
+                var matchingCommands = commands.Where(c => String.Equals(c.Suggest([InputArguments[0]]).FirstOrDefault()?.Suggestion ?? "", InputArguments[0], StringComparison.OrdinalIgnoreCase)).ToArray();
                 if (matchingCommands.Length == 1)
                 {
 
-                    if (inputArgs.Length > 0 &&
-                        !String.Equals(HistoryCommand.CommandName, inputArgs[0], StringComparison.OrdinalIgnoreCase))
+                    if (InputArguments.Length > 0 &&
+                        !String.Equals(HistoryCommand.CommandName, InputArguments[0], StringComparison.OrdinalIgnoreCase))
                     {
 
-                        var command = String.Join(" ", inputArgs);
+                        var command = String.Join(" ", InputArguments);
 
                         if (commandHistory.LastOrDefault() != command)
                             commandHistory.Add(command);
 
                     }
 
-                    return await matchingCommands.First().Execute(inputArgs, cts.Token);
+                    return await matchingCommands.First().Execute(InputArguments, cts.Token);
 
                 }
                 else
                 {
-                     return [$"Unknown command: {inputArgs[0]}"];
+                     return [$"Unknown command: {InputArguments[0]}"];
                 }
 
             }
@@ -195,15 +480,31 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         }
 
+        #endregion
 
-        private String[] ReadLineWithAutoCompletion(List<ICLICommands> commands, out Boolean cancelled)
+
+        #region (private static) ClearCurrentConsoleLine()
+
+        private static void ClearCurrentConsoleLine()
+        {
+            var currentLineCursor = Console.CursorTop;
+            Console.SetCursorPosition(0, currentLineCursor);
+            Console.Write(new String(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, currentLineCursor);
+        }
+
+        #endregion
+
+        #region (private) ReadLineWithAutoCompletion(Commands, out Cancelled)
+
+        private String[] ReadLineWithAutoCompletion(List<ICLICommands> Commands, out Boolean Cancelled)
         {
 
             var input           = new List<Char>();
             var cursorPosition  = 0;
             var historyIndex    = -1;
             var currentInput    = String.Empty;
-            cancelled           = false;
+            Cancelled           = false;
 
             while (true)
             {
@@ -220,42 +521,36 @@ namespace org.GraphDefined.Vanaheimr.CLI
                     }
                     if (suggestions.Length == 1)
                     {
+
                         input.Clear();
-                        input.AddRange(suggestions[0] + " ");
+
+                        input.AddRange(suggestions[0].Suggestion ?? "");
+
+                        if (suggestions[0].Info == SuggestionInfo.Complete)
+                            input.Add(' ');
+
                         cursorPosition = input.Count;
                         ClearCurrentConsoleLine();
                         CommandPrompt(input);
+
                     }
                     else if (suggestions.Length > 1)
                     {
-                        //if (suggestions.Length == 1)
-                        //{
-                        //    input.Clear();
-                        //    input.AddRange(suggestions[0] + " ");
-                        //    cursorPosition = input.Count;
-                        //    ClearCurrentConsoleLine();
-                        //    CommandPrompt(input);
-                        //}
-                        // if (suggestions.Length > 1)
-                        //{
 
-                            //var suggestions2 = suggestions.Where(s => s.Count() > 0).Select(s => s.AggregateWith(" "));
+                        var commonPrefix = new String(suggestions.First().Suggestion[..suggestions.Min(s => s.Suggestion.Length)].
+                                                                    TakeWhile((c, i) => suggestions.All(s => s?.Suggestion.Length > i && s.Suggestion[i] == c)).ToArray());
 
-                            var commonPrefix = new String(suggestions.First()[..suggestions.Min(s => s.Length)].
-                                                                      TakeWhile((c, i) => suggestions.All(s => s.Length > i && s[i] == c)).ToArray());
+                        input.Clear();
+                        input.AddRange(commonPrefix);
+                        cursorPosition = input.Count;
 
-                            input.Clear();
-                            input.AddRange(commonPrefix);
-                            cursorPosition = input.Count;
+                        ClearCurrentConsoleLine();
+                        CommandPrompt(input);
+                        Console.WriteLine();
+                        Console.WriteLine("Suggestions: " + String.Join(", ", suggestions.Select(s => s.Suggestion)));
+                        Console.WriteLine();
+                        CommandPrompt(input);
 
-                            ClearCurrentConsoleLine();
-                            CommandPrompt(input);
-                            Console.WriteLine();
-                            Console.WriteLine("Suggestions: " + String.Join(", ", suggestions));
-                            Console.WriteLine();
-                            CommandPrompt(input);
-
-                        //}
                     }
                 }
 
@@ -358,7 +653,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                 else if (key.Key == ConsoleKey.Escape)
                 {
-                    cancelled = true;
+                    Cancelled = true;
                     Console.WriteLine();
                     return [];
                 }
@@ -375,15 +670,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
             }
         }
 
-        private static void ClearCurrentConsoleLine()
-        {
-            var currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, currentLineCursor);
-            Console.Write(new String(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
-        }
+        #endregion
+
 
     }
-
 
 }

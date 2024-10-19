@@ -23,9 +23,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         protected readonly CLI cli = CLI;
 
-        public abstract IEnumerable<String> Suggest(String[] args);
+        public abstract IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
 
-        public abstract Task<String[]> Execute(String[] args, CancellationToken cancellationToken);
+        public abstract Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
 
         public abstract String Help();
 

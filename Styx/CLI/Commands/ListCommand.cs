@@ -30,12 +30,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public static readonly String CommandName = nameof(ListCommand)[..^7].ToLowerFirstChar();
 
-        public override IEnumerable<String> Suggest(String[] args)
+        public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
             if (CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ CommandName ];
+                return [ SuggestionResponse.Complete(CommandName) ];
             }
 
             return [];

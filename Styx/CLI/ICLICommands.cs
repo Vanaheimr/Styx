@@ -20,8 +20,8 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
     public interface ICLICommands
     {
-        IEnumerable<String> Suggest(String[] args);
-        Task<String[]> Execute(String[] args, CancellationToken cancellationToken);
+        IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
+        Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
         String Help();
     }
 

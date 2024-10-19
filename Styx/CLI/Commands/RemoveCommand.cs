@@ -30,25 +30,25 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public static readonly String CommandName = nameof(RemoveCommand)[..^7].ToLowerFirstChar();
 
-        public override IEnumerable<String> Suggest(String[] args)
+        public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
 
             if (args.Length == 1 &&
                 CommandName.StartsWith(args[0], StringComparison.CurrentCultureIgnoreCase))
             {
-                return [ CommandName ];
+                return [ SuggestionResponse.Complete(CommandName) ];
             }
 
             if (args.Length == 2)
             {
 
                 var name     = args[1];
-                var keyList  = new List<String>();
+                var keyList  = new List<SuggestionResponse>();
 
                 foreach (var key in cli.Environment.Keys)
                 {
                     if (key.StartsWith(name, StringComparison.CurrentCultureIgnoreCase))
-                        keyList.Add($"{CommandName} {key}");
+                        keyList.Add(SuggestionResponse.Complete($"{CommandName} {key}"));
                 }
 
                 return keyList;
