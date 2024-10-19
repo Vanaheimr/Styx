@@ -1202,6 +1202,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public static String ToLowerFirstChar(this String Input)
+        {
+            return String.Concat(char.ToLowerInvariant(Input[0]), Input[1..]);
+        }
+
     }
 
 }
