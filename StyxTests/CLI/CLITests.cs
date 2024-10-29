@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var s1  = await cli.Suggest("");
 
-            Assert.That(s1.Length, Is.EqualTo(7));
+            Assert.That(s1.Length, Is.EqualTo(8));
 
         }
 
@@ -99,7 +99,7 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var s1  = await cli.Suggest("ad");
 
-            Assert.That(s1[0].Suggestion,   Is.EqualTo("add"));
+            Assert.That(s1[0].Suggestion,   Is.EqualTo("addEnv"));
             Assert.That(s1[0].Info,         Is.EqualTo(SuggestionInfo.CommandCompleted));
 
         }
@@ -116,10 +116,10 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var s1  = await cli.Suggest("re");
 
-            Assert.That(s1[0].Suggestion,   Is.EqualTo("remove"));
+            Assert.That(s1[0].Suggestion,   Is.EqualTo("removeAll"));
             Assert.That(s1[0].Info,         Is.EqualTo(SuggestionInfo.CommandCompleted));
 
-            Assert.That(s1[1].Suggestion,   Is.EqualTo("removeAll"));
+            Assert.That(s1[1].Suggestion,   Is.EqualTo("removeEnv"));
             Assert.That(s1[1].Info,         Is.EqualTo(SuggestionInfo.CommandCompleted));
 
         }
@@ -134,15 +134,15 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var cli = new CLI();
 
-            var e1  = await cli.Execute("add a 1");
+            var e1  = await cli.Execute("addEnv a 1");
 
-            Assert.That(e1.First(),                   Is.EqualTo("Item added: a = 1"));
+            Assert.That(e1.First(),                   Is.EqualTo("Environment key added: 'a' = 1"));
 
             Assert.That(cli.Environment.   Count(),   Is.EqualTo(1));
-            Assert.That(cli.CommandHistory.First(),   Is.EqualTo("add a 1"));
+            Assert.That(cli.CommandHistory.First(),   Is.EqualTo("addEnv a 1"));
 
-            var s1  = await cli.Suggest("remove a");
-            Assert.That(s1[0].Suggestion,             Is.EqualTo("remove a"));
+            var s1  = await cli.Suggest("removeEnv a");
+            Assert.That(s1[0].Suggestion,             Is.EqualTo("removeEnv a"));
             Assert.That(s1[0].Info,                   Is.EqualTo(SuggestionInfo.ParameterCompleted));
 
         }
@@ -157,21 +157,21 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var cli = new CLI();
 
-            var e1  = await cli.Execute("add aa1 1");
-            var e2  = await cli.Execute("add aa2 2");
+            var e1  = await cli.Execute("addEnv aa1 1");
+            var e2  = await cli.Execute("addEnv aa2 2");
 
-            Assert.That(e1.First(),                        Is.EqualTo("Item added: aa1 = 1"));
-            Assert.That(e2.First(),                        Is.EqualTo("Item added: aa2 = 2"));
+            Assert.That(e1.First(),                        Is.EqualTo("Environment key added: 'aa1' = 1"));
+            Assert.That(e2.First(),                        Is.EqualTo("Environment key added: 'aa2' = 2"));
 
             Assert.That(cli.Environment.   Count(),        Is.EqualTo(2));
-            Assert.That(cli.CommandHistory.ElementAt(0),   Is.EqualTo("add aa1 1"));
-            Assert.That(cli.CommandHistory.ElementAt(1),   Is.EqualTo("add aa2 2"));
+            Assert.That(cli.CommandHistory.ElementAt(0),   Is.EqualTo("addEnv aa1 1"));
+            Assert.That(cli.CommandHistory.ElementAt(1),   Is.EqualTo("addEnv aa2 2"));
 
-            var s1  = await cli.Suggest("remove a");
-            Assert.That(s1[0].Suggestion,                  Is.EqualTo("remove aa1"));
+            var s1  = await cli.Suggest("removeEnv a");
+            Assert.That(s1[0].Suggestion,                  Is.EqualTo("removeEnv aa1"));
             Assert.That(s1[0].Info,                        Is.EqualTo(SuggestionInfo.ParameterPrefix));
 
-            Assert.That(s1[1].Suggestion,                  Is.EqualTo("remove aa2"));
+            Assert.That(s1[1].Suggestion,                  Is.EqualTo("removeEnv aa2"));
             Assert.That(s1[1].Info,                        Is.EqualTo(SuggestionInfo.ParameterPrefix));
 
         }
@@ -186,21 +186,21 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var cli = new CLI();
 
-            var e1  = await cli.Execute("add a 1");
-            var e2  = await cli.Execute("add aa2 2");
+            var e1  = await cli.Execute("addEnv a 1");
+            var e2  = await cli.Execute("addEnv aa2 2");
 
-            Assert.That(e1.First(),                        Is.EqualTo("Item added: a = 1"));
-            Assert.That(e2.First(),                        Is.EqualTo("Item added: aa2 = 2"));
+            Assert.That(e1.First(),                        Is.EqualTo("Environment key added: 'a' = 1"));
+            Assert.That(e2.First(),                        Is.EqualTo("Environment key added: 'aa2' = 2"));
 
             Assert.That(cli.Environment.   Count(),        Is.EqualTo(2));
-            Assert.That(cli.CommandHistory.ElementAt(0),   Is.EqualTo("add a 1"));
-            Assert.That(cli.CommandHistory.ElementAt(1),   Is.EqualTo("add aa2 2"));
+            Assert.That(cli.CommandHistory.ElementAt(0),   Is.EqualTo("addEnv a 1"));
+            Assert.That(cli.CommandHistory.ElementAt(1),   Is.EqualTo("addEnv aa2 2"));
 
-            var s1  = await cli.Suggest("remove a");
-            Assert.That(s1[0].Suggestion,                  Is.EqualTo("remove a"));
+            var s1  = await cli.Suggest("removeEnv a");
+            Assert.That(s1[0].Suggestion,                  Is.EqualTo("removeEnv a"));
             Assert.That(s1[0].Info,                        Is.EqualTo(SuggestionInfo.ParameterCompleted));
 
-            Assert.That(s1[1].Suggestion,                  Is.EqualTo("remove aa2"));
+            Assert.That(s1[1].Suggestion,                  Is.EqualTo("removeEnv aa2"));
             Assert.That(s1[1].Info,                        Is.EqualTo(SuggestionInfo.ParameterPrefix));
 
         }

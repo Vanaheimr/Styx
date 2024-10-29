@@ -92,6 +92,13 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #endregion
 
+        #region (static) CommandHelp        (Suggestion)
+        public static SuggestionResponse CommandHelp(String Suggestion)
+
+            => new (Suggestion,
+                    SuggestionInfo.CommandHelp);
+
+        #endregion
 
 
         #region Operator overloading

@@ -29,6 +29,8 @@ namespace org.GraphDefined.Vanaheimr.CLI
         CommandCompleted,
         ParameterCompleted,
 
+        CommandHelp,
+
         Error
 
     }

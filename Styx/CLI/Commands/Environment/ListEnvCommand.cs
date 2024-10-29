@@ -24,11 +24,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class ListCommand(CLI CLI) : ACLICommand(CLI),
-                                        ICLICommand
+    public class ListEnvCommand(CLI CLI) : ACLICommand(CLI),
+                                           ICLICommand
     {
 
-        public static readonly String CommandName = nameof(ListCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(ListEnvCommand)[..^7].ToLowerFirstChar();
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
@@ -46,14 +46,31 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            if (cli.Environment.Count == 0)
-                return Task.FromResult<String[]>(["No items to list!"]);
+            if (cli.Environment.IsEmpty)
+                return Task.FromResult<String[]>(["No environment keys to list!"]);
 
 
-            var list = new List<String>() { "Listing all items:" };
+            var list = new List<String>() { "Listing all environment keys:" };
 
-            foreach (var item in cli.Environment)
-                list.Add($"Name: {item.Key}, Value: {item.Value}");
+            foreach (var kvp in cli.Environment)
+            {
+                switch (kvp.Value.Count)
+                {
+
+                    case 0:
+                        list.Add($"Key: '{kvp.Key}', no value(s)"); 
+                        break;
+
+                    case 1:
+                        list.Add($"Key: '{kvp.Key}', Value: '{kvp.Value.First()}'");
+                        break;
+
+                    default:
+                        list.Add($"Key: '{kvp.Key}', Values: '{kvp.Value.AggregateWith(", ")}'");
+                        break;
+
+                }
+            }
 
             return Task.FromResult(list.ToArray());
 
@@ -61,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public override String Help()
         {
-            return "list - Lists all items.";
+            return "list - Lists all environment keys and their values";
         }
 
     }

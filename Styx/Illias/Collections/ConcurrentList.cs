@@ -76,9 +76,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             internalList = new (Capacity);
         }
 
-        public ConcurrentList(IEnumerable<T> Enumeration)
+        public ConcurrentList(IEnumerable<T> Elements)
         {
-            internalList = new (Enumeration);
+            internalList = new (Elements);
+        }
+
+        public ConcurrentList(params T[] Elements)
+        {
+            internalList = new (Elements);
         }
 
         #endregion
@@ -99,11 +104,92 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
         }
 
+        public Boolean TryAddRange(params T[] Elements)
+        {
+            lock (syncLock)
+            {
+
+                internalList.AddRange(Elements);
+
+                return true;
+
+            }
+        }
+
+        public Boolean TryAddRange(IEnumerable<T> Elements)
+        {
+            lock (syncLock)
+            {
+
+                internalList.AddRange(Elements);
+
+                return true;
+
+            }
+        }
+
+        public Boolean TrySet(T Element)
+        {
+            lock (syncLock)
+            {
+
+                internalList.Clear();
+                internalList.Add(Element);
+
+                return true;
+
+            }
+        }
+
+        public Boolean TrySet(params T[] Elements)
+        {
+            lock (syncLock)
+            {
+
+                internalList.Clear();
+                internalList.AddRange(Elements);
+
+                return true;
+
+            }
+        }
+
+        public Boolean TrySet(IEnumerable<T> Elements)
+        {
+            lock (syncLock)
+            {
+
+                internalList.Clear();
+                internalList.AddRange(Elements);
+
+                return true;
+
+            }
+        }
+
         public Boolean TryRemove(T Element)
         {
             lock (syncLock)
             {
                 return internalList.Remove(Element);
+            }
+        }
+
+        public void TryRemoveMultiple(params T[] Elements)
+        {
+            lock (syncLock)
+            {
+                foreach (var element in Elements)
+                    internalList.Remove(element);
+            }
+        }
+
+        public void TryRemoveMultiple(IEnumerable<T> Elements)
+        {
+            lock (syncLock)
+            {
+                foreach (var element in Elements)
+                    internalList.Remove(element);
             }
         }
 

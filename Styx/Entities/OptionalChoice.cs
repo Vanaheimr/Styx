@@ -19,12 +19,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Tag a struct, class or property as 'optional'.
+    /// Tag a struct, class or property as 'optional choice group'.
     /// </summary>
+    /// <param name="Group">The "choice" group.</param>
     [AttributeUsage(AttributeTargets.Struct|AttributeTargets.Class|AttributeTargets.Property,
                     AllowMultiple  = false,
                     Inherited      = true)]
-    public class OptionalChoiceAttribute : Attribute
+    public class OptionalChoiceAttribute(String Group) : Attribute
     {
 
         #region Tags
@@ -32,18 +33,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The "choice" group.
         /// </summary>
-        public String  Group    { get; }
+        public String Group { get; } = Group;
 
         #endregion
-
-        /// <summary>
-        /// Create a new 'optional'-tag having the choice group.
-        /// </summary>
-        /// <param name="Group">The "choice" group.</param>
-        public OptionalChoiceAttribute(String Group)
-        {
-            this.Group = Group;
-        }
 
     }
 

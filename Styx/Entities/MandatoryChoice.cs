@@ -19,12 +19,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Tag a struct, class or property as 'mandatory'.
+    /// Tag a struct, class or property as 'mandatory choice group'.
     /// </summary>
+    /// <param name="Group">The "choice" group.</param>
     [AttributeUsage(AttributeTargets.Struct|AttributeTargets.Class|AttributeTargets.Property,
                     AllowMultiple  = false,
                     Inherited      = true)]
-    public class MandatoryChoiceAttribute : Attribute
+    public class MandatoryChoiceAttribute(String Group) : Attribute
     {
 
         #region Tags
@@ -32,18 +33,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The "choice" group.
         /// </summary>
-        public String  Group    { get; }
+        public String Group { get; } = Group;
 
         #endregion
-
-        /// <summary>
-        /// Create a new 'mandatory'-tag having the choice group.
-        /// </summary>
-        /// <param name="Group">The "choice" group.</param>
-        public MandatoryChoiceAttribute(String Group)
-        {
-            this.Group = Group;
-        }
 
     }
 

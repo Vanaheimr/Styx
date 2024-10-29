@@ -21,10 +21,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Tag a struct, class or property as 'optional'.
     /// </summary>
+    /// <param name="Tags">Some tags.</param>
     [AttributeUsage(AttributeTargets.Struct|AttributeTargets.Class|AttributeTargets.Property,
                     AllowMultiple  = false,
                     Inherited      = true)]
-    public class OptionalAttribute : Attribute
+    public class OptionalAttribute(params String[] Tags) : Attribute
     {
 
         #region Tags
@@ -32,18 +33,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Additional tags of the 'optional'-tag.
         /// </summary>
-        public IEnumerable<String>  Tags    { get; }
+        public IEnumerable<String> Tags { get; } = Tags?.Where(tag => tag.IsNotNullOrEmpty()).Distinct().ToArray() ?? [];
 
         #endregion
-
-        /// <summary>
-        /// Create a new 'optional'-tag having the given tags.
-        /// </summary>
-        /// <param name="Tags">Some tags.</param>
-        public OptionalAttribute(params String[] Tags)
-        {
-            this.Tags = Tags?.Where(tag => tag.IsNotNullOrEmpty()).Distinct().ToArray() ?? Array.Empty<String>();
-        }
 
     }
 

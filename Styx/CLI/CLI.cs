@@ -18,6 +18,8 @@
 #region Usings
 
 using System.Reflection;
+using System.Collections.Concurrent;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -27,7 +29,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
     /// <summary>
     /// A Command Line Interface for executing commands.
     /// </summary>
-    public class CLI
+    public class CLI : ICLI
     {
 
         #region (static class) DefaultStrings
@@ -37,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// </summary>
         public static class DefaultStrings
         {
-            public const String RemoteSystemId = "remoteSystemId";
+            //public const EnvironmentKey RemoteSystemId = EnvironmentKey.Parse("remoteSystemId");
         }
 
         #endregion
@@ -45,12 +47,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #region Data
 
-        private readonly  List<ICLICommand>          commands         = [];
-        private readonly  List<String>                commandHistory   = [];
-        private readonly  CancellationTokenSource     cts              = new();
-
-        public  readonly  Dictionary<String, String>  Environment      = [];
-        public            Boolean                     QuitCLI          = false;
+        private readonly  List<ICLICommand>        commands         = [];
+        private readonly  List<String>             commandHistory   = [];
+        private readonly  CancellationTokenSource  cts              = new();
 
         #endregion
 
@@ -59,14 +58,19 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// <summary>
         /// All registered commands.
         /// </summary>
-        public IEnumerable<ICLICommand> Commands
+        public IEnumerable<ICLICommand>                                      Commands
             => commands;
 
         /// <summary>
         /// The command history.
         /// </summary>
-        public IEnumerable<String> CommandHistory
+        public IEnumerable<String>                                           CommandHistory
             => commandHistory;
+
+        public Boolean                                                       QuitCLI        { get; set; } = false;
+
+
+        public ConcurrentDictionary<EnvironmentKey, ConcurrentList<String>>  Environment    { get; }      = [];
 
         #endregion
 
@@ -91,7 +95,40 @@ namespace org.GraphDefined.Vanaheimr.CLI
         #endregion
 
 
-        #region RegisterAssemblies(AssembliesWithCLICommands)
+        #region RegisterCLIType    (CLIType)
+
+        /// <summary>
+        /// Register all commands of the given CLI type and its assembly.
+        /// </summary>
+        /// <param name="CLIType">A CLI type.</param>
+        public void RegisterCLIType(Type CLIType)
+        {
+
+                commands.AddRange(
+                    CLIType.Assembly.
+                        GetTypes().
+                        Where(type => typeof(ICLICommand).IsAssignableFrom(type) &&
+                                      !type.IsAbstract &&
+                                      !type.IsInterface &&
+                                       type.GetConstructor(Type.EmptyTypes) is not null).
+                        Select(type => (ICLICommand) Activator.CreateInstance(type)!)
+                );
+
+                commands.AddRange(
+                    CLIType.Assembly.
+                        GetTypes().
+                        Where(type => typeof(ICLICommand).IsAssignableFrom(type) &&
+                                      !type.IsAbstract &&
+                                      !type.IsInterface &&
+                                       type.GetConstructor([CLIType]) is not null).
+                        Select(type => (ICLICommand) Activator.CreateInstance(type, this)!)
+                );
+
+        }
+
+        #endregion
+
+        #region RegisterAssemblies (AssembliesWithCLICommands)
 
         /// <summary>
         /// Register all commands from the given assemblies.
@@ -100,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
         public void RegisterAssemblies(params Assembly[] AssembliesWithCLICommands)
         {
 
-            foreach (var assemblyWithCLICommands in AssembliesWithCLICommands)
+            foreach (var assemblyWithCLICommands in AssembliesWithCLICommands.Distinct())
             {
 
                 commands.AddRange(
@@ -110,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                       !type.IsAbstract &&
                                       !type.IsInterface &&
                                        type.GetConstructor(Type.EmptyTypes) is not null).
-                        Select(type => (ICLICommand)Activator.CreateInstance(type)!)
+                        Select(type => (ICLICommand) Activator.CreateInstance(type)!)
                 );
 
                 commands.AddRange(
@@ -120,7 +157,46 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                       !type.IsAbstract &&
                                       !type.IsInterface &&
                                        type.GetConstructor([typeof(CLI)]) is not null).
-                        Select(type => (ICLICommand)Activator.CreateInstance(type, this)!)
+                        Select(type => (ICLICommand) Activator.CreateInstance(type, this)!)
+                );
+
+            }
+
+        }
+
+        #endregion
+
+        #region RegisterAssemblies (CLIType, AssembliesWithCLICommands)
+
+        /// <summary>
+        /// Register all commands of the given CLI type and from the given assemblies.
+        /// </summary>
+        /// <param name="CLIType">A CLI type.</param>
+        /// <param name="AssembliesWithCLICommands">An array of assemblies to search for commands.</param>
+        public void RegisterAssemblies(Type CLIType, params Assembly[] AssembliesWithCLICommands)
+        {
+
+            foreach (var assemblyWithCLICommands in AssembliesWithCLICommands.Distinct())
+            {
+
+                commands.AddRange(
+                    assemblyWithCLICommands.
+                        GetTypes().
+                        Where(type => typeof(ICLICommand).IsAssignableFrom(type) &&
+                                      !type.IsAbstract &&
+                                      !type.IsInterface &&
+                                       type.GetConstructor(Type.EmptyTypes) is not null).
+                        Select(type => (ICLICommand) Activator.CreateInstance(type)!)
+                );
+
+                commands.AddRange(
+                    assemblyWithCLICommands.
+                        GetTypes().
+                        Where(type => typeof(ICLICommand).IsAssignableFrom(type) &&
+                                      !type.IsAbstract &&
+                                      !type.IsInterface &&
+                                       type.GetConstructor([CLIType]) is not null).
+                        Select(type => (ICLICommand) Activator.CreateInstance(type, this)!)
                 );
 
             }
@@ -157,8 +233,8 @@ namespace org.GraphDefined.Vanaheimr.CLI
         private String GetPrompt()
         {
 
-            if (Environment.TryGetValue(DefaultStrings.RemoteSystemId, out var remoteSystemId))
-                return $"[{remoteSystemId}] Enter command: ";
+            if (Environment.TryGetValue(EnvironmentKey.RemoteSystemId, out var remoteSystemId))
+                return $"[{remoteSystemId.First()}] Enter command: ";
 
             return "Enter command: ";
 
@@ -301,19 +377,33 @@ namespace org.GraphDefined.Vanaheimr.CLI
                     if (suggestions.Length == 1)
                     {
 
-                        input.Clear();
-
-                        input.AddRange(suggestions[0].Suggestion ?? "");
-
-                        if (suggestions[0].Info == SuggestionInfo.CommandCompleted ||
-                            suggestions[0].Info == SuggestionInfo.ParameterCompleted)
+                        if (suggestions[0].Info == SuggestionInfo.CommandHelp)
                         {
-                            input.Add(' ');
+                            ClearCurrentConsoleLine();
+                            CommandPrompt(input);
+                            Console.WriteLine();
+                            Console.WriteLine($"Usage: {suggestions[0].Suggestion}");
+                            Console.WriteLine();
+                            CommandPrompt(input);
                         }
+                        else
+                        {
 
-                        cursorPosition = input.Count;
-                        ClearCurrentConsoleLine();
-                        CommandPrompt(input);
+                            input.Clear();
+
+                            input.AddRange(suggestions[0].Suggestion ?? "");
+
+                            if (suggestions[0].Info == SuggestionInfo.CommandCompleted ||
+                                suggestions[0].Info == SuggestionInfo.ParameterCompleted)
+                            {
+                                input.Add(' ');
+                            }
+
+                            cursorPosition = input.Count;
+                            ClearCurrentConsoleLine();
+                            CommandPrompt(input);
+
+                        }
 
                     }
                     else if (suggestions.Length > 1)

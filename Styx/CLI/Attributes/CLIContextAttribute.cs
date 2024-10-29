@@ -15,33 +15,32 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public abstract class ACLICommand<T>(T CLI) : ICLICommand
+    /// <summary>
+    /// Tag a struct, class or property as 'CLI context'.
+    /// </summary>
+    /// <param name="Tags">Additional tags.</param>
+    [AttributeUsage(AttributeTargets.Class,
+                    Inherited = true)]
+    public class CLIContextAttribute(params String[] Tags) : Attribute
     {
 
-        protected readonly T cli = CLI;
+        #region Tags
 
-        public abstract IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
+        /// <summary>
+        /// Additional tags of the 'CLI context'-tag.
+        /// </summary>
+        public IEnumerable<String> Tags { get; } = Tags?.Where(tag => tag.IsNotNullOrEmpty()).Distinct().ToArray() ?? [];
 
-        public abstract Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
-
-        public abstract String Help();
-
-    }
-
-
-    public abstract class ACLICommand(ICLI CLI) : ACLICommand<ICLI>(CLI)
-    {
-
-        //protected readonly CLI cli = CLI;
-
-        //public abstract IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
-
-        //public abstract Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
-
-        //public abstract String Help();
+        #endregion
 
     }
 

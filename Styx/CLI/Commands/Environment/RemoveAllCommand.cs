@@ -49,13 +49,13 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
             cli.Environment.Clear();
 
-            return Task.FromResult<String[]>(["All items removed."]);
+            return Task.FromResult<String[]>(["All environment keys removed."]);
 
         }
 
         public override String Help()
         {
-            return "removeAll - Removes all items.";
+            return "removeAll - Removes all environment keys.";
         }
 
     }

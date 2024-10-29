@@ -24,11 +24,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.CLI
 {
 
-    public class AddCommand(CLI CLI) : ACLICommand(CLI),
-                                       ICLICommand
+    public class AddEnvCommand(CLI CLI) : ACLICommand(CLI),
+                                          ICLICommand
     {
 
-        public static readonly String CommandName = nameof(AddCommand)[..^7].ToLowerFirstChar();
+        public static readonly String CommandName = nameof(AddEnvCommand)[..^7].ToLowerFirstChar();
 
         public override IEnumerable<SuggestionResponse> Suggest(String[] args)
         {
@@ -47,25 +47,37 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                                CancellationToken  CancellationToken)
         {
 
-            if (Arguments.Length == 3)
+            if (Arguments.Length >= 3)
             {
 
-                var name  = Arguments[1];
-                var value = Arguments[2];
+                var name   = EnvironmentKey.TryParse(Arguments[1]);
+                var values = Arguments.Skip(2).ToArray();
 
-                cli.Environment[name] = value;
+                if (name is not null)
+                {
 
-                return Task.FromResult<String[]>([$"Item added: {name} = {value}"]);
+                    cli.Environment.TryAdd(name.Value, []);
+                    cli.Environment[name.Value].TryAddRange(values);
+
+                    return Task.FromResult<String[]>(
+                               values.Length == 1
+                                   ? [$"Environment key added: '{name}' = {values[0]}"]
+                                   : [$"Environment keys added: '{name}' = {values.AggregateWith(", ")}"]
+                           );
+
+                }
+
+                return Task.FromResult<String[]>([$"could not be parse environment key '{name}'!"]);
 
             }
 
-            return Task.FromResult<String[]>([$"Usage: {CommandName} <name> <value>"]);
+            return Task.FromResult<String[]>([$"Usage: {CommandName} <name> <value> [value2] ... [valueX]"]);
 
         }
 
         public override String Help()
         {
-            return $"{CommandName} <name> <value> - Adds an item with the specified name and value.";
+            return $"{CommandName} <name> <value> [value2] ... [valueX] - Adds an environment key with the specified name and value(s).";
         }
 
     }
