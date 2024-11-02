@@ -301,7 +301,14 @@ namespace org.GraphDefined.Vanaheimr.CLI
             try
             {
 
-                var matchingCommands = commands.Where(c => String.Equals(c.Suggest([InputArguments[0]]).FirstOrDefault()?.Suggestion ?? "", InputArguments[0], StringComparison.OrdinalIgnoreCase)).ToArray();
+                var matchingCommands = commands.Where(c => {
+
+                                                        var s = c.Suggest([InputArguments[0]]).FirstOrDefault()?.Suggestion ?? "";
+
+                                                        return s.Equals    (InputArguments[0],       StringComparison.OrdinalIgnoreCase) ||
+                                                               s.StartsWith(InputArguments[0] + " ", StringComparison.OrdinalIgnoreCase);
+
+                                                     }).ToArray();
                 if (matchingCommands.Length == 1)
                 {
 
@@ -419,7 +426,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
                         ClearCurrentConsoleLine();
                         CommandPrompt(input);
                         Console.WriteLine();
-                        Console.WriteLine("Suggestions: " + String.Join(", ", suggestions.Select(s => s.Suggestion)));
+                        Console.WriteLine("Suggestions:");
+                        foreach (var suggestion in suggestions)
+                            Console.WriteLine($"   {suggestion.Suggestion}");
                         Console.WriteLine();
                         CommandPrompt(input);
 
