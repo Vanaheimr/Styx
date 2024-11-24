@@ -274,13 +274,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public Boolean TryRemove(TKey Key, out IEnumerable<TValue> Values)
         {
+
             if (internalDictionary.TryRemove(Key, out var values))
             {
-                Values = values;
+                Values = values ?? [];
                 return true;
             }
 
-            Values = Array.Empty<TValue>();
+            Values = [];
             return false;
 
         }
