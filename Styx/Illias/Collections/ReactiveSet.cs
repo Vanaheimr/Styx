@@ -428,9 +428,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator == (ReactiveSet<T> ReactiveSet1,
-                                           ReactiveSet<T> ReactiveSet2)
+        public static Boolean operator == (ReactiveSet<T>? ReactiveSet1,
+                                           ReactiveSet<T>? ReactiveSet2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -454,9 +453,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator != (ReactiveSet<T> ReactiveSet1,
-                                           ReactiveSet<T> ReactiveSet2)
+        public static Boolean operator != (ReactiveSet<T>? ReactiveSet1,
+                                           ReactiveSet<T>? ReactiveSet2)
 
             => !(ReactiveSet1 == ReactiveSet2);
 
@@ -469,17 +467,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
-        /// <returns>true|false</returns>
         public static Boolean operator < (ReactiveSet<T> ReactiveSet1,
                                           ReactiveSet<T> ReactiveSet2)
-        {
 
-            if (ReactiveSet1 is null)
-                throw new ArgumentNullException(nameof(ReactiveSet1), "The given ReactiveSet1 must not be null!");
-
-            return ReactiveSet1.Count < ReactiveSet2.Count;
-
-        }
+            => ReactiveSet1.Count < ReactiveSet2.Count;
 
         #endregion
 
@@ -490,7 +481,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
-        /// <returns>true|false</returns>
         public static Boolean operator <= (ReactiveSet<T> ReactiveSet1,
                                            ReactiveSet<T> ReactiveSet2)
 
@@ -505,17 +495,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
-        /// <returns>true|false</returns>
         public static Boolean operator > (ReactiveSet<T> ReactiveSet1,
                                           ReactiveSet<T> ReactiveSet2)
-        {
 
-            if (ReactiveSet1 is null)
-                throw new ArgumentNullException(nameof(ReactiveSet1), "The given ReactiveSet1 must not be null!");
-
-            return ReactiveSet1.Count > ReactiveSet2.Count;
-
-        }
+            => ReactiveSet1.Count > ReactiveSet2.Count;
 
         #endregion
 
@@ -526,7 +509,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ReactiveSet1">A ReactiveSet.</param>
         /// <param name="ReactiveSet2">Another ReactiveSet.</param>
-        /// <returns>true|false</returns>
         public static Boolean operator >= (ReactiveSet<T> ReactiveSet1,
                                            ReactiveSet<T> ReactiveSet2)
 
@@ -578,7 +560,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => ReactiveSet is not null &&
                internalSet.Count == ReactiveSet.internalSet.Count &&
-               internalSet.All(item => ReactiveSet.Contains(item));
+               internalSet.All(ReactiveSet.Contains);
 
         #endregion
 
