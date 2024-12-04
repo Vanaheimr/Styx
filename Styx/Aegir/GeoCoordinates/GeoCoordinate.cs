@@ -19,6 +19,7 @@
 
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -140,9 +141,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public static class GeoCoordinateExtensions
     {
 
-        public static Boolean TryParseGeoCoordinate(this String        Text,
-                                                    out GeoCoordinate  GeoLocation,
-                                                    out String?        ErrorResponse)
+        public static Boolean TryParseGeoCoordinate(this String                              Text,
+                                                    [NotNullWhen(true)]  out GeoCoordinate?  GeoLocation,
+                                                    [NotNullWhen(false)] out String?         ErrorResponse)
 
             => GeoCoordinate.TryParse(JObject.Parse(Text),
                                       out GeoLocation,
@@ -471,9 +472,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="LatitudeString">The Latitude (south to nord).</param>
         /// <param name="LongitudeString">The Longitude (parallel to equator).</param>
         /// <param name="GeoCoordinate">The resulting geo coordinate.</param>
-        public static Boolean TryParse(String             LatitudeString,
-                                       String             LongitudeString,
-                                       out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParse(String                                 LatitudeString,
+                                       String                                 LongitudeString,
+                                       [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
         {
 
             GeoCoordinate = default;
@@ -484,8 +485,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (!Longitude.TryParse(LongitudeString, out var longitude))
                 return false;
 
-            GeoCoordinate = new GeoCoordinate(latitude,
-                                              longitude);
+            GeoCoordinate = new GeoCoordinate(
+                                latitude,
+                                longitude
+                            );
 
             return true;
 
@@ -502,10 +505,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="LongitudeString">The Longitude (parallel to equator).</param>
         /// <param name="AltitudeString">The Altitude.</param>
         /// <param name="GeoCoordinate">The resulting geo coordinate.</param>
-        public static Boolean TryParse(String             LatitudeString,
-                                       String             LongitudeString,
-                                       String             AltitudeString,
-                                       out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParse(String                                 LatitudeString,
+                                       String                                 LongitudeString,
+                                       String                                 AltitudeString,
+                                       [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
         {
 
             GeoCoordinate = default;
@@ -519,9 +522,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (!Aegir.Altitude.TryParse(AltitudeString,  out var altitude))
                 return false;
 
-            GeoCoordinate = new GeoCoordinate(latitude,
-                                              longitude,
-                                              altitude);
+            GeoCoordinate = new GeoCoordinate(
+                                latitude,
+                                longitude,
+                                altitude
+                            );
 
             return true;
 
@@ -577,8 +582,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoString">A string to parse.</param>
         /// <param name="GeoCoordinate">The parsed geo coordinate.</param>
         /// <returns>True if success, false otherwise</returns>
-        public static Boolean TryParseString(String             GeoString,
-                                             out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParseString(String                                 GeoString,
+                                             [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
 
             => TryParseString(GeoString, (lat, lng) => new GeoCoordinate(lat, lng), out GeoCoordinate);
 
@@ -663,9 +668,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate? TryParseJSON(String Text)
             => TryParse(JObject.Parse(Text));
 
-        public static Boolean TryParseJSON(String             Text,
-                                           out GeoCoordinate  GeoCoordinate,
-                                           out String?        ErrorResponse)
+        public static Boolean TryParseJSON(String                                   Text,
+                                           [NotNullWhen(true)]  out GeoCoordinate?  GeoCoordinate,
+                                           [NotNullWhen(false)] out String?         ErrorResponse)
 
             => TryParse(JObject.Parse(Text),
                         out GeoCoordinate,
@@ -685,9 +690,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
-        public static Boolean TryParse(JObject            JSON,
-                                       out GeoCoordinate  GeoLocation,
-                                       out String?        ErrorResponse)
+        public static Boolean TryParse(JObject                                  JSON,
+                                       [NotNullWhen(true)]  out GeoCoordinate?  GeoLocation,
+                                       [NotNullWhen(false)] out String?         ErrorResponse)
         {
 
             ErrorResponse   = default;
@@ -715,7 +720,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             }
 
-            GeoLocation = default;
+            GeoLocation    = default;
+            ErrorResponse  = "error!";
             return false;
 
         }

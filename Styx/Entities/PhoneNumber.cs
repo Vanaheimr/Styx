@@ -17,8 +17,8 @@
 
 #region Usings
 
-using System;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -51,9 +51,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A phone number.
     /// </summary>
-    public struct PhoneNumber : IId,
-                                IEquatable<PhoneNumber>,
-                                IComparable<PhoneNumber>
+    public readonly struct PhoneNumber : IId,
+                                         IEquatable<PhoneNumber>,
+                                         IComparable<PhoneNumber>
     {
 
         #region Data
@@ -115,7 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static PhoneNumber Parse(String Text)
         {
 
-            if (TryParse(Text, out PhoneNumber phoneNumber))
+            if (TryParse(Text, out var phoneNumber))
                 return phoneNumber;
 
             throw new ArgumentException($"Invalid text representation of a phone number: '" + Text + "'!",
@@ -134,7 +134,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static PhoneNumber? TryParse(String Text)
         {
 
-            if (TryParse(Text, out PhoneNumber phoneNumber))
+            if (TryParse(Text, out var phoneNumber))
                 return phoneNumber;
 
             return null;
@@ -150,10 +150,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of a phone number.</param>
         /// <param name="PhoneNumber">The parsed phone number.</param>
-        public static Boolean TryParse(String Text, out PhoneNumber PhoneNumber)
+        public static Boolean TryParse(String                               Text,
+                                       [NotNullWhen(true)] out PhoneNumber  PhoneNumber)
         {
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNotNullOrEmpty() &&
                 IsPhoneNumber_RegExprString.IsMatch(Text))
