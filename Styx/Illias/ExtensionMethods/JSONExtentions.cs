@@ -55,7 +55,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     //public delegate Boolean  TryJObjectParser  <TResult>     (JObject Input, out TResult? arg);
     public delegate Boolean  TryJObjectParser1 <TResult>     (JObject Input, out TResult  arg, out String? ErrorResponse);
-    public delegate Boolean  TryJObjectParser2 <TResult>     (JObject Input, [NotNullWhen(true)]  out TResult? arg, [NotNullWhen(false)] out String? ErrorResponse);
+    public delegate Boolean  TryJObjectParser2a<TResult>     (JObject Input, [NotNullWhen(true)]  out TResult? arg, [NotNullWhen(false)] out String? ErrorResponse);
+    public delegate Boolean  TryJObjectParser2b<TResult>     (JObject Input,                      out TResult? arg, [NotNullWhen(false)] out String? ErrorResponse); // TResult's properties are all optional and thus TResult can be null!
     public delegate Boolean  TryJObjectParser3a<TResult>     (JObject Input, out TResult? arg, out String? ErrorResponse,                 CustomJObjectParserDelegate<TResult>? CustomParser = null);
     public delegate Boolean  TryJObjectParser3b<TResult, TId>(JObject Input, out TResult? arg, out String? ErrorResponse, TId? Id = null, CustomJObjectParserDelegate<TResult>? CustomParser = null) where TId: struct;
 
@@ -2438,7 +2439,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatoryJSON<T>(this JObject                      JSON,
                                                     String                            PropertyName,
                                                     String                            PropertyDescription,
-                                                    TryJObjectParser2<T>              TryJObjectParser,
+                                                    TryJObjectParser2a<T>              TryJObjectParser,
                                                     [NotNullWhen(true)]  out T?       Value,
                                                     [NotNullWhen(false)] out String?  ErrorResponse)
         {
@@ -2493,7 +2494,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatoryJSONS<T>(this JObject                      JSON,
                                                      String                            PropertyName,
                                                      String                            PropertyDescription,
-                                                     TryJObjectParser2<T>              TryJObjectParser,
+                                                     TryJObjectParser2a<T>              TryJObjectParser,
                                                      [NotNullWhen(true)]  out T?       Value,
                                                      [NotNullWhen(false)] out String?  ErrorResponse)
 
@@ -2549,7 +2550,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatoryJSONStruct<T>(this JObject                      JSON,
                                                           String                            PropertyName,
                                                           String                            PropertyDescription,
-                                                          TryJObjectParser2<T>              TryJObjectParser,
+                                                          TryJObjectParser2a<T>              TryJObjectParser,
                                                           [NotNullWhen(true)]  out T        Value,
                                                           [NotNullWhen(false)] out String?  ErrorResponse)
 
@@ -3233,7 +3234,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatoryList<T>(this JObject                      JSON,
                                                     String                            PropertyName,
                                                     String                            PropertyDescription,
-                                                    TryJObjectParser2<T>              TryParser,
+                                                    TryJObjectParser2a<T>              TryParser,
                                                     [NotNullWhen(true)]  out List<T>  ListOfT,
                                                     [NotNullWhen(false)] out String?  ErrorResponse)
         {
@@ -3572,7 +3573,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatoryHashSet<T>(this JObject                         JSON,
                                                        String                               PropertyName,
                                                        String                               PropertyDescription,
-                                                       TryJObjectParser2<T>                 TryParser,
+                                                       TryJObjectParser2a<T>                 TryParser,
                                                        [NotNullWhen(true)]  out HashSet<T>  HashSetOfT,
                                                        [NotNullWhen(false)] out String?     ErrorResponse)
         {
@@ -3707,7 +3708,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatoryJSON<T>(this JObject                             JSON,
                                                     String                                   PropertyName,
                                                     String                                   PropertyDescription,
-                                                    TryJObjectParser2<T>                     TryJObjectParser,
+                                                    TryJObjectParser2a<T>                     TryJObjectParser,
                                                     [NotNullWhen(true)]  out IEnumerable<T>  EnumerationOfT,
                                                     [NotNullWhen(false)] out String?         ErrorResponse)
         {
@@ -6132,7 +6133,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalJSON<T>(this JObject                      JSON,
                                                    String                            PropertyName,
                                                    String                            PropertyDescription,
-                                                   TryJObjectParser2<T>              JObjectParser,
+                                                   TryJObjectParser2a<T>              JObjectParser,
                                                    [NotNullWhen(true)]  out T?       Value,
                                                    [NotNullWhen(false)] out String?  ErrorResponse)
         {
@@ -6184,7 +6185,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalJSON<T>(this JObject          JSON,
                                                    String                PropertyName,
                                                    String                PropertyDescription,
-                                                   TryJObjectParser2<T>  JObjectParser,
+                                                   TryJObjectParser2a<T>  JObjectParser,
                                                    out T?                Value,
                                                    out String?           ErrorResponse)
 
@@ -6906,7 +6907,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalJSON<T>(this JObject                             JSON,
                                                    String                                   PropertyName,
                                                    String                                   PropertyDescription,
-                                                   TryJObjectParser2<T>                     Parser,
+                                                   TryJObjectParser2a<T>                     Parser,
                                                    [NotNullWhen(true)]  out IEnumerable<T>  EnumerableT,
                                                    [NotNullWhen(false)] out String?         ErrorResponse)
 
@@ -6979,7 +6980,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean Parallel_ParseOptionalJSON<T>(this JObject          JSON,
                                                             String                PropertyName,
                                                             String                PropertyDescription,
-                                                            TryJObjectParser2<T>  Parser,
+                                                            TryJObjectParser2a<T>  Parser,
                                                             out IEnumerable<T>    EnumerableT,
                                                             out String?           ErrorResponse)
 
@@ -7368,9 +7369,82 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalHashSet<T>(this JObject                         JSON,
                                                       String                               PropertyName,
                                                       String                               PropertyDescription,
-                                                      TryJObjectParser2<T>                 Parser,
+                                                      TryJObjectParser2a<T>                 Parser,
                                                       [NotNullWhen(true)]  out HashSet<T>  HashSet,
                                                                            out String?     ErrorResponse)
+
+        {
+
+            HashSet        = [];
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+
+                // "propertyKey": null -> will be ignored!
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (JSONToken is not JArray JSONArray)
+                {
+                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
+                    return true;
+                }
+
+
+                var errorResponses = new List<String>();
+
+                foreach (var element in JSONArray)
+                {
+
+                    if (element is not JObject JSONObject)
+                    {
+                        ErrorResponse = "The given token is not a valid JSON object!";
+                        return true;
+                    }
+
+                    if (Parser(JSONObject,
+                               out var itemT,
+                               out var errorResponse) && itemT is not null)
+                    {
+                        HashSet.Add(itemT);
+                    }
+                    else
+                        errorResponses.Add(errorResponse ?? "Could not parse the given item!");
+
+                }
+
+                if (errorResponses.Any())
+                    ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+
+        public static Boolean ParseOptionalHashSetNull<T>(this JObject                         JSON,
+                                                          String                               PropertyName,
+                                                          String                               PropertyDescription,
+                                                          TryJObjectParser2b<T>                Parser,
+                                                          [NotNullWhen(true)]  out HashSet<T>  HashSet,
+                                                                               out String?     ErrorResponse)
 
         {
 
