@@ -715,12 +715,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Meter.
         /// </summary>
-        public Meter Clone
+        public Meter Clone()
 
             => new (Value);
 

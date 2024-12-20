@@ -579,12 +579,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Ampere.
         /// </summary>
-        public Ampere Clone
+        public Ampere Clone()
 
             => new (Value);
 

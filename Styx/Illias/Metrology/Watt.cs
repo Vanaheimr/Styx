@@ -1010,12 +1010,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Watt.
         /// </summary>
-        public Watt Clone
+        public Watt Clone()
 
             => new (Value);
 

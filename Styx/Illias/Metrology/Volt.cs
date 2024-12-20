@@ -592,12 +592,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Volt.
         /// </summary>
-        public Volt Clone
+        public Volt Clone()
 
             => new (Value);
 
