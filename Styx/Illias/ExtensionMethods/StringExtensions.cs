@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class StringExtensions
     {
 
-        #region IsNullOrEmpty      (GivenString)
+        #region IsNullOrEmpty       (GivenString)
 
         /// <summary>
         /// Indicates whether the given (trimmed) string is null or empty.
@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IsNotNullOrEmpty   (GivenString)
+        #region IsNotNullOrEmpty    (GivenString)
 
         /// <summary>
         /// Indicates whether the given (trimmed) string is not null or empty.
@@ -58,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IfNotNullOrEmpty   (GivenString, Mapper, DefaultValue)
+        #region IfNotNullOrEmpty    (GivenString, Mapper, DefaultValue)
 
         /// <summary>
         /// Mappes the given string if it is not null or empty, or returns the default value.
@@ -76,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IsNullOrWhiteSpace (GivenString)
+        #region IsNullOrWhiteSpace  (GivenString)
 
         /// <summary>
         /// Indicates whether the given string is null, empty,
@@ -89,6 +89,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region CloneString         (GivenString)
+
+        /// <summary>
+        /// Clones the given string.
+        /// </summary>
+        /// <param name="GivenString">A string.</param>
+        public static String CloneString(this String GivenString)
+
+               // Strings might in some cases still be null!
+            => new (GivenString?.ToCharArray() ?? []);
+
+        #endregion
+
+        #region CloneNullableString (GivenString)
+
+        /// <summary>
+        /// Clones the given nullable string.
+        /// </summary>
+        /// <param name="GivenString">A nullable string.</param>
+        public static String? CloneNullableString(this String? GivenString)
+
+            => GivenString is not null
+                   ? new String(GivenString.ToCharArray())
+                   : null;
+
+        #endregion
 
 
         #region ToHexString         (this ByteArray, StartIndex  = 0, Length = null, ToLower = true)

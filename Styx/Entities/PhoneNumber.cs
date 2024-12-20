@@ -175,15 +175,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this phone number.
         /// </summary>
-        public PhoneNumber Clone
+        public PhoneNumber Clone()
 
-            => new PhoneNumber(
-                   new String(InternalId?.ToCharArray())
+            => new (
+                   InternalId.CloneString()
                );
 
         #endregion

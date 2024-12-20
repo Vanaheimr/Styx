@@ -764,11 +764,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         public GeoCoordinate Clone()
 
-            => new (Latitude. Clone(),
-                    Longitude.Clone(),
-                    Altitude?.Clone(),
-                    Projection,
-                    Planet);
+            => new (
+                   Latitude. Clone(),
+                   Longitude.Clone(),
+                   Altitude?.Clone(),
+                   Projection,
+                   Planet
+               );
 
         #endregion
 

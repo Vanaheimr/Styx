@@ -488,17 +488,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
-        /// Clone this energy source.
+        /// Clone this country.
         /// </summary>
-        public Country Clone
+        public Country Clone()
 
             => new (
                    CountryName.Clone(),
-                   new String(Alpha2Code.ToCharArray()),
-                   new String(Alpha3Code.ToCharArray()),
+                   Alpha2Code.CloneString(),
+                   Alpha3Code.CloneString(),
                    NumericCode,
                    TelefonCode
                );
