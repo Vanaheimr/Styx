@@ -452,13 +452,18 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 if (!Aegir.Altitude.TryParse(AltitudeDouble.Value, out var altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
-                return new GeoCoordinate(latitude,
-                                         longitude,
-                                         altitude);
+                return new GeoCoordinate(
+                           latitude,
+                           longitude,
+                           altitude
+                       );
+
             }
 
-            return new GeoCoordinate(latitude,
-                                     longitude);
+            return new GeoCoordinate(
+                       latitude,
+                       longitude
+                   );
 
         }
 
