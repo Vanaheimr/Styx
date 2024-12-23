@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System;
 
 #endregion
@@ -50,13 +51,18 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Create a new abstract filter arrow.
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public AbstractFilterArrow(Func<TMessage, Boolean>  Include         = null,
-                                   Boolean                  InvertedFilter  = false,
-                                   IArrowSender<TMessage>   ArrowSender     = null)
+        public AbstractFilterArrow(Func<TMessage, Boolean>?  Include          = null,
+                                   Boolean                   InvertedFilter   = false,
+                                   IArrowSender<TMessage>?   ArrowSender      = null)
 
             : base(ArrowSender)
 
-        { }
+        {
+
+            this.Include         = Include ?? ((message) => true);
+            this.InvertedFilter  = InvertedFilter;
+
+        }
 
         #endregion
 
@@ -69,7 +75,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="Message">The message to filter or not.</param>
         /// <returns>True if the message should be forwarded; False otherwise.</returns>
-        protected virtual Boolean ForwardMessage(TMessage Message)
+        protected virtual Boolean ForwardMessage(EventTracking_Id EventTrackingId, TMessage Message)
         {
             return Include(Message) ^ InvertedFilter;
         }
@@ -77,12 +83,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #endregion
 
 
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
 
             MessageOut = MessageIn;
 
-            return ForwardMessage(MessageIn);
+            return ForwardMessage(EventTrackingId, MessageIn);
 
         }
 

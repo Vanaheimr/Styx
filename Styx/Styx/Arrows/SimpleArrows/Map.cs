@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -119,19 +118,16 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageProcessor">A delegate to transform an incoming message into an outgoing message.</param>
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public MapArrow(Func<TIn, TOut>             MessageProcessor,
-                        Func<Exception, Exception>  OnError      = null,
-                        IArrowSender<TIn>           ArrowSender  = null)
+        public MapArrow(Func<TIn, TOut>              MessageProcessor,
+                        Func<Exception, Exception>?  OnError       = null,
+                        IArrowSender<TIn>?           ArrowSender   = null)
 
             : base(ArrowSender)
 
         {
 
-            if (MessageProcessor == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
             this.MessageProcessor  = MessageProcessor;
-            this.OnError           = (OnError != null) ? OnError : e => e;
+            this.OnError           = (OnError is not null) ? OnError : e => e;
 
         }
 
@@ -144,7 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TIn MessageIn, out TOut MessageOut)
         {
             // Try-Catch will be done within AbstractArrow.ProcessArrow(MessageIn)
             MessageOut = MessageProcessor(MessageIn);
@@ -177,13 +173,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?             OnStarted;
 
-        public event NotificationEventHandler<TOut> OnNotification;
+        public event NotificationEventHandler<TOut>?  OnNotification;
 
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?    OnExceptionOccured;
 
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?           OnCompleted;
 
         #endregion
 
@@ -196,34 +192,28 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageProcessor">A delegate to transform two incoming messages into an outgoing message.</param>
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public MapArrow(Func<TIn1, TIn2, TOut>      MessageProcessor,
-                        Func<Exception, Exception>  OnError      = null,
-                        IArrowSender<TIn1, TIn2>    ArrowSender  = null)
+        public MapArrow(Func<TIn1, TIn2, TOut>       MessageProcessor,
+                        Func<Exception, Exception>?  OnError       = null,
+                        IArrowSender<TIn1, TIn2>?    ArrowSender   = null)
 
         {
 
-            if (MessageProcessor == null)
+            if (MessageProcessor is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             this.MessageProcessor  = MessageProcessor;
             this.OnError           = (OnError != null) ? OnError : e => e;
 
-            if (ArrowSender != null)
-                ArrowSender.SendTo(this);
+            ArrowSender?.SendTo(this);
 
         }
 
         #endregion
 
 
-        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message)
+        public void ProcessStarted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)
         {
-
-            var OnStartedLocal = OnStarted;
-
-            if (OnStartedLocal != null)
-                OnStartedLocal(this, Timestamp, Message);
-
+            OnStarted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
 
         #region ProcessArrow(MessageIn1, MessageIn2)
@@ -233,34 +223,21 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn1">The first incoming message.</param>
         /// <param name="MessageIn2">The second incoming message.</param>
-        public void ProcessArrow(TIn1 MessageIn1, TIn2 MessageIn2)
+        public void ProcessArrow(EventTracking_Id EventTrackingId, TIn1 MessageIn1, TIn2 MessageIn2)
         {
-
-            if (OnNotification != null)
-                OnNotification(MessageProcessor(MessageIn1, MessageIn2));
-
+            OnNotification?.Invoke(EventTrackingId, MessageProcessor(MessageIn1, MessageIn2));
         }
 
         #endregion
 
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
-
-            var OnExceptionOccuredLocal = OnExceptionOccured;
-
-            if (OnExceptionOccuredLocal != null)
-                OnExceptionOccuredLocal(this, Timestamp, ExceptionMessage);
-
+            OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
         }
 
-        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
-
-            var OnCompletedLocal = OnCompleted;
-
-            if (OnCompletedLocal != null)
-                OnCompletedLocal(this, Timestamp, Message);
-
+            OnCompleted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
 
     }
@@ -288,13 +265,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?             OnStarted;
 
-        public event NotificationEventHandler<TOut> OnNotification;
+        public event NotificationEventHandler<TOut>?  OnNotification;
 
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?    OnExceptionOccured;
 
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?           OnCompleted;
 
         #endregion
 
@@ -307,34 +284,28 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageProcessor">A delegate to transform three incoming messages into an outgoing message.</param>
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public MapArrow(Func<TIn1, TIn2, TIn3, TOut>    MessageProcessor,
-                        Func<Exception, Exception>      OnError      = null,
-                        IArrowSender<TIn1, TIn2, TIn3>  ArrowSender  = null)
+        public MapArrow(Func<TIn1, TIn2, TIn3, TOut>     MessageProcessor,
+                        Func<Exception, Exception>?      OnError       = null,
+                        IArrowSender<TIn1, TIn2, TIn3>?  ArrowSender   = null)
 
         {
 
-            if (MessageProcessor == null)
+            if (MessageProcessor is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             this.MessageProcessor  = MessageProcessor;
             this.OnError           = (OnError != null) ? OnError : e => e;
 
-            if (ArrowSender != null)
-                ArrowSender.SendTo(this);
+            ArrowSender?.SendTo(this);
 
         }
 
         #endregion
 
 
-        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message)
+        public void ProcessStarted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)
         {
-
-            var OnStartedLocal = OnStarted;
-
-            if (OnStartedLocal != null)
-                OnStartedLocal(this, Timestamp, Message);
-
+            OnStarted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
 
         #region ProcessArrow(MessageIn1, MessageIn2, MessageIn3)
@@ -345,34 +316,21 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageIn1">The first incoming message.</param>
         /// <param name="MessageIn2">The second incoming message.</param>
         /// <param name="MessageIn3">The third incoming message.</param>
-        public void ProcessArrow(TIn1 MessageIn1, TIn2 MessageIn2, TIn3 MessageIn3)
+        public void ProcessArrow(EventTracking_Id EventTrackingId, TIn1 MessageIn1, TIn2 MessageIn2, TIn3 MessageIn3)
         {
-
-            if (OnNotification != null)
-                OnNotification(MessageProcessor(MessageIn1, MessageIn2, MessageIn3));
-
+            OnNotification?.Invoke(EventTrackingId, MessageProcessor(MessageIn1, MessageIn2, MessageIn3));
         }
 
         #endregion
 
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
-
-            var OnExceptionOccuredLocal = OnExceptionOccured;
-
-            if (OnExceptionOccuredLocal != null)
-                OnExceptionOccuredLocal(this, Timestamp, ExceptionMessage);
-
+            OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
         }
 
-        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
-
-            var OnCompletedLocal = OnCompleted;
-
-            if (OnCompletedLocal != null)
-                OnCompletedLocal(this, Timestamp, Message);
-
+            OnCompleted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
 
     }

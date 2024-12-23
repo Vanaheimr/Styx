@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void Log(LogLevel LogLevel, params Object[] Arguments)
         {
-            Log(DateTime.Now, LogLevel, Arguments);
+            Log(Timestamp.Now, LogLevel, Arguments);
         }
 
         #endregion
@@ -66,7 +66,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void Log(TEnum Topic, params Object[] Arguments)
         {
-            Log(DateTime.Now, Topic, Arguments);
+            Log(Timestamp.Now, Topic, Arguments);
         }
 
         #endregion

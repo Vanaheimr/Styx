@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -31,11 +31,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class ArrowObject<TOut> : AbstractArrowSender<TOut>
     {
 
+        #region Data
+
+        private TOut value;
+
+        #endregion
+
         #region Properties
-
-        #region Value
-
-        private TOut _Value;
 
         /// <summary>
         /// The value of the ArrowObject.
@@ -45,24 +47,22 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _Value;
+                return value;
             }
 
             set
             {
 
-                if (_Value.Equals(value))
+                if (this.value?.Equals(value) == true)
                     return;
 
-                _Value = value;
+                this.value = value;
 
-                base.NotifyRecipients(this, value);
+                base.NotifyRecipients(EventTracking_Id.New, this, value);
 
             }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -74,7 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Value">The value of the object.</param>
         public ArrowObject(TOut Value)
         {
-            this._Value = Value;
+            this.value = Value;
         }
 
         #endregion

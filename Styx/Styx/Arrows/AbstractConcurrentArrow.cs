@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -43,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event called whenever this arrow sends a new message.
         /// </summary>
-        public event NotificationEventHandler<TOut>  OnNotification;
+        public event NotificationEventHandler<TOut>?  OnNotification;
 
         #endregion
 
@@ -54,8 +54,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
         /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
-        public AbstractConcurrentArrow(UInt32             MaxQueueSize = 1000,
-                                       IArrowSender<TIn>  ArrowSender  = null)
+        public AbstractConcurrentArrow(UInt32              MaxQueueSize   = 1000,
+                                       IArrowSender<TIn>?  ArrowSender    = null)
 
             : base(MaxQueueSize, ArrowSender)
 
@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
         /// <returns>True if the message should be forwarded; False otherwise.</returns>
-        protected abstract Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut);
+        protected abstract Boolean ProcessMessage(EventTracking_Id EventTrackingId, TIn MessageIn, out TOut MessageOut);
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Process the incoming arrow.
         /// </summary>
         /// <param name="Message">The message of the arrow.</param>
-        protected override void ProcessArrowConcurrently(TIn Message)
+        protected override void ProcessArrowConcurrently(EventTracking_Id EventTrackingId, TIn Message)
         {
 
             TOut MessageOut;
@@ -91,20 +91,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             try
             {
 
-                if (ProcessMessage(Message, out MessageOut))
-                {
-
-                    var OnNotificationLocal = OnNotification;
-
-                    if (OnNotificationLocal != null)
-                        OnNotificationLocal(MessageOut);
-
-                }
+                if (ProcessMessage(EventTrackingId, Message, out MessageOut))
+                    OnNotification?.Invoke(EventTrackingId, MessageOut);
 
             }
             catch (Exception e)
             {
-                base.ProcessExceptionOccured(this, DateTime.Now, e);
+                base.ProcessExceptionOccured(this, Timestamp.Now, EventTrackingId, e);
             }
 
         }

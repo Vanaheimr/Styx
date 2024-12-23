@@ -15,11 +15,7 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
+using org.GraphDefined.Vanaheimr.Illias;
 
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
@@ -84,10 +80,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
         public CalcArrow(TData                      InitialValue,
                          Func<TData, TData, TData>  MessageProcessor,
-                         IArrowSender<TData>        ArrowSender = null)
+                         IArrowSender<TData>?       ArrowSender = null)
         {
 
-            if (MessageProcessor == null)
+            if (MessageProcessor is null)
                 throw new ArgumentNullException("MessageProcessor", "The MessageProcessor must not be null!");
 
             this.SideEffect        = InitialValue;
@@ -104,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TData MessageIn, out TData MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TData MessageIn, out TData MessageOut)
         {
 
             MessageOut = SideEffect = this.MessageProcessor(this.SideEffect, MessageIn);

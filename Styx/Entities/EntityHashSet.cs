@@ -330,60 +330,60 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region OnAddition
 
-        private readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> addition;
+        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> addition;
 
         /// <summary>
         /// Called whenever an entity will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> OnAddition
+        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> OnAddition
             => addition;
 
         #endregion
 
         #region OnAdditionIfNotExists
 
-        private readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> additionIfNotExists;
+        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> additionIfNotExists;
 
         /// <summary>
         /// Called whenever an entity will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> OnAdditionIfNotExists
+        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> OnAdditionIfNotExists
             => additionIfNotExists;
 
         #endregion
 
         #region OnAddOrUpdate
 
-        private readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> addOrUpdate;
+        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> addOrUpdate;
 
         /// <summary>
         /// Called whenever an entity will be or was added or updated.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnAddOrUpdate
+        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnAddOrUpdate
             => addOrUpdate;
 
         #endregion
 
         #region OnUpdate
 
-        private readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> update;
+        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> update;
 
         /// <summary>
         /// Called whenever an entity will be or was updated.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnUpdate
+        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnUpdate
             => update;
 
         #endregion
 
         #region OnRemoval
 
-        private readonly IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> removal;
+        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> removal;
 
         /// <summary>
         /// Called whenever an entity will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, Boolean> OnRemoval
+        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> OnRemoval
             => removal;
 
         #endregion
@@ -392,24 +392,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
-        public EntityHashSet(TParentDataStructure                                                                                       ParentDataStructure,
+        public EntityHashSet(TParentDataStructure                                                                     ParentDataStructure,
 
-                             IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>?  Addition              = null,
-                             IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>?  AdditionIfNotExists   = null,
-                             IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  AddOrUpdate           = null,
-                             IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  Update                = null,
-                             IVotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>?  Removal               = null)
+                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>?  Addition              = null,
+                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>?  AdditionIfNotExists   = null,
+                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  AddOrUpdate           = null,
+                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  Update                = null,
+                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>?  Removal               = null)
         {
 
             this.lookup               = new ConcurrentDictionary<TId, TEntity>();
 
             this.parentDataStructure  = ParentDataStructure;
 
-            this.addition             = Addition            ?? new VotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
-            this.additionIfNotExists  = AdditionIfNotExists ?? new VotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
-            this.addOrUpdate          = AddOrUpdate         ?? new VotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
-            this.update               = Update              ?? new VotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
-            this.removal              = Removal             ?? new VotingNotificator<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.addition             = Addition            ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.additionIfNotExists  = AdditionIfNotExists ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.addOrUpdate          = AddOrUpdate         ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
+            this.update               = Update              ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
+            this.removal              = Removal             ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
 
         }
 
@@ -423,8 +423,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 User_Id?          CurrentUserId)
         {
 
-            if (addition.SendVoting(Timestamp.Now,
-                                    EventTrackingId,
+            if (addition.SendVoting(EventTrackingId,
+                                    Timestamp.Now,
                                     CurrentUserId ?? User_Id.Anonymous,
                                     parentDataStructure,
                                     Entity) &&
@@ -433,8 +433,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             {
 
-                addition.SendNotification(Timestamp.Now,
-                                          EventTrackingId,
+                addition.SendNotification(EventTrackingId,
+                                          Timestamp.Now,
                                           CurrentUserId ?? User_Id.Anonymous,
                                           parentDataStructure,
                                           Entity);
@@ -468,8 +468,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 User_Id?          CurrentUserId)
         {
 
-            if (addition.SendVoting(Timestamp.Now,
-                                    EventTrackingId,
+            if (addition.SendVoting(EventTrackingId,
+                                    Timestamp.Now,
                                     CurrentUserId ?? User_Id.Anonymous,
                                     parentDataStructure,
                                     Entity) &&
@@ -480,8 +480,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 OnSuccess?.Invoke(Entity);
 
-                addition.SendNotification(Timestamp.Now,
-                                          EventTrackingId,
+                addition.SendNotification(EventTrackingId,
+                                          Timestamp.Now,
                                           CurrentUserId ?? User_Id.Anonymous,
                                           parentDataStructure,
                                           Entity);
@@ -505,8 +505,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 User_Id?                   CurrentUserId)
         {
 
-            if (addition.SendVoting(Timestamp.Now,
-                                    EventTrackingId,
+            if (addition.SendVoting(EventTrackingId,
+                                    Timestamp.Now,
                                     CurrentUserId ?? User_Id.Anonymous,
                                     parentDataStructure,
                                     Entity) &&
@@ -517,8 +517,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 OnSuccess?.Invoke(Timestamp.Now, Entity);
 
-                addition.SendNotification(Timestamp.Now,
-                                          EventTrackingId,
+                addition.SendNotification(EventTrackingId,
+                                          Timestamp.Now,
                                           CurrentUserId ?? User_Id.Anonymous,
                                           parentDataStructure,
                                           Entity);
@@ -544,8 +544,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var userId = CurrentUserId ?? User_Id.Anonymous;
 
-            if (addition.SendVoting(Timestamp.Now,
-                                    EventTrackingId,
+            if (addition.SendVoting(EventTrackingId,
+                                    Timestamp.Now,
                                     userId,
                                     parentDataStructure,
                                     Entity) &&
@@ -560,8 +560,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                   parentDataStructure,
                                   Entity);
 
-                addition.SendNotification(Timestamp.Now,
-                                          EventTrackingId,
+                addition.SendNotification(EventTrackingId,
+                                          Timestamp.Now,
                                           CurrentUserId ?? User_Id.Anonymous,
                                           parentDataStructure,
                                           Entity);
@@ -591,8 +591,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var currentUserId = CurrentUserId ?? User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
-                                                           EventTrackingId,
+            if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
+                                                           Timestamp.Now,
                                                            currentUserId,
                                                            parentDataStructure,
                                                            Entity)))
@@ -603,8 +603,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     lookup.TryAdd(entity.Id, entity);
 
-                    addition.SendNotification(Timestamp.Now,
-                                              EventTrackingId,
+                    addition.SendNotification(EventTrackingId,
+                                              Timestamp.Now,
                                               currentUserId,
                                               parentDataStructure,
                                               entity);
@@ -628,8 +628,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var currentUserId = CurrentUserId ?? User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
-                                                           EventTrackingId,
+            if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
+                                                           Timestamp.Now,
                                                            currentUserId,
                                                            parentDataStructure,
                                                            Entity)))
@@ -640,8 +640,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     lookup.TryAdd(entity.Id, entity);
 
-                    addition.SendNotification(Timestamp.Now,
-                                              EventTrackingId,
+                    addition.SendNotification(EventTrackingId,
+                                              Timestamp.Now,
                                               currentUserId,
                                               parentDataStructure,
                                               entity);
@@ -666,8 +666,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var currentUserId = CurrentUserId ?? User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
-                                                           EventTrackingId,
+            if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
+                                                           Timestamp.Now,
                                                            currentUserId,
                                                            parentDataStructure,
                                                            Entity)))
@@ -678,8 +678,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     lookup.TryAdd(entity.Id, entity);
 
-                    addition.SendNotification(Timestamp.Now,
-                                              EventTrackingId,
+                    addition.SendNotification(EventTrackingId,
+                                              Timestamp.Now,
                                               currentUserId,
                                               parentDataStructure,
                                               entity);
@@ -704,8 +704,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var currentUserId = CurrentUserId ?? User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
-            if (Entities.All(Entity => addition.SendVoting(Timestamp.Now,
-                                                           EventTrackingId,
+            if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
+                                                           Timestamp.Now,
                                                            currentUserId,
                                                            parentDataStructure,
                                                            Entity)))
@@ -716,8 +716,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     lookup.TryAdd(entity.Id, entity);
 
-                    addition.SendNotification(Timestamp.Now,
-                                              EventTrackingId,
+                    addition.SendNotification(EventTrackingId,
+                                              Timestamp.Now,
                                               currentUserId,
                                               parentDataStructure,
                                               entity);
@@ -743,8 +743,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            User_Id?          CurrentUserId)
         {
 
-            if (additionIfNotExists.SendVoting(Timestamp.Now,
-                                               EventTrackingId,
+            if (additionIfNotExists.SendVoting(EventTrackingId,
+                                               Timestamp.Now,
                                                CurrentUserId ?? User_Id.Anonymous,
                                                parentDataStructure,
                                                Entity) &&
@@ -753,8 +753,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             {
 
-                additionIfNotExists.SendNotification(Timestamp.Now,
-                                                     EventTrackingId,
+                additionIfNotExists.SendNotification(EventTrackingId,
+                                                     Timestamp.Now,
                                                      CurrentUserId ?? User_Id.Anonymous,
                                                      parentDataStructure,
                                                      Entity);
@@ -783,8 +783,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            User_Id?          CurrentUserId)
         {
 
-            if (additionIfNotExists.SendVoting(Timestamp.Now,
-                                               EventTrackingId,
+            if (additionIfNotExists.SendVoting(EventTrackingId,
+                                               Timestamp.Now,
                                                CurrentUserId ?? User_Id.Anonymous,
                                                parentDataStructure,
                                                Entity) &&
@@ -795,8 +795,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 OnSuccess?.Invoke(Entity);
 
-                additionIfNotExists.SendNotification(Timestamp.Now,
-                                                     EventTrackingId,
+                additionIfNotExists.SendNotification(EventTrackingId,
+                                                     Timestamp.Now,
                                                      CurrentUserId ?? User_Id.Anonymous,
                                                      parentDataStructure,
                                                      Entity);
@@ -817,8 +817,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            User_Id?                   CurrentUserId)
         {
 
-            if (additionIfNotExists.SendVoting(Timestamp.Now,
-                                               EventTrackingId,
+            if (additionIfNotExists.SendVoting(EventTrackingId,
+                                               Timestamp.Now,
                                                CurrentUserId ?? User_Id.Anonymous,
                                                parentDataStructure,
                                                Entity) &&
@@ -829,8 +829,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 OnSuccess?.Invoke(Timestamp.Now, Entity);
 
-                additionIfNotExists.SendNotification(Timestamp.Now,
-                                                     EventTrackingId,
+                additionIfNotExists.SendNotification(EventTrackingId,
+                                                     Timestamp.Now,
                                                      CurrentUserId ?? User_Id.Anonymous,
                                                      parentDataStructure,
                                                      Entity);
@@ -853,8 +853,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var userId = CurrentUserId ?? User_Id.Anonymous;
 
-            if (additionIfNotExists.SendVoting(Timestamp.Now,
-                                               EventTrackingId,
+            if (additionIfNotExists.SendVoting(EventTrackingId,
+                                               Timestamp.Now,
                                                userId,
                                                parentDataStructure,
                                                Entity) &&
@@ -869,8 +869,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                   parentDataStructure,
                                   Entity);
 
-                additionIfNotExists.SendNotification(Timestamp.Now,
-                                                     EventTrackingId,
+                additionIfNotExists.SendNotification(EventTrackingId,
+                                                     Timestamp.Now,
                                                      CurrentUserId ?? User_Id.Anonymous,
                                                      parentDataStructure,
                                                      Entity);
@@ -897,8 +897,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  User_Id?          CurrentUserId)
         {
 
-            if (update.SendVoting(Timestamp.Now,
-                                  EventTrackingId,
+            if (update.SendVoting(EventTrackingId,
+                                  Timestamp.Now,
                                   CurrentUserId ?? User_Id.Anonymous,
                                   parentDataStructure,
                                   NewEntity,
@@ -907,8 +907,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 lookup.TryUpdate(Id, NewEntity, OldEntity))
             {
 
-                update.SendNotification(Timestamp.Now,
-                                        EventTrackingId,
+                update.SendNotification(EventTrackingId,
+                                        Timestamp.Now,
                                         CurrentUserId ?? User_Id.Anonymous,
                                         parentDataStructure,
                                         NewEntity,
@@ -991,8 +991,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (lookup.TryGetValue(Id, out Entity))
             {
 
-                if (removal.SendVoting(Timestamp.Now,
-                                       EventTrackingId,
+                if (removal.SendVoting(EventTrackingId,
+                                       Timestamp.Now,
                                        CurrentUserId ?? User_Id.Anonymous,
                                        parentDataStructure,
                                        Entity) &&
@@ -1000,8 +1000,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     lookup.TryRemove(Id, out Entity))
                 {
 
-                    removal.SendNotification(Timestamp.Now,
-                                             EventTrackingId,
+                    removal.SendNotification(EventTrackingId,
+                                             Timestamp.Now,
                                              CurrentUserId ?? User_Id.Anonymous,
                                              parentDataStructure,
                                              Entity);
@@ -1027,8 +1027,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  User_Id?          CurrentUserId)
         {
 
-            if (removal.SendVoting(Timestamp.Now,
-                                   EventTrackingId,
+            if (removal.SendVoting(EventTrackingId,
+                                   Timestamp.Now,
                                    CurrentUserId ?? User_Id.Anonymous,
                                    parentDataStructure,
                                    Entity) &&
@@ -1036,8 +1036,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 lookup.TryRemove(Entity.Id, out _))
             {
 
-                removal.SendNotification(Timestamp.Now,
-                                         EventTrackingId,
+                removal.SendNotification(EventTrackingId,
+                                         Timestamp.Now,
                                          CurrentUserId ?? User_Id.Anonymous,
                                          parentDataStructure,
                                          Entity);

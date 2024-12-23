@@ -17,12 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-
-#if SILVERLIGHT
-using de.ahzf.Silverlight;
-#endif
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -80,7 +75,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// sliding standard deviation and the average of
         /// messages/objects that have passed through it.
         /// </summary>
-        public StatisticsArrow(IArrowSender<Double> ArrowSender = null)
+        public StatisticsArrow(IArrowSender<Double>? ArrowSender = null)
 
             : base(ArrowSender)
 
@@ -163,7 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(Double MessageIn, out Statistics MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, Double MessageIn, out Statistics MessageOut)
         {
 
             var Value     = MessageIn;

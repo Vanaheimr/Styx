@@ -17,9 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -78,20 +76,16 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageAction">A delegate called concurrently for every incoming message.</param>
         /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public ConcurrentActionArrow(Action<TIn>        MessageAction,
-                                     UInt32             MaxQueueSize  = 1000,
-                                     IArrowSender<TIn>  ArrowSender   = null)
+        public ConcurrentActionArrow(Action<TIn>         MessageAction,
+                                     UInt32              MaxQueueSize  = 1000,
+                                     IArrowSender<TIn>?  ArrowSender   = null)
 
             : base(MaxQueueSize, ArrowSender)
 
         {
 
-            #region Initial checks
-
             if (MessageAction == null)
                 throw new ArgumentNullException("MessageAction", "The given 'MessageAction' delegate must not be null!");
-
-            #endregion
 
             this.MessageAction = MessageAction;
 
@@ -100,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #endregion
 
 
-        protected override Boolean ProcessMessage(TIn MessageIn, out TIn MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TIn MessageIn, out TIn MessageOut)
         {
             MessageOut = MessageIn;
             MessageAction(MessageIn);

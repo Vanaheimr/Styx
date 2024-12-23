@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 
 #endregion
@@ -25,13 +25,13 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
-    public delegate void VotingEventHandler<T,                          V>(T  Message,                                                                                IVote<V> Vote);
-    public delegate void VotingEventHandler<T1, T2,                     V>(T1 Message1, T2 Message2,                                                                  IVote<V> Vote);
-    public delegate void VotingEventHandler<T1, T2, T3,                 V>(T1 Message1, T2 Message2, T3 Message3,                                                     IVote<V> Vote);
-    public delegate void VotingEventHandler<T1, T2, T3, T4,             V>(T1 Message1, T2 Message2, T3 Message3, T4 Message4,                                        IVote<V> Vote);
-    public delegate void VotingEventHandler<T1, T2, T3, T4, T5,         V>(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5,                           IVote<V> Vote);
-    public delegate void VotingEventHandler<T1, T2, T3, T4, T5, T6,     V>(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6,              IVote<V> Vote);
-    public delegate void VotingEventHandler<T1, T2, T3, T4, T5, T6, T7, V>(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7, IVote<V> Vote);
+    public delegate void VotingEventHandler<T,                          V>(EventTracking_Id EventTrackingId, T  Message,                                                                                IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2,                     V>(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2,                                                                  IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3,                 V>(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3,                                                     IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, T4,             V>(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4,                                        IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, T4, T5,         V>(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5,                           IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, T4, T5, T6,     V>(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6,              IVote<V> Vote);
+    public delegate void VotingEventHandler<T1, T2, T3, T4, T5, T6, T7, V>(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7, IVote<V> Vote);
 
 
     public interface IVotingSender<T, V> : IArrowSender<T>

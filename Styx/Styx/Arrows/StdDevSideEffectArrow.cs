@@ -17,12 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading;
-
-#if SILVERLIGHT
-using de.ahzf.Silverlight;
-#endif
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -47,50 +42,23 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Properties
 
-        #region StdDev
-
         /// <summary>
         /// The standard deviation of the processed messages.
         /// </summary>
         public Double StdDev
-        {
-            get
-            {
-                return Math.Sqrt(SideEffect1);
-            }
-        }
-
-        #endregion
-
-        #region Variance
+            => Math.Sqrt(SideEffect1);
 
         /// <summary>
         /// The variance of the processed messages.
         /// </summary>
         public Double Variance
-        {
-            get
-            {
-                return SideEffect1;
-            }
-        }
-
-        #endregion
-
-        #region Average
+            => SideEffect1;
 
         /// <summary>
         /// The average of the processed messages.
         /// </summary>
         public Double Average
-        {
-            get
-            {
-                return SideEffect2;
-            }
-        }
-
-        #endregion
+            => SideEffect2;
 
         #endregion
 
@@ -111,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         private Double AddToSum(Double Summand)
         {
-            
+
             Double _InitialValue, _NewLocalSum;
 
             do
@@ -124,11 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             }
             // If Sum still equals _InitialValue, exchange it with _NewLocalSum
-#if SILVERLIGHT
-            while (_InitialValue != SilverlightTools.CompareExchange(ref Sum, _NewLocalSum, _InitialValue));
-#else
             while (_InitialValue != Interlocked.CompareExchange(ref Sum, _NewLocalSum, _InitialValue));
-#endif
 
             // Return _NewLocalSum as Sum may already be alternated
             // by a concurrent thread between the end of the loop
@@ -143,7 +107,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         private Double AddToQuadratSum(Double Summand)
         {
-            
+
             Double _InitialValue, _NewLocalSum;
 
             do
@@ -156,11 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             }
             // If Sum still equals _InitialValue, exchange it with _NewLocalSum
-#if SILVERLIGHT
-            while (_InitialValue != SilverlightTools.CompareExchange(ref QuadratSum, _NewLocalSum, _InitialValue));
-#else
             while (_InitialValue != Interlocked.CompareExchange(ref QuadratSum, _NewLocalSum, _InitialValue));
-#endif
 
             // Return _NewLocalSum as Sum may already be alternated
             // by a concurrent thread between the end of the loop
@@ -179,20 +139,20 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(Double MessageIn, out Double MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, Double MessageIn, out Double MessageOut)
         {
 
             MessageOut = MessageIn;
             var _Counter = Interlocked.Increment(ref Counter);
 
             var _Sum     = AddToSum(MessageOut);
-            _SideEffect1 = AddToQuadratSum(MessageOut) - (Math.Pow(_Sum, 2) / _Counter);
-            _SideEffect2 = _Sum / _Counter;
+            SideEffect1Protected = AddToQuadratSum(MessageOut) - (Math.Pow(_Sum, 2) / _Counter);
+            SideEffect2Protected = _Sum / _Counter;
 
             if (Counter > 1 && Counter < 30)
-                _SideEffect1 = _SideEffect1 / (_Counter - 1);  // corr. Var.
+                SideEffect1Protected = SideEffect1Protected / (_Counter - 1);  // corr. Var.
             else
-                _SideEffect1 = _SideEffect1 / _Counter;
+                SideEffect1Protected = SideEffect1Protected / _Counter;
 
             return true;
 

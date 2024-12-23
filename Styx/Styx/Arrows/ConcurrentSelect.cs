@@ -17,12 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
-using System.Diagnostics;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -79,20 +74,16 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageProcessor">A delegate for transforming incoming messages into outgoing messages.</param>
         /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public ConcurrentSelectArrow(Func<TIn, TOut>    MessageProcessor,
-                                       UInt32             MaxQueueSize  = 1000,
-                                       IArrowSender<TIn>  ArrowSender   = null)
+        public ConcurrentSelectArrow(Func<TIn, TOut>     MessageProcessor,
+                                     UInt32              MaxQueueSize   = 1000,
+                                     IArrowSender<TIn>?  ArrowSender    = null)
 
             : base(MaxQueueSize, ArrowSender)
 
         {
 
-            #region Initial checks
-
-            if (MessageProcessor == null)
+            if (MessageProcessor is null)
                 throw new ArgumentNullException("MessageProcessor", "The given 'MessageProcessor' delegate must not be null!");
-
-            #endregion
 
             this.MessageProcessor = MessageProcessor;
 
@@ -107,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TIn MessageIn, out TOut MessageOut)
         {
             // Try-Catch will be done within AbstractConcurrentArrow.ProcessArrow(MessageIn)
             MessageOut = MessageProcessor(MessageIn);

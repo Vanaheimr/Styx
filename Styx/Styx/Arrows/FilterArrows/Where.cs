@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
@@ -59,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Include">A Func&lt;TMessage, Boolean&gt; filtering the consuming objects. True means forwardfilter (ignore).</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
         public WhereArrow(Func<TMessage, Boolean>  Include,
-                          IArrowSender<TMessage>   ArrowSender  = null)
+                          IArrowSender<TMessage>?  ArrowSender   = null)
 
             : base(Include, false, ArrowSender)
 

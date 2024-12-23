@@ -32,16 +32,18 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                                             ISideEffectArrow<TIn, TOut, TSideEffect>
     {
 
-        #region Properties
-
-        #region SideEffect
+        #region Data
 
         /// <summary>
         /// The SideEffect produced by this Arrow.
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected TSideEffect _SideEffect;
+        protected TSideEffect SideEffectProtected;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// The SideEffect produced by this Arrow.
@@ -51,17 +53,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _SideEffect;
+                return SideEffectProtected;
             }
 
             protected set
             {
-                _SideEffect = value;
+                SideEffectProtected = value;
             }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Creates a new AbstractSideEffectArrow.
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public AbstractSideEffectArrow(IArrowSender<TIn> ArrowSender = null)
+        public AbstractSideEffectArrow(IArrowSender<TIn>? ArrowSender = null)
 
             : base(ArrowSender)
 
@@ -98,16 +98,25 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                                        ISideEffectArrow<TIn, TOut, T1, T2>
     {
 
-        #region Properties
-
-        #region SideEffect1
+        #region Data
 
         /// <summary>
         /// The first SideEffect produced by this Arrow.
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T1 _SideEffect1;
+        protected T1 SideEffect1Protected;
+
+        /// <summary>
+        /// The second SideEffect produced by this Arrow.
+        /// Use this reference for operations like:
+        /// Interlocked.Increment(ref _SideEffect);
+        /// </summary>
+        protected T2 SideEffect2Protected;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// The first SideEffect produced by this Arrow.
@@ -117,26 +126,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _SideEffect1;
+                return SideEffect1Protected;
             }
 
             protected set
             {
-                _SideEffect1 = value;
+                SideEffect1Protected = value;
             }
 
         }
-
-        #endregion
-
-        #region SideEffect2
-
-        /// <summary>
-        /// The second SideEffect produced by this Arrow.
-        /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
-        /// </summary>
-        protected T2 _SideEffect2;
 
         /// <summary>
         /// The second SideEffect produced by this Arrow.
@@ -146,17 +144,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _SideEffect2;
+                return SideEffect2Protected;
             }
 
             protected set
             {
-                _SideEffect2 = value;
+                SideEffect2Protected = value;
             }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -165,7 +161,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Creates a new AbstractSideEffectArrow.
         /// </summary>
-        public AbstractSideEffectArrow(IArrowSender<TIn> ArrowSender = null)
+        public AbstractSideEffectArrow(IArrowSender<TIn>? ArrowSender = null)
 
             : base(ArrowSender)
 
@@ -193,16 +189,32 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                                            ISideEffectArrow<TIn, TOut, T1, T2, T3>
     {
 
-        #region Properties
-
-        #region SideEffect1
+        #region Data
 
         /// <summary>
         /// The first SideEffect produced by this Arrow.
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T1 _SideEffect1;
+        protected T1 SideEffect1Protected;
+
+        /// <summary>
+        /// The second SideEffect produced by this Arrow.
+        /// Use this reference for operations like:
+        /// Interlocked.Increment(ref _SideEffect);
+        /// </summary>
+        protected T2 SideEffect2Protected;
+
+        /// <summary>
+        /// The third SideEffect produced by this Arrow.
+        /// Use this reference for operations like:
+        /// Interlocked.Increment(ref _SideEffect);
+        /// </summary>
+        protected T3 SideEffect3Protected;
+
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// The first SideEffect produced by this Arrow.
@@ -212,26 +224,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _SideEffect1;
+                return SideEffect1Protected;
             }
 
             protected set
             {
-                _SideEffect1 = value;
+                SideEffect1Protected = value;
             }
 
         }
-
-        #endregion
-
-        #region SideEffect2
-
-        /// <summary>
-        /// The second SideEffect produced by this Arrow.
-        /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
-        /// </summary>
-        protected T2 _SideEffect2;
 
         /// <summary>
         /// The second SideEffect produced by this Arrow.
@@ -241,26 +242,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _SideEffect2;
+                return SideEffect2Protected;
             }
 
             protected set
             {
-                _SideEffect2 = value;
+                SideEffect2Protected = value;
             }
 
         }
-
-        #endregion
-
-        #region SideEffect3
-
-        /// <summary>
-        /// The third SideEffect produced by this Arrow.
-        /// Use this reference for operations like:
-        /// Interlocked.Increment(ref _SideEffect);
-        /// </summary>
-        protected T3 _SideEffect3;
 
         /// <summary>
         /// The third SideEffect produced by this Arrow.
@@ -270,17 +260,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             get
             {
-                return _SideEffect3;
+                return SideEffect3Protected;
             }
 
             protected set
             {
-                _SideEffect3 = value;
+                SideEffect3Protected = value;
             }
 
         }
-
-        #endregion
 
         #endregion
 
@@ -289,7 +277,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Creates a new AbstractSideEffectArrow.
         /// </summary>
-        public AbstractSideEffectArrow(IArrowSender<TIn> ArrowSender = null)
+        public AbstractSideEffectArrow(IArrowSender<TIn>? ArrowSender = null)
 
             : base(ArrowSender)
 

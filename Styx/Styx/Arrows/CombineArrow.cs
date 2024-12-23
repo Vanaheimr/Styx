@@ -17,8 +17,9 @@
 
 #region Usings
 
-using System;
 using System.Collections.Concurrent;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -63,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        #region MaxQueueSize
+        #region Properties
 
         /// <summary>
         /// The maximum number of queued messages for both arrow senders.
@@ -86,19 +87,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                             Func<TIn1, TIn2, TOut>  MessagesProcessor,
                             UInt32                  MaxQueueSize = 1000)
         {
-
-            #region Initial checks
-
-            if (ArrowSender1 == null)
-                throw new ArgumentNullException("ArrowSender1", "The parameter 'ArrowSender1' must not be null!");
-
-            if (ArrowSender2 == null)
-                throw new ArgumentNullException("ArrowSender2", "The parameter 'ArrowSender2' must not be null!");
-
-            if (MessagesProcessor == null)
-                throw new ArgumentNullException("MessagesProcessor", "The parameter 'MessagesProcessor' must not be null!");
-
-            #endregion
 
             this.ArrowSender1       = ArrowSender1;
             this.ArrowSender2       = ArrowSender2;
@@ -123,15 +111,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// further processing and delivery to the subscribers.
         /// </summary>
         /// <param name="MessageIn1">A message from sender 1.</param>
-        public void ReceiveMessage1(TIn1 MessageIn1)
+        public void ReceiveMessage1(EventTracking_Id EventTrackingId, TIn1 MessageIn1)
         {
 
-            TIn2 MessageIn2;
+            if (Queue2.TryDequeue(out var MessageIn2))
+                NotifyRecipients(EventTrackingId, this, MessagesProcessor(MessageIn1, MessageIn2));
 
-            if (Queue2.TryDequeue(out MessageIn2))
-                base.NotifyRecipients(this, MessagesProcessor(MessageIn1, MessageIn2));
-
-            else if (this.Queue1.Count < this.MaxQueueSize)
+            else if (Queue1.Count < MaxQueueSize)
                 Queue1.Enqueue(MessageIn1);
 
         }
@@ -145,16 +131,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// further processing and delivery to the subscribers.
         /// </summary>
         /// <param name="MessageIn2">A message from sender 2.</param>
-        public void ReceiveMessage2(TIn2 MessageIn2)
+        public void ReceiveMessage2(EventTracking_Id EventTrackingId, TIn2 MessageIn2)
         {
 
-            TIn1 MessageIn1;
+            if (Queue1.TryDequeue(out var MessageIn1))
+                NotifyRecipients(EventTrackingId, this, MessagesProcessor(MessageIn1, MessageIn2));
 
-            if (Queue1.TryDequeue(out MessageIn1))
-                base.NotifyRecipients(this, MessagesProcessor(MessageIn1, MessageIn2));
-
-            else if (this.Queue2.Count < this.MaxQueueSize)
-                this.Queue2.Enqueue(MessageIn2);
+            else if (Queue2.Count < MaxQueueSize)
+                Queue2.Enqueue(MessageIn2);
 
         }
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System;
 
 #endregion
@@ -65,35 +66,17 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Properties
 
-        #region Min
-
         /// <summary>
         /// The minimum of the passed values.
         /// </summary>
         public TMessage Min
-        {
-            get
-            {
-                return _SideEffect1;
-            }
-        }
-
-        #endregion
-
-        #region Max
+            => SideEffect1Protected;
 
         /// <summary>
         /// The maximum of the passed values.
         /// </summary>
         public TMessage Max
-        {
-            get
-            {
-                return _SideEffect2;
-            }
-        }
-
-        #endregion
+            => SideEffect2Protected;
 
         #endregion
 
@@ -106,9 +89,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Min">The initial minimum.</param>
         /// <param name="Max">The initial maximum.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public MinMaxArrow(TMessage                Min,
-                           TMessage                Max,
-                           IArrowSender<TMessage>  ArrowSender = null)
+        public MinMaxArrow(TMessage                 Min,
+                           TMessage                 Max,
+                           IArrowSender<TMessage>?  ArrowSender = null)
         {
 
             this.SideEffect1 = Min;
@@ -125,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
 
             MessageOut = MessageIn;

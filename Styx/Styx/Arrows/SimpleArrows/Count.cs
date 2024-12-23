@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -66,14 +65,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="InitialValue">The initial value of the counter.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public CountArrow(Int64                   InitialValue = 0L,
-                          IArrowSender<TMessage>  ArrowSender  = null)
+        public CountArrow(Int64                    InitialValue = 0L,
+                          IArrowSender<TMessage>?  ArrowSender  = null)
 
             : base(ArrowSender)
 
         {
 
-            base._SideEffect = InitialValue;
+            base.SideEffectProtected = InitialValue;
 
         }
 
@@ -86,10 +85,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
             MessageOut = MessageIn;
-            Interlocked.Increment(ref _SideEffect);
+            Interlocked.Increment(ref SideEffectProtected);
             return true;
         }
 
@@ -102,7 +101,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _SideEffect + ">";
+            return base.ToString() + "<" + SideEffectProtected + ">";
         }
 
         #endregion

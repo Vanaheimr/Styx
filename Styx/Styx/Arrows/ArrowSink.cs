@@ -17,10 +17,10 @@
 
 #region Usings
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -50,9 +50,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// A blocking collection as inter-thread message pipeline.
         /// </summary>
-        private readonly BlockingCollection<TIn> BlockingCollection;
+        private readonly BlockingCollection<TIn>  BlockingCollection;
 
-        private readonly IEnumerator<TIn> _InternalEnumerator;
+        private readonly IEnumerator<TIn>         internalEnumerator;
 
         #endregion
 
@@ -66,8 +66,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Func">A Func&lt;S, Boolean&gt; filtering the consuming objects. True means filter (ignore).</param>
         public ArrowSink()
         {
-            this.BlockingCollection   = new BlockingCollection<TIn>();
-            this._InternalEnumerator  = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
+            this.BlockingCollection  = [];
+            this.internalEnumerator  = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
         }
 
         #endregion
@@ -81,11 +81,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         internal ArrowSink(IArrowSender<TIn> INotification)
         {
 
-            if (INotification != null)
-                INotification.SendTo(this);
+            INotification?.SendTo(this);
 
-            this.BlockingCollection   = new BlockingCollection<TIn>();
-            this._InternalEnumerator  = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
+            this.BlockingCollection  = [];
+            this.internalEnumerator  = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
 
         }
 
@@ -94,21 +93,20 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #endregion
 
 
-        public void ProcessArrow(TIn Message)
+        public void ProcessArrow(EventTracking_Id EventTrackingId, TIn Message)
         {
             BlockingCollection.Add(Message);
         }
 
-        public void ProcessExceptionOccured(dynamic Sender, DateTime Timestamp, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(dynamic Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
             BlockingCollection.CompleteAdding();
         }
 
-        public void ProcessCompleted(dynamic Sender, DateTime Timestamp, String Message)
+        public void ProcessCompleted(dynamic Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
             BlockingCollection.CompleteAdding();
         }
-
 
 
         #region GetEnumerator()
@@ -120,9 +118,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// A IEnumerator&lt;E&gt; that can be used to iterate through the collection.
         /// </returns>
         public IEnumerator<TIn> GetEnumerator()
-        {
-            return _InternalEnumerator;
-        }
+            => internalEnumerator;
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
@@ -130,10 +126,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <returns>
         /// A IEnumerator that can be used to iterate through the collection.
         /// </returns>
-        IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _InternalEnumerator;
-        }
+        IEnumerator IEnumerable.GetEnumerator()
+            => internalEnumerator;
 
         #endregion
 
@@ -143,23 +137,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Gets the current element in the collection.
         /// </summary>
         public TIn Current
-        {
-            get
-            {
-                return _InternalEnumerator.Current;
-            }
-        }
+            => internalEnumerator.Current;
 
         /// <summary>
         /// Gets the current element in the collection.
         /// </summary>
-        Object System.Collections.IEnumerator.Current
-        {
-            get
-            {
-                return _InternalEnumerator.Current;
-            }
-        }
+        Object IEnumerator.Current
+            => internalEnumerator.Current;
 
         #endregion
 
@@ -174,9 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// collection.
         /// </returns>
         public Boolean MoveNext()
-        {
-            return _InternalEnumerator.MoveNext();
-        }
+            => internalEnumerator.MoveNext();
 
         #endregion
 
@@ -188,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         public virtual void Reset()
         {
-            _InternalEnumerator.Reset();
+            internalEnumerator.Reset();
         }
 
         #endregion
@@ -200,7 +182,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         public virtual void Dispose()
         {
-            _InternalEnumerator.Dispose();
+            internalEnumerator.Dispose();
         }
 
         #endregion

@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -52,12 +51,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// write/read times.
         /// </summary>
         /// <param name="ICollection">An optional ICollection to store the passed messages/objects.</param>
-        public AggregatorArrow(ICollection<TMessage> ICollection = null)
+        public AggregatorArrow(ICollection<TMessage>? ICollection = null)
         {
             if (ICollection == null)
-                _SideEffect = new List<TMessage>();
+                SideEffectProtected = [];
             else
-                _SideEffect = ICollection;
+                SideEffectProtected = ICollection;
         }
 
         #endregion
@@ -69,10 +68,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
             MessageOut = MessageIn;
-            _SideEffect.Add(MessageIn);
+            SideEffectProtected.Add(MessageIn);
             return true;
         }
 
@@ -85,7 +84,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         public override String ToString()
         {
-            return base.ToString() + "<" + _SideEffect + ">";
+            return base.ToString() + "<" + SideEffectProtected + ">";
         }
 
         #endregion

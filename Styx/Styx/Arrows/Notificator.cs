@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 
 #endregion
@@ -34,19 +35,19 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public event CompletedEventHandler?         OnCompleted;
 
-        public void SignalStarted(Object Sender, DateTime Timestamp, String Message)
+        public void SignalStarted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)
         {
-            OnStarted?.Invoke(Sender, Timestamp, Message);
+            OnStarted?.Invoke(Sender, Timestamp, EventTrackingId, Message);
         }
 
-        public void SignalError(Object Sender, DateTime Timestamp, Exception Exception)
+        public void SignalError(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception)
         {
-            OnExceptionOccured?.Invoke(Sender, Timestamp, Exception);
+            OnExceptionOccured?.Invoke(Sender, Timestamp, EventTrackingId, Exception);
         }
 
-        public void SignalCompleted(Object Sender, DateTime Timestamp, String Message)
+        public void SignalCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)
         {
-            OnCompleted?.Invoke(Sender, Timestamp, Message);
+            OnCompleted?.Invoke(Sender, Timestamp, EventTrackingId, Message);
         }
 
     }
@@ -55,11 +56,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Notificator<T> : ANotificator, INotificator<T>, IArrowSender<T>
     {
 
-        public event NotificationEventHandler<T> OnNotification;
+        public event NotificationEventHandler<T>? OnNotification;
 
-        public void SendNotification(T Message)
+        public void SendNotification(EventTracking_Id EventTrackingId, T Message)
         {
-            OnNotification?.Invoke(Message);
+            OnNotification?.Invoke(EventTrackingId, Message);
         }
 
     }
@@ -69,14 +70,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private readonly Func<IVote<V>> VoteCreator;
-        private readonly V DefaultValue;
+        private readonly Func<IVote<V>>  VoteCreator;
+        private readonly V               DefaultValue;
 
         #endregion
 
         #region Events
 
-        public event VotingEventHandler<T, V> OnVoting;
+        public event VotingEventHandler<T, V>? OnVoting;
 
         #endregion
 
@@ -89,27 +90,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         }
 
-        public V SendVoting(T Message)
+        public V SendVoting(EventTracking_Id EventTrackingId, T Message)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            OnVoting?.Invoke(Message, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message, Vote);
 
             return Vote.Result;
 
         }
 
-        public V SendVoting(T Message, IVote<V> Vote)
+        public V SendVoting(EventTracking_Id EventTrackingId, T Message, IVote<V> Vote)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return Vote.Result;
 
-            OnVoting?.Invoke(Message, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message, Vote);
 
             return Vote.Result;
 
@@ -122,12 +123,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Notificator<T1, T2> : ANotificator, INotificator<T1, T2>, IArrowSender<T1, T2>
     {
 
-        public event NotificationEventHandler<T1, T2> OnNotification;
+        public event NotificationEventHandler<T1, T2>? OnNotification;
 
-        public void SendNotification(T1 Message1, T2 Message2)
+        public void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2)
         {
 
-            OnNotification?.Invoke(Message1, Message2);
+            OnNotification?.Invoke(EventTrackingId, Message1, Message2);
 
         }
 
@@ -138,8 +139,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private readonly Func<IVote<V>> VoteCreator;
-        private readonly V DefaultValue;
+        private readonly Func<IVote<V>>  VoteCreator;
+        private readonly V               DefaultValue;
 
         #endregion
 
@@ -158,27 +159,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         }
 
-        public V SendVoting(T1 Message1, T2 Message2)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            OnVoting?.Invoke(Message1, Message2, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Vote);
 
             return Vote.Result;
 
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, IVote<V> Vote)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, IVote<V> Vote)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return Vote.Result;
 
-            OnVoting?.Invoke(Message1, Message2, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Vote);
 
             return Vote.Result;
 
@@ -192,11 +193,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Notificator<T1, T2, T3> : ANotificator, INotificator<T1, T2, T3>, IArrowSender<T1, T2, T3>
     {
 
-        public event NotificationEventHandler<T1, T2, T3> OnNotification;
+        public event NotificationEventHandler<T1, T2, T3>? OnNotification;
 
-        public void SendNotification(T1 Message1, T2 Message2, T3 Message3)
+        public void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3)
         {
-            OnNotification?.Invoke(Message1, Message2, Message3);
+            OnNotification?.Invoke(EventTrackingId, Message1, Message2, Message3);
         }
 
     }
@@ -224,27 +225,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.DefaultValue  = DefaultValue;
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Vote);
 
             return Vote.Result;
 
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, IVote<V> Vote)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return Vote.Result;
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Vote);
 
             return Vote.Result;
 
@@ -258,11 +259,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Notificator<T1, T2, T3, T4> : ANotificator, INotificator<T1, T2, T3, T4>, IArrowSender<T1, T2, T3, T4>
     {
 
-        public event NotificationEventHandler<T1, T2, T3, T4> OnNotification;
+        public event NotificationEventHandler<T1, T2, T3, T4>? OnNotification;
 
-        public void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4)
+        public void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4)
         {
-            OnNotification?.Invoke(Message1, Message2, Message3, Message4);
+            OnNotification?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4);
         }
 
     }
@@ -290,27 +291,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.DefaultValue  = DefaultValue;
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Vote);
 
             return Vote.Result;
 
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, IVote<V> Vote)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, IVote<V> Vote)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return Vote.Result;
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Vote);
 
             return Vote.Result;
 
@@ -324,11 +325,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Notificator<T1, T2, T3, T4, T5> : ANotificator, INotificator<T1, T2, T3, T4, T5>, IArrowSender<T1, T2, T3, T4, T5>
     {
 
-        public event NotificationEventHandler<T1, T2, T3, T4, T5> OnNotification;
+        public event NotificationEventHandler<T1, T2, T3, T4, T5>? OnNotification;
 
-        public void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5)
+        public void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5)
         {
-            OnNotification?.Invoke(Message1, Message2, Message3, Message4, Message5);
+            OnNotification?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Message5);
         }
 
     }
@@ -356,27 +357,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.DefaultValue  = DefaultValue;
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Message5, Vote);
 
             return Vote.Result;
 
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, IVote<V> Vote)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, IVote<V> Vote)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return Vote.Result;
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Message5, Vote);
 
             return Vote.Result;
 
@@ -390,11 +391,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Notificator<T1, T2, T3, T4, T5, T6> : ANotificator, INotificator<T1, T2, T3, T4, T5, T6>, IArrowSender<T1, T2, T3, T4, T5, T6>
     {
 
-        public event NotificationEventHandler<T1, T2, T3, T4, T5, T6> OnNotification;
+        public event NotificationEventHandler<T1, T2, T3, T4, T5, T6>? OnNotification;
 
-        public void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6)
+        public void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6)
         {
-            OnNotification?.Invoke(Message1, Message2, Message3, Message4, Message5, Message6);
+            OnNotification?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Message5, Message6);
         }
 
     }
@@ -422,27 +423,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             this.DefaultValue  = DefaultValue;
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return DefaultValue;
 
             var Vote = VoteCreator();
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Message6, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Message5, Message6, Vote);
 
             return Vote.Result;
 
         }
 
-        public V SendVoting(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, IVote<V> Vote)
+        public V SendVoting(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, IVote<V> Vote)
         {
 
-            if (OnVoting == null)
+            if (OnVoting is null)
                 return Vote.Result;
 
-            OnVoting?.Invoke(Message1, Message2, Message3, Message4, Message5, Message6, Vote);
+            OnVoting?.Invoke(EventTrackingId, Message1, Message2, Message3, Message4, Message5, Message6, Vote);
 
             return Vote.Result;
 
@@ -461,14 +462,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private Timer   UpdateEVSEStatusTimer;
-        private List<T> ListOfT;
+        private readonly Timer   UpdateEVSEStatusTimer;
+        private readonly List<T> ListOfT;
 
         #endregion
 
         #region Events
 
-        public event AggregatedNotificationEventHandler<IEnumerable<T>>  OnNotification;
+        public event AggregatedNotificationEventHandler<IEnumerable<T>>?  OnNotification;
 
         #endregion
 
@@ -477,7 +478,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         {
 
             UpdateEVSEStatusTimer = new Timer(SendNotification2);
-            ListOfT               = new List<T>();
+            ListOfT               = [];
 
         }
 
@@ -490,16 +491,16 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             }
 
             UpdateEVSEStatusTimer.Change(5000, Timeout.Infinite);
-            Console.WriteLine(DateTime.Now + " something added!");
+            Console.WriteLine(Illias.Timestamp.Now + " something added!");
 
         }
 
-        public void SendNotification2(Object Context)
+        public void SendNotification2(Object? Context)
         {
 
             UpdateEVSEStatusTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
-            List<T> NewListOfT = null;
+            List<T>? NewListOfT = null;
 
             lock (ListOfT)
             {
@@ -507,7 +508,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 ListOfT.Clear();
             }
 
-            OnNotification?.Invoke(DateTime.Now, NewListOfT);
+            OnNotification?.Invoke(Timestamp.Now, NewListOfT);
 
         }
 

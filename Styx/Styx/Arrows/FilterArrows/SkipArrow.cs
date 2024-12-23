@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Threading;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -60,8 +59,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private readonly UInt32  NumberOfMessagesToSkip;
-        private          Int64   Counter;
+        private readonly UInt32  numberOfMessagesToSkip;
+        private          Int64   internalCounter;
 
         #endregion
 
@@ -72,13 +71,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// without any processing, but skips the first n messages.
         /// </summary>
         /// <param name="NumberOfMessagesToSkip">The number of messages to skip.</param>
-        public SkipArrow(UInt32                  NumberOfMessagesToSkip,
-                         IArrowSender<TMessage>  ArrowSender = null)
+        public SkipArrow(UInt32                   NumberOfMessagesToSkip,
+                         IArrowSender<TMessage>?  ArrowSender   = null)
 
             : base(ArrowSender)
 
         {
-            this.NumberOfMessagesToSkip = NumberOfMessagesToSkip;
+            this.numberOfMessagesToSkip = NumberOfMessagesToSkip;
         }
 
         #endregion
@@ -90,18 +89,18 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
 
-            var _Counter = Interlocked.Increment(ref Counter);
+            var counter = Interlocked.Increment(ref internalCounter);
 
-            if (_Counter > NumberOfMessagesToSkip)
+            if (counter > numberOfMessagesToSkip)
             {
                 MessageOut = MessageIn;
                 return true;
             }
 
-            MessageOut = default(TMessage);
+            MessageOut = default;
             return false;
 
         }

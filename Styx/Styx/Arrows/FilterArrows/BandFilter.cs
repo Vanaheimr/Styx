@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
@@ -35,23 +28,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Properties
 
-        #region Lower
-
         /// <summary>
         /// The lower bound of the passed values.
         /// </summary>
-        public TMessage Lower { get; private set; }
-
-        #endregion
-
-        #region Upper
+        public TMessage  Lower    { get; private set; }
 
         /// <summary>
         /// The upper bound of the passed values.
         /// </summary>
-        public TMessage Upper { get; private set; }
-
-        #endregion
+        public TMessage  Upper    { get; private set; }
 
         #endregion
 
@@ -65,10 +50,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Upper">The upper bound of the passed values.</param>
         /// <param name="InvertedFilter">Invert the filter behaviour.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public BandFilterArrow(TMessage                Lower,
-                               TMessage                Upper,
-                               Boolean                 InvertedFilter  = false,
-                               IArrowSender<TMessage>  ArrowSender     = null)
+        public BandFilterArrow(TMessage                 Lower,
+                               TMessage                 Upper,
+                               Boolean                  InvertedFilter  = false,
+                               IArrowSender<TMessage>?  ArrowSender     = null)
 
             : base(Message => {
 

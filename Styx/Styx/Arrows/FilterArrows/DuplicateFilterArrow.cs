@@ -17,9 +17,8 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Collections;
-using System;
-using System.Collections.Generic;
 
 #endregion
 
@@ -39,7 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private readonly HashedSet<TMessage> _HistorySet;
+        private readonly HashedSet<TMessage> historySet = [];
 
         #endregion
 
@@ -53,9 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// becomes as a log_2 index is checked for every object.
         /// </summary>
         public DuplicateFilterArrow()
-        {
-            _HistorySet = new HashedSet<TMessage>();
-        }
+        { }
 
         #endregion
 
@@ -66,14 +63,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
-            
+
             MessageOut = MessageIn;
 
-            if (!_HistorySet.Contains(MessageIn))
+            if (!historySet.Contains(MessageIn))
             {
-                _HistorySet.Add(MessageIn);
+                historySet.Add(MessageIn);
                 return true;
             }
 

@@ -17,10 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Collections.Concurrent;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -47,14 +46,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Properties
 
-        #region MaxQueueSize
-
         /// <summary>
         /// The maximum number of queued messages for both arrow senders.
         /// </summary>
         public UInt32 MaxQueueSize { get; set; }
-
-        #endregion
 
         #endregion
 
@@ -74,41 +69,35 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         {
 
-            #region Initial checks
-
-            if (ArrowSender1 == null)
-                throw new ArgumentNullException("ArrowSender1", "The parameter 'ArrowSender1' must not be null!");
-
-            if (ArrowSender2 == null)
-                throw new ArgumentNullException("ArrowSender2", "The parameter 'ArrowSender2' must not be null!");
-
-            if (MessagesProcessor == null)
-                throw new ArgumentNullException("MessagesProcessor", "The parameter 'MessagesProcessor' must not be null!");
-
-            #endregion
-
             this.MessagesProcessor    = MessagesProcessor;
-            this.MaxQueueSize         = 1000;
-            this.BlockingCollection1  = new BlockingCollection<TIn1>();
-            this.BlockingCollection2  = new BlockingCollection<TIn2>();
+            this.MaxQueueSize         = MaxQueueSize;
+            this.BlockingCollection1  = [];
+            this.BlockingCollection2  = [];
 
             ArrowSender1.OnNotification += ReceiveMessage1;
             ArrowSender2.OnNotification += ReceiveMessage2;
 
             this.ArrowSenderTask = Task.Factory.StartNew(() => {
 
-                var Enumerator1 = BlockingCollection1.GetConsumingEnumerable().GetEnumerator();
-                var Enumerator2 = BlockingCollection2.GetConsumingEnumerable().GetEnumerator();
+                var enumerator1 = BlockingCollection1.GetConsumingEnumerable().GetEnumerator();
+                var enumerator2 = BlockingCollection2.GetConsumingEnumerable().GetEnumerator();
 
                 while (!BlockingCollection1.IsCompleted ||
                        !BlockingCollection2.IsCompleted)
                 {
 
                     // Both will block until something becomes available!
-                    Enumerator1.MoveNext();
-                    Enumerator2.MoveNext();
+                    enumerator1.MoveNext();
+                    enumerator2.MoveNext();
 
-                    base.NotifyRecipients(this, MessagesProcessor(Enumerator1.Current, Enumerator2.Current));
+                    NotifyRecipients(
+                        EventTracking_Id.New,
+                        this,
+                        this.MessagesProcessor(
+                            enumerator1.Current,
+                            enumerator2.Current
+                        )
+                    );
 
                 }
 
@@ -126,9 +115,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// further processing and delivery to the subscribers.
         /// </summary>
         /// <param name="MessageIn1">A message from sender 1.</param>
-        public void ReceiveMessage1(TIn1 MessageIn1)
+        public void ReceiveMessage1(EventTracking_Id EventTrackingId, TIn1 MessageIn1)
         {
-            if (BlockingCollection1.Count < this.MaxQueueSize)
+            if (BlockingCollection1.Count < MaxQueueSize)
                 BlockingCollection1.Add(MessageIn1);
         }
 
@@ -141,9 +130,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// further processing and delivery to the subscribers.
         /// </summary>
         /// <param name="MessageIn2">A message from sender 2.</param>
-        public void ReceiveMessage2(TIn2 MessageIn2)
+        public void ReceiveMessage2(EventTracking_Id EventTrackingId, TIn2 MessageIn2)
         {
-            if (BlockingCollection2.Count < this.MaxQueueSize)
+            if (BlockingCollection2.Count < MaxQueueSize)
                 BlockingCollection2.Add(MessageIn2);
         }
 

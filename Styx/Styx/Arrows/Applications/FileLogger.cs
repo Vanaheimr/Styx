@@ -92,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void Log(TEnum Topics, params Object[] Arguments)
         {
-            Log(DateTime.Now, Topics, Arguments);
+            Log(Timestamp.Now, Topics, Arguments);
         }
 
         #endregion

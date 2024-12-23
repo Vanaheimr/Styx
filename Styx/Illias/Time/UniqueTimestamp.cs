@@ -77,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     // Save the last known timestamp in a local variable.
                     initialValue  = lastTimestamp;
 
-                    newValue      = Math.Max(DateTime.Now.Ticks, initialValue + 1);
+                    newValue      = Math.Max(Timestamp.Now.Ticks, initialValue + 1);
 
                 }
                 // Use CompareExchange to avoid locks!

@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private Action<TIn> Action;
+        private readonly Action<TIn> Action;
 
         #endregion
 
@@ -60,15 +60,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="Action">An Action &lt;S&gt; to invoke on every accepted message/object before forwarding it.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public ActionArrow(Action<TIn>        Action,
-                           IArrowSender<TIn>  ArrowSender = null)
+        public ActionArrow(Action<TIn>         Action,
+                           IArrowSender<TIn>?  ArrowSender = null)
 
             : base(ArrowSender)
 
         {
-
-            if (Action == null)
-                throw new ArgumentNullException("The given Action<TIn> must not be null!");
 
             this.Action = Action;
 
@@ -83,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TIn MessageIn, out TIn MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TIn MessageIn, out TIn MessageOut)
         {
             MessageOut = MessageIn;
             Action(MessageIn);

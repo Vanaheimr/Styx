@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -37,33 +36,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Properties
 
-        #region WasStarted
+        public Boolean  WasStarted     { get; private set; }
 
-        private Boolean _WasStarted = false;
-
-        public Boolean WasStarted
-        {
-            get
-            {
-                return _WasStarted;
-            }
-        }
-
-        #endregion
-
-        #region IsCompleted
-
-        private Boolean _IsCompleted = false;
-
-        public Boolean IsComplicated
-        {
-            get
-            {
-                return _IsCompleted;
-            }
-        }
-
-        #endregion
+        public Boolean  IsCompleted    { get; private set; }
 
         #endregion
 
@@ -72,17 +47,17 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event called whenever this arrow started to send messages.
         /// </summary>
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?             OnStarted;
 
         /// <summary>
         /// An event called whenever an exception occured at this arrow.
         /// </summary>
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?    OnExceptionOccured;
 
         /// <summary>
         /// An event called whenever this arrow will no longer send any messages.
         /// </summary>
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?           OnCompleted;
 
         #endregion
 
@@ -92,14 +67,13 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Creates a new abstract arrow receiver.
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public AbstractArrowReceiver(IArrowSender<TIn> ArrowSender = null)
+        public AbstractArrowReceiver(IArrowSender<TIn>? ArrowSender = null)
         {
 
-            this._WasStarted   = false;
-            this._IsCompleted  = false;
+            WasStarted   = false;
+            IsCompleted  = false;
 
-            if (ArrowSender != null)
-                ArrowSender.SendTo(this);
+            ArrowSender?.SendTo(this);
 
         }
 
@@ -113,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// and delivery to the subscribers.
         /// </summary>
         /// <param name="MessageIn">The message.</param>
-        public abstract void ProcessArrow(TIn MessageIn);
+        public abstract void ProcessArrow(EventTracking_Id EventTrackingId, TIn MessageIn);
 
         #endregion
 
@@ -126,30 +100,26 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of the started message.</param>
         /// <param name="Timestamp">The timestamp of the start.</param>
         /// <param name="Message">An optional message.</param>
-        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message = null)
+        public void ProcessStarted(Object Sender, DateTime Timestamp2, EventTracking_Id EventTrackingId, String? Message = null)
         {
 
-            if (_WasStarted == true)
+            if (WasStarted == true)
                 return;
 
             try
             {
 
-                _WasStarted = true;
+                WasStarted = true;
 
-                var OnStartedLocal = OnStarted;
-
-                if (OnStartedLocal != null)
-                    OnStartedLocal(this, Timestamp, Message);
+                var onStarted = OnStarted;
+                onStarted?.Invoke(this, Timestamp2, EventTrackingId, Message);
 
             }
             catch (Exception e)
             {
 
-                var OnExceptionLocal = OnExceptionOccured;
-
-                if (OnExceptionLocal != null)
-                    OnExceptionLocal(this, DateTime.Now, e);
+                var onExceptionOccured = OnExceptionOccured;
+                onExceptionOccured?.Invoke(this, Timestamp.Now, EventTrackingId, e);
 
             }
 
@@ -165,16 +135,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="Timestamp">The timestamp of the exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception Exception)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception)
         {
 
             try
             {
 
-                var OnErrorLocal = OnExceptionOccured;
-
-                if (OnErrorLocal != null)
-                    OnErrorLocal(this, Timestamp, Exception);
+                var onExceptionOccured = OnExceptionOccured;
+                onExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, Exception);
 
             }
             catch
@@ -192,30 +160,26 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of the completed message.</param>
         /// <param name="Timestamp">The timestamp of the shutdown.</param>
         /// <param name="Message">An optional message.</param>
-        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message = null)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp2, EventTracking_Id EventTrackingId, String? Message = null)
         {
 
-            if (_IsCompleted == true)
+            if (IsCompleted == true)
                 return;
 
             try
             {
 
-                _IsCompleted = true;
+                IsCompleted = true;
 
-                var OnCompletedLocal = OnCompleted;
-
-                if (OnCompletedLocal != null)
-                    OnCompletedLocal(this, Timestamp, Message);
+                var onCompleted = OnCompleted;
+                onCompleted?.Invoke(this, Timestamp2, EventTrackingId, Message);
 
             }
             catch (Exception e)
             {
 
-                var OnExceptionLocal = OnExceptionOccured;
-
-                if (OnExceptionLocal != null)
-                    OnExceptionLocal(this, DateTime.Now, e);
+                var onExceptionOccured = OnExceptionOccured;
+                onExceptionOccured?.Invoke(this, Timestamp.Now, EventTrackingId, e);
 
             }
 

@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -42,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// The last message send.
         /// </summary>
-        public TMessage LastMessage { get; private set; }
+        public TMessage?  LastMessage    { get; private set; }
 
         #endregion
 
@@ -82,9 +81,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
-            
+
             MessageOut = MessageIn;
 
             if (MessageIn.Equals(LastMessage))

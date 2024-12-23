@@ -15,42 +15,48 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
     public interface INotificator<T> : IArrowSender<T>
     {
-        void SendNotification(T Message);
+        void SendNotification(EventTracking_Id EventTrackingId, T Message);
     }
 
     public interface INotificator<T1, T2> : IArrowSender<T1, T2>
     {
-        void SendNotification(T1 Message1, T2 Message2);
+        void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2);
     }
 
     public interface INotificator<T1, T2, T3> : IArrowSender<T1, T2, T3>
     {
-        void SendNotification(T1 Message1, T2 Message2, T3 Message3);
+        void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3);
     }
 
     public interface INotificator<T1, T2, T3, T4> : IArrowSender<T1, T2, T3, T4>
     {
-        void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4);
+        void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4);
     }
 
     public interface INotificator<T1, T2, T3, T4, T5> : IArrowSender<T1, T2, T3, T4, T5>
     {
-        void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
+        void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
     }
 
     public interface INotificator<T1, T2, T3, T4, T5, T6> : IArrowSender<T1, T2, T3, T4, T5, T6>
     {
-        void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6);
+        void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6);
     }
 
     public interface INotificator<T1, T2, T3, T4, T5, T6, T7> : IArrowSender<T1, T2, T3, T4, T5, T6, T7>
     {
-        void SendNotification(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7);
+        void SendNotification(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7);
     }
 
 }

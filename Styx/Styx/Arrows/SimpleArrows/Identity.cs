@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -66,7 +66,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// It simply sends the incoming message to the recipients without any processing.
         /// This arrow is useful in various test case situations.
         /// </summary>
-        public IdentityArrow(IArrowSender<TMessage> ArrowSender = null)
+        public IdentityArrow(IArrowSender<TMessage>? ArrowSender = null)
 
             : base(ArrowSender)
 
@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
-        protected override Boolean ProcessMessage(TMessage MessageIn, out TMessage MessageOut)
+        protected override Boolean ProcessMessage(EventTracking_Id EventTrackingId, TMessage MessageIn, out TMessage MessageOut)
         {
             MessageOut = MessageIn;
             return true;

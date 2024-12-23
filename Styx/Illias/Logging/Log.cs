@@ -15,22 +15,13 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Xml.Linq;
-using System.Diagnostics;
-using System.Globalization;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias.ConsoleLog
 {
 
     public static class Log
     {
 
-        public static void WriteLine(String Message = null)
+        public static void WriteLine(String? Message = null)
         {
             if (Message == null)
                 Console.WriteLine("");
@@ -38,12 +29,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.ConsoleLog
                 Console.WriteLine(Message);
         }
 
-        public static void Timestamp(String Message = null)
+        public static void Timestamp(String? Message = null)
         {
             if (Message == null)
                 Console.WriteLine("");
             else
-                Console.WriteLine(DateTime.Now + " - " + Message);
+                Console.WriteLine(Illias.Timestamp.Now + " - " + Message);
         }
 
     }

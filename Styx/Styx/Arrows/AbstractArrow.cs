@@ -17,7 +17,7 @@
 
 #region Usings
 
-using System;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -43,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event called whenever this arrow sends a new message.
         /// </summary>
-        public event NotificationEventHandler<TOut>  OnNotification;
+        public event NotificationEventHandler<TOut>?  OnNotification;
 
         #endregion
 
@@ -53,7 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Create a new abstract arrow.
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public AbstractArrow(IArrowSender<TIn> ArrowSender = null)
+        public AbstractArrow(IArrowSender<TIn>? ArrowSender = null)
 
             : base(ArrowSender)
 
@@ -70,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="MessageIn">The incoming message.</param>
         /// <param name="MessageOut">The outgoing message.</param>
         /// <returns>True if the message should be forwarded; False otherwise.</returns>
-        protected abstract Boolean ProcessMessage(TIn MessageIn, out TOut MessageOut);
+        protected abstract Boolean ProcessMessage(EventTracking_Id EventTrackingId, TIn MessageIn, out TOut MessageOut);
 
         #endregion
 
@@ -81,33 +81,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Process the incoming arrow.
         /// </summary>
         /// <param name="Message">The message of the arrow.</param>
-        public override void ProcessArrow(TIn Message)
+        public override void ProcessArrow(EventTracking_Id EventTrackingId, TIn Message)
         {
-
-            TOut MessageOut;
 
             try
             {
 
-                if (ProcessMessage(Message, out MessageOut))
+                if (ProcessMessage(EventTrackingId, Message, out TOut MessageOut))
                 {
-
-                    var OnNotificationLocal = OnNotification;
-
-                    if (OnNotificationLocal != null)
-                        OnNotificationLocal(MessageOut);
-
+                    OnNotification?.Invoke(EventTrackingId, MessageOut);
                 }
 
             }
             catch (Exception e)
             {
-                base.ProcessExceptionOccured(this, DateTime.Now, e);
+                base.ProcessExceptionOccured(this, Timestamp.Now, EventTrackingId, e);
             }
 
         }
 
         #endregion
+
 
     }
 

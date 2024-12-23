@@ -15,14 +15,10 @@
  * limitations under the License.
  */
 
-#if !SILVERLIGHT 
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -34,12 +30,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     /// </summary>
     public static class SniperExtensions
     {
-
-#if SILVERLIGHT
-
-        // todo!
-
-#else
 
         #region ToSniper(this IEnumerable, AutoStart = false, StartAsTask = false, InitialDelay = null)
 
@@ -82,8 +72,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #endregion
 
-#endif
-
     }
 
 
@@ -100,105 +88,68 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// The internal source of messages/objects.
         /// </summary>
-        private readonly IEnumerator<TOut> IEnumerator;
+        private readonly IEnumerator<TOut>  IEnumerator;
 
-        private readonly Func<TOut> Func;
+        private readonly Func<TOut>         Func;
 
         #endregion
 
         #region Properties
 
-        #region InitialDelay
-
         /// <summary>
         /// The initial delay before starting to fire asynchronously.
         /// </summary>
-        public Nullable<TimeSpan> InitialDelay { get; private set; }
-
-        #endregion
-
-        #region IsTask
+        public Nullable<TimeSpan>       InitialDelay                   { get; private set; }
 
         /// <summary>
         /// Whether the sniper is running as its own task or not.
         /// </summary>
-        public Boolean IsTask
-        {
-            get
-            {
-                return FireTask != null;
-            }
-        }
-
-        #endregion
-
-        #region FireCancellationTokenSource
+        public Boolean                  IsTask
+            => FireTask is not null;
 
         /// <summary>
         /// Signals to a FireCancellationToken that it should be canceled.
         /// </summary>
-        public CancellationTokenSource FireCancellationTokenSource { get; private set; }
-
-        #endregion
-
-        #region FireCancellationToken
+        public CancellationTokenSource  FireCancellationTokenSource    { get; private set; }
 
         /// <summary>
         /// Propogates notification that the asynchronous fireing should be canceled.
         /// </summary>
-        public CancellationToken FireCancellationToken { get; private set; }
-
-        #endregion
-
-        #region FireTask
+        public CancellationToken        FireCancellationToken          { get; private set; }
 
         /// <summary>
         /// The internal task for fireing the messages/objects.
         /// </summary>
-        public Task FireTask { get; private set; }
-
-        #endregion
-
-        #region Intervall
+        public Task                     FireTask                       { get; private set; }
 
         /// <summary>
         /// The intervall will throttle the automatic measurement of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
-        public TimeSpan Intervall { get; set; }
-
-        #endregion
-
-        #region ThrottlingSleepDuration
+        public TimeSpan                 Intervall                      { get; set; }
 
         /// <summary>
         /// The amount of time in milliseconds a passive sensor
         /// will sleep if it is in throttling mode.
         /// </summary>
-        public Int32 ThrottlingSleepDuration { get; set; }
-
-        #endregion
-
-        #region LastFireTime
+        public Int32                    ThrottlingSleepDuration        { get; set; }
 
         /// <summary>
         /// The last time the sniper fired.
         /// </summary>
-        public DateTime LastFireTime { get; private set; }
-
-        #endregion
+        public DateTime                 LastFireTime                   { get; private set; }
 
         #endregion
 
         #region Events
 
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?               OnStarted;
 
-        public event NotificationEventHandler<TOut> OnNotification;
+        public event NotificationEventHandler<TOut>?    OnNotification;
 
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?             OnCompleted;
 
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?      OnExceptionOccured;
 
         #endregion
 
@@ -214,27 +165,16 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(IEnumerable<TOut>      IEnumerable,
-                      Boolean                AutoStart    = false,
-                      Boolean                StartAsTask  = false,
-                      Nullable<TimeSpan>     InitialDelay = null)
+        public Sniper(IEnumerable<TOut>   IEnumerable,
+                      Boolean             AutoStart      = false,
+                      Boolean             StartAsTask    = false,
+                      Nullable<TimeSpan>  InitialDelay   = null)
         {
 
-            #region Initial Checks
-
-            if (IEnumerable == null)
-                throw new ArgumentNullException("The given IEnumerable must not be null!");
-
-            #endregion
-
-            this.IEnumerator = IEnumerable.GetEnumerator();
-
-            if (this.IEnumerator == null)
-                throw new ArgumentNullException("IEnumerable.GetEnumerator() must not be null!");
-
-            this.InitialDelay            = InitialDelay;
-            this.Intervall               = TimeSpan.FromSeconds(10);
-            this.ThrottlingSleepDuration = 1000;
+            this.IEnumerator              = IEnumerable.GetEnumerator();
+            this.InitialDelay             = InitialDelay;
+            this.Intervall                = TimeSpan.FromSeconds(10);
+            this.ThrottlingSleepDuration  = 1000;
 
             if (AutoStart)
                 StartToFire(StartAsTask);
@@ -253,23 +193,16 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(IEnumerator<TOut>      IEnumerator,
-                      Boolean                AutoStart    = false,
-                      Boolean                StartAsTask  = false,
-                      Nullable<TimeSpan>     InitialDelay = null)
+        public Sniper(IEnumerator<TOut>   IEnumerator,
+                      Boolean             AutoStart      = false,
+                      Boolean             StartAsTask    = false,
+                      Nullable<TimeSpan>  InitialDelay   = null)
         {
 
-            #region Initial Checks
-
-            if (IEnumerator == null)
-                throw new ArgumentNullException("The given IEnumerator must not be null!");
-
-            #endregion
-
-            this.IEnumerator             = IEnumerator;
-            this.InitialDelay            = InitialDelay;
-            this.Intervall               = TimeSpan.FromSeconds(10);
-            this.ThrottlingSleepDuration = 1000;
+            this.IEnumerator              = IEnumerator;
+            this.InitialDelay             = InitialDelay;
+            this.Intervall                = TimeSpan.FromSeconds(10);
+            this.ThrottlingSleepDuration  = 1000;
 
             if (AutoStart)
                 StartToFire(StartAsTask);
@@ -284,27 +217,20 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// The Sniper fetches messages/objects from the given IEnumerable
         /// and sends them to the recipients.
         /// </summary>
-        /// <param name="IEnumerable">An IEnumerable&lt;S&gt; as element source.</param>
+        /// <param name="Func">A function returning the next message/object.</param>
         /// <param name="AutoStart">Start the sniper automatically.</param>
         /// <param name="StartAsTask">Start the sniper within its own task.</param>
         /// <param name="InitialDelay">Set the initial delay of the sniper in milliseconds.</param>
-        public Sniper(Func<TOut>         Func,
-                      Boolean            AutoStart    = false,
-                      Boolean            StartAsTask  = false,
-                      Nullable<TimeSpan> InitialDelay = null)
+        public Sniper(Func<TOut>          Func,
+                      Boolean             AutoStart      = false,
+                      Boolean             StartAsTask    = false,
+                      Nullable<TimeSpan>  InitialDelay   = null)
         {
 
-            #region Initial Checks
-
-            if (Func == null)
-                throw new ArgumentNullException("The given Func must not be null!");
-
-            #endregion
-            
-            this.Func                    = Func;
-            this.InitialDelay            = InitialDelay;
-            this.Intervall               = TimeSpan.FromSeconds(10);
-            this.ThrottlingSleepDuration = 1000;
+            this.Func                     = Func;
+            this.InitialDelay             = InitialDelay;
+            this.Intervall                = TimeSpan.FromSeconds(10);
+            this.ThrottlingSleepDuration  = 1000;
 
             if (AutoStart)
                 StartToFire(StartAsTask);
@@ -326,11 +252,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public Task AsTask(TaskCreationOptions TaskCreationOption = TaskCreationOptions.AttachedToParent)
         {
 
-            if (FireTask == null)
+            if (FireTask is null)
             {
-                FireCancellationTokenSource = new CancellationTokenSource();
-                FireCancellationToken       = FireCancellationTokenSource.Token;
-                FireTask                    = new Task(StartFireing, FireCancellationToken, TaskCreationOption);
+                FireCancellationTokenSource  = new CancellationTokenSource();
+                FireCancellationToken        = FireCancellationTokenSource.Token;
+                FireTask                     = new Task(StartFireing, FireCancellationToken, TaskCreationOption);
             }
 
             return FireTask;
@@ -349,10 +275,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             // if already runnning => return
 
-            var OnStartedLocal = OnStarted;
-
-            if (OnStartedLocal != null)
-                OnStartedLocal(this, DateTime.Now);
+            OnStarted?.Invoke(this, Timestamp.Now, EventTracking_Id.New);
 
             try
             {
@@ -360,57 +283,47 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 if (IsTask && InitialDelay != null && InitialDelay.HasValue)
                     Thread.Sleep(InitialDelay.Value);
 
-                if (IEnumerator != null)
+                if (IEnumerator is not null)
                 {
                     while (IEnumerator.MoveNext())
                     {
 
-                        if (OnNotification != null)
-                            OnNotification(IEnumerator.Current);
+                        OnNotification?.Invoke(EventTracking_Id.New, IEnumerator.Current);
 
                         // Sleep if we are in throttling mode
-                        while (LastFireTime + Intervall > DateTime.Now)
+                        while (LastFireTime + Intervall > Timestamp.Now)
                             Thread.Sleep(ThrottlingSleepDuration);
 
-                        LastFireTime = DateTime.Now;
+                        LastFireTime = Timestamp.Now;
 
                     }
                 }
 
-                else if (Func != null)
+                else if (Func is not null)
                 {
 
                     while (true)
                     {
 
-                        if (OnNotification != null)
-                            OnNotification(Func());
+                        OnNotification?.Invoke(EventTracking_Id.New, Func());
 
                         // Sleep if we are in throttling mode
-                        while (LastFireTime + Intervall > DateTime.Now)
+                        while (LastFireTime + Intervall > Timestamp.Now)
                             Thread.Sleep(ThrottlingSleepDuration);
 
-                        LastFireTime = DateTime.Now;
+                        LastFireTime = Timestamp.Now;
 
                     }
 
                 }
 
-                var OnCompletedLocal = OnCompleted;
-
-                if (OnCompletedLocal != null)
-                    OnCompletedLocal(this, DateTime.Now);
+                OnCompleted?.Invoke(this, Timestamp.Now, EventTracking_Id.New);
 
             }
 
             catch (Exception e)
             {
-
-                var OnExceptionOccuredLocal = OnExceptionOccured;
-
-                if (OnExceptionOccuredLocal != null)
-                    OnExceptionOccuredLocal(this, DateTime.Now, e);
-
+                OnExceptionOccured?.Invoke(this, Timestamp.Now, EventTracking_Id.New, e);
             }
 
         }
@@ -429,7 +342,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             if (StartAsTask)
             {
 
-                if (FireTask != null)
+                if (FireTask is not null)
                     FireTask.Start();
 
                 else
@@ -450,5 +363,3 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     }
 
 }
-
-#endif

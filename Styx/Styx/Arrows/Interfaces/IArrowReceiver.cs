@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System;
 
 #endregion
@@ -39,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="ExceptionMessage">The timestamp of the exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage);
+        void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage);
 
         /// <summary>
         /// The sender of the arrows signaled not to send any more arrows.
@@ -47,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of this arrow.</param>
         /// <param name="Timestamp">The timestamp of the shutdown.</param>
         /// <param name="Message">An optional message.</param>
-        void ProcessCompleted(Object Sender, DateTime Timestamp, String Message = null);
+        void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null);
 
     }
 
@@ -65,7 +66,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Accept a single message.
         /// </summary>
         /// <param name="Message">The message.</param>
-        void ProcessArrow(T Message);
+        void ProcessArrow(EventTracking_Id EventTrackingId, T Message);
 
     }
 
@@ -85,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="Message1">The first message.</param>
         /// <param name="Message2">The second message.</param>
-        void ProcessArrow(T1 Message1, T2 Message2);
+        void ProcessArrow(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2);
 
     }
 
@@ -106,7 +107,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Message1">The first message.</param>
         /// <param name="Message2">The second message.</param>
         /// <param name="Message3">The third message.</param>
-        void ProcessArrow(T1 Message1, T2 Message2, T3 Message3);
+        void ProcessArrow(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3);
 
     }
 
@@ -128,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Message2">The second message.</param>
         /// <param name="Message3">The third message.</param>
         /// <param name="Message4">The fourth message.</param>
-        void ProcessArrow(T1 Message1, T2 Message2, T3 Message3, T4 Message4);
+        void ProcessArrow(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4);
 
     }
 
@@ -151,7 +152,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Message3">The third message.</param>
         /// <param name="Message4">The fourth message.</param>
         /// <param name="Message5">The fifth message.</param>
-        void ProcessArrow(T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
+        void ProcessArrow(EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5);
 
     }
 

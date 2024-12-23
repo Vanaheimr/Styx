@@ -17,9 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -45,14 +45,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Properties
 
-        #region MaxQueueSize
-
         /// <summary>
         /// The maximum number of queued messages.
         /// </summary>
-        public UInt32 MaxQueueSize { get; set; }
-
-        #endregion
+        public UInt32  MaxQueueSize    { get; set; }
 
         #endregion
 
@@ -63,28 +59,27 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// </summary>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
         /// <param name="MaxQueueSize">The maximum number of queued messages for both arrow senders.</param>
-        public AbstractConcurrentArrowReceiver(UInt32            MaxQueueSize  = 1000,
-                                               IArrowSender<TIn> ArrowSender   = null)
+        public AbstractConcurrentArrowReceiver(UInt32             MaxQueueSize   = 1000,
+                                               IArrowSender<TIn>? ArrowSender    = null)
 
             : base(ArrowSender)
 
         {
 
             this.MaxQueueSize        = MaxQueueSize;
-            this.BlockingCollection  = new BlockingCollection<TIn>();
+            this.BlockingCollection  = [];
 
-            this.ArrowSenderTask     = Task.Factory.StartNew(() =>
-            {
+            this.ArrowSenderTask     = Task.Factory.StartNew(() => {
 
-                var Enumerator = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
+                var enumerator = BlockingCollection.GetConsumingEnumerable().GetEnumerator();
 
                 while (!BlockingCollection.IsCompleted)
                 {
 
                     // Will block until something becomes available!
-                    Enumerator.MoveNext();
+                    enumerator.MoveNext();
 
-                    ProcessArrowConcurrently(Enumerator.Current);
+                    ProcessArrowConcurrently(EventTracking_Id.New, enumerator.Current);
 
                 }
 
@@ -101,12 +96,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Process the incoming message.
         /// </summary>
         /// <param name="MessageIn">The incoming message.</param>
-        protected abstract void ProcessArrowConcurrently(TIn MessageIn);
+        protected abstract void ProcessArrowConcurrently(EventTracking_Id EventTrackingId, TIn MessageIn);
 
         #endregion
 
 
-        public override void ProcessArrow(TIn Message)
+        public override void ProcessArrow(EventTracking_Id EventTrackingId, TIn Message)
         {
             BlockingCollection.Add(Message);
         }

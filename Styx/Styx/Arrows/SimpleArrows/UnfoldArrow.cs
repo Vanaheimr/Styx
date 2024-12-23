@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -51,71 +50,45 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?           OnStarted;
 
-        public event NotificationEventHandler<T> OnNotification;
+        public event NotificationEventHandler<T>?   OnNotification;
 
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?  OnExceptionOccured;
 
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?         OnCompleted;
 
         #endregion
 
         #region Constructor(s)
 
-        #region SplitterArrow()
-
-        public UnfoldArrow(IArrowSender<IEnumerable<T>> In = null)
+        public UnfoldArrow(IArrowSender<IEnumerable<T>>? In = null)
         {
-            if (In != null)
-                In.SendTo(this);
+            In?.SendTo(this);
         }
 
         #endregion
 
-        #endregion
 
-
-
-        public void ProcessStarted(Object Sender, DateTime Timestamp, String Message)
+        public void ProcessStarted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)
         {
-
-            var OnStartedLocal = OnStarted;
-
-            if (OnStartedLocal != null)
-                OnStartedLocal(this, Timestamp, Message);
-
+            OnStarted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
 
-        public void ProcessArrow(IEnumerable<T> Messages)
+        public void ProcessArrow(EventTracking_Id EventTrackingId, IEnumerable<T> Messages)
         {
-
-            var OnNotificationLocal = OnNotification;
-
-            if (OnNotificationLocal != null)
-                foreach (var Message in Messages)
-                    OnNotificationLocal(Message);
-
+            foreach (var Message in Messages)
+                OnNotification?.Invoke(EventTrackingId, Message);
         }
 
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, Exception ExceptionMessage)
+        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
-
-            var OnExceptionOccuredLocal = OnExceptionOccured;
-
-            if (OnExceptionOccuredLocal != null)
-                OnExceptionOccuredLocal(this, Timestamp, ExceptionMessage);
-
+            OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
         }
 
-        public void ProcessCompleted(Object Sender, DateTime Timestamp, String Message)
+        public void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
-
-            var OnCompletedLocal = OnCompleted;
-
-            if (OnCompleted != null)
-                OnCompleted(this, Timestamp, Message);
-
+            OnCompleted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
 
     }

@@ -17,8 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -41,22 +40,22 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event for signaling the start of a message delivery.
         /// </summary>
-        public event StartedEventHandler OnStarted;
+        public event StartedEventHandler?               OnStarted;
 
         /// <summary>
         /// An event for message delivery.
         /// </summary>
-        public event NotificationEventHandler<TOut> OnNotification;
+        public event NotificationEventHandler<TOut>?    OnNotification;
 
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        public event ExceptionOccuredEventHandler OnExceptionOccured;
+        public event ExceptionOccuredEventHandler?      OnExceptionOccured;
 
         /// <summary>
         /// An event for signaling the completion of a message delivery.
         /// </summary>
-        public event CompletedEventHandler OnCompleted;
+        public event CompletedEventHandler?             OnCompleted;
 
         #endregion
 
@@ -65,12 +64,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Turns the recording of the message delivery path ON or OFF.
         /// </summary>
-        public Boolean RecordMessagePath { get; set; }
+        public Boolean              RecordMessagePath    { get; set; }
 
         /// <summary>
         /// Returns the message path.
         /// </summary>
-        public IEnumerable<Object> Path { get; protected set;  }
+        public IEnumerable<Object>  Path                 { get; protected set;  }
 
         #endregion
 
@@ -152,24 +151,20 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of the message.</param>
         /// <param name="MessageIn">The message.</param>
         /// <returns>True if the message was accepted and could be processed; False otherwise.</returns>
-        protected Boolean NotifyRecipients(Object Sender, TOut Message)
+        protected Boolean NotifyRecipients(EventTracking_Id EventTrackingId, Object Sender, TOut Message)
         {
 
             try
             {
 
-                var OnNotificationLocal = OnNotification;
-
-                if (OnNotificationLocal != null)
-                    OnNotificationLocal(Message);
+                OnNotification?.Invoke(EventTrackingId, Message);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                if (OnExceptionOccured != null)
-                    OnExceptionOccured(this, DateTime.Now, e);
+                OnExceptionOccured?.Invoke(this, Timestamp.Now, EventTrackingId, e);
             }
 
             return false;
@@ -187,17 +182,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of the completion signal.</param>
         /// <param name="Timestamp">The timestamp of the shutdown.</param>
         /// <param name="Message">An optional shutdown message.</param>
-        public void Complete(Object Sender, DateTime Timestamp, String Message = null)
+        public void Complete(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
             try
             {
-                if (OnCompleted != null)
-                    OnCompleted(this, Timestamp, Message);
+                OnCompleted?.Invoke(this, Timestamp, EventTrackingId, Message);
             }
             catch (Exception e)
             {
-                if (OnExceptionOccured != null)
-                    OnExceptionOccured(this, Timestamp, e);
+                OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, e);
             }
         }
 
