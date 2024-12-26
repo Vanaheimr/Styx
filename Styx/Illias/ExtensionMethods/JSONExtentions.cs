@@ -6625,11 +6625,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    String              PropertyDescription,
                                                    TryParser<T>        Parser,
                                                    out IEnumerable<T>  EnumerableT,
-                                                   out String          ErrorResponse)
+                                                   out String?         ErrorResponse)
 
         {
 
-            EnumerableT    = null;
+            EnumerableT    = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -6651,9 +6651,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -6676,7 +6676,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return true;
                     }
 
-                    if (Parser(item, out T itemT))
+                    if (Parser(item, out var itemT) && itemT is not null)
                         list.Add(itemT);
 
                 }
@@ -6696,11 +6696,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    String              PropertyDescription,
                                                    TryParser2<T>       Parser,
                                                    out IEnumerable<T>  EnumerableT,
-                                                   out String          ErrorResponse)
+                                                   out String?         ErrorResponse)
 
         {
 
-            EnumerableT    = null;
+            EnumerableT    = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -6722,9 +6722,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -6747,7 +6747,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return true;
                     }
 
-                    if (Parser(item, out T itemT, out ErrorResponse))
+                    if (Parser(item, out var itemT, out ErrorResponse) && itemT is not null)
                         list.Add(itemT);
 
                 }
@@ -6762,76 +6762,76 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseOptionalJSON<T>(this JObject         JSON,
-                                                   String               PropertyName,
-                                                   String               PropertyDescription,
-                                                   TryParser4<T>        Parser,
-                                                   out IEnumerable<T>   EnumerableT,
-                                                   out String           ErrorResponse,
-                                                   OnExceptionDelegate  OnException)
+        //public static Boolean ParseOptionalJSON<T>(this JObject         JSON,
+        //                                           String               PropertyName,
+        //                                           String               PropertyDescription,
+        //                                           TryParser4<T>        Parser,
+        //                                           out IEnumerable<T>   EnumerableT,
+        //                                           out String           ErrorResponse,
+        //                                           OnExceptionDelegate  OnException)
 
-        {
+        //{
 
-            EnumerableT    = null;
-            ErrorResponse  = null;
+        //    EnumerableT    = null;
+        //    ErrorResponse  = null;
 
-            if (JSON is null)
-            {
-                ErrorResponse = "The given JSON object must not be null!";
-                return true;
-            }
+        //    if (JSON is null)
+        //    {
+        //        ErrorResponse = "The given JSON object must not be null!";
+        //        return true;
+        //    }
 
-            if (PropertyName.IsNullOrEmpty())
-            {
-                ErrorResponse = "Invalid JSON property name provided!";
-                return true;
-            }
+        //    if (PropertyName.IsNullOrEmpty())
+        //    {
+        //        ErrorResponse = "Invalid JSON property name provided!";
+        //        return true;
+        //    }
 
-            if (JSON.TryGetValue(PropertyName, out var JSONToken))
-            {
+        //    if (JSON.TryGetValue(PropertyName, out var JSONToken))
+        //    {
 
-                // "propertyKey": null -> will be ignored!
-                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
-                    return false;
+        //        // "propertyKey": null -> will be ignored!
+        //        if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+        //            return false;
 
-                if (!(JSONToken is JArray JSONArray))
-                {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
-                    return true;
-                }
+        //        if (!(JSONToken is JArray JSONArray))
+        //        {
+        //            ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+        //            return true;
+        //        }
 
-                var list = new List<T>();
+        //        var list = new List<T>();
 
-                foreach (var element in JSONArray)
-                {
+        //        foreach (var element in JSONArray)
+        //        {
 
-                    if (element is null)
-                    {
-                        ErrorResponse = "A given value within the array is null!";
-                        return true;
-                    }
+        //            if (element is null)
+        //            {
+        //                ErrorResponse = "A given value within the array is null!";
+        //                return true;
+        //            }
 
-                    var item = element.Value<String>()?.Trim();
+        //            var item = element.Value<String>()?.Trim();
 
-                    if (item.IsNullOrEmpty())
-                    {
-                        ErrorResponse = "A given value within the array is null or empty!";
-                        return true;
-                    }
+        //            if (item.IsNullOrEmpty())
+        //            {
+        //                ErrorResponse = "A given value within the array is null or empty!";
+        //                return true;
+        //            }
 
-                    if (Parser(item, out T itemT, OnException))
-                        list.Add(itemT);
+        //            if (Parser(item, out T itemT, OnException))
+        //                list.Add(itemT);
 
-                }
+        //        }
 
-                EnumerableT = list;
-                return true;
+        //        EnumerableT = list;
+        //        return true;
 
-            }
+        //    }
 
-            return false;
+        //    return false;
 
-        }
+        //}
 
 
 
@@ -6907,7 +6907,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalJSON<T>(this JObject                             JSON,
                                                    String                                   PropertyName,
                                                    String                                   PropertyDescription,
-                                                   TryJObjectParser2a<T>                     Parser,
+                                                   TryJObjectParser2a<T>                    Parser,
                                                    [NotNullWhen(true)]  out IEnumerable<T>  EnumerableT,
                                                    [NotNullWhen(false)] out String?         ErrorResponse)
 
@@ -6977,12 +6977,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static Boolean Parallel_ParseOptionalJSON<T>(this JObject          JSON,
-                                                            String                PropertyName,
-                                                            String                PropertyDescription,
+        public static Boolean Parallel_ParseOptionalJSON<T>(this JObject           JSON,
+                                                            String                 PropertyName,
+                                                            String                 PropertyDescription,
                                                             TryJObjectParser2a<T>  Parser,
-                                                            out IEnumerable<T>    EnumerableT,
-                                                            out String?           ErrorResponse)
+                                                            out IEnumerable<T>     EnumerableT,
+                                                            out String?            ErrorResponse)
 
         {
 

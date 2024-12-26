@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Extension methods for time spans.
     /// </summary>
-    public static class TimeSpanExtensions
+    public static partial class TimeSpanExtensions
     {
 
         #region (static) FromMilliseconds (Number, StdDev)
