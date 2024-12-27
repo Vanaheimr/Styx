@@ -182,15 +182,15 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this environment key.
         /// </summary>
-        public EnvironmentKey Clone
+        public EnvironmentKey Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

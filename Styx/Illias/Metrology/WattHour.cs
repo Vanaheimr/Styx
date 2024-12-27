@@ -797,12 +797,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this WattHour.
         /// </summary>
-        public WattHour Clone
+        public WattHour Clone()
 
             => new (Value);
 
