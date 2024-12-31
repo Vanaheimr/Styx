@@ -6330,7 +6330,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         String              PropertyDescription,
                                                         TryJArrayParser<T>  JArrayParser,
                                                         out T?              Value,
-                                                        out String          ErrorResponse)
+                                                        out String?         ErrorResponse)
 
             where T : struct
 
@@ -6380,7 +6380,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         String               PropertyDescription,
                                                         TryJArrayParser2<T>  JArrayParser,
                                                         out T                Value,
-                                                        out String           ErrorResponse)
+                                                        out String?          ErrorResponse)
         {
 
             Value          = default;
@@ -6408,7 +6408,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!(JSONToken is JArray JSON2))
                     ErrorResponse  = "Invalid " + PropertyDescription + "!";
 
-                else if (!JArrayParser(JSON2, out Value, out String ErrorResponse2))
+                else if (!JArrayParser(JSON2, out Value, out var ErrorResponse2))
                     ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
 
                 return true;
@@ -6424,7 +6424,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         String               PropertyDescription,
                                                         TryJArrayParser2<T>  JArrayParser,
                                                         out T?               Value,
-                                                        out String           ErrorResponse)
+                                                        out String?          ErrorResponse)
 
             where T : struct
 
@@ -6455,7 +6455,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!(JSONToken is JArray JSON2))
                     ErrorResponse  = "Invalid " + PropertyDescription + "!";
 
-                else if (JArrayParser(JSON2, out T value, out String ErrorResponse2))
+                else if (JArrayParser(JSON2, out T value, out var ErrorResponse2))
                     Value = value;
 
                 else
@@ -6477,7 +6477,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         TryJArrayParser3<T>  JArrayParser,
                                                         Func<JToken, T>      Parser,
                                                         out StdDev<T>?       Value,
-                                                        out String           ErrorResponse)
+                                                        out String?          ErrorResponse)
 
             where T : struct
 
