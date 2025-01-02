@@ -18,7 +18,7 @@
 #region Usings
 
 using System.Collections;
-
+using System.Diagnostics.CodeAnalysis;
 using org.GraphDefined.Vanaheimr.Illias.Collections;
 
 #endregion
@@ -694,8 +694,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <typeparam name="TSource">The type of the enumeration.</typeparam>
         /// <param name="IEnumerable">An enumeration.</param>
         /// <param name="Filter">An optional delegate to filter the given enumeration.</param>
-        public static Boolean SafeAny<TSource>(this IEnumerable<TSource>?  IEnumerable,
-                                               Func<TSource, Boolean>?     Filter   = null)
+        public static Boolean SafeAny<TSource>([NotNullWhen(true)] this IEnumerable<TSource>?  IEnumerable,
+                                               Func<TSource, Boolean>?                         Filter   = null)
         {
 
             if (IEnumerable is null)
