@@ -145,15 +145,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
-        /// Clone an EventTrackingId.
+        /// Clone this event tracking identification.
         /// </summary>
-        public EventTracking_Id Clone
+        public EventTracking_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion
