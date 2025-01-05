@@ -19,6 +19,7 @@
 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+
 using org.GraphDefined.Vanaheimr.Illias.Collections;
 
 #endregion
@@ -57,26 +58,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial Checks
 
-            if (IEnumerable == null)
-                throw new ArgumentNullException("The given enumeration of doubles must not be null!");
+            if (IEnumerable is null)
+                throw new ArgumentNullException(nameof(IEnumerable), "The given enumeration of doubles must not be null!");
 
-            var Count = IEnumerable.Count();
+            var count = IEnumerable.Count();
 
-            if (Count == 0)
-                throw new ArgumentNullException("The length of the given enumeration of doubles must not be zero!");
+            if (count == 0)
+                return new Collections.Tuple<Double, Double>(0, 0);
 
-            if (Count == 1)
+            if (count == 1)
                 return new Collections.Tuple<Double, Double>(IEnumerable.First(), 0);
 
             #endregion
 
-            var average = IEnumerable.Average();
-            var sum     = 0.0;
+            var average  = IEnumerable.Average();
+            var sum      = 0.0;
 
             foreach (var value in IEnumerable)
                 sum += (value - average) * (value - average);
 
-            return new Collections.Tuple<Double, Double>(average, Math.Sqrt(sum / (Count - 1)));
+            return new Collections.Tuple<Double, Double>(average, Math.Sqrt(sum / (count - 1)));
 
         }
 
@@ -97,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var hashCode = 3;
 
             foreach (var value in IEnumerable)
-                hashCode ^= value!.GetHashCode();
+                hashCode ^= (value?.GetHashCode() ?? 0);
 
             return hashCode;
 
@@ -145,7 +146,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Action">An action to call for each element of the enumeration.</param>
         public static void TryForEach<T>(this IEnumerable<T> IEnumerable, Action<T> Action)
         {
-            if (IEnumerable != null && Action != null)
+            if (IEnumerable is not null && Action is not null)
                 foreach (var Element in IEnumerable)
                     Action(Element);
         }
@@ -165,20 +166,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (IEnumerable == null)
-                throw new ArgumentNullException("The given IEnumerable must not be null!");
+            if (IEnumerable is null)
+                throw new ArgumentNullException(nameof(IEnumerable), "The given IEnumerable must not be null!");
 
-            if (Action == null)
-                throw new ArgumentNullException("The given Action must not be null!");
+            if (Action      is null)
+                throw new ArgumentNullException(nameof(Action),      "The given Action must not be null!");
 
             #endregion
 
-            S _Seed = Seed;
+            S seed = Seed;
 
             foreach (var Item in IEnumerable)
-                Action(_Seed, Item);
+                Action(seed, Item);
 
-            return _Seed;
+            return seed;
 
         }
 
@@ -197,7 +198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void ForEachCounted<T>(this IEnumerable<T> IEnumerable, Action<T, UInt64> Action, UInt64 Counter = 1UL)
         {
 
-            if (IEnumerable == null || Action == null)
+            if (IEnumerable is null || Action is null)
                 return;
 
             foreach (var Element in IEnumerable)
@@ -221,14 +222,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (IEnumerable == null)
-                throw new ArgumentNullException("The given IEnumerable must not be null!");
+            if (IEnumerable is null)
+                throw new ArgumentNullException(nameof(IEnumerable), "The given IEnumerable must not be null!");
 
-            if (First == null)
-                throw new ArgumentNullException("The given Action must not be null!");
+            if (First is null)
+                throw new ArgumentNullException(nameof(First),       "The given Action must not be null!");
 
-            if (Remaining == null)
-                throw new ArgumentNullException("The given Action must not be null!");
+            if (Remaining is null)
+                throw new ArgumentNullException(nameof(Remaining),   "The given Action must not be null!");
 
             #endregion
 
@@ -258,7 +259,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T2> SelectCounted<T1, T2>(this IEnumerable<T1> IEnumerable, Func<T1, UInt64, T2> Delegate, UInt64 Counter = 1UL)
         {
 
-            if (IEnumerable == null || Delegate == null)
+            if (IEnumerable is null || Delegate is null)
                 yield break;
 
             if (IEnumerable.Any())
@@ -277,7 +278,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static UInt64 Sum(this IEnumerable<UInt64> IEnumerable)
         {
 
-            if (IEnumerable == null)
+            if (IEnumerable is null)
                 return 0;
 
             var sum = 0UL;
@@ -525,8 +526,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Enumeration == null)
-                return new T[0];
+            if (Enumeration is null)
+                return [];
 
             #endregion
 
@@ -579,58 +580,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region CountIsAtLeast<T>(this myIEnumerable, myNumberOfElements)
+        #region CountIsAtLeast<T>(this Enumerable, NumberOfElements)
 
-        public static Boolean CountIsAtLeast<T>(this IEnumerable<T> myIEnumerable, UInt64 myNumberOfElements)
+        public static Boolean CountIsAtLeast<T>(this IEnumerable<T> Enumerable, UInt64 NumberOfElements)
         {
 
-            if (myIEnumerable == null)
+            if (Enumerable is null)
                 return false;
 
-            var _Enumerator = myIEnumerable.GetEnumerator();
+            var enumerator = Enumerable.GetEnumerator();
 
-            while (myNumberOfElements > 0 && _Enumerator.MoveNext())
-                myNumberOfElements--;
+            while (NumberOfElements > 0 && enumerator.MoveNext())
+                NumberOfElements--;
 
-            return (myNumberOfElements == 0 && !_Enumerator.MoveNext());
+            return NumberOfElements == 0 && !enumerator.MoveNext();
 
         }
 
         #endregion
 
-        #region CountIsGreater<T>(this myIEnumerable, myNumberOfElements)
+        #region CountIsGreater<T>(this Enumerable, NumberOfElements)
 
-        public static Boolean CountIsGreater<T>(this IEnumerable<T> myIEnumerable, UInt64 myNumberOfElements)
+        public static Boolean CountIsGreater<T>(this IEnumerable<T> Enumerable, UInt64 NumberOfElements)
         {
 
-            if (myIEnumerable == null)
+            if (Enumerable is null)
                 return false;
 
-            var _Enumerator = myIEnumerable.GetEnumerator();
+            var enumerator = Enumerable.GetEnumerator();
 
-            while (myNumberOfElements > 0 && _Enumerator.MoveNext())
-                myNumberOfElements--;
+            while (NumberOfElements > 0 && enumerator.MoveNext())
+                NumberOfElements--;
 
-            return (myNumberOfElements == 0 && _Enumerator.MoveNext());
+            return NumberOfElements == 0 && enumerator.MoveNext();
 
         }
 
         #endregion
 
-        #region CountIsGreaterOrEquals<T>(this myIEnumerable, myNumberOfElements)
+        #region CountIsGreaterOrEquals<T>(this Enumerable, NumberOfElements)
 
-        public static Boolean CountIsGreaterOrEquals<T>(this IEnumerable<T> myIEnumerable, UInt64 myNumberOfElements)
+        public static Boolean CountIsGreaterOrEquals<T>(this IEnumerable<T> Enumerable, UInt64 NumberOfElements)
         {
 
-            if (myIEnumerable == null)
+            if (Enumerable is null)
                 return false;
 
-            var _Enumerator = myIEnumerable.GetEnumerator();
+            var enumerator = Enumerable.GetEnumerator();
 
-            while (myNumberOfElements > 0 && _Enumerator.MoveNext())
-                myNumberOfElements--;
+            while (NumberOfElements > 0 && enumerator.MoveNext())
+                NumberOfElements--;
 
-            return (myNumberOfElements == 0);
+            return NumberOfElements == 0;
 
         }
 
@@ -677,7 +678,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                Func<TSource, Boolean>     Check)
         {
 
-            if (IEnumerable == null || Check == null)
+            if (IEnumerable is null || Check is null)
                 return false;
 
             return IEnumerable.All(Check);
@@ -724,7 +725,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                                         IEnumerable<TResult>?      DefaultValues   = null)
         {
 
-            DefaultValues ??= Array.Empty<TResult>();
+            DefaultValues ??= [];
 
             if (IEnumerable is null || SelectionDelegate is null)
                 return DefaultValues;
@@ -753,7 +754,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (IEnumerable is null || Filter is null)
-                return Array.Empty<TSource>();
+                return [];
 
             return IEnumerable.Where(Filter);
 
@@ -771,7 +772,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (IEnumerable is null || !IEnumerable.Any())
-                return new HashSet<TSource>();
+                return [];
 
             return new HashSet<TSource>(IEnumerable);
 
@@ -794,14 +795,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                                                 IEnumerable<TResult>?       DefaultValues   = null)
         {
 
-            DefaultValues ??= Array.Empty<TResult>();
+            DefaultValues ??= [];
 
             if (IEnumerable is null || SelectionDelegate is null)
                 return DefaultValues;
 
             var items = IEnumerable.ToArray();
 
-            if (!items.Any())
+            if (items.Length == 0)
                 return DefaultValues;
 
             var outItems = new List<TResult>();
@@ -837,15 +838,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (DefaultValues is null)
-                DefaultValues = Array.Empty<TResult>();
+                DefaultValues = [];
 
             if (IEnumerable is null || SelectionDelegate is null)
                 return DefaultValues;
 
             var Items = IEnumerable.ToArray();
 
-            if (!Items.Any())
-                return Array.Empty<TResult>();
+            if (Items.Length == 0)
+                return [];
 
             return Items.SelectMany(SelectionDelegate);
 
@@ -1121,24 +1122,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> Swap<T>(this IEnumerable<T> IEnumerable)
         {
 
-            var Enumerator = IEnumerable.GetEnumerator();
+            var enumerator = IEnumerable.GetEnumerator();
 
-            T a = default(T);
-            T b = default(T);
+            T a = default;
+            T b = default;
             Byte Emit = 0;
 
-            while (Enumerator.MoveNext())
+            while (enumerator.MoveNext())
             {
 
                 if (Emit == 0)
                 {
-                    a = Enumerator.Current;
+                    a = enumerator.Current;
                     Emit++;
                 }
 
                 else
                 {
-                    b = Enumerator.Current;
+                    b = enumerator.Current;
                     yield return b;
                     yield return a;
                     Emit = 0;
@@ -1175,7 +1176,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToHashedSet<T>(this Enumeration)
 
         public static HashedSet<T> ToHashedSet<T>(this IEnumerable<T> Enumeration)
-            => new HashedSet<T>(Enumeration);
+
+            => new (Enumeration);
 
         #endregion
 
@@ -1186,13 +1188,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           Action<T>            Delegate)
         {
 
-            if (Enumeration == null || Delegate == null)
+            if (Enumeration is null || Delegate is null)
                 return;
 
-            var FirstItem = Enumeration.FirstOrDefault();
+            var firstItem = Enumeration.FirstOrDefault();
 
-            if (FirstItem != null)
-                Delegate(FirstItem);
+            if (firstItem is not null)
+                Delegate(firstItem);
 
         }
 
@@ -1205,13 +1207,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          T2                   DefaultValue)
         {
 
-            if (Enumeration == null || Delegate == null)
+            if (Enumeration is null || Delegate is null)
                 return DefaultValue;
 
-            var FirstItem = Enumeration.FirstOrDefault();
+            var firstItem = Enumeration.FirstOrDefault();
 
-            if (FirstItem != null)
-                return Delegate(FirstItem);
+            if (firstItem is not null)
+                return Delegate(firstItem);
 
             return DefaultValue;
 
@@ -1251,7 +1253,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           Func<TSource, UInt64>      Selector)
         {
 
-            if (Source == null || Selector == null)
+            if (Source is null || Selector is null)
                 return 0;
 
             var sum = 0UL;
@@ -1276,10 +1278,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> ReverseAndReturn<T>(this IEnumerable<T> Enumeration)
         {
 
-            var NewList = new List<T>(Enumeration);
-            NewList.Reverse();
+            var list = new List<T>(Enumeration);
+            list.Reverse();
 
-            return NewList;
+            return list;
 
         }
 
