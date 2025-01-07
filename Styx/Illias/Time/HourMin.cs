@@ -144,14 +144,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this HourMin.
         /// </summary>
-        public HourMin Clone
+        public HourMin Clone()
 
-            => new (Hour, Minute);
+            => new (
+                   Hour,
+                   Minute
+               );
 
         #endregion
 

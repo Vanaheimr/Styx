@@ -1134,12 +1134,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this bits/sec.
         /// </summary>
-        public BitsPerSecond Clone
+        public BitsPerSecond Clone()
 
             => new (Value);
 

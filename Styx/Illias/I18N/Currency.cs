@@ -221,19 +221,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this currency.
         /// </summary>
-        public Currency Clone
+        public Currency Clone()
 
-            => new (Name,
-                    ISOCode,
-                    Numeric,
-                    Symbol,
-                    SymbolLocation,
-                    Countries.ToArray());
+            => new (
+                   Name.     CloneString(),
+                   ISOCode.  CloneString(),
+                   Numeric,
+                   Symbol?.  CloneString(),
+                   SymbolLocation,
+                   Countries.ToArray()
+               );
 
         #endregion
 

@@ -598,12 +598,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Hertz.
         /// </summary>
-        public Hertz Clone
+        public Hertz Clone()
 
             => new (Value);
 

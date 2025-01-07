@@ -136,15 +136,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this JSON-LD context.
         /// </summary>
-        public JSONLDContext Clone
+        public JSONLDContext Clone()
 
-            => new JSONLDContext(
-                   new String(InternalContext?.ToCharArray())
+            => new (
+                   InternalContext.CloneString()
                );
 
         #endregion

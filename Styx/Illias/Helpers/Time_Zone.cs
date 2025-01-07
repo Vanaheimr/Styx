@@ -144,15 +144,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this time zone identification.
         /// </summary>
-        public Time_Zone Clone
+        public Time_Zone Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion

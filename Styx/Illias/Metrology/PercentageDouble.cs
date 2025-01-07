@@ -256,12 +256,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this Percentage.
         /// </summary>
-        public PercentageDouble Clone
+        public PercentageDouble Clone()
 
             => new (Value);
 

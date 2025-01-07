@@ -268,6 +268,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UserDefinedDictionary  InternalData    { get; }
 
 
+        #region Created
+
+        private DateTime created;
+
+        /// <summary>
+        /// The timestamp of the creation of this object.
+        /// </summary>
+        [Mandatory]
+        public DateTime Created
+        {
+
+            get
+            {
+                return created;
+            }
+
+            set
+            {
+
+                if (created != value)
+                    SetProperty(ref created,
+                                value);
+
+            }
+
+        }
+
+        #endregion
+
         #region LastChange
 
         private DateTime lastChange;
@@ -319,12 +348,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LastChange">The optional timestamp of the last changes within this object.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData,
-                                DateTime?               LastChange   = null)
+                                DateTime?               LastChange   = null,
+                                DateTime?               Created      = null)
         {
 
-            this.CustomData    = CustomData   ?? new JObject();
+            this.CustomData    = CustomData   ?? [];
             this.InternalData  = InternalData ?? new UserDefinedDictionary();
-            this.lastChange    = LastChange   ?? Timestamp.Now;
+
+            this.lastChange    = LastChange   ?? Created    ?? Timestamp.Now;
+            this.created       = Created      ?? LastChange ?? Timestamp.Now;
 
         }
 

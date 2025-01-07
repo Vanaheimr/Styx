@@ -189,15 +189,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Clone
+        #region Clone()
 
         /// <summary>
         /// Clone this user identification.
         /// </summary>
-        public User_Id Clone
+        public User_Id Clone()
 
             => new (
-                   new String(InternalId?.ToCharArray())
+                   InternalId.CloneString()
                );
 
         #endregion
