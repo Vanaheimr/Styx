@@ -348,15 +348,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LastChange">The optional timestamp of the last changes within this object.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData,
-                                DateTime?               LastChange   = null,
-                                DateTime?               Created      = null)
+                                DateTime?               Created      = null,
+                                DateTime?               LastChange   = null)
         {
 
             this.CustomData    = CustomData   ?? [];
             this.InternalData  = InternalData ?? new UserDefinedDictionary();
 
-            this.lastChange    = LastChange   ?? Created    ?? Timestamp.Now;
             this.created       = Created      ?? LastChange ?? Timestamp.Now;
+            this.lastChange    = LastChange   ?? Created    ?? Timestamp.Now;
 
         }
 
