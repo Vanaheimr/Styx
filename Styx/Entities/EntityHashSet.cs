@@ -418,14 +418,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryAdd(Entity, ...)
 
-        public AddResult TryAdd(TEntity           Entity,
-                                EventTracking_Id  EventTrackingId,
-                                User_Id?          CurrentUserId)
+        public AddResult TryAdd(TEntity            Entity,
+                                EventTracking_Id?  EventTrackingId   = null,
+                                User_Id?           CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (addition.SendVoting(EventTrackingId,
                                     Timestamp.Now,
-                                    CurrentUserId ?? User_Id.Anonymous,
+                                    CurrentUserId.Value,
                                     parentDataStructure,
                                     Entity) &&
 
@@ -435,7 +438,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 addition.SendNotification(EventTrackingId,
                                           Timestamp.Now,
-                                          CurrentUserId ?? User_Id.Anonymous,
+                                          CurrentUserId.Value,
                                           parentDataStructure,
                                           Entity);
 
@@ -462,15 +465,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="OnSuccess">A delegate called after adding the entity, but before the notifications are send.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public AddResult TryAdd(TEntity           Entity,
-                                Action<TEntity>   OnSuccess,
-                                EventTracking_Id  EventTrackingId,
-                                User_Id?          CurrentUserId)
+        public AddResult TryAdd(TEntity            Entity,
+                                Action<TEntity>    OnSuccess,
+                                EventTracking_Id?  EventTrackingId   = null,
+                                User_Id?           CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (addition.SendVoting(EventTrackingId,
                                     Timestamp.Now,
-                                    CurrentUserId ?? User_Id.Anonymous,
+                                    CurrentUserId.Value,
                                     parentDataStructure,
                                     Entity) &&
 
@@ -482,7 +488,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 addition.SendNotification(EventTrackingId,
                                           Timestamp.Now,
-                                          CurrentUserId ?? User_Id.Anonymous,
+                                          CurrentUserId.Value,
                                           parentDataStructure,
                                           Entity);
 
@@ -501,13 +507,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public AddResult TryAdd(TEntity                    Entity,
                                 Action<DateTime, TEntity>  OnSuccess,
-                                EventTracking_Id           EventTrackingId,
-                                User_Id?                   CurrentUserId)
+                                EventTracking_Id?          EventTrackingId   = null,
+                                User_Id?                   CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (addition.SendVoting(EventTrackingId,
                                     Timestamp.Now,
-                                    CurrentUserId ?? User_Id.Anonymous,
+                                    CurrentUserId.Value,
                                     parentDataStructure,
                                     Entity) &&
 
@@ -519,7 +528,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 addition.SendNotification(EventTrackingId,
                                           Timestamp.Now,
-                                          CurrentUserId ?? User_Id.Anonymous,
+                                          CurrentUserId.Value,
                                           parentDataStructure,
                                           Entity);
 
@@ -538,15 +547,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public AddResult TryAdd(TEntity                                                                     Entity,
                                 Action<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
-                                EventTracking_Id                                                            EventTrackingId,
-                                User_Id?                                                                    CurrentUserId)
+                                EventTracking_Id?                                                           EventTrackingId   = null,
+                                User_Id?                                                                    CurrentUserId     = null)
         {
 
-            var userId = CurrentUserId ?? User_Id.Anonymous;
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (addition.SendVoting(EventTrackingId,
                                     Timestamp.Now,
-                                    userId,
+                                    CurrentUserId.Value,
                                     parentDataStructure,
                                     Entity) &&
 
@@ -556,13 +566,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 OnSuccess?.Invoke(Timestamp.Now,
                                   EventTrackingId,
-                                  userId,
+                                  CurrentUserId.Value,
                                   parentDataStructure,
                                   Entity);
 
                 addition.SendNotification(EventTrackingId,
                                           Timestamp.Now,
-                                          CurrentUserId ?? User_Id.Anonymous,
+                                          CurrentUserId.Value,
                                           parentDataStructure,
                                           Entity);
 
@@ -584,16 +594,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region TryAdd(Entities, ...)
 
         public Boolean TryAdd(IEnumerable<TEntity>  Entities,
-                              EventTracking_Id      EventTrackingId,
-                              User_Id?              CurrentUserId)
+                              EventTracking_Id?     EventTrackingId   = null,
+                              User_Id?              CurrentUserId     = null)
         {
 
-            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
             if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
                                                            Timestamp.Now,
-                                                           currentUserId,
+                                                           CurrentUserId.Value,
                                                            parentDataStructure,
                                                            Entity)))
             {
@@ -605,7 +616,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     addition.SendNotification(EventTrackingId,
                                               Timestamp.Now,
-                                              currentUserId,
+                                              CurrentUserId.Value,
                                               parentDataStructure,
                                               entity);
 
@@ -621,16 +632,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public Boolean TryAdd(IEnumerable<TEntity>          Entities,
                               Action<IEnumerable<TEntity>>  OnSuccess,
-                              EventTracking_Id              EventTrackingId,
-                              User_Id?                      CurrentUserId)
+                              EventTracking_Id?             EventTrackingId   = null,
+                              User_Id?                      CurrentUserId     = null)
         {
 
-            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
             if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
                                                            Timestamp.Now,
-                                                           currentUserId,
+                                                           CurrentUserId.Value,
                                                            parentDataStructure,
                                                            Entity)))
             {
@@ -642,7 +654,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     addition.SendNotification(EventTrackingId,
                                               Timestamp.Now,
-                                              currentUserId,
+                                              CurrentUserId.Value,
                                               parentDataStructure,
                                               entity);
 
@@ -659,16 +671,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public Boolean TryAdd(IEnumerable<TEntity>                    Entities,
                               Action<DateTime, IEnumerable<TEntity>>  OnSuccess,
-                              EventTracking_Id                        EventTrackingId,
-                              User_Id?                                CurrentUserId)
+                              EventTracking_Id?                       EventTrackingId   = null,
+                              User_Id?                                CurrentUserId     = null)
         {
 
-            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
             if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
                                                            Timestamp.Now,
-                                                           currentUserId,
+                                                           CurrentUserId.Value,
                                                            parentDataStructure,
                                                            Entity)))
             {
@@ -680,7 +693,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     addition.SendNotification(EventTrackingId,
                                               Timestamp.Now,
-                                              currentUserId,
+                                              CurrentUserId.Value,
                                               parentDataStructure,
                                               entity);
 
@@ -697,16 +710,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public Boolean TryAdd(IEnumerable<TEntity>                                          Entities,
                               Action<DateTime, TParentDataStructure, IEnumerable<TEntity>>  OnSuccess,
-                              EventTracking_Id                                              EventTrackingId,
-                              User_Id?                                                      CurrentUserId)
+                              EventTracking_Id?                                             EventTrackingId   = null,
+                              User_Id?                                                      CurrentUserId     = null)
         {
 
-            var currentUserId = CurrentUserId ?? User_Id.Anonymous;
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             // Only when all are allowed we will go on!
             if (Entities.All(Entity => addition.SendVoting(EventTrackingId,
                                                            Timestamp.Now,
-                                                           currentUserId,
+                                                           CurrentUserId.Value,
                                                            parentDataStructure,
                                                            Entity)))
             {
@@ -718,7 +732,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     addition.SendNotification(EventTrackingId,
                                               Timestamp.Now,
-                                              currentUserId,
+                                              CurrentUserId.Value,
                                               parentDataStructure,
                                               entity);
 
@@ -738,14 +752,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryAddIfNotExists(Entity, ...)
 
-        public AddResult TryAddIfNotExists(TEntity           Entity,
-                                           EventTracking_Id  EventTrackingId,
-                                           User_Id?          CurrentUserId)
+        public AddResult TryAddIfNotExists(TEntity            Entity,
+                                           EventTracking_Id?  EventTrackingId   = null,
+                                           User_Id?           CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (additionIfNotExists.SendVoting(EventTrackingId,
                                                Timestamp.Now,
-                                               CurrentUserId ?? User_Id.Anonymous,
+                                               CurrentUserId.Value,
                                                parentDataStructure,
                                                Entity) &&
 
@@ -755,7 +772,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 additionIfNotExists.SendNotification(EventTrackingId,
                                                      Timestamp.Now,
-                                                     CurrentUserId ?? User_Id.Anonymous,
+                                                     CurrentUserId.Value,
                                                      parentDataStructure,
                                                      Entity);
 
@@ -777,15 +794,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="OnSuccess">A delegate called after adding the entity, but before the notifications are send.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="CurrentUserId">An optional user identification initiating this command/request.</param>
-        public AddResult TryAddIfNotExists(TEntity           Entity,
-                                           Action<TEntity>   OnSuccess,
-                                           EventTracking_Id  EventTrackingId,
-                                           User_Id?          CurrentUserId)
+        public AddResult TryAddIfNotExists(TEntity            Entity,
+                                           Action<TEntity>    OnSuccess,
+                                           EventTracking_Id?  EventTrackingId   = null,
+                                           User_Id?           CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (additionIfNotExists.SendVoting(EventTrackingId,
                                                Timestamp.Now,
-                                               CurrentUserId ?? User_Id.Anonymous,
+                                               CurrentUserId.Value,
                                                parentDataStructure,
                                                Entity) &&
 
@@ -797,7 +817,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 additionIfNotExists.SendNotification(EventTrackingId,
                                                      Timestamp.Now,
-                                                     CurrentUserId ?? User_Id.Anonymous,
+                                                     CurrentUserId.Value,
                                                      parentDataStructure,
                                                      Entity);
 
@@ -813,13 +833,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public AddResult TryAddIfNotExists(TEntity                    Entity,
                                            Action<DateTime, TEntity>  OnSuccess,
-                                           EventTracking_Id           EventTrackingId,
-                                           User_Id?                   CurrentUserId)
+                                           EventTracking_Id?          EventTrackingId   = null,
+                                           User_Id?                   CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (additionIfNotExists.SendVoting(EventTrackingId,
                                                Timestamp.Now,
-                                               CurrentUserId ?? User_Id.Anonymous,
+                                               CurrentUserId.Value,
                                                parentDataStructure,
                                                Entity) &&
 
@@ -831,7 +854,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 additionIfNotExists.SendNotification(EventTrackingId,
                                                      Timestamp.Now,
-                                                     CurrentUserId ?? User_Id.Anonymous,
+                                                     CurrentUserId.Value,
                                                      parentDataStructure,
                                                      Entity);
 
@@ -847,15 +870,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public AddResult TryAddIfNotExists(TEntity                                                                     Entity,
                                            Action<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
-                                           EventTracking_Id                                                            EventTrackingId,
-                                           User_Id?                                                                    CurrentUserId)
+                                           EventTracking_Id?                                                           EventTrackingId   = null,
+                                           User_Id?                                                                    CurrentUserId     = null)
         {
 
-            var userId = CurrentUserId ?? User_Id.Anonymous;
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (additionIfNotExists.SendVoting(EventTrackingId,
                                                Timestamp.Now,
-                                               userId,
+                                               CurrentUserId.Value,
                                                parentDataStructure,
                                                Entity) &&
 
@@ -865,13 +889,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 OnSuccess?.Invoke(Timestamp.Now,
                                   EventTrackingId,
-                                  userId,
+                                  CurrentUserId.Value,
                                   parentDataStructure,
                                   Entity);
 
                 additionIfNotExists.SendNotification(EventTrackingId,
                                                      Timestamp.Now,
-                                                     CurrentUserId ?? User_Id.Anonymous,
+                                                     CurrentUserId.Value,
                                                      parentDataStructure,
                                                      Entity);
 
@@ -890,16 +914,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryUpdate (Id, NewEntity, OldEntity, ...)
 
-        public Boolean TryUpdate(TId               Id,
-                                 TEntity           NewEntity,
-                                 TEntity           OldEntity,
-                                 EventTracking_Id  EventTrackingId,
-                                 User_Id?          CurrentUserId)
+        public Boolean TryUpdate(TId                Id,
+                                 TEntity            NewEntity,
+                                 TEntity            OldEntity,
+                                 EventTracking_Id?  EventTrackingId   = null,
+                                 User_Id?           CurrentUserId     = null)
         {
+
+            EventTrackingId ??= EventTracking_Id.New;
+            CurrentUserId   ??= User_Id.Anonymous;
 
             if (update.SendVoting(EventTrackingId,
                                   Timestamp.Now,
-                                  CurrentUserId ?? User_Id.Anonymous,
+                                  CurrentUserId.Value,
                                   parentDataStructure,
                                   NewEntity,
                                   OldEntity) &&
@@ -909,7 +936,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 update.SendNotification(EventTrackingId,
                                         Timestamp.Now,
-                                        CurrentUserId ?? User_Id.Anonymous,
+                                        CurrentUserId.Value,
                                         parentDataStructure,
                                         NewEntity,
                                         OldEntity);

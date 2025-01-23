@@ -47,57 +47,57 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The name of the street.
         /// </summary>
-        public String                   Street               { get; }
+        public String                  Street               { get; }
 
         /// <summary>
         /// The postal code.
         /// </summary>
-        public String                   PostalCode           { get; }
+        public String                  PostalCode           { get; }
 
         /// <summary>
         /// The city.
         /// </summary>
-        public I18NString               City                 { get; }
+        public I18NString              City                 { get; }
 
         /// <summary>
         /// The country.
         /// </summary>
-        public Country                  Country              { get; }
+        public Country                 Country              { get; }
 
         /// <summary>
         /// The house number.
         /// </summary>
-        public String?                  HouseNumber          { get; }
+        public String?                 HouseNumber          { get; }
 
         /// <summary>
         /// The floor level.
         /// </summary>
-        public String?                  FloorLevel           { get; }
+        public String?                 FloorLevel           { get; }
 
         /// <summary>
         /// The region.
         /// </summary>
-        public String?                  Region               { get; }
+        public String?                 Region               { get; }
 
         /// <summary>
         /// The postal code sub.
         /// </summary>
-        public String?                  PostalCodeSub        { get; }
+        public String?                 PostalCodeSub        { get; }
 
         /// <summary>
         /// The timezone.
         /// </summary>
-        public Time_Zone?               TimeZone             { get; }
+        public Time_Zone?              TimeZone             { get; }
 
         /// <summary>
         /// The official languages at this address.
         /// </summary>
-        public IEnumerable<Languages>?  OfficialLanguages    { get; }
+        public IEnumerable<Languages>  OfficialLanguages    { get; }
 
         /// <summary>
         /// An optional text/comment to describe the address.
         /// </summary>
-        public I18NString?              Comment              { get; }
+        public I18NString              Comment              { get; }
 
         #endregion
 
@@ -118,26 +118,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// 
         /// <param name="CustomData">Optional custom data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">An optional dictionary of internal data.</param>
-        public Address(String                       Street,
-                       String                       PostalCode,
-                       I18NString                   City,
-                       Country                      Country,
+        public Address(String                   Street,
+                       String                   PostalCode,
+                       I18NString               City,
+                       Country                  Country,
 
-                       String?                      HouseNumber         = null,
-                       String?                      FloorLevel          = null,
-                       String?                      Region              = null,
-                       String?                      PostalCodeSub       = null,
-                       Time_Zone?                   TimeZone            = null,
-                       IEnumerable<Languages>?      OfficialLanguages   = null,
-                       I18NString?                  Comment             = null,
+                       String?                  HouseNumber         = null,
+                       String?                  FloorLevel          = null,
+                       String?                  Region              = null,
+                       String?                  PostalCodeSub       = null,
+                       Time_Zone?               TimeZone            = null,
+                       IEnumerable<Languages>?  OfficialLanguages   = null,
+                       I18NString?              Comment             = null,
 
-                       JObject?                     CustomData          = null,
-                       UserDefinedDictionary?       InternalData        = null,
-                       DateTime?                    LastChange          = null)
+                       JObject?                 CustomData          = null,
+                       UserDefinedDictionary?   InternalData        = null,
+                       DateTime?                LastChangeDate      = null)
 
             : base(CustomData,
                    InternalData,
-                   LastChange ?? Timestamp.Now)
+                   LastChangeDate ?? Timestamp.Now)
 
         {
 
@@ -151,8 +151,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.Region             = Region;
             this.PostalCodeSub      = PostalCodeSub;
             this.TimeZone           = TimeZone;
-            this.OfficialLanguages  = OfficialLanguages;
-            this.Comment            = Comment;
+            this.OfficialLanguages  = OfficialLanguages ?? [];
+            this.Comment            = Comment           ?? I18NString.Empty;
 
         }
 
@@ -549,6 +549,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        public Address Clone()
+        {
+
+            return new Address(
+
+                       Street.          CloneString(),
+                       PostalCode.      CloneString(),
+                       City.            Clone(),
+                       Country.         Clone(),
+
+                       HouseNumber?.    CloneString(),
+                       FloorLevel?.     CloneString(),
+                       Region?.         CloneString(),
+                       PostalCodeSub?.  CloneString(),
+                       TimeZone?.       Clone(),
+                       OfficialLanguages,
+                       Comment.         Clone(),
+
+                       CustomData,
+                       InternalData,
+                       LastChangeDate
+
+                   );
+
+        }
+
+
         #region Operator overloading
 
         #region Operator == (Address1, Address2)
@@ -822,8 +849,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 // TimeZone
 // OfficialLanguages
 
-               ((Comment is     null && Address.Comment is     null) ||
-                (Comment is not null && Address.Comment is not null && Comment.Equals(Address.Comment)));
+               Comment.Equals(Address.Comment);
 
         #endregion
 

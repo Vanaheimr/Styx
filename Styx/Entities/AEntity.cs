@@ -617,32 +617,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// The unique identification of this entity.
             /// </summary>
             [Mandatory]
-            public  TId                Id               { get; set; }
+            public  TId                  Id               { get; set; }
 
             /// <summary>
             /// The multi-language name of this entity.
             /// </summary>
             [Optional]
-            public I18NString?         Name             { get; set; }
+            public I18NString            Name             { get; set; } = I18NString.Empty;
 
             /// <summary>
             /// The multi-language description of this entity.
             /// </summary>
             [Optional]
-            public I18NString?         Description      { get; set; }
+            public I18NString            Description      { get; set; } = I18NString.Empty;
 
             /// <summary>
             /// The JSON-LD context of this entity.
             /// </summary>
             [Mandatory]
-            public JSONLDContext       JSONLDContext    { get; set; }
-
-            ///// <summary>
-            ///// The timestamp of the last changes within this entity.
-            ///// Can e.g. be used as a HTTP ETag.
-            ///// </summary>
-            //[Mandatory]
-            //public DateTime            LastChange   { get; set; }
+            public JSONLDContext         JSONLDContext    { get; set; }
 
             /// <summary>
             /// All signatures of this blog posting.
@@ -650,17 +643,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             [Optional]
             public HashSet<Signature23>  Signatures       { get; }
 
-            ///// <summary>
-            ///// Custom data stored within this entity.
-            ///// </summary>
-            //[Optional]
-            //public TCustomData?        CustomData       { get; set; }
-
             /// <summary>
             /// The data source of this entity, e.g. an automatic importer.
             /// </summary>
             [Optional]
-            public String?        DataSource       { get; set; }
+            public String?               DataSource      { get; set; }
 
             #endregion
 
@@ -680,16 +667,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// <param name="CustomData">Custom data stored within this entity.</param>
             /// <param name="DataSource">The source of this information, e.g. an automatic importer.</param>
             /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
-            public Builder(TId                      Id,
-                           JSONLDContext            JSONLDContext,
-                           DateTime?                LastChange     = default,
-                           IEnumerable<Signature23>?  Signatures     = default,
-                           JObject?                 CustomData     = null,
-                           UserDefinedDictionary?   InternalData   = null,
-                           String?                  DataSource     = default)
+            public Builder(TId                        Id,
+                           JSONLDContext              JSONLDContext,
+                           DateTime?                  Created        = null,
+                           DateTime?                  LastChange     = null,
+                           IEnumerable<Signature23>?  Signatures     = null,
+                           JObject?                   CustomData     = null,
+                           UserDefinedDictionary?     InternalData   = null,
+                           String?                    DataSource     = default)
 
                 : base(CustomData,
                        InternalData,
+                       Created,
                        LastChange)
 
             {
@@ -698,7 +687,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 this.JSONLDContext   = JSONLDContext;
                 this.Signatures      = Signatures is not null
                                            ? new HashSet<Signature23>(Signatures)
-                                           : new HashSet<Signature23>();
+                                           : [];
                 this.DataSource      = DataSource;
 
             }

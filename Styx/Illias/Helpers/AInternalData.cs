@@ -352,11 +352,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 DateTime?               LastChange   = null)
         {
 
-            this.CustomData    = CustomData   ?? [];
-            this.InternalData  = InternalData ?? new UserDefinedDictionary();
-
             this.created       = Created      ?? LastChange ?? Timestamp.Now;
             this.lastChange    = LastChange   ?? Created    ?? Timestamp.Now;
+
+            this.CustomData    = CustomData   ?? [];
+            this.InternalData  = InternalData ?? new UserDefinedDictionary();
 
         }
 
@@ -459,6 +459,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        protected void CloneFrom(AInternalData InternalData)
+        {
+
+            foreach (var handler in InternalData.OnPropertyChanged?.GetInvocationList() ?? [])
+            {
+
+                if (handler.Target == InternalData)
+                    continue;
+
+                OnPropertyChanged += (OnPropertyChangedDelegate) handler;
+
+            }
+
+        }
+
+
+
+
         public Boolean IsEmpty
             => InternalData.IsEmpty;
 
@@ -516,24 +534,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #region Properties
 
             /// <summary>
-            /// Optional custom data, e.g. in combination with custom parsers and serializers.
+            /// The timestamp of the creation of this object.
             /// </summary>
-            [Optional]
-            public JObject                CustomData      { get; }
-
-
-            /// <summary>
-            /// An optional dictionary of customer-specific data.
-            /// </summary>
-            [Optional]
-            public UserDefinedDictionary  InternalData    { get; }
+            [Mandatory]
+            public DateTime               Created           { get; set; }
 
             /// <summary>
             /// The timestamp of the last changes within this ChargingPool.
             /// Can be used as a HTTP ETag.
             /// </summary>
             [Mandatory]
-            public DateTime               LastChangeDate      { get; set; }
+            public DateTime               LastChangeDate    { get; set; }
+
+            /// <summary>
+            /// Optional custom data, e.g. in combination with custom parsers and serializers.
+            /// </summary>
+            [Optional]
+            public JObject                CustomData        { get; }
+
+
+            /// <summary>
+            /// An optional dictionary of customer-specific data.
+            /// </summary>
+            [Optional]
+            public UserDefinedDictionary  InternalData      { get; }
 
             #endregion
 
@@ -551,12 +575,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// <param name="InternalData">An optional dictionary of internal data.</param>
             protected Builder(JObject?                CustomData,
                               UserDefinedDictionary?  InternalData,
+                              DateTime?               Created      = null,
                               DateTime?               LastChange   = null)
             {
 
-                this.CustomData    = CustomData   ?? new JObject();
-                this.InternalData  = InternalData ?? new UserDefinedDictionary();
-                this.LastChangeDate    = LastChange   ?? Timestamp.Now;
+                this.Created         = Created      ?? LastChange ?? Timestamp.Now;
+                this.LastChangeDate  = LastChange   ?? Created    ?? Timestamp.Now;
+
+                this.CustomData      = CustomData   ?? [];
+                this.InternalData    = InternalData ?? new UserDefinedDictionary();
 
             }
 

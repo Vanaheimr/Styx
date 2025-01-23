@@ -367,12 +367,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     i18NStrings[Language] = value;
 
-                    OnPropertyChanged?.Invoke(Timestamp.Now,
-                                              EventTracking_Id.New,
-                                              this,
-                                              "",
-                                              new Tuple<Languages, String>(Language, oldText),
-                                              new Tuple<Languages, String>(Language, value));
+                    OnPropertyChanged?.Invoke(
+                        Timestamp.Now,
+                        EventTracking_Id.New,
+                        this,
+                        "",
+                        new Tuple<Languages, String>(Language, value),
+                        new Tuple<Languages, String>(Language, oldText)
+                    );
 
                 }
 
@@ -399,12 +401,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 i18NStrings.Add(Language, Text);
 
-                OnPropertyChanged?.Invoke(Timestamp.Now,
-                                          EventTracking_Id.New,
-                                          this,
-                                          "",
-                                          null,
-                                          new Tuple<Languages, String>(Language, Text));
+                OnPropertyChanged?.Invoke(
+                    Timestamp.Now,
+                    EventTracking_Id.New,
+                    this,
+                    "",
+                    null,
+                    new Tuple<Languages, String>(Language, Text)
+                );
 
             }
 
@@ -417,12 +421,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     i18NStrings[Language] = Text;
 
-                    OnPropertyChanged?.Invoke(Timestamp.Now,
-                                              EventTracking_Id.New,
-                                              this,
-                                              "",
-                                              new Tuple<Languages, String>(Language, oldText),
-                                              new Tuple<Languages, String>(Language, Text));
+                    OnPropertyChanged?.Invoke(
+                        Timestamp.Now,
+                        EventTracking_Id.New,
+                        this,
+                        "",
+                        new Tuple<Languages, String>(Language, Text),
+                        new Tuple<Languages, String>(Language, oldText)
+                    );
 
                 }
 
