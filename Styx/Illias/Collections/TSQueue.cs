@@ -17,266 +17,168 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias.Collections
 {
 
-    /// <summary>
-    /// A thread-safe, lock-free queue.
-    /// </summary>
-    /// <typeparam name="T">The type of the values stored within the queue.</typeparam>
-    public class TSQueue<T> : IEnumerable<T>
+    public class LockFreeQueue<T> : IEnumerable<T>
     {
 
-        #region (class) QueueElement
+        public delegate Task QueueDelegate(LockFreeQueue<T>  sender,
+                                           T                 value,
+                                           CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// An element within a queue.
+        /// Called whenever a new element is successfully enqueued.
         /// </summary>
-        public class QueueElement
+        public event QueueDelegate? OnAdded;
+
+        private class Node(T value)
         {
-
-            #region Properties
-
-            /// <summary>
-            /// Return the next element within the queue.
-            /// </summary>
-            public QueueElement Next  { get; set; }
-
-            /// <summary>
-            /// Return the value stored within the element.
-            /// </summary>
-            public T            Value { get; }
-
-            #endregion
-
-            #region Constructor(s)
-            /// <summary>
-            /// Create a single queue element.
-            /// </summary>
-            /// <param name="Value">The value stored within the node.</param>
-            public QueueElement(T Value)
-            {
-                this.Value = Value;
-                this.Next  = null;
-            }
-
-            #endregion
-
+            public T     Value = value;
+            public Node? Next;
         }
 
-        #endregion
+        private Node  head;
+        private Node  tail;
+        private Int64 count;
 
-
-        #region Properties
-
-        #region First
-
-        private QueueElement _FirstQueueElement;
 
         /// <summary>
-        /// The first element of the queue.
+        /// The maximum number of elements in the queue.
         /// </summary>
-        public QueueElement First
-        {
-            get
-            {
-                return _FirstQueueElement;
-            }
-        }
-
-        #endregion
-
-        #region MaxNumberOfElements
+        public UInt64 MaxNumberOfElements    { get; }
 
         /// <summary>
-        /// The maximal number of values within the queue.
-        /// RemoveOldestQueueElement() will be called to remove dispensable elements.
-        /// </summary>
-        public UInt64 MaxNumberOfElements { get; }
-
-        #endregion
-
-        #region Count
-
-        private Int64 _Count;
-
-        /// <summary>
-        /// The current number of elements within the queue.
+        /// The number of elements currently in the queue.
         /// </summary>
         public UInt64 Count
+            => (UInt64) Interlocked.Read(ref count);
+
+
+        public LockFreeQueue(UInt64 MaxNumberOfCachedEvents = 500)
         {
-            get
+            this.head = this.tail     = new Node(default!);
+            this.MaxNumberOfElements  = MaxNumberOfCachedEvents;
+        }
+
+        /// <summary>
+        /// Enqueue a new item at the tail.
+        /// </summary>
+        public async Task Enqueue(T item, CancellationToken cancellationToken = default)
+        {
+
+            var newNode = new Node(item);
+
+            while (true)
             {
-                return (UInt64) _Count;
+
+                var tailSnapshot = tail;
+                var nextSnapshot = Volatile.Read(ref tailSnapshot.Next);
+
+                if (nextSnapshot is null)
+                {
+                    // Try to link the new node
+                    if (Interlocked.CompareExchange(ref tailSnapshot.Next, newNode, null) == null)
+                    {
+
+                        // Successfully linked; increment the count
+                        Interlocked.Increment(ref count);
+
+                        // Move 'tail' pointer forward if tail is still tailSnapshot
+                        Interlocked.CompareExchange(ref tail, newNode, tailSnapshot);
+
+                        // If we've exceeded MaxNumberOfCachedEvents, remove one from the head
+                        if ((UInt64) Interlocked.Read(ref count) > MaxNumberOfElements)
+                        {
+                            // Best effort: remove one item
+                            Dequeue();
+                        }
+
+                        // Now raise the OnAdded event if any listeners
+                        var onAdded = OnAdded;
+                        if (onAdded is not null)
+                        {
+                            // If multiple handlers, run them concurrently
+                            var delegates = onAdded.GetInvocationList()
+                            .Cast<QueueDelegate>()
+                                                   .Select(d => d(this, item, cancellationToken));
+                            await Task.WhenAll(delegates);
+                        }
+
+                        return;
+
+                    }
+                }
+                else
+                {
+                    // Another thread already added a node, so move tail forward and retry
+                    Interlocked.CompareExchange(ref tail, nextSnapshot, tailSnapshot);
+                }
+
             }
         }
 
-        #endregion
-
-        #endregion
-
-        #region Events
-
         /// <summary>
-        /// A delegate called whenever an element was added to or removed from the queue.
+        /// Dequeue the oldest item from the head. Returns default(T) if empty.
         /// </summary>
-        /// <param name="Sender">The sender of the event.</param>
-        /// <param name="Value">The value.</param>
-        public delegate Task QueueDelegate(TSQueue<T> Sender, T Value);
-
-        /// <summary>
-        /// Called whenever an element was added to the queue.
-        /// </summary>
-        public event QueueDelegate OnAdded;
-
-        /// <summary>
-        /// Called whenever an element of the queue was removed.
-        /// </summary>
-        public event QueueDelegate OnRemoved;
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new thread-safe, lock-free queue.
-        /// </summary>
-        /// <param name="MaxNumberOfElements">The maximal number of values within the queue.</param>
-        public TSQueue(UInt64 MaxNumberOfElements = 500)
+        public T Dequeue()
         {
-
-            this.MaxNumberOfElements  = Math.Min(MaxNumberOfElements, Int64.MaxValue);
-
-        }
-
-        #endregion
-
-
-        #region Push(Value)
-
-        /// <summary>
-        /// Push a new value into the queue.
-        /// </summary>
-        /// <param name="Value">The value.</param>
-        public async Task<QueueElement> Push(T Value)
-        {
-
-            var NewQueueElement = new QueueElement(Value);
-
-            QueueElement OldFirst;
-
-            do
+            while (true)
             {
-                OldFirst              = First;
-                NewQueueElement.Next  = OldFirst;
-            }
-            while (Interlocked.CompareExchange(ref _FirstQueueElement, NewQueueElement, OldFirst) != OldFirst);
 
-            Interlocked.Increment(ref _Count);
+                var headSnapshot = head;
+                var tailSnapshot = tail;
+                var nextSnapshot = Volatile.Read(ref headSnapshot.Next);
 
-            // Multiple concurrent threads might remove more than expected!
-            // But it is assumed, that this is not a problem to anyone.
-            while ((UInt64) _Count > MaxNumberOfElements)
-                await Pop();
-
-            var OnAddedLocal = OnAdded;
-            if (OnAddedLocal != null)
-                await Task.WhenAll(OnAddedLocal.GetInvocationList().
-                                       Cast<QueueDelegate>().
-                                       Select(e => e(this,
-                                                     Value)));
-
-            return NewQueueElement;
-
-        }
-
-        #endregion
-
-        #region Peek()
-
-        /// <summary>
-        /// Return the oldest value of the queue without removing it.
-        /// </summary>
-        public T Peek()
-
-            => _FirstQueueElement.Value;
-
-        #endregion
-
-        #region Pop()
-
-        /// <summary>
-        /// Return the oldest value of the queue and remove it.
-        /// </summary>
-        public async Task<T> Pop()
-        {
-
-            QueueElement Oldest     = _FirstQueueElement;
-            QueueElement PreOldest  = null;
-
-            while (Oldest.Next != null)
-            {
-                PreOldest  = Oldest;
-                Oldest     = Oldest.Next;
-            }
-
-            if (PreOldest != null)
-            {
-                PreOldest.Next = null;
-                Interlocked.Decrement(ref _Count);
-            }
-
-            var OnRemovedLocal = OnRemoved;
-            if (OnRemovedLocal != null)
-                await Task.WhenAll(OnRemovedLocal.GetInvocationList().
-                                       Cast<QueueDelegate>().
-                                       Select(e => e(this,
-                                                     _FirstQueueElement.Value)));
-
-            return Oldest.Value;
-
-        }
-
-        #endregion
-
-
-        #region GetEnumerator()
-
-        /// <summary>
-        /// Get an enumerator for the queue..
-        /// </summary>
-        public IEnumerator<T> GetEnumerator()
-        {
-
-            var node = _FirstQueueElement;
-
-            if (node != null)
-            {
-                do
+                if (headSnapshot == tailSnapshot)
                 {
 
-                    yield return node.Value;
+                    // The queue is (probably) empty
+                    if (nextSnapshot == null)
+                        return default!;
 
-                } while ((node = node.Next) != null);
+                    // Tail is lagging behind, so move it forward
+                    Interlocked.CompareExchange(ref tail, nextSnapshot, tailSnapshot);
+
+                }
+                else
+                {
+
+                    // There's at least one real node
+                    if (nextSnapshot == null)
+                        return default!;  // Might happen transiently
+
+                    T value = nextSnapshot.Value;
+                    // Try to move head forward
+                    if (Interlocked.CompareExchange(ref head, nextSnapshot, headSnapshot) == headSnapshot)
+                    {
+                        Interlocked.Decrement(ref count);
+                        return value;
+                    }
+
+                }
+
             }
+        }
 
+        public IEnumerator<T> GetEnumerator()
+        {
+            // Start from head.Next to skip the dummy node
+            var current = Volatile.Read(ref head).Next;
+            while (current is not null)
+            {
+                yield return current.Value;
+                current = Volatile.Read(ref current.Next);
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        #endregion
+            => GetEnumerator();
 
     }
 
