@@ -20,11 +20,250 @@
 using System.Reflection;
 using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Text.RegularExpressions;
 
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.CLI
 {
+
+    /// <summary>
+    /// Holds the result of the autocompletion process.
+    /// </summary>
+    public class AutoCompleteResult
+    {
+        public String        ExpandedPath    { get; set; } = String.Empty;
+        public List<String>  Candidates      { get; set; } = [];
+
+    }
+
+    public static class AutoComplete
+    {
+
+        /// <summary>
+        /// Attempts to autocomplete a partial path. Returns the path expanded
+        /// to its longest common prefix, and a list of all matching candidates
+        /// if there's more than one.
+        /// </summary>
+        /// <param name="partialPath">The user-typed partial path (may be file or directory).</param>
+        public static AutoCompleteResult AutoCompletePath(String partialPath)
+        {
+
+            var result = new AutoCompleteResult {
+                ExpandedPath = partialPath
+            };
+
+            if (String.IsNullOrWhiteSpace(partialPath))
+                return result;
+
+            if (partialPath == "~")
+                partialPath = Directory.GetCurrentDirectory();
+
+            // Normalize directory separators to backslashes for internal handling
+            // (You could use Path.DirectorySeparatorChar, but let's be explicit).
+            partialPath = partialPath.Replace('/', '\\');
+
+            // If partialPath points to a directory (e.g., ends with slash), 
+            // let's remove it so we can split out the "parent directory" vs. "prefix" in a uniform way.
+            var endedWithSeparator = partialPath.EndsWith("\\", StringComparison.Ordinal);
+            if (endedWithSeparator && partialPath.Length > 1)
+            {
+                partialPath = partialPath.TrimEnd('\\');
+            }
+
+            // Extract the directory portion that definitely exists and the partial name
+            var directoryPart = Path.GetDirectoryName(partialPath);
+            if (String.IsNullOrEmpty(directoryPart))
+            {
+                // If there's no directory part, assume the current directory
+                directoryPart = Directory.GetCurrentDirectory();
+            }
+            else if (!Directory.Exists(directoryPart))
+            {
+                // Try walking up the partial directory string until we get a valid directory
+                directoryPart = FindLongestExistingDirectory(directoryPart);
+            }
+
+            // The last part in partialPath, which we will try to match to files/dirs
+            var partialName = Path.GetFileName(partialPath);
+            if (String.IsNullOrEmpty(partialName) && endedWithSeparator)
+            {
+                // If partialPath ended with a slash, partialName is empty, so just treat it as
+                // "list everything inside directoryPart".
+                partialName = String.Empty;
+            }
+
+
+            var candidates = new List<String>();
+
+            try
+            {
+
+                candidates.AddRange(
+                    new DirectoryInfo(directoryPart).
+                        GetFiles("*.*", SearchOption.TopDirectoryOnly).
+                        Where   (name     => name.FullName.StartsWith(partialPath, StringComparison.OrdinalIgnoreCase)).
+                        Select  (filepath => filepath.FullName)
+                );
+
+                candidates.AddRange(
+                    new DirectoryInfo(directoryPart).
+                        GetDirectories("*.*", SearchOption.TopDirectoryOnly).
+                        Where(name => name.FullName.StartsWith(partialPath, StringComparison.OrdinalIgnoreCase)).
+                        Select(filepath => filepath.FullName)
+                );
+
+            }
+            catch (Exception e)
+            {
+                DebugX.Log(e.Message);
+                return result;
+            }
+
+            if (candidates.Count == 1)
+            {
+
+                var candidate = candidates.First();
+                candidates.Clear();
+
+                candidates.AddRange(
+                    new DirectoryInfo(candidate).
+                        GetFiles("*.*", SearchOption.TopDirectoryOnly).
+                        Where   (name     => name.FullName.StartsWith(partialPath, StringComparison.OrdinalIgnoreCase)).
+                        Select  (filepath => filepath.FullName)
+                );
+
+                candidates.AddRange(
+                    new DirectoryInfo(candidate).
+                        GetDirectories("*.*", SearchOption.TopDirectoryOnly).
+                        Where(name => name.FullName.StartsWith(partialPath, StringComparison.OrdinalIgnoreCase)).
+                        Select(filepath => filepath.FullName)
+                );
+
+            }
+
+
+            #region No match
+
+            if (candidates.Count == 0)
+                return result;
+
+            #endregion
+
+            #region Exactly one match...
+
+            if (candidates.Count == 1)
+            {
+
+                var singleMatch = candidates[0];
+                var expanded    = Path.Combine(directoryPart, singleMatch);
+
+                // If it's a directory, append a slash to make it obvious
+                if (Directory.Exists(expanded))
+                    expanded += "\\";
+
+                result.ExpandedPath = expanded;
+                result.Candidates.Add(expanded);
+
+                return result;
+
+            }
+
+            #endregion
+
+            #region ...or multiple matches
+
+            var commonPrefix = FindLongestCommonPrefix(candidates, partialPath);
+
+            // Expand partialPath with the found common prefix
+            if (commonPrefix.Length > 0 && commonPrefix.Length > partialName.Length)
+            {
+
+                var prefixPath = Path.Combine(directoryPart, commonPrefix);
+
+                if (Directory.Exists(prefixPath))
+                    prefixPath += "\\";
+
+                result.ExpandedPath = prefixPath;
+
+            }
+
+            // Provide full paths as well, so the consumer can show them or let the user pick
+            result.Candidates = candidates.Select(c => {
+                var fullPath = Path.Combine(directoryPart, c);
+                if (Directory.Exists(fullPath)) fullPath += "\\";
+                return fullPath;
+            }).
+                                           ToList();
+
+            return result;
+
+            #endregion
+
+        }
+
+        /// <summary>
+        /// Finds the longest existing directory by peeling off path segments 
+        /// until an existing directory is found, or returns an empty string if none found.
+        /// </summary>
+        private static String FindLongestExistingDirectory(String path)
+        {
+
+            while (!String.IsNullOrEmpty(path) && !Directory.Exists(path))
+            {
+                path = Path.GetDirectoryName(path) ?? String.Empty;
+            }
+
+            return String.IsNullOrEmpty(path)
+                       ? Directory.GetCurrentDirectory()
+                       : path;
+
+        }
+
+        /// <summary>
+        /// Finds the longest common prefix of all strings in 'values', starting from 
+        /// the existing partialName (so we only extend beyond partialName).
+        /// Case-insensitive match is used here for path convenience.
+        /// </summary>
+        private static String FindLongestCommonPrefix(List<String>  values,
+                                                      String        partialName)
+        {
+
+            if (values is null || values.Count == 0)
+                return partialName;
+
+            // Convert everything to the same case for prefix-finding
+            var lowered       = values.Select(v => v.ToLowerInvariant()).ToList();
+            var basePartial   = partialName.ToLowerInvariant();
+
+            // We'll accumulate the prefix in commonPrefix
+            var commonPrefix  = basePartial;
+
+            // The maximum possible length of the common prefix can't exceed 
+            // the length of the shortest candidate.
+            var minLength     = lowered.Min(s => s.Length);
+
+            for (var i = commonPrefix.Length; i < minLength; i++)
+            {
+
+                // The character to compare for all candidates
+                var c = lowered[0][i];
+
+                // Check if all match this character
+                if (lowered.Any(s => s[i] != c))
+                    break;
+
+                // Append the character
+                commonPrefix += c;
+
+            }
+
+            return commonPrefix;
+
+        }
+
+    }
+
 
     /// <summary>
     /// A Command Line Interface for executing commands.
@@ -253,11 +492,38 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
 
 
+        public static string[] ParseCommandLine(string input)
+        {
+            // This pattern matches either:
+            // 1) Quoted text: "([^"]*)"
+            // 2) Or unquoted segments: ([^\s]+)
+            var matches = Regex.Matches(input, "\"([^\"]*)\"|([^\\s]+)");
+            var tokens = new List<string>();
+
+            foreach (Match match in matches)
+            {
+                // If Group[1] is not empty, that's the quoted segment (without the quotes)
+                if (!string.IsNullOrEmpty(match.Groups[1].Value))
+                {
+                    tokens.Add(match.Groups[1].Value);
+                }
+                else
+                {
+                    // Otherwise, it's a regular token
+                    tokens.Add(match.Groups[2].Value);
+                }
+            }
+
+            return tokens.ToArray();
+        }
+
+
         #region Suggest(Command)
 
         public Task<SuggestionResponse[]> Suggest(String Command)
 
-            => Suggest(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+            => //Suggest(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+               Suggest(ParseCommandLine(Command));
 
         #endregion
 
@@ -289,7 +555,8 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public Task<String[]> Execute(String Command)
 
-            => Execute(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+            => //Execute(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+               Execute(ParseCommandLine(Command));
 
         #endregion
 
@@ -376,7 +643,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 if (key.Key == ConsoleKey.Tab)
                 {
 
-                    var suggestions = await Suggest(new String(input.ToArray()).Split(' ', StringSplitOptions.RemoveEmptyEntries));
+                    var suggestions = await Suggest(ParseCommandLine(new String(input.ToArray())));
 
                     if (suggestions.Length == 0)
                     {
@@ -450,7 +717,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 else if (key.Key == ConsoleKey.Enter)
                 {
                     Console.WriteLine();
-                    return new Tuple<String[], Boolean>(new String(input.ToArray()).Split(' ', StringSplitOptions.RemoveEmptyEntries), false);
+                    return new Tuple<String[], Boolean>(ParseCommandLine(new String(input.ToArray())), false);
                 }
 
                 else if (key.Key == ConsoleKey.Backspace && cursorPosition > 0)
