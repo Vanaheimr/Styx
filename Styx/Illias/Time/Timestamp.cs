@@ -42,6 +42,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) NowDate
+
+        /// <summary>
+        /// The current time stamp respecting time travels.
+        /// </summary>
+        public static DateOnly NowDate
+
+            => DateOnly.FromDateTime(DateTime.UtcNow + timeTravel);
+
+        #endregion
+
+        #region (static) NowTime
+
+        /// <summary>
+        /// The current time stamp respecting time travels.
+        /// </summary>
+        public static TimeOnly NowTime
+
+            => TimeOnly.FromDateTime(DateTime.UtcNow + timeTravel);
+
+        #endregion
+
+
         #region (static) TravelBackInTime   (TimeTravel)
 
         /// <summary>

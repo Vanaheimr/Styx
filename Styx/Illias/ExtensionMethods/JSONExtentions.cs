@@ -1477,11 +1477,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Int64     Int64Value,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Int64    Int64Value,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Int64Value = default;
@@ -1561,11 +1561,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Ampere,                 out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Ampere    AmpereValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Ampere   AmpereValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             AmpereValue = default;
@@ -1605,11 +1605,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Hertz,                  out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Hertz     HertzValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Hertz    HertzValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             HertzValue = default;
@@ -1649,11 +1649,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Meter,                  out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Meter     MeterValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Meter    MeterValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             MeterValue = default;
@@ -1693,11 +1693,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Percentage,             out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject    JSON,
-                                             String          PropertyName,
-                                             String          PropertyDescription,
-                                             out Percentage  PercentageValue,
-                                             out String?     ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                         JSON,
+                                             String                               PropertyName,
+                                             String                               PropertyDescription,
+                                                                  out Percentage  PercentageValue,
+                                             [NotNullWhen(false)] out String?     ErrorResponse)
         {
 
             PercentageValue = default;
@@ -1737,11 +1737,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out PercentageInt,          out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject        JSON,
-                                             String              PropertyName,
-                                             String              PropertyDescription,
-                                             out PercentageByte  PercentageValue,
-                                             out String?         ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                             JSON,
+                                             String                                   PropertyName,
+                                             String                                   PropertyDescription,
+                                                                  out PercentageByte  PercentageValue,
+                                             [NotNullWhen(false)] out String?         ErrorResponse)
         {
 
             PercentageValue = default;
@@ -1779,13 +1779,57 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Siemens,                out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Siemens  SiemensValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            SiemensValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            SiemensValue      = Siemens.ParseS(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Volt,                   out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Volt      VoltValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Volt     VoltValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             VoltValue = default;
@@ -1823,13 +1867,101 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Voltampere,             out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject                         JSON,
+                                             String                               PropertyName,
+                                             String                               PropertyDescription,
+                                                                  out VoltAmpere  VoltampereValue,
+                                             [NotNullWhen(false)] out String?     ErrorResponse)
+        {
+
+            VoltampereValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            VoltampereValue      = VoltAmpere.ParseVA(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out VoltampereReactiv,      out ErrorResponse)
+
+        public static Boolean ParseMandatory(this JObject                                JSON,
+                                             String                                      PropertyName,
+                                             String                                      PropertyDescription,
+                                                                  out VoltAmpereReactive  VoltampereReactivValue,
+                                             [NotNullWhen(false)] out String?            ErrorResponse)
+        {
+
+            VoltampereReactivValue = default;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = "Missing JSON property '" + PropertyName + "'!";
+                return false;
+            }
+
+            if (JSONToken is null ||
+                !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+            {
+                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                return false;
+            }
+
+            VoltampereReactivValue      = VoltAmpereReactive.ParseVAR(decimalValue);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out Watt,                   out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out Watt      WattValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                      JSON,
+                                             String                            PropertyName,
+                                             String                            PropertyDescription,
+                                                                  out Watt     WattValue,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             WattValue = default;
@@ -1869,11 +2001,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out WattHour,               out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject  JSON,
-                                             String        PropertyName,
-                                             String        PropertyDescription,
-                                             out WattHour  WattHourValue,
-                                             out String?   ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                       JSON,
+                                             String                             PropertyName,
+                                             String                             PropertyDescription,
+                                                                  out WattHour  WattHourValue,
+                                             [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
             WattHourValue = default;
@@ -5022,6 +5154,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Siemens,                out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject  JSON,
+                                            String        PropertyName,
+                                            String        PropertyDescription,
+                                            out Siemens?  SiemensValue,
+                                            out String?   ErrorResponse,
+                                            Int32?        Multiplicator = null)
+        {
+
+            SiemensValue      = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    SiemensValue     = Siemens.ParseS(decimalValue, Multiplicator);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
         #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Volt,                   out ErrorResponse)
 
         public static Boolean ParseOptional(this JObject  JSON,
@@ -5054,6 +5232,98 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
                     VoltValue     = Volt.ParseV(decimalValue, Multiplicator);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out Voltampere,             out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject     JSON,
+                                            String           PropertyName,
+                                            String           PropertyDescription,
+                                            out VoltAmpere?  VoltampereValue,
+                                            out String?      ErrorResponse,
+                                            Int32?           Multiplicator = null)
+        {
+
+            VoltampereValue      = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    VoltampereValue     = VoltAmpere.ParseVA(decimalValue, Multiplicator);
+
+                else
+                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region ParseOptional       (this JSON, PropertyName, PropertyDescription,                               out VoltampereReactiv,      out ErrorResponse)
+
+        public static Boolean ParseOptional(this JObject            JSON,
+                                            String                  PropertyName,
+                                            String                  PropertyDescription,
+                                            out VoltAmpereReactive?  VoltampereReactivValue,
+                                            out String?             ErrorResponse,
+                                            Int32?                  Multiplicator = null)
+        {
+
+            VoltampereReactivValue      = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
+                    VoltampereReactivValue     = VoltAmpereReactive.ParseVAR(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
@@ -6128,6 +6398,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    return false;
 
         //}
+
+        public static Boolean ParseOptionalJSONMayBeNull<T>(this JObject           JSON,
+                                                            String                 PropertyName,
+                                                            String                 PropertyDescription,
+                                                            TryJObjectParser2b<T>  JObjectParser,
+                                                            out T?                 Value,
+                                                            out String?            ErrorResponse)
+        {
+
+            Value          = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+
+                // "propertyKey": null -> will be ignored!
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                {
+                    ErrorResponse = $"JSON property '{PropertyName}' must not be null!";
+                    return false;
+                }
+
+                if (JSONToken is not JObject JSON2)
+                {
+                    ErrorResponse  = $"JSON property '{PropertyName}' is not an object!";
+                    return false;
+                }
+
+                if (JObjectParser(JSON2, out Value, out var errorResponse2))
+                    return true;
+
+                ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
+                return false;
+
+            }
+
+            //ErrorResponse = "Invalid JSON property!";
+            return false;
+
+        }
 
 
         public static Boolean ParseOptionalJSON<T>(this JObject                      JSON,

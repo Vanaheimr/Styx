@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Decimal  Value           { get; }
 
         /// <summary>
-        /// The value of the Amperes as Int32.
+        /// The value of the Volt as Int32.
         /// </summary>
         public Int32    IntegerValue
             => (Int32) Value;
