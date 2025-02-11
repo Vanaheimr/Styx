@@ -584,6 +584,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                              : ArrayOfBytes.Length
                      );
 
+        public static String ToUTF8String(this IEnumerable<Byte>  EnumerationOfBytes,
+                                          UInt32?                 NumberOfBytes = null)
+
+            => EnumerationOfBytes is null || !EnumerationOfBytes.Any()
+                   ? String.Empty
+                   : Encoding.UTF8.GetString(
+                         EnumerationOfBytes.ToArray(),
+                         0,
+                         NumberOfBytes.HasValue
+                             ? (Int32) NumberOfBytes.Value
+                             : EnumerationOfBytes.Count()
+                     );
+
         #endregion
 
         #region ToUTF8String(this MemoryStream, NumberOfBytes = null)
