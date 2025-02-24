@@ -23,6 +23,7 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Xml.Linq;
 
 #endregion
 
@@ -45,10 +46,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate TResult  Parser            <TResult>(String  Input);
 
-    public delegate Boolean  TryParser         <TResult>(String  Input, out TResult?  arg);
-    public delegate Boolean  TryParser2        <TResult>(String  Input, out TResult?  arg, out String? ErrorResponse);
-    public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult?  arg, out String? ErrorResponse, CustomJObjectParserDelegate<TResult>? CustomParser = null);
-    public delegate Boolean  TryParser4        <TResult>(String  Input, out TResult?  arg, OnExceptionDelegate OnException);
+    public delegate Boolean  TryParser         <TResult>(String  Input, out TResult?  Result);
+    public delegate Boolean  TryParser2        <TResult>(String  Input, out TResult?  Result, out String? ErrorResponse);
+    public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult?  Result, out String? ErrorResponse, CustomJObjectParserDelegate<TResult>? CustomParser = null);
+    public delegate Boolean  TryParser4        <TResult>(String  Input, out TResult?  Result, OnExceptionDelegate OnException);
 
 
     public delegate Boolean  TryNumericParser  <TResult>(UInt64  Input, out TResult?  arg);
@@ -226,7 +227,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             { }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -289,7 +290,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 //            { }
 
 //            Value          = null;
-//            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+//            ErrorResponse  = "Invalid '{PropertyDescription}'!";
 //            return false;
 
 //        }
@@ -343,7 +344,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -397,7 +398,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
 
         //    Value          = null;
-        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    ErrorResponse  = "Invalid '{PropertyDescription}'!";
         //    return false;
 
         //}
@@ -446,7 +447,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -499,7 +500,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
 
         //    Value          = null;
-        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    ErrorResponse  = "Invalid '{PropertyDescription}'!";
         //    return false;
 
         //}
@@ -550,7 +551,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -601,7 +602,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -655,7 +656,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
 
         //    Value          = null;
-        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    ErrorResponse  = "Invalid '{PropertyDescription}'!";
         //    return false;
 
         //}
@@ -718,7 +719,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -772,7 +773,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -826,7 +827,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
 
         //    Value          = null;
-        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    ErrorResponse  = "Invalid '{PropertyDescription}'!";
         //    return false;
 
         //}
@@ -880,7 +881,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -933,7 +934,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
 
         //    Value          = null;
-        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    ErrorResponse  = "Invalid '{PropertyDescription}'!";
         //    return false;
 
         //}
@@ -989,7 +990,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Value          = default;
-            ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+            ErrorResponse  = "Invalid '{PropertyDescription}'!";
             return false;
 
         }
@@ -1043,7 +1044,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
 
         //    Value          = null;
-        //    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //    ErrorResponse  = "Invalid '{PropertyDescription}'!";
         //    return false;
 
         //}
@@ -1085,7 +1086,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (JSONToken is null || JSONToken.Type == JTokenType.Null)
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1095,7 +1096,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception e)
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1138,7 +1139,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Single.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out SingleValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1178,7 +1179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Double.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out DoubleValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1221,7 +1222,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out DecimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1264,7 +1265,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Byte.TryParse(JSONToken.Value<String>(), out ByteValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1304,7 +1305,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !SByte.TryParse(JSONToken.Value<String>(), out SByteValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1347,7 +1348,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Int16.TryParse(JSONToken.Value<String>(), out Int16Value))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1387,7 +1388,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !UInt16.TryParse(JSONToken.Value<String>(), out UInt16Value))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1427,7 +1428,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Int32.TryParse(JSONToken.Value<String>(), out Int32Value))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1467,7 +1468,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !UInt32.TryParse(JSONToken.Value<String>(), out UInt32Value))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1507,7 +1508,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Int64.TryParse(JSONToken.Value<String>(), out Int64Value))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1547,7 +1548,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !UInt64.TryParse(JSONToken.Value<String>(), out UInt64Value))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1591,7 +1592,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1635,7 +1636,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1679,7 +1680,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1723,7 +1724,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1767,7 +1768,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var byteValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1811,7 +1812,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1855,7 +1856,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1899,7 +1900,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1943,7 +1944,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -1987,7 +1988,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2031,7 +2032,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2087,7 +2088,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2137,7 +2138,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2196,7 +2197,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 else
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = "Invalid '{PropertyDescription}'!";
                     return false;
                 }
             }
@@ -2242,7 +2243,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSONToken is null ||
                 !Enum.TryParse(JSONToken.Value<String>(), true, out EnumValue))
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2291,7 +2292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2339,7 +2340,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -2384,7 +2385,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!(JSONToken is JArray JArray))
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = "Invalid '{PropertyDescription}'!";
                     return false;
                 }
 
@@ -2393,7 +2394,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -3810,7 +3811,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //        if (!(JSONToken is JArray JArray))
         //        {
-        //            ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //            ErrorResponse = "Invalid '{PropertyDescription}'!";
         //            return false;
         //        }
 
@@ -3827,7 +3828,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
         //    catch
         //    {
-        //        ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //        ErrorResponse = "Invalid '{PropertyDescription}'!";
         //        return false;
         //    }
 
@@ -3870,7 +3871,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JArray)
                 {
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = "Invalid '{PropertyDescription}'!";
                     return false;
                 }
 
@@ -4091,7 +4092,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //        if (!(JSONToken is JArray JArray))
         //        {
-        //            ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //            ErrorResponse = "Invalid '{PropertyDescription}'!";
         //            return false;
         //        }
 
@@ -4108,7 +4109,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //    }
         //    catch
         //    {
-        //        ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+        //        ErrorResponse = "Invalid '{PropertyDescription}'!";
         //        return false;
         //    }
 
@@ -4325,7 +4326,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4340,7 +4341,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch
                 {
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                 }
 
                 return true;
@@ -4375,7 +4376,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4390,7 +4391,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch
                 {
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                 }
 
                 if (!BooleanValue.HasValue)
@@ -4426,7 +4427,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4439,7 +4440,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     SingleValue = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4468,7 +4469,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4481,7 +4482,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     DoubleValue = value;
 
                 else
-                    ErrorResponse = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = "Invalid '{PropertyDescription}'!";
 
                 return true;
 
@@ -4513,7 +4514,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = $"Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4526,7 +4527,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     DecimalValue = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4558,7 +4559,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4571,7 +4572,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ByteValue = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4600,7 +4601,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4613,7 +4614,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     SByteValue = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4645,7 +4646,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4658,7 +4659,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Int16Value = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4687,7 +4688,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4700,7 +4701,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     UInt16Value = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4729,7 +4730,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4742,7 +4743,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Int32Value = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4771,7 +4772,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4784,7 +4785,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     UInt32Value = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4813,7 +4814,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4826,7 +4827,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Int64Value = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4855,7 +4856,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4868,7 +4869,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     UInt64Value = value;
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4902,7 +4903,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4915,7 +4916,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     AmpereValue   = Ampere.ParseA(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4948,7 +4949,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -4961,7 +4962,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     HertzValue    = Hertz.ParseHz(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -4994,7 +4995,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5007,7 +5008,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     MeterValue    = Meter.ParseM(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5039,7 +5040,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5052,7 +5053,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     PercentageValue = Percentage.Parse(decimalValue);
 
                 else
-                    ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse   = "Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5084,7 +5085,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5097,7 +5098,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     PercentageValue = PercentageByte.Parse(byteValue);
 
                 else
-                    ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse   = "Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5129,7 +5130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5142,7 +5143,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     PercentageValue = PercentageDouble.Parse(doubleValue);
 
                 else
-                    ErrorResponse   = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse   = "Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5175,7 +5176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5188,7 +5189,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     SiemensValue     = Siemens.ParseS(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5221,7 +5222,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5234,7 +5235,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     VoltValue     = Volt.ParseV(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5267,7 +5268,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5280,7 +5281,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     VoltampereValue     = VoltAmpere.ParseVA(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5313,7 +5314,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5326,7 +5327,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     VoltampereReactivValue     = VoltAmpereReactive.ParseVAR(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5359,7 +5360,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5372,7 +5373,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     WattValue     = Watt.ParseW(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5405,7 +5406,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5418,7 +5419,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     WattHourValue = WattHour.TryParseWh(decimalValue, Multiplicator);
 
                 else
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
 
                 return true;
 
@@ -5628,7 +5629,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var JSONValue = JSONToken?.Value<String>();
                 if (JSONValue is null)
                 {
-                    ErrorResponse  = "Unknown '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse  = "Unknown '{PropertyDescription}'!";
                     EnumValue      = null;
                     return false;
                 }
@@ -5641,7 +5642,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 else
                 {
-                    ErrorResponse  = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse  = "Invalid value for '{PropertyDescription}'!";
                     EnumValue      = null;
                 }
 
@@ -5690,7 +5691,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (JSONToken is not JArray JSONArray)
             {
-                ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                ErrorResponse  = "Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -5702,7 +5703,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 else
                 {
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                     return false;
                 }
 
@@ -5749,7 +5750,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken.Type != JTokenType.Array)
                 {
-                    ErrorResponse  = "Invalid '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse  = "Invalid '{PropertyDescription}'!";
                     return false;
                 }
 
@@ -5764,7 +5765,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     else
                     {
-                        ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                        ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                         return false;
                     }
 
@@ -5801,7 +5802,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5816,7 +5817,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch
                 {
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                 }
 
                 return true;
@@ -5846,7 +5847,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -5870,7 +5871,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch
                 {
-                    ErrorResponse = "Invalid value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                 }
 
             }
@@ -5962,7 +5963,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JObject i18NJSON)
                 {
-                    ErrorResponse = "JSON property '" + (PropertyDescription ?? PropertyName) + "' is not a I18N string!";
+                    ErrorResponse = "JSON property '{PropertyDescription}' is not a I18N string!";
                     return true;
                 }
 
@@ -5995,7 +5996,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     }
                     catch
                     {
-                        ErrorResponse = "Invalid I18N value for '" + (PropertyDescription ?? PropertyName) + "'!";
+                        ErrorResponse = "Invalid I18N value for '{PropertyDescription}'!";
                         return true;
                     }
 
@@ -6035,7 +6036,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (PropertyName.IsNullOrEmpty())
             {
-                ErrorResponse = "Invalid JSON property '" + (PropertyDescription ?? PropertyName) + "' provided!";
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
                 return true;
             }
 
@@ -7887,7 +7888,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + (PropertyDescription ?? PropertyName) + "' is not a valid JSON array!";
+                    ErrorResponse = "The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 

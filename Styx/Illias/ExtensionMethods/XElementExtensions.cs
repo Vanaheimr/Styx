@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Xml.Linq;
 
@@ -25,11 +26,1101 @@ using System.Xml.Linq;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    public delegate Boolean  TryXMLValueParser1  <TResult>(String    Input, [NotNullWhen(true)] out TResult?  Result);
+    public delegate Boolean  TryXMLValueParser2  <TResult>(String    Input, [NotNullWhen(true)] out TResult?  Result, [NotNullWhen(false)] out String? ErrorResponse);
+
+    public delegate Boolean  TryXMLElementParser1<TResult>(XElement  Input, [NotNullWhen(true)] out TResult?  Result);
+    public delegate Boolean  TryXMLElementParser2<TResult>(XElement  Input, [NotNullWhen(true)] out TResult?  Result, [NotNullWhen(false)] out String? ErrorResponse);
+
+
     /// <summary>
     /// Extensions to the XElement class.
     /// </summary>
     public static class XElementExtensions
     {
+
+
+        // TryParse Mandatory
+
+        #region TryParseMandatory                   (ParentXElement, XName, Description, Parser,                      out Result,    out ErrorResponse)
+
+        public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
+                                                   XName                             XName,
+                                                   String                            Description,
+                                                   Func<String, T>                   Parser,
+                                                   [NotNullWhen(true)]  out T?       Result,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            Result = Parser(xml.Value.Trim());
+
+            if (Result is null)
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatory                   (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Result,    out ErrorResponse)
+
+        public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
+                                                   XName                             XName,
+                                                   String                            Description,
+                                                   TryXMLValueParser1<T>             TryParser,
+                                                   [NotNullWhen(true)]  out T?       Result,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!TryParser(xml.Value.Trim(), out Result))
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
+                                                   XName                             XName,
+                                                   String                            Description,
+                                                   TryXMLValueParser2<T>             TryParser,
+                                                   [NotNullWhen(true)]  out T?       Result,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!TryParser(xml.Value.Trim(), out Result, out var errorResponse))
+            {
+                ErrorResponse = $"Invalid '{Description}' value '{xml.Value}': {errorResponse}";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
+                                                   XName                             XName,
+                                                   String                            Description,
+                                                   TryXMLElementParser1<T>           TryParser,
+                                                   [NotNullWhen(true)]  out T?       Result,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!TryParser(xml, out Result))
+            {
+                ErrorResponse  = $"Invalid '{Description}' XML element '{xml.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
+                                                   XName                             XName,
+                                                   String                            Description,
+                                                   TryXMLElementParser2<T>           TryParser,
+                                                   [NotNullWhen(true)]  out T?       Result,
+                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!TryParser(xml, out Result, out var errorResponse))
+            {
+                ErrorResponse  = $"Invalid '{Description}' XML element '{xml.Value}': {errorResponse}";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryText               (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+
+        public static Boolean TryParseMandatoryText(this XElement                     ParentXElement,
+                                                    XName                             XName,
+                                                    String                            Description,
+                                                    [NotNullWhen(true)]  out String?  Text,
+                                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Text         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (xml.Value.IsNullOrEmpty())
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            Text = xml.Value;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryTimestamp          (ParentXElement, XName, Description,                              out Timestamp, out ErrorResponse)
+
+        public static Boolean TryParseMandatoryTimestamp(this XElement                       ParentXElement,
+                                                         XName                               XName,
+                                                         String                              Description,
+                                                         [NotNullWhen(true)]  out DateTime?  Timestamp,
+                                                         [NotNullWhen(false)] out String?    ErrorResponse)
+        {
+
+            Timestamp         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!DateTime.TryParse(xml.Value, out var timestamp))
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            if (timestamp.Kind != DateTimeKind.Utc)
+                timestamp = timestamp.ToUniversalTime();
+
+            Timestamp = timestamp;
+
+            return true;
+
+        }
+
+        #endregion
+
+
+        #region TryParseMandatoryAttribute          (ParentXElement, XName, Description, Parser,                      out Result,    out ErrorResponse)
+
+        public static Boolean TryParseMandatoryAttribute<T>(this XElement                     ParentXElement,
+                                                            XName                             XName,
+                                                            String                            Description,
+                                                            Func<String, T>                   Parser,
+                                                            [NotNullWhen(true)]  out T?       Result,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML attribute!";
+                return false;
+            }
+
+            Result = Parser(attribute.Value.Trim());
+
+            if (Result is null)
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{attribute.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryAttribute          (ParentXElement, XName, Description, TryParser,                   out Result,    out ErrorResponse)
+
+        public static Boolean TryParseMandatoryAttribute<T>(this XElement                     ParentXElement,
+                                                            XName                             XName,
+                                                            String                            Description,
+                                                            TryXMLValueParser1<T>             TryParser,
+                                                            [NotNullWhen(true)]  out T?       Result,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML attribute!";
+                return false;
+            }
+
+            if (!TryParser(attribute.Value.Trim(), out Result))
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{attribute.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseMandatoryAttribute<T>(this XElement                     ParentXElement,
+                                                            XName                             XName,
+                                                            String                            Description,
+                                                            TryXMLValueParser2<T>             TryParser,
+                                                            [NotNullWhen(true)]  out T?       Result,
+                                                            [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Attribute(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML attribute!";
+                return false;
+            }
+
+            if (!TryParser(xml.Value.Trim(), out Result, out var errorResponse))
+            {
+                ErrorResponse = $"Invalid '{Description}' value '{xml.Value}': {errorResponse}";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryTextAttribute      (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+
+        public static Boolean TryParseMandatoryTextAttribute(this XElement                     ParentXElement,
+                                                             XName                             XName,
+                                                             String                            Description,
+                                                             [NotNullWhen(true)]  out String?  Text,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Text         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML attribute!";
+                return false;
+            }
+
+            if (attribute.Value.IsNullOrEmpty())
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{attribute.Value}'!";
+                return false;
+            }
+
+            Text = attribute.Value;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryTimestampAttribute (ParentXElement, XName, Description,                              out Timestamp, out ErrorResponse)
+
+        public static Boolean TryParseMandatoryTimestampAttribute(this XElement                       ParentXElement,
+                                                                  XName                               XName,
+                                                                  String                              Description,
+                                                                  [NotNullWhen(true)]  out DateTime?  Timestamp,
+                                                                  [NotNullWhen(false)] out String?    ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML attribute!";
+                return false;
+            }
+
+            if (!DateTime.TryParse(attribute.Value, out var timestamp))
+            {
+                ErrorResponse = $"Invalid '{Description}' value '{attribute.Value}'!";
+                return false;
+            }
+
+            if (timestamp.Kind != DateTimeKind.Utc)
+                timestamp = timestamp.ToUniversalTime();
+
+            Timestamp = timestamp;
+
+            return true;
+
+        }
+
+        #endregion
+
+
+        #region TryParseMandatoryElements           (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Results,   out ErrorResponse)
+
+        public static Boolean TryParseMandatoryElements<T>(this XElement                            ParentXElement,
+                                                           XName                                    XName,
+                                                           String                                   Description,
+                                                           TryXMLValueParser1<T>                    TryParser,
+                                                           [NotNull]            out IEnumerable<T>  Results,
+                                                           [NotNullWhen(false)] out String?         ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml.Value, out var result))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter}. '{Description}' value '{xml.Value}'!";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return results.Length > 0;
+
+        }
+
+
+        public static Boolean TryParseMandatoryElements<T>(this XElement                             ParentXElement,
+                                                           XName                                     XName,
+                                                           String                                    Description,
+                                                           TryXMLValueParser2<T>                     TryParser,
+                                                           [NotNull]            out IEnumerable<T>?  Results,
+                                                           [NotNullWhen(false)] out String?          ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml.Value, out var result, out var errorResponse))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter}. '{Description}' value '{xml.Value}': {errorResponse}";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return results.Length > 0;
+
+        }
+
+
+        public static Boolean TryParseMandatoryElements<T>(this XElement                             ParentXElement,
+                                                           XName                                     XName,
+                                                           String                                    Description,
+                                                           TryXMLElementParser1<T>                   TryParser,
+                                                           [NotNull]            out IEnumerable<T>?  Results,
+                                                           [NotNullWhen(false)] out String?          ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml, out var result))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter++}. '{Description}' XML element '{xml.Value}'!";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return results.Length > 0;
+
+        }
+
+
+        public static Boolean TryParseMandatoryElements<T>(this XElement                             ParentXElement,
+                                                           XName                                     XName,
+                                                           String                                    Description,
+                                                           TryXMLElementParser2<T>                   TryParser,
+                                                           [NotNull]            out IEnumerable<T>?  Results,
+                                                           [NotNullWhen(false)] out String?          ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml, out var result, out var errorResponse))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter++}. '{Description}' XML element '{xml.Value}': {errorResponse}";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return results.Length > 0;
+
+        }
+
+        #endregion
+
+
+        // TryParse Optional
+
+        #region TryParseOptional                    (ParentXElement, XName, Description, Parser,                      out Result,    out ErrorResponse)
+
+        public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
+                                                  XName                              XName,
+                                                  String                             Description,
+                                                  Func<String, T>                    Parser,
+                                                  [MaybeNullWhen(true)] out T?       Result,
+                                                  [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+                Result         = Parser(xml.Value.Trim());
+                ErrorResponse  = $"Invalid optional '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptional                    (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Result,    out ErrorResponse)
+
+        public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
+                                                  XName                              XName,
+                                                  String                             Description,
+                                                  TryXMLValueParser1<T>              TryParser,
+                                                  [MaybeNullWhen(true)] out T?       Result,
+                                                  [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null &&
+                !TryParser(xml.Value.Trim(), out Result))
+            {
+                ErrorResponse  = $"Invalid optional '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
+                                                  XName                              XName,
+                                                  String                             Description,
+                                                  TryXMLValueParser2<T>              TryParser,
+                                                  [MaybeNullWhen(true)] out T?       Result,
+                                                  [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null &&
+                !TryParser(xml.Value.Trim(), out Result, out var errorResponse))
+            {
+                ErrorResponse = $"Invalid optional '{Description}' value '{xml.Value}': {errorResponse}";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
+                                                  XName                              XName,
+                                                  String                             Description,
+                                                  TryXMLElementParser1<T>            TryParser,
+                                                  [MaybeNullWhen(true)] out T?       Result,
+                                                  [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null &&
+                !TryParser(xml, out Result))
+            {
+                ErrorResponse = $"Invalid optional '{Description}' XML element '{xml.Value}'!";
+                return false;
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
+                                                  XName                              XName,
+                                                  String                             Description,
+                                                  TryXMLElementParser2<T>            TryParser,
+                                                  [MaybeNullWhen(true)] out T?       Result,
+                                                  [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Result         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null &&
+                !TryParser(xml, out Result, out var errorResponse))
+            {
+                ErrorResponse = $"Invalid optional '{Description}' XML element '{xml.Value}': {errorResponse}";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalText                (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+
+        public static Boolean TryParseOptionalText(this XElement                      ParentXElement,
+                                                   XName                              XName,
+                                                   String                             Description,
+                                                   [MaybeNullWhen(true)] out String?  Text,
+                                                   [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Text           = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                Text = xml.Value.Trim();
+
+                return Text.IsNotNullOrEmpty();
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalTextAttribute       (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+
+        public static Boolean TryParseOptionalTextAttribute(this XElement                      ParentXElement,
+                                                            XName                              XName,
+                                                            String                             Description,
+                                                            [MaybeNullWhen(true)] out String?  Text,
+                                                            [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Text         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is not null)
+            {
+
+                Text = attribute.Value.Trim();
+
+                return Text.IsNotNullOrEmpty();
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalTimestampAttribute  (ParentXElement, XName, Description,                              out Timestamp, out ErrorResponse)
+
+        public static Boolean TryParseOptionalTimestampAttribute(this XElement                        ParentXElement,
+                                                                 XName                                XName,
+                                                                 String                               Description,
+                                                                 [MaybeNullWhen(true)] out DateTime?  Timestamp,
+                                                                 [NotNullWhen(false)]  out String?    ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is not null)
+            {
+
+                if (!DateTime.TryParse(attribute.Value, out var timestamp))
+                {
+                    ErrorResponse = $"Invalid '{Description}' value '{attribute.Value}'!";
+                    return false;
+                }
+
+                if (timestamp.Kind != DateTimeKind.Utc)
+                    timestamp = timestamp.ToUniversalTime();
+
+                Timestamp = timestamp;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+
+        #region TryParseOptionalElements            (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Results,   out ErrorResponse)
+
+        public static Boolean TryParseOptionalElements<T>(this XElement                            ParentXElement,
+                                                          XName                                    XName,
+                                                          String                                   Description,
+                                                          TryXMLValueParser1<T>                    TryParser,
+                                                          [NotNull]            out IEnumerable<T>  Results,
+                                                          [NotNullWhen(false)] out String?         ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml.Value, out var result))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter}. '{Description}' value '{xml.Value}'!";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptionalElements<T>(this XElement                             ParentXElement,
+                                                          XName                                     XName,
+                                                          String                                    Description,
+                                                          TryXMLValueParser2<T>                     TryParser,
+                                                          [NotNull]            out IEnumerable<T>?  Results,
+                                                          [NotNullWhen(false)] out String?          ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml.Value, out var result, out var errorResponse))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter}. '{Description}' value '{xml.Value}': {errorResponse}";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptionalElements<T>(this XElement                             ParentXElement,
+                                                          XName                                     XName,
+                                                          String                                    Description,
+                                                          TryXMLElementParser1<T>                   TryParser,
+                                                          [NotNull]            out IEnumerable<T>?  Results,
+                                                          [NotNullWhen(false)] out String?          ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml, out var result))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter++}. '{Description}' XML element '{xml.Value}'!";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptionalElements<T>(this XElement                             ParentXElement,
+                                                          XName                                     XName,
+                                                          String                                    Description,
+                                                          TryXMLElementParser2<T>                   TryParser,
+                                                          [NotNull]            out IEnumerable<T>?  Results,
+                                                          [NotNullWhen(false)] out String?          ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (TryParser(xml, out var result, out var errorResponse))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter++}. '{Description}' XML element '{xml.Value}': {errorResponse}";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return true;
+
+        }
+
+        #endregion
+
 
         // XML Elements
 
@@ -269,6 +1360,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
 
 
         // Map XML Element
