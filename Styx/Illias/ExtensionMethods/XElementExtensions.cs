@@ -993,13 +993,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseOptionalBoolean             (ParentXElement, XName, Description,                              out Boolean,    out ErrorResponse)
+        #region TryParseOptional                    (ParentXElement, XName, Description,                              out Boolean,    out ErrorResponse)
 
-        public static Boolean TryParseOptionalBoolean(this XElement                       ParentXElement,
-                                                      XName                               XName,
-                                                      String                              Description,
-                                                      [MaybeNullWhen(true)] out Boolean?  Boolean,
-                                                      [NotNullWhen(false)]  out String?   ErrorResponse)
+        public static Boolean TryParseOptional(this XElement                       ParentXElement,
+                                               XName                               XName,
+                                               String                              Description,
+                                               [MaybeNullWhen(true)] out Boolean?  Boolean,
+                                               [NotNullWhen(false)]  out String?   ErrorResponse)
         {
 
             Boolean        = default;
@@ -1037,6 +1037,46 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
+
+        #region TryParseOptional                    (ParentXElement, XName, Description,                              out Double,     out ErrorResponse)
+
+        public static Boolean TryParseOptional(this XElement                      ParentXElement,
+                                               XName                              XName,
+                                               String                             Description,
+                                               [MaybeNullWhen(true)] out Double?  Double,
+                                               [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Double         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                if (System.Double.TryParse(xml.Value, out var value))
+                {
+                    Double = value;
+                    return true;
+                }
+
+                ErrorResponse = $"Invalid optional '{Description}' value '{xml.Value}'!";
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
 
         #region TryParseOptionalText                (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
 
