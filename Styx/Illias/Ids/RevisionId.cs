@@ -105,10 +105,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region RevisionId(DateTimeString, SystemId)
 
         /// <summary>
-        /// Generates a RevisionId based on the "yyyyddMM.HHmmss.fffffff" formated
+        /// Generates a RevisionId based on the "yyyyddMM.HHmmss.fffffff" formatted
         /// string representation of a DateTime object and the given SystemId.
         /// </summary>
-        /// <param name="DateTimeString">A DateTime object as "yyyyddMM.HHmmss.fffffff"-formated string</param>
+        /// <param name="DateTimeString">A DateTime object as "yyyyddMM.HHmmss.fffffff"-formatted string</param>
         /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
         /// <exception cref="System.FormatException"></exception>
         public RevisionId(String DateTimeString, System_Id SystemId)
@@ -130,9 +130,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Generates a RevisionId based on the "yyyyddMM.HHmmss.fffffff(SystemId)"
-        /// formated string representation of a RevId.
+        /// formatted string representation of a RevId.
         /// </summary>
-        /// <param name="RevIdString">A RevId object as "yyyyddMM.HHmmss.fffffff(SystemId)"-formated string</param>
+        /// <param name="RevIdString">A RevId object as "yyyyddMM.HHmmss.fffffff(SystemId)"-formatted string</param>
         /// <exception cref="System.FormatException"></exception>
         public RevisionId(String RevIdString)
         {
@@ -408,9 +408,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) ToString()
 
         /// <summary>
-        /// Returns a formated string representation of this revision
+        /// Returns a formatted string representation of this revision
         /// </summary>
-        /// <returns>A formated string representation of this revision</returns>
+        /// <returns>A formatted string representation of this revision</returns>
         public override String ToString()
         {
             return String.Format("{0:yyyyddMM.HHmmss.fffffff}({1})", new DateTime((Int64) Timestamp), SystemId.ToString());

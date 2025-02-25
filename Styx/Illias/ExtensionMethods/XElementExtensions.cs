@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         // TryParse Mandatory
 
-        #region TryParseMandatory                   (ParentXElement, XName, Description, Parser,                      out Result,    out ErrorResponse)
+        #region TryParseMandatory                   (ParentXElement, XName, Description, Parser,                      out Result,     out ErrorResponse)
 
         public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
                                                    XName                             XName,
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseMandatory                   (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Result,    out ErrorResponse)
+        #region TryParseMandatory                   (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Result,     out ErrorResponse)
 
         public static Boolean TryParseMandatory<T>(this XElement                     ParentXElement,
                                                    XName                             XName,
@@ -225,7 +225,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseMandatoryText               (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+        #region TryParseMandatoryBoolean            (ParentXElement, XName, Description,                              out Boolean,    out ErrorResponse)
+
+        public static Boolean TryParseMandatoryBoolean(this XElement                      ParentXElement,
+                                                       XName                              XName,
+                                                       String                             Description,
+                                                       [MaybeNullWhen(true)] out Boolean  Boolean,
+                                                       [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Boolean        = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                if (xml.Value.Trim().Equals("true",  StringComparison.OrdinalIgnoreCase))
+                {
+                    Boolean = true;
+                    return true;
+                }
+
+                if (xml.Value.Trim().Equals("false", StringComparison.OrdinalIgnoreCase))
+                {
+                    Boolean = false;
+                    return true;
+                }
+
+                ErrorResponse = $"Invalid optional '{Description}' value '{xml.Value}'!";
+                return false;
+
+            }
+
+            ErrorResponse = $"Missing required '{Description}' XML element!";
+            return false;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryText               (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
 
         public static Boolean TryParseMandatoryText(this XElement                     ParentXElement,
                                                     XName                             XName,
@@ -264,13 +310,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseMandatoryTimestamp          (ParentXElement, XName, Description,                              out Timestamp, out ErrorResponse)
+        #region TryParseMandatoryTimestamp          (ParentXElement, XName, Description,                              out Timestamp,  out ErrorResponse)
 
-        public static Boolean TryParseMandatoryTimestamp(this XElement                       ParentXElement,
-                                                         XName                               XName,
-                                                         String                              Description,
-                                                         [NotNullWhen(true)]  out DateTime?  Timestamp,
-                                                         [NotNullWhen(false)] out String?    ErrorResponse)
+        public static Boolean TryParseMandatoryTimestamp(this XElement                      ParentXElement,
+                                                         XName                              XName,
+                                                         String                             Description,
+                                                         [NotNullWhen(true)]  out DateTime  Timestamp,
+                                                         [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
             Timestamp         = default;
@@ -304,10 +350,85 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+
+        public static Boolean TryParseMandatoryTimestamp(this XElement                            ParentXElement,
+                                                         XName                                    XName,
+                                                         String                                   Description,
+                                                         [NotNullWhen(true)]  out DateTimeOffset  Timestamp,
+                                                         [NotNullWhen(false)] out String?         ErrorResponse)
+        {
+
+            Timestamp         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!DateTimeOffset.TryParse(xml.Value, out var timestamp))
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            Timestamp = timestamp;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseMandatoryTimeSpan           (ParentXElement, XName, Description,                              out TimeSpan,   out ErrorResponse)
+
+        public static Boolean TryParseMandatoryTimeSpan(this XElement                      ParentXElement,
+                                                        XName                              XName,
+                                                        String                             Description,
+                                                        [NotNullWhen(true)]  out TimeSpan  TimeSpan,
+                                                        [NotNullWhen(false)] out String?   ErrorResponse)
+        {
+
+            TimeSpan         = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML element!";
+                return false;
+            }
+
+            if (!UInt64.TryParse(xml.Value, out var seconds))
+            {
+                ErrorResponse  = $"Invalid '{Description}' value '{xml.Value}'!";
+                return false;
+            }
+
+            TimeSpan = TimeSpan.FromSeconds(seconds);
+
+            return true;
+
+        }
+
         #endregion
 
 
-        #region TryParseMandatoryAttribute          (ParentXElement, XName, Description, Parser,                      out Result,    out ErrorResponse)
+        #region TryParseMandatoryAttribute          (ParentXElement, XName, Description, Parser,                      out Result,     out ErrorResponse)
 
         public static Boolean TryParseMandatoryAttribute<T>(this XElement                     ParentXElement,
                                                             XName                             XName,
@@ -347,7 +468,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseMandatoryAttribute          (ParentXElement, XName, Description, TryParser,                   out Result,    out ErrorResponse)
+        #region TryParseMandatoryAttribute          (ParentXElement, XName, Description, TryParser,                   out Result,     out ErrorResponse)
 
         public static Boolean TryParseMandatoryAttribute<T>(this XElement                     ParentXElement,
                                                             XName                             XName,
@@ -420,7 +541,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseMandatoryTextAttribute      (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+        #region TryParseMandatoryTextAttribute      (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
 
         public static Boolean TryParseMandatoryTextAttribute(this XElement                     ParentXElement,
                                                              XName                             XName,
@@ -459,13 +580,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseMandatoryTimestampAttribute (ParentXElement, XName, Description,                              out Timestamp, out ErrorResponse)
+        #region TryParseMandatoryTimestampAttribute (ParentXElement, XName, Description,                              out Timestamp,  out ErrorResponse)
 
-        public static Boolean TryParseMandatoryTimestampAttribute(this XElement                       ParentXElement,
-                                                                  XName                               XName,
-                                                                  String                              Description,
-                                                                  [NotNullWhen(true)]  out DateTime?  Timestamp,
-                                                                  [NotNullWhen(false)] out String?    ErrorResponse)
+        public static Boolean TryParseMandatoryTimestampAttribute(this XElement                      ParentXElement,
+                                                                  XName                              XName,
+                                                                  String                             Description,
+                                                                  [NotNullWhen(true)]  out DateTime  Timestamp,
+                                                                  [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
             Timestamp      = default;
@@ -499,10 +620,46 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+
+        public static Boolean TryParseMandatoryTimestampAttribute(this XElement                            ParentXElement,
+                                                                  XName                                    XName,
+                                                                  String                                   Description,
+                                                                  [NotNullWhen(true)]  out DateTimeOffset  Timestamp,
+                                                                  [NotNullWhen(false)] out String?         ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is null)
+            {
+                ErrorResponse  = $"Missing required '{Description}' XML attribute!";
+                return false;
+            }
+
+            if (!DateTimeOffset.TryParse(attribute.Value, out var timestamp))
+            {
+                ErrorResponse = $"Invalid '{Description}' value '{attribute.Value}'!";
+                return false;
+            }
+
+            Timestamp = timestamp;
+
+            return true;
+
+        }
+
         #endregion
 
 
-        #region TryParseMandatoryElements           (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Results,   out ErrorResponse)
+        #region TryParseMandatoryElements           (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Results,    out ErrorResponse)
 
         public static Boolean TryParseMandatoryElements<T>(this XElement                            ParentXElement,
                                                            XName                                    XName,
@@ -680,7 +837,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         // TryParse Optional
 
-        #region TryParseOptional                    (ParentXElement, XName, Description, Parser,                      out Result,    out ErrorResponse)
+        #region TryParseOptional                    (ParentXElement, XName, Description, Parser,                      out Result,     out ErrorResponse)
 
         public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
                                                   XName                              XName,
@@ -713,7 +870,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseOptional                    (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Result,    out ErrorResponse)
+        #region TryParseOptional                    (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Result,     out ErrorResponse)
 
         public static Boolean TryParseOptional<T>(this XElement                      ParentXElement,
                                                   XName                              XName,
@@ -836,7 +993,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseOptionalText                (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+        #region TryParseOptionalBoolean             (ParentXElement, XName, Description,                              out Boolean,    out ErrorResponse)
+
+        public static Boolean TryParseOptionalBoolean(this XElement                       ParentXElement,
+                                                      XName                               XName,
+                                                      String                              Description,
+                                                      [MaybeNullWhen(true)] out Boolean?  Boolean,
+                                                      [NotNullWhen(false)]  out String?   ErrorResponse)
+        {
+
+            Boolean        = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                if (xml.Value.Trim().Equals("true",  StringComparison.OrdinalIgnoreCase))
+                {
+                    Boolean = true;
+                    return true;
+                }
+
+                if (xml.Value.Trim().Equals("false", StringComparison.OrdinalIgnoreCase))
+                {
+                    Boolean = false;
+                    return true;
+                }
+
+                ErrorResponse = $"Invalid optional '{Description}' value '{xml.Value}'!";
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalText                (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
 
         public static Boolean TryParseOptionalText(this XElement                      ParentXElement,
                                                    XName                              XName,
@@ -870,7 +1072,121 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseOptionalTextAttribute       (ParentXElement, XName, Description,                              out Text,      out ErrorResponse)
+        #region TryParseOptionalTimestamp           (ParentXElement, XName, Description,                              out Timestamp,  out ErrorResponse)
+
+        public static Boolean TryParseOptionalTimestamp(this XElement                        ParentXElement,
+                                                        XName                                XName,
+                                                        String                               Description,
+                                                        [MaybeNullWhen(true)] out DateTime?  Timestamp,
+                                                        [NotNullWhen(false)]  out String?    ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                if (!DateTime.TryParse(xml.Value, out var timestamp))
+                {
+                    ErrorResponse = $"Invalid '{Description}' xml element '{xml.Value}'!";
+                    return false;
+                }
+
+                if (timestamp.Kind != DateTimeKind.Utc)
+                    timestamp = timestamp.ToUniversalTime();
+
+                Timestamp = timestamp;
+
+            }
+
+            return true;
+
+        }
+
+
+        public static Boolean TryParseOptionalTimestamp(this XElement                              ParentXElement,
+                                                        XName                                      XName,
+                                                        String                                     Description,
+                                                        [MaybeNullWhen(true)] out DateTimeOffset?  Timestamp,
+                                                        [NotNullWhen(false)]  out String?          ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                if (!DateTimeOffset.TryParse(xml.Value, out var timestamp))
+                {
+                    ErrorResponse = $"Invalid '{Description}' xml element '{xml.Value}'!";
+                    return false;
+                }
+
+                Timestamp = timestamp;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalTimeSpan            (ParentXElement, XName, Description,                              out TimeSpan,   out ErrorResponse)
+
+        public static Boolean TryParseOptionalTimeSpan(this XElement                        ParentXElement,
+                                                       XName                                XName,
+                                                       String                               Description,
+                                                       [MaybeNullWhen(true)] out TimeSpan?  TimeSpan,
+                                                       [NotNullWhen(false)]  out String?    ErrorResponse)
+        {
+
+            TimeSpan       = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                if (!Int64.TryParse(xml.Value, out var seconds))
+                {
+                    ErrorResponse = $"Invalid '{Description}' xml element '{xml.Value}'!";
+                    return false;
+                }
+
+                TimeSpan = System.TimeSpan.FromSeconds(seconds);
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalTextAttribute       (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
 
         public static Boolean TryParseOptionalTextAttribute(this XElement                      ParentXElement,
                                                             XName                              XName,
@@ -904,7 +1220,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseOptionalTimestampAttribute  (ParentXElement, XName, Description,                              out Timestamp, out ErrorResponse)
+        #region TryParseOptionalTimestampAttribute  (ParentXElement, XName, Description,                              out Timestamp,  out ErrorResponse)
 
         public static Boolean TryParseOptionalTimestampAttribute(this XElement                        ParentXElement,
                                                                  XName                                XName,
@@ -928,7 +1244,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!DateTime.TryParse(attribute.Value, out var timestamp))
                 {
-                    ErrorResponse = $"Invalid '{Description}' value '{attribute.Value}'!";
+                    ErrorResponse = $"Invalid '{Description}' xml attribute '{attribute.Value}'!";
                     return false;
                 }
 
@@ -943,10 +1259,93 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+
+        public static Boolean TryParseOptionalTimestampAttribute(this XElement                              ParentXElement,
+                                                                 XName                                      XName,
+                                                                 String                                     Description,
+                                                                 [MaybeNullWhen(true)] out DateTimeOffset?  Timestamp,
+                                                                 [NotNullWhen(false)]  out String?          ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is not null)
+            {
+
+                if (!DateTimeOffset.TryParse(attribute.Value, out var timestamp))
+                {
+                    ErrorResponse = $"Invalid '{Description}' xml attribute '{attribute.Value}'!";
+                    return false;
+                }
+
+                Timestamp = timestamp;
+
+            }
+
+            return true;
+
+        }
+
         #endregion
 
 
-        #region TryParseOptionalElements            (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Results,   out ErrorResponse)
+        #region TryParseOptionalElements            (ParentXElement, XName, Description, Parser,                      out Results,    out ErrorResponse)
+
+        public static Boolean TryParseOptionalElements<T>(this XElement                            ParentXElement,
+                                                          XName                                    XName,
+                                                          String                                   Description,
+                                                          Func<String, T>                          Parser,
+                                                          [NotNull]            out IEnumerable<T>  Results,
+                                                          [NotNullWhen(false)] out String?         ErrorResponse)
+        {
+
+            Results        = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new T[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                var result = Parser(xml.Value);
+
+                if (result is not null)
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter}. '{Description}' value '{xml.Value}'!";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Results = results;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalElements            (ParentXElement, XName, Description, TryXML[Value|Element]Parser, out Results,    out ErrorResponse)
 
         public static Boolean TryParseOptionalElements<T>(this XElement                            ParentXElement,
                                                           XName                                    XName,
@@ -1114,6 +1513,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Results = results;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalTimestamps          (ParentXElement, XName, Description,                              out Timestamps, out ErrorResponse)
+
+        public static Boolean TryParseOptionalTimestamps(this XElement                                         ParentXElement,
+                                                         XName                                                 XName,
+                                                         String                                                Description,
+                                                         [NotNull]            out IEnumerable<DateTimeOffset>  Timestamps,
+                                                         [NotNullWhen(false)] out String?                      ErrorResponse)
+        {
+
+            Timestamps     = [];
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xmls     = ParentXElement.Elements(XName);
+            var results  = new DateTimeOffset[xmls.Count()];
+            var counter  = 1;
+
+            foreach (var xml in xmls)
+            {
+
+                if (DateTimeOffset.TryParse(xml.Value, out var result))
+                    results[counter-1] = result;
+                else
+                {
+                    ErrorResponse = $"Invalid {counter}. '{Description}' value '{xml.Value}'!";
+                    return false;
+                }
+
+                counter++;
+
+            }
+
+            Timestamps = results;
 
             return true;
 

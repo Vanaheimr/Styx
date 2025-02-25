@@ -82,8 +82,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Convert the given DateTime object to an ISO 8601 datetime string.
         /// </summary>
         /// <param name="DateTime">A DateTime object.</param>
-        /// <param name="Fractions">Iclude the fractions of seconds.</param>
-        /// <returns>The DateTime formated as "yyyy-MM-ddTHH:mm:ss.fff" + "Z"</returns>
+        /// <param name="Fractions">Include the fractions of seconds.</param>
+        /// <returns>The DateTime formatted as "yyyy-MM-ddTHH:mm:ss.fff" + "Z"</returns>
         /// <example>2014-02-01T15:45:00.000Z</example>
         public static String ToIso8601(this DateTime  DateTime,
                                        Boolean        Fractions   = true)
@@ -96,11 +96,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToIso8601WithOffset(this DateTime, Fractions = true)
 
         /// <summary>
-        /// Convert the given DateTime object to an ISO 8601 datetime string with timezone offset.
+        /// Convert the given DateTime object to an ISO 8601 datetime string with time zone offset.
         /// </summary>
         /// <param name="DateTime">A DateTime object.</param>
-        /// <param name="Fractions">Iclude the fractions of seconds.</param>
-        /// <returns>The DateTime formated as "yyyy-MM-ddTHH:mm:ss.fffzzz"</returns>
+        /// <param name="Fractions">Include the fractions of seconds.</param>
+        /// <returns>The DateTime formatted as "yyyy-MM-ddTHH:mm:ss.fffzzz"</returns>
         /// <example>2014-02-01T15:45:00.000+00:00</example>
         public static String ToIso8601WithOffset(this DateTime  DateTime,
                                                  Boolean        Fractions   = true)
@@ -119,7 +119,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Convert the given DateTime object to an RFC 1123 datetime string.
         /// </summary>
         /// <param name="DateTime">A DateTime object.</param>
-        /// <returns>The DateTime formated as e.g. "Wed, 24 Nov 2016 09:44:55 GMT"</returns>
+        /// <returns>The DateTime formatted as e.g. "Wed, 24 Nov 2016 09:44:55 GMT"</returns>
         public static String ToRfc1123(this DateTime DateTime)
 
             => DateTime.ToUniversalTime().ToString("R");
