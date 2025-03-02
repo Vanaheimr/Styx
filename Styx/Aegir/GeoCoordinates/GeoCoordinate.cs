@@ -141,13 +141,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public static class GeoCoordinateExtensions
     {
 
-        public static Boolean TryParseGeoCoordinate(this String                              Text,
-                                                    [NotNullWhen(true)]  out GeoCoordinate?  GeoLocation,
-                                                    [NotNullWhen(false)] out String?         ErrorResponse)
+        //public static Boolean TryParseGeoCoordinate(this String                              Text,
+        //                                                                 out GeoCoordinate?  GeoLocation,
+        //                                            [NotNullWhen(false)] out String?         ErrorResponse)
 
-            => GeoCoordinate.TryParse(JObject.Parse(Text),
-                                      out GeoLocation,
-                                      out ErrorResponse);
+        //    => GeoCoordinate.TryParse(
+        //           JObject.Parse(Text),
+        //           out GeoLocation,
+        //           out ErrorResponse
+        //       );
 
 
         public static Boolean EqualsWithTolerance(this GeoCoordinate?  GeoCoordinate1,
@@ -164,9 +166,20 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     /// <summary>
     /// A geographical coordinate or position on a map.
     /// </summary>
-    public readonly struct GeoCoordinate : IGeoCoordinate,
-                                           IEquatable <GeoCoordinate>,
-                                           IComparable<GeoCoordinate>
+    /// <param name="Latitude">The Latitude (south to nord).</param>
+    /// <param name="Longitude">The Longitude (parallel to equator).</param>
+    /// <param name="Altitude">The (optional) Altitude.</param>
+    /// <param name="Projection">The gravitational model or projection of the geo coordinates.</param>
+    /// <param name="Planet">The planet.</param>
+    public readonly struct GeoCoordinate(Latitude            Latitude,
+                                         Longitude           Longitude,
+                                         Altitude?           Altitude     = null,
+                                         GravitationalModel  Projection   = GravitationalModel.WGS84,
+                                         Planets             Planet       = Planets.Earth)
+
+        : IGeoCoordinate,
+          IEquatable <GeoCoordinate>,
+          IComparable<GeoCoordinate>
 
     {
 
@@ -244,54 +257,27 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// The planet.
         /// </summary>
-        public Planets             Planet        { get; }
+        public Planets Planet { get; } = Planet;
 
         /// <summary>
         /// The Latitude (south to nord).
         /// </summary>
-        public Latitude            Latitude      { get; }
+        public Latitude Latitude { get; } = Latitude;
 
         /// <summary>
         /// The Longitude (parallel to equator).
         /// </summary>
-        public Longitude           Longitude     { get; }
+        public Longitude Longitude { get; } = Longitude;
 
         /// <summary>
         /// The Altitude.
         /// </summary>
-        public Altitude?           Altitude      { get; }
+        public Altitude? Altitude { get; } = Altitude;
 
         /// <summary>
         /// The gravitational model.
         /// </summary>
-        public GravitationalModel  Projection    { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new geographical coordinate or position on a map.
-        /// </summary>
-        /// <param name="Latitude">The Latitude (south to nord).</param>
-        /// <param name="Longitude">The Longitude (parallel to equator).</param>
-        /// <param name="Altitude">The (optional) Altitude.</param>
-        /// <param name="Projection">The gravitational model or projection of the geo coordinates.</param>
-        /// <param name="Planet">The planet.</param>
-        public GeoCoordinate(Latitude            Latitude,
-                             Longitude           Longitude,
-                             Altitude?           Altitude     = null,
-                             GravitationalModel  Projection   = GravitationalModel.WGS84,
-                             Planets             Planet       = Planets.Earth)
-        {
-
-            this.Latitude    = Latitude;
-            this.Longitude   = Longitude;
-            this.Altitude    = Altitude;
-            this.Projection  = Projection;
-            this.Planet      = Planet;
-
-        }
+        public GravitationalModel Projection { get; } = Projection;
 
         #endregion
 
@@ -309,7 +295,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        #region Create    (Latitude,  Longitude, Altitude = null)
+        #region Create     (Latitude,  Longitude, Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -337,14 +323,18 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                             Altitude?   Altitude = null)
 
             => Latitude.HasValue && Longitude.HasValue
-                   ? new GeoCoordinate(Latitude. Value,
-                                       Longitude.Value,
-                                       Altitude)
+
+                   ? new GeoCoordinate(
+                         Latitude. Value,
+                         Longitude.Value,
+                         Altitude
+                     )
+
                    : null;
 
         #endregion
 
-        #region FromLngLat(Latitude,  Longitude, Altitude = null)
+        #region FromLngLat (Latitude,  Longitude, Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -366,7 +356,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region FromLngLat(Longitude, Latitude,  Altitude = null)
+        #region FromLngLat (Longitude, Latitude,  Altitude = null)
 
         /// <summary>
         /// Create a new geographical coordinate or position on a map.
@@ -389,67 +379,68 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        #region Parse   (LatitudeString, LongitudeString, AltitudeString = null)
+        #region Parse      (Latitude, Longitude, Altitude = null)
 
         /// <summary>
         /// Parse the given latitude and longitude string representations.
         /// </summary>
-        /// <param name="LatitudeString">The Latitude (south to nord).</param>
-        /// <param name="LongitudeString">The Longitude (parallel to equator).</param>
-        /// <param name="AltitudeString">The Altitude.</param>
-        public static GeoCoordinate Parse(String   LatitudeString,
-                                          String   LongitudeString,
-                                          String?  AltitudeString   = null)
+        /// <param name="Latitude">The Latitude (south to nord).</param>
+        /// <param name="Longitude">The Longitude (parallel to equator).</param>
+        /// <param name="Altitude">The Altitude.</param>
+        public static GeoCoordinate Parse(String   Latitude,
+                                          String   Longitude,
+                                          String?  Altitude   = null)
         {
 
-            if (!Latitude. TryParse(LatitudeString,  out var latitude))
+            if (!Aegir.Latitude. TryParse(Latitude,  out var latitude))
                 throw new Exception("Invalid 'latitude' value!");
 
-            if (!Longitude.TryParse(LongitudeString, out var longitude))
+            if (!Aegir.Longitude.TryParse(Longitude, out var longitude))
                 throw new Exception("Invalid 'longitude' value!");
 
-            if (AltitudeString is not null && AltitudeString.IsNeitherNullNorEmpty())
+            if (Altitude is not null)
             {
 
-                if (!Aegir.Altitude.TryParse(AltitudeString, out var altitude))
+                if (!Aegir.Altitude.TryParse(Altitude, out var altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
-                return new GeoCoordinate(latitude,
-                                         longitude,
-                                         altitude);
+                return new GeoCoordinate(
+                           latitude,
+                           longitude,
+                           altitude
+                       );
 
             }
 
-            return new GeoCoordinate(latitude,
-                                     longitude);
+            return new GeoCoordinate(
+                       latitude,
+                       longitude
+                   );
 
         }
 
-        #endregion
-
-        #region Parse   (LatitudeDouble, LongitudeDouble, AltitudeDouble = null)
 
         /// <summary>
         /// Parse the given latitude and longitude string representations.
         /// </summary>
-        /// <param name="LatitudeDouble">The Latitude (south to nord).</param>
-        /// <param name="LongitudeDouble">The Longitude (parallel to equator).</param>
-        /// <param name="AltitudeDouble">The Altitude.</param>
-        public static GeoCoordinate Parse(Double   LatitudeDouble,
-                                          Double   LongitudeDouble,
-                                          Double?  AltitudeDouble   = null)
+        /// <param name="Latitude">The Latitude (south to nord).</param>
+        /// <param name="Longitude">The Longitude (parallel to equator).</param>
+        /// <param name="Altitude">The Altitude.</param>
+        public static GeoCoordinate Parse(Double   Latitude,
+                                          Double   Longitude,
+                                          Double?  Altitude   = null)
         {
 
-            if (!Latitude. TryParse(LatitudeDouble,  out var latitude))
+            if (!Aegir.Latitude. TryParse(Latitude,  out var latitude))
                 throw new Exception("Invalid 'latitude' value!");
 
-            if (!Longitude.TryParse(LongitudeDouble, out var longitude))
+            if (!Aegir.Longitude.TryParse(Longitude, out var longitude))
                 throw new Exception("Invalid 'longitude' value!");
 
-            if (AltitudeDouble.HasValue)
+            if (Altitude.HasValue)
             {
 
-                if (!Aegir.Altitude.TryParse(AltitudeDouble.Value, out var altitude))
+                if (!Aegir.Altitude.TryParse(Altitude.Value, out var altitude))
                     throw new Exception("Invalid 'altitude' value!");
 
                 return new GeoCoordinate(
@@ -469,7 +460,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region TryParse(LatitudeString, LongitudeString, out GeoCoordinate)
+        #region TryParse   (LatitudeString, LongitudeString, out GeoCoordinate)
 
         /// <summary>
         /// Parse the given latitude and longitude string representations.
@@ -477,9 +468,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="LatitudeString">The Latitude (south to nord).</param>
         /// <param name="LongitudeString">The Longitude (parallel to equator).</param>
         /// <param name="GeoCoordinate">The resulting geo coordinate.</param>
-        public static Boolean TryParse(String                                 LatitudeString,
-                                       String                                 LongitudeString,
-                                       [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParse(String             LatitudeString,
+                                       String             LongitudeString,
+                                       out GeoCoordinate  GeoCoordinate)
         {
 
             GeoCoordinate = default;
@@ -501,7 +492,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region TryParse(LatitudeString, LongitudeString, AltitudeString, out GeoCoordinate)
+        #region TryParse   (LatitudeString, LongitudeString, AltitudeString, out GeoCoordinate)
 
         /// <summary>
         /// Parse the given latitude and longitude string representations.
@@ -510,10 +501,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="LongitudeString">The Longitude (parallel to equator).</param>
         /// <param name="AltitudeString">The Altitude.</param>
         /// <param name="GeoCoordinate">The resulting geo coordinate.</param>
-        public static Boolean TryParse(String                                 LatitudeString,
-                                       String                                 LongitudeString,
-                                       String                                 AltitudeString,
-                                       [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParse(String             LatitudeString,
+                                       String             LongitudeString,
+                                       String             AltitudeString,
+                                       out GeoCoordinate  GeoCoordinate)
         {
 
             GeoCoordinate = default;
@@ -587,8 +578,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoString">A string to parse.</param>
         /// <param name="GeoCoordinate">The parsed geo coordinate.</param>
         /// <returns>True if success, false otherwise</returns>
-        public static Boolean TryParseString(String                                 GeoString,
-                                             [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParseString(String             GeoString,
+                                             out GeoCoordinate  GeoCoordinate)
 
             => TryParseString(GeoString, (lat, lng) => new GeoCoordinate(lat, lng), out GeoCoordinate);
 
@@ -629,35 +620,35 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                                 out T                         Value)
         {
 
-            var Match = IsDecimalGeoPositionRegExpr.Match(GeoString);
+            var match = IsDecimalGeoPositionRegExpr.Match(GeoString);
 
-            if (Match.Success)
+            if (match.Success)
             {
 
-                var latitude = Double.Parse(Match.Groups[1].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
+                var latitude = Double.Parse(match.Groups[1].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
 
-                if (Match.Groups[2].Value == "S")
+                if (match.Groups[2].Value == "S")
                     latitude = -1 * latitude;
 
-                var Longitude = Double.Parse(Match.Groups[3].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
+                var longitude = Double.Parse(match.Groups[3].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
 
-                if (Match.Groups[4].Value == "W")
-                    Longitude = -1 * Longitude;
+                if (match.Groups[4].Value == "W")
+                    longitude = -1 * longitude;
 
-                Value = Processor(Latitude.Parse(latitude), new Longitude(Longitude));
+                Value = Processor(Latitude.Parse(latitude), Longitude.Parse(longitude));
                 return true;
 
             }
 
-            Match = IsSignedDecimalGeoPositionRegExpr.Match(GeoString);
+            match = IsSignedDecimalGeoPositionRegExpr.Match(GeoString);
 
-            if (Match.Success)
+            if (match.Success)
             {
 
-                var latitude  = Double.Parse(Match.Groups[1].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
-                var Longitude = Double.Parse(Match.Groups[2].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
+                var latitude  = Double.Parse(match.Groups[1].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
+                var longitude = Double.Parse(match.Groups[2].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
 
-                Value = Processor(Latitude.Parse(latitude), new Longitude(Longitude));
+                Value = Processor(Latitude.Parse(latitude), Longitude.Parse(longitude));
                 return true;
 
             }
@@ -673,13 +664,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoCoordinate? TryParseJSON(String Text)
             => TryParse(JObject.Parse(Text));
 
-        public static Boolean TryParseJSON(String                                   Text,
-                                           [NotNullWhen(true)]  out GeoCoordinate?  GeoCoordinate,
-                                           [NotNullWhen(false)] out String?         ErrorResponse)
+        //(JObject Input, [NotNullWhen(true)]  out TResult? arg, [NotNullWhen(false)] out String? ErrorResponse);
+        public static Boolean TryParseJSON(String                                  Text,
+                                                                out GeoCoordinate  GeoCoordinate,
+                                           [NotNullWhen(false)] out String?        ErrorResponse)
 
-            => TryParse(JObject.Parse(Text),
-                        out GeoCoordinate,
-                        out ErrorResponse);
+            => TryParse(
+                   JObject.Parse(Text),
+                   out GeoCoordinate,
+                   out ErrorResponse
+               );
 
         public static GeoCoordinate? TryParse(JObject JSON)
         {
@@ -695,11 +689,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
-        public static Boolean TryParse(JObject                                  JSON,
-                                       [NotNullWhen(true)]  out GeoCoordinate?  GeoLocation,
-                                       [NotNullWhen(false)] out String?         ErrorResponse)
+        public static Boolean TryParse(JObject                                 JSON,
+                                                            out GeoCoordinate  GeoLocation,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
         {
 
+            GeoLocation     = default;
             ErrorResponse   = default;
 
             var lat         = JSON["lat"] ?? JSON["latitude"];
@@ -720,13 +715,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     return true;
 
                 }
-                catch
-                { }
+                catch (Exception e)
+                {
+                    ErrorResponse = e.Message;
+                    return false;
+                }
 
             }
 
-            GeoLocation    = default;
-            ErrorResponse  = "error!";
+            ErrorResponse = "error!";
             return false;
 
         }
@@ -837,15 +834,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// http://www.movable-type.co.uk/scripts/latlong.html
         /// http://mathforum.org/library/drmath/view/51822.html
         /// </remarks>
-        /// <param name="Target">Anothre geo coordinate.</param>
+        /// <param name="Target">Another geo coordinate.</param>
         public GeoCoordinate MidPoint(GeoCoordinate Target)
         {
 
-            var dLat = (Target.Latitude.Value  - Latitude.Value).ToRadians();
+            var dLat = (Target.Latitude. Value - Latitude. Value).ToRadians();
             var dLon = (Target.Longitude.Value - Longitude.Value).ToRadians();
 
-            var Bx = Math.Cos(Target.Latitude.Value.ToRadians()) * Math.Cos(dLon);
-            var By = Math.Cos(Target.Latitude.Value.ToRadians()) * Math.Sin(dLon);
+            var Bx   = Math.Cos(Target.Latitude.Value.ToRadians()) * Math.Cos(dLon);
+            var By   = Math.Cos(Target.Latitude.Value.ToRadians()) * Math.Sin(dLon);
 
             var lat3 = Math.Atan2(Math.Sin(Latitude.Value.ToRadians()) +
                                   Math.Sin(Target.Latitude.Value.ToRadians()),
@@ -859,27 +856,26 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 lon3 = (lon3 + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
 
             return new GeoCoordinate(
-                           Latitude. Parse(lat3.ToDegree()),
-                           Longitude.Parse(lon3.ToDegree())
-                       );
+                       Latitude. Parse(lat3.ToDegree()),
+                       Longitude.Parse(lon3.ToDegree())
+                   );
 
         }
 
         #endregion
 
 
-        #region (static) Swap(ref Pixel1, ref Pixel2)
+        #region (static) Swap(ref GeoCoordinate1, ref GeoCoordinate2)
 
         /// <summary>
-        /// Swaps two pixels.
+        /// Swaps two geo coordinates.
         /// </summary>
-        /// <param name="Pixel1">The first pixel.</param>
-        /// <param name="Pixel2">The second pixel.</param>
-        public static void Swap(ref GeoCoordinate Pixel1, ref GeoCoordinate Pixel2)
+        /// <param name="GeoCoordinate1">The first geo coordinate.</param>
+        /// <param name="GeoCoordinate2">The second geo coordinate.</param>
+        public static void Swap(ref GeoCoordinate GeoCoordinate1,
+                                ref GeoCoordinate GeoCoordinate2)
         {
-            var tmp = Pixel2;
-            Pixel2 = Pixel1;
-            Pixel1 = tmp;
+            (GeoCoordinate1, GeoCoordinate2) = (GeoCoordinate2, GeoCoordinate1);
         }
 
         #endregion
@@ -887,7 +883,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region ToGeoString(GeoType = GeoFormat.Decimal, Decimals = 5)
 
         /// <summary>
-        /// Returns a user-friendly string representaion.
+        /// Returns a user-friendly string representation.
         /// </summary>
         public String ToGeoString(GeoFormat GeoType = GeoFormat.Decimal, UInt16 Decimals = 7)
         {
@@ -900,7 +896,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                     return String.Format("{0}° {1}, {2}° {3}",
                                          Math.Round(Latitude.Value,  Decimals).ToString().Replace(',', '.'),
-                                         (Latitude.Value  < 0) ? "S" : "N",
+                                         (Latitude. Value < 0) ? "S" : "N",
                                          Math.Round(Longitude.Value, Decimals).ToString().Replace(',', '.'),
                                          (Longitude.Value < 0) ? "W" : "E");
 
@@ -908,19 +904,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 // 49° 26' 56.5'' N, 11° 4' 29.6'' E
                 case GeoFormat.Sexagesimal:
 
-                    var Latitude_Grad       = (Latitude.Value > 0) ? (UInt32) Math.Abs(Math.Floor(Latitude.Value)) : (UInt32) Math.Abs(Math.Floor(Latitude.Value) + 1);
-                    var Latitude_Minute_dec = (Math.Abs(Latitude.Value) - Latitude_Grad) * 60;
-                    var Latitude_Minute     = (UInt32) Math.Floor(Latitude_Minute_dec);
-                    var Latitude_Second_dec = (Latitude_Minute_dec - Latitude_Minute) * 60;
+                    var latitude_Grad       = (Latitude.Value > 0) ? (UInt32) Math.Abs(Math.Floor(Latitude.Value)) : (UInt32) Math.Abs(Math.Floor(Latitude.Value) + 1);
+                    var latitude_Minute_dec = (Math.Abs(Latitude.Value) - latitude_Grad) * 60;
+                    var latitude_Minute     = (UInt32) Math.Floor(latitude_Minute_dec);
+                    var latitude_Second_dec = (latitude_Minute_dec - latitude_Minute) * 60;
 
-                    var Longitude_Grad       = (Longitude.Value > 0) ? (UInt32) Math.Abs(Math.Floor(Longitude.Value)) : (UInt32) Math.Abs(Math.Floor(Longitude.Value) + 1);
-                    var Longitude_Minute_dec = (Math.Abs(Longitude.Value) - Longitude_Grad) * 60;
-                    var Longitude_Minute     = (UInt32) Math.Floor(Longitude_Minute_dec);
-                    var Longitude_Second_dec = (Longitude_Minute_dec - Longitude_Minute) * 60;
+                    var longitude_Grad       = (Longitude.Value > 0) ? (UInt32) Math.Abs(Math.Floor(Longitude.Value)) : (UInt32) Math.Abs(Math.Floor(Longitude.Value) + 1);
+                    var longitude_Minute_dec = (Math.Abs(Longitude.Value) - longitude_Grad) * 60;
+                    var longitude_Minute     = (UInt32) Math.Floor(longitude_Minute_dec);
+                    var longitude_Second_dec = (longitude_Minute_dec - longitude_Minute) * 60;
 
                     return String.Format("{0}° {1}' {2}'' {3}, {4}° {5}' {6}'' {7}",
-                                         Latitude_Grad,  Latitude_Minute,  Latitude_Second_dec,  (Latitude.Value  < 0) ? "S" : "N",
-                                         Longitude_Grad, Longitude_Minute, Longitude_Second_dec, (Longitude.Value < 0) ? "W" : "E");
+                                         latitude_Grad,  latitude_Minute,  latitude_Second_dec,  (Latitude.Value  < 0) ? "S" : "N",
+                                         longitude_Grad, longitude_Minute, longitude_Second_dec, (Longitude.Value < 0) ? "W" : "E");
 
             }
 
@@ -1112,7 +1108,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Return the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()

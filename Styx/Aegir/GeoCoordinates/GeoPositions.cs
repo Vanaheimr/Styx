@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             /// </summary>
             public static GeoCoordinate Berlin()
             {
-                return new GeoCoordinate(Latitude.Parse(52.500556), new Longitude(13.398889));
+                return new GeoCoordinate(Latitude.Parse(52.500556), Longitude.Parse(13.398889));
             }
 
             /// <summary>
@@ -43,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             /// </summary>
             public static GeoCoordinate Jena()
             {
-                return new GeoCoordinate(Latitude.Parse(50.929054), new Longitude(11.584074));
+                return new GeoCoordinate(Latitude.Parse(50.929054), Longitude.Parse(11.584074));
             }
 
         }

@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
 using System.Text;
-using System.Linq;
 
 using Newtonsoft.Json.Linq;
-
-using System.Collections.Generic;
 
 #endregion
 
@@ -31,9 +27,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// An object comparizion result.
+    /// An object comparison result.
     /// </summary>
-    public readonly struct ComparizionResult
+    public readonly struct ComparisonResult
     {
 
         #region (struct) PropertyWithValue
@@ -121,7 +117,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Added">An enumeration of added properties.</param>
         /// <param name="Updated">An enumeration of updated properties.</param>
         /// <param name="Removed">An enumeration of removed properties.</param>
-        public ComparizionResult(IEnumerable<PropertyWithValue>   Added,
+        public ComparisonResult(IEnumerable<PropertyWithValue>   Added,
                                  IEnumerable<PropertyWithValues>  Updated,
                                  IEnumerable<PropertyWithValue>   Removed)
         {
@@ -135,7 +131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToJSON    (IncludeProperty = null, MaskProperty = null)
+        #region ToJSON     (IncludeProperty = null, MaskProperty = null)
 
         public JObject ToJSON(Func<String, Boolean>  IncludeProperty   = null,
                               Func<String, Boolean>  MaskProperty      = null)
@@ -261,7 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToHTML    (IncludeProperty = null, MaskProperty = null)
+        #region ToHTML     (IncludeProperty = null, MaskProperty = null)
 
         public String ToHTML(Func<String, Boolean>  IncludeProperty   = null,
                              Func<String, Boolean>  MaskProperty      = null)
@@ -399,7 +395,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToTelegram(IncludeProperty = null, MaskProperty = null)
+        #region ToTelegram (IncludeProperty = null, MaskProperty = null)
 
         public String ToTelegram(Func<String, Boolean>  IncludeProperty   = null,
                                  Func<String, Boolean>  MaskProperty      = null)
@@ -505,7 +501,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToText    (IncludeProperty = null, MaskProperty = null)
+        #region ToText     (IncludeProperty = null, MaskProperty = null)
 
         public String ToText(Func<String, Boolean>  IncludeProperty   = null,
                              Func<String, Boolean>  MaskProperty      = null)

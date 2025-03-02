@@ -170,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             for (var i = 0; i < Precision; i++)
             {
 
-                // Shrink latitude intervall
+                // Shrink latitude interval
                 if (_MinLatitude < _MaxLatitude)
                 {
 
@@ -189,7 +189,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                 _GeoHash <<= 1;
 
-                // Shrink longitude intervall
+                // Shrink longitude interval
                 if (_MinLongitude < _MaxLongitude)
                 {
 
@@ -232,20 +232,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         /// <summary>
         /// Decode the geo hash into latitude and longitude using the given
-        /// delegate to transfor it into the resulting data structure.
+        /// delegate to transform it into the resulting data structure.
         /// </summary>
         /// <typeparam name="T">The type of the resulting data structure.</typeparam>
         /// <param name="Processor">A delegate to transform the decoded latitude and longitude into the resulting data structure.</param>
         /// <param name="Digits">Rounds the double-precision latitude and longitude to the given number of fractional digits.</param>
         public T Decode<T>(Func<Latitude, Longitude, T> Processor, Byte Digits = 12)
         {
-
-            #region Initial checks
-
-            if (Processor == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
 
             var bitmask = 1UL << 63;
             Double[] LatitudeInterval  = {  -90,  90 };
@@ -254,7 +247,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             while (bitmask > 0)
             {
 
-                RefineInterval(ref LatitudeInterval, bitmask);
+                RefineInterval(ref LatitudeInterval,  bitmask);
                 bitmask >>= 1;
 
                 RefineInterval(ref LongitudeInterval, bitmask);
@@ -277,11 +270,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Operator == (GeoHash641, GeoHash642)
 
         /// <summary>
-        /// Compares two geo hashs for equality.
+        /// Compares two geo hashes for equality.
         /// </summary>
         /// <param name="GeoHash641">A geo hash.</param>
         /// <param name="GeoHash642">Another geo hash.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (GeoHash64 GeoHash641,
                                            GeoHash64 GeoHash642)
 
@@ -296,7 +288,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="GeoHash641">A geo hash.</param>
         /// <param name="GeoHash642">Another geo hash.</param>
-        /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (GeoHash64 GeoHash641,
                                            GeoHash64 GeoHash642)
 
@@ -410,7 +401,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Return the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()

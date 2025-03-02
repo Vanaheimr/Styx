@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         /// <summary>
         /// Decode the geohash into latitude and longitude using the given
-        /// delegate to transfor it into the resulting data structure.
+        /// delegate to transform it into the resulting data structure.
         /// </summary>
         /// <typeparam name="TReturn">The type of the resulting data structure.</typeparam>
         /// <param name="Processor">A delegate to transform the decoded latitude and longitude into the resulting data structure.</param>

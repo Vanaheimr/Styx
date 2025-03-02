@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Globalization;
 
 #endregion
@@ -36,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Properties
 
         /// <summary>
-        /// Returns the value of the longitude.
+        /// The numeric value of the longitude.
         /// </summary>
         public Double  Value    { get; }
 
@@ -47,8 +46,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Create a new geographical longitude (parallel to equator).
         /// </summary>
-        /// <param name="Value">The value of the longitude.</param>
-        public Longitude(Double Value)
+        /// <param name="Value">The numeric value of the longitude.</param>
+        private Longitude(Double Value)
         {
             this.Value = Value;
         }
@@ -56,34 +55,34 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        #region (static) Parse   (Value)
+        #region (static) Parse    (Number)
 
         /// <summary>
-        /// Parse the given string as a geographical longitude (parallel to equator).
+        /// Parse the given number as a geographical longitude (parallel to equator).
         /// </summary>
-        /// <param name="Text">A text representation of a longitude.</param>
-        public static Longitude Parse(Double Value)
+        /// <param name="Number">A numeric representation of a longitude.</param>
+        public static Longitude Parse(Double Number)
         {
 
-            if (TryParse(Value, out var longitude))
+            if (TryParse(Number, out var longitude))
                 return longitude;
 
-            throw new ArgumentException("Invalid longitude '" + Value + "'! The value must be between -180 and 180!", nameof(Value));
+            throw new ArgumentException($"Invalid longitude '{Number}'! The value must be between -180 and 180!", nameof(Number));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Value)
+        #region (static) TryParse (Number)
 
         /// <summary>
-        /// Try to parse the given string as a geographical longitude (parallel to equator).
+        /// Try to parse the given number as a geographical longitude (parallel to equator).
         /// </summary>
-        /// <param name="Text">A text representation of a longitude.</param>
-        public static Longitude? TryParse(Double Value)
+        /// <param name="Number">A numeric representation of a longitude.</param>
+        public static Longitude? TryParse(Double Number)
         {
 
-            if (TryParse(Value, out var longitude))
+            if (TryParse(Number, out var longitude))
                 return longitude;
 
             return null;
@@ -92,19 +91,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region (static) TryParse(Value, out Longitude)
+        #region (static) TryParse (Number, out Longitude)
 
         /// <summary>
-        /// Try to parse the given string as a geographical longitude (parallel to equator).
+        /// Try to parse the given number as a geographical longitude (parallel to equator).
         /// </summary>
-        /// <param name="Value">A nummeric representation of a longitude.</param>
+        /// <param name="Number">A numeric representation of a longitude.</param>
         /// <param name="Longitude">The parsed longitude.</param>
-        public static Boolean TryParse(Double Value, out Longitude Longitude)
+        public static Boolean TryParse(Double Number, out Longitude Longitude)
         {
 
-            if (Value >= -180 && Value <= 180)
+            if (Number >= -180 && Number <= 180)
             {
-                Longitude = new Longitude(Value);
+                Longitude = new Longitude(Number);
                 return true;
             }
 
@@ -129,32 +128,67 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             => Parse(Double.Parse(Value, NumberStyle, FormatProvider));
 
 
+
+        #region TryParse     (Text)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical longitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a longitude to parse.</param>
         public static Longitude? TryParse(String Text)
         {
 
-            if (TryParse(Text, out Longitude longitude))
+            if (TryParse(Text, out var longitude))
                 return longitude;
 
             return null;
 
         }
 
+        #endregion
+
+        #region TryParse     (Text,                ValueMapper)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical longitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a longitude to parse.</param>
+        /// <param name="ValueMapper">An optional mapping function to modify the parsed longitude value.</param>
         public static Longitude? TryParse(String Text, Func<Double, Double>? ValueMapper)
         {
 
-            if (TryParse(Text, out Longitude longitude, ValueMapper))
+            if (TryParse(Text, out var longitude, ValueMapper))
                 return longitude;
 
             return null;
 
         }
 
+        #endregion
+
+        #region TryParse     (Text, out Longitude)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical longitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a longitude to parse.</param>
+        /// <param name="Longitude">The parsed longitude.</param>
         public static Boolean TryParse(String Text, out Longitude Longitude)
 
             => TryParse(Text,
                         out Longitude,
                         null);
 
+        #endregion
+
+        #region TryParse     (Text, out Longitude, ValueMapper)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical longitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a longitude to parse.</param>
+        /// <param name="Longitude">The parsed longitude.</param>
+        /// <param name="ValueMapper">An optional mapping function to modify the parsed longitude value.</param>
         public static Boolean TryParse(String                 Text,
                                        out Longitude          Longitude,
                                        Func<Double, Double>?  ValueMapper)
@@ -180,7 +214,18 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
-        public static Boolean TryParseNMEA(String                 Text,
+        #endregion
+
+
+        #region TryParseNMEA (NMEA, out Longitude, ValueMapper = null)
+
+        /// <summary>
+        /// Try to parse the given NMEA string as a geographical longitude (parallel to equator).
+        /// </summary>
+        /// <param name="NMEA"></param>
+        /// <param name="Longitude"></param>
+        /// <param name="ValueMapper"></param>
+        public static Boolean TryParseNMEA(String                 NMEA,
                                            out Longitude          Longitude,
                                            Func<Double, Double>?  ValueMapper   = null)
         {
@@ -188,16 +233,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             try
             {
 
-                var dot   = Text.IndexOf(".") - 2;
+                var dot   = NMEA.IndexOf('.') - 2;
                 if (dot < 0) dot = 0;
 
-                var space = Text.IndexOf(" ");
-                var sign  = Text[Text.Length - 1];
+                var space = NMEA.IndexOf(' ');
+                var sign  = NMEA[^1];
 
                 if (space > 0 &&
                     (sign == 'e' || sign == 'E' || sign == 'w' || sign == 'W') &&
-                    Double.TryParse(Text.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out var degrees) &&
-                    Double.TryParse(Text.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out var minutes))
+                    Double.TryParse(NMEA.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out var degrees) &&
+                    Double.TryParse(NMEA.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out var minutes))
                 {
 
                     var value = degrees + (minutes / 60);
@@ -221,11 +266,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        #endregion
+
 
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this geographical longitude.
         /// </summary>
         public Longitude Clone()
 
@@ -237,10 +284,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Distance(OtherLongitude)
 
         /// <summary>
-        /// A method to calculate the distance between two longitude.
+        /// Calculate the distance between two longitude.
         /// </summary>
         /// <param name="OtherLongitude">Another longitude.</param>
-        /// <returns>The distance between a and b.</returns>
         public Double DistanceTo(Longitude OtherLongitude)
         {
             return Math.Abs(Value - OtherLongitude.Value);
@@ -259,20 +305,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude1">A longitude.</param>
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Longitude Longitude1, Longitude Longitude2)
-        {
+        public static Boolean operator == (Longitude Longitude1,
+                                           Longitude Longitude2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(Longitude1, Longitude2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) Longitude1 == null) || ((Object) Longitude2 == null))
-                return false;
-
-            return Longitude1.Equals(Longitude2);
-
-        }
+            => Longitude1.Equals(Longitude2);
 
         #endregion
 
@@ -284,8 +320,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude1">A longitude.</param>
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Longitude Longitude1, Longitude Longitude2)
-            => !(Longitude1 == Longitude2);
+        public static Boolean operator != (Longitude Longitude1,
+                                           Longitude Longitude2)
+
+            => !Longitude1.Equals(Longitude2);
 
         #endregion
 
@@ -297,18 +335,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude1">A longitude.</param>
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator  < (Longitude Longitude1, Longitude Longitude2)
-        {
+        public static Boolean operator  < (Longitude Longitude1,
+                                           Longitude Longitude2)
 
-            if ((Object) Longitude1 == null)
-                throw new ArgumentNullException("The given Longitude1 must not be null!");
-
-            if ((Object) Longitude2 == null)
-                throw new ArgumentNullException("The given Longitude2 must not be null!");
-
-            return Longitude1.CompareTo(Longitude2) < 0;
-
-        }
+            => Longitude1.CompareTo(Longitude2) < 0;
 
         #endregion
 
@@ -320,8 +350,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude1">A longitude.</param>
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Longitude Longitude1, Longitude Longitude2)
-            => !(Longitude1 > Longitude2);
+        public static Boolean operator <= (Longitude Longitude1,
+                                           Longitude Longitude2)
+
+            => Longitude1.CompareTo(Longitude2) <= 0;
 
         #endregion
 
@@ -333,18 +365,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude1">A longitude.</param>
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator  > (Longitude Longitude1, Longitude Longitude2)
-        {
+        public static Boolean operator  > (Longitude Longitude1,
+                                           Longitude Longitude2)
 
-            if ((Object) Longitude1 == null)
-                throw new ArgumentNullException("The given Longitude1 must not be null!");
-
-            if ((Object) Longitude2 == null)
-                throw new ArgumentNullException("The given Longitude2 must not be null!");
-
-            return Longitude1.CompareTo(Longitude2) > 0;
-
-        }
+            => Longitude1.CompareTo(Longitude2) > 0;
 
         #endregion
 
@@ -356,8 +380,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude1">A longitude.</param>
         /// <param name="Longitude2">Another longitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Longitude Longitude1, Longitude Longitude2)
-            => !(Longitude1 < Longitude2);
+        public static Boolean operator >= (Longitude Longitude1,
+                                           Longitude Longitude2)
+
+            => Longitude1.CompareTo(Longitude2) >= 0;
 
         #endregion
 
@@ -368,30 +394,24 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geographical longitudes.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">Another geographical longitude.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given Object must not be null!");
-
-            if (!(Object is Longitude Longitude))
-                throw new ArgumentException("The given object is not a longitude!", nameof(Object));
-
-            return CompareTo(Longitude);
-
-        }
+            => Object is Longitude longitude
+                   ? CompareTo(longitude)
+                   : throw new ArgumentException("The given object is not a geographical longitude!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(Longitude)
 
         /// <summary>
-        /// Compares two longitudes.
+        /// Compares two geographical longitudes.
         /// </summary>
-        /// <param name="Longitude">Another longitude.</param>
+        /// <param name="Longitude">Another geographical longitude.</param>
         public Int32 CompareTo(Longitude Longitude)
 
             => Value.CompareTo(Longitude.Value);
@@ -405,32 +425,22 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geographical longitudes for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
-        {
+        /// <param name="Object">Another geographical longitude.</param>
+        public override Boolean Equals(Object? Object)
 
-            if (Object == null)
-                return false;
-
-            if (!(Object is Longitude Longitude))
-                return false;
-
-            return Equals(Longitude);
-
-        }
+            => Object is Longitude longitude &&
+                   Equals(longitude);
 
         #endregion
 
         #region Equals(Longitude)
 
         /// <summary>
-        /// Compares two longitudes for equality.
+        /// Compares two geographical longitudes for equality.
         /// </summary>
-        /// <param name="Longitude">Another longitude.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
+        /// <param name="Longitude">Another geographical longitude.</param>
         public Boolean Equals(Longitude Longitude)
 
             => Value.Equals(Longitude.Value);
@@ -445,7 +455,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Longitude">Another geographical longitude.</param>
         /// <param name="Epsilon">An optional numeric tolerance.</param>
         public Boolean EqualsWithTolerance(Longitude  Longitude,
-                              Double     Epsilon = 1e-7)
+                                           Double     Epsilon = 1e-7)
 
             => Value - Longitude.Value < Epsilon;
 
@@ -456,7 +466,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Return the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()

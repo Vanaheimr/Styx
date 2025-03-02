@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A RevId is an identificator for a specific IElement revision in
+    /// A RevId is an identifier for a specific IElement revision in
     /// a distributed system consisting of a timestamp and a SystemId.
     /// </summary>
     public class RevisionId : IComparable, IComparable<RevisionId>, IEquatable<RevisionId>
@@ -35,24 +35,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Properties
 
-        #region Timestamp
-
         /// <summary>
         /// The timestamp of this revision.
         /// </summary>
-        public UInt64 Timestamp { get; private set; }
-
-        #endregion
-
-        #region SystemId
+        public UInt64     Timestamp    { get; private set; }
 
         /// <summary>
         /// A unique identification of the generating system,
         /// process or thread of this revision.
         /// </summary>
-        public System_Id SystemId { get; private set; }
-
-        #endregion
+        public System_Id  SystemId     { get; private set; }
 
         #endregion
 
@@ -63,7 +55,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Generates a RevisionId based on the actual timestamp and the given SystemId.
         /// </summary>
-        /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
+        /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
         public RevisionId(System_Id SystemId)
         {
             this.Timestamp = (UInt64) UniqueTimestamp.Ticks;
@@ -78,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Generates a RevisionId based on the given UInt64 timestamp and the given SystemId.
         /// </summary>
         /// <param name="Timestamp">A timestamp</param>
-        /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
+        /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
         public RevisionId(UInt64 Timestamp, System_Id SystemId)
         {
             this.Timestamp = Timestamp;
@@ -93,10 +85,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Generates a RevisionId based on the given DateTime object and the given SystemId.
         /// </summary>
         /// <param name="DateTime">A DateTime object</param>
-        /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
+        /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
         public RevisionId(DateTime DateTime, System_Id SystemId)
         {
-            this.Timestamp = (UInt64)DateTime.Ticks;
+            this.Timestamp = (UInt64) DateTime.Ticks;
             this.SystemId  = SystemId;
         }
 
@@ -109,13 +101,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// string representation of a DateTime object and the given SystemId.
         /// </summary>
         /// <param name="DateTimeString">A DateTime object as "yyyyddMM.HHmmss.fffffff"-formatted string</param>
-        /// <param name="SystemId">An unique identificator for the generating system, process or thread</param>
+        /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
         /// <exception cref="System.FormatException"></exception>
         public RevisionId(String DateTimeString, System_Id SystemId)
         {
             try
             {
-                this.Timestamp = (UInt64)(DateTime.ParseExact(DateTimeString, "yyyyddMM.HHmmss.fffffff", null)).Ticks;
+                this.Timestamp = (UInt64) DateTime.ParseExact(DateTimeString, "yyyyddMM.HHmmss.fffffff", null).Ticks;
                 this.SystemId  = SystemId;
             }
             catch
@@ -133,7 +125,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// formatted string representation of a RevId.
         /// </summary>
         /// <param name="RevIdString">A RevId object as "yyyyddMM.HHmmss.fffffff(SystemId)"-formatted string</param>
-        /// <exception cref="System.FormatException"></exception>
         public RevisionId(String RevIdString)
         {
 

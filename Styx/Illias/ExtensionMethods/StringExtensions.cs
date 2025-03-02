@@ -563,9 +563,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static String EscapeForXMLandHTML(this String Text)
 
-            => Text?.Replace("<", "&lt;")?.
-                     Replace(">", "&gt;")?.
-                     Replace("&", "&amp;");
+            => Text.Replace("<", "&lt;").
+                    Replace(">", "&gt;").
+                    Replace("&", "&amp;");
 
         #endregion
 

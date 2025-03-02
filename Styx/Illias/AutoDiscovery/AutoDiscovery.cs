@@ -292,7 +292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region TryGetInstance(Identificator, out Instance)
 
         /// <summary>
-        /// Attempts to get an instance associated with the identificator.
+        /// Attempts to get an instance associated with the identifier.
         /// </summary>
         public Boolean TryGetInstance(String Identificator, out TClass Instance)
         {
@@ -319,7 +319,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch (Exception e)
                 {
-                    throw new AutoDiscoveryException("An instance of " + typeof(TClass).Name + " with identificator '" + Identificator + "' could not be activated!", e);
+                    throw new AutoDiscoveryException("An instance of " + typeof(TClass).Name + " with identifier '" + Identificator + "' could not be activated!", e);
                 }
 
             }

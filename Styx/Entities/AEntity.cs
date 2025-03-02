@@ -67,7 +67,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// The common generic interface of an entity having one or multiple unique identification(s).
     /// </summary>
-    /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
+    /// <typeparam name="TId">THe type of the unique identifier.</typeparam>
     public interface IEntity<TId> : IEntity, IHasId<TId>
 
         where TId : IId
@@ -560,12 +560,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        public ComparizionResult CompareWith(AEntity<TId, TEntity> Entity)
+        public ComparisonResult CompareWith(AEntity<TId, TEntity> Entity)
         {
 
-            var Added    = new List<ComparizionResult.PropertyWithValue>();
-            var Updated  = new List<ComparizionResult.PropertyWithValues>();
-            var Removed  = new List<ComparizionResult.PropertyWithValue>();
+            var Added    = new List<ComparisonResult.PropertyWithValue>();
+            var Updated  = new List<ComparisonResult.PropertyWithValues>();
+            var Removed  = new List<ComparisonResult.PropertyWithValue>();
 
             var propertyInfos = GetType().GetProperties().
                                           Where(info => info.CustomAttributes.SafeAny() &&
@@ -583,17 +583,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 { }
 
                 else if (getter1 is null)
-                    Added.  Add(new ComparizionResult.PropertyWithValue (pinfo.Name, getter2));
+                    Added.  Add(new ComparisonResult.PropertyWithValue (pinfo.Name, getter2));
 
                 else if (getter2 is null)
-                    Removed.Add(new ComparizionResult.PropertyWithValue (pinfo.Name, getter1));
+                    Removed.Add(new ComparisonResult.PropertyWithValue (pinfo.Name, getter1));
 
                 else if (!getter1.Equals(getter2))
-                    Updated.Add(new ComparizionResult.PropertyWithValues(pinfo.Name, getter1, getter2));
+                    Updated.Add(new ComparisonResult.PropertyWithValues(pinfo.Name, getter1, getter2));
 
             }
 
-            return new ComparizionResult(Added,
+            return new ComparisonResult(Added,
                                          Updated,
                                          Removed);
 

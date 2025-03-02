@@ -85,7 +85,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public String?                 PostalCodeSub        { get; }
 
         /// <summary>
-        /// The timezone.
+        /// The time zone.
         /// </summary>
         public Time_Zone?              TimeZone             { get; }
 
@@ -113,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PostalCodeSub">The postal code sub</param>
         /// <param name="City">The city.</param>
         /// <param name="Country">The country.</param>
-        /// <param name="TimeZone">The timezone.</param>
+        /// <param name="TimeZone">The time zone.</param>
         /// <param name="Comment">An optional text/comment to describe the address.</param>
         /// 
         /// <param name="CustomData">Optional custom data, e.g. in combination with custom parsers and serializers.</param>
@@ -159,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse   (JSON, CustomAddressParser = null)
+        #region (static) Parse    (JSON, CustomAddressParser = null)
 
         /// <summary>
         /// Parse the given JSON representation of an address.
@@ -184,7 +184,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Text, CustomAddressParser = null)
+        #region (static) Parse    (Text, CustomAddressParser = null)
 
         /// <summary>
         /// Parse the given text representation of an address.
@@ -209,7 +209,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(JSON, out Address, out ErrorResponse, CustomAddressParser = null)
+        #region (static) TryParse (JSON, out Address, out ErrorResponse, CustomAddressParser = null)
 
         // Note: The following is needed to satisfy pattern matching delegates! Do not refactor it!
 
@@ -257,7 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!JSON.ParseMandatoryText("street",
                                              "street",
-                                             out String Street,
+                                             out String? street,
                                              out ErrorResponse))
                 {
                     return false;
@@ -270,7 +270,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!JSON.ParseMandatory("country",
                                          "country",
                                          Illias.Country.TryParse,
-                                         out Country Country,
+                                         out Country country,
                                          out ErrorResponse))
                 {
                     return false;
@@ -282,7 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!JSON.ParseMandatoryText("postalCode",
                                              "postal code",
-                                             out String PostalCode,
+                                             out String? postalCode,
                                              out ErrorResponse))
                 {
                     return false;
@@ -294,7 +294,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!JSON.ParseMandatory("city",
                                          "city",
-                                         out I18NString City,
+                                         out I18NString city,
                                          out ErrorResponse))
                 {
                     return false;
@@ -307,13 +307,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSON.ParseOptional("houseNumber",
                                        "house number",
-                                       out String houseNumber,
+                                       out String? houseNumber,
                                        out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -322,13 +320,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSON.ParseOptional("floorLevel",
                                        "floor level",
-                                       out String floorLevel,
+                                       out String? floorLevel,
                                        out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -337,13 +333,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSON.ParseOptional("region",
                                        "region",
-                                       out String Region,
+                                       out String? region,
                                        out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -352,13 +346,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSON.ParseOptional("postalCodeSub",
                                              "postal code sub",
-                                             out String PostalCodeSub,
+                                             out String? postalCodeSub,
                                              out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -368,7 +360,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSON.ParseOptional("TimeZone",
                                        "time zone",
                                        Time_Zone.TryParse,
-                                       out Time_Zone? TimeZone,
+                                       out Time_Zone? timeZone,
                                        out ErrorResponse))
                 {
                     if (ErrorResponse is not null)
@@ -381,13 +373,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSON.ParseOptional("comment",
                                        "comment",
-                                       out I18NString comment,
+                                       out I18NString? comment,
                                        out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -396,13 +386,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSON.ParseOptionalEnums("officialLanguages",
                                             "official languages",
-                                            out HashSet<Languages> OfficialLanguages,
+                                            out HashSet<Languages> officialLanguages,
                                             out ErrorResponse))
                 {
-
                     if (ErrorResponse is not null)
                         return false;
-
                 }
 
                 #endregion
@@ -415,20 +403,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 #endregion
 
 
-                Address = new Address(Street,
-                                      PostalCode,
-                                      City,
-                                      Country,
+                Address = new Address(
 
-                                      houseNumber,
-                                      floorLevel,
-                                      Region,
-                                      PostalCodeSub,
-                                      TimeZone,
-                                      OfficialLanguages,
-                                      comment,
+                              street,
+                              postalCode,
+                              city,
+                              country,
 
-                                      customData);
+                              houseNumber,
+                              floorLevel,
+                              region,
+                              postalCodeSub,
+                              timeZone,
+                              officialLanguages,
+                              comment,
+
+                              customData
+
+                          );
 
 
                 if (CustomAddressParser is not null)
@@ -449,7 +441,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Text, out Address, out ErrorResponse, CustomAddressParser = null)
+        #region (static) TryParse (Text, out Address, out ErrorResponse, CustomAddressParser = null)
 
         /// <summary>
         /// Try to parse the given text representation of a address.

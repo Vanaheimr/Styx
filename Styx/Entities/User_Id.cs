@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the user identificator.
+        /// The length of the user identifier.
         /// </summary>
         public UInt64 Length
             => (UInt64) (InternalId?.Length ?? 0);

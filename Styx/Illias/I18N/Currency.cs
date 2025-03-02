@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -199,7 +201,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Text">The ISO code or name of a currency.</param>
         /// <param name="Currency">The parsed Currency</param>
         /// <returns>true or false</returns>
-        public static Boolean TryParse(String Text, out Currency? Currency)
+        public static Boolean TryParse(String Text, [NotNullWhen(true)] out Currency? Currency)
         {
 
             Currency = default;
