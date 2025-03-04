@@ -857,7 +857,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region GenerateHashCode()
 
         /// <summary>
-        /// Generate the hashcode of this object.
+        /// Generate the hash code of this object.
         /// </summary>
         public void GenerateHashCode()
         {

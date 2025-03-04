@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Properties
 
         /// <summary>
-        /// The nummeric value of the latitude.
+        /// The numeric value of the latitude.
         /// </summary>
         public Double  Value    { get; }
 
@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Create a new geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Value">The nummeric value of the latitude.</param>
+        /// <param name="Value">The numeric value of the latitude.</param>
         private Latitude(Double Value)
         {
             this.Value = Value;
@@ -55,34 +55,34 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        #region (static) Parse   (Value)
+        #region (static) Parse        (Number)
 
         /// <summary>
-        /// Parse the given string as a geographical latitude (south to nord).
+        /// Parse the given number as a geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Text">A text representation of a latitude.</param>
-        public static Latitude Parse(Double Value)
+        /// <param name="Number">The numeric representation of a latitude to parse.</param>
+        public static Latitude Parse(Double Number)
         {
 
-            if (TryParse(Value, out var latitude))
+            if (TryParse(Number, out var latitude))
                 return latitude;
 
-            throw new ArgumentException("Invalid latitude '" + Value + "'! The value must be between -90 and 90!", nameof(Value));
+            throw new ArgumentException($"Invalid latitude '{Number}'! The value must be between -90 and 90!", nameof(Number));
 
         }
 
         #endregion
 
-        #region (static) TryParse(Value)
+        #region (static) TryParse     (Number)
 
         /// <summary>
-        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// Try to parse the given number as a geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Text">A text representation of a latitude.</param>
-        public static Latitude? TryParse(Double Value)
+        /// <param name="Number">A numeric representation of a latitude.</param>
+        public static Latitude? TryParse(Double Number)
         {
 
-            if (TryParse(Value, out var latitude))
+            if (TryParse(Number, out var latitude))
                 return latitude;
 
             return null;
@@ -91,19 +91,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #endregion
 
-        #region (static) TryParse(Value, out Latitude)
+        #region (static) TryParse     (Number, out Latitude)
 
         /// <summary>
-        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// Try to parse the given number as a geographical latitude (south to nord).
         /// </summary>
-        /// <param name="Value">A nummeric representation of a latitude.</param>
-        /// <param name="ClearingHouseId">The parsed latitude.</param>
-        public static Boolean TryParse(Double Value, out Latitude Latitude)
+        /// <param name="Number">A numeric representation of a latitude.</param>
+        /// <param name="Latitude">The parsed latitude.</param>
+        public static Boolean TryParse(Double Number, out Latitude Latitude)
         {
 
-            if (Value >= -90 && Value <= 90)
+            if (Number >= -90 && Number <= 90)
             {
-                Latitude = new Latitude(Value);
+                Latitude = new Latitude(Number);
                 return true;
             }
 
@@ -113,10 +113,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         }
 
         #endregion
-
-
-
-
 
 
         public static Latitude Parse(String Value)
@@ -131,6 +127,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Latitude Parse(String Value, NumberStyles NumberStyle, IFormatProvider FormatProvider)
             => Parse(Double.Parse(Value, NumberStyle, FormatProvider));
 
+
+        #region TryParse     (Text)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a latitude to parse.</param>
         public static Latitude? TryParse(String Text)
         {
 
@@ -141,6 +144,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        #endregion
+
+        #region TryParse     (Text,               ValueMapper)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a latitude to parse.</param>
+        /// <param name="ValueMapper">An optional mapping function to modify the parsed latitude value.</param>
         public static Latitude? TryParse(String Text, Func<Double, Double> ValueMapper)
         {
 
@@ -151,12 +163,31 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        #endregion
+
+        #region TryParse     (Text, out Latitude)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a latitude to parse.</param>
+        /// <param name="Latitude">The parsed latitude.</param>
         public static Boolean TryParse(String Text, out Latitude Latitude)
 
             => TryParse(Text,
                         out Latitude,
                         null);
 
+        #endregion
+
+        #region TryParse     (Text, out Latitude, ValueMapper)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="Text">The text representation of a latitude to parse.</param>
+        /// <param name="Latitude">The parsed latitude.</param>
+        /// <param name="ValueMapper">An optional mapping function to modify the parsed latitude value.</param>
         public static Boolean TryParse(String                 Text,
                                        out Latitude           Latitude,
                                        Func<Double, Double>?  ValueMapper)
@@ -176,7 +207,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
-        public static Boolean TryParseNMEA(String                 Text,
+        #endregion
+
+
+        #region TryParseNMEA (Text, out Latitude, ValueMapper = null)
+
+        /// <summary>
+        /// Try to parse the given NMEA string as a geographical latitude (south to nord).
+        /// </summary>
+        /// <param name="NMEA"></param>
+        /// <param name="Latitude"></param>
+        /// <param name="ValueMapper"></param>
+        /// <returns></returns>
+        public static Boolean TryParseNMEA(String                 NMEA,
                                            out Latitude           Latitude,
                                            Func<Double, Double>?  ValueMapper   = null)
         {
@@ -184,16 +227,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             try
             {
 
-                var dot   = Text.IndexOf(".") - 2;
+                var dot   = NMEA.IndexOf('.') - 2;
                 if (dot < 0) dot = 0;
 
-                var space = Text.IndexOf(" ");
-                var sign  = Text[Text.Length - 1];
+                var space = NMEA.IndexOf(' ');
+                var sign  = NMEA[^1];
 
                 if (space > 0 &&
                     (sign == 'n' || sign == 'N' || sign == 's' || sign == 'S') &&
-                    Double.TryParse(Text.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out var degrees) &&
-                    Double.TryParse(Text.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out var minutes))
+                    Double.TryParse(NMEA.Substring(0,   dot),       NumberStyles.Any, CultureInfo.InvariantCulture, out var degrees) &&
+                    Double.TryParse(NMEA.Substring(dot, space-dot), NumberStyles.Any, CultureInfo.InvariantCulture, out var minutes))
                 {
 
                     var value = degrees + (minutes / 60);
@@ -217,10 +260,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
+        #endregion
+
+
         #region Clone()
 
         /// <summary>
-        /// Clone this object.
+        /// Clone this geographical latitude.
         /// </summary>
         public Latitude Clone()
 
@@ -232,10 +278,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Distance(OtherLatitude)
 
         /// <summary>
-        /// A method to calculate the distance between two latitudes.
+        /// Calculate the distance between two latitudes.
         /// </summary>
         /// <param name="OtherLatitude">Another latitude.</param>
-        /// <returns>The distance between a and b.</returns>
         public Double DistanceTo(Latitude OtherLatitude)
 
             => Math.Abs(Value - OtherLatitude.Value);
@@ -403,7 +448,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude">Another geographical latitude.</param>
         /// <param name="Epsilon">An optional numeric tolerance.</param>
         public Boolean EqualsWithTolerance(Latitude  Latitude,
-                              Double    Epsilon = 1e-7)
+                                           Double    Epsilon = 1e-7)
 
             => Value - Latitude.Value < Epsilon;
 
@@ -414,7 +459,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Return the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()
@@ -454,8 +499,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Format">A composite format string</param>
         public String ToString(String Format)
 
-            => String.Format(Format,
-                             Value);
+            => String.Format(Format, Value);
 
         #endregion
 

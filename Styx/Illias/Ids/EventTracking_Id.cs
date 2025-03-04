@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -40,19 +42,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Indicates whether this identification is null or empty.
         /// </summary>
-        public Boolean IsNullOrEmpty
+        public Boolean  IsNullOrEmpty
             => InternalId.IsNullOrEmpty();
 
         /// <summary>
         /// Indicates whether this identification is NOT null or empty.
         /// </summary>
-        public Boolean IsNotNullOrEmpty
+        public Boolean  IsNotNullOrEmpty
             => InternalId.IsNotNullOrEmpty();
 
         /// <summary>
-        /// The length of the event tracking identificator.
+        /// The length of the event tracking identifier.
         /// </summary>
-        public UInt64 Length
+        public UInt64   Length
             => (UInt64) (InternalId?.Length ?? 0);
 
         #endregion
@@ -81,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse   (Text)
+        #region (static) Parse    (Text)
 
         /// <summary>
         /// Parse the given string as a service identification.
@@ -90,16 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static EventTracking_Id Parse(String Text)
         {
 
-            #region Initial checks
-
-            Text = Text?.Trim();
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The given text representation of an event tracking identification must not be null or empty!");
-
-            #endregion
-
-            if (TryParse(Text, out EventTracking_Id eventTrackingId))
+            if (TryParse(Text, out var eventTrackingId))
                 return eventTrackingId;
 
             throw new ArgumentException("The given text representation of an event tracking identification is invalid!",
@@ -109,25 +102,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse(Text, out EventTrackingId)
+        #region (static) TryParse (Text, out EventTrackingId)
 
         /// <summary>
         /// Parse the given string as an event tracking identification.
         /// </summary>
         /// <param name="Text">A text representation of an event tracking identification.</param>
         /// <param name="EventTrackingId">The parsed event tracking identification.</param>
-        public static Boolean TryParse(String Text, out EventTracking_Id EventTrackingId)
+        public static Boolean TryParse(String Text, [NotNullWhen(true)] out EventTracking_Id? EventTrackingId)
         {
+
+            EventTrackingId = null;
 
             #region Initial checks
 
-            Text = Text?.Trim();
+            Text = Text.Trim();
 
             if (Text.IsNullOrEmpty())
-            {
-                EventTrackingId = default;
                 return false;
-            }
 
             #endregion
 
@@ -138,7 +130,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch
             {
-                EventTrackingId = null;
                 return false;
             }
         }
@@ -155,6 +146,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => new (
                    InternalId.CloneString()
                );
+
+        #endregion
+
+
+        #region Static defaults
+
+        /// <summary>
+        /// Zero
+        /// </summary>
+        public static EventTracking_Id  Zero
+            => new ("0");
 
         #endregion
 

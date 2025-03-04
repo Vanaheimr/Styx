@@ -17,13 +17,7 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Globalization;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Collections;
 
 #endregion
 
@@ -548,14 +542,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
-            #region Initial checks
-
-            if (IProperties == null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            #endregion
-
-            return (TCast)(Object)IProperties[Key];
+            return (TCast) (Object) IProperties[Key];
 
         }
 
@@ -590,18 +577,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (OnSuccess == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
+            if (OnSuccess is null)
+                throw new ArgumentNullException(nameof(OnSuccess), "The given delegate must not be null!");
 
             #endregion
 
-            TValue _Value;
-
-            if (IProperties.TryGetProperty(Key, out _Value))
-                OnSuccess(new KeyValuePair<TKey, TValue>(Key, _Value));
+            if (IProperties.TryGetProperty(Key, out var value))
+                OnSuccess(new KeyValuePair<TKey, TValue>(Key, value));
 
         }
 
@@ -631,18 +613,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (OnSuccess == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
+            if (OnSuccess is null)
+                throw new ArgumentNullException(nameof(OnSuccess), "The given delegate must not be null!");
 
             #endregion
 
-            TValue _Value;
-            if (IProperties.TryGetProperty(Key, out _Value))
-                if (_Value.GetType().Equals(PropertyType))
-                    OnSuccess(new KeyValuePair<TKey, TValue>(Key, _Value));
+            if (IProperties.TryGetProperty(Key, out var value) &&
+                value is not null &&
+                value.GetType().Equals(PropertyType))
+            {
+                OnSuccess(new KeyValuePair<TKey, TValue>(Key, value));
+            }
 
         }
 
@@ -660,9 +641,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccessFunc">A delegate to call for a matching KeyValuePair.</param>
-        public static TResult KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
-                                                                      TKey                                      Key,
-                                                                      Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
+        public static TResult? KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
+                                                                       TKey                                      Key,
+                                                                       Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -670,19 +651,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (OnSuccessFunc == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
+            if (OnSuccessFunc is null)
+                throw new ArgumentNullException(nameof(OnSuccessFunc), "The given delegate must not be null!");
 
             #endregion
 
-            TValue _Value;
-            if (IProperties.TryGetProperty(Key, out _Value))
-                return OnSuccessFunc(new KeyValuePair<TKey, TValue>(Key, _Value));
+            if (IProperties.TryGetProperty(Key, out var value))
+                return OnSuccessFunc(new KeyValuePair<TKey, TValue>(Key, value));
 
-            return default(TResult);
+            return default;
 
         }
 
@@ -702,10 +679,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccessFunc">A delegate to call for a matching KeyValuePair.</param>
-        public static TResult KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
-                                                                      TKey                                      Key,
-                                                                      Type                                      PropertyType,
-                                                                      Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
+        public static TResult? KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
+                                                                       TKey                                      Key,
+                                                                       Type                                      PropertyType,
+                                                                       Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -713,20 +690,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (OnSuccessFunc == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
+            if (OnSuccessFunc is null)
+                throw new ArgumentNullException(nameof(OnSuccessFunc),  "The given delegate must not be null!");
 
             #endregion
 
-            TValue _Value;
-            if (IProperties.TryGetProperty(Key, out _Value))
-                if (_Value.GetType().Equals(PropertyType))
-                    return OnSuccessFunc(new KeyValuePair<TKey, TValue>(Key, _Value));
+            if (IProperties.TryGetProperty(Key, out TValue value) &&
+                value is not null &&
+                value.GetType().Equals(PropertyType))
+            {
+                return OnSuccessFunc(new KeyValuePair<TKey, TValue>(Key, value));
+            }
 
-            return default(TResult);
+            return default;
 
         }
 

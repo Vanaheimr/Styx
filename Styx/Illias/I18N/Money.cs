@@ -141,20 +141,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (!Match.Success)
                 return false;
 
-            if (!Decimal. TryParse(Match.Groups[3].Value.Replace(',', '.'),
+            if (!Decimal.TryParse(Match.Groups[3].Value.Replace(',', '.'),
                                    NumberStyles.Number,
                                    CultureInfo.InvariantCulture,
                                    out Decimal value))
+            {
                 return false;
+            }
 
             if (!Currency.TryParse(Match.Groups[1].Value.IsNotNullOrEmpty()
                                        ? Match.Groups[1].Value
                                        : Match.Groups[5].Value,
-                                   out Currency currency))
+                                   out var currency))
+            {
                 return false;
+            }
 
-            Money = new Money(value,
-                              currency);
+            Money = new Money(
+                        value,
+                        currency
+                    );
 
             return true;
 

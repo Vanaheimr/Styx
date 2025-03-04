@@ -74,26 +74,25 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Data
 
-        private static readonly string[][] Neighbors = {
-                                                           new[]
-                                                               {
-                                                                   "p0r21436x8zb9dcf5h7kjnmqesgutwvy", // Top
-                                                                   "bc01fg45238967deuvhjyznpkmstqrwx", // Right
-                                                                   "14365h7k9dcfesgujnmqp0r2twvyx8zb", // Bottom
-                                                                   "238967debc01fg45kmstqrwxuvhjyznp", // Left
-                                                               }, new[]
-                                                                      {
-                                                                          "bc01fg45238967deuvhjyznpkmstqrwx", // Top
-                                                                          "p0r21436x8zb9dcf5h7kjnmqesgutwvy", // Right
-                                                                          "238967debc01fg45kmstqrwxuvhjyznp", // Bottom
-                                                                          "14365h7k9dcfesgujnmqp0r2twvyx8zb", // Left
-                                                                      }
-                                                       };
+        private static readonly String[][] Neighbours  = [
+                                                             [
+                                                                 "p0r21436x8zb9dcf5h7kjnmqesgutwvy", // Top
+                                                                 "bc01fg45238967deuvhjyznpkmstqrwx", // Right
+                                                                 "14365h7k9dcfesgujnmqp0r2twvyx8zb", // Bottom
+                                                                 "238967debc01fg45kmstqrwxuvhjyznp", // Left
+                                                             ],
+                                                             [
+                                                                 "bc01fg45238967deuvhjyznpkmstqrwx", // Top
+                                                                 "p0r21436x8zb9dcf5h7kjnmqesgutwvy", // Right
+                                                                 "238967debc01fg45kmstqrwxuvhjyznp", // Bottom
+                                                                 "14365h7k9dcfesgujnmqp0r2twvyx8zb", // Left
+                                                             ]
+                                                         ];
 
-        private static readonly string[][] Borders = {
-                                                         new[] {"prxz", "bcfguvyz", "028b", "0145hjnp"},
-                                                         new[] {"bcfguvyz", "prxz", "0145hjnp", "028b"}
-                                                     };
+        private static readonly String[][] Borders     = [
+                                                             [ "prxz",     "bcfguvyz", "028b",     "0145hjnp" ],
+                                                             [ "bcfguvyz", "prxz",     "0145hjnp", "028b"     ]
+                                                         ];
 
         /// <summary>
         /// Special GeoHash Base32 alphabet
@@ -197,21 +196,22 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Latitude">The latitude.</param>
         /// <param name="Longitude">The longitude.</param>
         /// <param name="Precision">An optional precision aka number of characters of the resulting geo hash.</param>
-        /// <returns>The latitude and longitude encoded as geo hash.</returns>
-        private static String Encode(Latitude Latitude, Longitude Longitude, Byte Precision = 12)
+        private static String Encode(Latitude   Latitude,
+                                     Longitude  Longitude,
+                                     Byte       Precision = 12)
         {
 
-            var even      = true;
-            var bit       = 0;
-            var character = 0;
-            var GeoHash   = new StringBuilder();
-            var bitmask   = 16;
+            var even          = true;
+            var bit           = 0;
+            var character     = 0;
+            var GeoHash       = new StringBuilder();
+            var bitmask       = 16;
             Double midLat, midLon;
 
-            var _MinLatitude  =  -90.0;
-            var _MaxLatitude  =   90.0;
-            var _MinLongitude = -180.0;
-            var _MaxLongitude =  180.0;
+            var minLatitude   =  -90.0;
+            var maxLatitude   =   90.0;
+            var minLongitude  = -180.0;
+            var maxLongitude  =  180.0;
 
             if (Precision < 1 || Precision > 20) Precision = 12;
 
@@ -221,33 +221,33 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 if (even)
                 {
 
-                    midLon = (_MinLongitude + _MaxLongitude) / 2;
+                    midLon = (minLongitude + maxLongitude) / 2;
 
                     if (Longitude.Value > midLon)
                     {
                         // Set 1!
                         character |= bitmask;
-                        _MinLongitude = midLon;
+                        minLongitude = midLon;
                     }
                     else
                         // Set 0!
-                        _MaxLongitude = midLon;
+                        maxLongitude = midLon;
 
                 }
                 else
                 {
 
-                    midLat = (_MinLatitude + _MaxLatitude) / 2;
+                    midLat = (minLatitude + maxLatitude) / 2;
 
                     if (Latitude.Value > midLat)
                     {
                         // Set 1!
                         character |= bitmask;
-                        _MinLatitude = midLat;
+                        minLatitude = midLat;
                     }
                     else
                         // Set 0!
-                        _MaxLatitude = midLat;
+                        maxLatitude = midLat;
 
                 }
 
@@ -290,7 +290,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         /// <summary>
         /// Decode the geo hash into latitude and longitude using the given
-        /// delegate to transfor it into the resulting data structure.
+        /// delegate to transform it into the resulting data structure.
         /// </summary>
         /// <typeparam name="T">The type of the resulting data structure.</typeparam>
         /// <param name="Processor">A delegate to transform the decoded latitude and longitude into the resulting data structure.</param>
@@ -298,36 +298,27 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public T Decode<T>(Func<Latitude, Longitude, T> Processor, Byte Digits = 12)
         {
 
-            #region Initial checks
+            var even = true;
 
-            if (Processor == null)
-                throw new ArgumentNullException("The given delegate must not be null!");
+            Double[] LatitudeInterval   = {  -90,  90 };
+            Double[] LongitudeInterval  = { -180, 180 };
 
-            #endregion
-
-            var even      = true;
-            var CharValue = 0;
-            var Bitmask   = 0;
-
-            Double[] LatitudeInterval  = {  -90,  90 };
-            Double[] LongitudeInterval = { -180, 180 };
-
-            foreach (var Character in internalGeoHash)
+            foreach (var character in internalGeoHash)
             {
 
                 //ToDo: Faster GeoHashAlphabet lookup!
-                CharValue = GeoHashAlphabet.IndexOf(Character);
+                var charValue = GeoHashAlphabet.IndexOf(character);
 
-                for (int j = 0; j < 5; j++)
+                for (var j = 0; j < 5; j++)
                 {
 
-                    Bitmask = 16 >> j;
+                    var bitmask = 16 >> j;
 
                     if (even)
-                        RefineInterval(ref LongitudeInterval, CharValue, Bitmask);
+                        RefineInterval(ref LongitudeInterval, charValue, bitmask);
 
                     else
-                        RefineInterval(ref LatitudeInterval,  CharValue, Bitmask);
+                        RefineInterval(ref LatitudeInterval,  charValue, bitmask);
 
                     even = !even;
 
@@ -336,9 +327,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             }
 
             return Processor(
-                Latitude. Parse(Math.Round((LatitudeInterval[0]  + LatitudeInterval[1])  / 2, Digits)),
-                Longitude.Parse(Math.Round((LongitudeInterval[0] + LongitudeInterval[1]) / 2, Digits))
-            );
+                       Latitude. Parse(Math.Round((LatitudeInterval[0]  + LatitudeInterval[1])  / 2, Digits)),
+                       Longitude.Parse(Math.Round((LongitudeInterval[0] + LongitudeInterval[1]) / 2, Digits))
+                   );
 
         }
 
@@ -361,15 +352,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             hash = hash.ToLower();
 
-            var lastChr = hash[hash.Length - 1];
+            var lastChr = hash[^1];
             var type    = hash.Length % 2;
             var dir     = (int) Direction;
-            var nHash   = hash.Substring(0, hash.Length - 1);
+            var nHash   = hash[..^1];
 
             if (Borders[type][dir].IndexOf(lastChr) != -1)
                 nHash = CalculateAdjacent_private(nHash, (Direction) dir);
 
-            return nHash + GeoHashAlphabet[Neighbors[type][dir].IndexOf(lastChr)];
+            return nHash + GeoHashAlphabet[Neighbours[type][dir].IndexOf(lastChr)];
 
         }
 
@@ -381,7 +372,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Operator == (Left, Right)
 
         /// <summary>
-        /// Compares two geo hashs for equality.
+        /// Compares two geo hashes for equality.
         /// </summary>
         /// <param name="Left">A geo hash.</param>
         /// <param name="Right">Another geo hash.</param>
@@ -396,7 +387,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Operator != (Left, Right)
 
         /// <summary>
-        /// Compares two vertices for inequality.
+        /// Compares two geo hashes for inequality.
         /// </summary>
         /// <param name="Left">A geo hash.</param>
         /// <param name="Right">Another geo hash.</param>
@@ -415,9 +406,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geo hashes.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
+        /// <param name="Object">A geo hash to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is GeoHash geoHash
@@ -442,9 +433,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region CompareTo(IGeoCoordinate)
 
         /// <summary>
-        /// Compares two geo coordinates.
+        /// Compares two geo hashes.
         /// </summary>
-        /// <param name="IGeoCoordinate">Another geo coordinate.</param>
+        /// <param name="IGeoCoordinate">Another geo hash.</param>
         public Int32 CompareTo(IGeoCoordinate? IGeoCoordinate)
         {
 
@@ -514,7 +505,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Return the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()

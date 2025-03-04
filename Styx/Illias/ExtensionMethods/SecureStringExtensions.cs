@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Security;
 using System.Runtime.InteropServices;
 
@@ -32,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class SecureStringExtensions
     {
 
-        public static String UnsecureString(this SecureString SecureText)
+        public static String? UnsecureString(this SecureString SecureText)
         {
 
             if (SecureText == null)

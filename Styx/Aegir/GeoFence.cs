@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -38,11 +34,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     {
 
         /// <summary>
-        /// Return a JSON representation of the given GeoLocation.
+        /// Return a JSON representation of the given geo fence.
         /// </summary>
-        /// <param name="GeoLocation">A geographical location.</param>
-        public static JObject ToJSON(this GeoFence? GeoLocation)
-            => GeoLocation?.ToJSON();
+        /// <param name="GeoFence">A geographical fence.</param>
+        public static JObject? ToJSON(this GeoFence? GeoFence)
+            => GeoFence?.ToJSON();
 
 
         #region ToJSON(this GeoLocation, JPropertyKey)
@@ -52,16 +48,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="GeoFence">A geographical location.</param>
         /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoFence GeoFence, String JPropertyKey)
-        {
+        public static JProperty ToJSON(this GeoFence  GeoFence,
+                                       String         JPropertyKey)
 
-            //if (GeoLocation == default(GeoFence))
-            //    return null;
-
-            return new JProperty(JPropertyKey,
-                                 GeoFence.ToJSON());
-
-        }
+            => new (
+                   JPropertyKey,
+                   GeoFence.ToJSON()
+               );
 
 
         /// <summary>
@@ -69,14 +62,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="GeoLocation">A GeoLocation.</param>
         /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoFence? GeoLocation, String JPropertyKey)
+        public static JProperty? ToJSON(this GeoFence? GeoLocation, String JPropertyKey)
         {
 
             if (!GeoLocation.HasValue)
                 return null;
 
-            return new JProperty(JPropertyKey,
-                                 GeoLocation.Value.ToJSON());
+            return new JProperty(
+                       JPropertyKey,
+                       GeoLocation.Value.ToJSON()
+                   );
 
         }
 
@@ -89,9 +84,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     }
 
     /// <summary>
-    /// A geo fenche.
+    /// A geo fence.
     /// </summary>
-    public struct GeoFence
+    public readonly struct GeoFence
     {
 
         #region Properties
@@ -120,15 +115,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Distance">A geographical distance.</param>
         /// <param name="Description">An optional description.</param>
-        public GeoFence(Meter       Distance,
-                        I18NString  Description = null)
-        {
+        public GeoFence(Meter        Distance,
+                        I18NString?  Description   = null)
 
-            this.GeoCoordinates  = null;
-            this.Distance        = Distance;
-            this.Description     = Description ?? new I18NString();
+            : this([],
+                   Distance,
+                   Description)
 
-        }
+        { }
 
         /// <summary>
         /// Create a new geo fence.
@@ -138,11 +132,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Description">An optional description.</param>
         public GeoFence(IEnumerable<GeoCoordinate>  GeoCoordinates,
                         Meter?                      Distance,
-                        I18NString                  Description = null)
+                        I18NString?                 Description   = null)
         {
-
-            if (GeoCoordinates == null || !GeoCoordinates.SafeAny())
-                throw new ArgumentNullException(nameof(GeoCoordinates), "The given geo coordinates must not be null or empty!");
 
             this.GeoCoordinates  = GeoCoordinates;
             this.Distance        = Distance;
@@ -210,7 +201,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Get the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
         {

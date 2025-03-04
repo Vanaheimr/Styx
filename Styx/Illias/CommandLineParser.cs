@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -48,27 +45,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The short option.
         /// </summary>
-        public Char                  ShortOption         { get { return _Short.Value; } }
+        public Char                   ShortOption         { get { return _Short.Value; } }
 
         /// <summary>
         /// The long option.
         /// </summary>
-        public String                LongOption          { get; private set; }
+        public String                 LongOption          { get; private set; }
 
         /// <summary>
         /// An optional regular expression for verification.
         /// </summary>
-        public Regex                 RegularExpression   { get; private set; }
+        public Regex                  RegularExpression   { get; private set; }
 
         /// <summary>
         /// An optional delegate for verification.
         /// </summary>
-        public Func<String, Boolean> Verification              { get; private set; }
+        public Func<String, Boolean>  Verification        { get; private set; }
 
         /// <summary>
         /// The action delegate.
         /// </summary>
-        public Action<String>        Action              { get; private set; }
+        public Action<String>         Action              { get; private set; }
 
         #endregion
 
@@ -113,8 +110,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             : this(CommandLineParser)
         {
 
-            if (LongOption == null || LongOption.Trim() == "")
-                throw new ArgumentNullException("String", "The parameter must not be null or empty!");
+            if (LongOption is null || LongOption.Trim() == "")
+                throw new ArgumentNullException(nameof(LongOption), "The parameter must not be null or empty!");
 
             this.LongOption = LongOption.Trim();
 

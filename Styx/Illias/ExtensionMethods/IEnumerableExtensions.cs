@@ -53,7 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="IEnumerable">An enumeration of Doubles.</param>
         /// <returns>The mean and stddev of the given enumeration of doubles.</returns>
-        public static Collections.Tuple<Double, Double> AverageAndStdDev(this IEnumerable<Double> IEnumerable)
+        public static Tuple<Double, Double> AverageAndStdDev(this IEnumerable<Double> IEnumerable)
         {
 
             #region Initial Checks
@@ -64,10 +64,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var count = IEnumerable.Count();
 
             if (count == 0)
-                return new Collections.Tuple<Double, Double>(0, 0);
+                return new Tuple<Double, Double>(0, 0);
 
             if (count == 1)
-                return new Collections.Tuple<Double, Double>(IEnumerable.First(), 0);
+                return new Tuple<Double, Double>(IEnumerable.First(), 0);
 
             #endregion
 
@@ -77,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             foreach (var value in IEnumerable)
                 sum += (value - average) * (value - average);
 
-            return new Collections.Tuple<Double, Double>(average, Math.Sqrt(sum / (count - 1)));
+            return new Tuple<Double, Double>(average, Math.Sqrt(sum / (count - 1)));
 
         }
 

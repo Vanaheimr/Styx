@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System;
 using System.Globalization;
 
 #endregion
@@ -26,7 +25,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
     /// <summary>
-    /// An altitude.
+    /// An geographical altitude.
     /// </summary>
     public readonly struct Altitude : IEquatable<Altitude>,
                                       IComparable<Altitude>,
@@ -46,9 +45,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new altitude.
+        /// Create a new geographical altitude.
         /// </summary>
-        /// <param name="Value">The value of the altitude.</param>
+        /// <param name="Value">The numeric value of the altitude.</param>
         private Altitude(Double Value)
         {
             this.Value = Value;
@@ -57,21 +56,106 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        public static Altitude Parse(Double Longitude)
-            => new Altitude(Longitude);
+        #region (static) Parse    (Number)
+
+        /// <summary>
+        /// Parse the given number as a geographical altitude.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a altitude.</param>
+        public static Altitude Parse(Double Number)
+        {
+
+            if (TryParse(Number, out var altitude))
+                return altitude;
+
+            throw new ArgumentException($"Invalid altitude '{Number}'! The value must be between -180 and 180!", nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse (Number)
+
+        /// <summary>
+        /// Try to parse the given number as a geographical altitude.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a altitude.</param>
+        public static Altitude? TryParse(Double Number)
+        {
+
+            if (TryParse(Number, out var altitude))
+                return altitude;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse (Number, out Altitude)
+
+        /// <summary>
+        /// Try to parse the given number as a geographical altitude.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a altitude.</param>
+        /// <param name="Altitude">The parsed altitude.</param>
+        public static Boolean TryParse(Double Number, out Altitude Altitude)
+        {
+
+            try
+            {
+                Altitude = new Altitude(Number);
+                return true;
+            }
+            catch
+            { }
+
+            Altitude = default;
+            return false;
+
+        }
+
+        #endregion
+
 
         public static Altitude Parse(String Altitude)
-            => new Altitude(Double.Parse(Altitude, CultureInfo.InvariantCulture));
+            => Parse(Double.Parse(Altitude, CultureInfo.InvariantCulture));
 
         public static Altitude Parse(String Altitude, IFormatProvider FormatProvider)
-            => new Altitude(Double.Parse(Altitude, FormatProvider));
+            => Parse(Double.Parse(Altitude, FormatProvider));
 
         public static Altitude Parse(String Altitude, NumberStyles NumberStyle)
-            => new Altitude(Double.Parse(Altitude, NumberStyle));
+            => Parse(Double.Parse(Altitude, NumberStyle));
 
         public static Altitude Parse(String Altitude, NumberStyles NumberStyle, IFormatProvider FormatProvider)
-            => new Altitude(Double.Parse(Altitude, NumberStyle, FormatProvider));
+            => Parse(Double.Parse(Altitude, NumberStyle, FormatProvider));
 
+
+        #region TryParse (Text)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical altitude.
+        /// </summary>
+        /// <param name="Text">The text representation of a altitude to parse.</param>
+        public static Altitude? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out var altitude))
+                return altitude;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse (Text, out Altitude)
+
+        /// <summary>
+        /// Try to parse the given string as a geographical altitude.
+        /// </summary>
+        /// <param name="Text">The text representation of a altitude to parse.</param>
+        /// <param name="Altitude">The parsed altitude.</param>
         public static Boolean TryParse(String Text, out Altitude Altitude)
         {
             try
@@ -90,21 +174,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         }
 
-        public static Boolean TryParse(Double Value, out Altitude Altitude)
-        {
-
-            try
-            {
-                Altitude = new Altitude(Value);
-                return true;
-            }
-            catch
-            { }
-
-            Altitude = default;
-            return false;
-
-        }
+        #endregion
 
 
         #region Clone()
@@ -143,20 +213,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude1">A altitude.</param>
         /// <param name="Altitude2">Another altitude.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (Altitude Altitude1, Altitude Altitude2)
-        {
+        public static Boolean operator == (Altitude Altitude1,
+                                           Altitude Altitude2)
 
-            // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(Altitude1, Altitude2))
-                return true;
-
-            // If one is null, but not both, return false.
-            if (((Object) Altitude1 == null) || ((Object) Altitude2 == null))
-                return false;
-
-            return Altitude1.Equals(Altitude2);
-
-        }
+            => Altitude1.Equals(Altitude2);
 
         #endregion
 
@@ -168,10 +228,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude1">A altitude.</param>
         /// <param name="Altitude2">Another altitude.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (Altitude Altitude1, Altitude Altitude2)
-        {
-            return !(Altitude1 == Altitude2);
-        }
+        public static Boolean operator != (Altitude Altitude1,
+                                           Altitude Altitude2)
+
+            => !Altitude1.Equals(Altitude2);
 
         #endregion
 
@@ -183,18 +243,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude1">A altitude.</param>
         /// <param name="Altitude2">Another altitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator  < (Altitude Altitude1, Altitude Altitude2)
-        {
+        public static Boolean operator  < (Altitude Altitude1,
+                                           Altitude Altitude2)
 
-            if ((Object) Altitude1 == null)
-                throw new ArgumentNullException("The given Altitude1 must not be null!");
-
-            if ((Object) Altitude2 == null)
-                throw new ArgumentNullException("The given Altitude2 must not be null!");
-
-            return Altitude1.CompareTo(Altitude2) < 0;
-
-        }
+            => Altitude1.CompareTo(Altitude2) < 0;
 
         #endregion
 
@@ -206,10 +258,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude1">A altitude.</param>
         /// <param name="Altitude2">Another altitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Altitude Altitude1, Altitude Altitude2)
-        {
-            return !(Altitude1 > Altitude2);
-        }
+        public static Boolean operator <= (Altitude Altitude1,
+                                           Altitude Altitude2)
+
+            => Altitude1.CompareTo(Altitude2) <= 0;
 
         #endregion
 
@@ -221,18 +273,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude1">A altitude.</param>
         /// <param name="Altitude2">Another altitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator  > (Altitude Altitude1, Altitude Altitude2)
-        {
+        public static Boolean operator  > (Altitude Altitude1,
+                                           Altitude Altitude2)
 
-            if ((Object) Altitude1 == null)
-                throw new ArgumentNullException("The given Altitude1 must not be null!");
-
-            if ((Object) Altitude2 == null)
-                throw new ArgumentNullException("The given Altitude2 must not be null!");
-
-            return Altitude1.CompareTo(Altitude2) > 0;
-
-        }
+            => Altitude1.CompareTo(Altitude2) > 0;
 
         #endregion
 
@@ -244,10 +288,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="Altitude1">A altitude.</param>
         /// <param name="Altitude2">Another altitude.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Altitude Altitude1, Altitude Altitude2)
-        {
-            return !(Altitude1 < Altitude2);
-        }
+        public static Boolean operator >= (Altitude Altitude1,
+                                           Altitude Altitude2)
+
+            => Altitude1.CompareTo(Altitude2) >= 0;
 
         #endregion
 
@@ -258,30 +302,27 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geographical altitudes.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
-        {
+        /// <param name="Object">Another geographical altitude.</param>
+        public Int32 CompareTo(Object? Object)
 
-            if (Object == null)
-                throw new ArgumentNullException("The given Object must not be null!");
-
-            return CompareTo((Altitude) Object);
-
-        }
+            => Object is Altitude altitude
+                   ? CompareTo(altitude)
+                   : throw new ArgumentException("The given object is not a geographical altitude!",
+                                                 nameof(Object));
 
         #endregion
 
         #region CompareTo(Altitude)
 
         /// <summary>
-        /// Compares two altitudes.
+        /// Compares two geographical altitudes.
         /// </summary>
-        /// <param name="Altitude">Another altitude.</param>
+        /// <param name="Altitude">Another geographical altitude.</param>
         public Int32 CompareTo(Altitude Altitude)
         {
-            return this.Value.CompareTo(Altitude.Value);
+            return Value.CompareTo(Altitude.Value);
         }
 
         #endregion
@@ -293,11 +334,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two geographical altitudes for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        /// <param name="Object">Another geographical altitude.</param>
+        public override Boolean Equals(Object? Object)
 
             => Object is Altitude altitude &&
                    Equals(altitude);
@@ -307,10 +347,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region Equals(Altitude)
 
         /// <summary>
-        /// Compares two altitudes for equality.
+        /// Compares two geographical altitudes for equality.
         /// </summary>
-        /// <param name="Altitude">Another altitude.</param>
-        /// <returns>True if both are equal; False otherwise.</returns>
+        /// <param name="Altitude">Another geographical altitude.</param>
         public Boolean Equals(Altitude Altitude)
 
             => Value.Equals(Altitude.Value);
@@ -322,7 +361,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Return the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         /// <returns></returns>
         public override Int32 GetHashCode()

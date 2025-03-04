@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -28,55 +22,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// A generic range of values.
     /// </summary>
     /// <typeparam name="T">The type of the range values.</typeparam>
-    public struct Range<T>
+    /// <param name="Min">The minimum value or lower bound.</param>
+    /// <param name="Max">The maximum value or upper bound.</param>
+    public readonly struct Range<T>(T Min, T Max)
     {
 
-        #region Min
-
-        private readonly T _Min;
+        #region Properties
 
         /// <summary>
         /// The minimum value or lower bound.
         /// </summary>
-        public T Min
-        {
-            get
-            {
-                return _Min;
-            }
-        }
-
-        #endregion
-
-        #region Max
-
-        private readonly T _Max;
+        public T  Min    { get; } = Min;
 
         /// <summary>
         /// The maximum value or upper bound.
         /// </summary>
-        public T Max
-        {
-            get
-            {
-                return _Max;
-            }
-        }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Creates a new range of values.
-        /// </summary>
-        /// <param name="Min">The minimum value or lower bound.</param>
-        /// <param name="Max">The maximum value or upper bound.</param>
-        public Range(T Min, T Max)
-        {
-            _Min = Min;
-            _Max = Max;
-        }
+        public T  Max    { get; } = Max;
 
         #endregion
 
@@ -84,13 +45,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) GetHashCode()
 
         /// <summary>
-        /// Get the hashcode of this object.
+        /// Return the hash code of this object.
         /// </summary>
         public override Int32 GetHashCode()
         {
             unchecked
             {
-                return _Min.GetHashCode() * 17 ^ _Max.GetHashCode();
+
+                return (Min?.GetHashCode() ?? 0) * 3 ^
+                       (Max?.GetHashCode() ?? 0);
+
             }
         }
 
@@ -102,9 +66,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat(_Min.ToString(), " -> ", _Max.ToString());
-        }
+
+            => $"'{Min?.ToString()}' -> '{Max?.ToString()}'";
 
         #endregion
 
