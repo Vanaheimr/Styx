@@ -331,9 +331,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => Stream.Write(ByteArray, 0, ByteArray.Length);
 
-        public static async Task WriteAsync(this Stream Stream, Byte[] ByteArray)
+        public static async Task WriteAsync(this Stream Stream, Byte[] ByteArray, CancellationToken CancellationToken = default)
 
-            => await Stream.WriteAsync(ByteArray, 0, ByteArray.Length).ConfigureAwait(false);
+            => await Stream.WriteAsync(ByteArray, CancellationToken).ConfigureAwait(false);
+
+
+        #region Aggregate(this ByteArrays)
+
+        /// <summary>
+        /// Aggregates multiple byte arrays into a single byte array.
+        /// </summary>
+        /// <param name="ByteArrays">An enumeration of byte arrays.</param>
+        public static Byte[] Aggregate(this IEnumerable<Byte[]> ByteArrays)
+        {
+
+            var length = ByteArrays.Sum(array => array.Length);
+            var result = new Byte[length];
+            var offset = 0;
+
+            foreach (var array in ByteArrays)
+            {
+                Array.Copy(array, 0, result, offset, array.Length);
+                offset += array.Length;
+            }
+
+            return result;
+
+        }
+
+        #endregion
+
 
     }
 

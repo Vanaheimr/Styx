@@ -202,7 +202,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           Replace("-", "");
 
                 if (hexString.IsNullOrEmpty())
-                    ErrorResponse = $"The given hex-representation of a byte array must not be null!";
+                {
+                    ByteArray = [];
+                    return true;
+                }
 
                 else if (hexString.Length % 2 == 1)
                     ErrorResponse = $"The length of the given hex-representation '{HexString}' of a byte array is invalid!";
