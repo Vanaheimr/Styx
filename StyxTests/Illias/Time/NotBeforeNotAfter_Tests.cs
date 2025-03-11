@@ -332,7 +332,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         #endregion
 
 
-        //ToDo: Check whether timezone setting may affect these tests!
+        //ToDo: Check whether time zone setting may affect these tests!
         //ToDo: Zero-Length durations (should be checked by the parent object, but you never know ;) )
         //ToDo: NotAfter < NotBefore (should be checked by the parent object, but you never know ;) )
 

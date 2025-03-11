@@ -72,6 +72,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
+        /// The value as centimeters.
+        /// </summary>
+        public Decimal  CM
+            => Value * 100;
+
+        /// <summary>
+        /// The value as decimeters.
+        /// </summary>
+        public Decimal  DM
+            => Value * 10;
+
+        /// <summary>
         /// The value as KiloMeters.
         /// </summary>
         public Decimal  KM
@@ -116,6 +128,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) ParseCM    (Text)
+
+        /// <summary>
+        /// Parse the given string as centimeters.
+        /// </summary>
+        /// <param name="Text">A text representation of a centimeter.</param>
+        public static Meter ParseCM(String Text)
+        {
+
+            if (TryParseCM(Text, out var meter))
+                return meter;
+
+            throw new ArgumentException($"Invalid text representation of a centimeter: '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) ParseDM    (Text)
+
+        /// <summary>
+        /// Parse the given string as decimeters.
+        /// </summary>
+        /// <param name="Text">A text representation of a decimeter.</param>
+        public static Meter ParseDM(String Text)
+        {
+
+            if (TryParseDM(Text, out var meter))
+                return meter;
+
+            throw new ArgumentException($"Invalid text representation of a decimeter: '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
         #region (static) ParseM     (Text)
 
         /// <summary>
@@ -154,6 +204,120 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region (static) ParseCM    (Number, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter ParseCM(Decimal  Number,
+                                    Int32?   Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a km: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter ParseCM(Double  Number,
+                                    Int32?  Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a km: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter ParseCM(Byte    Number,
+                                    Int32?  Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a km: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) ParseDM    (Number, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter ParseDM(Decimal  Number,
+                                    Int32?   Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a km: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter ParseDM(Double  Number,
+                                    Int32?  Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a km: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter ParseDM(Byte    Number,
+                                    Int32?  Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            throw new ArgumentException($"Invalid numeric representation of a km: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
 
         #region (static) ParseM     (Number, Exponent = null)
 
@@ -288,6 +452,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) TryParseCM (Text)
+
+        /// <summary>
+        /// Try to parse the given text as a km.
+        /// </summary>
+        /// <param name="Text">A text representation of a km.</param>
+        public static Meter? TryParseCM(String Text)
+        {
+
+            if (TryParseCM(Text, out var meter))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseDM (Text)
+
+        /// <summary>
+        /// Try to parse the given text as a km.
+        /// </summary>
+        /// <param name="Text">A text representation of a km.</param>
+        public static Meter? TryParseDM(String Text)
+        {
+
+            if (TryParseDM(Text, out var meter))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (static) TryParseM  (Text)
 
         /// <summary>
@@ -324,6 +524,114 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region (static) TryParseCM (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryParseCM(Decimal  Number,
+                                        Int32?   Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryParseCM(Double  Number,
+                                        Int32?  Exponent = null)
+        {
+
+            if (TryParseCM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a Meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a Meter.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryParseCM(Byte    Number,
+                                        Int32?  Exponent = null)
+        {
+
+            if (TryParseCM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseDM (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryParseDM(Decimal  Number,
+                                        Int32?   Exponent = null)
+        {
+
+            if (TryParseM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryParseDM(Double  Number,
+                                        Int32?  Exponent = null)
+        {
+
+            if (TryParseDM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a Meter.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a Meter.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryParseDM(Byte    Number,
+                                        Int32?  Exponent = null)
+        {
+
+            if (TryParseDM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
 
         #region (static) TryParseM  (Number, Exponent = null)
 
@@ -420,11 +728,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryParse(Byte    Number,
-                                      Int32?  Exponent = null)
+        public static Meter? TryParseKM(Byte    Number,
+                                        Int32?  Exponent = null)
         {
 
-            if (TryParseM(Number, out var meter, Exponent))
+            if (TryParseKM(Number, out var meter, Exponent))
                 return meter;
 
             return null;
@@ -459,6 +767,74 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
 
                     Meter = new Meter(factor * value);
+
+                    return true;
+
+                }
+
+            }
+            catch
+            { }
+
+            Meter = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseCM (Text,   out Meter)
+
+        /// <summary>
+        /// Parse the given string as a km.
+        /// </summary>
+        /// <param name="Text">A text representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        public static Boolean TryParseCM(String Text, out Meter Meter)
+        {
+
+            try
+            {
+
+                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
+                    value >= 0)
+                {
+
+                    Meter = new Meter(1000 * value);
+
+                    return true;
+
+                }
+
+            }
+            catch
+            { }
+
+            Meter = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseDM (Text,   out Meter)
+
+        /// <summary>
+        /// Parse the given string as a km.
+        /// </summary>
+        /// <param name="Text">A text representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        public static Boolean TryParseDM(String Text, out Meter Meter)
+        {
+
+            try
+            {
+
+                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
+                    value >= 0)
+                {
+
+                    Meter = new Meter(1000 * value);
 
                     return true;
 
@@ -543,6 +919,176 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region (static) TryParseCM (Number, out Meter, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseCM(Byte       Number,
+                                         out Meter  Meter,
+                                         Int32?     Exponent = null)
+        {
+
+            Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+
+            if (Number < 0)
+                return false;
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseCM(Double     Number,
+                                         out Meter  Meter,
+                                         Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Meter = new Meter(1000 * (Decimal) (Number * Math.Pow(10, Exponent ?? 0)));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Meter = default;
+                return false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        public static Boolean TryParseCM(Decimal    Number,
+                                         out Meter  Meter,
+                                         Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Meter = default;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParseDM (Number, out Meter, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseDM(Byte       Number,
+                                         out Meter  Meter,
+                                         Int32?     Exponent = null)
+        {
+
+            Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+
+            if (Number < 0)
+                return false;
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseDM(Double     Number,
+                                         out Meter  Meter,
+                                         Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Meter = new Meter(1000 * (Decimal) (Number * Math.Pow(10, Exponent ?? 0)));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Meter = default;
+                return false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a km.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a km.</param>
+        /// <param name="Meter">The parsed km.</param>
+        public static Boolean TryParseDM(Decimal    Number,
+                                         out Meter  Meter,
+                                         Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Meter = default;
+                return false;
+            }
+
+        }
+
+        #endregion
 
         #region (static) TryParseM  (Number, out Meter, Exponent = null)
 
