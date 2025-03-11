@@ -2360,7 +2360,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              out String               ErrorResponse)
         {
 
-            EnumerationOfStrings = null;
+            EnumerationOfStrings = [];
 
             if (JSON is null)
             {
@@ -2383,7 +2383,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                if (!(JSONToken is JArray JArray))
+                if (JSONToken is not JArray JArray)
                 {
                     ErrorResponse = "Invalid '{PropertyDescription}'!";
                     return false;

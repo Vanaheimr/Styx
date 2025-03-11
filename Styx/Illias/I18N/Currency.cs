@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
+#region Usings
+
 using System.Diagnostics.CodeAnalysis;
+
+#endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
@@ -138,7 +142,107 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region List of currencies...
+        #region (static) Parse       (Text)
+
+        /// <summary>
+        /// Return the appropriate currency for the given string.
+        /// </summary>
+        /// <param name="Text">The ISO code or name of a currency.</param>
+        public static Currency Parse(String Text)
+        {
+
+            if (TryParse(Text,
+                         out var currency))
+            {
+                return currency!;
+            }
+
+            throw new ArgumentException("The given JSON representation of a currency is invalid!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) TryParse    (Text, out Currency)
+
+        /// <summary>
+        /// Return the appropriate currency for the given string.
+        /// </summary>
+        /// <param name="Text">The ISO code or name of a currency.</param>
+        /// <param name="Currency">The parsed Currency</param>
+        public static Boolean TryParse(String                             Text,
+                                       [NotNullWhen(true)] out Currency?  Currency)
+        {
+
+            Currency = default;
+
+            if (Text.IsNullOrEmpty())
+                return false;
+
+            Text = Text.Trim();
+
+            Currency = (from   fieldInfo in typeof(Currency).GetFields()
+                        let    currency = fieldInfo.GetValue(null) as Currency
+                        where  currency is not null
+                        where  currency.ISOCode == Text || currency.Symbol == Text || currency.Name == Text
+                        select currency).FirstOrDefault();
+
+            return Currency is not null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseISO (Text, out Currency)
+
+        /// <summary>
+        /// Return the appropriate currency for the given string.
+        /// </summary>
+        /// <param name="Text">The ISO code or name of a currency.</param>
+        /// <param name="Currency">The parsed Currency</param>
+        public static Boolean TryParseISO(String Text, [NotNullWhen(true)] out Currency? Currency)
+        {
+
+            Currency = default;
+
+            if (Text.IsNullOrEmpty())
+                return false;
+
+            Text = Text.Trim();
+
+            Currency = (from   fieldInfo in typeof(Currency).GetFields()
+                        let    currency = fieldInfo.GetValue(null) as Currency
+                        where  currency is not null
+                        where  currency.ISOCode == Text
+                        select currency).FirstOrDefault();
+
+            return Currency is not null;
+
+        }
+
+        #endregion
+
+        #region Clone()
+
+        /// <summary>
+        /// Clone this currency.
+        /// </summary>
+        public Currency Clone()
+
+            => new (
+                   Name.     CloneString(),
+                   ISOCode.  CloneString(),
+                   Numeric,
+                   Symbol?.  CloneString(),
+                   SymbolLocation,
+                   [.. Countries]
+               );
+
+        #endregion
+
+
+        #region Static defaults
 
         /// <summary>
         /// Euro, €
@@ -167,77 +271,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Currency RSD = new ("Dinar",             "RSD", 941,  null, Symbol_Location.NoSymbol, Country.Serbia);
         public static readonly Currency RUB = new ("Rubel",             "RUB", 643,  null, Symbol_Location.NoSymbol, Country.RussianFederation);
         public static readonly Currency SEK = new ("Krone",             "SEK", 752,  null, Symbol_Location.NoSymbol, Country.Sweden);
-
-        #endregion
-
-
-        #region (static) Parse   (Text)
-
-        /// <summary>
-        /// Return the appropriate currency for the given string.
-        /// </summary>
-        /// <param name="Text">The ISO code or name of a currency.</param>
-        public static Currency Parse(String Text)
-        {
-
-            if (TryParse(Text,
-                         out var currency))
-            {
-                return currency!;
-            }
-
-            throw new ArgumentException("The given JSON representation of a currency is invalid!",
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) TryParse(Text, out Currency)
-
-        /// <summary>
-        /// Return the appropriate currency for the given string.
-        /// </summary>
-        /// <param name="Text">The ISO code or name of a currency.</param>
-        /// <param name="Currency">The parsed Currency</param>
-        /// <returns>true or false</returns>
-        public static Boolean TryParse(String Text, [NotNullWhen(true)] out Currency? Currency)
-        {
-
-            Currency = default;
-
-            if (Text.IsNullOrEmpty())
-                return false;
-
-            Text = Text.Trim();
-
-            Currency = (from   fieldInfo in typeof(Currency).GetFields()
-                        let    currency = fieldInfo.GetValue(null) as Currency
-                        where  currency is not null
-                        where  currency.ISOCode == Text || currency.Symbol == Text || currency.Name == Text
-                        select currency).FirstOrDefault();
-
-            return Currency is not null;
-
-        }
-
-        #endregion
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this currency.
-        /// </summary>
-        public Currency Clone()
-
-            => new (
-                   Name.     CloneString(),
-                   ISOCode.  CloneString(),
-                   Numeric,
-                   Symbol?.  CloneString(),
-                   SymbolLocation,
-                   Countries.ToArray()
-               );
 
         #endregion
 

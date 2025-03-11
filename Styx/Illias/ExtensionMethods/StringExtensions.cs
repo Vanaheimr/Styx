@@ -1250,6 +1250,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return String.Concat(char.ToLowerInvariant(Input[0]), Input[1..]);
         }
 
+
+        #region Matches(this Text, Pattern, IgnoreCase = true)
+
+        public static Boolean Matches(this String?  Text,
+                                      String        Pattern,
+                                      Boolean       IgnoreCase   = true)
+
+            => Text is not null &&
+               (IgnoreCase
+                    ? Text.Contains(Pattern, StringComparison.OrdinalIgnoreCase)
+                    : Text.Contains(Pattern, StringComparison.Ordinal));
+
+        #endregion
+
+
     }
 
 }
