@@ -415,17 +415,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static String ToBase64(this Byte[] ByteArray)
         {
-
             try
             {
                 return Convert.ToBase64String(ByteArray);
             }
-
             catch (Exception e)
             {
                 throw new Exception("Error in ToBase64" + e.Message);
             }
-
         }
 
         #endregion
@@ -460,6 +457,86 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 Base64String = Base64String.Trim();
+
+                if (Base64String.IsNullOrEmpty())
+                    ErrorResponse = "The given base64-representation of a byte array must not be null!";
+
+                else if (Base64String.Length % 4 != 0)
+                    ErrorResponse = $"The length of the given base64-representation '{Base64String}' of a byte array is invalid ({Base64String.Length} characters)!";
+
+                else if (!Base64Regex.IsMatch(Base64String))
+                    ErrorResponse = $"The given base64-representation '{Base64String}' of a byte array is invalid!";
+
+                else
+                {
+                    ByteArray = Convert.FromBase64String(Base64String);
+                    return true;
+                }
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The given string '{Base64String}' could not be parsed as a base64-representation of a byte array: " + e.Message;
+            }
+
+            ErrorResponse ??= $"The given string '{Base64String}' is not a base64-representation of a byte array!";
+            ByteArray       = [];
+            return false;
+
+        }
+
+        #endregion
+
+
+        #region ToBase64URL         (this ByteArray)
+
+        public static String ToBase64URL(this Byte[] ByteArray)
+        {
+            try
+            {
+                return Convert.ToBase64String(ByteArray).Replace('+', '-').Replace('/', '_').TrimEnd('=');
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Error in ToBase64URL" + e.Message);
+            }
+        }
+
+        #endregion
+
+        #region FromBASE64URL       (this Base64String)
+
+        public static Byte[] FromBASE64URL(this String Base64String)
+        {
+
+            if (TryParseBASE64URL(Base64String, out var byteArray, out var errorResponse))
+                return byteArray;
+
+            throw new ArgumentException(errorResponse, nameof(Base64String));
+
+        }
+
+        #endregion
+
+        #region TryParseBASE64URL   (this Base64String, out ByteArray,  out ErrorResponse)
+
+        public static Boolean TryParseBASE64URL(this String                       Base64String,
+                                                [NotNullWhen(true)]  out Byte[]?  ByteArray,
+                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            try
+            {
+
+                Base64String = Base64String.Trim().Replace('-', '+').Replace('_', '/');
+
+                switch (Base64String.Length % 4)
+                {
+                    case 2: Base64String += "=="; break;
+                    case 3: Base64String += "=";  break;
+                }
 
                 if (Base64String.IsNullOrEmpty())
                     ErrorResponse = "The given base64-representation of a byte array must not be null!";
