@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         Task FireTask { get; }
 
         /// <summary>
-        /// The intervall will throttle the automatic measurement of passive
+        /// The interval will throttle the automatic measurement of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
         TimeSpan Intervall { get; set; }
