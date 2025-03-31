@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// The interval will throttle the automatic measurement of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
-        TimeSpan Intervall { get; set; }
+        TimeSpan Interval { get; set; }
 
         /// <summary>
         /// The amount of time in milliseconds a passive sensor

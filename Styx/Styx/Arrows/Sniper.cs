@@ -126,7 +126,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// The interval will throttle the automatic measurement of passive
         /// sensors and the event notifications of active sensors.
         /// </summary>
-        public TimeSpan                 Intervall                      { get; set; }
+        public TimeSpan                 Interval                      { get; set; }
 
         /// <summary>
         /// The amount of time in milliseconds a passive sensor
@@ -173,7 +173,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             this.IEnumerator              = IEnumerable.GetEnumerator();
             this.InitialDelay             = InitialDelay;
-            this.Intervall                = TimeSpan.FromSeconds(10);
+            this.Interval                = TimeSpan.FromSeconds(10);
             this.ThrottlingSleepDuration  = 1000;
 
             if (AutoStart)
@@ -201,7 +201,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             this.IEnumerator              = IEnumerator;
             this.InitialDelay             = InitialDelay;
-            this.Intervall                = TimeSpan.FromSeconds(10);
+            this.Interval                = TimeSpan.FromSeconds(10);
             this.ThrottlingSleepDuration  = 1000;
 
             if (AutoStart)
@@ -229,7 +229,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             this.Func                     = Func;
             this.InitialDelay             = InitialDelay;
-            this.Intervall                = TimeSpan.FromSeconds(10);
+            this.Interval                = TimeSpan.FromSeconds(10);
             this.ThrottlingSleepDuration  = 1000;
 
             if (AutoStart)
@@ -291,7 +291,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                         OnNotification?.Invoke(EventTracking_Id.New, IEnumerator.Current);
 
                         // Sleep if we are in throttling mode
-                        while (LastFireTime + Intervall > Timestamp.Now)
+                        while (LastFireTime + Interval > Timestamp.Now)
                             Thread.Sleep(ThrottlingSleepDuration);
 
                         LastFireTime = Timestamp.Now;
@@ -308,7 +308,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                         OnNotification?.Invoke(EventTracking_Id.New, Func());
 
                         // Sleep if we are in throttling mode
-                        while (LastFireTime + Intervall > Timestamp.Now)
+                        while (LastFireTime + Interval > Timestamp.Now)
                             Thread.Sleep(ThrottlingSleepDuration);
 
                         LastFireTime = Timestamp.Now;
