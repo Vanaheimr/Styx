@@ -39,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Unknown distance metric.
         /// </summary>
-        unkown,
+        Unknown,
 
         /// <summary>
         /// Air-line distance.
