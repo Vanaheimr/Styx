@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -335,7 +336,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryGetAs<T>(Key, out Value)
 
-        public Boolean TryGetAs<T>(String Key, out T? Value)
+        public Boolean TryGetAs<T>(String                      Key,
+                                   [NotNullWhen(true)] out T?  Value)
         {
 
             if (InternalDictionary.TryGetValue(Key, out Object? value) &&
