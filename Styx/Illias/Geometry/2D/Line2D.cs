@@ -583,7 +583,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
             return X1.GetHashCode() ^ 1 + Y1.GetHashCode() ^ 2 + X2.GetHashCode() ^ 3 + Y2.GetHashCode();

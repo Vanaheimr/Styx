@@ -584,7 +584,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
             return Left.GetHashCode() ^ 1 + Top.GetHashCode() ^ 2 + Front.GetHashCode() ^ 3 + Right.GetHashCode() ^ 4 + Bottom.GetHashCode() ^ 5 + Behind.GetHashCode();

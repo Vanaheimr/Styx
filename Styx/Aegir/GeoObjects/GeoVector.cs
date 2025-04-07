@@ -676,7 +676,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
-        /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
             return P.GetHashCode();
