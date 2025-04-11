@@ -24,6 +24,41 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class DateTimeOffsetExtensions
     {
 
+        #region UnixEpoch
+
+        /// <summary>
+        /// The UNIX epoch.
+        /// </summary>
+        public static readonly DateTimeOffset UnixEpoch = new (1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
+
+        #endregion
+
+        #region ToUnixTimestamp   (this DateTime)
+
+        /// <summary>
+        /// Convert the given DateTime object to UNIX timestamp.
+        /// </summary>
+        /// <param name="DateTime">A DateTime object.</param>
+        /// <returns>The seconds since 1. January 1970</returns>
+        public static Int64 ToUnixTimestamp(this DateTimeOffset DateTime)
+
+            => (Int64) Math.Floor(DateTime.Subtract(UnixEpoch).TotalSeconds);
+
+        #endregion
+
+        #region FromUnixTimestamp (this UnixTimestamp)
+
+        /// <summary>
+        /// Convert the given UNIX timestamp to a .NET DateTime object.
+        /// </summary>
+        /// <param name="UnixTimestamp">A UNIX timestamp (seconds since 1. January 1970)</param>
+        public static DateTimeOffset FromUnixTimestamp(this Int64 UnixTimestamp)
+
+            => UnixEpoch.AddSeconds(UnixTimestamp);
+
+        #endregion
+
+
         #region ToIso8601(this DateTimeOffset, Fractions = true)
 
         /// <summary>
@@ -56,6 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => DateTimeOffset.ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "") + "zzz");
 
         #endregion
+
 
     }
 

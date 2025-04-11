@@ -29,11 +29,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The UNIX epoch.
         /// </summary>
-        public static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static readonly DateTime UnixEpoch = new (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         #endregion
 
-        #region ToUnixTimestamp(this DateTime)
+        #region ToUnixTimestamp   (this DateTime)
 
         /// <summary>
         /// Convert the given DateTime object to UNIX timestamp.
@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region FromUnixTimestamp(this UnixTimestamp)
+        #region FromUnixTimestamp (this UnixTimestamp)
 
         /// <summary>
         /// Convert the given UNIX timestamp to a .NET DateTime object.
