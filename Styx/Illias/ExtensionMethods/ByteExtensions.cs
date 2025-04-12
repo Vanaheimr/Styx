@@ -336,7 +336,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => await Stream.WriteAsync(ByteArray, CancellationToken).ConfigureAwait(false);
 
 
-        #region Aggregate(this ByteArrays)
+        #region Aggregate  (this ByteArrays)
 
         /// <summary>
         /// Aggregates multiple byte arrays into a single byte array.
@@ -361,6 +361,76 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Pad        (this ByteArray, Size)
+
+        /// <summary>
+        /// Pads the given byte array to the given size.
+        /// </summary>
+        /// <param name="ByteArray">A byte array.</param>
+        /// <param name="Size">The size of the resulting byte array.</param>
+        public static Byte[] Pad(this Byte[]  ByteArray,
+                                 UInt32       Size)
+        {
+
+            if (Size <= ByteArray.Length)
+                return ByteArray;
+
+            var output = new Byte[Size];
+            Buffer.BlockCopy(ByteArray, 0, output, 0, ByteArray.Length);
+
+            return output;
+
+        }
+
+        #endregion
+
+        #region IsEqualTo  (this ByteArray1, ByteArray2)
+
+        /// <summary>
+        /// Compares two byte arrays for equality.
+        /// </summary>
+        public static Boolean IsEqualTo(this Byte[] ByteArray1, Byte[] ByteArray2)
+        {
+
+            if (ByteArray1 == null || ByteArray2 == null || ByteArray1.Length != ByteArray2.Length)
+                return false;
+
+            for (var i = 0; i < ByteArray1.Length; i++)
+            {
+                if (ByteArray1[i] != ByteArray2[i])
+                    return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region IsPrefixOf (this ByteArray, Data)
+
+        /// <summary>
+        /// Checks whether the first byte array is a prefix of the second byte array.
+        /// </summary>
+        /// <param name="Prefix">An array of bytes that is expected to be a prefix of the 2nd array of bytes.</param>
+        /// <param name="Data">An array of bytes that is expected to start with the given prefix.</param>
+        public static Boolean IsPrefixOf(this Byte[] Prefix, Byte[] Data)
+        {
+
+            if (Prefix.Length > Data.Length)
+                return false;
+
+            for (var i = 0; i < Prefix.Length; i++)
+            {
+                if (Prefix[i] != Data[i])
+                    return false;
+            }
+
+            return true;
+
+        }
+
+        #endregion
 
     }
 

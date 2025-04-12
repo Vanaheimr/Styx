@@ -5834,7 +5834,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String         PropertyName,
                                             String         PropertyDescription,
                                             out DateTime?  Timestamp,
-                                            out String     ErrorResponse)
+                                            out String?    ErrorResponse)
         {
 
             Timestamp      = default;
@@ -5874,15 +5874,59 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        public static Boolean ParseOptional(this JObject         JSON,
+                                            String               PropertyName,
+                                            String               PropertyDescription,
+                                            out DateTimeOffset?  Timestamp,
+                                            out String?          ErrorResponse)
+        {
+
+            Timestamp      = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type != JTokenType.Null)
+            {
+
+                try
+                {
+                    Timestamp = JSONToken.Value<DateTimeOffset>();
+                }
+                catch
+                {
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
+                }
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
 
         public static Boolean ParseOptional(this JObject               JSON,
                                             String                     PropertyName,
                                             String                     PropertyDescription,
                                             out IEnumerable<DateTime>  Timestamps,
-                                            out String                 ErrorResponse)
+                                            out String?                ErrorResponse)
         {
 
-            Timestamps     = null;
+            Timestamps     = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -5907,8 +5951,61 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     var _timestamps = new List<DateTime>();
 
-                    foreach (var timestamp in (JSONToken as JArray).AsEnumerable())
-                        _timestamps.Add(JSONToken.Value<DateTime>());
+                    if (JSONToken is JArray jArray)
+                        foreach (var timestamp in jArray.AsEnumerable())
+                            _timestamps.Add(JSONToken.Value<DateTime>());
+
+                    Timestamps = _timestamps;
+
+                    return true;
+
+                }
+                catch
+                {
+                    ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
+                }
+
+            }
+
+            return false;
+
+        }
+
+        public static Boolean ParseOptional(this JObject                     JSON,
+                                            String                           PropertyName,
+                                            String                           PropertyDescription,
+                                            out IEnumerable<DateTimeOffset>  Timestamps,
+                                            out String?                      ErrorResponse)
+        {
+
+            Timestamps     = [];
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property '{PropertyDescription}' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type == JTokenType.Array)
+            {
+
+                try
+                {
+
+                    var _timestamps = new List<DateTimeOffset>();
+
+                    if (JSONToken is JArray jArray)
+                        foreach (var timestamp in jArray.AsEnumerable())
+                            _timestamps.Add(JSONToken.Value<DateTimeOffset>());
 
                     Timestamps = _timestamps;
 
