@@ -28,7 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                       IBoomerangReceiver<T, TResult> Target)
         {
             INotification.OnNotification        += Target.ProcessBoomerang;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                            IBoomerangReceiver<T1, T2, TResult> Target)
         {
             INotification.OnNotification        += Target.ProcessBoomerang;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                                IBoomerangReceiver<T1, T2, T3, TResult> Target)
         {
             INotification.OnNotification        += Target.ProcessBoomerang;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                                    IBoomerangReceiver<T1, T2, T3, T4, TResult> Target)
         {
             INotification.OnNotification        += Target.ProcessBoomerang;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                                        IBoomerangReceiver<T1, T2, T3, T4, T5, TResult> Target)
         {
             INotification.OnNotification        += Target.ProcessBoomerang;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 

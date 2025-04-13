@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public event StartedEventHandler?           OnStarted;
 
-        public event ExceptionOccuredEventHandler?  OnExceptionOccured;
+        public event ExceptionOccurredEventHandler?  OnExceptionOccurred;
 
         public event CompletedEventHandler?         OnCompleted;
 
@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public void SignalError(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception)
         {
-            OnExceptionOccured?.Invoke(Sender, Timestamp, EventTrackingId, Exception);
+            OnExceptionOccurred?.Invoke(Sender, Timestamp, EventTrackingId, Exception);
         }
 
         public void SignalCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)

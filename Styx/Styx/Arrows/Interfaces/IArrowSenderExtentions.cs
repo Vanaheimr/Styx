@@ -28,7 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                           IArrowReceiver<T> Target)
         {
             INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                IArrowReceiver<T1, T2> Target)
         {
             INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                    IArrowReceiver<T1, T2, T3> Target)
         {
             INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                        IArrowReceiver<T1, T2, T3, T4> Target)
         {
             INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 
@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                                                            IArrowReceiver<T1, T2, T3, T4, T5> Target)
         {
             INotification.OnNotification        += Target.ProcessArrow;
-            INotification.OnExceptionOccured    += Target.ProcessExceptionOccured;
+            INotification.OnExceptionOccurred    += Target.ProcessExceptionOccurred;
             INotification.OnCompleted           += Target.ProcessCompleted;
         }
 

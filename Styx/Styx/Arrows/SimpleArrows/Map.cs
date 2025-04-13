@@ -177,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public event NotificationEventHandler<TOut>?  OnNotification;
 
-        public event ExceptionOccuredEventHandler?    OnExceptionOccured;
+        public event ExceptionOccurredEventHandler?    OnExceptionOccurred;
 
         public event CompletedEventHandler?           OnCompleted;
 
@@ -230,9 +230,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
+        public void ProcessExceptionOccurred(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
-            OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
+            OnExceptionOccurred?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
         }
 
         public void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
@@ -269,7 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public event NotificationEventHandler<TOut>?  OnNotification;
 
-        public event ExceptionOccuredEventHandler?    OnExceptionOccured;
+        public event ExceptionOccurredEventHandler?    OnExceptionOccurred;
 
         public event CompletedEventHandler?           OnCompleted;
 
@@ -323,9 +323,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #endregion
 
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
+        public void ProcessExceptionOccurred(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
-            OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
+            OnExceptionOccurred?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
         }
 
         public void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)

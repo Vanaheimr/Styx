@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event called whenever an exception occured at this arrow.
         /// </summary>
-        public event ExceptionOccuredEventHandler?    OnExceptionOccured;
+        public event ExceptionOccurredEventHandler?    OnExceptionOccurred;
 
         /// <summary>
         /// An event called whenever this arrow will no longer send any messages.
@@ -118,8 +118,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             catch (Exception e)
             {
 
-                var onExceptionOccured = OnExceptionOccured;
-                onExceptionOccured?.Invoke(this, Timestamp.Now, EventTrackingId, e);
+                var onExceptionOccurred = OnExceptionOccurred;
+                onExceptionOccurred?.Invoke(this, Timestamp.Now, EventTrackingId, e);
 
             }
 
@@ -135,14 +135,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="Timestamp">The timestamp of the exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        public void ProcessExceptionOccured(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception)
+        public void ProcessExceptionOccurred(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception)
         {
 
             try
             {
 
-                var onExceptionOccured = OnExceptionOccured;
-                onExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, Exception);
+                var onExceptionOccurred = OnExceptionOccurred;
+                onExceptionOccurred?.Invoke(this, Timestamp, EventTrackingId, Exception);
 
             }
             catch
@@ -178,8 +178,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             catch (Exception e)
             {
 
-                var onExceptionOccured = OnExceptionOccured;
-                onExceptionOccured?.Invoke(this, Timestamp.Now, EventTrackingId, e);
+                var onExceptionOccurred = OnExceptionOccurred;
+                onExceptionOccurred?.Invoke(this, Timestamp.Now, EventTrackingId, e);
 
             }
 

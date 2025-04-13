@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        public event ExceptionOccuredEventHandler?      OnExceptionOccured;
+        public event ExceptionOccurredEventHandler?      OnExceptionOccurred;
 
         /// <summary>
         /// An event for signaling the completion of a message delivery.
@@ -164,7 +164,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             }
             catch (Exception e)
             {
-                OnExceptionOccured?.Invoke(this, Timestamp.Now, EventTrackingId, e);
+                OnExceptionOccurred?.Invoke(this, Timestamp.Now, EventTrackingId, e);
             }
 
             return false;
@@ -190,7 +190,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             }
             catch (Exception e)
             {
-                OnExceptionOccured?.Invoke(this, Timestamp, EventTrackingId, e);
+                OnExceptionOccurred?.Invoke(this, Timestamp, EventTrackingId, e);
             }
         }
 

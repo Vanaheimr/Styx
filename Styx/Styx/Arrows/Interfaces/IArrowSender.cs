@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public delegate void    NotificationEventHandler<T1, T2, T3, T4, T5, T6, T7> (EventTracking_Id EventTrackingId, T1 Message1, T2 Message2, T3 Message3, T4 Message4, T5 Message5, T6 Message6, T7 Message7);
 
     public delegate void    StartedEventHandler                                  (Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String?   Message = null);
-    public delegate void    ExceptionOccuredEventHandler                         (Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception);
+    public delegate void    ExceptionOccurredEventHandler                         (Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception);
     public delegate void    CompletedEventHandler                                (Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String?   Message = null);
 
     #endregion
@@ -62,7 +62,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        event ExceptionOccuredEventHandler  OnExceptionOccured;
+        event ExceptionOccurredEventHandler  OnExceptionOccurred;
 
     }
 

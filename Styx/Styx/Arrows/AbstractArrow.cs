@@ -95,7 +95,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             }
             catch (Exception e)
             {
-                base.ProcessExceptionOccured(this, Timestamp.Now, EventTrackingId, e);
+                base.ProcessExceptionOccurred(this, Timestamp.Now, EventTrackingId, e);
             }
 
         }

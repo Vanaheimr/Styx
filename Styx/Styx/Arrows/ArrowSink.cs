@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             BlockingCollection.Add(Message);
         }
 
-        public void ProcessExceptionOccured(dynamic Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
+        public void ProcessExceptionOccurred(dynamic Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
             BlockingCollection.CompleteAdding();
         }

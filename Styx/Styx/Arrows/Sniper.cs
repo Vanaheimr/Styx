@@ -149,7 +149,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         public event CompletedEventHandler?             OnCompleted;
 
-        public event ExceptionOccuredEventHandler?      OnExceptionOccured;
+        public event ExceptionOccurredEventHandler?      OnExceptionOccurred;
 
         #endregion
 
@@ -323,7 +323,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             catch (Exception e)
             {
-                OnExceptionOccured?.Invoke(this, Timestamp.Now, EventTracking_Id.New, e);
+                OnExceptionOccurred?.Invoke(this, Timestamp.Now, EventTracking_Id.New, e);
             }
 
         }
