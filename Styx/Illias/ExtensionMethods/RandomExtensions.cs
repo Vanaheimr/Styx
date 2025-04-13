@@ -32,6 +32,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 #pragma warning disable SCS0005 // Weak random number generator.
 
+        #region RandomInt16       (MaxValue)
+
+        /// <summary>
+        /// Get a random Int16.
+        /// </summary>
+        /// <param name="MaxValue">The optional exclusive upper bound of the random number to be generated. Its value must be greater than or equal to 0. If null then Int16.MaxValue will be used.</param>
+        public static Int16 RandomInt16(Int16? MaxValue = null)
+
+            => (Int16) Random.Shared.Next(MaxValue ?? Int16.MaxValue);
+
+        #endregion
+
+        #region RandomUInt16      (MaxValue)
+
+        /// <summary>
+        /// Get a random UInt16.
+        /// </summary>
+        /// <param name="MaxValue">The optional exclusive upper bound of the random number to be generated. Its value must be greater than or equal to 0. If null then Int16.MaxValue will be used.</param>
+        public static UInt16 RandomUInt16(Int16? MaxValue = null)
+
+            => (UInt16) Random.Shared.Next(MaxValue ?? Int16.MaxValue);
+
+        #endregion
+
         #region RandomInt32       (MaxValue)
 
         /// <summary>
