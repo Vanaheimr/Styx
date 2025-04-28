@@ -24,15 +24,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class DateTimeOffsetExtensions
     {
 
-        #region UnixEpoch
-
-        /// <summary>
-        /// The UNIX epoch.
-        /// </summary>
-        public static readonly DateTimeOffset UnixEpoch = new (1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
-
-        #endregion
-
         #region ToUnixTimestamp   (this DateTime)
 
         /// <summary>
@@ -42,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>The seconds since 1. January 1970</returns>
         public static Int64 ToUnixTimestamp(this DateTimeOffset DateTime)
 
-            => (Int64) Math.Floor(DateTime.Subtract(UnixEpoch).TotalSeconds);
+            => (Int64) Math.Floor(DateTime.Subtract(DateTimeOffset.UnixEpoch).TotalSeconds);
 
         #endregion
 
@@ -54,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="UnixTimestamp">A UNIX timestamp (seconds since 1. January 1970)</param>
         public static DateTimeOffset FromUnixTimestamp(this Int64 UnixTimestamp)
 
-            => UnixEpoch.AddSeconds(UnixTimestamp);
+            => DateTimeOffset.UnixEpoch.AddSeconds(UnixTimestamp);
 
         #endregion
 

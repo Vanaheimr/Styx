@@ -24,9 +24,17 @@ using System.Security.Cryptography;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    /// <summary>
+    /// UUID v7 extension methods.
+    /// </summary>
     public static class UUIDv7
     {
 
+        #region Generate()
+
+        /// <summary>
+        /// Generates a new UUIDv7.
+        /// </summary>
         public static Guid Generate()
         {
 
@@ -59,6 +67,114 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return new Guid(uuidBytes);
 
         }
+
+        #endregion
+
+
+        #region IsUUIDv7 (this UUID)
+
+        /// <summary>
+        /// Checks whether the given UUID is a valid UUIDv7.
+        /// </summary>
+        /// <param name="UUID">The UUID to verify.</param>
+        public static Boolean IsUUIDv7(this Guid UUID)
+            => UUID.ToByteArray().IsUUIDv7();
+
+        #endregion
+
+        #region IsUUIDv7 (this ByteArray)
+
+        /// <summary>
+        /// Checks whether the given byte array represents a valid UUIDv7.
+        /// </summary>
+        /// <param name="ByteArray">The byte array to verify.</param>
+        public static Boolean IsUUIDv7(this Byte[] ByteArray)
+        {
+
+            if (ByteArray.Length != 16)
+                return false;
+
+            // Check version (bits 48–51, upper nibble of byte 6) is 7
+            if ((ByteArray[6] & 0xF0) != 0x70)
+                return false;
+
+            // Check variant (bits 64–65, high bits of byte 8) is 0b10
+            if ((ByteArray[8] & 0xC0) != 0x80)
+                return false;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region IsUUIDv7 (this Text)
+
+        /// <summary>
+        /// Checks whether the given text represents a valid UUIDv7.
+        /// </summary>
+        /// <param name="Text">The text to verify.</param>
+        public static Boolean IsUUIDv7(this String Text)
+        {
+
+            if (!Guid.TryParse(Text, out var uuid))
+                return false;
+
+            return uuid.IsUUIDv7();
+
+        }
+
+        #endregion
+
+
+        #region ConvertToDateTime       (UUID)
+
+        /// <summary>
+        /// Converts a UUIDv7 to its corresponding timestamp (DateTime).
+        /// </summary>
+        /// <param name="UUID">The UUIDv7 to convert.</param>
+        public static DateTime ConvertToDateTime(Guid UUID)
+        {
+
+            if (!UUID.IsUUIDv7())
+                throw new ArgumentException("The provided UUID is not a valid UUIDv7.", nameof(UUID));
+
+            // Extract the 48-bit timestamp (first 6 bytes)
+            var bytes      = UUID.ToByteArray();
+            var timestamp  = 0L;
+            for (var i = 0; i < 6; i++)
+                timestamp  = (timestamp << 8) | bytes[i];
+
+            return DateTime.UnixEpoch.AddMilliseconds(timestamp);
+
+        }
+
+        #endregion
+
+        #region ConvertToDateTimeOffset (UUID)
+
+        /// <summary>
+        /// Converts a UUIDv7 to its corresponding timestamp (DateTime).
+        /// </summary>
+        /// <param name="UUID">The UUIDv7 to convert.</param>
+        public static DateTimeOffset ConvertToDateTimeOffset(Guid UUID)
+        {
+
+            if (!UUID.IsUUIDv7())
+                throw new ArgumentException("The provided UUID is not a valid UUIDv7.", nameof(UUID));
+
+            // Extract the 48-bit timestamp (first 6 bytes)
+            var bytes      = UUID.ToByteArray();
+            var timestamp  = 0L;
+            for (var i = 0; i < 6; i++)
+                timestamp  = (timestamp << 8) | bytes[i];
+
+            return DateTimeOffset.UnixEpoch.AddMilliseconds(timestamp);
+
+        }
+
+        #endregion
+
 
     }
 

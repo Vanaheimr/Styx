@@ -24,15 +24,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class DateTimeExtensions
     {
 
-        #region UnixEpoch
-
-        /// <summary>
-        /// The UNIX epoch.
-        /// </summary>
-        public static readonly DateTime UnixEpoch = new (1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
-        #endregion
-
         #region ToUnixTimestamp   (this DateTime)
 
         /// <summary>
@@ -42,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <returns>The seconds since 1. January 1970</returns>
         public static Int64 ToUnixTimestamp(this DateTime DateTime)
 
-            => (Int64) Math.Floor(DateTime.Subtract(UnixEpoch).TotalSeconds);
+            => (Int64) Math.Floor(DateTime.Subtract(DateTime.UnixEpoch).TotalSeconds);
 
         #endregion
 
@@ -54,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="UnixTimestamp">A UNIX timestamp (seconds since 1. January 1970)</param>
         public static DateTime FromUnixTimestamp(this Int64 UnixTimestamp)
 
-            => UnixEpoch.AddSeconds(UnixTimestamp);
+            => DateTime.UnixEpoch.AddSeconds(UnixTimestamp);
 
         #endregion
 
