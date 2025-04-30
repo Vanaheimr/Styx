@@ -258,7 +258,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
         /// <summary>
         /// Mark this transaction as committed.
-        /// Will not invoke the OnDispose event to clean up the ressources
+        /// Will not invoke the OnDispose event to clean up the resources
         /// </summary>
         /// <param name="Comment">A comment.</param>
         /// <param name="Async">if true commit will be async; default: false</param>
@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         #region Rollback(Comment = "", Async = false)
 
         /// <summary>
-        /// Mark this transaction as rolledback. Will invoke the event OnDispose to clean up ressources.
+        /// Mark this transaction as rolledback. Will invoke the event OnDispose to clean up resources.
         /// </summary>
         /// <param name="Comment">A comment.</param>
         /// <param name="Async">if true rollback will be async; default: false</param>
