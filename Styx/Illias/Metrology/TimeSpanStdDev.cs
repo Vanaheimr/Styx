@@ -15,19 +15,13 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System.Globalization;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for time spans.
+    /// Extension methods for StdDev&lt;TimeSpan&gt;.
     /// </summary>
-    public static partial class TimeSpanExtensions
+    public static partial class StdDevTimeSpanExtensions
     {
 
         #region (static) FromMilliseconds (Number, StdDev)
@@ -63,8 +57,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                );
 
         #endregion
-
-
 
     }
 

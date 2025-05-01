@@ -3822,6 +3822,90 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseMandatoryObjectList(this JSON, PropertyName, PropertyDescription,                               out ListOfT,                out ErrorResponse)
+
+        public static Boolean ParseMandatoryObjectList(this JObject                           JSON,
+                                                       String                                 PropertyName,
+                                                       String                                 PropertyDescription,
+                                                       [NotNullWhen(true)]  out List<Object>  ListOfT,
+                                                       [NotNullWhen(false)] out String?       ErrorResponse)
+        {
+
+            ListOfT = [];
+
+            if (JSON is null)
+            {
+                ErrorResponse = "Invalid JSON provided!";
+                return false;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return false;
+            }
+
+            if (!JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+                ErrorResponse = $"Missing property '{PropertyName}'!";
+                return false;
+            }
+
+            try
+            {
+
+                if (JSONToken is not JArray JArray)
+                {
+                    ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                    return false;
+                }
+
+                foreach (var item in JArray)
+                {
+                    switch (item.Type)
+                    {
+
+                        case JTokenType.String:
+                            ListOfT.Add(item?.Value<String>() ?? "");
+                            break;
+
+                        case JTokenType.Uri:
+                            ListOfT.Add(item?.Value<String>() ?? "");
+                            break;
+
+                        case JTokenType.Float:
+                            ListOfT.Add(item?.Value<Double>() ?? 0.0);
+                            break;
+
+                        case JTokenType.Guid:
+                            ListOfT.Add(item?.Value<Guid>()   ?? Guid.Empty);
+                            break;
+
+                        case JTokenType.Integer:
+                            ListOfT.Add(item?.Value<Int64>()  ?? 0);
+                            break;
+
+                        case JTokenType.TimeSpan:
+                            ListOfT.Add(item?.Value<TimeSpan>() ?? TimeSpan.Zero);
+                            break;
+
+                    }
+                }
+
+            }
+            catch
+            {
+                ErrorResponse = $"Invalid '{PropertyDescription ?? PropertyName}'!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
         #region ParseMandatoryJSON      (this JSON, PropertyName, PropertyDescription,                               out EnumerationOfT,         out ErrorResponse)
 
         //public static Boolean ParseMandatoryJSON<T>(this JObject         JSON,
