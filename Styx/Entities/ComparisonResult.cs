@@ -170,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             (JSON["added"] as JObject).Add(property.Name, text);
 
                         else if (property.Value is DateTime timestamp)
-                            (JSON["added"] as JObject).Add(property.Name, timestamp.ToIso8601());
+                            (JSON["added"] as JObject).Add(property.Name, timestamp.ToISO8601());
 
                         else
                             (JSON["added"] as JObject).Add(property.Name, property.Value.ToString());
@@ -204,7 +204,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue as String, property.OldValue as String));
 
                         else if (property.NewValue is DateTime)
-                            (JSON["updated"] as JObject).Add(property.Name, new JArray(((DateTime)property.NewValue).ToIso8601(), ((DateTime)property.OldValue).ToIso8601()));
+                            (JSON["updated"] as JObject).Add(property.Name, new JArray(((DateTime)property.NewValue).ToISO8601(), ((DateTime)property.OldValue).ToISO8601()));
 
                         else
                             (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue.ToString(), property.OldValue.ToString()));
@@ -238,7 +238,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             (JSON["removed"] as JObject).Add(property.Name, text);
 
                         else if (property.Value is DateTime timestamp)
-                            (JSON["removed"] as JObject).Add(property.Name, timestamp.ToIso8601());
+                            (JSON["removed"] as JObject).Add(property.Name, timestamp.ToISO8601());
 
                         else
                             (JSON["removed"] as JObject).Add(property.Name, property.Value.ToString());

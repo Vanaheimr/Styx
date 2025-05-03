@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             var OrderedEnumeration = Enumeration.
-                                         OrderBy(TVP => TVP.Timestamp.ToIso8601()).
+                                         OrderBy(TVP => TVP.Timestamp.ToISO8601()).
                                          ToArray();
 
             if (OrderedEnumeration.Length > 0)
@@ -116,7 +116,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             json = new JObject(
 
-                       new JProperty("timestamp",  this.Timestamp.ToIso8601()),
+                       new JProperty("timestamp",  this.Timestamp.ToISO8601()),
 
                        new JProperty("value",      Value is Byte    ||
                                                    Value is Single  ||
@@ -429,7 +429,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(Timestamped<TValue> Timestamped)
         {
 
-            if (Timestamp.ToIso8601() != Timestamped.Timestamp.ToIso8601())
+            if (Timestamp.ToISO8601() != Timestamped.Timestamp.ToISO8601())
                 return false;
 
             if (Value is null && Timestamped.Value is null)
@@ -465,7 +465,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"'{Value?.ToString() ?? ""}' @ {Timestamp.ToIso8601()}";
+            => $"'{Value?.ToString() ?? ""}' @ {Timestamp.ToISO8601()}";
 
         #endregion
 
@@ -800,7 +800,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(Timestamped_RW<TValue> Timestamped)
         {
 
-            if (Timestamp.ToIso8601() != Timestamped.Timestamp.ToIso8601())
+            if (Timestamp.ToISO8601() != Timestamped.Timestamp.ToISO8601())
                 return false;
 
             if (Value is null && Timestamped.Value is null)
@@ -836,7 +836,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"'{Value?.ToString() ?? ""}' @ {Timestamp.ToIso8601()}";
+            => $"'{Value?.ToString() ?? ""}' @ {Timestamp.ToISO8601()}";
 
         #endregion
 

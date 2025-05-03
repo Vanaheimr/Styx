@@ -146,7 +146,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Begin.ToIso8601()} -> {End.ToIso8601()}";
+            => $"{Begin.ToISO8601()} -> {End.ToISO8601()}";
 
         #endregion
 

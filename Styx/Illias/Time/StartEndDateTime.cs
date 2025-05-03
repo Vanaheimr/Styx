@@ -116,10 +116,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                ? null
                                : new JProperty("@context",   JSONLDContext),
 
-                                 new JProperty("start",      StartTime.    ToIso8601()),
+                                 new JProperty("start",      StartTime.    ToISO8601()),
 
                            EndTime.HasValue
-                               ? new JProperty("end",        EndTime.Value.ToIso8601())
+                               ? new JProperty("end",        EndTime.Value.ToISO8601())
                                : null
                        );
 
@@ -229,10 +229,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => String.Concat(
 
-                   StartTime.ToIso8601(),
+                   StartTime.ToISO8601(),
 
                    EndTime.HasValue
-                       ? " -> " + EndTime.Value.ToIso8601()
+                       ? " -> " + EndTime.Value.ToISO8601()
                        : "..."
 
                );

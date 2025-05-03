@@ -283,7 +283,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     // Remove any old status having the same timestamp!
                     var newStatusSchedule  = statusSchedule.
-                                                 Where (status => status.Timestamp.ToIso8601() != Timestamp.ToIso8601()).
+                                                 Where (status => status.Timestamp.ToISO8601() != Timestamp.ToISO8601()).
                                                  ToList();
 
                     newStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));

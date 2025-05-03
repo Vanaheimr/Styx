@@ -498,7 +498,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                    : null,
 
                                IncludeLastChange
-                                   ? new JProperty("lastChange",   LastChangeDate.ToIso8601())
+                                   ? new JProperty("lastChange",   LastChangeDate.ToISO8601())
                                    : null
 
                            }.

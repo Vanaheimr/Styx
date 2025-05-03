@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region ToIso8601(this DateTimeOffset, Fractions = true)
+        #region ToISO8601(this DateTimeOffset, Fractions = true)
 
         /// <summary>
         /// Convert the given DateTimeOffset object to an ISO 8601 datetime string.
@@ -59,7 +59,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Fractions">Include the fractions of seconds.</param>
         /// <returns>The DateTimeOffset formatted as "yyyy-MM-ddTHH:mm:ss.fff" + "Z"</returns>
         /// <example>2014-02-01T15:45:00.000Z</example>
-        public static String ToIso8601(this DateTimeOffset  DateTimeOffset,
+        public static String ToISO8601(this DateTimeOffset  DateTimeOffset,
                                        Boolean              Fractions   = true)
 
             => DateTimeOffset.ToUniversalTime().
@@ -67,7 +67,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToIso8601WithOffset(this DateTimeOffset, Fractions = true)
+        #region ToISO8601WithOffset(this DateTimeOffset, Fractions = true)
 
         /// <summary>
         /// Convert the given DateTimeOffset object to an ISO 8601 datetime string with time zone offset.
@@ -76,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Fractions">Include the fractions of seconds.</param>
         /// <returns>The DateTimeOffset formatted as "yyyy-MM-ddTHH:mm:ss.fffzzz"</returns>
         /// <example>2014-02-01T15:45:00.000+00:00</example>
-        public static String ToIso8601WithOffset(this DateTimeOffset  DateTimeOffset,
+        public static String ToISO8601WithOffset(this DateTimeOffset  DateTimeOffset,
                                                  Boolean              Fractions   = true)
 
             => DateTimeOffset.ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "") + "zzz");
