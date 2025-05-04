@@ -8082,7 +8082,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetOptional(this JSON, PropertyName, out Values)
+        #region GetOptional(this JSON, PropertyName, PropertyDescription, out Values)
 
         public static Boolean GetOptional(this JObject             JSON,
                                           String                   PropertyName,
@@ -8115,7 +8115,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '{PropertyDescription}' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -8126,7 +8126,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  Select(jtoken => jtoken?.Value<String>()).
                                  Where (value  => value is not null).
                                  Cast<String>().
-                                 ToArray() ?? Array.Empty<String>();
+                                 ToArray() ?? [];
 
                     return true;
 
@@ -8144,6 +8144,54 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseOptionalText(this JSON, PropertyName, PropertyDescription, out Values)
+
+        public static Boolean ParseOptionalText(this JObject  JSON,
+                                                String        PropertyName,
+                                                String        PropertyDescription,
+                                                out String    Text,
+                                                out String?   ErrorResponse)
+        {
+
+            Text           = "";
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+
+                // "propertyKey": null -> will be ignored!
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                    return false;
+
+                if (JSONToken.Type != JTokenType.String)
+                {
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid string!";
+                    return true;
+                }
+
+                Text = JSONToken.Value<String>() ?? "";
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
 
 
 
