@@ -50,6 +50,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region TryParseMilliseconds (Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a minutes time span.
+        /// </summary>
+        /// <param name="Text">A text representation of a minutes time span.</param>
+        public static Boolean TryParseMilliseconds(String                             Text,
+                                                   [NotNullWhen(true)]  out TimeSpan  Time,
+                                                   [NotNullWhen(false)] out String?   ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            if (Double.TryParse(Text, out var number))
+            {
+                Time = TimeSpan.FromMilliseconds(number);
+                return true;
+            }
+
+            Time           = TimeSpan.Zero;
+            ErrorResponse  = "Invalid time span format!";
+            return false;
+
+        }
+
+        #endregion
+
+
         #region TryParseSeconds      (Text)
 
         /// <summary>
@@ -68,6 +96,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region TryParseSeconds      (Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a minutes time span.
+        /// </summary>
+        /// <param name="Text">A text representation of a minutes time span.</param>
+        public static Boolean TryParseSeconds(String                             Text,
+                                              [NotNullWhen(true)]  out TimeSpan  Time,
+                                              [NotNullWhen(false)] out String?   ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            if (Double.TryParse(Text, out var number))
+            {
+                Time = TimeSpan.FromSeconds(number);
+                return true;
+            }
+
+            Time           = TimeSpan.Zero;
+            ErrorResponse  = "Invalid time span format!";
+            return false;
+
+        }
+
+        #endregion
+
+
         #region TryParseMinutes      (Text)
 
         /// <summary>
@@ -81,6 +137,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return null;
 
             return TimeSpan.FromMinutes(number);
+
+        }
+
+        #endregion
+
+        #region TryParseMinutes      (Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a minutes time span.
+        /// </summary>
+        /// <param name="Text">A text representation of a minutes time span.</param>
+        public static Boolean TryParseMinutes(String                             Text,
+                                              [NotNullWhen(true)]  out TimeSpan  Time,
+                                              [NotNullWhen(false)] out String?   ErrorResponse)
+        {
+
+            ErrorResponse = null;
+
+            if (Double.TryParse(Text, out var number))
+            {
+                Time = TimeSpan.FromMinutes(number);
+                return true;
+            }
+
+            Time           = TimeSpan.Zero;
+            ErrorResponse  = "Invalid time span format!";
+            return false;
 
         }
 
