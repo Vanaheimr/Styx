@@ -47,6 +47,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => DateTime.UnixEpoch.AddSeconds(UnixTimestamp);
 
+
+        /// <summary>
+        /// Convert the given UNIX timestamp to a .NET DateTime object.
+        /// </summary>
+        /// <param name="UnixTimestamp">A UNIX timestamp (seconds since 1. January 1970)</param>
+        public static DateTime? FromUnixTimestamp(this Int64? UnixTimestamp)
+
+            => UnixTimestamp.HasValue
+                   ? DateTime.UnixEpoch.AddSeconds(UnixTimestamp.Value)
+                   : null;
+
         #endregion
 
 
