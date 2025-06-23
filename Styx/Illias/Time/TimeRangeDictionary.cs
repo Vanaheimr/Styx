@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A concurrent dictionary whoes values implement INotBeforeNotAfter.
+    /// A concurrent dictionary whose values implement INotBeforeNotAfter.
     /// </summary>
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type if the values.</typeparam>
