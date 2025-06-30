@@ -6140,7 +6140,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 try
                 {
-                    Timespan = TimeSpan.FromSeconds(JSONToken.Value<UInt64>());
+                    Timespan = TimeSpan.FromSeconds(JSONToken.Value<Double>());
+                }
+                catch
+                {
+                    ErrorResponse = $"Invalid value for '{PropertyDescription ?? PropertyName}'!";
+                }
+
+                return true;
+
+            }
+
+            ErrorResponse = $"Invalid value for '{PropertyDescription ?? PropertyName}'!";
+            return false;
+
+        }
+
+        public static Boolean ParseOptionalMS(this JObject   JSON,
+                                              String         PropertyName,
+                                              String         PropertyDescription,
+                                              out TimeSpan?  Timespan,
+                                              out String?    ErrorResponse)
+        {
+
+            Timespan       = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = $"Invalid JSON property '{PropertyDescription ?? PropertyName}' provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken) &&
+                JSONToken      is not null &&
+                JSONToken.Type is not JTokenType.Null)
+            {
+
+                try
+                {
+                    Timespan = TimeSpan.FromMilliseconds(JSONToken.Value<Double>());
                 }
                 catch
                 {
