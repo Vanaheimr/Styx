@@ -80,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         CommandResult         Result             { get; }
 
         /// <summary>
-        /// The optional unqiue identification of the sender.
+        /// The optional unique identification of the sender.
         /// </summary>
         IId?                  SenderId           { get; }
 

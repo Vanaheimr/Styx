@@ -39,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public  CommandResult         Result             { get; }
 
         /// <summary>
-        /// The optional unqiue identification of the sender.
+        /// The optional unique identification of the sender.
         /// </summary>
         public  IId?                  SenderId           { get; }
 
@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Entity">An entity.</param>
         /// <param name="Result">A (command) result.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="SenderId">An optional unqiue identification of the sender.</param>
+        /// <param name="SenderId">An optional unique identification of the sender.</param>
         /// <param name="Sender">An optional sender of this result.</param>
         /// <param name="Description">An optional description of the result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
