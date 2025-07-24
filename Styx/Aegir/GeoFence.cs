@@ -236,12 +236,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                      "km",
                                      Description.IsNullOrEmpty()
                                          ? "(" + Description.FirstText() + ")"
-                                         : "");
+                                         : String.Empty);
 
             if (GeoCoordinates.Count() > 1)
                 return GeoCoordinates.
                            Select(coordinate => coordinate.ToString()).
-                           AggregateWith(", ");
+                           AggregateCSV();
 
             return Description.IsNullOrEmpty()
                        ? Description.FirstText()

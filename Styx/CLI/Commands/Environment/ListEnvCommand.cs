@@ -66,7 +66,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                         break;
 
                     default:
-                        list.Add($"Key: '{kvp.Key}', Values: '{kvp.Value.AggregateWith(", ")}'");
+                        list.Add($"Key: '{kvp.Key}', Values: '{kvp.Value.AggregateCSV()}'");
                         break;
 
                 }

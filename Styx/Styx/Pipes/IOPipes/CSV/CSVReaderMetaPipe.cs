@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
 //        #region Constructor(s)
 
-//        #region CSVReaderMetaPipe(SearchPattern = "*", SearchOption = TopDirectoryOnly, FileFilter = null, IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
+//        #region CSVReaderMetaPipe(SearchPattern = "*", SearchOption = TopDirectoryOnly, FileFilter = null, IgnoreLines = null, Separators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false)
 
 //        /// <summary>
 //        /// The CSVMetaPipe splits the lines of the found csv files into pieces.
@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 //        /// <param name="SearchOption">Include or do not include subdirectories.</param>
 //        /// <param name="FileFilter">A delegate for filtering the found files.</param>
 //        /// <param name="IgnoreLines">A regular expression indicating which input strings should be ignored. Default: All lines starting with a '#'.</param>
-//        /// <param name="Seperators">An array of string used to split the input strings.</param>
+//        /// <param name="Separators">An array of string used to split the input strings.</param>
 //        /// <param name="StringSplitOptions">Split options, e.g. remove empty entries.</param>
 //        /// <param name="ExpectedNumberOfColumns">If the CSV file had a schema, a specific number of columns can be expected. If instead it is a list of values no such value can be expected.</param>
 //        /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 //                                 FileFilter          FileFilter                 = null,
 //                                 // Parameters for the CSVPipe
 //                                 Regex               IgnoreLines                = null,
-//                                 String[]            Seperators                 = null,
+//                                 String[]            Separators                 = null,
 //                                 StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
 //                                 UInt16?             ExpectedNumberOfColumns    = null,
 //                                 Boolean             FailOnWrongNumberOfColumns = false,
@@ -92,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
 //                       new CSVReaderPipe(
 //                               IgnoreLines:                IgnoreLines,
-//                               Seperators:                 Seperators,
+//                               Separators:                 Separators,
 //                               StringSplitOptions:         StringSplitOptions,
 //                               ExpectedNumberOfColumns:    ExpectedNumberOfColumns,
 //                               FailOnWrongNumberOfColumns: FailOnWrongNumberOfColumns)

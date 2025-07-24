@@ -698,7 +698,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => $"{Hour:D2}:{Minute:D2}{(Second.HasValue
                                             ? $":{Second.Value:D2}"
-                                            : "")}";
+                                            : String.Empty)}";
 
         #endregion
 

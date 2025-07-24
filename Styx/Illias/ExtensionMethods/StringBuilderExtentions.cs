@@ -35,18 +35,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static StringBuilder AppendCSV(this StringBuilder   StringBuilder,
                                               IEnumerable<String>  IEnumerable)
 
-            => StringBuilder.Append(IEnumerable.CSVAggregate());
+            => StringBuilder.Append(IEnumerable.AggregateCSV());
 
         #endregion
 
         #region AppendCSV  (this StringBuilder, Prefix, IEnumerable, Suffix)
 
-        public static StringBuilder AppendCSV(this StringBuilder   StringBuilder,
-                                              String               Prefix,
-                                              IEnumerable<String>  IEnumerable,
-                                              String               Suffix)
-
-            => StringBuilder.Append(IEnumerable.CSVAggregate(Prefix, Suffix));
+       // public static StringBuilder AppendCSV(this StringBuilder   StringBuilder,
+       //                                       String               Prefix,
+       //                                       IEnumerable<String>  IEnumerable,
+       //                                       String               Suffix)
+       //
+       //     => StringBuilder.Append(IEnumerable.CSVAggregate(Prefix, Suffix));
 
         #endregion
 

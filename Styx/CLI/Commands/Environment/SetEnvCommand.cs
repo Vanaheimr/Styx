@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                     return Task.FromResult<String[]>(
                                values.Length == 1
                                    ? [$"Environment key set: '{name}' = {values[0]}"]
-                                   : [$"Environment keys set: '{name}' = {values.AggregateWith(", ")}"]
+                                   : [$"Environment keys set: '{name}' = {values.AggregateCSV()}"]
                            );
 
                 }

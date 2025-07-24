@@ -129,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             => String.Concat(Element, ", ",
                              Distance, " meters via ",
                              DistanceMetric,
-                             TravelTime.HasValue ? " (" + TravelTime.Value.TotalMinutes + " minutes)" : "");
+                             TravelTime.HasValue ? " (" + TravelTime.Value.TotalMinutes + " minutes)" : String.Empty);
 
         #endregion
 
@@ -196,29 +196,29 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public const  String IsSignedDecimal_RegExprString            = "([-]?[0-9]+[\\.\\,]?[0-9]*)";
 
         /// <summary>
-        /// The regular expression init string for matching comma seperators.
+        /// The regular expression init string for matching comma separators.
         /// </summary>
-        public const  String MayBeSeperator_RegExprString             = "[\\s,;]+";
+        public const  String MayBeSeparator_RegExprString             = "[\\s,;]+";
 
         /// <summary>
         /// The regular expression init string for matching decimal geo positions/coordinates.
         /// </summary>
         public const  String IsDecimalGeoPosition_RegExprString       = IsDecimal_RegExprString + "[°]?[\\s]+([SN]?)" +
-                                                                        MayBeSeperator_RegExprString +
+                                                                        MayBeSeparator_RegExprString +
                                                                         IsDecimal_RegExprString + "[°]?[\\s]+([EWO]?)";
 
         /// <summary>
         /// The regular expression init string for matching signed decimal geo positions/coordinates.
         /// </summary>
         public const  String IsSignedDecimalGeoPosition_RegExprString = IsSignedDecimal_RegExprString + "[°]?" +
-                                                                        MayBeSeperator_RegExprString +
+                                                                        MayBeSeparator_RegExprString +
                                                                         IsSignedDecimal_RegExprString + "[°]?";
 
         /// <summary>
         /// The regular expression init string for matching sexagesimal geo positions/coordinates.
         /// </summary>
         public const  String IsSexagesimalGeoPosition_RegExprString   = "([-]?[0-9])+°[\\s]+([0-9])+'[\\s]+([0-9]+[\\.\\,]?[0-9]*)''[\\s]+([SN]?)" +
-                                                                        MayBeSeperator_RegExprString +
+                                                                        MayBeSeparator_RegExprString +
                                                                         "([-]?[0-9])+°[\\s]+([0-9])+'[\\s]+([0-9]+[\\.\\,]?[0-9]*)''[\\s]+([EWO]?)";
 
         /// <summary>
@@ -1135,7 +1135,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                              ", Longitude = ",  Longitude.Value,
                              Altitude.HasValue
                                  ? ", Altitude = " + Altitude.Value
-                                 : "");
+                                 : String.Empty);
 
         #endregion
 

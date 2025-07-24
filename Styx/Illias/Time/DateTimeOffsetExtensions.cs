@@ -63,7 +63,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Boolean              Fractions   = true)
 
             => DateTimeOffset.ToUniversalTime().
-                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "")) + "Z";
+                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty)) + "Z";
 
         #endregion
 
@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String ToISO8601WithOffset(this DateTimeOffset  DateTimeOffset,
                                                  Boolean              Fractions   = true)
 
-            => DateTimeOffset.ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "") + "zzz");
+            => DateTimeOffset.ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty) + "zzz");
 
         #endregion
 

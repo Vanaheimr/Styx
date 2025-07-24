@@ -39,6 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static DateTime Now
 
             => DateTime.UtcNow + timeTravel;
+               // Stopwatch.GetTimestamp() + timeTravel; <= Might be much faster, but changes symantic!
 
         #endregion
 

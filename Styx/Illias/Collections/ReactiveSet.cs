@@ -583,7 +583,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat("'", internalSet.AggregateWith(", "), "'");
+            => String.Concat("'", internalSet.AggregateCSV(), "'");
 
         #endregion
 

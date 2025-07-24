@@ -91,7 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Boolean        Fractions   = true)
 
             => DateTime.ToUniversalTime().
-                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "")) + "Z";
+                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty)) + "Z";
 
         #endregion
 
@@ -111,7 +111,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ? DateTime.ToLocalTime()
                     : DateTime).
 
-                ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : "") + "zzz");
+                ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty) + "zzz");
 
         #endregion
 

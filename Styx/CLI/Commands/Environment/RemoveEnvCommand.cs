@@ -107,7 +107,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                             return Task.FromResult<String[]>(
                                        values.Length == 1
                                            ? [$"Removed value '{values[0]}' from environment key '{environmentKey}'"]
-                                           : [$"Removed values '{values.AggregateWith(", ")}' from environment key '{environmentKey}'"]
+                                           : [$"Removed values '{values.AggregateCSV()}' from environment key '{environmentKey}'"]
                                    );
 
                         // Empty list of values => Remove entire environment key!

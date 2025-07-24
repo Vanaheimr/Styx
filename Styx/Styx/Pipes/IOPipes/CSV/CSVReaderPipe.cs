@@ -36,14 +36,14 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public static class CSVReaderPipeExtensions
     {
 
-        #region ToCSV(this IEnumerable, IgnoreLines = null, Seperators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false, TrimColumns = true)
+        #region ToCSV(this IEnumerable, IgnoreLines = null, Separators = null, StringSplitOptions = None, ExpectedNumberOfColumns = null, FailOnWrongNumberOfColumns = false, TrimColumns = true)
 
         /// <summary>
         /// Splits a given strings into elements by a given sperator.
         /// </summary>
         /// <param name="SourcePipe">An enumeration of strings.</param>
         /// <param name="IgnoreLines">A regular expression indicating which input strings should be ignored. Default: All lines starting with a '#'.</param>
-        /// <param name="Seperators">An array of string used to split the input strings.</param>
+        /// <param name="Separators">An array of string used to split the input strings.</param>
         /// <param name="StringSplitOptions">Split options, e.g. remove empty entries.</param>
         /// <param name="ExpectedNumberOfColumns">If the CSV file had a schema, a specific number of columns can be expected. If instead it is a list of values no such value can be expected.</param>
         /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
@@ -51,13 +51,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <returns>An enumeration of string arrays.</returns>
         public static IEndPipe<String[]> ToCSV(this IEndPipe<String>    SourcePipe,
                                                     Regex               IgnoreLines                = null,
-                                                    String[]            Seperators                 = null,
+                                                    String[]            Separators                 = null,
                                                     StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
                                                     UInt16?             ExpectedNumberOfColumns    = null,
                                                     Boolean             FailOnWrongNumberOfColumns = false,
                                                     Boolean             TrimColumns                = true)
         {
-            return new CSVReaderPipe(SourcePipe, IgnoreLines, Seperators, StringSplitOptions, ExpectedNumberOfColumns, FailOnWrongNumberOfColumns, TrimColumns);
+            return new CSVReaderPipe(SourcePipe, IgnoreLines, Separators, StringSplitOptions, ExpectedNumberOfColumns, FailOnWrongNumberOfColumns, TrimColumns);
         }
 
         #endregion
@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #region Data
 
         private readonly Regex               IgnoreLines;  
-        private readonly String[]            Seperators;
+        private readonly String[]            Separators;
         private readonly StringSplitOptions  StringSplitOptions;
         private readonly UInt16?             ExpectedNumberOfColumns;
         private readonly Boolean             FailOnWrongNumberOfColumns;
@@ -97,14 +97,14 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         /// <param name="SourcePipe"></param>
         /// <param name="IgnoreLines">A regular expression indicating which input strings should be ignored. Default: All lines starting with a '#'.</param>
-        /// <param name="Seperators">An array of string used to split the input strings.</param>
+        /// <param name="Separators">An array of string used to split the input strings.</param>
         /// <param name="StringSplitOptions">Split options, e.g. remove empty entries.</param>
         /// <param name="ExpectedNumberOfColumns">If the CSV file had a schema, a specific number of columns can be expected. If instead it is a list of values no such value can be expected.</param>
         /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
         /// <param name="TrimColumns">Remove leading and trailing whitespaces.</param>
         public CSVReaderPipe(IEndPipe<String>    SourcePipe,
                              Regex               IgnoreLines                = null,
-                             String[]            Seperators                 = null,
+                             String[]            Separators                 = null,
                              StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
                              UInt16?             ExpectedNumberOfColumns    = null,
                              Boolean             FailOnWrongNumberOfColumns = false,
@@ -115,13 +115,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         {
 
             this.IgnoreLines                = (IgnoreLines == null) ? new Regex(@"^\#")  : IgnoreLines;
-            this.Seperators                 = (Seperators  == null) ? new String[] {","} : Seperators;
+            this.Separators                 = (Separators  == null) ? new String[] {","} : Separators;
             this.StringSplitOptions         = StringSplitOptions;
             this.ExpectedNumberOfColumns    = ExpectedNumberOfColumns;
             this.FailOnWrongNumberOfColumns = FailOnWrongNumberOfColumns;
             this.TrimColumns                = TrimColumns;
 
-            this.EmptyColumRegex            = new Regex("\\" + this.Seperators[0] + "\\s\\" + this.Seperators[0]);
+            this.EmptyColumRegex            = new Regex("\\" + this.Separators[0] + "\\s\\" + this.Separators[0]);
 
         }
 
@@ -169,11 +169,11 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                     // Remove patterns like ",  ,"
                     if (StringSplitOptions == StringSplitOptions.RemoveEmptyEntries)
-                        _CurrentLine = EmptyColumRegex.Replace(_CurrentLine, Seperators[0]);
+                        _CurrentLine = EmptyColumRegex.Replace(_CurrentLine, Separators[0]);
 
 
                     // Split the current line
-                    _CurrentElement = _CurrentLine.Split(Seperators, StringSplitOptions);
+                    _CurrentElement = _CurrentLine.Split(Separators, StringSplitOptions);
 
 
                     // Remove empty arrays
@@ -182,7 +182,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                         continue;
 
 
-                    // Original columns having the seperator character(s) within quotation marks \"..., ...\"
+                    // Original columns having the separator character(s) within quotation marks \"..., ...\"
                     //   might end up as multiple columns. This will fix it!
                     for (var i = 0; i < _CurrentElement.Length; i++)
                     {

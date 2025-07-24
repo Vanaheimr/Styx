@@ -41,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public override String ToString()
 
-            => $"Update of '{PropertyName}' '{OldValue?.ToString() ?? ""}' -> '{NewValue?.ToString() ?? ""}' {(DataSource is not null ? $"'{DataSource}'" : "")}!";
+            => $"Update of '{PropertyName}' '{OldValue?.ToString() ?? ""}' -> '{NewValue?.ToString() ?? ""}' {(DataSource is not null ? $"'{DataSource}'" : String.Empty)}!";
 
     }
 
@@ -70,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public override String ToString()
 
-            => $"Update of '{Id}'.'{PropertyName}' '{OldValue?.ToString() ?? ""}' -> '{NewValue?.ToString() ?? ""}' {(DataSource is not null ? $"'{DataSource}'" : "")}!";
+            => $"Update of '{Id}'.'{PropertyName}' '{OldValue?.ToString() ?? ""}' -> '{NewValue?.ToString() ?? ""}' {(DataSource is not null ? $"'{DataSource}'" : String.Empty)}!";
 
     }
 

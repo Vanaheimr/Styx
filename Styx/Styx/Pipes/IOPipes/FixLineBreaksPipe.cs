@@ -38,40 +38,40 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public static class FixLineBreaksPipeExtensions
     {
 
-        #region FixLineBreaks(this IEnumerable, StartOfNewLineRegExpr, NewLineSeperator = "<br>", IEnumerable = null, IEnumerator = null)
+        #region FixLineBreaks(this IEnumerable, StartOfNewLineRegExpr, NewLineSeparator = "<br>", IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Sometimes there are unwanted new line characters within CSV files.
         /// This pipe tries to detect real new lines based on the given regular expression
-        /// and concatenates the dangling lines using the given NewLineSeperator.
+        /// and concatenates the dangling lines using the given NewLineSeparator.
         /// </summary>
         /// <param name="IEnumerable">An enumeration of lines.</param>
         /// <param name="StartOfNewLineRegExpr">A regular expression detecting real new lines.</param>
-        /// <param name="NewLineSeperator">The new line seperator between the prior dangling lines.</param>
+        /// <param name="NewLineSeparator">The new line separator between the prior dangling lines.</param>
         public static IEnumerable<String> FixLineBreaks(this IEndPipe<String>  SourcePipe,
                                                         Regex                  StartOfNewLineRegExpr,
-                                                        String                 NewLineSeperator = "<br>")
+                                                        String                 NewLineSeparator = "<br>")
         {
-            return new FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExpr, NewLineSeperator).AsEnumerable();
+            return new FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExpr, NewLineSeparator).AsEnumerable();
         }
 
         #endregion
 
-        #region FixLineBreaks(this IEnumerator, StartOfNewLineRegExprString, NewLineSeperator = "<br>", IEnumerable = null, IEnumerator = null)
+        #region FixLineBreaks(this IEnumerator, StartOfNewLineRegExprString, NewLineSeparator = "<br>", IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Sometimes there are unwanted new line characters within CSV files.
         /// This pipe tries to detect real new lines based on the given regular expression
-        /// and concatenates the dangling lines using the given NewLineSeperator.
+        /// and concatenates the dangling lines using the given NewLineSeparator.
         /// </summary>
         /// <param name="IEnumerator">An enumerator of lines.</param>
         /// <param name="StartOfNewLineRegExprString">A regular expression detecting real new lines.</param>
-        /// <param name="NewLineSeperator">The new line seperator between the prior dangling lines.</param>
+        /// <param name="NewLineSeparator">The new line separator between the prior dangling lines.</param>
         public static IEnumerable<String> FixLineBreaks(this IEndPipe<String>  SourcePipe,
                                                         String                 StartOfNewLineRegExprString,
-                                                        String                 NewLineSeperator = "<br>")
+                                                        String                 NewLineSeparator = "<br>")
         {
-            return new FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExprString, NewLineSeperator).AsEnumerable();
+            return new FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExprString, NewLineSeparator).AsEnumerable();
         }
 
         #endregion
@@ -90,26 +90,26 @@ namespace org.GraphDefined.Vanaheimr.Styx
         private readonly Regex         StartOfNewLineRegExpr;
         private          Boolean       IgnoreFirstLineMatch;
         private readonly StringBuilder FixedLine;
-        private readonly String        NewLineSeperator;
+        private readonly String        NewLineSeparator;
 
         #endregion
 
         #region Constructor(s)
 
-        #region FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExpr, NewLineSeperator, IEnumerable = null, IEnumerator = null)
+        #region FixLineBreaksPipe(SourcePipe, StartOfNewLineRegExpr, NewLineSeparator, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Sometimes there are unwanted new line characters within CSV files.
         /// This pipe tries to detect real new lines based on the given regular expression
-        /// and concatenates the dangling lines using the given NewLineSeperator.
+        /// and concatenates the dangling lines using the given NewLineSeparator.
         /// </summary>
         /// <param name="StartOfNewLineRegExpr">A regular expression detecting real new lines.</param>
-        /// <param name="NewLineSeperator">The new line seperator between the prior dangling lines.</param>
+        /// <param name="NewLineSeparator">The new line separator between the prior dangling lines.</param>
         /// <param name="IEnumerable">An enumeration of lines.</param>
         /// <param name="IEnumerator">An enumerator of lines.</param>
         public FixLineBreaksPipe(IEndPipe<String>  SourcePipe,
                                  Regex             StartOfNewLineRegExpr,
-                                 String            NewLineSeperator)
+                                 String            NewLineSeparator)
 
             : base(SourcePipe)
 
@@ -120,34 +120,34 @@ namespace org.GraphDefined.Vanaheimr.Styx
             if (StartOfNewLineRegExpr == null)
                 throw new ArgumentNullException("StartOfNewLineRegExpr", "The parameter 'StartOfNewLineRegExpr' must not be null!");
 
-            if (NewLineSeperator == null)
-                throw new ArgumentNullException("NewLineSeperator", "The parameter 'NewLineSeperator' must not be null!");
+            if (NewLineSeparator == null)
+                throw new ArgumentNullException("NewLineSeparator", "The parameter 'NewLineSeparator' must not be null!");
 
             #endregion
 
             this.StartOfNewLineRegExpr = StartOfNewLineRegExpr;
             this.IgnoreFirstLineMatch  = true;
             this.FixedLine             = new StringBuilder();
-            this.NewLineSeperator      = NewLineSeperator;
+            this.NewLineSeparator      = NewLineSeparator;
 
         }
 
         #endregion
 
-        #region FixLineBreaksPipe(StartOfNewLineRegExprString, NewLineSeperator, IEnumerable = null, IEnumerator = null)
+        #region FixLineBreaksPipe(StartOfNewLineRegExprString, NewLineSeparator, IEnumerable = null, IEnumerator = null)
 
         /// <summary>
         /// Sometimes there are unwanted new line characters within CSV files.
         /// This pipe tries to detect real new lines based on the given regular expression
-        /// and concatenates the dangling lines using the given NewLineSeperator.
+        /// and concatenates the dangling lines using the given NewLineSeparator.
         /// </summary>
         /// <param name="StartOfNewLineRegExprString">A regular expression detecting real new lines.</param>
-        /// <param name="NewLineSeperator">The new line seperator between the prior dangling lines.</param>
+        /// <param name="NewLineSeparator">The new line separator between the prior dangling lines.</param>
         /// <param name="IEnumerable">An enumeration of lines.</param>
         /// <param name="IEnumerator">An enumerator of lines.</param>
         public FixLineBreaksPipe(IEndPipe<String>  SourcePipe,
                                  String            StartOfNewLineRegExprString,
-                                 String            NewLineSeperator)
+                                 String            NewLineSeparator)
 
             : base(SourcePipe)
 
@@ -158,15 +158,15 @@ namespace org.GraphDefined.Vanaheimr.Styx
             if (StartOfNewLineRegExprString.IsNullOrEmpty())
                 throw new ArgumentNullException("StartOfNewLineRegExprString", "The parameter 'StartOfNewLineRegExprString' must not be null!");
 
-            if (NewLineSeperator == null)
-                throw new ArgumentNullException("NewLineSeperator", "The parameter 'NewLineSeperator' must not be null!");
+            if (NewLineSeparator == null)
+                throw new ArgumentNullException("NewLineSeparator", "The parameter 'NewLineSeparator' must not be null!");
 
             #endregion
 
             this.StartOfNewLineRegExpr = new Regex(StartOfNewLineRegExprString);
             this.IgnoreFirstLineMatch  = true;
             this.FixedLine             = new StringBuilder();
-            this.NewLineSeperator      = NewLineSeperator;
+            this.NewLineSeparator      = NewLineSeparator;
 
         }
 
@@ -200,21 +200,21 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     if (this.IgnoreFirstLineMatch)
                     {
                         this.IgnoreFirstLineMatch = false;
-                        this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeperator);
+                        this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeparator);
                     }
 
                     else
                     {
                         _CurrentElement = this.FixedLine.ToString();
                         this.FixedLine.Clear();
-                        this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeperator);
+                        this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeparator);
                         return true;
                     }
 
                 }
 
                 else
-                    this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeperator);
+                    this.FixedLine.Append(SourcePipe.Current).Append(this.NewLineSeparator);
 
             }
 

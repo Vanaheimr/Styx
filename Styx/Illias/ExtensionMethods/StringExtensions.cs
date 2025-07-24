@@ -854,7 +854,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             return Text.IsNotNullOrEmpty()
                        ? Text[..(Int32) Math.Min((UInt32) Text.Length, Length)]
-                       : "";
+                       : String.Empty;
 
         }
 
