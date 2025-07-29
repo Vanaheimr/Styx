@@ -882,7 +882,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (Characters.Count > 0)
-                yield return new String(Characters.ToArray());
+                yield return new String([.. Characters]);
 
         }
 
