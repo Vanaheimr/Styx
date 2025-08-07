@@ -89,7 +89,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Newtonsoft.Json.Formatting  Format = Newtonsoft.Json.Formatting.None)
         {
 
-            if (JSONObject == null)
+            if (JSONObject is null)
                 return [];
 
             return Encoding.UTF8.GetBytes(JSONObject.ToString(Format));
@@ -125,7 +125,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            ToArray();
 
             return data.Length > 0
-                       ? new JArray(data)
+                       ? [.. data]
                        : [];
 
         }
@@ -150,7 +150,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            ToArray();
 
             return data.Length > 0
-                       ? new JArray(data)
+                       ? [.. data]
                        : [];
 
         }
