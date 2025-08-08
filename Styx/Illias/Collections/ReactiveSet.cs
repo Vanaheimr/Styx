@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// A delegate called whenever an item was added to the reactive set.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnItemAddedDelegate  (DateTime        Timestamp,
+        public delegate void OnItemAddedDelegate  (DateTimeOffset  Timestamp,
                                                    ReactiveSet<T>  ReactiveSet,
                                                    T               Item);
 
@@ -57,7 +57,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// A delegate called whenever an item was removed from the reactive set.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnItemRemovedDelegate(DateTime        Timestamp,
+        public delegate void OnItemRemovedDelegate(DateTimeOffset  Timestamp,
                                                    ReactiveSet<T>  ReactiveSet,
                                                    T               Item);
 
@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// A delegate called whenever the reactive set changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnSetChangedDelegate (DateTime         Timestamp,
+        public delegate void OnSetChangedDelegate (DateTimeOffset   Timestamp,
                                                    ReactiveSet<T>   ReactiveSet,
                                                    IEnumerable<T>   NewItems,
                                                    IEnumerable<T>?  OldItems = null);

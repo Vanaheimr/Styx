@@ -89,8 +89,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var tolerance     = Tolerance ?? TimeSpan.FromSeconds(1);
-                var existingItem  = valueList.FirstOrDefault(v => (v.NotBefore ?? DateTime.MinValue).IsEqualToWithinTolerance(Value.NotBefore ?? DateTime.MinValue, tolerance) &&
-                                                                  (v.NotAfter  ?? DateTime.MaxValue).IsEqualToWithinTolerance(Value.NotAfter  ?? DateTime.MaxValue, tolerance));
+                var existingItem  = valueList.FirstOrDefault(v => (v.NotBefore ?? DateTimeOffset.MinValue).IsEqualToWithinTolerance(Value.NotBefore ?? DateTimeOffset.MinValue, tolerance) &&
+                                                                  (v.NotAfter  ?? DateTimeOffset.MaxValue).IsEqualToWithinTolerance(Value.NotAfter  ?? DateTimeOffset.MaxValue, tolerance));
 
                 if (existingItem is not null)
                 {
@@ -132,8 +132,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var tolerance   = Tolerance ?? TimeSpan.FromSeconds(1);
-                var valueIndex  = valueList.FindIndex(v => (v.NotBefore ?? DateTime.MinValue).IsEqualToWithinTolerance(Value.NotBefore ?? DateTime.MinValue, tolerance) &&
-                                                           (v.NotAfter  ?? DateTime.MinValue).IsEqualToWithinTolerance(Value.NotAfter  ?? DateTime.MinValue, tolerance));
+                var valueIndex  = valueList.FindIndex(v => (v.NotBefore ?? DateTimeOffset.MinValue).IsEqualToWithinTolerance(Value.NotBefore ?? DateTimeOffset.MinValue, tolerance) &&
+                                                           (v.NotAfter  ?? DateTimeOffset.MinValue).IsEqualToWithinTolerance(Value.NotAfter  ?? DateTimeOffset.MinValue, tolerance));
 
                 // No matching value found
                 if (valueIndex == -1)
@@ -157,9 +157,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Key">The key of the value to check.</param>
         /// <param name="Timestamp">An optional point in time to check.</param>
         /// <param name="Tolerance">An optional tolerance of time stamps.</param>
-        public Boolean ContainsKey(TKey       Key,
-                                   DateTime?  Timestamp   = null,
-                                   TimeSpan?  Tolerance   = null)
+        public Boolean ContainsKey(TKey             Key,
+                                   DateTimeOffset?  Timestamp   = null,
+                                   TimeSpan?        Tolerance   = null)
         {
 
             if (!Timestamp.HasValue)
@@ -199,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tolerance">An optional tolerance of time stamps.</param>
         public Boolean TryGetValue(TKey                             Key,
                                    [NotNullWhen(true)] out TValue?  Value,
-                                   DateTime?                        Timestamp   = null,
+                                   DateTimeOffset?                  Timestamp   = null,
                                    TimeSpan?                        Tolerance   = null)
         {
 

@@ -74,12 +74,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The timestamp of the value creation.
         /// </summary>
-        public DateTime  Timestamp    { get; }
+        public DateTimeOffset  Timestamp    { get; }
 
         /// <summary>
         /// The value.
         /// </summary>
-        public TValue    Value        { get; }
+        public TValue          Value        { get; }
 
         #endregion
 
@@ -107,8 +107,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Timestamp">The timestamp.</param>
         /// <param name="Value">The value.</param>
-        public Timestamped(DateTime  Timestamp,
-                           TValue    Value)
+        public Timestamped(DateTimeOffset  Timestamp,
+                           TValue          Value)
         {
 
             this.Timestamp  = Timestamp;
@@ -157,8 +157,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Timestamp">The timestamp.</param>
         /// <param name="Value">The value.</param>
-        public void Deconstruct(out DateTime  Timestamp,
-                                out TValue    Value)
+        public void Deconstruct(out DateTimeOffset  Timestamp,
+                                out TValue          Value)
         {
             Timestamp  = this.Timestamp;
             Value      = this.Value;
@@ -169,7 +169,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Value -implicit-> Timestamped<Value>
 
         /// <summary>
-        /// Implicit conversatiuon from an non-timestamped value
+        /// Implicit conversation from an non-timestamped value
         /// to a timestamped value.
         /// </summary>
         /// <param name="Value">The value to be timestamped.</param>
@@ -489,12 +489,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The timestamp of the value creation.
         /// </summary>
-        public DateTime  Timestamp    { get; set; }
+        public DateTimeOffset  Timestamp    { get; set; }
 
         /// <summary>
         /// The value.
         /// </summary>
-        public TValue    Value        { get; set; }
+        public TValue          Value        { get; set; }
 
         #endregion
 
@@ -519,8 +519,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Value">The value.</param>
         /// <param name="Timestamp">The timestamp.</param>
-        public Timestamped_RW(TValue    Value,
-                              DateTime  Timestamp)
+        public Timestamped_RW(TValue          Value,
+                              DateTimeOffset  Timestamp)
         {
             this.Value      = Value;
             this.Timestamp  = Timestamp;
@@ -538,8 +538,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Timestamp">The timestamp.</param>
         /// <param name="Value">The value.</param>
-        public void Deconstruct(out DateTime  Timestamp,
-                                out TValue    Value)
+        public void Deconstruct(out DateTimeOffset  Timestamp,
+                                out TValue          Value)
         {
             Timestamp  = this.Timestamp;
             Value      = this.Value;
@@ -550,7 +550,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Value -implicit-> Timestamped_RW<Value>
 
         /// <summary>
-        /// Implicit conversatiuon from an non-timestamped value
+        /// Implicit conversation from an non-timestamped value
         /// to a timestamped value.
         /// </summary>
         /// <param name="Value">The value to be timestamped.</param>

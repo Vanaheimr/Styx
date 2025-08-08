@@ -26,19 +26,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     public delegate Task RAMUsageMonitorHandler        (ResourcesMonitor  Sender,
-                                                        DateTime          Timestamp,
+                                                        DateTimeOffset    Timestamp,
                                                         UInt64            RAMUsageByOS,
                                                         UInt64            RAMUsageShared,
                                                         UInt64            RAMUsagePrivate,
                                                         UInt64            RAMUsagePrivateThreshold);
 
     public delegate Task FreeSystemMemoryMonitorHandler(ResourcesMonitor  Sender,
-                                                        DateTime          Timestamp,
+                                                        DateTimeOffset    Timestamp,
                                                         MemoryMetrics     MemoryMetrics,
                                                         Double            FreeSystemMemoryThreshold);
 
     public delegate Task DiskSpaceMonitorHandler       (ResourcesMonitor  Sender,
-                                                        DateTime          Timestamp,
+                                                        DateTimeOffset    Timestamp,
                                                         Double            FreeDiscSpacePercentage);
 
     public class MemoryMetrics

@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
@@ -30,7 +24,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     /// <param name="Timestamp">The timestamp of the message.</param>
     /// <param name="LogLevel">The log level of the message.</param>
     /// <param name="Arguments">The message arguments.</param>
-    public delegate void LoggerDelegate(DateTime Timestamp, LogLevel LogLevel, params Object[] Arguments);
+    public delegate void LoggerDelegate(DateTimeOffset Timestamp, LogLevel LogLevel, params Object[] Arguments);
 
 
     /// <summary>
@@ -39,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     /// <param name="Timestamp">The timestamp of the message.</param>
     /// <param name="LogLevel">The log level of the message.</param>
     /// <param name="Arguments">The message arguments.</param>
-    public delegate void LoggerDelegate<TEnum>(DateTime Timestamp, TEnum Topic, params Object[] Arguments)
+    public delegate void LoggerDelegate<TEnum>(DateTimeOffset Timestamp, TEnum Topic, params Object[] Arguments)
         where TEnum : struct, IComparable, IFormattable, IConvertible;
 
 }

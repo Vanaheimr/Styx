@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="DataSource">An optional data source or context for the status update.</param>
-    public delegate Task OnPropertyChangedDelegate(DateTime          Timestamp,
+    public delegate Task OnPropertyChangedDelegate(DateTimeOffset    Timestamp,
                                                    EventTracking_Id  EventTrackingId,
                                                    Object            Sender,
                                                    String            PropertyName,
@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     /// <param name="DataSource">An optional data source or context for the status update.</param>
-    public delegate Task OnPropertyChangedDelegate<TSender>(DateTime          Timestamp,
+    public delegate Task OnPropertyChangedDelegate<TSender>(DateTimeOffset    Timestamp,
                                                             EventTracking_Id  EventTrackingId,
                                                             TSender           Sender,
                                                             String            PropertyName,

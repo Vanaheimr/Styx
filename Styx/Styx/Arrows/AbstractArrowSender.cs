@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event for signaling an exception.
         /// </summary>
-        public event ExceptionOccurredEventHandler?      OnExceptionOccurred;
+        public event ExceptionOccurredEventHandler?     OnExceptionOccurred;
 
         /// <summary>
         /// An event for signaling the completion of a message delivery.

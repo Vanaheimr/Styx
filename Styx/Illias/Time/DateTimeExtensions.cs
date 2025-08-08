@@ -137,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static DateTime? TryParse(String Text)
         {
 
-            if (DateTime.TryParse(Text, out DateTime dateTime))
+            if (DateTime.TryParse(Text, out var dateTime))
                 return dateTime;
 
             return null;
@@ -145,7 +145,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
     }
 

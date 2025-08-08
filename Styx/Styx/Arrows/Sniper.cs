@@ -137,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// The last time the sniper fired.
         /// </summary>
-        public DateTime                 LastFireTime                   { get; private set; }
+        public DateTimeOffset           LastFireTime                   { get; private set; }
 
         #endregion
 

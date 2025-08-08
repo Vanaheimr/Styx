@@ -37,7 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Context(String?                 DataSource     = null,
                        JObject?                CustomData     = null,
                        UserDefinedDictionary?  InternalData   = null,
-                       DateTime?               LastChange     = null)
+                       DateTimeOffset?         LastChange     = null)
 
             : base(CustomData,
                    InternalData,
@@ -269,13 +269,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Created
 
-        private DateTime created;
+        private DateTimeOffset created;
 
         /// <summary>
         /// The timestamp of the creation of this object.
         /// </summary>
         [Mandatory]
-        public DateTime Created
+        public DateTimeOffset Created
         {
 
             get
@@ -298,14 +298,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region LastChange
 
-        private DateTime lastChange;
+        private DateTimeOffset lastChange;
 
         /// <summary>
         /// The timestamp of the last changes within this object.
         /// Can e.g. also be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime LastChangeDate
+        public DateTimeOffset LastChangeDate
         {
 
             get
@@ -347,8 +347,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LastChange">The optional timestamp of the last changes within this object.</param>
         protected AInternalData(JObject?                CustomData,
                                 UserDefinedDictionary?  InternalData,
-                                DateTime?               Created      = null,
-                                DateTime?               LastChange   = null)
+                                DateTimeOffset?         Created      = null,
+                                DateTimeOffset?         LastChange   = null)
         {
 
             this.created       = Created      ?? LastChange ?? Timestamp.Now;
@@ -536,14 +536,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// The timestamp of the creation of this object.
             /// </summary>
             [Mandatory]
-            public DateTime               Created           { get; set; }
+            public DateTimeOffset         Created           { get; set; }
 
             /// <summary>
             /// The timestamp of the last changes within this ChargingPool.
             /// Can be used as a HTTP ETag.
             /// </summary>
             [Mandatory]
-            public DateTime               LastChangeDate    { get; set; }
+            public DateTimeOffset         LastChangeDate    { get; set; }
 
             /// <summary>
             /// Optional custom data, e.g. in combination with custom parsers and serializers.
@@ -574,8 +574,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// <param name="InternalData">An optional dictionary of internal data.</param>
             protected Builder(JObject?                CustomData,
                               UserDefinedDictionary?  InternalData,
-                              DateTime?               Created      = null,
-                              DateTime?               LastChange   = null)
+                              DateTimeOffset?         Created      = null,
+                              DateTimeOffset?         LastChange   = null)
             {
 
                 this.Created         = Created      ?? LastChange ?? Timestamp.Now;

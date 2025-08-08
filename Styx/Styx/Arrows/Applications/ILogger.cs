@@ -33,9 +33,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
     {
 
-        void Log(                    TEnum Topics, params Object[] Arguments);
+        void Log(                          TEnum Topics, params Object[] Arguments);
 
-        void Log(DateTime Timestamp, TEnum Topics, params Object[] Arguments);
+        void Log(DateTimeOffset Timestamp, TEnum Topics, params Object[] Arguments);
 
     }
 

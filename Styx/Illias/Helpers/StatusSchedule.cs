@@ -114,7 +114,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="NewStatus">The new timestamped status.</param>
         /// <param name="OldStatus">The old timestamped status.</param>
         /// <param name="DataSource">An optional data source or context for the status update.</param>
-        public delegate Task OnStatusChangedDelegate(DateTime           Timestamp,
+        public delegate Task OnStatusChangedDelegate(DateTimeOffset     Timestamp,
                                                      EventTracking_Id   EventTrackingId,
                                                      StatusSchedule<T>  StatusSchedule,
                                                      Timestamped<T>     NewStatus,
@@ -266,9 +266,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Value">The value of the new status entry.</param>
         /// <param name="Timestamp">The timestamp of the new status entry.</param>
         /// <param name="DataSource">An optional data source or context for the status update.</param>
-        public StatusSchedule<T> Insert(T         Value,
-                                        DateTime  Timestamp,
-                                        Context?  DataSource   = null)
+        public StatusSchedule<T> Insert(T               Value,
+                                        DateTimeOffset  Timestamp,
+                                        Context?        DataSource   = null)
         {
 
             lock (statusSchedule)

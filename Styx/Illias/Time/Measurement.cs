@@ -29,17 +29,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The timestamp of the measurement;
         /// </summary>
-        public DateTime  Timestamp    { get; }
+        public DateTimeOffset  Timestamp    { get; }
 
         /// <summary>
         /// The value of the measurement;
         /// </summary>
-        public TValue    Value        { get; }
+        public TValue          Value        { get; }
 
         /// <summary>
         /// The unit of the measurement;
         /// </summary>
-        public TUnits    Unit         { get; }
+        public TUnits          Unit         { get; }
 
         #endregion
 
@@ -72,9 +72,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamp">The timestamp of the measurement.</param>
         /// <param name="Value">The value of the measurement.</param>
         /// <param name="Unit">The unit of the measurement.</param>
-        public Measurement(DateTime  Timestamp,
-                           TValue    Value,
-                           TUnits    Unit)
+        public Measurement(DateTimeOffset  Timestamp,
+                           TValue          Value,
+                           TUnits          Unit)
         {
 
             this.Timestamp  = Timestamp;

@@ -18,7 +18,6 @@
 #region Usings
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System;
 
 #endregion
 
@@ -40,15 +39,15 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="ExceptionMessage">The timestamp of the exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        void ProcessExceptionOccurred(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage);
+        void ProcessExceptionOccurred(Object Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage);
 
         /// <summary>
-        /// The sender of the arrows signaled not to send any more arrows.
+        /// The sender of the arrows signalled not to send any more arrows.
         /// </summary>
         /// <param name="Sender">The sender of this arrow.</param>
         /// <param name="Timestamp">The timestamp of the shutdown.</param>
         /// <param name="Message">An optional message.</param>
-        void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null);
+        void ProcessCompleted(Object Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, String? Message = null);
 
     }
 

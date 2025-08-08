@@ -31,8 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         Boolean                IsEmpty           { get; }
         Boolean                IsNotEmpty        { get; }
 
-        DateTime               Created           { get; set; }
-        DateTime               LastChangeDate    { get; set; }
+        DateTimeOffset         Created           { get; set; }
+        DateTimeOffset         LastChangeDate    { get; set; }
 
         JObject                CustomData        { get; }
         UserDefinedDictionary  InternalData      { get; }

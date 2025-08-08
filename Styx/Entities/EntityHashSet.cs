@@ -330,60 +330,60 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region OnAddition
 
-        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> addition;
+        private readonly IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, Boolean> addition;
 
         /// <summary>
         /// Called whenever an entity will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> OnAddition
+        public IVotingSender<DateTimeOffset, User_Id, TParentDataStructure, TEntity, Boolean> OnAddition
             => addition;
 
         #endregion
 
         #region OnAdditionIfNotExists
 
-        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> additionIfNotExists;
+        private readonly IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, Boolean> additionIfNotExists;
 
         /// <summary>
         /// Called whenever an entity will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> OnAdditionIfNotExists
+        public IVotingSender<DateTimeOffset, User_Id, TParentDataStructure, TEntity, Boolean> OnAdditionIfNotExists
             => additionIfNotExists;
 
         #endregion
 
         #region OnAddOrUpdate
 
-        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> addOrUpdate;
+        private readonly IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> addOrUpdate;
 
         /// <summary>
         /// Called whenever an entity will be or was added or updated.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnAddOrUpdate
+        public IVotingSender<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnAddOrUpdate
             => addOrUpdate;
 
         #endregion
 
         #region OnUpdate
 
-        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> update;
+        private readonly IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> update;
 
         /// <summary>
         /// Called whenever an entity will be or was updated.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnUpdate
+        public IVotingSender<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean> OnUpdate
             => update;
 
         #endregion
 
         #region OnRemoval
 
-        private readonly IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> removal;
+        private readonly IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, Boolean> removal;
 
         /// <summary>
         /// Called whenever an entity will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, User_Id, TParentDataStructure, TEntity, Boolean> OnRemoval
+        public IVotingSender<DateTimeOffset, User_Id, TParentDataStructure, TEntity, Boolean> OnRemoval
             => removal;
 
         #endregion
@@ -392,24 +392,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Constructor(s)
 
-        public EntityHashSet(TParentDataStructure                                                                     ParentDataStructure,
+        public EntityHashSet(TParentDataStructure                                                                           ParentDataStructure,
 
-                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>?  Addition              = null,
-                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>?  AdditionIfNotExists   = null,
-                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  AddOrUpdate           = null,
-                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  Update                = null,
-                             IVotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>?  Removal               = null)
+                             IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity,          Boolean>?  Addition              = null,
+                             IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity,          Boolean>?  AdditionIfNotExists   = null,
+                             IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  AddOrUpdate           = null,
+                             IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>?  Update                = null,
+                             IVotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity,          Boolean>?  Removal               = null)
         {
 
             this.lookup               = new ConcurrentDictionary<TId, TEntity>();
 
             this.parentDataStructure  = ParentDataStructure;
 
-            this.addition             = Addition            ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
-            this.additionIfNotExists  = AdditionIfNotExists ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
-            this.addOrUpdate          = AddOrUpdate         ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
-            this.update               = Update              ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
-            this.removal              = Removal             ?? new VotingNotificator<DateTime, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.addition             = Addition            ?? new VotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.additionIfNotExists  = AdditionIfNotExists ?? new VotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
+            this.addOrUpdate          = AddOrUpdate         ?? new VotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
+            this.update               = Update              ?? new VotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity, TEntity, Boolean>(() => new VetoVote(), true);
+            this.removal              = Removal             ?? new VotingNotificator<DateTimeOffset, User_Id, TParentDataStructure, TEntity,          Boolean>(() => new VetoVote(), true);
 
         }
 
@@ -505,10 +505,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public AddResult TryAdd(TEntity                    Entity,
-                                Action<DateTime, TEntity>  OnSuccess,
-                                EventTracking_Id?          EventTrackingId   = null,
-                                User_Id?                   CurrentUserId     = null)
+        public AddResult TryAdd(TEntity                          Entity,
+                                Action<DateTimeOffset, TEntity>  OnSuccess,
+                                EventTracking_Id?                EventTrackingId   = null,
+                                User_Id?                         CurrentUserId     = null)
         {
 
             EventTrackingId ??= EventTracking_Id.New;
@@ -545,10 +545,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public AddResult TryAdd(TEntity                                                                     Entity,
-                                Action<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
-                                EventTracking_Id?                                                           EventTrackingId   = null,
-                                User_Id?                                                                    CurrentUserId     = null)
+        public AddResult TryAdd(TEntity                                                                           Entity,
+                                Action<DateTimeOffset, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
+                                EventTracking_Id?                                                                 EventTrackingId   = null,
+                                User_Id?                                                                          CurrentUserId     = null)
         {
 
             EventTrackingId ??= EventTracking_Id.New;
@@ -669,10 +669,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public Boolean TryAdd(IEnumerable<TEntity>                    Entities,
-                              Action<DateTime, IEnumerable<TEntity>>  OnSuccess,
-                              EventTracking_Id?                       EventTrackingId   = null,
-                              User_Id?                                CurrentUserId     = null)
+        public Boolean TryAdd(IEnumerable<TEntity>                          Entities,
+                              Action<DateTimeOffset, IEnumerable<TEntity>>  OnSuccess,
+                              EventTracking_Id?                             EventTrackingId   = null,
+                              User_Id?                                      CurrentUserId     = null)
         {
 
             EventTrackingId ??= EventTracking_Id.New;
@@ -708,10 +708,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public Boolean TryAdd(IEnumerable<TEntity>                                          Entities,
-                              Action<DateTime, TParentDataStructure, IEnumerable<TEntity>>  OnSuccess,
-                              EventTracking_Id?                                             EventTrackingId   = null,
-                              User_Id?                                                      CurrentUserId     = null)
+        public Boolean TryAdd(IEnumerable<TEntity>                                                Entities,
+                              Action<DateTimeOffset, TParentDataStructure, IEnumerable<TEntity>>  OnSuccess,
+                              EventTracking_Id?                                                   EventTrackingId   = null,
+                              User_Id?                                                            CurrentUserId     = null)
         {
 
             EventTrackingId ??= EventTracking_Id.New;
@@ -831,10 +831,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public AddResult TryAddIfNotExists(TEntity                    Entity,
-                                           Action<DateTime, TEntity>  OnSuccess,
-                                           EventTracking_Id?          EventTrackingId   = null,
-                                           User_Id?                   CurrentUserId     = null)
+        public AddResult TryAddIfNotExists(TEntity                          Entity,
+                                           Action<DateTimeOffset, TEntity>  OnSuccess,
+                                           EventTracking_Id?                EventTrackingId   = null,
+                                           User_Id?                         CurrentUserId     = null)
         {
 
             EventTrackingId ??= EventTracking_Id.New;
@@ -868,10 +868,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public AddResult TryAddIfNotExists(TEntity                                                                     Entity,
-                                           Action<DateTime, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
-                                           EventTracking_Id?                                                           EventTrackingId   = null,
-                                           User_Id?                                                                    CurrentUserId     = null)
+        public AddResult TryAddIfNotExists(TEntity                                                                           Entity,
+                                           Action<DateTimeOffset, EventTracking_Id, User_Id, TParentDataStructure, TEntity>  OnSuccess,
+                                           EventTracking_Id?                                                                 EventTrackingId   = null,
+                                           User_Id?                                                                          CurrentUserId     = null)
         {
 
             EventTrackingId ??= EventTracking_Id.New;

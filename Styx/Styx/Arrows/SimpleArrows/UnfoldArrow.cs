@@ -70,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #endregion
 
 
-        public void ProcessStarted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String Message)
+        public void ProcessStarted(Object Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, String Message)
         {
             OnStarted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }
@@ -81,12 +81,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 OnNotification?.Invoke(EventTrackingId, Message);
         }
 
-        public void ProcessExceptionOccurred(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
+        public void ProcessExceptionOccurred(Object Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
             OnExceptionOccurred?.Invoke(this, Timestamp, EventTrackingId, ExceptionMessage);
         }
 
-        public void ProcessCompleted(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
+        public void ProcessCompleted(Object Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
             OnCompleted?.Invoke(this, Timestamp, EventTrackingId, Message);
         }

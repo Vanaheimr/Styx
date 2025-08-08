@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event called whenever an exception occured at this arrow.
         /// </summary>
-        public event ExceptionOccurredEventHandler?    OnExceptionOccurred;
+        public event ExceptionOccurredEventHandler?   OnExceptionOccurred;
 
         /// <summary>
         /// An event called whenever this arrow will no longer send any messages.
@@ -95,7 +95,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #region ProcessStarted(Sender, Timestamp, Message = null)
 
         /// <summary>
-        /// The sender of the arrows signaled to start sending arrows.
+        /// The sender of the arrows signalled to start sending arrows.
         /// </summary>
         /// <param name="Sender">The sender of the started message.</param>
         /// <param name="Timestamp">The timestamp of the start.</param>
@@ -135,7 +135,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="Timestamp">The timestamp of the exception.</param>
         /// <param name="Exception">The occured exception.</param>
-        public void ProcessExceptionOccurred(Object Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception Exception)
+        public void ProcessExceptionOccurred(Object            Sender,
+                                             DateTimeOffset    Timestamp,
+                                             EventTracking_Id  EventTrackingId,
+                                             Exception         Exception)
         {
 
             try
@@ -155,12 +158,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #region ProcessCompleted(Sender, Timestamp, Message = null)
 
         /// <summary>
-        /// The sender of the arrows signaled not to send any more arrows.
+        /// The sender of the arrows signalled not to send any more arrows.
         /// </summary>
         /// <param name="Sender">The sender of the completed message.</param>
         /// <param name="Timestamp">The timestamp of the shutdown.</param>
         /// <param name="Message">An optional message.</param>
-        public void ProcessCompleted(Object Sender, DateTime Timestamp2, EventTracking_Id EventTrackingId, String? Message = null)
+        public void ProcessCompleted(Object Sender, DateTimeOffset Timestamp2, EventTracking_Id EventTrackingId, String? Message = null)
         {
 
             if (IsCompleted == true)

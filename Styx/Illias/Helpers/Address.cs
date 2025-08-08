@@ -133,7 +133,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                        JObject?                 CustomData          = null,
                        UserDefinedDictionary?   InternalData        = null,
-                       DateTime?                LastChangeDate      = null)
+                       DateTimeOffset?          LastChangeDate      = null)
 
             : base(CustomData,
                    InternalData,

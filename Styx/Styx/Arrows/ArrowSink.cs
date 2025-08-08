@@ -98,12 +98,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             BlockingCollection.Add(Message);
         }
 
-        public void ProcessExceptionOccurred(dynamic Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
+        public void ProcessExceptionOccurred(dynamic Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage)
         {
             BlockingCollection.CompleteAdding();
         }
 
-        public void ProcessCompleted(dynamic Sender, DateTime Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
+        public void ProcessCompleted(dynamic Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, String? Message = null)
         {
             BlockingCollection.CompleteAdding();
         }

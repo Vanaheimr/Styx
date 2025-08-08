@@ -33,13 +33,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) Now
 
+        ///// <summary>
+        ///// The current time stamp respecting time travels.
+        ///// </summary>
+        //public static DateTime Now
+
+        //    => DateTime.UtcNow + timeTravel;
+
+
         /// <summary>
         /// The current time stamp respecting time travels.
         /// </summary>
-        public static DateTime Now
+        public static DateTimeOffset Now
 
-            => DateTime.UtcNow + timeTravel;
-               // Stopwatch.GetTimestamp() + timeTravel; <= Might be much faster, but changes symantic!
+            => DateTimeOffset.UtcNow + timeTravel;
+               // Stopwatch.GetTimestamp() + timeTravel; <= Might be much faster, but changes semantics!
 
         #endregion
 
@@ -50,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static DateOnly NowDate
 
-            => DateOnly.FromDateTime(DateTime.UtcNow + timeTravel);
+            => DateOnly.FromDateTime((DateTimeOffset.UtcNow + timeTravel).DateTime);
 
         #endregion
 
@@ -61,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static TimeOnly NowTime
 
-            => TimeOnly.FromDateTime(DateTime.UtcNow + timeTravel);
+            => TimeOnly.FromDateTime((DateTimeOffset.UtcNow + timeTravel).DateTime);
 
         #endregion
 

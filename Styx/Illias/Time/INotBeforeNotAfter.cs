@@ -38,10 +38,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             var tolerance      = Tolerance               ?? TimeSpan.FromSeconds(1);
-            var existingStart  = ExistingValue.NotBefore ?? DateTime.MinValue;
-            var existingEnd    = ExistingValue.NotAfter  ?? DateTime.MaxValue;
-            var newStart       = NewValue.     NotBefore ?? DateTime.MinValue;
-            var newEnd         = NewValue.     NotAfter  ?? DateTime.MaxValue;
+            var existingStart  = ExistingValue.NotBefore ?? DateTimeOffset.MinValue;
+            var existingEnd    = ExistingValue.NotAfter  ?? DateTimeOffset.MaxValue;
+            var newStart       = NewValue.     NotBefore ?? DateTimeOffset.MinValue;
+            var newEnd         = NewValue.     NotAfter  ?? DateTimeOffset.MaxValue;
 
             // Check if one interval ends when the other begins
             // respecting the tolerance (no overlap)
@@ -52,13 +52,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             // Check if the timespans overlap considering the tolerance
-            return ((newStart          - DateTime.MinValue > tolerance)
+            return ((newStart                - DateTimeOffset.MinValue > tolerance)
                          ? newStart.     Subtract(tolerance)
                          : newStart)
 
                      <
 
-                   ((DateTime.MaxValue - existingEnd       > tolerance)
+                   ((DateTimeOffset.MaxValue - existingEnd             > tolerance)
                          ? existingEnd.  Add     (tolerance)
                          : existingEnd)
 
@@ -66,13 +66,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        &&
 
 
-                   ((DateTime.MaxValue - newEnd            > tolerance)
+                   ((DateTimeOffset.MaxValue - newEnd                  > tolerance)
                          ? newEnd.       Add     (tolerance)
                          : newEnd)
 
                      >
 
-                   ((existingStart     - DateTime.MinValue > tolerance)
+                   ((existingStart           - DateTimeOffset.MinValue > tolerance)
                          ? existingStart.Subtract(tolerance)
                          : existingStart);
 
@@ -89,16 +89,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Timestamp">A timestamp.</param>
         /// <param name="Tolerance">An optional tolerance (default: 1 second)</param>
         public static Boolean IsNotBeforeWithinRange(this INotBeforeNotAfter  NotBeforeNotAfter,
-                                                     DateTime                 Timestamp,
+                                                     DateTimeOffset           Timestamp,
                                                      TimeSpan?                Tolerance   = null)
         {
 
             var tolerance  = Tolerance                   ?? TimeSpan.FromSeconds(1);
-            var notBefore  = NotBeforeNotAfter.NotBefore ?? DateTime.MinValue;
+            var notBefore  = NotBeforeNotAfter.NotBefore ?? DateTimeOffset.MinValue;
 
-            return Timestamp >= ((notBefore - DateTime.MinValue) > tolerance
+            return Timestamp >= ((notBefore - DateTimeOffset.MinValue) > tolerance
                                      ? notBefore.Subtract(tolerance)
-                                     : DateTime.MinValue);
+                                     : DateTimeOffset.MinValue);
 
         }
 
@@ -114,16 +114,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tolerance">An optional tolerance (default: 1 second)</param>
 
         public static Boolean IsNotAfterWithinRange(this INotBeforeNotAfter  NotBeforeNotAfter,
-                                                    DateTime                 Timestamp,
+                                                    DateTimeOffset           Timestamp,
                                                     TimeSpan?                Tolerance   = null)
         {
 
             var tolerance  = Tolerance                  ?? TimeSpan.FromSeconds(1);
-            var notAfter   = NotBeforeNotAfter.NotAfter ?? DateTime.MaxValue;
+            var notAfter   = NotBeforeNotAfter.NotAfter ?? DateTimeOffset.MaxValue;
 
-            return Timestamp <= ((DateTime.MaxValue - notAfter) > tolerance
+            return Timestamp <= ((DateTimeOffset.MaxValue - notAfter) > tolerance
                                      ? notAfter.Add(tolerance)
-                                     : DateTime.MaxValue);
+                                     : DateTimeOffset.MaxValue);
 
         }
 
@@ -143,14 +143,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The optional timestamp when this object becomes active/valid.
         /// Typically used for a new object that already exists, before it becomes active/valid.
         /// </summary>
-        public DateTime?  NotBefore    { get; }
+        public DateTimeOffset?  NotBefore    { get; }
 
         /// <summary>
         /// The optional timestamp after which this object is no longer active/valid.
         /// Typically used when an object is is replaced automatically with a new version
         /// of the object after this timestamp has passed.
         /// </summary>
-        public DateTime?  NotAfter     { get; }
+        public DateTimeOffset?  NotAfter     { get; }
 
 
     }

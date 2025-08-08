@@ -46,17 +46,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The start time.
         /// </summary>
-        public DateTime   StartTime    { get; }
+        public DateTimeOffset   StartTime    { get; }
 
         /// <summary>
         /// The end time.
         /// </summary>
-        public DateTime?  EndTime      { get; set; }
+        public DateTimeOffset?  EndTime      { get; set; }
 
         /// <summary>
         /// The duration.
         /// </summary>
-        public TimeSpan? Duration
+        public TimeSpan?        Duration
 
             => EndTime.HasValue
                    ? EndTime.Value - StartTime
@@ -71,8 +71,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="StartTime">The start time.</param>
         /// <param name="EndTime">The end time.</param>
-        public StartEndDateTime(DateTime   StartTime,
-                                DateTime?  EndTime = null)
+        public StartEndDateTime(DateTimeOffset   StartTime,
+                                DateTimeOffset?  EndTime = null)
         {
 
             if (EndTime.HasValue && StartTime > EndTime)

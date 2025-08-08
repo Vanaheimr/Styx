@@ -33,14 +33,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #region (class) Things
 
-        public class Things(String     Name,
-                            DateTime?  NotBefore,
-                            DateTime?  NotAfter) : INotBeforeNotAfter
+        public class Things(String           Name,
+                            DateTimeOffset?  NotBefore,
+                            DateTimeOffset?  NotAfter) : INotBeforeNotAfter
         {
 
-            public String     Name         { get; } = Name;
-            public DateTime?  NotBefore    { get; } = NotBefore;
-            public DateTime?  NotAfter     { get; } = NotAfter;
+            public String           Name         { get; } = Name;
+            public DateTimeOffset?  NotBefore    { get; } = NotBefore;
+            public DateTimeOffset?  NotAfter     { get; } = NotAfter;
 
         }
 

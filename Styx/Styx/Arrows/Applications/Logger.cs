@@ -43,13 +43,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Log(Timestamp, LogLevel, params Arguments)
 
-        public void Log(DateTime Timestamp, LogLevel LogLevel, params Object[] Arguments)
+        public void Log(DateTimeOffset Timestamp, LogLevel LogLevel, params Object[] Arguments)
         {
-
-            var OnOutputLocal = OnOutput;
-            if (OnOutputLocal != null)
-                OnOutputLocal(Timestamp, LogLevel, Arguments);
-
+            OnOutput?.Invoke(Timestamp, LogLevel, Arguments);
         }
 
         #endregion
@@ -73,13 +69,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Log(Timestamp, Topic, params Arguments)
 
-        public void Log(DateTime Timestamp, TEnum Topic, params Object[] Arguments)
+        public void Log(DateTimeOffset Timestamp, TEnum Topic, params Object[] Arguments)
         {
-
-            var OnOutputLocal = OnOutput;
-            if (OnOutputLocal != null)
-                OnOutputLocal(Timestamp, Topic, Arguments);
-
+            OnOutput?.Invoke(Timestamp, Topic, Arguments);
         }
 
         #endregion

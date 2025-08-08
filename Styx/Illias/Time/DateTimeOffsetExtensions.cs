@@ -50,6 +50,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region IsEqualToWithinTolerance(this Timestamp1, Timestamp2, Tolerance = 1 second)
+
+        /// <summary>
+        /// Compares two timestamps with a specified tolerance.
+        /// </summary>
+        /// <param name="Timestamp1">The first timestamp.</param>
+        /// <param name="Timestamp2">The second timestamp.</param>
+        /// <param name="Tolerance">An optional tolerance within which the timestamps are considered equal (default: 1 second).</param>
+        public static Boolean IsEqualToWithinTolerance(this DateTimeOffset  Timestamp1,
+                                                       DateTimeOffset       Timestamp2,
+                                                       TimeSpan?            Tolerance   = null)
+
+            => Math.Abs((Timestamp1 - Timestamp2).Ticks) <= (Tolerance ?? TimeSpan.FromSeconds(1)).Ticks;
+
+        #endregion
+
+
         #region ToISO8601(this DateTimeOffset, Fractions = true)
 
         /// <summary>
@@ -83,6 +100,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ToRFC1123(this DateTime)
+
+        /// <summary>
+        /// Convert the given DateTime object to an RFC 1123 datetime string.
+        /// </summary>
+        /// <param name="DateTime">A DateTime object.</param>
+        /// <returns>The DateTime formatted as e.g. "Wed, 24 Nov 2016 09:44:55 GMT"</returns>
+        public static String ToRFC1123(this DateTimeOffset DateTime)
+
+            => DateTime.ToUniversalTime().ToString("R");
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a DateTime object.
+        /// </summary>
+        /// <param name="Text">A text representation of a DateTime object.</param>
+        public static DateTimeOffset? TryParse(String Text)
+        {
+
+            if (DateTimeOffset.TryParse(Text, out var dateTime))
+                return dateTime;
+
+            return null;
+
+        }
+
+        #endregion
 
     }
 

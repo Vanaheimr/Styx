@@ -305,7 +305,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           IEnumerable<Signature23>?  Signatures     = default,
                           JObject?                 CustomData     = null,
                           UserDefinedDictionary?   InternalData   = null,
-                          DateTime?                LastChange     = null,
+                          DateTimeOffset?          LastChange     = null,
                           String?                  DataSource     = default)
 
             : base(CustomData,
@@ -669,8 +669,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// <param name="LastChange">The timestamp of the last changes within this entity. Can e.g. be used as a HTTP ETag.</param>
             public Builder(TId                        Id,
                            JSONLDContext              JSONLDContext,
-                           DateTime?                  Created        = null,
-                           DateTime?                  LastChange     = null,
+                           DateTimeOffset?            Created        = null,
+                           DateTimeOffset?            LastChange     = null,
                            IEnumerable<Signature23>?  Signatures     = null,
                            JObject?                   CustomData     = null,
                            UserDefinedDictionary?     InternalData   = null,
@@ -686,7 +686,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 this.Id              = Id;
                 this.JSONLDContext   = JSONLDContext;
                 this.Signatures      = Signatures is not null
-                                           ? new HashSet<Signature23>(Signatures)
+                                           ? [.. Signatures]
                                            : [];
                 this.DataSource      = DataSource;
 

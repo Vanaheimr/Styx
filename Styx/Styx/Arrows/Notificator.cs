@@ -455,7 +455,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
 
 
-    public delegate void AggregatedNotificationEventHandler<T>(DateTime DateTime, T Message);
+    public delegate void AggregatedNotificationEventHandler<T>(DateTimeOffset DateTime, T Message);
 
     public class AggregatedNotificator<T>
     {
@@ -504,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
             lock (ListOfT)
             {
-                NewListOfT = new List<T>(ListOfT);
+                NewListOfT = [.. ListOfT];
                 ListOfT.Clear();
             }
 

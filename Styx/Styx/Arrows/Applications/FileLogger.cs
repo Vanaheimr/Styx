@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -99,7 +95,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Log(Timestamp, Topics, params Arguments)
 
-        public void Log(DateTime Timestamp, TEnum Topics, params Object[] Arguments)
+        public void Log(DateTimeOffset Timestamp, TEnum Topics, params Object[] Arguments)
         {
 
             LogfileWriter.WriteLine(Timestamp + " - " + Arguments.Select(v => v.ToString()).AggregateOrDefault((a, b) => a + ", " + b, String.Empty));
