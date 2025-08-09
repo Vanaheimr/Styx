@@ -59,7 +59,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion 
 
-        #region LogException(Exception, Source)
+
+        #region LogException (Exception, Source)
 
         /// <summary>
         /// Write the current timestamp and given exception to Debug.
