@@ -40,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Log(params String[] Text)
         {
             if (Text.IsNeitherNullNorEmpty())
-                Debug.WriteLine(String.Concat("[", Timestamp.Now, "] ", String.Concat(Text)));
+                Debug.WriteLine($"[{Timestamp.Now}] ", String.Concat(Text));
         }
 
         #endregion
@@ -54,39 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void LogT(params String[] Text)
         {
             if (Text.IsNeitherNullNorEmpty())
-                Debug.WriteLine(String.Concat("[", Timestamp.Now, " T:", Thread.CurrentThread.ManagedThreadId, "] ", String.Concat(Text)));
-        }
-
-        #endregion
-
-        #region Log(Message, Exception)
-
-        /// <summary>
-        /// Write the current timestamp and given exception to Debug.
-        /// </summary>
-        /// <param name="Message">An exception message..</param>
-        /// <param name="Exception">The exception.</param>
-        public static void Log(String Message, Exception Exception)
-        {
-            if (Exception is not null)
-                Debug.WriteLine(String.Concat("[", Timestamp.Now, "] ", Message ?? "", Environment.NewLine, Exception.Message, Environment.NewLine,
-                                              Exception.StackTrace, Environment.NewLine));
-        }
-
-        #endregion
-
-        #region Log(Exception, Source)
-
-        /// <summary>
-        /// Write the current timestamp and given exception to Debug.
-        /// </summary>
-        /// <param name="Exception">The exception.</param>
-        /// <param name="Source">The source of the exception.</param>
-        public static void Log(Exception Exception, String Source)
-        {
-            if (Exception is not null)
-                Debug.WriteLine(String.Concat("[", Timestamp.Now, "] ", Source ?? "", " led to an exception: ", Exception.Message, Environment.NewLine,
-                                              Exception.StackTrace, Environment.NewLine));
+                Debug.WriteLine($"[{Timestamp.Now}] T:{Environment.CurrentManagedThreadId}] ", String.Concat(Text));
         }
 
         #endregion
@@ -101,9 +69,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void LogException(Exception Exception, [CallerMemberName] String Source = "")
         {
             if (Exception is not null)
-                Debug.WriteLine(String.Concat("[", Timestamp.Now, "] ", Source ?? "", " led to an exception: ", Environment.NewLine,
-                                Exception.Message,    Environment.NewLine,
-                                Exception.StackTrace, Environment.NewLine));
+                Debug.WriteLine($"[{Timestamp.Now}] {Source ?? "?"} led to an exception: ", Environment.NewLine,
+                                                     Exception.Message,                     Environment.NewLine,
+                                                     Exception.StackTrace,                  Environment.NewLine);
         }
 
         #endregion
