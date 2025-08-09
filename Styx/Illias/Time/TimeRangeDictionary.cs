@@ -296,8 +296,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public IEnumerable<TKey> Keys
             => internalDictionary.Keys;
 
-        public IEnumerable<TValue> Values(DateTime?  Timestamp   = null,
-                                          TimeSpan?  Tolerance   = null)
+        public IEnumerable<TValue> Values(DateTimeOffset?  Timestamp   = null,
+                                          TimeSpan?        Tolerance   = null)
         {
 
             var results    = new List<TValue>();
