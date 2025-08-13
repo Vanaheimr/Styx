@@ -40,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Log(params String[] Text)
         {
             if (Text.IsNeitherNullNorEmpty())
-                Debug.WriteLine($"[{Timestamp.Now}] " + String.Concat(Text));
+                Debug.WriteLine($"[{Timestamp.Now.ToLocalTime():dd.MM.yyyy HH:mm:ss zzz}] " + String.Concat(Text));
         }
 
         #endregion
@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void LogT(params String[] Text)
         {
             if (Text.IsNeitherNullNorEmpty())
-                Debug.WriteLine($"[{Timestamp.Now}] T:{Environment.CurrentManagedThreadId}] " + String.Concat(Text));
+                Debug.WriteLine($"[{Timestamp.Now.ToLocalTime():dd.MM.yyyy HH:mm:ss zzz}] T:{Environment.CurrentManagedThreadId}] " + String.Concat(Text));
         }
 
         #endregion 
@@ -71,9 +71,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             Debug.WriteLine(
                 String.Concat(
-                    $"[{Timestamp.Now}] {Source ?? "?"} led to an exception: ", Environment.NewLine,
-                                         Exception.Message,                     Environment.NewLine,
-                                         Exception.StackTrace,                  Environment.NewLine
+                    $"[{Timestamp.Now.ToLocalTime():dd.MM.yyyy HH:mm:ss zzz}] {Source ?? "?"} led to an exception: ", Environment.NewLine,
+                                                                               Exception.Message,                     Environment.NewLine,
+                                                                               Exception.StackTrace,                  Environment.NewLine
                 )
             );
         }
