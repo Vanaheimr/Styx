@@ -46,10 +46,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate TResult  Parser            <TResult>(String  Input);
 
-    public delegate Boolean  TryParser         <TResult>(String  Input, out TResult?  Result);
-    public delegate Boolean  TryParser2        <TResult>(String  Input, out TResult?  Result, out String? ErrorResponse);
-    public delegate Boolean  TryParser3        <TResult>(String  Input, out TResult?  Result, out String? ErrorResponse, CustomJObjectParserDelegate<TResult>? CustomParser = null);
-    public delegate Boolean  TryParser4        <TResult>(String  Input, out TResult?  Result, OnExceptionDelegate OnException);
+    public delegate Boolean  TryParser         <TResult>(String  Input, [NotNullWhen(true)] out TResult? Result);
+    public delegate Boolean  TryParser2        <TResult>(String  Input, [NotNullWhen(true)] out TResult? Result, [NotNullWhen(false)] out String? ErrorResponse);
+    public delegate Boolean  TryParser3        <TResult>(String  Input, [NotNullWhen(true)] out TResult? Result, [NotNullWhen(false)] out String? ErrorResponse, CustomJObjectParserDelegate<TResult>? CustomParser = null);
+    public delegate Boolean  TryParser4        <TResult>(String  Input, [NotNullWhen(true)] out TResult? Result, OnExceptionDelegate OnException);
 
 
     public delegate Boolean  TryNumericParser  <TResult>(UInt64  Input, out TResult?  arg);
