@@ -18,10 +18,10 @@
 #region Usings
 
 using System.Text;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
