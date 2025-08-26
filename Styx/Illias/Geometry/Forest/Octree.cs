@@ -122,28 +122,28 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                 var _Count = (UInt64) EmbeddedVoxels.Count;
 
-                if (Subtree1 != null)
+                if (Subtree1 is not null)
                     _Count += Subtree1.Count;
 
-                if (Subtree2 != null)
+                if (Subtree2 is not null)
                     _Count += Subtree2.Count;
 
-                if (Subtree3 != null)
+                if (Subtree3 is not null)
                     _Count += Subtree3.Count;
 
-                if (Subtree4 != null)
+                if (Subtree4 is not null)
                     _Count += Subtree4.Count;
 
-                if (Subtree5 != null)
+                if (Subtree5 is not null)
                     _Count += Subtree5.Count;
 
-                if (Subtree6 != null)
+                if (Subtree6 is not null)
                     _Count += Subtree6.Count;
 
-                if (Subtree7 != null)
+                if (Subtree7 is not null)
                     _Count += Subtree7.Count;
 
-                if (Subtree8 != null)
+                if (Subtree8 is not null)
                     _Count += Subtree8.Count;
 
                 return _Count;
@@ -267,28 +267,28 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                 #region Check subtrees...
 
-                if      (Subtree1 != null && Subtree1.Contains(Voxel))
+                if      (Subtree1 is not null && Subtree1.Contains(Voxel))
                     Subtree1.Add(Voxel);
                 
-                else if (Subtree2 != null && Subtree2.Contains(Voxel))
+                else if (Subtree2 is not null && Subtree2.Contains(Voxel))
                     Subtree2.Add(Voxel);
                 
-                else if (Subtree3 != null && Subtree3.Contains(Voxel))
+                else if (Subtree3 is not null && Subtree3.Contains(Voxel))
                     Subtree3.Add(Voxel);
                 
-                else if (Subtree4 != null && Subtree4.Contains(Voxel))
+                else if (Subtree4 is not null && Subtree4.Contains(Voxel))
                     Subtree4.Add(Voxel);
 
-                else if (Subtree5 != null && Subtree5.Contains(Voxel))
+                else if (Subtree5 is not null && Subtree5.Contains(Voxel))
                     Subtree5.Add(Voxel);
 
-                else if (Subtree6 != null && Subtree6.Contains(Voxel))
+                else if (Subtree6 is not null && Subtree6.Contains(Voxel))
                     Subtree6.Add(Voxel);
 
-                else if (Subtree7 != null && Subtree7.Contains(Voxel))
+                else if (Subtree7 is not null && Subtree7.Contains(Voxel))
                     Subtree7.Add(Voxel);
 
-                else if (Subtree8 != null && Subtree8.Contains(Voxel))
+                else if (Subtree8 is not null && Subtree8.Contains(Voxel))
                     Subtree8.Add(Voxel);
 
                 #endregion
@@ -307,7 +307,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Create Subtrees
 
-                    if (Subtree1 == null)
+                    if (Subtree1 is null)
                     {
                         Subtree1 = new Octree<T>(Left,
                                                  Top,
@@ -319,7 +319,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree2 == null)
+                    if (Subtree2 is null)
                     {
                         Subtree2 = new Octree<T>(Math.Add(Left,  Math.Div2(Width)),
                                                  Top,
@@ -331,7 +331,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree2.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree3 == null)
+                    if (Subtree3 is null)
                     {
                         Subtree3 = new Octree<T>(Left,
                                                  Math.Add(Top,   Math.Div2(Height)),
@@ -343,7 +343,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree3.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree4 == null)
+                    if (Subtree4 is null)
                     {
                         Subtree4 = new Octree<T>(Math.Add(Left,  Math.Div2(Width)),
                                                  Math.Add(Top,   Math.Div2(Height)),
@@ -355,7 +355,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree4.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree5 == null)
+                    if (Subtree5 is null)
                     {
                         Subtree5 = new Octree<T>(Left,
                                                  Top,
@@ -367,7 +367,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree5.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree6 == null)
+                    if (Subtree6 is null)
                     {
                         Subtree6 = new Octree<T>(Math.Add(Left,  Math.Div2(Width)),
                                                  Top,
@@ -379,7 +379,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree6.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree7 == null)
+                    if (Subtree7 is null)
                     {
                         Subtree7 = new Octree<T>(Left,
                                                  Math.Add(Top, Math.Div2(Height)),
@@ -391,7 +391,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree7.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree8 == null)
+                    if (Subtree8 is null)
                     {
                         Subtree8 = new Octree<T>(Math.Add(Left, Math.Div2(Width)),
                                                  Math.Add(Top, Math.Div2(Height)),
@@ -407,7 +407,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Fire OctreeSplit event
 
-                    if (OnTreeSplit != null)
+                    if (OnTreeSplit is not null)
                         OnTreeSplit(this, Voxel);
 
                     #endregion
@@ -476,7 +476,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (VoxelSelector == null)
+            if (VoxelSelector is null)
                 throw new ArgumentNullException("The given VoxelSelector must not be null!");
 
             #endregion
@@ -491,19 +491,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Voxel in Subtree1.Get(VoxelSelector))
                     yield return _Voxel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Voxel in Subtree2.Get(VoxelSelector))
                     yield return _Voxel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Voxel in Subtree3.Get(VoxelSelector))
                     yield return _Voxel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Voxel in Subtree4.Get(VoxelSelector))
                     yield return _Voxel;
 
@@ -524,7 +524,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Cube == null)
+            if (Cube is null)
                 throw new ArgumentNullException("The given cube must not be null!");
 
             #endregion
@@ -539,42 +539,42 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Cube))
                     foreach (var _Voxel in Subtree1.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Cube))
                     foreach (var _Voxel in Subtree2.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Overlaps(Cube))
                     foreach (var _Voxel in Subtree3.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Overlaps(Cube))
                     foreach (var _Voxel in Subtree4.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree5 != null)
+            if (Subtree5 is not null)
                 if (Subtree5.Overlaps(Cube))
                     foreach (var _Voxel in Subtree5.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree6 != null)
+            if (Subtree6 is not null)
                 if (Subtree6.Overlaps(Cube))
                     foreach (var _Voxel in Subtree6.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree7 != null)
+            if (Subtree7 is not null)
                 if (Subtree7.Overlaps(Cube))
                     foreach (var _Voxel in Subtree7.Get(Cube))
                         yield return _Voxel;
 
-            if (Subtree8 != null)
+            if (Subtree8 is not null)
                 if (Subtree8.Overlaps(Cube))
                     foreach (var _Voxel in Subtree8.Get(Cube))
                         yield return _Voxel;
@@ -596,7 +596,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             
             #region Initial Checks
 
-            if (Voxel == null)
+            if (Voxel is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
             #endregion
@@ -609,35 +609,35 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Contains(Voxel))
                     Subtree1.Remove(Voxel);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Contains(Voxel))
                     Subtree2.Remove(Voxel);
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Contains(Voxel))
                     Subtree3.Remove(Voxel);
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Contains(Voxel))
                     Subtree4.Remove(Voxel);
 
-            if (Subtree5 != null)
+            if (Subtree5 is not null)
                 if (Subtree5.Contains(Voxel))
                     Subtree5.Remove(Voxel);
 
-            if (Subtree6 != null)
+            if (Subtree6 is not null)
                 if (Subtree6.Contains(Voxel))
                     Subtree6.Remove(Voxel);
 
-            if (Subtree7 != null)
+            if (Subtree7 is not null)
                 if (Subtree7.Contains(Voxel))
                     Subtree7.Remove(Voxel);
 
-            if (Subtree8 != null)
+            if (Subtree8 is not null)
                 if (Subtree8.Contains(Voxel))
                     Subtree8.Remove(Voxel);
 
@@ -658,7 +658,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Cube == null)
+            if (Cube is null)
                 throw new ArgumentNullException("The given cube must not be null!");
 
             #endregion
@@ -683,35 +683,35 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Cube))
                     Subtree1.Remove(Cube);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Cube))
                     Subtree2.Remove(Cube);
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Overlaps(Cube))
                     Subtree3.Remove(Cube);
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Overlaps(Cube))
                     Subtree4.Remove(Cube);
 
-            if (Subtree5 != null)
+            if (Subtree5 is not null)
                 if (Subtree5.Overlaps(Cube))
                     Subtree5.Remove(Cube);
 
-            if (Subtree6 != null)
+            if (Subtree6 is not null)
                 if (Subtree6.Overlaps(Cube))
                     Subtree6.Remove(Cube);
 
-            if (Subtree7 != null)
+            if (Subtree7 is not null)
                 if (Subtree7.Overlaps(Cube))
                     Subtree7.Remove(Cube);
 
-            if (Subtree8 != null)
+            if (Subtree8 is not null)
                 if (Subtree8.Overlaps(Cube))
                     Subtree8.Remove(Cube);
 
@@ -733,19 +733,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Voxel in EmbeddedVoxels)
                 yield return _Voxel;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Voxel in Subtree1)
                     yield return _Voxel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Voxel in Subtree2)
                     yield return _Voxel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Voxel in Subtree3)
                     yield return _Voxel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Voxel in Subtree4)
                     yield return _Voxel;
 
@@ -760,19 +760,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Voxel in EmbeddedVoxels)
                 yield return _Voxel;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Voxel in Subtree1)
                     yield return _Voxel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Voxel in Subtree2)
                     yield return _Voxel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Voxel in Subtree3)
                     yield return _Voxel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Voxel in Subtree4)
                     yield return _Voxel;
 

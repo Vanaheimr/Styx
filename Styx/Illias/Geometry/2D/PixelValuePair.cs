@@ -87,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) PixelValuePair1 == null) || ((Object) PixelValuePair2 == null))
+            if (((Object) PixelValuePair1 is null) || ((Object) PixelValuePair2 is null))
                 return false;
 
             return PixelValuePair1.Equals(PixelValuePair2);
@@ -124,17 +124,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IPixelValuePair<T, TValue>.
             var IPixelValuePair = (IPixelValuePair<T, TValue>) Object;
-            if ((Object) IPixelValuePair != null)
+            if ((Object) IPixelValuePair is not null)
                 return IPixelValuePair.CompareTo(this);
 
             // Check if the given object is an IPixel<T>.
             var IPixel = (IPixel<T>) Object;
-            if ((Object) IPixel != null)
+            if ((Object) IPixel is not null)
                 return IPixel.CompareTo(this);
 
             throw new ArgumentException("The given object is neither a PixelValuePair<T, TValue> nor a Pixel<T>!");
@@ -170,17 +170,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an IPixelValuePair<T, TValue>.
             var IPixelValuePair = (IPixelValuePair<T, TValue>) Object;
-            if ((Object) IPixelValuePair != null)
+            if ((Object) IPixelValuePair is not null)
                 return this.Equals(IPixelValuePair);
 
             // Check if the given object is an IPixel<T>.
             var IPixel = (IPixel<T>) Object;
-            if ((Object) IPixel != null)
+            if ((Object) IPixel is not null)
                 return this.Equals(IPixel);
 
             return false;
@@ -199,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IPixelValuePair<T, TValue> IPixelValuePair)
         {
 
-            if ((Object) IPixelValuePair == null)
+            if ((Object) IPixelValuePair is null)
                 return false;
 
             return X.Equals(IPixelValuePair.X) &&

@@ -134,7 +134,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.ISOCode         = ISOCode.Trim();
             this.Numeric         = Numeric;
             this.Symbol          = Symbol?.Trim();
-            this.SymbolLocation  = this.Symbol != null ? SymbolLocation : Symbol_Location.NoSymbol;
+            this.SymbolLocation  = this.Symbol is not null ? SymbolLocation : Symbol_Location.NoSymbol;
             this.Countries       = Countries;
 
         }

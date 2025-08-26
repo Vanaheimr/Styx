@@ -38,7 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static ApplicationRunTypes GetRunType()
         {
 
-            if (Type.GetType("Mono.Runtime") != null)
+            if (Type.GetType("Mono.Runtime") is not null)
             {
 
                 // It's a console application if 'bool Mono.Unix.Native.Syscall.isatty(0)' in Mono.Posix.dll

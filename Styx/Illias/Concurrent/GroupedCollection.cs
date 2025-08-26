@@ -80,10 +80,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException("Key", "The parameter Key must not be null!");
 
-            if (Group == null)
+            if (Group is null)
                 throw new ArgumentNullException("Group", "The parameter Group must not be null!");
 
             #endregion

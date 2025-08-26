@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             if (SourcePipe.MoveNext())
@@ -76,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                 _CurrentElement = SourcePipe.Current;
 
-                if (Delegate != null)
+                if (Delegate is not null)
                     Delegate(_CurrentElement);
 
                 return true;

@@ -179,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EventTrackingId1 == null) || ((Object) EventTrackingId2 == null))
+            if (((Object) EventTrackingId1 is null) || ((Object) EventTrackingId2 is null))
                 return false;
 
             return EventTrackingId1.Equals(EventTrackingId2);
@@ -212,7 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator < (EventTracking_Id EventTrackingId1, EventTracking_Id EventTrackingId2)
         {
 
-            if ((Object) EventTrackingId1 == null)
+            if ((Object) EventTrackingId1 is null)
                 throw new ArgumentNullException("The given EventTrackingId1 must not be null!");
 
             return EventTrackingId1.CompareTo(EventTrackingId2) < 0;
@@ -245,7 +245,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator > (EventTracking_Id EventTrackingId1, EventTracking_Id EventTrackingId2)
         {
 
-            if ((Object) EventTrackingId1 == null)
+            if ((Object) EventTrackingId1 is null)
                 throw new ArgumentNullException("The given EventTrackingId1 must not be null!");
 
             return EventTrackingId1.CompareTo(EventTrackingId2) > 0;
@@ -280,7 +280,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is EventTracking_Id EventTrackingId))
@@ -301,7 +301,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(EventTracking_Id EventTrackingId)
         {
 
-            if ((Object) EventTrackingId == null)
+            if ((Object) EventTrackingId is null)
                 throw new ArgumentNullException(nameof(EventTrackingId), "The given event tracking identification must not be null!");
 
             return String.Compare(InternalId, EventTrackingId.InternalId, StringComparison.OrdinalIgnoreCase);
@@ -324,7 +324,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is EventTracking_Id EventTrackingId))

@@ -73,7 +73,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             SSSSS = null;
             ErrorResponse = null;
 
-            if (JSON != null)
+            if (JSON is not null)
             {
 
                 if (JSON.Count == 2)

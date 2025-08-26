@@ -115,7 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             while (true)
             {
 
-                if (_CurrentEnumerator == null)
+                if (_CurrentEnumerator is null)
                     return false;
 
                 // Move to the next element of the current enumerator

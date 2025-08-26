@@ -249,7 +249,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                if (ByteArray == null || ByteArray.Length == 0)
+                if (ByteArray is null || ByteArray.Length == 0)
                     return String.Empty;
 
                 var result          = new StringBuilder((ByteArray.Length + 7) * 8 / 5);
@@ -959,7 +959,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _Delegate = Delegate;
 
-            if (String.IsNullOrEmpty(GivenString) && _Delegate != null)
+            if (String.IsNullOrEmpty(GivenString) && _Delegate is not null)
                 _Delegate(GivenString);
 
         }
@@ -981,7 +981,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _Delegate = Delegate;
 
-            if (!String.IsNullOrEmpty(GivenString) && _Delegate != null)
+            if (!String.IsNullOrEmpty(GivenString) && _Delegate is not null)
                 _Delegate(GivenString);
 
         }
@@ -1055,7 +1055,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Text == null)
+            if (Text is null)
                 yield break;
 
             #endregion
@@ -1100,10 +1100,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Initial checks
 
-            if (Text == null)
+            if (Text is null)
                 yield break;
 
-            if (Delimiters == null || Delimiters.Length == 0)
+            if (Delimiters is null || Delimiters.Length == 0)
                 throw new ArgumentNullException("The given delimiter must not be null or empty!");
 
             String[] Tokens;
@@ -1145,7 +1145,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                                            if (tuple.Length == 1)
                                            {
-                                               if (tuple[0] != null)
+                                               if (tuple[0] is not null)
                                                {
                                                    if (!Dictionary.ContainsKey(tuple[0].Trim()))
                                                        Dictionary.Add(tuple[0].Trim(), "");
@@ -1156,7 +1156,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                                            else if (tuple.Length == 2)
                                            {
-                                               if (tuple[0] != null)
+                                               if (tuple[0] is not null)
                                                {
                                                    if (!Dictionary.ContainsKey(tuple[0].Trim()))
                                                        Dictionary.Add(tuple[0].Trim(), tuple[1]);
@@ -1224,7 +1224,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String                    Text)
         {
 
-            if (Strings == null)
+            if (Strings is null)
                 return false;
 
             foreach (var text in Strings)

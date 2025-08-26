@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String? UnsecureString(this SecureString SecureText)
         {
 
-            if (SecureText == null)
+            if (SecureText is null)
                 throw new ArgumentNullException(nameof(SecureText), "The given secure text must not be null!");
 
             var UnmanagedString = IntPtr.Zero;

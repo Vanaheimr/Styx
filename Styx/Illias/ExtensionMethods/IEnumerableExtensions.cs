@@ -651,10 +651,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //public static T When<T>(this T Object, Func<T, Boolean> ConditionDelegate)
         //{
 
-        //    if (ConditionDelegate == null)
+        //    if (ConditionDelegate is null)
         //        throw new ArgumentNullException("ConditionDelegate", "The ConditionDelegate must not be null!");
 
-        //    if (Object == null)
+        //    if (Object is null)
         //        return default(T);
 
         //    if (ConditionDelegate(Object))
@@ -1143,7 +1143,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //public static HashSet<T> ToHashSet2<T>(this IEnumerable<T> Enumeration)
         //{
 
-        //    if (Enumeration == null)
+        //    if (Enumeration is null)
         //        return new HashSet<T>();
 
         //    var All = Enumeration.ToArray();

@@ -211,7 +211,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             var GeoCoordinates = GeoJSON?["features"]?[FeatureId]?["geometry"]?["coordinates"]?[ObjectId];
 
-            if (GeoCoordinates == null)
+            if (GeoCoordinates is null)
                 return new GeoBoundingBox(Latitude.Parse(0), Longitude.Parse(0), Altitude.Parse(0),
                                           Latitude.Parse(0), Longitude.Parse(0), Altitude.Parse(0));
 
@@ -336,7 +336,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static IList<Point> DouglasPeuckerReduction(IList<Point> Points, double Tolerance)
         {
 
-            if (Points == null || Points.Count < 3)
+            if (Points is null || Points.Count < 3)
                 return Points;
 
             int firstPoint = 0;

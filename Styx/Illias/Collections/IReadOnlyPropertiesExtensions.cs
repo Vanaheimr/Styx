@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
             #endregion
@@ -87,10 +87,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -100,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
                 OnSuccess(_Value);
 
-            else if (OnError != null)
+            else if (OnError is not null)
                 OnError(Key);
 
         }
@@ -129,10 +129,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -142,7 +142,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
                 OnSuccess(Key, _Value);
 
-            else if (OnError != null)
+            else if (OnError is not null)
                 OnError(Key);
 
         }
@@ -172,10 +172,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -185,7 +185,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
                 return OnSuccessFunc(_Value);
 
-            if (OnErrorFunc != null)
+            if (OnErrorFunc is not null)
                 return OnErrorFunc(Key);
 
             return default(TResult);
@@ -216,10 +216,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -229,7 +229,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
                 return OnSuccessFunc(Key, _Value);
 
-            if (OnErrorFunc != null)
+            if (OnErrorFunc is not null)
                 return OnErrorFunc(Key);
 
             return default(TResult);
@@ -258,7 +258,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
             #endregion
@@ -290,7 +290,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
             #endregion
@@ -321,7 +321,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
             #endregion
@@ -366,10 +366,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -381,7 +381,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 if (_Value.GetType().Equals(PropertyType))
                     OnSuccess(_Value);
             }
-            else if (OnError != null)
+            else if (OnError is not null)
                 OnError(Key);
 
         }
@@ -412,10 +412,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -427,7 +427,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 if (_Value.GetType().Equals(PropertyType))
                     OnSuccess(Key, _Value);
             }
-            else if (OnError != null)
+            else if (OnError is not null)
                 OnError(Key);
 
         }
@@ -457,10 +457,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -499,10 +499,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -732,13 +732,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -770,13 +770,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -808,13 +808,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
-            if (OnSuccess == null)
+            if (OnSuccess is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -846,13 +846,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -885,13 +885,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -926,13 +926,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
-            if (OnSuccessFunc == null)
+            if (OnSuccessFunc is null)
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             #endregion
@@ -963,7 +963,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
             #endregion
@@ -990,7 +990,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (KeyValueFilter == null)
+            if (KeyValueFilter is null)
                 throw new ArgumentNullException("The given KeyValueFilter must not be null!");
 
             #endregion
@@ -1064,10 +1064,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -1093,10 +1093,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -1108,7 +1108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 
                 List = _Value as List<Object>;
                 
-                if (List != null)
+                if (List is not null)
                     return true;
 
             }
@@ -1130,10 +1130,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -1158,10 +1158,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IReadOnlyProperties == null)
+            if (IReadOnlyProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -1173,7 +1173,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
                 Set = _Value as HashedSet<Object>;
 
-                if (Set != null)
+                if (Set is not null)
                     return true;
 
             }

@@ -175,10 +175,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var _ConcurrentBag = new ConcurrentBag<String>();
 
-            if (Paths == null)
+            if (Paths is null)
                 Paths = new List<String> { "." };
 
-            if (FileExtensions == null)
+            if (FileExtensions is null)
                 FileExtensions = new List<String> { ".dll", ".exe" };
 
             foreach (var _Path in Paths)
@@ -207,7 +207,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // Seems to be a mono bug!
-                if (_File != null)
+                if (_File is not null)
                 {
 
                    // Console.WriteLine(_File);
@@ -215,7 +215,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     try
                     {
 
-                        if (_File != null)
+                        if (_File is not null)
                             foreach (var _ActualType in Assembly.LoadFrom(_File).GetTypes())
                             {
 
@@ -226,7 +226,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                                     var _ActualTypeGetInterfaces = _ActualType.GetInterfaces();
 
-                                    if (_ActualTypeGetInterfaces != null)
+                                    if (_ActualTypeGetInterfaces is not null)
                                     {
 
                                         foreach (var _Interface in _ActualTypeGetInterfaces)
@@ -242,14 +242,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                                                     var __Id = _ActualType.Name;
 
-                                                    if (IdentificatorFunc != null)
+                                                    if (IdentificatorFunc is not null)
                                                     {
                                                         var _T = Activator.CreateInstance(_ActualType) as TClass;
-                                                        if (_T != null)
+                                                        if (_T is not null)
                                                             __Id = IdentificatorFunc(_T);
                                                     }
 
-                                                    if (__Id != null && __Id != String.Empty)
+                                                    if (__Id is not null && __Id != String.Empty)
                                                         _TypeLookup.TryAdd(__Id, _ActualType);
 
                                                 }

@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         public UInt64 RemoveWhere(Predicate<T> Match)
         {
 
-            if (Match == null)
+            if (Match is null)
                 throw new ArgumentNullException("match");
 
             var Candidates = new List<T>();
@@ -99,7 +99,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public void IntersectWith(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             var other_set = ToSet(other);
@@ -109,7 +109,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public void ExceptWith(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             foreach (var item in other)
@@ -118,7 +118,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public bool Overlaps(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             foreach (var item in other)
@@ -130,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public bool SetEquals(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             var other_set = ToSet(other);
@@ -147,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             foreach (var item in ToSet(other))
@@ -160,7 +160,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             var set = enumerable as HashedSet<T>;
 
-            if (set == null)
+            if (set is null)
                 set = new HashedSet<T>(enumerable);
 
             return set;
@@ -169,7 +169,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public void UnionWith(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             foreach (var item in other)
@@ -178,7 +178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         bool CheckIsSubsetOf(HashedSet<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             foreach (var item in this)
@@ -190,7 +190,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             if (InternalDictionary.Count == 0)
@@ -206,7 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             if (InternalDictionary.Count == 0)
@@ -222,7 +222,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         bool CheckIsSupersetOf(HashedSet<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             foreach (var item in other)
@@ -234,7 +234,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             var other_set = ToSet(other);
@@ -247,7 +247,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            if (other == null)
+            if (other is null)
                 throw new ArgumentNullException("other");
 
             var other_set = ToSet(other);

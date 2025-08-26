@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void CheckNull(this Object Object, String ObjectName)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(ObjectName, "The given '" + ObjectName + "' must not be null!");
 
         }

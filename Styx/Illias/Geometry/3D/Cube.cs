@@ -165,22 +165,22 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Left   == null)
+            if (Left   is null)
                 throw new ArgumentNullException("The given left coordinate must not be null!");
 
-            if (Top    == null)
+            if (Top    is null)
                 throw new ArgumentNullException("The given top coordinate must not be null!");
 
-            if (Front  == null)
+            if (Front  is null)
                 throw new ArgumentNullException("The given front coordinate must not be null!");
 
-            if (Right  == null)
+            if (Right  is null)
                 throw new ArgumentNullException("The given right coordinate must not be null!");
 
-            if (Bottom == null)
+            if (Bottom is null)
                 throw new ArgumentNullException("The given bottom coordinate must not be null!");
 
-            if (Behind == null)
+            if (Behind is null)
                 throw new ArgumentNullException("The given behind coordinate must not be null!");
 
             #endregion
@@ -223,10 +223,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Voxel1 == null)
+            if (Voxel1 is null)
                 throw new ArgumentNullException("The given first voxel must not be null!");
 
-            if (Voxel2 == null)
+            if (Voxel2 is null)
                 throw new ArgumentNullException("The given second voxel must not be null!");
 
             #endregion
@@ -271,16 +271,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Voxel  == null)
+            if (Voxel  is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
-            if (Width  == null)
+            if (Width  is null)
                 throw new ArgumentNullException("The given width must not be null!");
 
-            if (Height == null)
+            if (Height is null)
                 throw new ArgumentNullException("The given height must not be null!");
 
-            if (Depth  == null)
+            if (Depth  is null)
                 throw new ArgumentNullException("The given depth must not be null!");
 
             #endregion
@@ -329,13 +329,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
-            if (z == null)
+            if (z is null)
                 throw new ArgumentNullException("The given z-coordinate must not be null!");
 
             #endregion
@@ -367,7 +367,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (IVoxel == null)
+            if (IVoxel is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
             #endregion
@@ -391,7 +391,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (ICube == null)
+            if (ICube is null)
                 throw new ArgumentNullException("The given cube must not be null!");
 
             #endregion
@@ -443,7 +443,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (ICube == null)
+            if (ICube is null)
                 throw new ArgumentNullException("The given cube must not be null!");
 
             #endregion
@@ -501,7 +501,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Cube1 == null) || ((Object) Cube2 == null))
+            if (((Object) Cube1 is null) || ((Object) Cube2 is null))
                 return false;
 
             return Cube1.Equals(Cube2);
@@ -539,12 +539,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Cube<T>.
             var CubeT = (Cube<T>) Object;
-            if ((Object) CubeT == null)
+            if ((Object) CubeT is null)
                 return false;
 
             return this.Equals(CubeT);
@@ -563,7 +563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(ICube<T> ICube)
         {
 
-            if ((Object) ICube == null)
+            if ((Object) ICube is null)
                 return false;
 
             return this.Left.  Equals(ICube.Left)   &&

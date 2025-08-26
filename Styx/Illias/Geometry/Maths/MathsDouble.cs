@@ -117,7 +117,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
         public Double Min(params Double[] Values)
         {
 
-            if (Values == null)
+            if (Values is null)
                 throw new ArgumentException("The given values must not be null!");
 
             if (Values.Length == 0)
@@ -147,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
         public Double Max(params Double[] Values)
         {
 
-            if (Values == null)
+            if (Values is null)
                 throw new ArgumentException("The given values must not be null!");
 
             if (Values.Length == 0)
@@ -178,7 +178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
         public Double Add(params Double[] Summands)
         {
 
-            if (Summands == null)
+            if (Summands is null)
                 throw new ArgumentException("The given summands must not be null!");
 
             if (Summands.Length == 0)
@@ -223,7 +223,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
         public Double Mul(params Double[] Multiplicators)
         {
 
-            if (Multiplicators == null)
+            if (Multiplicators is null)
                 throw new ArgumentException("The given multiplicators must not be null!");
 
             if (Multiplicators.Length == 0)

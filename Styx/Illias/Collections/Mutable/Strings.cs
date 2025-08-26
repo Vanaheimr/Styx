@@ -58,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return true;
 
         //    // If one is null, but not both, return false.
-        //    if (((Object) MultiString1 == null) || ((Object) MultiString2 == null))
+        //    if (((Object) MultiString1 is null) || ((Object) MultiString2 is null))
         //        return false;
 
         //    return MultiString1.Equals(MultiString2);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //public static Boolean operator < (MultiString MultiString1, MultiString MultiString2)
         //{
 
-        //    if ((Object) MultiString1 == null)
+        //    if ((Object) MultiString1 is null)
         //        throw new ArgumentNullException("The given MultiString1 must not be null!");
 
         //    return MultiString1.CompareTo(MultiString2) < 0;
@@ -128,7 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //public static Boolean operator > (MultiString MultiString1, MultiString MultiString2)
         //{
 
-        //    if ((Object) MultiString1 == null)
+        //    if ((Object) MultiString1 is null)
         //        throw new ArgumentNullException("The given MultiString1 must not be null!");
 
         //    return MultiString1.CompareTo(MultiString2) > 0;
@@ -165,12 +165,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an MultiString.
             var MultiString = Object as MultiString;
-            if ((Object) MultiString == null)
+            if ((Object) MultiString is null)
                 throw new ArgumentException("The given object is not a MultiString!");
 
             return CompareTo(MultiString);
@@ -188,7 +188,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(MultiString OtherMultiString)
         {
 
-            if ((Object) OtherMultiString == null)
+            if ((Object) OtherMultiString is null)
                 throw new ArgumentNullException("The given MultiString must not be null!");
 
             // Compare the length of the MultiStrings
@@ -222,12 +222,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an MultiString.
             var MultiString = Object as MultiString;
-            if ((Object) MultiString == null)
+            if ((Object) MultiString is null)
                 return false;
 
             return this.Equals(MultiString);

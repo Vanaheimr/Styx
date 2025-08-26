@@ -126,7 +126,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests
         public static void PrintPerformance(String myName, Nullable<Int32> myEvents, String myEventName, Double myTimeInMilliseconds)
         {
             
-            if (myEvents != null)
+            if (myEvents is not null)
                 Console.WriteLine("\t" + myName + ": " + myEvents + " " + myEventName + " in " + myTimeInMilliseconds + "ms");
 
             else

@@ -91,7 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             while (true)
             {
 
-                if (CurrentPipe == null)
+                if (CurrentPipe is null)
                 {
 
                     if (!SourcePipe2.MoveNext())

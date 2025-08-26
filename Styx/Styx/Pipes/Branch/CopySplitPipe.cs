@@ -66,7 +66,7 @@
 //            public override Boolean MoveNext()
 //            {
 
-//                if (_InputEnumerator == null || _Queue == null)
+//                if (_InputEnumerator is null || _Queue is null)
 //                    return false;
 
 //                while (true)
@@ -168,7 +168,7 @@
 //        public override Boolean MoveNext()
 //        {
 
-//            if (_InputEnumerator == null)
+//            if (_InputEnumerator is null)
 //                return false;
 
 //            if (_InputEnumerator.MoveNext())

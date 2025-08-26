@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -104,10 +104,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given rectangle must not be null!");
 
             #endregion
@@ -134,10 +134,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given first pixel must not be null!");
 
-            if (Circle == null)
+            if (Circle is null)
                 throw new ArgumentNullException("The given first edgepixel must not be null!");
 
             #endregion

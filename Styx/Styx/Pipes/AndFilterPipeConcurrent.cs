@@ -93,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Concurrent
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())

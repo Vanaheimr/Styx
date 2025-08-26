@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                 var _InternalPipe = SourcePipe as IPipe;
 
-                if (_InternalPipe != null)
+                if (_InternalPipe is not null)
                 {
 
                     var _TmpSet     = new HashedSet<Object>();

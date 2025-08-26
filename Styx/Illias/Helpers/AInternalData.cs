@@ -678,7 +678,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             //    }
 
             //    public Boolean HasInternalData
-            //        => internalData != null && internalData.Count > 0;
+            //        => internalData is not null && internalData.Count > 0;
 
             //    public Boolean IsDefined(String  Key)
             //        => internalData.ContainsKey(Key);
@@ -728,7 +728,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             //                               Action<T>  ValueDelegate)
             //    {
 
-            //        if (ValueDelegate == null)
+            //        if (ValueDelegate is null)
             //            return;
 
             //        if (internalData.TryGetValue(Key, out Object? value) &&

@@ -53,7 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="ICollection">An optional ICollection to store the passed messages/objects.</param>
         public AggregatorArrow(ICollection<TMessage>? ICollection = null)
         {
-            if (ICollection == null)
+            if (ICollection is null)
                 SideEffectProtected = [];
             else
                 SideEffectProtected = ICollection;

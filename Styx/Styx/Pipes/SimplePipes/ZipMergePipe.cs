@@ -253,10 +253,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         private Func<Boolean> GetProcessingDelegate()
         {
 
-            if (SourcePipe1 == null || SourcePipe2 == null)
+            if (SourcePipe1 is null || SourcePipe2 is null)
                 return () => false;
 
-            if (ZipDelegate != null)
+            if (ZipDelegate is not null)
                 return () =>
                 {
 
@@ -274,7 +274,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                 };
 
-            if (CountedZipDelegate != null)
+            if (CountedZipDelegate is not null)
                 return () =>
                 {
 
@@ -495,10 +495,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         private Func<Boolean> GetProcessingDelegate()
         {
 
-            if (SourcePipe1 == null || SourcePipe2 == null || SourcePipe3 == null)
+            if (SourcePipe1 is null || SourcePipe2 is null || SourcePipe3 is null)
                 return () => false;
 
-            if (ZipDelegate != null)
+            if (ZipDelegate is not null)
                 return () =>
                 {
 
@@ -517,7 +517,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                 };
 
-            if (CountedZipDelegate != null)
+            if (CountedZipDelegate is not null)
                 return () =>
                 {
 

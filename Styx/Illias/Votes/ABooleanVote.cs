@@ -88,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Votes
         public ABooleanVote(VoteEvaluator<Boolean> VoteEvaluator)
         {
 
-            if (VoteEvaluator == null)
+            if (VoteEvaluator is null)
                 throw new ArgumentNullException("VoteEvaluator", "The given VoteEvaluator must not be null!");
 
             this.VoteEvaluator = VoteEvaluator;

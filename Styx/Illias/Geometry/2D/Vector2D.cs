@@ -107,10 +107,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (X == null)
+            if (X is null)
                 throw new ArgumentNullException("The given x-component must not be null!");
 
-            if (Y == null)
+            if (Y is null)
                 throw new ArgumentNullException("The given y-component must not be null!");
 
             #endregion
@@ -139,16 +139,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (X1   == null)
+            if (X1   is null)
                 throw new ArgumentNullException("The given left-coordinate must not be null!");
 
-            if (Y1    == null)
+            if (Y1    is null)
                 throw new ArgumentNullException("The given top-coordinate must not be null!");
 
-            if (X2  == null)
+            if (X2  is null)
                 throw new ArgumentNullException("The given right-coordinate must not be null!");
 
-            if (Y2 == null)
+            if (Y2 is null)
                 throw new ArgumentNullException("The given bottom-coordinate must not be null!");
 
             #endregion
@@ -175,10 +175,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel1 == null)
+            if (Pixel1 is null)
                 throw new ArgumentNullException("The first pixel must not be null!");
 
-            if (Pixel2 == null)
+            if (Pixel2 is null)
                 throw new ArgumentNullException("The second pixel must not be null!");
 
             #endregion
@@ -205,10 +205,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Vector1 == null)
+            if (Vector1 is null)
                 throw new ArgumentNullException("The first vector must not be null!");
 
-            if (Vector2 == null)
+            if (Vector2 is null)
                 throw new ArgumentNullException("The second vector must not be null!");
 
             #endregion
@@ -284,7 +284,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public IVector2D<T> Min(params IVector2D<T>[] Values)
         {
 
-            if (Values == null || Values.Length == 0)
+            if (Values is null || Values.Length == 0)
                 throw new ArgumentException("The given values must not be null or zero!");
 
             if (Values.Length == 1)
@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public IVector2D<T> Max(params IVector2D<T>[] Values)
         {
 
-            if (Values == null || Values.Length == 0)
+            if (Values is null || Values.Length == 0)
                 throw new ArgumentException("The given values must not be null or zero!");
 
             if (Values.Length == 1)
@@ -347,7 +347,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public IVector2D<T> Add(params IVector2D<T>[] Summands)
         {
 
-            if (Summands == null || Summands.Length == 0)
+            if (Summands is null || Summands.Length == 0)
                 throw new ArgumentException("The given summands must not be null!");
 
             if (Summands.Length == 1)
@@ -394,7 +394,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public IVector2D<T> Mul(params IVector2D<T>[] Multiplicators)
         {
 
-            if (Multiplicators == null || Multiplicators.Length == 0)
+            if (Multiplicators is null || Multiplicators.Length == 0)
                 throw new ArgumentException("The given multiplicators must not be null!");
 
             if (Multiplicators.Length == 1)
@@ -582,10 +582,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
             #endregion
@@ -612,7 +612,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Vector == null)
+            if (Vector is null)
                 throw new ArgumentNullException("The given vector must not be null!");
 
             #endregion
@@ -645,7 +645,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Vector1 == null) || ((Object) Vector2 == null))
+            if (((Object) Vector1 is null) || ((Object) Vector2 is null))
                 return false;
 
             return Vector1.Equals(Vector2);
@@ -683,12 +683,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Vector2D<T>.
             var VectorT = (Vector2D<T>) Object;
-            if ((Object) VectorT == null)
+            if ((Object) VectorT is null)
                 return false;
 
             return this.Equals(VectorT);
@@ -707,7 +707,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IVector2D<T> IVector)
         {
 
-            if ((Object) IVector == null)
+            if ((Object) IVector is null)
                 return false;
 
             return this.X.  Equals(IVector.X) &&

@@ -203,7 +203,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             : base(SourceElement)
 
         {
-            this.KeyValueFilter = (KeyValueFilter != null) ? KeyValueFilter : (k, v) => true;
+            this.KeyValueFilter = (KeyValueFilter is not null) ? KeyValueFilter : (k, v) => true;
         }
 
         #endregion
@@ -221,7 +221,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             : base(SourcePipe)
 
         {
-            this.KeyValueFilter = (KeyValueFilter != null) ? KeyValueFilter : (k, v) => true;
+            this.KeyValueFilter = (KeyValueFilter is not null) ? KeyValueFilter : (k, v) => true;
         }
 
         #endregion
@@ -242,12 +242,12 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             #region Process the key array
 
-            if (Keys != null)
+            if (Keys is not null)
             {
 
                 if (SourcePipe.MoveNext())
@@ -303,7 +303,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override String ToString()
         {
 
-            if (Keys != null)
+            if (Keys is not null)
                 return base.ToString() + "<" + Keys.Aggregate("", (a, b) => a.ToString() + " " + b.ToString()) + ">";
 
             return base.ToString();

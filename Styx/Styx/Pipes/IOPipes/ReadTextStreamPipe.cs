@@ -65,16 +65,16 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
-            if (_StreamReader == null)
+            if (_StreamReader is null)
             {
 
                 while (SourcePipe.MoveNext())
                 {
 
-                    if (SourcePipe.Current != null)
+                    if (SourcePipe.Current is not null)
                         continue;
 
                     _StreamReader = new StreamReader(SourcePipe.Current);
@@ -84,7 +84,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             }
 
-            if (_StreamReader != null)
+            if (_StreamReader is not null)
             {
 
                 do

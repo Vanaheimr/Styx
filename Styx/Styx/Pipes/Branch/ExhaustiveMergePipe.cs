@@ -86,7 +86,7 @@
 //        public override Boolean MoveNext()
 //        {
 
-//            if (_InputEnumerator == null)
+//            if (_InputEnumerator is null)
 //                return false;
 
 //            while (true)

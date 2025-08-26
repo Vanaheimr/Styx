@@ -115,7 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         {
 
-            if (GeoCoordinates == null)
+            if (GeoCoordinates is null)
                 throw new ArgumentNullException("GeoCoordinates");
 
             var StringBuilder = new StringBuilder("M ");

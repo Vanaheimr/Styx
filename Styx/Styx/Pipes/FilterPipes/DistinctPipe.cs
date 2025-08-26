@@ -69,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public DistinctPipe(IEndPipe<S> SourcePipe, IEqualityComparer<S> EqualityComparer = null)
             : base(SourcePipe)
         {
-            this.EqualityComparer  = (EqualityComparer != null) ? EqualityComparer : EqualityComparer<S>.Default;
+            this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;
             this.ValueHistory      = new HashedSet<S>();
         }
 
@@ -90,7 +90,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())

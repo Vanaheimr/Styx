@@ -88,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             if (Longitude_Start > Longitude_End)
                 throw new ArgumentException("");
 
-            if (PathAtZoomLevel == null || PathAtZoomLevel.Count == 0)
+            if (PathAtZoomLevel is null || PathAtZoomLevel.Count == 0)
                 throw new ArgumentException("");
 
             #endregion

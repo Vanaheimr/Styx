@@ -65,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         {
 
             this._Properties  = Properties ?? new Dictionary<String, Object>();
-            this._Features    = Features != null ? new List<AGeoJSONFeature>(Features) : new List<AGeoJSONFeature>();
+            this._Features    = Features is not null ? new List<AGeoJSONFeature>(Features) : new List<AGeoJSONFeature>();
 
         }
 
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             // "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
             // "timestamp": "2016-02-06T01:14:02Z",
 
-            if (GeoJSON != null)
+            if (GeoJSON is not null)
             {
                 foreach (var property in GeoJSON)
                 {
@@ -179,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static GeoJSON Parse(JObject GeoJSON)
         {
 
-            if (GeoJSON == null)
+            if (GeoJSON is null)
                 throw new ArgumentNullException(nameof(GeoJSON), "The given GeoJSON must not be null!");
 
             #region Parse features...

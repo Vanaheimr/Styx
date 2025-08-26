@@ -88,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) TriangleValuePair1 == null) || ((Object) TriangleValuePair2 == null))
+            if (((Object) TriangleValuePair1 is null) || ((Object) TriangleValuePair2 is null))
                 return false;
 
             return TriangleValuePair1.Equals(TriangleValuePair2);
@@ -125,17 +125,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an ITriangleValuePair<T, TValue>.
             var ITriangleValuePair = (ITriangleValuePair<T, TValue>)Object;
-            if ((Object) ITriangleValuePair != null)
+            if ((Object) ITriangleValuePair is not null)
                 return ITriangleValuePair.CompareTo(this);
 
             // Check if the given object is an ITriangle<T>.
             var ITriangle = (ITriangle<T>) Object;
-            if ((Object) ITriangle != null)
+            if ((Object) ITriangle is not null)
                 return ITriangle.CompareTo(this);
 
             throw new ArgumentException("The given object is neither a ITriangleValuePair<T, TValue> nor a ITriangle<T>!");
@@ -171,12 +171,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an ITriangleValuePair<T, TValue>.
             var TriangleValuePair = (ITriangleValuePair<T, TValue>)Object;
-            if ((Object) TriangleValuePair == null)
+            if ((Object) TriangleValuePair is null)
                 return false;
 
             return this.Equals(TriangleValuePair);
@@ -195,7 +195,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(ITriangleValuePair<T, TValue> ITriangleValuePair)
         {
 
-            if ((Object) ITriangleValuePair == null)
+            if ((Object) ITriangleValuePair is null)
                 return false;
 
             return this.P1.Equals(ITriangleValuePair.P1) &&

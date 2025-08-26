@@ -42,14 +42,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<Type> GetRecursiveInterfaces(this Type Interface, List<Type> AllInterfaces = null)
         {
 
-            if (AllInterfaces == null)
+            if (AllInterfaces is null)
                 AllInterfaces = new List<Type>();
 
             AllInterfaces.Add(Interface);
 
             var BaseInterfaces = Interface.GetInterfaces();
 
-            if (BaseInterfaces != null && BaseInterfaces.Count() > 0)
+            if (BaseInterfaces is not null && BaseInterfaces.Count() > 0)
                 foreach (var BaseInterface in BaseInterfaces)
                     GetRecursiveInterfaces(BaseInterface, AllInterfaces);
 

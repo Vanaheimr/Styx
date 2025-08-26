@@ -54,10 +54,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             #region Initial checks
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return DefaultValue;
 
-            if (AggreationDelegate == null)
+            if (AggreationDelegate is null)
                 throw new ArgumentNullException("AggreationDelegate");
 
             #endregion
@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                      T                 DefaultValue = default(T))
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return DefaultValue;
 
             try
@@ -126,7 +126,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static Boolean All<T>(this IEndPipe<T> SourcePipe, Func<T, Boolean> IncludeFilter)
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return true;
 
             foreach (var Item in SourcePipe)
@@ -150,7 +150,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static Boolean Any<T>(this IEndPipe<T> SourcePipe)
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             using (var Enumerator = SourcePipe)
@@ -172,7 +172,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static Boolean Any<T>(this IEndPipe<T> SourcePipe, Func<T, Boolean> IncludeFilter)
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             foreach (var Item in SourcePipe)
@@ -201,10 +201,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                           IEqualityComparer<T>  ValueComparer = null)
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
-            if (ValueComparer == null)
+            if (ValueComparer is null)
                 ValueComparer = EqualityComparer<T>.Default;
 
             foreach (var Item in SourcePipe)
@@ -229,12 +229,12 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                       Func<T, Boolean>  IncludeFilter = null)
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return 0UL;
 
             var Counter = 0UL;
 
-            if (IncludeFilter == null)
+            if (IncludeFilter is null)
                 foreach (var Item in SourcePipe)
                     Counter++;
 
@@ -264,10 +264,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                           T                 DefaultValue   = default(T))
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return DefaultValue;
 
-            if (IncludeFilter == null)
+            if (IncludeFilter is null)
                 foreach (var Item in SourcePipe)
                     return Item;
 
@@ -296,7 +296,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                          T                 DefaultValue   = default(T))
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return DefaultValue;
 
             T Value = DefaultValue;
@@ -318,7 +318,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                IEqualityComparer<T>  comparer = null)
         {
 
-            if (comparer == null)
+            if (comparer is null)
                 comparer = EqualityComparer<T>.Default;
 
             using (IEnumerator<T> first_enumerator = first.GetEnumerator(),
@@ -394,7 +394,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                              Boolean                  ResetPipeAfter   = false)
         {
 
-            if (Comparer == null)
+            if (Comparer is null)
                 Comparer = EqualityComparer<TKey>.Default;
 
             var Dictionary = new Dictionary<TKey, TValue>(Comparer);

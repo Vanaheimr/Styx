@@ -134,16 +134,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 
                 var _Count = (UInt64) EmbeddedPixels.Count;
 
-                if (Subtree1 != null)
+                if (Subtree1 is not null)
                     _Count += Subtree1.Count;
 
-                if (Subtree2 != null)
+                if (Subtree2 is not null)
                     _Count += Subtree2.Count;
 
-                if (Subtree3 != null)
+                if (Subtree3 is not null)
                     _Count += Subtree3.Count;
 
-                if (Subtree4 != null)
+                if (Subtree4 is not null)
                     _Count += Subtree4.Count;
 
                 return _Count;
@@ -269,16 +269,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                 #region Check subtrees...
 
-                if      (Subtree1 != null && Subtree1.Contains(IPixel))
+                if      (Subtree1 is not null && Subtree1.Contains(IPixel))
                     Subtree1.Add(IPixel);
                 
-                else if (Subtree2 != null && Subtree2.Contains(IPixel))
+                else if (Subtree2 is not null && Subtree2.Contains(IPixel))
                     Subtree2.Add(IPixel);
                 
-                else if (Subtree3 != null && Subtree3.Contains(IPixel))
+                else if (Subtree3 is not null && Subtree3.Contains(IPixel))
                     Subtree3.Add(IPixel);
                 
-                else if (Subtree4 != null && Subtree4.Contains(IPixel))
+                else if (Subtree4 is not null && Subtree4.Contains(IPixel))
                     Subtree4.Add(IPixel);
 
                 #endregion
@@ -297,7 +297,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Create Subtrees
 
-                    if (Subtree1 == null)
+                    if (Subtree1 is null)
                     {
                         Subtree1 = new Quadtree<T>(Left,
                                                    Top,
@@ -307,7 +307,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree2 == null)
+                    if (Subtree2 is null)
                     {
                         Subtree2 = new Quadtree<T>(Math.Add(Left, Math.Div2(Width)),
                                                    Top,
@@ -317,7 +317,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree2.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree3 == null)
+                    if (Subtree3 is null)
                     {
                         Subtree3 = new Quadtree<T>(Left,
                                                    Math.Add(Top,  Math.Div2(Height)),
@@ -327,7 +327,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree3.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree4 == null)
+                    if (Subtree4 is null)
                     {
                         Subtree4 = new Quadtree<T>(Math.Add(Left, Math.Div2(Width)),
                                                    Math.Add(Top,  Math.Div2(Height)),
@@ -341,7 +341,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Fire QuadtreeSplit event
 
-                    if (OnTreeSplit != null)
+                    if (OnTreeSplit is not null)
                         OnTreeSplit(this, IPixel);
 
                     #endregion
@@ -398,7 +398,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (PixelSelector == null)
+            if (PixelSelector is null)
                 throw new ArgumentNullException("The given PixelSelector must not be null!");
 
             #endregion
@@ -413,19 +413,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Pixel in Subtree1.Get(PixelSelector))
                     yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Pixel in Subtree2.Get(PixelSelector))
                     yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Pixel in Subtree3.Get(PixelSelector))
                     yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Pixel in Subtree4.Get(PixelSelector))
                     yield return _Pixel;
 
@@ -446,7 +446,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given Rectangle must not be null!");
 
             #endregion
@@ -461,22 +461,22 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree1.Get(Rectangle))
                         yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree2.Get(Rectangle))
                         yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree3.Get(Rectangle))
                         yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree4.Get(Rectangle))
                         yield return _Pixel;
@@ -498,7 +498,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -511,19 +511,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Contains(Pixel))
                     Subtree1.Remove(Pixel);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Contains(Pixel))
                     Subtree2.Remove(Pixel);
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Contains(Pixel))
                     Subtree3.Remove(Pixel);
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Contains(Pixel))
                     Subtree4.Remove(Pixel);
 
@@ -544,7 +544,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given rectangle must not be null!");
 
             #endregion
@@ -569,19 +569,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Rectangle))
                     Subtree1.Remove(Rectangle);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Rectangle))
                     Subtree2.Remove(Rectangle);
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Overlaps(Rectangle))
                     Subtree3.Remove(Rectangle);
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Overlaps(Rectangle))
                     Subtree4.Remove(Rectangle);
 
@@ -603,19 +603,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Pixel in EmbeddedPixels)
                 yield return _Pixel;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Pixel in Subtree1)
                     yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Pixel in Subtree2)
                     yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Pixel in Subtree3)
                     yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Pixel in Subtree4)
                     yield return _Pixel;
 
@@ -630,19 +630,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Pixel in EmbeddedPixels)
                 yield return _Pixel;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Pixel in Subtree1)
                     yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Pixel in Subtree2)
                     yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Pixel in Subtree3)
                     yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Pixel in Subtree4)
                     yield return _Pixel;
 
@@ -751,16 +751,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 
                 var _Count = (UInt64) EmbeddedPixels.Count;
 
-                if (Subtree1 != null)
+                if (Subtree1 is not null)
                     _Count += Subtree1.Count;
 
-                if (Subtree2 != null)
+                if (Subtree2 is not null)
                     _Count += Subtree2.Count;
 
-                if (Subtree3 != null)
+                if (Subtree3 is not null)
                     _Count += Subtree3.Count;
 
-                if (Subtree4 != null)
+                if (Subtree4 is not null)
                     _Count += Subtree4.Count;
 
                 return _Count;
@@ -901,16 +901,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                 #region Check subtrees...
 
-                if      (Subtree1 != null && Subtree1.Contains(IPixelValuePair))
+                if      (Subtree1 is not null && Subtree1.Contains(IPixelValuePair))
                     Subtree1.Add(IPixelValuePair);
 
-                else if (Subtree2 != null && Subtree2.Contains(IPixelValuePair))
+                else if (Subtree2 is not null && Subtree2.Contains(IPixelValuePair))
                     Subtree2.Add(IPixelValuePair);
 
-                else if (Subtree3 != null && Subtree3.Contains(IPixelValuePair))
+                else if (Subtree3 is not null && Subtree3.Contains(IPixelValuePair))
                     Subtree3.Add(IPixelValuePair);
 
-                else if (Subtree4 != null && Subtree4.Contains(IPixelValuePair))
+                else if (Subtree4 is not null && Subtree4.Contains(IPixelValuePair))
                     Subtree4.Add(IPixelValuePair);
 
                 #endregion
@@ -929,7 +929,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Create Subtrees
 
-                    if (Subtree1 == null)
+                    if (Subtree1 is null)
                     {
                         Subtree1 = new Quadtree<T, TValue>(Left,
                                                    Top,
@@ -939,7 +939,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree2 == null)
+                    if (Subtree2 is null)
                     {
                         Subtree2 = new Quadtree<T, TValue>(Math.Add(Left, Math.Div2(Width)),
                                                    Top,
@@ -949,7 +949,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree2.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree3 == null)
+                    if (Subtree3 is null)
                     {
                         Subtree3 = new Quadtree<T, TValue>(Left,
                                                    Math.Add(Top,  Math.Div2(Height)),
@@ -959,7 +959,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree3.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree4 == null)
+                    if (Subtree4 is null)
                     {
                         Subtree4 = new Quadtree<T, TValue>(Math.Add(Left, Math.Div2(Width)),
                                                    Math.Add(Top,  Math.Div2(Height)),
@@ -973,7 +973,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Fire QuadtreeSplit event
 
-                    if (OnTreeSplit != null)
+                    if (OnTreeSplit is not null)
                         OnTreeSplit(this, IPixelValuePair);
 
                     #endregion
@@ -1030,7 +1030,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (PixelSelector == null)
+            if (PixelSelector is null)
                 throw new ArgumentNullException("The given PixelSelector must not be null!");
 
             #endregion
@@ -1045,19 +1045,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Pixel in Subtree1.Get(PixelSelector))
                     yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Pixel in Subtree2.Get(PixelSelector))
                     yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Pixel in Subtree3.Get(PixelSelector))
                     yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Pixel in Subtree4.Get(PixelSelector))
                     yield return _Pixel;
 
@@ -1078,7 +1078,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given Rectangle must not be null!");
 
             #endregion
@@ -1093,22 +1093,22 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree1.Get(Rectangle))
                         yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree2.Get(Rectangle))
                         yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree3.Get(Rectangle))
                         yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Overlaps(Rectangle))
                     foreach (var _Pixel in Subtree4.Get(Rectangle))
                         yield return _Pixel;
@@ -1130,7 +1130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -1143,19 +1143,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Contains(Pixel))
                     Subtree1.Remove(Pixel);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Contains(Pixel))
                     Subtree2.Remove(Pixel);
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Contains(Pixel))
                     Subtree3.Remove(Pixel);
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Contains(Pixel))
                     Subtree4.Remove(Pixel);
 
@@ -1176,7 +1176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given rectangle must not be null!");
 
             #endregion
@@ -1201,19 +1201,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Rectangle))
                     Subtree1.Remove(Rectangle);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Rectangle))
                     Subtree2.Remove(Rectangle);
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 if (Subtree3.Overlaps(Rectangle))
                     Subtree3.Remove(Rectangle);
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 if (Subtree4.Overlaps(Rectangle))
                     Subtree4.Remove(Rectangle);
 
@@ -1235,19 +1235,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Pixel in EmbeddedPixels)
                 yield return _Pixel;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Pixel in Subtree1)
                     yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Pixel in Subtree2)
                     yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Pixel in Subtree3)
                     yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Pixel in Subtree4)
                     yield return _Pixel;
 
@@ -1262,19 +1262,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Pixel in EmbeddedPixels)
                 yield return _Pixel;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Pixel in Subtree1)
                     yield return _Pixel;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Pixel in Subtree2)
                     yield return _Pixel;
 
-            if (Subtree3 != null)
+            if (Subtree3 is not null)
                 foreach (var _Pixel in Subtree3)
                     yield return _Pixel;
 
-            if (Subtree4 != null)
+            if (Subtree4 is not null)
                 foreach (var _Pixel in Subtree4)
                     yield return _Pixel;
 

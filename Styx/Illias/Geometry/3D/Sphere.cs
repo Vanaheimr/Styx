@@ -125,16 +125,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Left   == null)
+            if (Left   is null)
                 throw new ArgumentNullException("The given left-coordinate must not be null!");
 
-            if (Top    == null)
+            if (Top    is null)
                 throw new ArgumentNullException("The given top-coordinate must not be null!");
 
-            if (Front  == null)
+            if (Front  is null)
                 throw new ArgumentNullException("The given front-coordinate must not be null!");
 
-            if (Radius == null)
+            if (Radius is null)
                 throw new ArgumentNullException("The given radius must not be null!");
 
             #endregion
@@ -175,13 +175,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
-            if (z == null)
+            if (z is null)
                 throw new ArgumentNullException("The given z-coordinate must not be null!");
 
             #endregion
@@ -208,7 +208,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Voxel == null)
+            if (Voxel is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
             #endregion
@@ -235,7 +235,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Sphere == null)
+            if (Sphere is null)
                 throw new ArgumentNullException("The given sphere must not be null!");
 
             #endregion
@@ -262,7 +262,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Sphere == null)
+            if (Sphere is null)
                 throw new ArgumentNullException("The given sphere must not be null!");
 
             #endregion
@@ -295,7 +295,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Sphere1 == null) || ((Object) Sphere2 == null))
+            if (((Object) Sphere1 is null) || ((Object) Sphere2 is null))
                 return false;
 
             return Sphere1.Equals(Sphere2);
@@ -333,12 +333,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Sphere<T>.
             var SphereT = (Sphere<T>) Object;
-            if ((Object) SphereT == null)
+            if ((Object) SphereT is null)
                 return false;
 
             return this.Equals(SphereT);
@@ -357,7 +357,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(ISphere<T> ISphere)
         {
 
-            if ((Object) ISphere == null)
+            if ((Object) ISphere is null)
                 return false;
 
             return this.Left.  Equals(ISphere.Left)  &&

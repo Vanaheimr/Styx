@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
                     _Filename = value;
 
-                    if (LogfileWriter != null)
+                    if (LogfileWriter is not null)
                         LogfileWriter.Close();
 
                     // Default encoding will be "UTF8"!

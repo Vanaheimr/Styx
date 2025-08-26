@@ -156,12 +156,12 @@
 
 //            _StartPipe = IPipes[0] as IStartPipe<S>;
 
-//            if (_StartPipe == null)
+//            if (_StartPipe is null)
 //                throw new ArgumentException("The first Pipe must implement 'IStartPipe<" + typeof(S) + ">', but '" + IPipes[0].GetType() + "' was provided!");
 
 //            _EndPipe = IPipes[_Length - 1] as IEndPipe<E>;
 
-//            if (_EndPipe == null)
+//            if (_EndPipe is null)
 //                throw new ArgumentException("The last Pipe must implement 'IEndPipe<" + typeof(E) + ">', but '" + IPipes[_Length - 1].GetType() + "' was provided!");
 
 //            _PipeNames.Add(_StartPipe.ToString());
@@ -175,7 +175,7 @@
 //#else
 //            Type _GenericIPipeInterface = _StartPipe.GetType().GetInterface("IPipe`2");
 //#endif
-//            if (_GenericIPipeInterface == null)
+//            if (_GenericIPipeInterface is null)
 //                throw new ArgumentException("IPipe<?,?> expected!");
 
 //            _Emitts = _GenericIPipeInterface.GetGenericArguments()[1];
@@ -201,7 +201,7 @@
 
 //            }
 
-//            if (_InternalEnumerator != null)
+//            if (_InternalEnumerator is not null)
 //                IPipes[0].SetSource(_InternalEnumerator);
 
 //            _PipelineString = _PipeNames.ToString();
@@ -222,7 +222,7 @@
 
 //            _InternalEnumerator = new HistoryEnumerator<S>(new List<S>() { SourceElement }.GetEnumerator());
 
-//            if (_Pipes != null && _Pipes.Length > 0)
+//            if (_Pipes is not null && _Pipes.Length > 0)
 //                _Pipes[0].SetSource(_InternalEnumerator);
 
 //            return this;
@@ -240,12 +240,12 @@
 //        public virtual IPipe<S, E> SetSource(IEnumerator<S> IEnumerator)
 //        {
 
-//            if (IEnumerator == null)
+//            if (IEnumerator is null)
 //                throw new ArgumentNullException("myIEnumerator must not be null!");
 
 //            _InternalEnumerator = IEnumerator;
 
-//            if (_Pipes != null && _Pipes.Length > 0)
+//            if (_Pipes is not null && _Pipes.Length > 0)
 //                _Pipes[0].SetSource(_InternalEnumerator);
 
 //            return this;
@@ -263,12 +263,12 @@
 //        public virtual IPipe<S, E> SetSourceCollection(IEnumerable<S> IEnumerable)
 //        {
 
-//            if (IEnumerable == null)
+//            if (IEnumerable is null)
 //                throw new ArgumentNullException("myIEnumerator must not be null!");
 
 //            _InternalEnumerator = IEnumerable.GetEnumerator();
 
-//            if (_Pipes != null && _Pipes.Length > 0)
+//            if (_Pipes is not null && _Pipes.Length > 0)
 //                _Pipes[0].SetSource(_InternalEnumerator);
 
 //            return this;
@@ -321,13 +321,13 @@
 //        public Boolean MoveNext()
 //        {
 
-//            if (_InternalEnumerator == null)
+//            if (_InternalEnumerator is null)
 //                return false;
 
-//            if (_EndPipe == null && _PipelineDefinition == null)
+//            if (_EndPipe is null && _PipelineDefinition is null)
 //                return false;
 
-//            if (_EndPipe != null)
+//            if (_EndPipe is not null)
 //            {
 //                if (_EndPipe.MoveNext())
 //                {
@@ -336,13 +336,13 @@
 //                }
 //            }
 
-//            else if (_PipelineDefinition != null)
+//            else if (_PipelineDefinition is not null)
 //            {
 
 //                while (true)
 //                {
 
-//                    if (_TmpIterator != null && _TmpIterator.MoveNext())
+//                    if (_TmpIterator is not null && _TmpIterator.MoveNext())
 //                    {
 //                        _CurrentElement = _TmpIterator.Current;
 //                        return true;
@@ -385,7 +385,7 @@
 //        /// </summary>
 //        public void Dispose()
 //        {
-//            if (_Pipes != null)
+//            if (_Pipes is not null)
 //                foreach (var _Pipe in _Pipes)
 //                    _Pipe.Dispose();
 //        }

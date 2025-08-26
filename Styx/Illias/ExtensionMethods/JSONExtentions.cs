@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON is null || PropertyName.IsNullOrEmpty())
                 return false;
 
-            return JSON[PropertyName] != null;
+            return JSON[PropertyName] is not null;
 
         }
 
@@ -4378,7 +4378,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Values = _Values.AsEnumerable().
                                  Select(jtoken => jtoken.Value<String>()).
-                                 Where (value  => value != null);
+                                 Where (value  => value is not null);
 
                 return true;
 
@@ -4408,7 +4408,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (JSON.TryGetValue(PropertyName, out JToken? _JToken) && _JToken?.Value<String>() != null)
+            if (JSON.TryGetValue(PropertyName, out JToken? _JToken) && _JToken?.Value<String>() is not null)
             {
 
                 try

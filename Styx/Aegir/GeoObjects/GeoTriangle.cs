@@ -170,19 +170,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoTriangle(GeoCoordinate Pixel1, GeoCoordinate Pixel2, GeoCoordinate Pixel3)
         {
 
-            #region Initial Checks
-
-            if (Pixel1 == null)
-                throw new ArgumentNullException("The given first pixel must not be null!");
-
-            if (Pixel2 == null)
-                throw new ArgumentNullException("The given second pixel must not be null!");
-
-            if (Pixel3 == null)
-                throw new ArgumentNullException("The given third pixel must not be null!");
-
-            #endregion
-
             #region Math Checks
 
             if (Pixel1.Equals(Pixel2) ||
@@ -309,7 +296,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object)Triangle1 == null) || ((Object)Triangle2 == null))
+            if (((Object)Triangle1 is null) || ((Object)Triangle2 is null))
                 return false;
 
             return Triangle1.Equals(Triangle2);
@@ -346,12 +333,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public virtual Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IGeoTriangle.
             var ITriangle = Object as GeoTriangle;
-            if ((Object)ITriangle == null)
+            if ((Object)ITriangle is null)
                 throw new ArgumentException("The given object is not a valid triangle!");
 
             return CompareTo(ITriangle);
@@ -369,7 +356,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Int32 CompareTo(GeoTriangle ITriangle)
         {
 
-            if ((Object)ITriangle == null)
+            if ((Object)ITriangle is null)
                 throw new ArgumentNullException("The given triangle must not be null!");
 
             // Compare the x-coordinate of the circumcenter
@@ -399,12 +386,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an GeoTriangle.
             var TriangleT = (GeoTriangle)Object;
-            if ((Object)TriangleT == null)
+            if ((Object)TriangleT is null)
                 return false;
 
             return this.Equals(TriangleT);
@@ -423,7 +410,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoTriangle ITriangle)
         {
 
-            if ((Object)ITriangle == null)
+            if ((Object)ITriangle is null)
                 return false;
 
             return (this.P1.Equals(ITriangle.P1) &&

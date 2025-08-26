@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 if (nextSnapshot is null)
                 {
                     // Try to link the new node
-                    if (Interlocked.CompareExchange(ref tailSnapshot.Next, newNode, null) == null)
+                    if (Interlocked.CompareExchange(ref tailSnapshot.Next, newNode, null) is null)
                     {
 
                         // Successfully linked; increment the count
@@ -139,7 +139,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 {
 
                     // The queue is (probably) empty
-                    if (nextSnapshot == null)
+                    if (nextSnapshot is null)
                         return default!;
 
                     // Tail is lagging behind, so move it forward
@@ -150,7 +150,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 {
 
                     // There's at least one real node
-                    if (nextSnapshot == null)
+                    if (nextSnapshot is null)
                         return default!;  // Might happen transiently
 
                     T value = nextSnapshot.Value;

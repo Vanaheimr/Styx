@@ -115,13 +115,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (X      == null)
+            if (X      is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (Y      == null)
+            if (Y      is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
-            if (Radius == null)
+            if (Radius is null)
                 throw new ArgumentNullException("The given radius must not be null!");
 
             #endregion
@@ -156,10 +156,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Center == null)
+            if (Center is null)
                 throw new ArgumentNullException("The given center pixel must not be null!");
 
-            if (Radius == null)
+            if (Radius is null)
                 throw new ArgumentNullException("The given radius must not be null!");
 
             #endregion
@@ -195,13 +195,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel1 == null)
+            if (Pixel1 is null)
                 throw new ArgumentNullException("The given first pixel must not be null!");
 
-            if (Pixel2 == null)
+            if (Pixel2 is null)
                 throw new ArgumentNullException("The given second pixel must not be null!");
 
-            if (Pixel3 == null)
+            if (Pixel3 is null)
                 throw new ArgumentNullException("The given third pixel must not be null!");
 
             #endregion
@@ -235,7 +235,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                                   Intersection(
                               new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y));
 
-            if (Center != null)
+            if (Center is not null)
             {
                 X               = Center.X;
                 Y               = Center.Y;
@@ -270,16 +270,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given first pixel must not be null!");
 
-            if (EdgePixel1 == null)
+            if (EdgePixel1 is null)
                 throw new ArgumentNullException("The given first edgepixel must not be null!");
 
-            if (EdgePixel2 == null)
+            if (EdgePixel2 is null)
                 throw new ArgumentNullException("The given second edgepixel must not be null!");
 
-            if (EdgePixel3 == null)
+            if (EdgePixel3 is null)
                 throw new ArgumentNullException("The given third edgepixel must not be null!");
 
             #endregion
@@ -336,10 +336,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
             #endregion
@@ -366,7 +366,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -393,7 +393,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Circle == null)
+            if (Circle is null)
                 throw new ArgumentNullException("The given circle must not be null!");
 
             #endregion
@@ -420,7 +420,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Circle == null)
+            if (Circle is null)
                 throw new ArgumentNullException("The given circle must not be null!");
 
             #endregion
@@ -453,7 +453,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Circle1 == null) || ((Object) Circle2 == null))
+            if (((Object) Circle1 is null) || ((Object) Circle2 is null))
                 return false;
 
             return Circle1.Equals(Circle2);
@@ -491,12 +491,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Circle<T>.
             var CircleT = (Circle<T>) Object;
-            if ((Object) CircleT == null)
+            if ((Object) CircleT is null)
                 return false;
 
             return this.Equals(CircleT);
@@ -515,7 +515,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(ICircle<T> ICircle)
         {
 
-            if ((Object) ICircle == null)
+            if ((Object) ICircle is null)
                 return false;
 
             return this.X.     Equals(ICircle.X) &&

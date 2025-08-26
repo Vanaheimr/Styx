@@ -114,8 +114,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         {
 
-            this.IgnoreLines                = (IgnoreLines == null) ? new Regex(@"^\#")  : IgnoreLines;
-            this.Separators                 = (Separators  == null) ? new String[] {","} : Separators;
+            this.IgnoreLines                = (IgnoreLines is null) ? new Regex(@"^\#")  : IgnoreLines;
+            this.Separators                 = (Separators  is null) ? new String[] {","} : Separators;
             this.StringSplitOptions         = StringSplitOptions;
             this.ExpectedNumberOfColumns    = ExpectedNumberOfColumns;
             this.FailOnWrongNumberOfColumns = FailOnWrongNumberOfColumns;
@@ -141,7 +141,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (true)
@@ -158,7 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
 
                     // Ignore empty lines
-                    if (_CurrentLine == null | _CurrentLine == "")
+                    if (_CurrentLine is null | _CurrentLine == "")
                         continue;
 
 
@@ -187,7 +187,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     for (var i = 0; i < _CurrentElement.Length; i++)
                     {
 
-                        if (_CurrentElement[i] == null)
+                        if (_CurrentElement[i] is null)
                             continue;
 
                         if (_CurrentElement[i].StartsWith(@"""") &&
@@ -217,10 +217,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                     }
 
-                    _CurrentElement = _CurrentElement.Where(column => column != null).ToArray();
+                    _CurrentElement = _CurrentElement.Where(column => column is not null).ToArray();
 
                     // The found number of columns does not fit the expected number
-                    if (ExpectedNumberOfColumns != null &&
+                    if (ExpectedNumberOfColumns is not null &&
                         ExpectedNumberOfColumns != _CurrentElement.Length)
                     {
                         if (FailOnWrongNumberOfColumns)

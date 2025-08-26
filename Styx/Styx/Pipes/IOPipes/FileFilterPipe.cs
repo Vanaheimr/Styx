@@ -87,21 +87,21 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (true)
             {
 
-                if (_TempIterator != null && _TempIterator.MoveNext())
+                if (_TempIterator is not null && _TempIterator.MoveNext())
                 {
 
-                    if (_TempIterator.Current != null)
+                    if (_TempIterator.Current is not null)
                     {
 
                         // No advanced filter given or it matches...
-                        if (_FileFilter == null ||
-                           (_FileFilter != null && !_FileFilter(_TempIterator.Current)))
+                        if (_FileFilter is null ||
+                           (_FileFilter is not null && !_FileFilter(_TempIterator.Current)))
                         {
 
                             _CurrentElement = _TempIterator.Current;

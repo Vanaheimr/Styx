@@ -202,7 +202,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             this.MessageProcessor  = MessageProcessor;
-            this.OnError           = (OnError != null) ? OnError : e => e;
+            this.OnError           = (OnError is not null) ? OnError : e => e;
 
             ArrowSender?.SendTo(this);
 
@@ -294,7 +294,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 throw new ArgumentNullException("The given delegate must not be null!");
 
             this.MessageProcessor  = MessageProcessor;
-            this.OnError           = (OnError != null) ? OnError : e => e;
+            this.OnError           = (OnError is not null) ? OnError : e => e;
 
             ArrowSender?.SendTo(this);
 

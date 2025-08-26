@@ -132,13 +132,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public SplitPipe(Byte Ids, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
         {
 
-            if (IEnumerator != null && IEnumerable != null)
+            if (IEnumerator is not null && IEnumerable is not null)
                 throw new ArgumentException("Please decide between IEnumerator and IEnumerable!");
 
-            if (IEnumerable != null)
+            if (IEnumerable is not null)
                 SetSourceCollection(IEnumerable);
 
-            if (IEnumerator != null)
+            if (IEnumerator is not null)
                 SetSource(IEnumerator);
 
             _Ids  = Ids;
@@ -167,7 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSource(IEnumerator<S> IEnumerator)
 		{
 
-            if (IEnumerator == null)
+            if (IEnumerator is null)
                 throw new ArgumentNullException("IEnumerator must not be null!");
 
 	        if (IEnumerator is IEndPipe<S>)
@@ -188,7 +188,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public virtual void SetSourceCollection(IEnumerable<S> IEnumerable)
 		{
 
-            if (IEnumerable == null)
+            if (IEnumerable is null)
                 throw new ArgumentNullException("IEnumerable must not be null!");
 
 	        SetSource(IEnumerable.GetEnumerator());
@@ -212,7 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         private Boolean MoveNext(Byte Id)
         {
 
-            if (_InternalEnumerator == null)
+            if (_InternalEnumerator is null)
                 return false;
 
             Boolean _Moved = true;

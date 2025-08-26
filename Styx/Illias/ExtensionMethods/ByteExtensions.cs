@@ -41,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          UInt32?      Length = null)
         {
 
-            if (ByteArray == null)
+            if (ByteArray is null)
                 throw new ArgumentNullException(nameof(ByteArray), "The given byte array must not be null!");
 
             var array = new Byte[Length ?? ByteArray.Length - StartIndex];
@@ -392,7 +392,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean IsEqualTo(this Byte[] ByteArray1, Byte[] ByteArray2)
         {
 
-            if (ByteArray1 == null || ByteArray2 == null || ByteArray1.Length != ByteArray2.Length)
+            if (ByteArray1 is null || ByteArray2 is null || ByteArray1.Length != ByteArray2.Length)
                 return false;
 
             for (var i = 0; i < ByteArray1.Length; i++)

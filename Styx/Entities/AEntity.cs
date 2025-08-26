@@ -372,7 +372,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                              [CallerMemberName] String  PropertyName = "")
         //{
 
-        //    if (FieldToChange != null)
+        //    if (FieldToChange is not null)
         //    {
 
         //        var OldValue       = FieldToChange;
@@ -402,7 +402,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         //    #region Initial checks
 
-        //    if (PropertyName == null)
+        //    if (PropertyName is null)
         //        throw new ArgumentNullException(nameof(PropertyName), "The given property name must not be null!");
 
         //    #endregion

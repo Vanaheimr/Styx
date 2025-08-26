@@ -81,31 +81,31 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                 case ComparisonFilter.EQUAL:
                     if (null == LeftObject)
-                        return RightObject == null;
+                        return RightObject is null;
                     return LeftObject.Equals(RightObject);
 
                 case ComparisonFilter.NOT_EQUAL:
                     if (null == LeftObject)
-                        return RightObject != null;
+                        return RightObject is not null;
                     return !LeftObject.Equals(RightObject);
 
                 case ComparisonFilter.GREATER_THAN:
-                    if (null == LeftObject || RightObject == null)
+                    if (null == LeftObject || RightObject is null)
                         return true;
                     return LeftObject.CompareTo(RightObject) == 1;
 
                 case ComparisonFilter.LESS_THAN:
-                    if (null == LeftObject || RightObject == null)
+                    if (null == LeftObject || RightObject is null)
                         return true;
                     return LeftObject.CompareTo(RightObject) == -1;
 
                 case ComparisonFilter.GREATER_THAN_EQUAL:
-                    if (null == LeftObject || RightObject == null)
+                    if (null == LeftObject || RightObject is null)
                         return true;
                     return LeftObject.CompareTo(RightObject) >= 0;
 
                 case ComparisonFilter.LESS_THAN_EQUAL:
-                    if (null == LeftObject || RightObject == null)
+                    if (null == LeftObject || RightObject is null)
                         return true;
                     return LeftObject.CompareTo(RightObject) <= 0;
 

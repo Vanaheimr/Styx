@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ExceptPipe(IEndPipe<S> SourcePipe, S Value, IEqualityComparer<S> EqualityComparer = null)
             : base(SourcePipe)
         {
-            this.EqualityComparer  = (EqualityComparer != null) ? EqualityComparer : EqualityComparer<S>.Default;
+            this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;
             this.ValueSet          = new HashedSet<S>() { Value };
         }
 
@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ExceptPipe(IEndPipe<S> FirstPipe, IEndPipe<S> SecondPipe, IEqualityComparer<S> EqualityComparer = null)
             : base(FirstPipe)
         {
-            this.EqualityComparer  = (EqualityComparer != null) ? EqualityComparer : EqualityComparer<S>.Default;
+            this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;
             this.ValueSet          = new HashedSet<S>(SecondPipe.ToList());
         }
 
@@ -100,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public ExceptPipe(IEndPipe<S> SourcePipe, IEnumerable<S> Enumeration, IEqualityComparer<S> EqualityComparer = null)
             : base(SourcePipe)
         {
-            this.EqualityComparer  = (EqualityComparer != null) ? EqualityComparer : EqualityComparer<S>.Default;
+            this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;
             this.ValueSet          = new HashedSet<S>(Enumeration);
         }
 
@@ -121,7 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())

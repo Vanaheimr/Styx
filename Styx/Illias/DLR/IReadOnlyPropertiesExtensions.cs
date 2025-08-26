@@ -46,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
             #endregion
@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
             #endregion

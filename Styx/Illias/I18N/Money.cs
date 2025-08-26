@@ -256,7 +256,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is Money))
@@ -303,7 +303,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             if (!(Object is Money))

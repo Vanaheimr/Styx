@@ -702,7 +702,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             var alt         = JSON["alt"] ?? JSON["altitude"];
             var projection  = JSON["projection"];
 
-            if (lat != null && lng != null)
+            if (lat is not null && lng is not null)
             {
 
                 try

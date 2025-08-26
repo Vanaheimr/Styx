@@ -153,7 +153,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())
@@ -226,7 +226,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             #region Initial checks
 
-            if (ComparisonFilter == null)
+            if (ComparisonFilter is null)
                 throw new ArgumentNullException("ComparisonFilter", "The given ComparisonFilter delegate must not be null!");
 
             #endregion
@@ -253,7 +253,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())

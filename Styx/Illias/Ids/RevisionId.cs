@@ -168,7 +168,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RevId1 == null) || ((Object) RevId2 == null))
+            if (((Object) RevId1 is null) || ((Object) RevId2 is null))
                 return false;
 
             return RevId1.Equals(RevId2);
@@ -289,12 +289,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a RevId.
             var _RevId = Object as RevisionId;
-            if ((Object) _RevId == null)
+            if ((Object) _RevId is null)
                 throw new ArgumentException("The given object is not a RevId!");
 
             if (this < _RevId) return -1;
@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int32 CompareTo(RevisionId RevisionId)
         {
 
-            if ((Object) RevisionId == null)
+            if ((Object) RevisionId is null)
                 throw new ArgumentNullException();
 
             if (this < RevisionId) return -1;
@@ -341,12 +341,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is a RevId.
             var _RevId = Object as RevisionId;
-            if ((Object) _RevId == null)
+            if ((Object) _RevId is null)
                 return false;
 
             return Equals(_RevId);
@@ -365,7 +365,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(RevisionId RevisionId)
         {
 
-            if ((Object) RevisionId == null)
+            if ((Object) RevisionId is null)
                 return false;
 
             // Check if the inner fields have the same values

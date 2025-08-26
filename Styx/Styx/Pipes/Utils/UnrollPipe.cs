@@ -69,13 +69,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (true)
             {
 
-                if (_TempIterator != null && _TempIterator.MoveNext())
+                if (_TempIterator is not null && _TempIterator.MoveNext())
                 {
                     _CurrentElement = _TempIterator.Current;
                     return true;

@@ -172,16 +172,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoLine(GeoCoordinate GeoCoordinate1, GeoVector GeoVector)
         {
 
-            #region Initial Checks
-
-            if (GeoCoordinate1 == null)
-                throw new ArgumentNullException("The given left-coordinate must not be null!");
-
-            if (GeoVector == null)
-                throw new ArgumentNullException("The given right-coordinate must not be null!");
-
-            #endregion
-
             this.P1     = GeoCoordinate1;
             this.P2     = new GeoCoordinate(
                               Latitude. Parse(GeoCoordinate1.Latitude. Value + GeoVector.P.Latitude. Value),
@@ -189,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                           );
 
             this.Length = GeoCoordinate1.DistanceTo(P2);
-            this.Tags   = new List<String>();
+            this.Tags   = [];
 
         }
 
@@ -205,20 +195,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoLine(GeoCoordinate GeoCoordinate1, GeoCoordinate GeoCoordinate2)
         {
 
-            #region Initial Checks
-
-            if (GeoCoordinate1   == null)
-                throw new ArgumentNullException("The given left-coordinate must not be null!");
-
-            if (GeoCoordinate2  == null)
-                throw new ArgumentNullException("The given right-coordinate must not be null!");
-
-            #endregion
-
             this.P1     = GeoCoordinate1;
             this.P2     = GeoCoordinate2;
             this.Length = GeoCoordinate1.DistanceTo(GeoCoordinate2);
-            this.Tags   = new List<String>();
+            this.Tags   = [];
 
         }
 
@@ -236,13 +216,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <returns>True if the pixel is located on this line; False otherwise.</returns>
         public Boolean Contains(GeoCoordinate Pixel)
         {
-
-            #region Initial Checks
-
-            if (Pixel == null)
-                throw new ArgumentNullException("The given pixel must not be null!");
-
-            #endregion
 
             #region Check line bounds
 
@@ -281,7 +254,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             #region Initial Checks
 
-            if (Line == null)
+            if (Line is null)
             {
                 IntersectionGeoCoordinate = default(GeoCoordinate);
                 return false;
@@ -510,7 +483,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Line1 == null) || ((Object) Line2 == null))
+            if (((Object) Line1 is null) || ((Object) Line2 is null))
                 return false;
 
             return Line1.Equals(Line2);
@@ -548,12 +521,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an GeoLine.
             var LineT = (GeoLine) Object;
-            if ((Object) LineT == null)
+            if ((Object) LineT is null)
                 return false;
 
             return this.Equals(LineT);
@@ -572,7 +545,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoLine ILine)
         {
 
-            if ((Object) ILine == null)
+            if ((Object) ILine is null)
                 return false;
 
                    // Normal direction

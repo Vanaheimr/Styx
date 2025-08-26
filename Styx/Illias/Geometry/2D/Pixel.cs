@@ -79,10 +79,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (X == null)
+            if (X is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (Y == null)
+            if (Y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
             #endregion
@@ -129,10 +129,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
             #endregion
@@ -159,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -192,7 +192,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Pixel1 == null) || ((Object) Pixel2 == null))
+            if (((Object) Pixel1 is null) || ((Object) Pixel2 is null))
                 return false;
 
             return Pixel1.Equals(Pixel2);
@@ -229,12 +229,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public virtual Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IPixel<T>.
             var IPixelT = Object as IPixel<T>;
-            if ((Object) IPixelT == null)
+            if ((Object) IPixelT is null)
                 throw new ArgumentException("The given object is not a valid pixel!");
 
             return CompareTo(IPixelT);
@@ -252,7 +252,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Int32 CompareTo(IPixel<T> IPixelT)
         {
             
-            if ((Object) IPixelT == null)
+            if ((Object) IPixelT is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             // Compare the x-coordinate of the pixels
@@ -282,12 +282,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Pixel<T>.
             var PixelT = (Pixel<T>) Object;
-            if ((Object) PixelT == null)
+            if ((Object) PixelT is null)
                 return false;
 
             return this.Equals(PixelT);
@@ -306,7 +306,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IPixel<T> IPixel)
         {
 
-            if ((Object) IPixel == null)
+            if ((Object) IPixel is null)
                 return false;
 
             return X.Equals(IPixel.X) &&

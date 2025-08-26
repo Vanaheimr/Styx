@@ -99,10 +99,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         //    lock (this)
         //    {
 
-        //        if (Recipient != null)
+        //        if (Recipient is not null)
         //            this.OnMessageAvailable += Recipient;
 
-        //        if (Recipients != null)
+        //        if (Recipients is not null)
         //            foreach (var _Recipient in Recipients)
         //                this.OnMessageAvailable += _Recipient;
 
@@ -126,10 +126,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         //    lock (this)
         //    {
 
-        //        if (Recipient != null)
+        //        if (Recipient is not null)
         //            this.OnMessageAvailable += Recipient.ReceiveMessage;
 
-        //        if (Recipients != null)
+        //        if (Recipients is not null)
         //            foreach (var _Recipient in Recipients)
         //                this.OnMessageAvailable += _Recipient.ReceiveMessage;
 

@@ -76,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public IEnumerable<TKey> Keys(ItemFilter<TKey> KeyFilter = null)
         {
 
-            if (KeyFilter == null)
+            if (KeyFilter is null)
                 return this.InternalIDictionary.Keys;
 
             else
@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UInt64 KeyCount(ItemFilter<TKey> KeyFilter = null)
         {
             
-            if (KeyFilter == null)
+            if (KeyFilter is null)
                 return (UInt64) this.InternalIDictionary.Count;
 
             else
@@ -113,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public IEnumerable<TValue> Values(ItemFilter<TValue> ValueFilter = null)
         {
 
-            if (ValueFilter == null)
+            if (ValueFilter is null)
                 return from   KeyValuePair
                        in     InternalIDictionary
                        select KeyValuePair.Value;
@@ -133,7 +133,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UInt64 ValueCount(ItemFilter<TValue> ValueFilter = null)
         {
 
-            if (ValueFilter == null)
+            if (ValueFilter is null)
                 return (UInt64) InternalIDictionary.Values.Count();
 
             else
@@ -161,7 +161,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean ContainsValue(TValue Value)
         {
 
-            if (Value == null)
+            if (Value is null)
                 return false;
 
             foreach (var Item in this.InternalIDictionary.Values)

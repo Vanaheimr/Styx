@@ -95,10 +95,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Left   == null)
+            if (Left   is null)
                 throw new ArgumentNullException("The given left-coordinate must not be null!");
 
-            if (Right  == null)
+            if (Right  is null)
                 throw new ArgumentNullException("The given right-coordinate must not be null!");
 
             #endregion
@@ -134,7 +134,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Element == null)
+            if (Element is null)
                 throw new ArgumentNullException("The given element must not be null!");
 
             #endregion
@@ -162,7 +162,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Line == null)
+            if (Line is null)
                 throw new ArgumentNullException("The given line must not be null!");
 
             #endregion
@@ -196,7 +196,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Line == null)
+            if (Line is null)
                 throw new ArgumentNullException("The given line must not be null!");
 
             #endregion
@@ -236,7 +236,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Line1 == null) || ((Object) Line2 == null))
+            if (((Object) Line1 is null) || ((Object) Line2 is null))
                 return false;
 
             return Line1.Equals(Line2);
@@ -274,12 +274,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Line<T>.
             var LineT = (Line1D<T>) Object;
-            if ((Object) LineT == null)
+            if ((Object) LineT is null)
                 return false;
 
             return this.Equals(LineT);
@@ -298,7 +298,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(ILine1D<T> ILine)
         {
 
-            if ((Object) ILine == null)
+            if ((Object) ILine is null)
                 return false;
 
             return this.Left. Equals(ILine.Left) &&

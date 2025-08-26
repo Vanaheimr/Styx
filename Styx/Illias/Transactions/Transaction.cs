@@ -154,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         {
             get
             {
-                return ParentTransaction != null;
+                return ParentTransaction is not null;
             }
         }
 
@@ -170,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
             get
             {
 
-                if (_NestedTransactions == null || !_NestedTransactions.Any())
+                if (_NestedTransactions is null || !_NestedTransactions.Any())
                     return false;
 
                 return true;
@@ -329,7 +329,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
                 case TransactionState.Running:
                     _State = TransactionState.RollingBack;
                     // Do actual some work!
-                    //        //if (OnDispose != null)
+                    //        //if (OnDispose is not null)
                     //        //    OnDispose(this, new TransactionDisposedEventArgs(this, _SessionTokenReference));
                     FinishingTime = UniqueTimestamp.Now;
                     _State = TransactionState.RolledBack;

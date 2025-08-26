@@ -145,13 +145,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public AbstractPipe(IEnumerable<S> SourceEnumeration, IEnumerator<S> SourceEnumerator)
         {
 
-            if (SourceEnumeration == null && SourceEnumerator == null)
+            if (SourceEnumeration is null && SourceEnumerator is null)
                 throw new ArgumentNullException("The given sources must not both be null!");
 
-            if (SourceEnumeration != null)
+            if (SourceEnumeration is not null)
                 this.SourcePipe = EndPipe.CreatePipe(SourceEnumeration);
 
-            if (SourceEnumerator != null)
+            if (SourceEnumerator is not null)
                 this.SourcePipe = EndPipe.CreatePipe(SourceEnumerator);
 
         }
@@ -300,7 +300,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         public virtual void Dispose()
         {
-            if (SourcePipe != null)
+            if (SourcePipe is not null)
                 SourcePipe.Dispose();
         }
 
@@ -358,7 +358,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     var _List = new List<Object>();
                     var _Last = ((IHistoryEnumerator) SourcePipe).Last;
 
-                    if (_Last == null)
+                    if (_Last is null)
                     {
                         //if (_InputEnumerator.MoveNext())
                         SourcePipe.MoveNext();
@@ -392,7 +392,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override String ToString()
         {
 
-            return (SourcePipe != null)
+            return (SourcePipe is not null)
                         ? this.GetType().Name + "<" + SourcePipe.Current + ">"
                         : this.GetType().Name;
 
@@ -775,7 +775,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 //    var _List = new List<Object>();
                 //    var _Last = ((IHistoryEnumerator) _InternalEnumerator).Last;
 
-                //    if (_Last == null)
+                //    if (_Last is null)
                 //        _List.Add(_InternalEnumerator.Current);
                 //    else
                 //        _List.Add(_Last);
@@ -1264,7 +1264,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 //    var _List = new List<Object>();
                 //    var _Last = ((IHistoryEnumerator) _InternalEnumerator).Last;
 
-                //    if (_Last == null)
+                //    if (_Last is null)
                 //        _List.Add(_InternalEnumerator.Current);
                 //    else
                 //        _List.Add(_Last);

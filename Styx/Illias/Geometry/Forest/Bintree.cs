@@ -129,10 +129,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 
                 var _Count = (UInt64) EmbeddedData.Count;
 
-                if (Subtree1 != null)
+                if (Subtree1 is not null)
                     _Count += Subtree1.Count;
 
-                if (Subtree2 != null)
+                if (Subtree2 is not null)
                     _Count += Subtree2.Count;
 
                 return _Count;
@@ -180,10 +180,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                 #region Check subtrees...
 
-                if      (Subtree1 != null && Subtree1.Contains(Element))
+                if      (Subtree1 is not null && Subtree1.Contains(Element))
                     Subtree1.Add(Element);
 
-                else if (Subtree2 != null && Subtree2.Contains(Element))
+                else if (Subtree2 is not null && Subtree2.Contains(Element))
                     Subtree2.Add(Element);
 
                 #endregion
@@ -202,7 +202,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Create Subtrees
 
-                    if (Subtree1 == null)
+                    if (Subtree1 is null)
                     {
                         Subtree1 = new Bintree<T>(Left,
                                                   Math.Add(Left, Math.Div2(Length)),
@@ -210,7 +210,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
-                    if (Subtree2 == null)
+                    if (Subtree2 is null)
                     {
                         Subtree2 = new Bintree<T>(Math.Add(Left, Math.Div2(Length)),
                                                   Right,
@@ -222,7 +222,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     #region Fire BintreeSplit event
 
-                    if (OnTreeSplit != null)
+                    if (OnTreeSplit is not null)
                         OnTreeSplit(this, Element);
 
                     #endregion
@@ -273,7 +273,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (ElementSelector == null)
+            if (ElementSelector is null)
                 throw new ArgumentNullException("The given ElementSelector must not be null!");
 
             #endregion
@@ -288,11 +288,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Element in Subtree1.Get(ElementSelector))
                     yield return _Element;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Element in Subtree2.Get(ElementSelector))
                     yield return _Element;
 
@@ -313,7 +313,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Line == null)
+            if (Line is null)
                 throw new ArgumentNullException("The given line must not be null!");
 
             #endregion
@@ -328,12 +328,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Line))
                     foreach (var _Element in Subtree1.Get(Line))
                         yield return _Element;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Line))
                     foreach (var _Element in Subtree2.Get(Line))
                         yield return _Element;
@@ -355,7 +355,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Element == null)
+            if (Element is null)
                 throw new ArgumentNullException("The given element must not be null!");
 
             #endregion
@@ -368,11 +368,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Contains(Element))
                     Subtree1.Remove(Element);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Contains(Element))
                     Subtree2.Remove(Element);
 
@@ -393,7 +393,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Line == null)
+            if (Line is null)
                 throw new ArgumentNullException("The given line must not be null!");
 
             #endregion
@@ -418,11 +418,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Check subtrees
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 if (Subtree1.Overlaps(Line))
                     Subtree1.Remove(Line);
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 if (Subtree2.Overlaps(Line))
                     Subtree2.Remove(Line);
 
@@ -444,11 +444,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Element in EmbeddedData)
                 yield return _Element;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Element in Subtree1)
                     yield return _Element;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Element in Subtree2)
                     yield return _Element;
 
@@ -463,11 +463,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             foreach (var _Element in EmbeddedData)
                 yield return _Element;
 
-            if (Subtree1 != null)
+            if (Subtree1 is not null)
                 foreach (var _Element in Subtree1)
                     yield return _Element;
 
-            if (Subtree2 != null)
+            if (Subtree2 is not null)
                 foreach (var _Element in Subtree2)
                     yield return _Element;
 

@@ -108,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixels == null || Pixels.Length <= 3)
+            if (Pixels is null || Pixels.Length <= 3)
                 throw new ArgumentNullException("The given array of pixels must not be null or smaller than three!");
 
             #endregion
@@ -159,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         //        return true;
 
         //    // If one is null, but not both, return false.
-        //    if (((Object) Triangle1 == null) || ((Object) Triangle2 == null))
+        //    if (((Object) Triangle1 is null) || ((Object) Triangle2 is null))
         //        return false;
 
         //    return Triangle1.Equals(Triangle2);
@@ -196,12 +196,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public virtual Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an ITriangle<T>.
             var IPolygon = Object as IPolygon<T>;
-            if ((Object) IPolygon == null)
+            if ((Object) IPolygon is null)
                 throw new ArgumentException("The given object is not a valid polygon!");
 
             return CompareTo(IPolygon);
@@ -219,7 +219,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Int32 CompareTo(IPolygon<T> IPolygon)
         {
             
-            if ((Object) IPolygon == null)
+            if ((Object) IPolygon is null)
                 throw new ArgumentNullException("The given polygon must not be null!");
 
             // Compare the x-coordinate of the circumcenter
@@ -249,12 +249,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Polygon<T>.
             var PolygonT = (IPolygon<T>) Object;
-            if ((Object) PolygonT == null)
+            if ((Object) PolygonT is null)
                 return false;
 
             return this.Equals(PolygonT);
@@ -273,7 +273,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IPolygon<T> IPolygon)
         {
 
-            if ((Object) IPolygon == null)
+            if ((Object) IPolygon is null)
                 return false;
 
             foreach (var _Pixel1 in _Pixels)

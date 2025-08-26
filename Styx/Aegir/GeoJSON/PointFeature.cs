@@ -71,7 +71,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static PointFeature Parse(JObject GeoJSON)
         {
 
-            if (GeoJSON == null)
+            if (GeoJSON is null)
                 throw new ArgumentNullException(nameof(GeoJSON), "The given GeoJSON must not be null!");
 
 

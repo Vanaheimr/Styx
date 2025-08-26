@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Action<T>  SomeDelegate)
         {
 
-            if (SomeObject == null || SomeDelegate == null)
+            if (SomeObject is null || SomeDelegate is null)
                 return;
 
             SomeDelegate(SomeObject);
@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            Func<T1, T2>  SomeDelegate)
         {
 
-            if (SomeObject == null || SomeDelegate == null)
+            if (SomeObject is null || SomeDelegate is null)
                 return default(T2);
 
             return SomeDelegate(SomeObject);

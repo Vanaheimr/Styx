@@ -23,7 +23,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.ConsoleLog
 
         public static void WriteLine(String? Message = null)
         {
-            if (Message == null)
+            if (Message is null)
                 Console.WriteLine("");
             else
                 Console.WriteLine(Message);
@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.ConsoleLog
 
         public static void Timestamp(String? Message = null)
         {
-            if (Message == null)
+            if (Message is null)
                 Console.WriteLine("");
             else
                 Console.WriteLine(Illias.Timestamp.Now + " - " + Message);

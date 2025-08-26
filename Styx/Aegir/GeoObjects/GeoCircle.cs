@@ -83,16 +83,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoCircle(GeoCoordinate Center, Double Radius)
         {
 
-            #region Initial Checks
-
-            if (Center == null)
-                throw new ArgumentNullException("The given center pixel must not be null!");
-
-            if (Radius == null)
-                throw new ArgumentNullException("The given radius must not be null!");
-
-            #endregion
-
             #region Math Checks
 
             if (Radius.Equals(0))
@@ -118,19 +108,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoCircle(GeoCoordinate Pixel1, GeoCoordinate Pixel2, GeoCoordinate Pixel3)
         {
 
-            #region Initial Checks
-
-            if (Pixel1 == null)
-                throw new ArgumentNullException("The given first pixel must not be null!");
-
-            if (Pixel2 == null)
-                throw new ArgumentNullException("The given second pixel must not be null!");
-
-            if (Pixel3 == null)
-                throw new ArgumentNullException("The given third pixel must not be null!");
-
-            #endregion
-
             #region Math Checks
 
             if (Pixel1.Equals(Pixel2) ||
@@ -155,7 +132,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                   Intersection(
                               new GeoLine(_Line23.Center, _Line23.Normale));
 
-            this.Radius     = (Center != null) ? Center.DistanceTo(Pixel1) : 0;
+            this.Radius     = Center.DistanceTo(Pixel1);
 
         }
 
@@ -176,22 +153,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="EdgePixel3">The third edge pixel defining a circle.</param>
         public static Boolean IsInCircle(GeoCoordinate Pixel, GeoCoordinate EdgePixel1, GeoCoordinate EdgePixel2, GeoCoordinate EdgePixel3)
         {
-
-            #region Initial Checks
-
-            if (Pixel == null)
-                throw new ArgumentNullException("The given first pixel must not be null!");
-
-            if (EdgePixel1 == null)
-                throw new ArgumentNullException("The given first edgepixel must not be null!");
-
-            if (EdgePixel2 == null)
-                throw new ArgumentNullException("The given second edgepixel must not be null!");
-
-            if (EdgePixel3 == null)
-                throw new ArgumentNullException("The given third edgepixel must not be null!");
-
-            #endregion
 
             #region Math Checks
 
@@ -235,13 +196,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Contains(GeoCoordinate GeoCoordinate)
         {
 
-            #region Initial Checks
-
-            if (GeoCoordinate == null)
-                throw new ArgumentNullException("The given x-coordinate must not be null!");
-
-            #endregion
-
             if (Center.DistanceTo(GeoCoordinate).IsLessThanOrEquals(Radius))
                 return true;
 
@@ -264,7 +218,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             #region Initial Checks
 
-            if (Circle == null)
+            if (Circle is null)
                 throw new ArgumentNullException("The given circle must not be null!");
 
             #endregion
@@ -291,7 +245,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             #region Initial Checks
 
-            if (Circle == null)
+            if (Circle is null)
                 throw new ArgumentNullException("The given circle must not be null!");
 
             #endregion
@@ -324,7 +278,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Circle1 == null) || ((Object) Circle2 == null))
+            if (((Object) Circle1 is null) || ((Object) Circle2 is null))
                 return false;
 
             return Circle1.Equals(Circle2);
@@ -362,12 +316,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an GeoCircle.
             var CircleT = (GeoCircle) Object;
-            if ((Object) CircleT == null)
+            if ((Object) CircleT is null)
                 return false;
 
             return this.Equals(CircleT);
@@ -386,7 +340,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoCircle Circle)
         {
 
-            if ((Object) Circle == null)
+            if ((Object) Circle is null)
                 return false;
 
             return this.Center.Equals(Circle.Center) &&

@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) VoxelValuePair1 == null) || ((Object) VoxelValuePair2 == null))
+            if (((Object) VoxelValuePair1 is null) || ((Object) VoxelValuePair2 is null))
                 return false;
 
             return VoxelValuePair1.Equals(VoxelValuePair2);
@@ -123,17 +123,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IVoxelValuePair<T, TValue>.
             var IVoxelValuePair = (IVoxelValuePair<T, TValue>) Object;
-            if ((Object) IVoxelValuePair != null)
+            if ((Object) IVoxelValuePair is not null)
                 return IVoxelValuePair.CompareTo(this);
 
             // Check if the given object is an IVoxel<T>.
             var IVoxel = (IVoxel<T>) Object;
-            if ((Object) IVoxel != null)
+            if ((Object) IVoxel is not null)
                 return IVoxel.CompareTo(this);
 
             throw new ArgumentException("The given object is neither a VoxelValuePair<T, TValue> nor a Voxel<T>!");
@@ -169,17 +169,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an IVoxelValuePair<T, TValue>.
             var IVoxelValuePair = (IVoxelValuePair<T, TValue>) Object;
-            if ((Object) IVoxelValuePair != null)
+            if ((Object) IVoxelValuePair is not null)
                 return this.Equals(IVoxelValuePair);
 
             // Check if the given object is an IVoxel<T>.
             var IVoxel = (IVoxel<T>) Object;
-            if ((Object) IVoxel != null)
+            if ((Object) IVoxel is not null)
                 return this.Equals(IVoxel);
 
             return false;
@@ -198,7 +198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IVoxelValuePair<T, TValue> IVoxelValuePair)
         {
 
-            if ((Object) IVoxelValuePair == null)
+            if ((Object) IVoxelValuePair is null)
                 return false;
 
             return X.Equals(IVoxelValuePair.X) &&

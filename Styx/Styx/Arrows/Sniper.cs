@@ -280,7 +280,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
             try
             {
 
-                if (IsTask && InitialDelay != null && InitialDelay.HasValue)
+                if (IsTask && InitialDelay is not null && InitialDelay.HasValue)
                     Thread.Sleep(InitialDelay.Value);
 
                 if (IEnumerator is not null)

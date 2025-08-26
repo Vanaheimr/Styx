@@ -87,13 +87,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoVector(GeoCoordinate GeoCoordinate)
         {
 
-            #region Initial Checks
-
-            if (GeoCoordinate == null)
-                throw new ArgumentNullException("The given y-component must not be null!");
-
-            #endregion
-
             this.P      = GeoCoordinate;
             this.Length = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0)).
                               DistanceTo(GeoCoordinate);
@@ -111,16 +104,6 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoCoordinate2">A pixel of type T.</param>
         public GeoVector(GeoCoordinate GeoCoordinate1, GeoCoordinate GeoCoordinate2)
         {
-
-            #region Initial Checks
-
-            if (GeoCoordinate1 == null)
-                throw new ArgumentNullException("The first pixel must not be null!");
-
-            if (GeoCoordinate2 == null)
-                throw new ArgumentNullException("The second pixel must not be null!");
-
-            #endregion
 
             this.P      = new GeoCoordinate(
                               Latitude. Parse(GeoCoordinate1.Latitude. Value - GeoCoordinate2.Latitude. Value),
@@ -145,10 +128,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             #region Initial Checks
 
-            if (GeoVector1 == null)
+            if (GeoVector1 is null)
                 throw new ArgumentNullException("The first vector must not be null!");
 
-            if (GeoVector2 == null)
+            if (GeoVector2 is null)
                 throw new ArgumentNullException("The second vector must not be null!");
 
             #endregion
@@ -225,7 +208,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         //public IVector2D<T> Min(params IVector2D<T>[] Values)
         //{
 
-        //    if (Values == null || Values.Length == 0)
+        //    if (Values is null || Values.Length == 0)
         //        throw new ArgumentException("The given values must not be null or zero!");
 
         //    if (Values.Length == 1)
@@ -256,7 +239,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         //public IVector2D<T> Max(params IVector2D<T>[] Values)
         //{
 
-        //    if (Values == null || Values.Length == 0)
+        //    if (Values is null || Values.Length == 0)
         //        throw new ArgumentException("The given values must not be null or zero!");
 
         //    if (Values.Length == 1)
@@ -288,7 +271,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         //public IVector2D<T> Add(params IVector2D<T>[] Summands)
         //{
 
-        //    if (Summands == null || Summands.Length == 0)
+        //    if (Summands is null || Summands.Length == 0)
         //        throw new ArgumentException("The given summands must not be null!");
 
         //    if (Summands.Length == 1)
@@ -335,7 +318,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         //public IVector2D<T> Mul(params IVector2D<T>[] Multiplicators)
         //{
 
-        //    if (Multiplicators == null || Multiplicators.Length == 0)
+        //    if (Multiplicators is null || Multiplicators.Length == 0)
         //        throw new ArgumentException("The given multiplicators must not be null!");
 
         //    if (Multiplicators.Length == 1)
@@ -523,7 +506,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         //    #region Initial Checks
 
-        //    if (P2 == null)
+        //    if (P2 is null)
         //        throw new ArgumentNullException("The given geo coordinate must not be null!");
 
         //    #endregion
@@ -550,7 +533,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         //    #region Initial Checks
 
-        //    if (Vector == null)
+        //    if (Vector is null)
         //        throw new ArgumentNullException("The given vector must not be null!");
 
         //    #endregion
@@ -583,7 +566,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Vector1 == null) || ((Object) Vector2 == null))
+            if (((Object) Vector1 is null) || ((Object) Vector2 is null))
                 return false;
 
             return Vector1.Equals(Vector2);
@@ -621,12 +604,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Vector2D<T>.
             var VectorT = (GeoVector) Object;
-            if ((Object) VectorT == null)
+            if ((Object) VectorT is null)
                 return false;
 
             return this.Equals(VectorT);
@@ -645,7 +628,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoVector IVector)
         {
 
-            if ((Object) IVector == null)
+            if ((Object) IVector is null)
                 return false;
 
             return this.P.Longitude.Equals(IVector.P.Longitude) &&

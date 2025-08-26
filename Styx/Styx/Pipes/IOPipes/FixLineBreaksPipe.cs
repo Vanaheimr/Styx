@@ -117,10 +117,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             #region Initial checks
 
-            if (StartOfNewLineRegExpr == null)
+            if (StartOfNewLineRegExpr is null)
                 throw new ArgumentNullException("StartOfNewLineRegExpr", "The parameter 'StartOfNewLineRegExpr' must not be null!");
 
-            if (NewLineSeparator == null)
+            if (NewLineSeparator is null)
                 throw new ArgumentNullException("NewLineSeparator", "The parameter 'NewLineSeparator' must not be null!");
 
             #endregion
@@ -158,7 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             if (StartOfNewLineRegExprString.IsNullOrEmpty())
                 throw new ArgumentNullException("StartOfNewLineRegExprString", "The parameter 'StartOfNewLineRegExprString' must not be null!");
 
-            if (NewLineSeparator == null)
+            if (NewLineSeparator is null)
                 throw new ArgumentNullException("NewLineSeparator", "The parameter 'NewLineSeparator' must not be null!");
 
             #endregion
@@ -188,7 +188,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public override Boolean MoveNext()
         {
 
-            if (SourcePipe == null)
+            if (SourcePipe is null)
                 return false;
 
             while (SourcePipe.MoveNext())

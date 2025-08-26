@@ -89,13 +89,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (X == null)
+            if (X is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (Y == null)
+            if (Y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
-            if (Z == null)
+            if (Z is null)
                 throw new ArgumentNullException("The given z-coordinate must not be null!");
 
             #endregion
@@ -127,13 +127,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
-            if (z == null)
+            if (z is null)
                 throw new ArgumentNullException("The given z-coordinate must not be null!");
 
             #endregion
@@ -161,7 +161,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (IVoxel == null)
+            if (IVoxel is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
             #endregion
@@ -195,7 +195,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Voxel1 == null) || ((Object) Voxel2 == null))
+            if (((Object) Voxel1 is null) || ((Object) Voxel2 is null))
                 return false;
 
             return Voxel1.Equals(Voxel2);
@@ -232,12 +232,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public virtual Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IVoxel<T>.
             var IVoxelT = Object as IVoxel<T>;
-            if ((Object) IVoxelT == null)
+            if ((Object) IVoxelT is null)
                 throw new ArgumentException("The given object is not a valid voxel!");
 
             return CompareTo(IVoxelT);
@@ -255,7 +255,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Int32 CompareTo(IVoxel<T> IVoxelT)
         {
             
-            if ((Object) IVoxelT == null)
+            if ((Object) IVoxelT is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
             // Compare the x-coordinate of the voxels
@@ -285,12 +285,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an IVoxel<T>.
             var IVoxelT = (IVoxel<T>) Object;
-            if ((Object) IVoxelT == null)
+            if ((Object) IVoxelT is null)
                 return false;
 
             return this.Equals(IVoxelT);
@@ -309,7 +309,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IVoxel<T> IVoxel)
         {
 
-            if ((Object) IVoxel == null)
+            if ((Object) IVoxel is null)
                 return false;
 
             return X.Equals(IVoxel.X) &&

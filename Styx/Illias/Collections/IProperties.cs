@@ -45,13 +45,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
-            if (FirstValue == null)
+            if (FirstValue is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -64,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
                 _Set = _Value as HashedSet<Object>;
 
-                if (_Set == null)
+                if (_Set is null)
                     throw new Exception("The value is not a set!");
 
                 else
@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
                     _Set.Add(FirstValue);
 
-                    if (Values != null && Values.Any())
+                    if (Values is not null && Values.Any())
                         Values.ForEach(value => _Set.Add(value));
 
                     return IProperties;
@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             _Set = new HashedSet<Object>() { FirstValue };
 
-            if (Values != null && Values.Any())
+            if (Values is not null && Values.Any())
                 Values.ForEach(value => _Set.Add(value));
 
             IProperties.Set(Key, _Set);
@@ -113,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
             #endregion
@@ -140,10 +140,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (KeyValuePairs == null)
+            if (KeyValuePairs is null)
                 throw new ArgumentNullException("The given KeyValuePair enumeration must not be null!");
 
             #endregion
@@ -173,10 +173,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException("The given IProperties must not be null!");
 
-            if (IDictionary == null)
+            if (IDictionary is null)
                 throw new ArgumentNullException("The given dictionary must not be null!");
 
             #endregion
@@ -201,13 +201,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
-            if (FirstValue == null)
+            if (FirstValue is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -220,7 +220,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 
                 _List = _Value as List<Object>;
 
-                if (_List == null)
+                if (_List is null)
                     throw new Exception("The value is not a list!");
 
                 else
@@ -228,7 +228,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
                     _List.Add(FirstValue);
 
-                    if (Values != null && Values.Any())
+                    if (Values is not null && Values.Any())
                         _List.AddRange(Values);
 
                     return IProperties;
@@ -239,7 +239,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             _List = new List<Object>() { FirstValue };
 
-            if (Values != null && Values.Any())
+            if (Values is not null && Values.Any())
                 _List.AddRange(Values);
 
             IProperties.Set(Key, _List);
@@ -261,13 +261,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
-            if (FirstValue == null)
+            if (FirstValue is null)
                 throw new ArgumentNullException();
 
             #endregion
@@ -281,7 +281,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
                 _ZSet = _CountedValue as Dictionary<Object, UInt64>;
 
-                if (_ZSet == null)
+                if (_ZSet is null)
                     throw new Exception("The value is not a counted set!");
 
                 else
@@ -292,7 +292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                     else
                         _ZSet.Add(FirstValue, 1);
 
-                    if (Values != null && Values.Any())
+                    if (Values is not null && Values.Any())
                         Values.ForEach(value => {
                             if (_ZSet.TryGetValue(value, out _Counter))
                                 _ZSet[value] = _Counter + 1;
@@ -309,7 +309,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             _ZSet = new Dictionary<Object, UInt64>();
             _ZSet.Add(FirstValue, 1);
 
-            if (Values != null && Values.Any())
+            if (Values is not null && Values.Any())
                 Values.ForEach(value =>
                 {
                     if (_ZSet.TryGetValue(value, out _Counter))
@@ -336,10 +336,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #region Initial checks
 
-            if (IProperties == null)
+            if (IProperties is null)
                 throw new ArgumentNullException();
 
-            if (Key == null)
+            if (Key is null)
                 throw new ArgumentNullException();
 
             #endregion

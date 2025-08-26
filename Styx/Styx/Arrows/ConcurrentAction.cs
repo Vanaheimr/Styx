@@ -84,7 +84,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         {
 
-            if (MessageAction == null)
+            if (MessageAction is null)
                 throw new ArgumentNullException("MessageAction", "The given 'MessageAction' delegate must not be null!");
 
             this.MessageAction = MessageAction;

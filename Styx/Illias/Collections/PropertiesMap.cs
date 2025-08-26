@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             foreach (var Properties in IEnumerable)
                 foreach (var Key in Keys)
-                    if (Properties[Key] != null)
+                    if (Properties[Key] is not null)
                         _Lookup[Key].Add(Properties[Key]);
 
             

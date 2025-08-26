@@ -157,13 +157,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel1 == null)
+            if (Pixel1 is null)
                 throw new ArgumentNullException("The given first pixel must not be null!");
 
-            if (Pixel2 == null)
+            if (Pixel2 is null)
                 throw new ArgumentNullException("The given second pixel must not be null!");
 
-            if (Pixel3 == null)
+            if (Pixel3 is null)
                 throw new ArgumentNullException("The given third pixel must not be null!");
 
             #endregion
@@ -255,7 +255,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Triangle1 == null) || ((Object) Triangle2 == null))
+            if (((Object) Triangle1 is null) || ((Object) Triangle2 is null))
                 return false;
 
             return Triangle1.Equals(Triangle2);
@@ -292,12 +292,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public virtual Int32 CompareTo(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an ITriangle<T>.
             var ITriangle = Object as ITriangle<T>;
-            if ((Object) ITriangle == null)
+            if ((Object) ITriangle is null)
                 throw new ArgumentException("The given object is not a valid triangle!");
 
             return CompareTo(ITriangle);
@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Int32 CompareTo(ITriangle<T> ITriangle)
         {
             
-            if ((Object) ITriangle == null)
+            if ((Object) ITriangle is null)
                 throw new ArgumentNullException("The given triangle must not be null!");
 
             // Compare the x-coordinate of the circumcenter
@@ -345,12 +345,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Triangle<T>.
             var TriangleT = (Triangle<T>) Object;
-            if ((Object) TriangleT == null)
+            if ((Object) TriangleT is null)
                 return false;
 
             return this.Equals(TriangleT);
@@ -369,7 +369,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(ITriangle<T> ITriangle)
         {
 
-            if ((Object) ITriangle == null)
+            if ((Object) ITriangle is null)
                 return false;
 
             return (this.P1.Equals(ITriangle.P1) &&

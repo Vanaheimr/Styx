@@ -408,10 +408,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(TValue? OtherValue)
         {
 
-            if (Value == null && OtherValue == null)
+            if (Value is null && OtherValue is null)
                 return true;
 
-            if (Value == null)
+            if (Value is null)
                 return false;
 
             return Value.Equals(OtherValue);
@@ -779,10 +779,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Equals(TValue? OtherValue)
         {
 
-            if (Value == null && OtherValue == null)
+            if (Value is null && OtherValue is null)
                 return true;
 
-            if (Value == null)
+            if (Value is null)
                 return false;
 
             return Value.Equals(OtherValue);

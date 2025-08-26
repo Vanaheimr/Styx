@@ -46,10 +46,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         //                                          IEqualityComparer<T>  Comparer = null)
         //{
 
-        //    if (FirstPipe == null || SecondPipe == null)
+        //    if (FirstPipe is null || SecondPipe is null)
         //        yield break;
 
-        //    if (Comparer == null)
+        //    if (Comparer is null)
         //        Comparer = EqualityComparer<T>.Default;
 
         //    var ValueSet = new HashSet<T>(Comparer);
@@ -291,7 +291,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         //                                                  IEqualityComparer<TSource> comparer = null)
         //{
 
-        //    if (comparer == null)
+        //    if (comparer is null)
         //        comparer = EqualityComparer<TSource>.Default;
 
         //    var items = new HashSet<TSource>(comparer);

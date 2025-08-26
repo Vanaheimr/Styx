@@ -75,7 +75,7 @@
 
 //            #region Initial checks
 
-//            if (InternalPipes == null)
+//            if (InternalPipes is null)
 //                throw new ArgumentNullException("The array of wrapped pipes must not be null!");
 
 //            if (InternalPipes.Length < 2)
@@ -87,7 +87,7 @@
 //            if (!(InternalPipes[InternalPipes.Length-1] is IEndPipe<E>))
 //                throw new ArgumentException("The last wrapped pipe must implement IEndPipe<E>!");
 
-//            if (IEnumerator != null && IEnumerable != null)
+//            if (IEnumerator is not null && IEnumerable is not null)
 //                throw new ArgumentException("Please decide between IEnumerator and IEnumerable!");
 
 //            #endregion
@@ -96,10 +96,10 @@
 //            this.StartPipe     = InternalPipes[0] as IStartPipe<S>;
 //            this.EndPipe       = InternalPipes[InternalPipes.Length-1] as IEndPipe<E>;
 
-//            if (IEnumerable != null)
+//            if (IEnumerable is not null)
 //                this.StartPipe.SetSourceCollection(IEnumerable);
 
-//            if (IEnumerator != null)
+//            if (IEnumerator is not null)
 //                this.StartPipe.SetSource(IEnumerator);
 
 //            for (var i = 1; i < InternalPipes.Length; i++)

@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="ICollection">An optional ICollection to store the passed objects.</param>
         public AggregatorPipe(ICollection<S> ICollection = null)
         {
-            if (ICollection == null)
+            if (ICollection is null)
                 InternalSideEffect = new List<S>();
             else
                 InternalSideEffect = ICollection;
@@ -81,10 +81,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         {
 
             // First consume all elements emitted by the _InternalEnumerator
-            if (_AggregateEnumerator == null)
+            if (_AggregateEnumerator is null)
             {
 
-                if (SourcePipe == null)
+                if (SourcePipe is null)
                     return false;
 
                 while (SourcePipe.MoveNext())

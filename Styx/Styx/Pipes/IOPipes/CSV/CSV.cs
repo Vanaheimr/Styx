@@ -42,12 +42,12 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static IEnumerable<String> GetLines(this StreamReader StreamReader)
         {
 
-            if (StreamReader == null)
+            if (StreamReader is null)
                 throw new ArgumentNullException("StreamReader", "StreamReader must not be null!");
 
             String CurrentLine;
 
-            while ((CurrentLine = StreamReader.ReadLine()) != null)
+            while ((CurrentLine = StreamReader.ReadLine()) is not null)
                 yield return CurrentLine;
 
         }
@@ -65,14 +65,14 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static IEnumerable<IEnumerable<String>> GetMultipleLines(this StreamReader StreamReader, Int32 NumberOfLines)
         {
 
-            if (StreamReader == null)
+            if (StreamReader is null)
                 throw new ArgumentNullException("myStreamReader must not be null!");
 
             var _Lines = new String[NumberOfLines];
             var _Number = 0;
             var _Line = "";
 
-            while ((_Line = StreamReader.ReadLine()) != null)
+            while ((_Line = StreamReader.ReadLine()) is not null)
             {
 
                 if (!_Line.StartsWith("#") && !_Line.StartsWith("//"))

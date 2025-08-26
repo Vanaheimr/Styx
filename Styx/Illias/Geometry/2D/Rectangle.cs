@@ -209,16 +209,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Left   == null)
+            if (Left   is null)
                 throw new ArgumentNullException("The given left-coordinate must not be null!");
 
-            if (Top    == null)
+            if (Top    is null)
                 throw new ArgumentNullException("The given top-coordinate must not be null!");
 
-            if (Right  == null)
+            if (Right  is null)
                 throw new ArgumentNullException("The given right-coordinate must not be null!");
 
-            if (Bottom == null)
+            if (Bottom is null)
                 throw new ArgumentNullException("The given bottom-coordinate must not be null!");
 
             if (Left.Equals(Right))
@@ -259,10 +259,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel1 == null)
+            if (Pixel1 is null)
                 throw new ArgumentNullException("The given first pixel must not be null!");
 
-            if (Pixel2 == null)
+            if (Pixel2 is null)
                 throw new ArgumentNullException("The given second pixel must not be null!");
 
             if (Pixel1.X.Equals(Pixel2.X))
@@ -304,13 +304,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel  == null)
+            if (Pixel  is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
-            if (Width  == null || Width.Equals(Math.Zero))
+            if (Width  is null || Width.Equals(Math.Zero))
                 throw new ArgumentNullException("The given width must not be null or zero!");
 
-            if (Height == null || Height.Equals(Math.Zero))
+            if (Height is null || Height.Equals(Math.Zero))
                 throw new ArgumentNullException("The given height must not be null or zero!");
 
             #endregion
@@ -350,10 +350,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (x == null)
+            if (x is null)
                 throw new ArgumentNullException("The given x-coordinate must not be null!");
 
-            if (y == null)
+            if (y is null)
                 throw new ArgumentNullException("The given y-coordinate must not be null!");
 
             #endregion
@@ -383,7 +383,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Pixel == null)
+            if (Pixel is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             #endregion
@@ -413,7 +413,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given rectangle must not be null!");
 
             #endregion
@@ -453,7 +453,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Initial Checks
 
-            if (Rectangle == null)
+            if (Rectangle is null)
                 throw new ArgumentNullException("The given rectangle must not be null!");
 
             #endregion
@@ -499,7 +499,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Rectangle1 == null) || ((Object) Rectangle2 == null))
+            if (((Object) Rectangle1 is null) || ((Object) Rectangle2 is null))
                 return false;
 
             return Rectangle1.Equals(Rectangle2);
@@ -537,12 +537,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public override Boolean Equals(Object Object)
         {
 
-            if (Object == null)
+            if (Object is null)
                 return false;
 
             // Check if the given object is an Rectangle<T>.
             var RectangleT = (Rectangle<T>) Object;
-            if ((Object) RectangleT == null)
+            if ((Object) RectangleT is null)
                 return false;
 
             return this.Equals(RectangleT);
@@ -561,7 +561,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean Equals(IRectangle<T> IRectangle)
         {
 
-            if ((Object) IRectangle == null)
+            if ((Object) IRectangle is null)
                 return false;
 
             return this.Left.  Equals(IRectangle.Left)  &&

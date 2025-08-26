@@ -145,7 +145,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public CommandLineParserOption Long(String LongOption)
         {
 
-            if (LongOption == null || LongOption.Trim() == "")
+            if (LongOption is null || LongOption.Trim() == "")
                 throw new ArgumentNullException("LongOption", "The parameter must not be null or empty!");
 
             this.LongOption = LongOption.Trim();
@@ -165,7 +165,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public CommandLineParserOption Verify(String RegularExpression)
         {
 
-            if (RegularExpression == null || RegularExpression.Trim() == "")
+            if (RegularExpression is null || RegularExpression.Trim() == "")
                 throw new ArgumentNullException("RegularExpression", "The parameter must not be null or empty!");
 
             this.RegularExpression = new Regex(RegularExpression);
@@ -185,7 +185,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public CommandLineParserOption Verify(Func<String, Boolean> Delegate)
         {
 
-            if (Delegate == null)
+            if (Delegate is null)
                 throw new ArgumentNullException("Delegate", "The delegate must not be null or empty!");
 
             this.Verification = Delegate;
@@ -205,7 +205,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public CommandLineParserOption Do(Action<String> Delegate)
         {
 
-            if (Delegate == null)
+            if (Delegate is null)
                 throw new ArgumentNullException("Delegate", "The parameter must not be null!");
 
             this.Action = Action;
@@ -226,16 +226,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public CommandLineParser Apply()
         {
 
-            if (!_Short.HasValue && LongOption == null)
+            if (!_Short.HasValue && LongOption is null)
                 throw new ArgumentException("Either a short or long option must be defined!");
 
-            if (Action == null)
+            if (Action is null)
                 throw new ArgumentException("An action has to be defined for this option!");
 
             if (_Short.HasValue)
                 CommandLineParser.AddOption(_Short.Value, Action);
 
-            if (LongOption != null)
+            if (LongOption is not null)
                 CommandLineParser.AddOption(LongOption, Action);
 
             return CommandLineParser;

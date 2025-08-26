@@ -43,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(Int32 Loops, Action Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0; i < Loops; i++)
@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(UInt32 Loops, Action Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0U; i < Loops; i++)
@@ -77,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(Int64 Loops, Action Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0L; i < Loops; i++)
@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(UInt64 Loops, Action Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0UL; i < Loops; i++)
@@ -115,7 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(Int32 Loops, Action<Int32> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0; i < Loops; i++)
@@ -132,7 +132,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(UInt32 Loops, Action<UInt32> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0U; i < Loops; i++)
@@ -149,7 +149,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(Int64 Loops, Action<Int64> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0L; i < Loops; i++)
@@ -166,7 +166,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(UInt64 Loops, Action<UInt64> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0UL; i < Loops; i++)
@@ -188,7 +188,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(Int32 Loops, Action<Int32, Int32> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0; i < Loops; i++)
@@ -206,7 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(UInt32 Loops, Action<UInt32, UInt32> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0U; i < Loops; i++)
@@ -224,7 +224,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(Int64 Loops, Action<Int64, Int64> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0L; i < Loops; i++)
@@ -242,7 +242,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static void Do(UInt64 Loops, Action<UInt64, UInt64> Do)
         {
 
-            if (Do == null)
+            if (Do is null)
                 throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
 
             for (var i = 0UL; i < Loops; i++)

@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static LineStringFeature Parse(JObject GeoJSON)
         {
 
-            if (GeoJSON == null)
+            if (GeoJSON is null)
                 throw new ArgumentNullException(nameof(GeoJSON), "The given JSON must not be null!");
 
             #region Parse geometry...
