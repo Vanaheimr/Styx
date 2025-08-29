@@ -1146,6 +1146,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region Operator /  (Watt,  Volt)
+
+        /// <summary>
+        /// Ampere = Watt / Volt
+        /// </summary>
+        /// <param name="Watt">A Watt.</param>
+        /// <param name="Volt">A Volt.</param>
+        public static Ampere operator / (Watt Watt,
+                                         Volt Volt)
+
+            => Ampere.ParseA(Watt.Value / Volt.Value);
+
+        #endregion
+
         #endregion
 
         #region IComparable<Watt> Members
