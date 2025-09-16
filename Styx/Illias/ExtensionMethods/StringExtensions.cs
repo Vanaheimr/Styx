@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System;
 using System.Text;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -246,13 +247,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToBase32            (this ByteArray)
 
+        /// <summary>
+        /// Converts an array of bytes into its Base32 string representation.
+        /// </summary>
+        /// <param name="Text">An array of bytes.</param>
+        public static String ToBase32(this String Text)
+
+            => ToBase32(Text.ToUTF8Bytes().AsSpan());
+
+
+        /// <summary>
+        /// Converts an array of bytes into its Base32 string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
         public static String ToBase32(this Byte[] ByteArray)
+
+            => ToBase32(ByteArray.AsSpan());
+
+
+        /// <summary>
+        /// Converts an array of bytes into its Base32 string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
+        public static String ToBase32(this ReadOnlySpan<Byte> ByteArray)
         {
 
             try
             {
 
-                if (ByteArray is null || ByteArray.Length == 0)
+                if (ByteArray.Length == 0)
                     return String.Empty;
 
                 var result          = new StringBuilder((ByteArray.Length + 7) * 8 / 5);
@@ -421,32 +444,63 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         private const string Base45Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
 
-        public static String ToBase45(this ReadOnlySpan<Byte> data)
+        /// <summary>
+        /// Converts an array of bytes into its Base45 string representation.
+        /// </summary>
+        /// <param name="Text">An array of bytes.</param>
+        public static String ToBase45(this String Text)
+
+            => ToBase45(Text.ToUTF8Bytes().AsSpan());
+
+
+        /// <summary>
+        /// Converts an array of bytes into its Base45 string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
+        public static String ToBase45(this Byte[] ByteArray)
+
+            => ToBase45(ByteArray.AsSpan());
+
+
+        /// <summary>
+        /// Converts an array of bytes into its Base45 string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
+        public static String ToBase45(this ReadOnlySpan<Byte> ByteArray)
         {
 
-            // Rough capacity estimate!
-            var sb = new StringBuilder((Int32) (data.Length * 1.6));
-            var i  = 0;
+            if (ByteArray.Length == 0)
+                return String.Empty;
 
-            while (i + 1 < data.Length)
+            var sb = new StringBuilder(ByteArray.Length / 2 * 3 + ByteArray.Length % 2 * 2);
+
+            var i  = 0;
+            while (i + 1 < ByteArray.Length)
             {
-                var x = (data[i] << 8) | data[i + 1]; // 0..65535
-                var e = x % 45; x /= 45;
-                var d = x % 45; x /= 45;
-                var c = x; // 0..(65535 / (45*45)) <= 32
-                sb.Append(Base45Alphabet[c]);
+
+                var x = (ByteArray[i] << 8) | ByteArray[i + 1];   // 0..65535
+                var c = x % 45;                                   // LSB
+                var d = (x / 45) % 45;
+                var e = x / (45 * 45);                            // MSB (0..32)
+
+                sb.Append(Base45Alphabet[c]);                     // LSB first
                 sb.Append(Base45Alphabet[d]);
                 sb.Append(Base45Alphabet[e]);
+
                 i += 2;
+
             }
 
-            if (i < data.Length) // 1 byte left
+            if (i < ByteArray.Length)                             // 1 byte left
             {
-                var x = data[i];
-                var d = x / 45;     // 0..5
-                var e = x % 45;     // 0..44
+
+                var x = ByteArray[i];                             // 0..255
+                var c = x % 45;                                   // LSB
+                var d = x / 45;
+
+                sb.Append(Base45Alphabet[c]);                     // LSB first
                 sb.Append(Base45Alphabet[d]);
-                sb.Append(Base45Alphabet[e]);
+
             }
 
             return sb.ToString();
@@ -457,7 +511,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region FromBASE45          (this Base45String)
 
-        public static Byte[] FromBASE45(this ReadOnlySpan<Char> Base45String)
+        public static Byte[] FromBASE45(this String Base45String)
         {
 
             if (TryParseBASE45(Base45String, out var byteArray, out var errorResponse))
@@ -479,7 +533,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Accepts only the exact 45-character alphabet (including SPACE).
         /// Returns false with an error message on any invalid length/character/overflow.
         /// </summary>
-        public static Boolean TryParseBASE45(this ReadOnlySpan<Char>           Base45String,
+        public static Boolean TryParseBASE45(this String                       Base45String,
                                              [NotNullWhen(true)]  out Byte[]?  ByteArray,
                                              [NotNullWhen(false)] out String?  ErrorResponse)
         {
@@ -544,7 +598,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                var x = map[c0] * 45 * 45 + map[c1] * 45 + map[c2]; // 0..91124
+                var x = map[c0] + map[c1] * 45 + map[c2] * 45 * 45; // 0..91124
                 if (x > 0xFFFF)
                 {
                     ErrorResponse = $"Invalid BASE45 triplet at indexes [{i},{i + 1},{i + 2}]: value {x} exceeds 65535.";
@@ -572,7 +626,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                var x = map[c0] * 45 + map[c1]; // 0..2024
+                var x = map[c0] + map[c1] * 45; // 0..2024
                 if (x > 0xFF)
                 {
                     ErrorResponse = $"Invalid BASE45 pair at indexes [{i},{i + 1}]: value {x} exceeds 255.";
@@ -592,7 +646,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToBase64            (this ByteArray)
 
+        /// <summary>
+        /// Converts an array of bytes into its Base64 string representation.
+        /// </summary>
+        /// <param name="Text">An array of bytes.</param>
+        public static String ToBase64(this String Text)
+
+            => ToBase64(Text.ToUTF8Bytes().AsSpan());
+
+
+        /// <summary>
+        /// Converts an array of bytes into its Base64 string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
         public static String ToBase64(this Byte[] ByteArray)
+
+            => ToBase64(ByteArray.AsSpan());
+
+
+        /// <summary>
+        /// Converts an array of bytes into its Base64 string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
+        public static String ToBase64(this ReadOnlySpan<Byte> ByteArray)
         {
             try
             {
@@ -672,6 +748,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToBase64URL         (this ByteArray)
 
+        /// <summary>
+        /// Converts an array of bytes into its Base64URL string representation.
+        /// </summary>
+        /// <param name="ByteArray">An array of bytes.</param>
         public static String ToBase64URL(this Byte[] ByteArray)
         {
             try
@@ -752,25 +832,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-
-        #region ToBase64            (this UTF8Text)
-
-        public static String ToBase64(this String UTF8Text)
-        {
-
-            try
-            {
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(UTF8Text));
-            }
-
-            catch (Exception e)
-            {
-                throw new Exception("Error in ToBase64" + e.Message);
-            }
-
-        }
-
-        #endregion
 
         #region FromBASE64_UTF8     (this Base64String)
 
