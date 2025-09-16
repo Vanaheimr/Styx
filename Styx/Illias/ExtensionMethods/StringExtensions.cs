@@ -168,7 +168,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseHEX(HexString, out var byteArray, out var errorResponse))
                 return byteArray;
 
-            throw new ArgumentException(errorResponse, nameof(HexString));
+            throw new ArgumentException(
+                      errorResponse,
+                      nameof(HexString)
+                  );
 
         }
 
@@ -321,7 +324,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseBASE32(Base32String, out var byteArray, out var errorResponse))
                 return byteArray;
 
-            throw new ArgumentException(errorResponse, nameof(Base32String));
+            throw new ArgumentException(
+                      errorResponse,
+                      nameof(Base32String)
+                  );
 
         }
 
@@ -411,6 +417,179 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region ToBase45            (this ByteArray)
+
+        private const string Base45Alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:";
+
+        public static String ToBase45(this ReadOnlySpan<Byte> data)
+        {
+
+            // Rough capacity estimate!
+            var sb = new StringBuilder((Int32) (data.Length * 1.6));
+            var i  = 0;
+
+            while (i + 1 < data.Length)
+            {
+                var x = (data[i] << 8) | data[i + 1]; // 0..65535
+                var e = x % 45; x /= 45;
+                var d = x % 45; x /= 45;
+                var c = x; // 0..(65535 / (45*45)) <= 32
+                sb.Append(Base45Alphabet[c]);
+                sb.Append(Base45Alphabet[d]);
+                sb.Append(Base45Alphabet[e]);
+                i += 2;
+            }
+
+            if (i < data.Length) // 1 byte left
+            {
+                var x = data[i];
+                var d = x / 45;     // 0..5
+                var e = x % 45;     // 0..44
+                sb.Append(Base45Alphabet[d]);
+                sb.Append(Base45Alphabet[e]);
+            }
+
+            return sb.ToString();
+
+        }
+
+        #endregion
+
+        #region FromBASE45          (this Base45String)
+
+        public static Byte[] FromBASE45(this ReadOnlySpan<Char> Base45String)
+        {
+
+            if (TryParseBASE45(Base45String, out var byteArray, out var errorResponse))
+                return byteArray;
+
+            throw new ArgumentException(
+                      errorResponse,
+                      nameof(Base45String)
+                  );
+
+        }
+
+        #endregion
+
+        #region TryParseBASE45      (this Base45String, out ByteArray,  out ErrorResponse)
+
+        /// <summary>
+        /// Decodes a BASE45 (RFC 9285) string into a byte array.
+        /// Accepts only the exact 45-character alphabet (including SPACE).
+        /// Returns false with an error message on any invalid length/character/overflow.
+        /// </summary>
+        public static Boolean TryParseBASE45(this ReadOnlySpan<Char>           Base45String,
+                                             [NotNullWhen(true)]  out Byte[]?  ByteArray,
+                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ByteArray      = null;
+            ErrorResponse  = null;
+
+            var len = Base45String.Length;
+            if (len == 0)
+            {
+                ByteArray = [];
+                return true;
+            }
+
+            // Valid BASE45 lengths are (len % 3) == 0 or 2. A remainder of 1 is impossible.
+            var rem = len % 3;
+            if (rem == 1)
+            {
+                ErrorResponse = $"Invalid BASE45 length {len}: length modulo 3 must be 0 or 2.";
+                return false;
+            }
+
+
+            // Build a decode map for ASCII 0..127 => value or -1 if invalid.
+            // stackalloc to avoid heap allocations; initialize to -1.
+            Span<Int32> map = stackalloc Int32[128];
+            for (var i = 0; i < map.Length; i++) map[i] = -1;
+            for (var i = 0; i < Base45Alphabet.Length; i++)
+            {
+                // all chars are ASCII
+                map[(Int32) Base45Alphabet[i]] = i;
+            }
+
+            // Pre-size the output buffer exactly:
+            // 3 chars -> 2 bytes; 2 chars -> 1 byte
+            var outLen = (len / 3) * 2 + (rem == 2 ? 1 : 0);
+            var output = new Byte[outLen];
+
+            var o = 0;
+
+            // Decode all full triplets
+            var tripletEnd = (len / 3) * 3;
+            for (var i = 0; i < tripletEnd; i += 3)
+            {
+
+                var c0 = Base45String[i];
+                var c1 = Base45String[i + 1];
+                var c2 = Base45String[i + 2];
+
+                if (c0 > 127 || c1 > 127 || c2 > 127 ||
+                    map[c0] < 0 || map[c1] < 0 || map[c2] < 0)
+                {
+
+                    var badIndex   = (map[c0] < 0 || c0 > 127) ? i :
+                                     (map[c1] < 0 || c1 > 127) ? i + 1 : i + 2;
+
+                    var bad        = Base45String[badIndex];
+
+                    ErrorResponse  = $"Invalid BASE45 character '{bad}' (U+{((Int32) bad):X4}) at index {badIndex}.";
+
+                    return false;
+
+                }
+
+                var x = map[c0] * 45 * 45 + map[c1] * 45 + map[c2]; // 0..91124
+                if (x > 0xFFFF)
+                {
+                    ErrorResponse = $"Invalid BASE45 triplet at indexes [{i},{i + 1},{i + 2}]: value {x} exceeds 65535.";
+                    return false;
+                }
+
+                output[o++] = (Byte) (x >>    8);
+                output[o++] = (Byte) (x &  0xFF);
+
+            }
+
+            // Decode a final pair if present
+            if (rem == 2)
+            {
+
+                var i  = tripletEnd;
+                var c0 = Base45String[i];
+                var c1 = Base45String[i + 1];
+
+                if (c0 > 127 || c1 > 127 || map[c0] < 0 || map[c1] < 0)
+                {
+                    var badIndex   = (map[c0] < 0 || c0 > 127) ? i : i + 1;
+                    var bad        = Base45String[badIndex];
+                    ErrorResponse  = $"Invalid BASE45 character '{bad}' (U+{((Int32) bad):X4}) at index {badIndex}.";
+                    return false;
+                }
+
+                var x = map[c0] * 45 + map[c1]; // 0..2024
+                if (x > 0xFF)
+                {
+                    ErrorResponse = $"Invalid BASE45 pair at indexes [{i},{i + 1}]: value {x} exceeds 255.";
+                    return false;
+                }
+
+                output[o++] = (Byte) x;
+            }
+
+            ByteArray = output;
+            return true;
+
+        }
+
+        #endregion
+
+
         #region ToBase64            (this ByteArray)
 
         public static String ToBase64(this Byte[] ByteArray)
@@ -435,7 +614,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseBASE64(Base64String, out var byteArray, out var errorResponse))
                 return byteArray;
 
-            throw new ArgumentException(errorResponse, nameof(Base64String));
+            throw new ArgumentException(
+                      errorResponse,
+                      nameof(Base64String)
+                  );
 
         }
 
@@ -512,7 +694,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseBASE64URL(Base64String, out var byteArray, out var errorResponse))
                 return byteArray;
 
-            throw new ArgumentException(errorResponse, nameof(Base64String));
+            throw new ArgumentException(
+                      errorResponse,
+                      nameof(Base64String)
+                  );
 
         }
 
@@ -595,7 +780,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseBASE64_UTF8(Base64String, out var utf8String, out var errorResponse))
                 return utf8String;
 
-            throw new ArgumentException(errorResponse, nameof(Base64String));
+            throw new ArgumentException(
+                      errorResponse,
+                      nameof(Base64String)
+                  );
 
         }
 
@@ -636,7 +824,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
 
         #region EscapeForXMLandHTML(Text)
