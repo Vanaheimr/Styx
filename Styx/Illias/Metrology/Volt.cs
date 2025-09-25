@@ -74,13 +74,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The value as KiloVolts.
         /// </summary>
-        public Decimal  KW
+        public Decimal  KV
             => Value / 1000;
 
         /// <summary>
         /// The value as MegaVolts.
         /// </summary>
-        public Decimal  MW
+        public Decimal  MV
             => Value / 1000000;
 
         #endregion
