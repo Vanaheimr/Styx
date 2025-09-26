@@ -709,6 +709,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
+            ByteArray     = null;
             ErrorResponse = null;
 
             try
@@ -717,29 +718,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 Base64String = Base64String.Trim();
 
                 if (Base64String.IsNullOrEmpty())
-                    ErrorResponse = "The given base64-representation of a byte array must not be null!";
-
-                else if (Base64String.Length % 4 != 0)
-                    ErrorResponse = $"The length of the given base64-representation '{Base64String}' of a byte array is invalid ({Base64String.Length} characters)!";
-
-                else if (!Base64Regex.IsMatch(Base64String))
-                    ErrorResponse = $"The given base64-representation '{Base64String}' of a byte array is invalid!";
-
-                else
                 {
-                    ByteArray = Convert.FromBase64String(Base64String);
-                    return true;
+                    ErrorResponse = "The given base64-representation of a byte array must not be null!";
+                    return false;
                 }
+
+                while (Base64String.Length % 4 != 0)
+                    Base64String += "=";
+
+                if (!Base64Regex.IsMatch(Base64String))
+                {
+                    ErrorResponse = $"The given base64-representation '{Base64String}' of a byte array is invalid!";
+                    return false;
+                }
+
+                ByteArray = Convert.FromBase64String(Base64String);
+                return true;
 
             }
             catch (Exception e)
             {
                 ErrorResponse = $"The given string '{Base64String}' could not be parsed as a base64-representation of a byte array: " + e.Message;
+                return false;
             }
-
-            ErrorResponse ??= $"The given string '{Base64String}' is not a base64-representation of a byte array!";
-            ByteArray       = [];
-            return false;
 
         }
 
