@@ -32,7 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 #pragma warning disable SCS0005 // Weak random number generator.
 
-        #region RandomInt16       (MaxValue)
+        #region RandomInt16        (MaxValue)
 
         /// <summary>
         /// Get a random Int16.
@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomUInt16      (MaxValue)
+        #region RandomUInt16       (MaxValue)
 
         /// <summary>
         /// Get a random UInt16.
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomInt32       (MaxValue)
+        #region RandomInt32        (MaxValue)
 
         /// <summary>
         /// Get a random Int32.
@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomUInt32      (MaxValue)
+        #region RandomUInt32       (MaxValue)
 
         /// <summary>
         /// Get a random UInt32.
@@ -80,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomInt64       (MaxValue)
+        #region RandomInt64        (MaxValue)
 
         /// <summary>
         /// Get a random Int64.
@@ -92,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomUInt64      (MaxValue)
+        #region RandomUInt64       (MaxValue)
 
         /// <summary>
         /// Get a random UInt64.
@@ -105,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region RandomBytes       (Length)
+        #region RandomBytes        (Length)
 
         /// <summary>
         /// Fill a byte array of the given length with random bytes.
@@ -123,7 +123,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomString      (Length)
+        #region RandomString       (Length)
 
         /// <summary>
         /// Get random string [a-zA-Z1-9]{Length} (without 'I', 'l', 'O', '0') of the given length.
@@ -167,7 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomHexString   (Length)
+        #region RandomHexString    (Length)
 
         /// <summary>
         /// Get random string [A-F0-9]{Length} of the given length.
@@ -185,7 +185,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RandomNumberString(Length)
+        #region RandomNumberString (Length)
 
         /// <summary>
         /// Get random number as string [0-9]{Length} of the given length.
@@ -202,6 +202,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return stringBuilder.ToString();
 
         }
+
+        #endregion
+
+        #region RandomTimeSpan     (MaxTimeSpan)
+
+        /// <summary>
+        /// Get a random time span.
+        /// </summary>
+        /// <param name="MaxTimeSpan">The optional exclusive upper bound of the random time span to be generated. Its value must be greater than or equal to 0. If null then Int32.MaxValue seconds will be used.</param>
+        public static TimeSpan RandomTimeSpan(TimeSpan? MaxTimeSpan = null)
+
+            => TimeSpan.FromSeconds(
+                   Random.Shared.Next(
+                       MaxTimeSpan.HasValue
+                           ? ((Int32) MaxTimeSpan.Value.TotalSeconds)
+                           :   Int32.MaxValue
+                   )
+               );
 
         #endregion
 
