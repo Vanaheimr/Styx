@@ -384,7 +384,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Set(Language, Text)
+        #region Set     (Language, Text)
 
         /// <summary>
         /// Add or replace a new language-text-pair to the given
@@ -442,7 +442,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Set(I18NPair)
+        #region Set     (I18NPair)
 
         /// <summary>
         /// Add or replace a new language-text-pair to the given
@@ -456,7 +456,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Set(I18NPairs)
+        #region Set     (I18NPairs)
 
         /// <summary>
         /// Add or replace a new language-text-pair to the given
@@ -477,7 +477,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Has  (Language)
+        #region Has     (Language)
 
         /// <summary>
         /// Checks if the given language representation exists.
@@ -489,7 +489,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Is   (Language, Value)
+        #region Is      (Language, Value)
 
         public Boolean Is(Languages  Language,
                           String     Value)
@@ -504,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IsNot(Language, Value)
+        #region IsNot   (Language, Value)
 
         public Boolean IsNot(Languages  Language,
                              String     Value)
@@ -519,19 +519,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Matches(Match, IgnoreCase = false)
+        #region Matches (Match, ComparisonType = OrdinalIgnoreCase)
 
-        public Boolean Matches(String   Match,
-                               Boolean  IgnoreCase  = false)
+        public Boolean Matches(String            Match,
+                               StringComparison  ComparisonType  = StringComparison.OrdinalIgnoreCase)
 
-            => i18NStrings.Any(kvp => IgnoreCase
-                                          ? kvp.Value.Contains(Match, StringComparison.OrdinalIgnoreCase)
-                                          : kvp.Value.Contains(Match, StringComparison.CurrentCulture));
+            => i18NStrings.Any(kvp => kvp.Value.Contains(Match, ComparisonType));
 
         #endregion
 
 
-        #region Remove(Language)
+        #region Remove  (Language)
 
         /// <summary>
         /// Remove the given language from the internationalized (I18N) multi-language text.
