@@ -32,33 +32,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Will load a X.509 certificate from the given PEM encoded files
-        /// and take care of Windows specific issues.
-        /// </summary>
-        /// <param name="CertificatePEMFile">The path to the PEM encoded certificate file.</param>
-        /// <param name="PrivateKeyPEMFile">The path to the PEM encoded private key file.</param>
-        public static X509Certificate2 Load(String CertificatePEMFile,
-                                            String PrivateKeyPEMFile)
-        {
-
-             var certificate  = X509Certificate2.CreateFromPemFile(
-                                    CertificatePEMFile,
-                                    PrivateKeyPEMFile
-                                );
-
-            // Because Windows is stupid and will generate strange errors otherwise...
-            var pfxBytes      = certificate.Export(X509ContentType.Pfx);
-
-            return X509CertificateLoader.LoadPkcs12(
-                       pfxBytes,
-                       null,
-                       X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable
-                   );
-
-        }
-
-
-        /// <summary>
-        /// Will load a X.509 certificate from the given PEM encoded files
         /// within the base directory of the application and
         /// take care of Windows specific issues.
         /// </summary>
@@ -67,10 +40,41 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static X509Certificate2 LoadFromBaseDirectory(String CertificatePEMFile,
                                                              String PrivateKeyPEMFile)
 
-             => Load(
+             => LoadPEM(
                     Path.Combine(AppContext.BaseDirectory, CertificatePEMFile),
                     Path.Combine(AppContext.BaseDirectory, PrivateKeyPEMFile)
                 );
+
+
+
+        /// <summary>
+        /// Will load a X.509 certificate from the given PEM encoded files
+        /// and take care of Windows specific issues.
+        /// </summary>
+        /// <param name="CertificatePEMFile">The path to the PEM encoded certificate file.</param>
+        /// <param name="PrivateKeyPEMFile">The path to the PEM encoded private key file.</param>
+        public static X509Certificate2 LoadPEM(String CertificatePEMFile,
+                                               String PrivateKeyPEMFile)
+        {
+
+             var certificate  = X509Certificate2.CreateFromPemFile(
+                                    CertificatePEMFile,
+                                    PrivateKeyPEMFile
+                                );
+
+            if (!OperatingSystem.IsWindows())
+                return certificate;
+
+            // Because Windows is stupid and will generate strange errors otherwise...
+            var pfxBytes = certificate.Export(X509ContentType.Pfx);
+
+            return X509CertificateLoader.LoadPkcs12(
+                       pfxBytes,
+                       null,
+                       X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.Exportable
+                   );
+
+        }
 
     }
 
