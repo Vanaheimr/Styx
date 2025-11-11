@@ -41,7 +41,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 // OID for Subject Alternative Name
                 if (extension.Oid?.Value == "2.5.29.17")
-                    return new AsnEncodedData(extension.Oid, extension.RawData).Format(true).Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+                    return new AsnEncodedData(
+                               extension.Oid,
+                               extension.RawData
+                           ).
+                           Format(true).
+                           Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
 
             }
 
