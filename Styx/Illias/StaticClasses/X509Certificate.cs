@@ -46,7 +46,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 );
 
 
-
         /// <summary>
         /// Will load a X.509 certificate from the given PEM encoded files
         /// and take care of Windows specific issues.
