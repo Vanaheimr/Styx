@@ -62,12 +62,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         OutOfService,
 
         /// <summary>
-        /// A lock timeout occured.
+        /// A lock timeout occurred.
         /// </summary>
         LockTimeout,
 
         /// <summary>
-        /// A timeout occured.
+        /// A timeout occurred.
         /// </summary>
         Timeout,
 

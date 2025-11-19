@@ -531,7 +531,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            if (Skip.HasValue  &&  Take.HasValue)
+            if ( Skip.HasValue &&  Take.HasValue)
                 return Enumeration.Skip(Skip).Take(Take);
 
             if (!Skip.HasValue &&  Take.HasValue)

@@ -34,11 +34,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     {
 
         /// <summary>
-        /// An exception occured at the arrow sender.
+        /// An exception occurred at the arrow sender.
         /// </summary>
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="ExceptionMessage">The timestamp of the exception.</param>
-        /// <param name="Exception">The occured exception.</param>
+        /// <param name="Exception">The occurred exception.</param>
         void ProcessExceptionOccurred(Object Sender, DateTimeOffset Timestamp, EventTracking_Id EventTrackingId, Exception ExceptionMessage);
 
         /// <summary>

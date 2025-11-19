@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public event StartedEventHandler?             OnStarted;
 
         /// <summary>
-        /// An event called whenever an exception occured at this arrow.
+        /// An event called whenever an exception occurred at this arrow.
         /// </summary>
         public event ExceptionOccurredEventHandler?   OnExceptionOccurred;
 
@@ -130,11 +130,11 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         #region ProcessException(Sender, Timestamp, Exception)
 
         /// <summary>
-        /// Process an occured exception.
+        /// Process an occurred exception.
         /// </summary>
         /// <param name="Sender">The sender of this exception.</param>
         /// <param name="Timestamp">The timestamp of the exception.</param>
-        /// <param name="Exception">The occured exception.</param>
+        /// <param name="Exception">The occurred exception.</param>
         public void ProcessExceptionOccurred(Object            Sender,
                                              DateTimeOffset    Timestamp,
                                              EventTracking_Id  EventTrackingId,

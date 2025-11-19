@@ -29,7 +29,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
     /// <summary>
-    /// A delegate called whenever an exception occured.
+    /// A delegate called whenever an exception occurred.
     /// </summary>
     public delegate void OnExceptionDelegate(DateTimeOffset Timestamp, Object Sender, Exception Exception);
 
