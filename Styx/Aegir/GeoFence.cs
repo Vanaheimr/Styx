@@ -154,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             var type    = JSON["type"  ]?.Value<String>();
             var radius  = JSON["radius"]?.Value<String>();
 
-            if (type is not null && type == "circle" && radius.IsNeitherNullNorEmpty())
+            if (type is not null && type == "circle" && radius.IsNotNullOrEmpty())
             {
 
                 try

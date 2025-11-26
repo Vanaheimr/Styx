@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -36,7 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Data
 
-        private readonly List<GeoCoordinate>  _GeoCoordinates;
+        private readonly List<GeoCoordinate> geoCoordinates = [];
 
         #endregion
 
@@ -46,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// The geo coordinates of this feature.
         /// </summary>
         public IEnumerable<GeoCoordinate> GeoCoordinates
-            => _GeoCoordinates;
+            => geoCoordinates;
 
         #endregion
 
@@ -62,10 +58,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         {
 
-            this._GeoCoordinates  = new List<GeoCoordinate>();
-
             foreach (var point in Points)
-                _GeoCoordinates.Add(point);
+                geoCoordinates.Add(point);
 
         }
 
@@ -122,8 +116,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (coordinates is JArray)
                     {
 
-                        points.Add(GeoCoordinate.Parse(coordinates[1].Value<Double>(),
-                                                       coordinates[0].Value<Double>()));
+                        points.Add(
+                            GeoCoordinate.Parse(
+                                coordinates[1].Value<Double>(),
+                                coordinates[0].Value<Double>()
+                            )
+                        );
 
                     }
 
@@ -133,9 +131,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             #endregion
 
-            return new LineStringFeature(GeoJSON["id"]?.Value<String>(),
-                                         Aegir.GeoJSON.ParseProperties(GeoJSON["properties"] as JObject),
-                                         points);
+            return new LineStringFeature(
+                       GeoJSON["id"]?.Value<String>(),
+                       Aegir.GeoJSON.ParseProperties(GeoJSON["properties"] as JObject),
+                       points
+                   );
 
         }
 

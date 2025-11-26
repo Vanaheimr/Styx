@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
@@ -117,9 +114,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="ZoomLevel">The current zoom level of the Aegir map.</param>
         /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
         /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
-        public Mouse2GeoCoordinatePipe(UInt32                              ZoomLevel,
-                                       IEnumerable<Tuple<Double, Double>>  IEnumerable = null,
-                                       IEnumerator<Tuple<Double, Double>>  IEnumerator = null)
+        public Mouse2GeoCoordinatePipe(UInt32                               ZoomLevel,
+                                       IEnumerable<Tuple<Double, Double>>?  IEnumerable   = null,
+                                       IEnumerator<Tuple<Double, Double>>?  IEnumerator   = null)
 
             : base(IEnumerable,
                    Item => GeoCalculations.Mouse2GeoCoordinate(Item.Item1, Item.Item2, ZoomLevel))
@@ -146,9 +143,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="ZoomLevel">The current zoom level of the Aegir map.</param>
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public Mouse2GeoCoordinateArrow(UInt32                               ZoomLevel,
-                                        Func<Exception, Exception>           OnError     = null,
-                                        IArrowSender<Tuple<Double, Double>>  ArrowSender = null)
+        public Mouse2GeoCoordinateArrow(UInt32                                ZoomLevel,
+                                        Func<Exception, Exception>?           OnError       = null,
+                                        IArrowSender<Tuple<Double, Double>>?  ArrowSender   = null)
 
             : base(Item => GeoCalculations.Mouse2GeoCoordinate(Item.Item1, Item.Item2, ZoomLevel),
                    OnError,

@@ -15,15 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-using Newtonsoft.Json.Linq;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
@@ -35,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Data
 
-        private readonly Dictionary<String, Object> _Properties;
+        private readonly Dictionary<String, Object> properties;
 
         #endregion
 
@@ -45,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// An enumeration of all geo json properties.
         /// </summary>
         public IEnumerable<KeyValuePair<String, Object>>  Properties
-            => _Properties;
+            => properties;
 
         /// <summary>
         /// The GeoJSON feature identification.
@@ -66,9 +57,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                Dictionary<String, Object>  Properties)
         {
 
-            this.Id           = Id;
-            this.Type         = Type;
-            this._Properties  = Properties ?? new Dictionary<String, Object>();
+            this.Id          = Id;
+            this.Type        = Type;
+            this.properties  = Properties ?? [];
 
         }
 
@@ -78,17 +69,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #region ContainsKey(Key)
 
         public Object ContainsKey(String Key)
-            => _Properties.ContainsKey(Key);
+            => properties.ContainsKey(Key);
 
         #endregion
 
         #region GetProperty(Key)
 
-        public Object GetProperty(String Key)
+        public Object? GetProperty(String Key)
         {
 
-            if (_Properties.TryGetValue(Key, out Object Value))
-                return Value;
+            if (properties.TryGetValue(Key, out var value))
+                return value;
 
             return null;
 

@@ -133,8 +133,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToJSON     (IncludeProperty = null, MaskProperty = null)
 
-        public JObject ToJSON(Func<String, Boolean>  IncludeProperty   = null,
-                              Func<String, Boolean>  MaskProperty      = null)
+        public JObject ToJSON(Func<String, Boolean>?  IncludeProperty   = null,
+                              Func<String, Boolean>?  MaskProperty      = null)
         {
 
             #region Init

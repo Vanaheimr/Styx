@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -37,18 +29,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Tags
 
-        private readonly String[] _Tags;
+        private readonly String[] tags;
 
         /// <summary>
         /// Additional tags of the 'mandatory'-tag.
         /// </summary>
         public IEnumerable<String> Tags
-        {
-            get
-            {
-                return _Tags;
-            }
-        }
+            => tags;
 
         #endregion
 
@@ -58,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tags">Some tags.</param>
         public DynamicAttribute(params String[] Tags)
         {
-            this._Tags = Tags?.Where(tag => !tag.IsNullOrEmpty()).ToArray();
+            this.tags = Tags?.Where(tag => !tag.IsNullOrEmpty()).ToArray();
         }
 
     }

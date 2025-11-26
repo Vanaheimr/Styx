@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
@@ -114,9 +111,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="ZoomLevel">The current zoom level of the Aegir map.</param>
         /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
         /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
-        public TilesXY2GeoCoordinatePipe(UInt32                ZoomLevel,
-                                         IEnumerable<TilesXY>  IEnumerable = null,
-                                         IEnumerator<TilesXY>  IEnumerator = null)
+        public TilesXY2GeoCoordinatePipe(UInt32                 ZoomLevel,
+                                         IEnumerable<TilesXY>?  IEnumerable   = null,
+                                         IEnumerator<TilesXY>?  IEnumerator   = null)
 
             : base(IEnumerable,
                    Item => GeoCalculations.TilesXY2GeoCoordinate(Item, ZoomLevel))
@@ -143,9 +140,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="ZoomLevel">The current zoom level of the Aegir map.</param>
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public TilesXY2GeoCoordinateArrow(UInt32                      ZoomLevel,
-                                          Func<Exception, Exception>  OnError     = null,
-                                          IArrowSender<TilesXY>       ArrowSender = null)
+        public TilesXY2GeoCoordinateArrow(UInt32                       ZoomLevel,
+                                          Func<Exception, Exception>?  OnError       = null,
+                                          IArrowSender<TilesXY>?       ArrowSender   = null)
 
             : base(Item => GeoCalculations.TilesXY2GeoCoordinate(Item, ZoomLevel),
                    OnError,

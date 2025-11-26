@@ -15,17 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
-using org.GraphDefined.Vanaheimr.Aegir;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
@@ -103,15 +92,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             get
             {
 
-                var _Line12 = new GeoLine(P1, P2);
-                var _Line23 = new GeoLine(P2, P3);
+                var line12     = new GeoLine(P1, P2);
+                var line23     = new GeoLine(P2, P3);
 
-                var _Normale12 = _Line12.Normale;
-                var _Normale23 = _Line23.Normale;
+                var normale12  = line12.Normale;
+                var normale23  = line23.Normale;
 
-                return new GeoLine(_Line12.Center, _Normale12.P).
+                return new GeoLine(line12.Center, normale12.P).
                            Intersection(
-                       new GeoLine(_Line23.Center, _Normale23.P));
+                       new GeoLine(line23.Center, normale23.P));
 
             }
         }
@@ -124,31 +113,24 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return the circumcircle of the triangle.
         /// </summary>
         public GeoCircle CircumCircle
-        {
-            get
-            {
-                var _CircumCenter = this.CircumCenter;
-                return new GeoCircle(_CircumCenter, P1.DistanceTo(_CircumCenter));
-            }
-        }
+
+            => new (
+                   CircumCenter,
+                   P1.DistanceTo(CircumCenter)
+               );
 
         #endregion
 
         #region Borders
 
-        private GeoLine[] _Borders;
+        private GeoLine[] borders;
 
         /// <summary>
         /// Return an enumeration of lines representing the
         /// surrounding borders of the triangle.
         /// </summary>
         public IEnumerable<GeoLine> Borders
-        {
-            get
-            {
-                return _Borders;
-            }
-        }
+            => borders;
 
         #endregion
 
@@ -159,15 +141,15 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Constructor(s)
 
-        #region Triangle(Pixel1, Pixel2, Pixel3)
-
         /// <summary>
         /// Create a triangle of type T.
         /// </summary>
         /// <param name="Pixel1">The first pixel of the triangle.</param>
         /// <param name="Pixel2">The second pixel of the triangle.</param>
         /// <param name="Pixel3">The third pixel of the triangle.</param>
-        public GeoTriangle(GeoCoordinate Pixel1, GeoCoordinate Pixel2, GeoCoordinate Pixel3)
+        public GeoTriangle(GeoCoordinate Pixel1,
+                           GeoCoordinate Pixel2,
+                           GeoCoordinate Pixel3)
         {
 
             #region Math Checks
@@ -234,13 +216,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             this.E23        = new GeoLine(P2, P3);
             this.E31        = new GeoLine(P3, P1);
 
-            this._Borders   = new GeoLine[3] { E12, E23, E31 };
+            this.borders   = [ E12, E23, E31 ];
 
-            this.Tags       = new List<String>();
+            this.Tags       = [];
 
         }
-
-        #endregion
 
         #endregion
 
@@ -437,9 +417,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return the HashCode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return P1.GetHashCode() ^ 1 + P2.GetHashCode() ^ 2 + P3.GetHashCode();
-        }
+
+            => P1.GetHashCode() * 5 ^
+               P2.GetHashCode() * 3 ^
+               P3.GetHashCode();
 
         #endregion
 
@@ -449,12 +430,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Format("Triangle: Pixel1={0}, Pixel2={1}, Pixel3={2}",
-                                 P1.ToString(),
-                                 P2.ToString(),
-                                 P3.ToString());
-        }
+
+            => $"Triangle: Pixel1={P1}, Pixel2={P2}, Pixel3={P3}";
 
         #endregion
 

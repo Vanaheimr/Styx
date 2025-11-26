@@ -17,10 +17,7 @@
 
 #region Usings
 
-using System;
-
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -358,9 +355,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return the HashCode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return this.Center.GetHashCode() ^ 1 + Radius.GetHashCode();
-        }
+
+            => Center.GetHashCode() * 3 ^
+               Radius.GetHashCode();
 
         #endregion
 
@@ -370,11 +367,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Format("GeoCircle: Center={0}, Radius={1}",
-                                 Center.ToString(),
-                                 Radius.ToString());
-        }
+
+            => $"GeoCircle: Center={Center}, Radius={Radius}";
 
         #endregion
 

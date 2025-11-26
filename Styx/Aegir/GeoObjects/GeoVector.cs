@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
@@ -87,9 +79,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoVector(GeoCoordinate GeoCoordinate)
         {
 
-            this.P      = GeoCoordinate;
-            this.Length = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0)).
-                              DistanceTo(GeoCoordinate);
+            this.P       = GeoCoordinate;
+            this.Length  = new GeoCoordinate(
+                              Latitude.Parse(0),
+                              Longitude.Parse(0)
+                           ).DistanceTo(GeoCoordinate);
 
         }
 
@@ -102,15 +96,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="GeoCoordinate1">A pixel of type T.</param>
         /// <param name="GeoCoordinate2">A pixel of type T.</param>
-        public GeoVector(GeoCoordinate GeoCoordinate1, GeoCoordinate GeoCoordinate2)
+        public GeoVector(GeoCoordinate GeoCoordinate1,
+                         GeoCoordinate GeoCoordinate2)
         {
 
-            this.P      = new GeoCoordinate(
-                              Latitude. Parse(GeoCoordinate1.Latitude. Value - GeoCoordinate2.Latitude. Value),
-                              Longitude.Parse(GeoCoordinate1.Longitude.Value - GeoCoordinate2.Longitude.Value)
-                          );
+            this.P       = new GeoCoordinate(
+                               Latitude. Parse(GeoCoordinate1.Latitude. Value - GeoCoordinate2.Latitude. Value),
+                               Longitude.Parse(GeoCoordinate1.Longitude.Value - GeoCoordinate2.Longitude.Value)
+                           );
 
-            this.Length = GeoCoordinate1.DistanceTo(GeoCoordinate2);
+            this.Length  = GeoCoordinate1.DistanceTo(GeoCoordinate2);
 
         }
 
@@ -123,25 +118,16 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="GeoVector1">A vector of type T.</param>
         /// <param name="GeoVector2">A vector of type T.</param>
-        public GeoVector(GeoVector GeoVector1, GeoVector GeoVector2)
+        public GeoVector(GeoVector GeoVector1,
+                         GeoVector GeoVector2)
         {
 
-            #region Initial Checks
+            this.P       = new GeoCoordinate(
+                               Latitude. Parse(GeoVector1.P.Latitude. Value - GeoVector2.P.Latitude. Value),
+                               Longitude.Parse(GeoVector1.P.Longitude.Value - GeoVector2.P.Longitude.Value)
+                           );
 
-            if (GeoVector1 is null)
-                throw new ArgumentNullException("The first vector must not be null!");
-
-            if (GeoVector2 is null)
-                throw new ArgumentNullException("The second vector must not be null!");
-
-            #endregion
-
-            this.P      = new GeoCoordinate(
-                              Latitude. Parse(GeoVector1.P.Latitude. Value - GeoVector2.P.Latitude. Value),
-                              Longitude.Parse(GeoVector1.P.Longitude.Value - GeoVector2.P.Longitude.Value)
-                          );
-
-            this.Length = GeoVector1.P.DistanceTo(GeoVector2.P);
+            this.Length  = GeoVector1.P.DistanceTo(GeoVector2.P);
 
         }
 

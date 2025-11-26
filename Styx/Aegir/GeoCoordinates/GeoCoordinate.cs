@@ -558,11 +558,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <typeparam name="T">The type of the return value.</typeparam>
         /// <param name="GeoString">A string to parse.</param>
         /// <returns>A new geo position or null.</returns>
-        public static T ParseString<T>(String GeoString, Func<Latitude, Longitude, T> Processor)
+        public static T? ParseString<T>(String GeoString, Func<Latitude, Longitude, T> Processor)
         {
 
-            if (TryParseString(GeoString, Processor, out T _T))
-                return _T;
+            if (TryParseString(GeoString, Processor, out var t))
+                return t;
 
             return default;
 
@@ -578,10 +578,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoString">A string to parse.</param>
         /// <param name="GeoCoordinate">The parsed geo coordinate.</param>
         /// <returns>True if success, false otherwise</returns>
-        public static Boolean TryParseString(String             GeoString,
-                                             out GeoCoordinate  GeoCoordinate)
+        public static Boolean TryParseString(String                                 GeoString,
+                                             [NotNullWhen(true)] out GeoCoordinate  GeoCoordinate)
 
-            => TryParseString(GeoString, (lat, lng) => new GeoCoordinate(lat, lng), out GeoCoordinate);
+            => TryParseString(
+                   GeoString,
+                   (lat, lng) => new GeoCoordinate(lat, lng),
+                   out GeoCoordinate
+               );
 
         #endregion
 
@@ -596,12 +600,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Boolean TryParseString(String                       GeoString,
                                              Action<Latitude, Longitude>  Processor)
 
-            => TryParseString(GeoString,
-                              (lat, lng) => {
-                                  Processor(lat, lng);
-                                  return true;
-                              },
-                              out Boolean _Boolean);
+            => TryParseString(
+                   GeoString,
+                   (lat, lng) => {
+                       Processor(lat, lng);
+                       return true;
+                   },
+                   out Boolean _Boolean
+               );
 
         #endregion
 
@@ -617,7 +623,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <returns>True if success, false otherwise</returns>
         public static Boolean TryParseString<T>(String                        GeoString,
                                                 Func<Latitude, Longitude, T>  Processor,
-                                                out T                         Value)
+                                                [NotNullWhen(true)] out T?    Value)
         {
 
             var match = IsDecimalGeoPositionRegExpr.Match(GeoString);
@@ -635,7 +641,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 if (match.Groups[4].Value == "W")
                     longitude = -1 * longitude;
 
-                Value = Processor(Latitude.Parse(latitude), Longitude.Parse(longitude));
+                Value = Processor.Invoke(
+                            Latitude. Parse(latitude),
+                            Longitude.Parse(longitude)
+                        );
+
                 return true;
 
             }
@@ -648,7 +658,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 var latitude  = Double.Parse(match.Groups[1].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
                 var longitude = Double.Parse(match.Groups[2].Value.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture);
 
-                Value = Processor(Latitude.Parse(latitude), Longitude.Parse(longitude));
+                Value = Processor.Invoke(
+                            Latitude. Parse(latitude),
+                            Longitude.Parse(longitude)
+                        );
+
                 return true;
 
             }

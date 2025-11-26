@@ -17,9 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Collections.Generic;
-
 using org.GraphDefined.Vanaheimr.Styx;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
@@ -108,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         public static GeoCoordinate2ScreenXYArrow ToScreenXY(this IArrowSender<GeoCoordinate>  ArrowSender,
                                                              UInt32                            ZoomLevel,
-                                                             Func<Exception, Exception>        OnError     = null)
+                                                             Func<Exception, Exception>?       OnError   = null)
         {
             return new GeoCoordinate2ScreenXYArrow(ZoomLevel, OnError, ArrowSender);
         }
@@ -136,9 +133,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="ZoomLevel">The current zoom level of the Aegir map.</param>
         /// <param name="IEnumerable">An optional IEnumerable&lt;S&gt; as element source.</param>
         /// <param name="IEnumerator">An optional IEnumerator&lt;S&gt; as element source.</param>
-        public GeoCoordinate2ScreenXYPipe(UInt32                      ZoomLevel,
-                                          IEnumerable<GeoCoordinate>  IEnumerable = null,
-                                          IEnumerator<GeoCoordinate>  IEnumerator = null)
+        public GeoCoordinate2ScreenXYPipe(UInt32                       ZoomLevel,
+                                          IEnumerable<GeoCoordinate>?  IEnumerable   = null,
+                                          IEnumerator<GeoCoordinate>?  IEnumerator   = null)
 
             : base(IEnumerable,
                    Item => GeoCalculations.GeoCoordinate2ScreenXY(Item, ZoomLevel))
@@ -165,9 +162,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="ZoomLevel">The current zoom level of the Aegir map.</param>
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         /// <param name="ArrowSender">The sender of the messages/objects.</param>
-        public GeoCoordinate2ScreenXYArrow(UInt32                       ZoomLevel,
-                                           Func<Exception, Exception>   OnError     = null,
-                                           IArrowSender<GeoCoordinate>  ArrowSender = null)
+        public GeoCoordinate2ScreenXYArrow(UInt32                        ZoomLevel,
+                                           Func<Exception, Exception>?   OnError       = null,
+                                           IArrowSender<GeoCoordinate>?  ArrowSender   = null)
 
             : base(Item => GeoCalculations.GeoCoordinate2ScreenXY(Item, ZoomLevel),
                    OnError,

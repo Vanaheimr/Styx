@@ -15,16 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
     // lat == y
@@ -572,10 +562,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return the HashCode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return P1.Longitude.GetHashCode() ^ 1 + P1.Latitude.GetHashCode() ^ 2 +
-                   P2.Longitude.GetHashCode() ^ 3 + P2.Latitude.GetHashCode();
-        }
+
+            => P1.GetHashCode() * 3 ^
+               P2.GetHashCode();
 
         #endregion
 
@@ -585,13 +574,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Format("GeoLine: Lng1={0}, Lat1={1}, Lng2={2}, Lat2={3}",
-                                 P1.Longitude.ToString(),
-                                 P1.Latitude. ToString(),
-                                 P2.Longitude.ToString(),
-                                 P2.Latitude. ToString());
-        }
+
+            => $"GeoLine: P1={P1}, P2={P2}";
 
         #endregion
 
