@@ -8238,6 +8238,78 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ParseOptionalTexts(this JSON, PropertyName, PropertyDescription, out Values)
+
+        public static Boolean ParseOptionalTexts(this JObject             JSON,
+                                                 String                   PropertyName,
+                                                 String                   PropertyDescription,
+                                                 out IEnumerable<String>  Texts,
+                                                 out String?              ErrorResponse)
+        {
+
+            Texts          = [];
+            ErrorResponse  = null;
+
+            if (JSON is null)
+            {
+                ErrorResponse = "The given JSON object must not be null!";
+                return true;
+            }
+
+            if (PropertyName.IsNullOrEmpty())
+            {
+                ErrorResponse = "Invalid JSON property name provided!";
+                return true;
+            }
+
+            if (JSON.TryGetValue(PropertyName, out var JSONToken))
+            {
+
+                // "propertyKey": null -> will be ignored!
+                if (JSONToken is null)
+                    return false;
+
+                if (JSONToken is not JArray jArray)
+                {
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid string!";
+                    return true;
+                }
+
+                var texts = new List<String>();
+
+                foreach (var element in jArray)
+                {
+
+                    if (element.Type != JTokenType.String)
+                    {
+                        ErrorResponse = $"A value within the given property '{PropertyDescription}' is not a valid string!";
+                        return true;
+                    }
+
+                    var text = element.Value<String>()?.Trim();
+
+                    if (text.IsNullOrEmpty())
+                    {
+                        ErrorResponse = $"A value within the given property '{PropertyDescription}' is null or empty!";
+                        return true;
+                    }
+
+                    texts.Add(text);
+
+                }
+
+                Texts = texts;
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
 
 
 
