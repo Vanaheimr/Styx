@@ -27,13 +27,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public readonly struct RunEnvironment
     {
 
-        public String   Platform       { get; }
-        public Boolean  IsWindows      { get; }
-        public Boolean  IsLinux        { get; }
-        public Boolean  IsMacOS        { get; }
-        public Boolean  IsFreeBSD      { get; }
+        public String   Platform     { get; }
+        public Boolean  IsWindows    { get; }
+        public Boolean  IsLinux      { get; }
+        public Boolean  IsMacOS      { get; }
+        public Boolean  IsFreeBSD    { get; }
 
-        public Boolean  IsConsole      { get; }
+        public Boolean  IsConsole    { get; }
+        public Boolean  IsInteractive      =>  IsConsole;
         public Boolean  IsService          => !IsConsole;
 
         public Boolean  IsWindowsConsole   =>  IsConsole && IsWindows;
