@@ -851,14 +851,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region TryParseBASE64_UTF8 (this Base64String)
+
+        public static String? TryParseBASE64_UTF8(this String Base64String)
+        {
+
+            if (TryParseBASE64_UTF8(Base64String, out var decoded, out _))
+                return decoded;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region TryParseBASE64_UTF8 (this Base64String, out UTF8String, out ErrorResponse)
 
         public static Boolean TryParseBASE64_UTF8(this String                       Base64String,
                                                   [NotNullWhen(true)]  out String?  UTF8String,
                                                   [NotNullWhen(false)] out String?  ErrorResponse)
         {
-
-            ErrorResponse = null;
 
             if (TryParseBASE64(Base64String, out var byteArray, out ErrorResponse))
             {
