@@ -69,13 +69,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Source">The source of the exception.</param>
         public static void LogException(Exception Exception, [CallerMemberName] String Source = "")
         {
+
+            var timeStamp = $"{Timestamp.Now.ToLocalTime():dd.MM.yyyy HH:mm:ss zzz}";
+
             Debug.WriteLine(
                 String.Concat(
-                    $"[{Timestamp.Now.ToLocalTime():dd.MM.yyyy HH:mm:ss zzz}] {Source ?? "?"} led to an exception: ", Environment.NewLine,
-                                                                               Exception.Message,                     Environment.NewLine,
-                                                                               Exception.StackTrace,                  Environment.NewLine
+                    $"[{timeStamp}] {Source ?? "?"} led to an exception: ", Environment.NewLine,
+                                     Exception.Message,                     Environment.NewLine,
+                                     Exception.StackTrace,                  Environment.NewLine
                 )
             );
+
+            var e = Exception;
+            var i = 1;
+
+            while (e.InnerException is not null)
+            {
+
+                e = e.InnerException;
+
+                Debug.WriteLine(
+                    String.Concat(
+                        $"[{timeStamp}] \\-- InnerException({i++}): ", Environment.NewLine,
+                        e.Message,                                     Environment.NewLine,
+                        e.StackTrace,                                  Environment.NewLine
+                    )
+                );
+
+            }
+
         }
 
         #endregion
