@@ -1,5 +1,9 @@
 /*
+<<<<<<< HEAD
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
+=======
+ * Copyright (c) 2010-2026, Achim 'ahzf' Friedland <achim.friedland@graphdefined.com>
+>>>>>>> 40be576d35824bfaa52c2a5b9607271d2180d69a
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

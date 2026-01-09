@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
+=======
+ * Copyright (c) 2010-2026, Achim 'ahzf' Friedland <code@ahzf.de>
+>>>>>>> 40be576d35824bfaa52c2a5b9607271d2180d69a
  * This file is part of Pipes.NET <http://www.github.com/ahzf/Pipes.NET>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

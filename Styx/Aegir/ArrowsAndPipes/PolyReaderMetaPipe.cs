@@ -1,5 +1,5 @@
 ﻿///*
-// * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
+// * Copyright (c) 2010-2026, Achim 'ahzf' Friedland <achim@graph-database.org>
 // * This file is part of Aegir <http://www.github.com/Vanaheimr/Aegir>
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");

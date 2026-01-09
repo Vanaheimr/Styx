@@ -1,5 +1,9 @@
 ﻿/*
+<<<<<<< HEAD
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
+=======
+ * Copyright (c) 2010-2026, Achim Friedland <achim.friedland@graphdefined.com>
+>>>>>>> 40be576d35824bfaa52c2a5b9607271d2180d69a
  * This file is part of Aegir <https://www.github.com/Vanaheimr/Aegir>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
