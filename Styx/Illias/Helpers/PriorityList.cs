@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections;
+using System.Collections.Concurrent;
 
 #endregion
 
@@ -33,8 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private readonly Dictionary<UInt32, T>  priorityList;
-        private T[]                             sortedList;
+        private readonly ConcurrentDictionary<UInt32, T> priorityList  = [];
 
         #endregion
 
@@ -44,39 +44,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new priority list.
         /// </summary>
         public PriorityList()
-        {
-
-            this.priorityList  = new Dictionary<UInt32, T>();
-            this.sortedList    = Array.Empty<T>();
-
-        }
+        { }
 
         #endregion
 
 
-        #region Add(Service)
+        #region Add(          Service)
 
         /// <summary>
         /// Add a new service to the priority list.
         /// </summary>
         /// <param name="Service">A service.</param>
-        public void Add(T Service)
-        {
-            lock (priorityList)
-            {
+        public Boolean Add(T Service)
 
-                priorityList.Add(priorityList.Count > 0
-                                    ? priorityList.Keys.Max() + 1
-                                    : 1,
-                                  Service);
+            => priorityList.TryAdd(
+                   !priorityList.IsEmpty
+                       ? priorityList.Keys.Max() + 1
+                       : 1,
+                   Service
+               );
 
-                sortedList = priorityList.
-                                  OrderBy(kvp => kvp.Key).
-                                  Select (kvp => kvp.Value).
-                                  ToArray();
+        #endregion
 
-            }
-        }
+        #region Add(Priority, Service)
+
+        /// <summary>
+        /// Add a new service to the priority list.
+        /// </summary>
+        /// <param name="Priority">The priority of the service.</param>
+        /// <param name="Service">A service.</param>
+        public Boolean Add(UInt32  Priority,
+                           T       Service)
+
+            => priorityList.TryAdd(
+                   Priority,
+                   Service
+               );
 
         #endregion
 
@@ -94,97 +97,121 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Work is null)
                 return Task.FromResult(Array.Empty<T2>());
 
-            return Task.WhenAll(sortedList.Select(service => Work(service)));
+            return Task.WhenAll(
+                       priorityList.
+                           OrderBy(element => element.Key).
+                           Select (element => Work(element.Value)
+                       )
+                   );
 
         }
 
         #endregion
 
-        #region WhenFirst(Work, VerifyResult, Timeout, OnException, DefaultResult)
+
+        #region (private) ExecuteWithCancellation(Element, Work, ExceptionHandler, CancellationToken)
+
+        private static async Task<T2> ExecuteWithCancellation<T2>(T                                     Element,
+                                                                  Func<T, CancellationToken, Task<T2>>  Work,
+                                                                  Action<Exception>?                    ExceptionHandler,
+                                                                  CancellationToken                     CancellationToken)
+        {
+            try
+            {
+
+                return await Work(
+                                 Element,
+                                 CancellationToken
+                             ).ConfigureAwait(false);
+
+            }
+            catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
+            {
+                // Expected, as another service was faster!
+                return default!;
+            }
+            catch (Exception ex)
+            {
+                ExceptionHandler?.Invoke(ex);
+                return default!;
+            }
+        }
+
+        #endregion
+
+        #region WhenFirst(Work, VerifyResult, Timeout, OnException, DefaultResult, ExternalCancellation)
 
         /// <summary>
-        /// Run every service in priority order and wait until all services are done.
+        /// Run every service in priority order and return the first valid result
+        /// or a default result after a timeout.
         /// </summary>
         /// <typeparam name="T2">The type of the work results.</typeparam>
         /// <param name="Work">A work to do.</param>
         /// <param name="VerifyResult">A delegate to verify and filter results.</param>
         /// <param name="Timeout">A timeout.</param>
         /// <param name="DefaultResult">A default result in case of errors or a timeout.</param>
-        public async Task<T2> WhenFirst<T2>(Func<T, Task<T2>>   Work,
-                                            Func<T2, Boolean>   VerifyResult,
-                                            TimeSpan            Timeout,
-                                            Action<Exception>?  OnException,
-                                            Func<TimeSpan, T2>  DefaultResult)
+        /// <param name="ExternalCancellation">An external cancellation token.</param>
+        public async Task<T2> WhenFirst<T2>(Func<T, CancellationToken, Task<T2>>  Work,
+                                            Func<T2, Boolean>                     VerifyResult,
+                                            TimeSpan                              Timeout,
+                                            Action<Exception>?                    ExceptionHandler,
+                                            Func<TimeSpan, T2>                    DefaultResult,
+                                            CancellationToken                     ExternalCancellation = default)
 
         {
 
-            #region Initial checks
+            var startTime          = Timestamp.Now;
 
-            Task<T2> workDone;
-            Task<T2> result;
+            using var timeoutCts   = new CancellationTokenSource(Timeout);
+            using var linkedCts    = CancellationTokenSource.CreateLinkedTokenSource(
+                                         ExternalCancellation,
+                                         timeoutCts.Token
+                                     );
 
-            #endregion
+            var cancellationToken  = linkedCts.Token;
 
-            var startTime    = Timestamp.Now;
 
-            var toDoList     = sortedList.
-                                   Select(service => Work(service)).
-                                   ToList();
+            var allTasks           = priorityList.
+                                         OrderBy(element => element.Key).
+                                         Select (element => ExecuteWithCancellation(
+                                                                element.Value,
+                                                                Work,
+                                                                ExceptionHandler,
+                                                                cancellationToken
+                                                            )).
+                                         ToList();
 
-            var timeoutTask  = Task.Run(() => {
-                                                  Thread.Sleep(Timeout);
-                                                  return DefaultResult(Timeout);
-                                              });
-
-            if (timeoutTask is not null)
-                toDoList.Add(timeoutTask);
-
-            do
+            while (allTasks.Count > 0)
             {
 
-                try
+                var completedTask = await Task.WhenAny(allTasks).ConfigureAwait(false);
+                allTasks.Remove(completedTask);
+
+                if (completedTask.IsCompletedSuccessfully)
                 {
 
-                    // Remove all faulted tasks from a previous run of the loop
-                    foreach (var errorTask in toDoList.Where(_ => _.Status == TaskStatus.Faulted).ToArray())
+                    var resultValue = await completedTask.ConfigureAwait(false);
+
+                    if (!EqualityComparer<T2>.Default.Equals(resultValue, default) &&
+                        VerifyResult(resultValue))
                     {
-
-                        toDoList.Remove(errorTask);
-
-                        if (errorTask.Exception?.InnerExceptions is not null)
-                            foreach (var exception in errorTask.Exception.InnerExceptions)
-                                OnException?.Invoke(exception);
-
-                    }
-
-                    workDone = await Task.WhenAny(toDoList).
-                                          ConfigureAwait(false);
-
-                    toDoList.Remove(workDone);
-
-                    if (workDone != timeoutTask)
-                    {
-
-                        result = workDone;
-
-                        if (result is not null &&
-                            !EqualityComparer<T2>.Default.Equals(result.Result, default) &&
-                            VerifyResult(result.Result))
-                        {
-                            return result.Result;
-                        }
-
+                        // Cancel all other tasks!
+                        linkedCts.Cancel();
+                        return resultValue;
                     }
 
                 }
-                catch (Exception e)
+                else if (completedTask.IsFaulted && ExceptionHandler is not null)
                 {
-                    DebugX.LogT(e.Message);
-                    workDone = Task.FromResult(DefaultResult(Timestamp.Now - startTime));
+                    foreach (var ex in completedTask.Exception?.InnerExceptions ?? [])
+                        ExceptionHandler(ex);
                 }
+
+                // Timeout reached?
+                if (cancellationToken.IsCancellationRequested)
+                    break;
 
             }
-            while (workDone != timeoutTask && toDoList.Count > 1);
 
             return DefaultResult(Timestamp.Now - startTime);
 
@@ -199,13 +226,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Returns an enumerator iterating through the priority list.
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
-            => sortedList.GetEnumerator();
+
+            => priorityList.
+                   OrderBy      (element => element.Key).
+                   Select       (element => element.Value).
+                   ToList       ().
+                   GetEnumerator();
 
         /// <summary>
         /// Returns an enumerator iterating through the priority list.
         /// </summary>
         public IEnumerator<T> GetEnumerator()
-            => ((IEnumerable<T>) sortedList).GetEnumerator();
+
+            => priorityList.
+                   OrderBy      (element => element.Key).
+                   Select       (element => element.Value).
+                   ToList       ().
+                   GetEnumerator();
 
         #endregion
 
