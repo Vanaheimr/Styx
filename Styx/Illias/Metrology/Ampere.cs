@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The value of the Ampere as Int32.
         /// </summary>
         public Int32    IntegerValue
-            => (Int32) Value;
+            => (Int32) Math.Round(Value);
 
         #endregion
 
