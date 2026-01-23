@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The value of the WattHour as Int32.
         /// </summary>
         public Int32    IntegerValue
-            => (Int32) Value;
+            => (Int32) Math.Round(Value);
 
 
 #pragma warning disable IDE1006 // Naming Styles
