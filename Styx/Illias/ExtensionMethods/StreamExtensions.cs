@@ -76,6 +76,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+
+        public static async Task<String?> ReadLineWithTimeoutAsync(this StreamReader  reader,
+                                                                   TimeSpan           timeout,
+                                                                   CancellationToken  cancellationToken = default)
+        {
+
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(timeout);
+
+            var readTask = reader.ReadLineAsync(cts.Token);
+
+            try
+            {
+                return await readTask.ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cts.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+            {
+                throw new TimeoutException($"Timeout nach {timeout.TotalSeconds} Sekunden.");
+            }
+
+        }
+
+
     }
 
 }
