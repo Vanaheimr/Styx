@@ -91,7 +91,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <typeparam name="T2">The type of the work results.</typeparam>
         /// <param name="Work">A work to do.</param>
-        public Task<T2[]> WhenAll<T2>(Func<T, Task<T2>> Work)
+        public Task<T2[]> WhenAll<T2>(Func<T, CancellationToken, Task<T2>>  Work,
+                                      CancellationToken                     ExternalCancellation = default)
         {
 
             if (Work is null)
@@ -100,7 +101,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return Task.WhenAll(
                        priorityList.
                            OrderBy(element => element.Key).
-                           Select (element => Work(element.Value)
+                           Select (element => Work(element.Value, ExternalCancellation)
                        )
                    );
 

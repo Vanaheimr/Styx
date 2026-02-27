@@ -289,12 +289,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     newStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
 
                     statusSchedule.Clear();
-                    statusSchedule.AddRange(newStatusSchedule.
-                                                OrderByDescending(v => v.Timestamp).
-                                                Take(MaxStatusHistorySize));
+                    statusSchedule.AddRange(
+                        newStatusSchedule.
+                            OrderByDescending(v => v.Timestamp).
+                            Take(MaxStatusHistorySize)
+                    );
 
                     // Will also call the change-events!
-                    CheckCurrentStatus(null, DataSource);
+                    CheckCurrentStatus(
+                        null,
+                        DataSource
+                    );
 
                 }
 
@@ -419,25 +424,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var now            = Timestamp.Now;
 
                 var historyList    = statusSchedule.Where(status => status.Timestamp <= now).ToArray();
-                if (historyList.Any())
+                if (historyList.Length > 0)
                     currentStatus  = historyList.First();
 
                 var futureList     = statusSchedule.Where(status => status.Timestamp  > now).ToArray();
-                    nextStatus     = futureList.Any()
+                    nextStatus     = futureList.Length > 0
                                          ? futureList.Last()
                                          : null;
 
-                callChangeEvents   = !EqualityComparer<T>.Default.Equals(currentStatus.Value, oldStatus.Value);
+                callChangeEvents   = !EqualityComparer<T>.Default.Equals(
+                                          currentStatus.Value,
+                                          oldStatus.Value
+                                      );
 
             }
 
             if (callChangeEvents)
-                OnStatusChanged?.Invoke(Timestamp.Now,
-                                        EventTracking_Id.New,
-                                        this,
-                                        currentStatus,
-                                        oldStatus,
-                                        DataSource);
+                OnStatusChanged?.Invoke(
+                    Timestamp.Now,
+                    EventTracking_Id.New,
+                    this,
+                    currentStatus,
+                    oldStatus,
+                    DataSource
+                );
 
             return currentStatus;
 
