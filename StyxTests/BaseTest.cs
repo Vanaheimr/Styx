@@ -15,122 +15,113 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Styx.UnitTests
 {
-    
+
     public static class BaseTest
     {
 
-        #region GenerateUUIDs(myNumber)
+        #region GenerateUUIDs (Number)
 
-        public static IEnumerable<String> GenerateUUIDs(UInt32 myNumber)
+        public static IEnumerable<String> GenerateUUIDs(UInt32 Number)
+        {
+
+            var uuids = new List<String>();
+
+            for (var i = 0; i < Number; i++)
+                uuids.Add(Guid.NewGuid().ToString());
+
+            return uuids;
+
+        }
+
+        #endregion
+
+        #region GenerateUUIDs (Prefix, Number)
+
+        public static IEnumerable<String> GenerateUUIDs(String  Prefix,
+                                                        UInt32  Number)
+        {
+
+            var uuids = new List<String>();
+
+            for (var i = 0; i < Number; i++)
+                uuids.Add(Prefix + Guid.NewGuid().ToString());
+
+            return uuids;
+
+        }
+
+        #endregion
+
+
+        #region PrintCollection<T>  (Collection)
+
+        public static void PrintCollection<T>(ICollection<T> Collection)
+        {
+            foreach (var item in Collection)
+                Console.WriteLine(item);
+        }
+
+        #endregion
+
+        #region PrintIEnumerator<T> (IEnumerator)
+
+        public static void PrintIEnumerator<T>(IEnumerator<T> IEnumerator)
+        {
+            while (IEnumerator.MoveNext())
+                Console.WriteLine(IEnumerator.Current);
+        }
+
+        #endregion
+
+
+        #region Count<T>(IEnumerator)
+
+        public static UInt64 Count<T>(IEnumerator<T> IEnumerator)
+        {
+
+            UInt64 counter = 0;
+
+            while (IEnumerator.MoveNext())
+                counter++;
+
+            return counter;
+
+        }
+
+        #endregion
+
+
+        #region AsList<T>(Item, Times)
+
+        public static List<T> AsList<T>(T Item, UInt64 Times)
+        {
+
+            var list = new List<T>();
+
+            for (var i = 0UL; i < Times; i++)
+                list.Add(Item);
+
+            return list;
+
+        }
+
+        #endregion
+
+        #region PrintPerformance(Name, Events, EventName, RunTime)
+
+        public static void PrintPerformance(String           Name,
+                                            Nullable<Int32>  Events,
+                                            String           EventName,
+                                            TimeSpan         RunTime)
         {
             
-            var _UUIDs = new List<String>();
-            
-            for (int i = 0; i < myNumber; i++)
-                _UUIDs.Add(Guid.NewGuid().ToString());
-
-            return _UUIDs;
-
-        }
-
-        #endregion
-
-        #region GenerateUUIDs(myPrefix, myNumber)
-
-        public static IEnumerable<String> GenerateUUIDs(String myPrefix, UInt32 myNumber)
-        {
-
-            var _UUIDs = new List<String>();
-
-            for (int i = 0; i < myNumber; i++)
-                _UUIDs.Add(myPrefix + Guid.NewGuid().ToString());
-
-            return _UUIDs;
-
-        }
-
-        #endregion
-
-        #region PrintCollection<T>(myCollection)
-
-        public static void PrintCollection<T>(ICollection<T> myCollection)
-        {
-            foreach (var _Object in myCollection)
-                Console.WriteLine(_Object);
-        }
-
-        #endregion
-
-        #region PrintIEnumerator<T>(myIEnumerator)
-
-        public static void PrintIEnumerator<T>(IEnumerator<T> myIEnumerator)
-        {
-            while (myIEnumerator.MoveNext())
-                Console.WriteLine(myIEnumerator.Current);
-        }
-
-        #endregion
-
-        #region Count<T>(myIEnumerator)
-
-        public static UInt64 Count<T>(IEnumerator<T> myIEnumerator)
-        {
-
-            UInt64 _Counter = 0;
-
-            while (myIEnumerator.MoveNext())
-                _Counter++;
-
-            return _Counter;
-
-        }
-
-        #endregion
-
-        #region Count<T>(myIEnumerable)
-
-        public static UInt64 Count<T>(IEnumerable<T> myIEnumerable)
-        {
-            return Count(myIEnumerable.GetEnumerator());
-        }
-
-        #endregion
-
-        #region AsList<T>(myObject, myTimes)
-
-        public static List<T> AsList<T>(T myObject, UInt64 myTimes)
-        {
-            
-            var _List = new List<T>();
-
-            for (var i = 0UL; i < myTimes; i++)
-                _List.Add(myObject);
-
-            return _List;
-
-        }
-
-        #endregion
-
-        #region PrintPerformance(String myName, Nullable<Int32> myEvents, String myEventName, Double myTimeInMilliseconds)
-
-        public static void PrintPerformance(String myName, Nullable<Int32> myEvents, String myEventName, Double myTimeInMilliseconds)
-        {
-            
-            if (myEvents is not null)
-                Console.WriteLine("\t" + myName + ": " + myEvents + " " + myEventName + " in " + myTimeInMilliseconds + "ms");
+            if (Events is not null)
+                Console.WriteLine("\t" + Name + ": " + Events + " " + EventName + " in " + RunTime.TotalMilliseconds + "ms");
 
             else
-                Console.WriteLine("\t" + myName + ": " + myEventName + " in " + myTimeInMilliseconds + "ms");
+                Console.WriteLine("\t" + Name + ": " + EventName + " in " + RunTime.TotalMilliseconds + "ms");
 
         }
 
