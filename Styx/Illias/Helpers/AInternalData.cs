@@ -237,7 +237,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => DataSource;
+            => DataSource ?? "";
 
         #endregion
 
