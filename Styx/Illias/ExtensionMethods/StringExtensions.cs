@@ -84,7 +84,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// or consists only of white-space characters.
         /// </summary>
         /// <param name="GivenString">A string.</param>
-        public static Boolean IsNullOrWhiteSpace(this String? GivenString)
+        public static Boolean IsNullOrWhiteSpace([NotNullWhen(false)] this String? GivenString)
 
             => String.IsNullOrWhiteSpace(GivenString);
 
