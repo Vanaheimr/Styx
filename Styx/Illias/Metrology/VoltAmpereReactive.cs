@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,21 +55,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct VoltAmpereReactive : IEquatable <VoltAmpereReactive>,
                                                 IComparable<VoltAmpereReactive>,
-                                                IComparable
+                                                IComparable,
+                                                IAdditionOperators   <VoltAmpereReactive, VoltAmpereReactive, VoltAmpereReactive>,
+                                                ISubtractionOperators<VoltAmpereReactive, VoltAmpereReactive, VoltAmpereReactive>,
+                                                IMultiplyOperators   <VoltAmpereReactive, Decimal,            VoltAmpereReactive>,
+                                                IDivisionOperators   <VoltAmpereReactive, Decimal,            VoltAmpereReactive>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the Volt-Ampere Reactive.
+        /// The zero value of the VoltAmpereReactive.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly VoltAmpereReactive Zero = new (0m);
 
         /// <summary>
-        /// The value of the Volt-Ampere Reactive as Int32.
+        /// The value of the VoltAmpereReactive.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the VoltAmpereReactive.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
         /// <summary>
@@ -370,30 +383,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out VoltAmpereReactive VoltAmpereReactive)
         {
 
-            try
+            VoltAmpereReactive = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kvar", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+
+            else if (Text.EndsWith("var",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^3].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim().ToLower();
+                VoltAmpereReactive = new VoltAmpereReactive(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kvar"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, out var value))
-                {
-
-                    VoltAmpereReactive = new VoltAmpereReactive(value / factor);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            VoltAmpereReactive = default;
             return false;
 
         }
@@ -483,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -511,7 +532,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -542,7 +563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -570,7 +591,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -584,22 +605,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this VoltAmpereReactive.
-        /// </summary>
-        public VoltAmpereReactive Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static VoltAmpereReactive Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -702,7 +707,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="VoltAmpereReactive1">A Volt-Ampere Reactive (VAR).</param>
         /// <param name="VoltAmpereReactive2">Another Volt-Ampere Reactive (VAR).</param>
         public static VoltAmpereReactive operator + (VoltAmpereReactive VoltAmpereReactive1,
-                                       VoltAmpereReactive VoltAmpereReactive2)
+                                                     VoltAmpereReactive VoltAmpereReactive2)
 
             => new (VoltAmpereReactive1.Value + VoltAmpereReactive2.Value);
 
@@ -716,9 +721,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="VoltAmpereReactive1">A Volt-Ampere Reactive (VAR).</param>
         /// <param name="VoltAmpereReactive2">Another Volt-Ampere Reactive (VAR).</param>
         public static VoltAmpereReactive operator - (VoltAmpereReactive VoltAmpereReactive1,
-                                       VoltAmpereReactive VoltAmpereReactive2)
+                                                     VoltAmpereReactive VoltAmpereReactive2)
 
             => new (VoltAmpereReactive1.Value - VoltAmpereReactive2.Value);
+
+        #endregion
+
+
+        #region Operator *  (VoltAmpereReactive,  Scalar)
+
+        /// <summary>
+        /// Multiplies a VoltAmpereReactive with a scalar.
+        /// </summary>
+        /// <param name="VoltAmpereReactive">A VoltAmpereReactive value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static VoltAmpereReactive operator * (VoltAmpereReactive  VoltAmpereReactive,
+                                                     Decimal             Scalar)
+
+            => new (VoltAmpereReactive.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (VoltAmpereReactive,  Scalar)
+
+        /// <summary>
+        /// Divides a VoltAmpereReactive with a scalar.
+        /// </summary>
+        /// <param name="VoltAmpereReactive">A VoltAmpereReactive value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static VoltAmpereReactive operator / (VoltAmpereReactive  VoltAmpereReactive,
+                                                     Decimal             Scalar)
+
+            => new (VoltAmpereReactive.Value / Scalar);
 
         #endregion
 
@@ -802,7 +836,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} VAR";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} VAR";
 
         #endregion
 

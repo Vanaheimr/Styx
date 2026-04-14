@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Numerics;
+using System.Globalization;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -23,7 +30,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct PercentageDouble : IEquatable <PercentageDouble>,
                                               IComparable<PercentageDouble>,
-                                              IComparable
+                                              IComparable,
+                                              IAdditionOperators   <PercentageDouble, PercentageDouble, PercentageDouble>,
+                                              ISubtractionOperators<PercentageDouble, PercentageDouble, PercentageDouble>
     {
 
         #region Properties
@@ -256,18 +265,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Percentage.
-        /// </summary>
-        public PercentageDouble Clone()
-
-            => new (Value);
-
-        #endregion
-
-
         #region Operator overloading
 
         #region Operator == (Percentage1, Percentage2)
@@ -368,7 +365,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         public static PercentageDouble operator + (PercentageDouble Percentage1,
-                                                 PercentageDouble Percentage2)
+                                                   PercentageDouble Percentage2)
 
             => Parse((Byte) Math.Min(Percentage1.Value + Percentage2.Value, 100));
 
@@ -382,7 +379,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
         public static PercentageDouble operator - (PercentageDouble Percentage1,
-                                                 PercentageDouble Percentage2)
+                                                   PercentageDouble Percentage2)
 
             => Parse((Byte) Math.Max(Percentage1.Value - Percentage2.Value, 0));
 
@@ -468,7 +465,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} %";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} %";
 
         #endregion
 

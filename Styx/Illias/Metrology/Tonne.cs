@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,30 +55,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct Tonne : IEquatable <Tonne>,
                                    IComparable<Tonne>,
-                                   IComparable
+                                   IComparable,
+                                   IAdditionOperators   <Tonne, Tonne,   Tonne>,
+                                   ISubtractionOperators<Tonne, Tonne,   Tonne>,
+                                   IMultiplyOperators   <Tonne, Decimal, Tonne>,
+                                   IDivisionOperators   <Tonne, Decimal, Tonne>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the frequency.
+        /// The zero value of the Tonne.
+        /// </summary>
+        public static readonly Tonne Zero = new (0m);
+
+        /// <summary>
+        /// The value of the Tonne.
         /// </summary>
         public Decimal  Value    { get; }
 
         /// <summary>
-        /// The value of the frequency as Int32.
+        /// The rounded integer value of the Tonne.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new frequency based on the given number.
+        /// Create a new Tonne based on the given number.
         /// </summary>
-        /// <param name="Value">A numeric representation of a frequency.</param>
+        /// <param name="Value">A numeric representation of a Tonne.</param>
         private Tonne(Decimal Value)
         {
 
@@ -357,7 +370,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse    (Text,   out Tonne)
+        #region (static) TryParse   (Text,   out Tonne)
 
         /// <summary>
         /// Parse the given string as a Tonne.
@@ -367,31 +380,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Tonne Tonne)
         {
 
-            try
+            Tonne = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kT", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("T",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^1].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Tonne = new Tonne(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kT") || Text.EndsWith("KT"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Tonne = new Tonne(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Tonne = default;
             return false;
 
         }
@@ -483,7 +503,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Tonne = new Tonne(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -514,7 +534,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Tonne = new Tonne(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -548,7 +568,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Tonne = new Tonne(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -579,7 +599,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Tonne = new Tonne(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -598,22 +618,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Tonne.
-        /// </summary>
-        public Tonne Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static Tonne Zero
-            => new (0);
-
-
         #region Operator overloading
 
         #region Operator == (Tonne1, Tonne2)
@@ -621,8 +625,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -636,8 +640,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -651,8 +655,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (Tonne Tonne1,
                                           Tonne Tonne2)
@@ -666,8 +670,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -681,8 +685,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (Tonne Tonne1,
                                           Tonne Tonne2)
@@ -696,8 +700,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -709,12 +713,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Tonne1, Tonne2)
 
         /// <summary>
-        /// Accumulates two frequency.
+        /// Accumulates two Tonne.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         public static Tonne operator + (Tonne Tonne1,
-                                       Tonne Tonne2)
+                                        Tonne Tonne2)
 
             => new (Tonne1.Value + Tonne2.Value);
 
@@ -723,14 +727,43 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Tonne1, Tonne2)
 
         /// <summary>
-        /// Substracts two frequency.
+        /// Substracts two Tonne.
         /// </summary>
-        /// <param name="Tonne1">A frequency.</param>
-        /// <param name="Tonne2">Another frequency.</param>
+        /// <param name="Tonne1">A Tonne.</param>
+        /// <param name="Tonne2">Another Tonne.</param>
         public static Tonne operator - (Tonne Tonne1,
-                                       Tonne Tonne2)
+                                        Tonne Tonne2)
 
             => new (Tonne1.Value - Tonne2.Value);
+
+        #endregion
+
+
+        #region Operator *  (Tonne,  Scalar)
+
+        /// <summary>
+        /// Multiplies a Tonne with a scalar.
+        /// </summary>
+        /// <param name="Tonne">A Tonne value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Tonne operator * (Tonne    Tonne,
+                                        Decimal  Scalar)
+
+            => new (Tonne.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (Tonne,  Scalar)
+
+        /// <summary>
+        /// Divides a Tonne with a scalar.
+        /// </summary>
+        /// <param name="Tonne">A Tonne value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Tonne operator / (Tonne    Tonne,
+                                        Decimal  Scalar)
+
+            => new (Tonne.Value / Scalar);
 
         #endregion
 
@@ -741,14 +774,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Object)
 
         /// <summary>
-        /// Compares two frequency.
+        /// Compares two Tonne.
         /// </summary>
-        /// <param name="Object">A frequency to compare with.</param>
+        /// <param name="Object">A Tonne to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
             => Object is Tonne tonne
                    ? CompareTo(tonne)
-                   : throw new ArgumentException("The given object is not a frequency!",
+                   : throw new ArgumentException("The given object is not a Tonne!",
                                                  nameof(Object));
 
         #endregion
@@ -756,7 +789,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region CompareTo(Tonne)
 
         /// <summary>
-        /// Compares two frequency.
+        /// Compares two Tonne.
         /// </summary>
         /// <param name="Tonne">A Tonne to compare with.</param>
         public Int32 CompareTo(Tonne Tonne)
@@ -772,9 +805,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two frequency for equality.
+        /// Compares two Tonne for equality.
         /// </summary>
-        /// <param name="Object">A frequency to compare with.</param>
+        /// <param name="Object">A Tonne to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is Tonne tonne &&
@@ -785,9 +818,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Tonne)
 
         /// <summary>
-        /// Compares two frequency for equality.
+        /// Compares two Tonne for equality.
         /// </summary>
-        /// <param name="Tonne">A frequency to compare with.</param>
+        /// <param name="Tonne">A Tonne to compare with.</param>
         public Boolean Equals(Tonne Tonne)
 
             => Value.Equals(Tonne.Value);
@@ -814,7 +847,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} T";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} T";
 
         #endregion
 

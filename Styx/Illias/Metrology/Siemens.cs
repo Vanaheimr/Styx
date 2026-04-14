@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,21 +55,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct Siemens : IEquatable <Siemens>,
                                      IComparable<Siemens>,
-                                     IComparable
+                                     IComparable,
+                                     IAdditionOperators   <Siemens, Siemens, Siemens>,
+                                     ISubtractionOperators<Siemens, Siemens, Siemens>,
+                                     IMultiplyOperators   <Siemens, Decimal, Siemens>,
+                                     IDivisionOperators   <Siemens, Decimal, Siemens>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the Siemens.
+        /// The zero value of the Siemens.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly Siemens Zero = new (0m);
 
         /// <summary>
-        /// The value of the Siemens as Int32.
+        /// The value of the Siemens.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the Siemens.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
         /// <summary>
@@ -370,30 +383,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Siemens Siemens)
         {
 
-            try
+            Siemens = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kS", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("S",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^1].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Siemens = new Siemens(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kS") || Text.EndsWith("KS"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, out var value))
-                {
-
-                    Siemens = new Siemens(value / factor);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Siemens = default;
             return false;
 
         }
@@ -483,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Siemens = new Siemens(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Siemens = new Siemens(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -511,7 +532,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Siemens = new Siemens(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Siemens = new Siemens(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -542,7 +563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Siemens = new Siemens(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Siemens = new Siemens(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -570,7 +591,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Siemens = new Siemens(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Siemens = new Siemens(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -584,22 +605,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Siemens.
-        /// </summary>
-        public Siemens Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static Siemens Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -702,7 +707,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Siemens1">A Siemens.</param>
         /// <param name="Siemens2">Another Siemens.</param>
         public static Siemens operator + (Siemens Siemens1,
-                                       Siemens Siemens2)
+                                          Siemens Siemens2)
 
             => new (Siemens1.Value + Siemens2.Value);
 
@@ -716,9 +721,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Siemens1">A Siemens.</param>
         /// <param name="Siemens2">Another Siemens.</param>
         public static Siemens operator - (Siemens Siemens1,
-                                       Siemens Siemens2)
+                                          Siemens Siemens2)
 
             => new (Siemens1.Value - Siemens2.Value);
+
+        #endregion
+
+
+        #region Operator *  (Siemens,  Scalar)
+
+        /// <summary>
+        /// Multiplies a Siemens with a scalar.
+        /// </summary>
+        /// <param name="Siemens">A Siemens value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Siemens operator * (Siemens  Siemens,
+                                          Decimal  Scalar)
+
+            => new (Siemens.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (Siemens,  Scalar)
+
+        /// <summary>
+        /// Divides a Siemens with a scalar.
+        /// </summary>
+        /// <param name="Siemens">A Siemens value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Siemens operator / (Siemens  Siemens,
+                                          Decimal  Scalar)
+
+            => new (Siemens.Value / Scalar);
 
         #endregion
 
@@ -802,7 +836,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} V";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} V";
 
         #endregion
 

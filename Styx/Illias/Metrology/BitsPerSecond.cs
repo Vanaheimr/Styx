@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,36 +55,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct BitsPerSecond : IEquatable <BitsPerSecond>,
                                            IComparable<BitsPerSecond>,
-                                           IComparable
+                                           IComparable,
+                                           IFormattable,
+                                           IAdditionOperators   <BitsPerSecond, BitsPerSecond, BitsPerSecond>,
+                                           ISubtractionOperators<BitsPerSecond, BitsPerSecond, BitsPerSecond>,
+                                           IMultiplyOperators   <BitsPerSecond, Decimal,       BitsPerSecond>,
+                                           IDivisionOperators   <BitsPerSecond, Decimal,       BitsPerSecond>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the BitsPerSeconds.
+        /// The zero value of BitsPerSecond.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly BitsPerSecond Zero = new (0m);
 
         /// <summary>
-        /// The value of the Amperes as Int32.
+        /// The value of the BitsPerSeconds.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the BitsPerSeconds.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
 #pragma warning disable IDE1006 // Naming Styles
         /// <summary>
         /// The value as KiloBitsPerSeconds.
         /// </summary>
-        public Decimal  kW
+        public Decimal  kBPS
             => Value / 1000;
 #pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// The value as MegaBitsPerSeconds.
         /// </summary>
-        public Decimal  MW
+        public Decimal  MBPS
             => Value / 1000000;
+
+        /// <summary>
+        /// The value as GigaBitsPerSeconds.
+        /// </summary>
+        public Decimal  GBPS
+            => Value / 1000000000;
 
         #endregion
 
@@ -652,36 +672,60 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out BitsPerSecond BitsPerSecond)
         {
 
-            try
+            BitsPerSecond = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if (Text.EndsWith("kbps",   StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+            if (Text.EndsWith("kBit/s", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^6].TrimEnd();
+            }
+
+            if (Text.EndsWith("Mbps",   StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+            if (Text.EndsWith("MBit/s", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^6].TrimEnd();
+            }
+
+            if (Text.EndsWith("Gbps",   StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+            if (Text.EndsWith("GBit/s", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000000m;
+                Text    = Text[..^6].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                BitsPerSecond = new BitsPerSecond(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kbps") || Text.EndsWith("kBit/s"))
-                    factor = 1000;
-
-                if (Text.EndsWith("Mbps") || Text.EndsWith("MBit/s"))
-                    factor = 1000000;
-
-                if (Text.EndsWith("Gbps") || Text.EndsWith("GBit/s"))
-                    factor = 1000000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
-                {
-
-                    BitsPerSecond = new BitsPerSecond(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            BitsPerSecond = default;
             return false;
 
         }
@@ -837,7 +881,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -865,7 +909,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -896,7 +940,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -924,7 +968,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -955,7 +999,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -983,7 +1027,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -1014,7 +1058,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -1042,7 +1086,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -1132,22 +1176,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this bits/sec.
-        /// </summary>
-        public BitsPerSecond Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static BitsPerSecond Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -1250,7 +1278,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="BitsPerSecond1">A bits/sec.</param>
         /// <param name="BitsPerSecond2">Another bits/sec.</param>
         public static BitsPerSecond operator + (BitsPerSecond BitsPerSecond1,
-                                       BitsPerSecond BitsPerSecond2)
+                                                BitsPerSecond BitsPerSecond2)
 
             => new (BitsPerSecond1.Value + BitsPerSecond2.Value);
 
@@ -1264,9 +1292,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="BitsPerSecond1">A bits/sec.</param>
         /// <param name="BitsPerSecond2">Another bits/sec.</param>
         public static BitsPerSecond operator - (BitsPerSecond BitsPerSecond1,
-                                       BitsPerSecond BitsPerSecond2)
+                                                BitsPerSecond BitsPerSecond2)
 
             => new (BitsPerSecond1.Value - BitsPerSecond2.Value);
+
+        #endregion
+
+
+        #region Operator *  (BitsPerSecond,  Scalar)
+
+        /// <summary>
+        /// Multiplies a BitsPerSecond with a scalar.
+        /// </summary>
+        /// <param name="BitsPerSecond">A BitsPerSecond value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static BitsPerSecond operator * (BitsPerSecond  BitsPerSecond,
+                                                Decimal        Scalar)
+
+            => new (BitsPerSecond.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (BitsPerSecond,  Scalar)
+
+        /// <summary>
+        /// Divides a BitsPerSecond by a scalar.
+        /// </summary>
+        /// <param name="BitsPerSecond">A BitsPerSecond value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static BitsPerSecond operator / (BitsPerSecond  BitsPerSecond,
+                                                Decimal        Scalar)
+
+            => new (BitsPerSecond.Value / Scalar);
 
         #endregion
 
@@ -1350,7 +1407,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} W";
+            => ToString(
+                   null,
+                   CultureInfo.InvariantCulture
+               );
+
+
+        /// <summary>
+        /// Return a text representation of this object using the given
+        /// format and culture-specific format provider.
+        /// </summary>
+        public String ToString(String?           Format,
+                               IFormatProvider?  FormatProvider)
+        {
+
+            if (String.IsNullOrEmpty(Format) ||
+                Format.Equals("G",    StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("bps",  StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Value.ToString("G", FormatProvider)} bits/sec";
+            }
+
+            if (Format.Equals("kbps", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{(Value / 1000m).ToString("G", FormatProvider)} kbits/sec";
+            }
+
+            return $"{Value.ToString(Format, FormatProvider)} bits/sec";
+
+        }
 
         #endregion
 

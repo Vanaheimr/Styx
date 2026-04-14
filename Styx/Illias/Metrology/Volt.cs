@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,34 +55,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct Volt : IEquatable <Volt>,
                                   IComparable<Volt>,
-                                  IComparable
+                                  IComparable,
+                                  IAdditionOperators   <Volt, Volt,    Volt>,
+                                  ISubtractionOperators<Volt, Volt,    Volt>,
+                                  IMultiplyOperators   <Volt, Decimal, Volt>,
+                                  IDivisionOperators   <Volt, Decimal, Volt>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the Volts.
+        /// The zero value of the Volt.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly Volt Zero = new (0m);
 
         /// <summary>
-        /// The value of the Volt as Int32.
+        /// The value of the Volt.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the Volt.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
+#pragma warning disable IDE1006 // Naming Styles
         /// <summary>
         /// The value as KiloVolts.
         /// </summary>
-        public Decimal  KV
-            => Value / 1000;
+        public Decimal  kV
+            => Value / 1000m;
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// The value as MegaVolts.
         /// </summary>
         public Decimal  MV
-            => Value / 1000000;
+            => Value / 1000000m;
 
         #endregion
 
@@ -157,18 +172,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) ParseV     (Number, Exponent = null)
+        #region (static) FromV      (Number, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a Volt.
+        /// From the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt ParseV(Decimal  Number,
-                                  Int32?   Exponent = null)
+        public static Volt FromV(Decimal  Number,
+                                 Int32?   Exponent = null)
         {
 
-            if (TryParseV(Number, out var volt, Exponent))
+            if (TryFromV(Number, out var volt, Exponent))
                 return volt;
 
             throw new ArgumentException($"Invalid numeric representation of a Volt: '{Number}'!",
@@ -178,15 +193,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Parse the given number as a Volt.
+        /// From the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt ParseV(Byte    Number,
-                                  Int32?  Exponent = null)
+        public static Volt FromV(Byte    Number,
+                                 Int32?  Exponent = null)
         {
 
-            if (TryParseV(Number, out var volt, Exponent))
+            if (TryFromV(Number, out var volt, Exponent))
                 return volt;
 
             throw new ArgumentException($"Invalid numeric representation of a Volt: '{Number}'!",
@@ -196,18 +211,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseKV    (Number, Exponent = null)
+        #region (static) FromKV     (Number, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a kV.
+        /// From the given number as a kV.
         /// </summary>
         /// <param name="Number">A numeric representation of a kV.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt ParseKV(Decimal  Number,
-                                   Int32?   Exponent = null)
+        public static Volt FromKV(Decimal  Number,
+                                  Int32?   Exponent = null)
         {
 
-            if (TryParseKV(Number, out var volt, Exponent))
+            if (TryFromKV(Number, out var volt, Exponent))
                 return volt;
 
             throw new ArgumentException($"Invalid numeric representation of a kV: '{Number}'!",
@@ -217,15 +232,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Parse the given number as a kV.
+        /// From the given number as a kV.
         /// </summary>
         /// <param name="Number">A numeric representation of a kV.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt ParseKV(Byte    Number,
-                                   Int32?  Exponent = null)
+        public static Volt FromKV(Byte    Number,
+                                  Int32?  Exponent = null)
         {
 
-            if (TryParseKV(Number, out var volt, Exponent))
+            if (TryFromKV(Number, out var volt, Exponent))
                 return volt;
 
             throw new ArgumentException($"Invalid numeric representation of a kV: '{Number}'!",
@@ -291,18 +306,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseV  (Number, Exponent = null)
+        #region (static) TryFromV   (Number, Exponent = null)
 
         /// <summary>
         /// Try to parse the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryParseV(Decimal  Number,
-                                      Int32?   Exponent = null)
+        public static Volt? TryFromV(Decimal  Number,
+                                     Int32?   Exponent = null)
         {
 
-            if (TryParseV(Number, out var volt, Exponent))
+            if (TryFromV(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -315,11 +330,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryParseV(Byte    Number,
-                                      Int32?  Exponent = null)
+        public static Volt? TryFromV(Byte    Number,
+                                     Int32?  Exponent = null)
         {
 
-            if (TryParseV(Number, out var volt, Exponent))
+            if (TryFromV(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -328,18 +343,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKV (Number, Exponent = null)
+        #region (static) TryFromKV  (Number, Exponent = null)
 
         /// <summary>
         /// Try to parse the given number as a kV.
         /// </summary>
         /// <param name="Number">A numeric representation of a kV.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryParseKV(Decimal  Number,
-                                       Int32?   Exponent = null)
+        public static Volt? TryFromKV(Decimal  Number,
+                                      Int32?   Exponent = null)
         {
 
-            if (TryParseKV(Number, out var volt, Exponent))
+            if (TryFromKV(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -352,11 +367,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of a kV.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryParseKV(Byte    Number,
-                                       Int32?  Exponent = null)
+        public static Volt? TryFromKV(Byte    Number,
+                                      Int32?  Exponent = null)
         {
 
-            if (TryParseKV(Number, out var volt, Exponent))
+            if (TryFromKV(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -376,30 +391,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Volt Volt)
         {
 
-            try
+            Volt = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kV", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("V",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^1].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Volt = new Volt(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kV") || Text.EndsWith("KV"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, out var value))
-                {
-
-                    Volt = new Volt(value / factor);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Volt = default;
             return false;
 
         }
@@ -473,28 +496,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseV  (Number, out Volt, Exponent = null)
+        #region (static) TryFromV   (Number, out Volt, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a Volt.
+        /// From the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Volt">The parsed Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseV(Byte      Number,
-                                        out Volt  Volt,
-                                        Int32?    Exponent = null)
+        public static Boolean TryFromV(Byte      Number,
+                                       out Volt  Volt,
+                                       Int32?    Exponent = null)
         {
 
             try
             {
-
-                Volt = new Volt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
-
+                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
                 return true;
-
             }
-            catch
+            catch (ArgumentOutOfRangeException)
+            {
+                Volt = default;
+                return false;
+            }
+            catch (OverflowException)
             {
                 Volt = default;
                 return false;
@@ -504,25 +529,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Parse the given number as a Volt.
+        /// From the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Volt">The parsed Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseV(Decimal   Number,
-                                        out Volt  Volt,
-                                        Int32?    Exponent = null)
+        public static Boolean TryFromV(Decimal   Number,
+                                       out Volt  Volt,
+                                       Int32?    Exponent = null)
         {
 
             try
             {
-
-                Volt = new Volt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
-
+                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
                 return true;
-
             }
-            catch
+            catch (ArgumentOutOfRangeException)
+            {
+                Volt = default;
+                return false;
+            }
+            catch (OverflowException)
             {
                 Volt = default;
                 return false;
@@ -532,28 +559,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKV (Number, out Volt, Exponent = null)
+        #region (static) TryFromKV  (Number, out Volt, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a Volt.
+        /// From the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Volt">The parsed Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKV(Byte      Number,
+        public static Boolean TryFromKV(Byte      Number,
                                          out Volt  Volt,
                                          Int32?    Exponent = null)
         {
 
             try
             {
-
-                Volt = new Volt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
-
+                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
                 return true;
-
             }
-            catch
+            catch (ArgumentOutOfRangeException)
+            {
+                Volt = default;
+                return false;
+            }
+            catch (OverflowException)
             {
                 Volt = default;
                 return false;
@@ -563,25 +592,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Parse the given number as a Volt.
+        /// From the given number as a Volt.
         /// </summary>
         /// <param name="Number">A numeric representation of a Volt.</param>
         /// <param name="Volt">The parsed Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKV(Decimal   Number,
+        public static Boolean TryFromKV(Decimal   Number,
                                          out Volt  Volt,
                                          Int32?    Exponent = null)
         {
 
             try
             {
-
-                Volt = new Volt(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
-
+                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
                 return true;
-
             }
-            catch
+            catch (ArgumentOutOfRangeException)
+            {
+                Volt = default;
+                return false;
+            }
+            catch (OverflowException)
             {
                 Volt = default;
                 return false;
@@ -590,22 +621,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Volt.
-        /// </summary>
-        public Volt Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static Volt Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -728,6 +743,49 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region Operator *  (Volt,   Scalar)
+
+        /// <summary>
+        /// Multiplies a Volt with a scalar.
+        /// </summary>
+        /// <param name="Volt">A Volt value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Volt operator * (Volt    Volt,
+                                       Decimal Scalar)
+
+            => new (Volt.Value * Scalar);
+
+        #endregion
+
+        #region Operator *  (Scalar, Volt)
+
+        /// <summary>
+        /// Multiplies a scalar with a Volt.
+        /// </summary>
+        /// <param name="Scalar">A scalar value.</param>
+        /// <param name="Volt">A Volt value.</param>
+        public static Volt operator * (Decimal Scalar,
+                                       Volt    Volt)
+
+            => new (Scalar * Volt.Value);
+
+        #endregion
+
+        #region Operator /  (Volt,   Scalar)
+
+        /// <summary>
+        /// Divides a Volt with a scalar.
+        /// </summary>
+        /// <param name="Volt">A Volt value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Volt operator / (Volt    Volt,
+                                       Decimal Scalar)
+
+            => new (Volt.Value / Scalar);
+
+        #endregion
+
         #endregion
 
         #region IComparable<Volt> Members
@@ -740,10 +798,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A Volt to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Volt volt
-                   ? CompareTo(volt)
-                   : throw new ArgumentException("The given object is not a Volt!",
-                                                 nameof(Object));
+            => Object switch {
+                   null       => 1,
+                   Volt volt  => CompareTo(volt),
+                   _          => throw new ArgumentException("The given object is not a Volt!", nameof(Object))
+               };
 
         #endregion
 
@@ -808,7 +867,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} V";
+            => ToString(
+                   null,
+                   CultureInfo.InvariantCulture
+               );
+
+
+        /// <summary>
+        /// Return a text representation of this object using the given
+        /// format and culture-specific format provider.
+        /// </summary>
+        public String ToString(String?           Format,
+                               IFormatProvider?  FormatProvider)
+        {
+
+            if (String.IsNullOrEmpty(Format) ||
+                Format.Equals("G",  StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("V",  StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Value.ToString("G", FormatProvider)} V";
+            }
+
+            if (Format.Equals("kV", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{(Value / 1000m).ToString("G", FormatProvider)} kV";
+            }
+
+            return $"{Value.ToString(Format, FormatProvider)} V";
+
+        }
 
         #endregion
 

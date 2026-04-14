@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,10 +55,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct Meter : IEquatable<Meter>,
                                    IComparable<Meter>,
-                                   IComparable
+                                   IComparable,
+                                   IAdditionOperators   <Meter, Meter, Meter>,
+                                   ISubtractionOperators<Meter, Meter, Meter>,
+                                   IMultiplyOperators   <Meter, Decimal, Meter>,
+                                   IDivisionOperators   <Meter, Decimal, Meter>
     {
 
         #region Properties
+
+        /// <summary>
+        /// The zero value of a Meter.
+        /// </summary>
+        public static readonly Meter Zero = new (0m);
 
         /// <summary>
         /// The value of the Meter.
@@ -65,10 +75,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Decimal  Value    { get; }
 
         /// <summary>
-        /// The value of the Meter as Int32.
+        /// The rounded integer value of the Meter.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
         /// <summary>
@@ -752,31 +765,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Meter Meter)
         {
 
-            try
+            Meter = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("m",  StringComparison.OrdinalIgnoreCase) &&
+                    !Text.EndsWith("km", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1/1000m;
+                Text    = Text[..^1].TrimEnd();
+            }
+
+            else if (Text.EndsWith("km", StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Meter = new Meter(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("km"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Meter = new Meter(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Meter = default;
             return false;
 
         }
@@ -933,7 +954,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+            Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -987,7 +1008,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1018,7 +1039,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+            Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1072,7 +1093,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1103,7 +1124,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Int32?     Exponent = null)
         {
 
-            Meter = new Meter(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+            Meter = new Meter(Number * Pow10.Calc(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1157,7 +1178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Meter = new Meter(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1188,7 +1209,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+            Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1242,7 +1263,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1259,22 +1280,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Meter.
-        /// </summary>
-        public Meter Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static Meter Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -1397,6 +1402,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region Operator *  (Meter,  Scalar)
+
+        /// <summary>
+        /// Multiplies a Meter with a scalar.
+        /// </summary>
+        /// <param name="Meter">A Meter value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Meter operator * (Meter    Meter,
+                                        Decimal  Scalar)
+
+            => new (Meter.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (Meter,  Scalar)
+
+        /// <summary>
+        /// Divides a Meter with a scalar.
+        /// </summary>
+        /// <param name="Meter">A Meter value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Meter operator / (Meter    Meter,
+                                        Decimal  Scalar)
+
+            => new (Meter.Value / Scalar);
+
+        #endregion
+
         #endregion
 
         #region IComparable<Meter> Members
@@ -1477,7 +1511,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} m";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} m";
 
         #endregion
 

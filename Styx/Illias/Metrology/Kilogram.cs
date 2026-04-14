@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,21 +55,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct Kilogram : IEquatable <Kilogram>,
                                       IComparable<Kilogram>,
-                                      IComparable
+                                      IComparable,
+                                      IAdditionOperators   <Kilogram, Kilogram, Kilogram>,
+                                      ISubtractionOperators<Kilogram, Kilogram, Kilogram>,
+                                      IMultiplyOperators   <Kilogram, Decimal,  Kilogram>,
+                                      IDivisionOperators   <Kilogram, Decimal,  Kilogram>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the mass.
+        /// The zero value of a kilogram.
+        /// </summary>
+        public static readonly Kilogram Zero = new (0m);
+
+        /// <summary>
+        /// The value of the kilogram.
         /// </summary>
         public Decimal  Value    { get; }
 
         /// <summary>
-        /// The value of the mass as Int32.
+        /// The rounded integer value of the kilogram.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
         #endregion
 
@@ -367,31 +380,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Kilogram Kilogram)
         {
 
-            try
+            Kilogram = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("g",  StringComparison.OrdinalIgnoreCase) &&
+                    !Text.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1/1000;
+                Text    = Text[..^1].TrimEnd();
+            }
+
+            else if (Text.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Kilogram = new Kilogram(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("g") && !Text.EndsWith("kg"))
-                    factor = 1/1000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Kilogram = new Kilogram(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Kilogram = default;
             return false;
 
         }
@@ -483,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Kilogram = new Kilogram(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -514,7 +535,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Kilogram = new Kilogram(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -548,7 +569,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Kilogram = new Kilogram(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -579,7 +600,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Kilogram = new Kilogram(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -596,22 +617,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Kilogram.
-        /// </summary>
-        public Kilogram Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static Kilogram Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -714,7 +719,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Kilogram1">A kilogram.</param>
         /// <param name="Kilogram2">Another kilogram.</param>
         public static Kilogram operator + (Kilogram Kilogram1,
-                                       Kilogram Kilogram2)
+                                           Kilogram Kilogram2)
 
             => new (Kilogram1.Value + Kilogram2.Value);
 
@@ -728,9 +733,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Kilogram1">A kilogram.</param>
         /// <param name="Kilogram2">Another kilogram.</param>
         public static Kilogram operator - (Kilogram Kilogram1,
-                                       Kilogram Kilogram2)
+                                           Kilogram Kilogram2)
 
             => new (Kilogram1.Value - Kilogram2.Value);
+
+        #endregion
+
+
+        #region Operator *  (Kilogram,  Scalar)
+
+        /// <summary>
+        /// Multiplies a Kilogram with a scalar.
+        /// </summary>
+        /// <param name="Kilogram">A Kilogram value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Kilogram operator * (Kilogram  Kilogram,
+                                           Decimal   Scalar)
+
+            => new (Kilogram.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (Kilogram,  Scalar)
+
+        /// <summary>
+        /// Divides a Kilogram with a scalar.
+        /// </summary>
+        /// <param name="Kilogram">A Kilogram value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Kilogram operator / (Kilogram  Kilogram,
+                                           Decimal   Scalar)
+
+            => new (Kilogram.Value / Scalar);
 
         #endregion
 
@@ -814,7 +848,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} kg";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} kg";
 
         #endregion
 

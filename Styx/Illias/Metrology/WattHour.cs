@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -46,21 +47,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct WattHour : IEquatable <WattHour>,
                                       IComparable<WattHour>,
-                                      IComparable
+                                      IComparable,
+                                      IAdditionOperators   <WattHour, WattHour, WattHour>,
+                                      ISubtractionOperators<WattHour, WattHour, WattHour>,
+                                      IMultiplyOperators   <WattHour, Decimal,  WattHour>,
+                                      IDivisionOperators   <WattHour, Decimal,  WattHour>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the WattHours.
+        /// The zero value of the WattHour.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly WattHour Zero = new (0m);
 
         /// <summary>
-        /// The value of the WattHour as Int32.
+        /// The value of the WattHour.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the WattHour.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -483,36 +496,50 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out WattHour WattHour)
         {
 
-            try
+            WattHour = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kWh", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^3].TrimEnd();
+            }
+
+            if      (Text.EndsWith("MWh", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^3].TrimEnd();
+            }
+
+            if      (Text.EndsWith("GWh", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^3].TrimEnd();
+            }
+
+            else if (Text.EndsWith("Wh",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                WattHour = new WattHour(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kWh") || Text.EndsWith("KWh"))
-                    factor = 1000;
-
-                if (Text.EndsWith("MWh"))
-                    factor = 1000000;
-
-                if (Text.EndsWith("GWh"))
-                    factor = 1000000000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
-                {
-
-                    WattHour = new WattHour(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            WattHour = default;
             return false;
 
         }
@@ -635,7 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                WattHour = new WattHour(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -663,7 +690,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                WattHour = new WattHour(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -694,7 +721,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                WattHour = new WattHour(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -722,7 +749,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                WattHour = new WattHour(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -753,7 +780,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                WattHour = new WattHour(1000000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -781,7 +808,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                WattHour = new WattHour(1000000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -795,22 +822,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this WattHour.
-        /// </summary>
-        public WattHour Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static WattHour Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -933,6 +944,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region Operator *  (WattHour,  Scalar)
+
+        /// <summary>
+        /// Multiplies a WattHour with a scalar.
+        /// </summary>
+        /// <param name="WattHour">A WattHour value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static WattHour operator * (WattHour  WattHour,
+                                           Decimal   Scalar)
+
+            => new (WattHour.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (WattHour,  Scalar)
+
+        /// <summary>
+        /// Divides a WattHour with a scalar.
+        /// </summary>
+        /// <param name="WattHour">A WattHour value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static WattHour operator / (WattHour  WattHour,
+                                           Decimal   Scalar)
+
+            => new (WattHour.Value / Scalar);
+
+        #endregion
+
         #endregion
 
         #region IComparable<WattHour> Members
@@ -1013,7 +1053,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} Wh";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} Wh";
 
         #endregion
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -53,22 +54,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// An Ohm value.
     /// </summary>
     public readonly struct Ohm : IEquatable <Ohm>,
-                                  IComparable<Ohm>,
-                                  IComparable
+                                 IComparable<Ohm>,
+                                 IComparable,
+                                 IAdditionOperators   <Ohm, Ohm,     Ohm>,
+                                 ISubtractionOperators<Ohm, Ohm,     Ohm>,
+                                 IMultiplyOperators   <Ohm, Decimal, Ohm>,
+                                 IDivisionOperators   <Ohm, Decimal, Ohm>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the Ohms.
+        /// The zero value of a Ohm.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly Ohm Zero = new (0m);
 
         /// <summary>
-        /// The value of the Ohm as Int32.
+        /// The value of the Ohm.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the Ohm.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
         /// <summary>
@@ -489,30 +502,63 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Ohm Ohm)
         {
 
-            try
+            Ohm = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kOhm", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+
+            if      (Text.EndsWith("kΩ",   StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("MOhm", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+
+            else if (Text.EndsWith("MΩ",   StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("GOhm", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000000m;
+                Text    = Text[..^4].TrimEnd();
+            }
+
+            else if (Text.EndsWith("GΩ",   StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Ohm = new Ohm(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("KOhm") || Text.EndsWith("KV"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, out var value))
-                {
-
-                    Ohm = new Ohm(value / factor);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Ohm = default;
             return false;
 
         }
@@ -635,7 +681,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -663,7 +709,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -694,7 +740,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -722,7 +768,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -753,7 +799,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -781,7 +827,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -795,22 +841,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Ohm.
-        /// </summary>
-        public Ohm Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static Ohm Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -913,7 +943,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Ohm1">An Ohm.</param>
         /// <param name="Ohm2">Another Ohm.</param>
         public static Ohm operator + (Ohm Ohm1,
-                                       Ohm Ohm2)
+                                      Ohm Ohm2)
 
             => new (Ohm1.Value + Ohm2.Value);
 
@@ -927,9 +957,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Ohm1">An Ohm.</param>
         /// <param name="Ohm2">Another Ohm.</param>
         public static Ohm operator - (Ohm Ohm1,
-                                       Ohm Ohm2)
+                                      Ohm Ohm2)
 
             => new (Ohm1.Value - Ohm2.Value);
+
+        #endregion
+
+
+        #region Operator *  (Ohm,  Scalar)
+
+        /// <summary>
+        /// Multiplies an Ohm with a scalar.
+        /// </summary>
+        /// <param name="Ohm">An Ohm value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Ohm operator * (Ohm     Ohm,
+                                      Decimal Scalar)
+
+            => new (Ohm.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (Ohm,  Scalar)
+
+        /// <summary>
+        /// Divides an Ohm with a scalar.
+        /// </summary>
+        /// <param name="Ohm">An Ohm value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Ohm operator / (Ohm     Ohm,
+                                      Decimal Scalar)
+
+            => new (Ohm.Value / Scalar);
 
         #endregion
 
@@ -1013,7 +1072,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} V";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} V";
 
         #endregion
 

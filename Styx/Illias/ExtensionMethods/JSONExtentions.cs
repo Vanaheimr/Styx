@@ -1596,7 +1596,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            AmpereValue    = Ampere.ParseA(decimalValue);
+            AmpereValue    = Ampere.FromA(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1860,7 +1860,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            VoltValue      = Volt.ParseV(decimalValue);
+            VoltValue      = Volt.FromV(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1992,7 +1992,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            WattValue      = Watt.ParseW(decimalValue);
+            WattValue      = Watt.FromW(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -5043,7 +5043,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    AmpereValue   = Ampere.ParseA(decimalValue, Multiplicator);
+                    AmpereValue   = Ampere.FromA(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -5362,7 +5362,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    VoltValue     = Volt.ParseV(decimalValue, Multiplicator);
+                    VoltValue     = Volt.FromV(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -5500,7 +5500,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    WattValue     = Watt.ParseW(decimalValue, Multiplicator);
+                    WattValue     = Watt.FromW(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";

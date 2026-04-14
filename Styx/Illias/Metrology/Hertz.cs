@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,10 +55,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct Hertz : IEquatable <Hertz>,
                                    IComparable<Hertz>,
-                                   IComparable
+                                   IComparable,
+                                   IAdditionOperators   <Hertz, Hertz,   Hertz>,
+                                   ISubtractionOperators<Hertz, Hertz,   Hertz>,
+                                   IMultiplyOperators   <Hertz, Decimal, Hertz>,
+                                   IDivisionOperators   <Hertz, Decimal, Hertz>
     {
 
         #region Properties
+
+        /// <summary>
+        /// The zero value of a frequency.
+        /// </summary>
+        public static readonly Hertz Zero = new (0m);
 
         /// <summary>
         /// The value of the frequency.
@@ -65,10 +75,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Decimal  Value    { get; }
 
         /// <summary>
-        /// The value of the frequency as Int32.
+        /// The rounded integer value of the frequency.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
         #endregion
 
@@ -141,6 +154,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return hertz;
 
             throw new ArgumentException($"Invalid text representation of a kHz: '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) ParseMHz    (Text)
+
+        /// <summary>
+        /// Parse the given string as a MHz.
+        /// </summary>
+        /// <param name="Text">A text representation of a MHz.</param>
+        public static Hertz ParseMHz(String Text)
+        {
+
+            if (TryParseMHz(Text, out var hertz))
+                return hertz;
+
+            throw new ArgumentException($"Invalid text representation of a MHz: '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) ParseGHz    (Text)
+
+        /// <summary>
+        /// Parse the given string as a GHz.
+        /// </summary>
+        /// <param name="Text">A text representation of a GHz.</param>
+        public static Hertz ParseGHz(String Text)
+        {
+
+            if (TryParseGHz(Text, out var hertz))
+                return hertz;
+
+            throw new ArgumentException($"Invalid text representation of a GHz: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -226,6 +277,84 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) ParseMHz    (Number, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz ParseMHz(Decimal  Number,
+                                     Int32?   Exponent = null)
+        {
+
+            if (TryParseMHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            throw new ArgumentException($"Invalid numeric representation of a MHz: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz ParseMHz(Byte    Number,
+                                     Int32?  Exponent = null)
+        {
+
+            if (TryParseMHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            throw new ArgumentException($"Invalid numeric representation of a MHz: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
+        #region (static) ParseGHz    (Number, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as a GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz ParseGHz(Decimal  Number,
+                                     Int32?   Exponent = null)
+        {
+
+            if (TryParseGHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            throw new ArgumentException($"Invalid numeric representation of a GHz: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz ParseGHz(Byte    Number,
+                                     Int32?  Exponent = null)
+        {
+
+            if (TryParseGHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            throw new ArgumentException($"Invalid numeric representation of a GHz: '{Number}'!",
+                                        nameof(Number));
+
+        }
+
+        #endregion
+
 
         #region (static) TryParse    (Text)
 
@@ -273,6 +402,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseKHz(Text, out var hertz))
+                return hertz;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseMHz (Text)
+
+        /// <summary>
+        /// Try to parse the given text as a MHz.
+        /// </summary>
+        /// <param name="Text">A text representation of a MHz.</param>
+        public static Hertz? TryParseMHz(String Text)
+        {
+
+            if (TryParseMHz(Text, out var hertz))
+                return hertz;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseGHz (Text)
+
+        /// <summary>
+        /// Try to parse the given text as a GHz.
+        /// </summary>
+        /// <param name="Text">A text representation of a GHz.</param>
+        public static Hertz? TryParseGHz(String Text)
+        {
+
+            if (TryParseGHz(Text, out var hertz))
                 return hertz;
 
             return null;
@@ -356,6 +521,80 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) TryParseMHz (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to parse the given number as a MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryParseMHz(Decimal  Number,
+                                         Int32?   Exponent = null)
+        {
+
+            if (TryParseMHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryParseMHz(Byte    Number,
+                                         Int32?  Exponent = null)
+        {
+
+            if (TryParseMHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseGHz (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to parse the given number as a GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryParseGHz(Decimal  Number,
+                                         Int32?   Exponent = null)
+        {
+
+            if (TryParseGHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to parse the given number as a GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryParseGHz(Byte    Number,
+                                         Int32?  Exponent = null)
+        {
+
+            if (TryParseGHz(Number, out var hertz, Exponent))
+                return hertz;
+
+            return null;
+
+        }
+
+        #endregion
+
 
         #region (static) TryParse    (Text,   out Hertz)
 
@@ -367,31 +606,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out Hertz Hertz)
         {
 
-            try
+            Hertz = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kHz", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("MHz", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            else if (Text.EndsWith("GHz", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000000m;
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                Hertz = new Hertz(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kHz") || Text.EndsWith("KHz"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Hertz = new Hertz(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            Hertz = default;
             return false;
 
         }
@@ -466,6 +719,74 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) TryParseMHz (Text,   out Hertz)
+
+        /// <summary>
+        /// Parse the given string as a MHz.
+        /// </summary>
+        /// <param name="Text">A text representation of a MHz.</param>
+        /// <param name="Hertz">The parsed MHz.</param>
+        public static Boolean TryParseMHz(String Text, out Hertz Hertz)
+        {
+
+            try
+            {
+
+                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
+                    value >= 0)
+                {
+
+                    Hertz = new Hertz(1000000 * value);
+
+                    return true;
+
+                }
+
+            }
+            catch
+            { }
+
+            Hertz = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseGHz (Text,   out Hertz)
+
+        /// <summary>
+        /// Parse the given string as a GHz.
+        /// </summary>
+        /// <param name="Text">A text representation of a GHz.</param>
+        /// <param name="Hertz">The parsed GHz.</param>
+        public static Boolean TryParseGHz(String Text, out Hertz Hertz)
+        {
+
+            try
+            {
+
+                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
+                    value >= 0)
+                {
+
+                    Hertz = new Hertz(1000000000 * value);
+
+                    return true;
+
+                }
+
+            }
+            catch
+            { }
+
+            Hertz = default;
+            return false;
+
+        }
+
+        #endregion
+
 
         #region (static) TryParseHz  (Number, out Hertz, Exponent = null)
 
@@ -483,7 +804,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Hertz = new Hertz(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Hertz = new Hertz(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -514,7 +835,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Hertz = new Hertz(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Hertz = new Hertz(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -548,7 +869,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Hertz = new Hertz(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Hertz = new Hertz(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -579,7 +900,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Hertz = new Hertz(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Hertz = new Hertz(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -597,21 +918,135 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-
-        #region Clone()
+        #region (static) TryParseMHz (Number, out Hertz, Exponent = null)
 
         /// <summary>
-        /// Clone this Hertz.
+        /// Parse the given number as a MHz.
         /// </summary>
-        public Hertz Clone()
+        /// <param name="Number">A numeric representation of a MHz.</param>
+        /// <param name="Hertz">The parsed MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseMHz(Byte       Number,
+                                          out Hertz  Hertz,
+                                          Int32?     Exponent = null)
+        {
 
-            => new (Value);
+            try
+            {
+
+                Hertz = new Hertz(1000 * Number * Pow10.Calc(Exponent ?? 0));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Hertz = default;
+                return false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a MHz.</param>
+        /// <param name="Hertz">The parsed MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseMHz(Decimal    Number,
+                                          out Hertz  Hertz,
+                                          Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Hertz = new Hertz(1000 * Number * Pow10.Calc(Exponent ?? 0));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Hertz = default;
+                return false;
+            }
+
+        }
 
         #endregion
 
+        #region (static) TryParseGHz (Number, out Hertz, Exponent = null)
 
-        public static Hertz Zero
-            => new (0);
+        /// <summary>
+        /// Parse the given number as a GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a GHz.</param>
+        /// <param name="Hertz">The parsed GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseGHz(Byte       Number,
+                                          out Hertz  Hertz,
+                                          Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Hertz = new Hertz(1000 * Number * Pow10.Calc(Exponent ?? 0));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Hertz = default;
+                return false;
+            }
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as a GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of a GHz.</param>
+        /// <param name="Hertz">The parsed GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryParseGHz(Decimal    Number,
+                                          out Hertz  Hertz,
+                                          Int32?     Exponent = null)
+        {
+
+            try
+            {
+
+                Hertz = new Hertz(1000 * Number * Pow10.Calc(Exponent ?? 0));
+
+                if (Number < 0)
+                    return false;
+
+                return true;
+
+            }
+            catch
+            {
+                Hertz = default;
+                return false;
+            }
+
+        }
+
+        #endregion
 
 
         #region Operator overloading
@@ -714,7 +1149,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Hertz1">A frequency.</param>
         /// <param name="Hertz2">Another frequency.</param>
         public static Hertz operator + (Hertz Hertz1,
-                                       Hertz Hertz2)
+                                        Hertz Hertz2)
 
             => new (Hertz1.Value + Hertz2.Value);
 
@@ -728,9 +1163,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Hertz1">A frequency.</param>
         /// <param name="Hertz2">Another frequency.</param>
         public static Hertz operator - (Hertz Hertz1,
-                                       Hertz Hertz2)
+                                        Hertz Hertz2)
 
             => new (Hertz1.Value - Hertz2.Value);
+
+        #endregion
+
+
+        #region Operator *  (Hertz,  Scalar)
+
+        /// <summary>
+        /// Multiplies a Hertz with a scalar.
+        /// </summary>
+        /// <param name="Hertz">A Hertz value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Hertz operator * (Hertz    Hertz,
+                                        Decimal  Scalar)
+
+            => new (Hertz.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (Hertz,  Scalar)
+
+        /// <summary>
+        /// Divides a Hertz by a scalar.
+        /// </summary>
+        /// <param name="Hertz">A Hertz value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static Hertz operator / (Hertz    Hertz,
+                                        Decimal  Scalar)
+
+            => new (Hertz.Value / Scalar);
 
         #endregion
 
@@ -814,7 +1278,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} Hz";
+            => ToString(
+                   null,
+                   CultureInfo.InvariantCulture
+               );
+
+
+        /// <summary>
+        /// Return a text representation of this object using the given
+        /// format and culture-specific format provider.
+        /// </summary>
+        public String ToString(String?           Format,
+                               IFormatProvider?  FormatProvider)
+        {
+
+            if (String.IsNullOrEmpty(Format) ||
+                Format.Equals("G",  StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("A",  StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Value.ToString("G", FormatProvider)} Hz";
+            }
+
+            if (Format.Equals("kA", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{(Value / 1000m).ToString("G", FormatProvider)} kHz";
+            }
+
+            return $"{Value.ToString(Format, FormatProvider)} Hz";
+
+        }
 
         #endregion
 

@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Numerics;
+using System.Globalization;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -23,7 +30,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct PercentageByte : IEquatable <PercentageByte>,
                                             IComparable<PercentageByte>,
-                                            IComparable
+                                            IComparable,
+                                            IAdditionOperators   <PercentageByte, PercentageByte, PercentageByte>,
+                                            ISubtractionOperators<PercentageByte, PercentageByte, PercentageByte>
     {
 
         #region Properties
@@ -379,18 +388,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Percentage.
-        /// </summary>
-        public PercentageByte Clone()
-
-            => new (Value);
-
-        #endregion
-
-
         #region Operator overloading
 
         #region Operator == (Percentage1, Percentage2)
@@ -591,7 +588,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} %";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} %";
 
         #endregion
 

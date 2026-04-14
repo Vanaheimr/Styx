@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,10 +55,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct SquareMeter : IEquatable<SquareMeter>,
                                          IComparable<SquareMeter>,
-                                         IComparable
+                                         IComparable,
+                                         IAdditionOperators   <SquareMeter, SquareMeter, SquareMeter>,
+                                         ISubtractionOperators<SquareMeter, SquareMeter, SquareMeter>,
+                                         IMultiplyOperators   <SquareMeter, Decimal,     SquareMeter>,
+                                         IDivisionOperators   <SquareMeter, Decimal,     SquareMeter>
     {
 
         #region Properties
+
+        /// <summary>
+        /// The zero value of the m².
+        /// </summary>
+        public static readonly SquareMeter Zero = new (0m);
 
         /// <summary>
         /// The value of the m².
@@ -65,10 +75,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Decimal  Value    { get; }
 
         /// <summary>
-        /// The value of the SquareMeter as Int32.
+        /// The rounded integer value of the m².
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
         /// <summary>
@@ -434,7 +447,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text,   out SquareMeter)
+        #region (static) TryParse    (Text,   out SquareMeter)
 
         /// <summary>
         /// Parse the given string as a m².
@@ -444,31 +457,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out SquareMeter SquareMeter)
         {
 
-            try
+            SquareMeter = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("km²", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000000m;
+                Text    = Text[..^3].TrimEnd();
+            }
+
+            else if (Text.EndsWith("m²",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                SquareMeter = new SquareMeter(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("km"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    SquareMeter = new SquareMeter(factor * value);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            SquareMeter = default;
             return false;
 
         }
@@ -557,7 +577,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Int32?     Exponent = null)
         {
 
-            SquareMeter = new SquareMeter(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+            SquareMeter = new SquareMeter(Number * Pow10.Calc(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -611,7 +631,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                SquareMeter = new SquareMeter(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                SquareMeter = new SquareMeter(Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -642,7 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            SquareMeter = new SquareMeter(1000000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+            SquareMeter = new SquareMeter(1000000 * Number * Pow10.Calc(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -696,7 +716,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                SquareMeter = new SquareMeter(1000 * Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                SquareMeter = new SquareMeter(1000 * Number * Pow10.Calc(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -713,22 +733,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this m².
-        /// </summary>
-        public SquareMeter Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static SquareMeter Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -831,7 +835,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SquareMeter1">A m².</param>
         /// <param name="SquareMeter2">Another m².</param>
         public static SquareMeter operator + (SquareMeter SquareMeter1,
-                                        SquareMeter SquareMeter2)
+                                              SquareMeter SquareMeter2)
 
             => new (SquareMeter1.Value + SquareMeter2.Value);
 
@@ -845,9 +849,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SquareMeter1">A m².</param>
         /// <param name="SquareMeter2">Another m².</param>
         public static SquareMeter operator - (SquareMeter SquareMeter1,
-                                        SquareMeter SquareMeter2)
+                                              SquareMeter SquareMeter2)
 
             => new (SquareMeter1.Value - SquareMeter2.Value);
+
+        #endregion
+
+
+        #region Operator *  (SquareMeter,  Scalar)
+
+        /// <summary>
+        /// Multiplies a SquareMeter with a scalar.
+        /// </summary>
+        /// <param name="SquareMeter">A SquareMeter value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static SquareMeter operator * (SquareMeter  SquareMeter,
+                                              Decimal      Scalar)
+
+            => new (SquareMeter.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (SquareMeter,  Scalar)
+
+        /// <summary>
+        /// Divides a SquareMeter with a scalar.
+        /// </summary>
+        /// <param name="SquareMeter">A SquareMeter value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static SquareMeter operator / (SquareMeter  SquareMeter,
+                                              Decimal      Scalar)
+
+            => new (SquareMeter.Value / Scalar);
 
         #endregion
 
@@ -931,7 +964,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} m";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} m";
 
         #endregion
 

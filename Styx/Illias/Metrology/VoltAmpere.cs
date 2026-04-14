@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 
 #endregion
@@ -54,21 +55,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct VoltAmpere : IEquatable <VoltAmpere>,
                                         IComparable<VoltAmpere>,
-                                        IComparable
+                                        IComparable,
+                                        IAdditionOperators   <VoltAmpere, VoltAmpere, VoltAmpere>,
+                                        ISubtractionOperators<VoltAmpere, VoltAmpere, VoltAmpere>,
+                                        IMultiplyOperators   <VoltAmpere, Decimal,    VoltAmpere>,
+                                        IDivisionOperators   <VoltAmpere, Decimal,    VoltAmpere>
     {
 
         #region Properties
 
         /// <summary>
-        /// The value of the Volt-Ampere.
+        /// The zero value of the VoltAmpere.
         /// </summary>
-        public Decimal  Value           { get; }
+        public static readonly VoltAmpere Zero = new (0m);
 
         /// <summary>
-        /// The value of the Volt-Ampere as Int32.
+        /// The value of the VoltAmpere.
         /// </summary>
-        public Int32    IntegerValue
-            => (Int32) Math.Round(Value);
+        public Decimal  Value    { get; }
+
+        /// <summary>
+        /// The rounded integer value of the VoltAmpere.
+        /// </summary>
+        public Int32    RoundedIntegerValue
+
+            => Decimal.ToInt32(
+                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+               );
 
 
         /// <summary>
@@ -370,30 +383,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(String Text, out VoltAmpere VoltAmpere)
         {
 
-            try
+            VoltAmpere = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            Text = Text.Trim();
+
+            var factor = 1m;
+
+            if      (Text.EndsWith("kVA", StringComparison.OrdinalIgnoreCase))
+            {
+                factor  = 1000m;
+                Text    = Text[..^3].TrimEnd();
+            }
+
+            else if (Text.EndsWith("VA",  StringComparison.OrdinalIgnoreCase))
+            {
+                Text    = Text[..^2].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Text,
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
 
-                Text = Text.Trim();
+                VoltAmpere = new VoltAmpere(value * factor);
 
-                var factor = 1;
-
-                if (Text.EndsWith("kV") || Text.EndsWith("KV"))
-                    factor = 1000;
-
-                if (Decimal.TryParse(Text, out var value))
-                {
-
-                    VoltAmpere = new VoltAmpere(value / factor);
-
-                    return true;
-
-                }
+                return true;
 
             }
-            catch
-            { }
 
-            VoltAmpere = default;
             return false;
 
         }
@@ -483,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpere = new VoltAmpere(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -511,7 +532,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpere = new VoltAmpere(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -542,7 +563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpere = new VoltAmpere(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                VoltAmpere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -570,7 +591,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Voltampere = new VoltAmpere(Number * (Decimal) Math.Pow(10, Exponent ?? 0));
+                Voltampere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
 
                 return true;
 
@@ -584,22 +605,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        #region Clone()
-
-        /// <summary>
-        /// Clone this Voltampere.
-        /// </summary>
-        public VoltAmpere Clone()
-
-            => new (Value);
-
-        #endregion
-
-
-        public static VoltAmpere Zero
-            => new (0);
 
 
         #region Operator overloading
@@ -702,7 +707,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Voltampere1">A Volt-Ampere (VA).</param>
         /// <param name="Voltampere2">Another Volt-Ampere (VA).</param>
         public static VoltAmpere operator + (VoltAmpere Voltampere1,
-                                       VoltAmpere Voltampere2)
+                                             VoltAmpere Voltampere2)
 
             => new (Voltampere1.Value + Voltampere2.Value);
 
@@ -716,9 +721,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Voltampere1">A Volt-Ampere (VA).</param>
         /// <param name="Voltampere2">Another Volt-Ampere (VA).</param>
         public static VoltAmpere operator - (VoltAmpere Voltampere1,
-                                       VoltAmpere Voltampere2)
+                                             VoltAmpere Voltampere2)
 
             => new (Voltampere1.Value - Voltampere2.Value);
+
+        #endregion
+
+
+        #region Operator *  (VoltAmpere,  Scalar)
+
+        /// <summary>
+        /// Multiplies a VoltAmpere with a scalar.
+        /// </summary>
+        /// <param name="VoltAmpere">A VoltAmpere value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static VoltAmpere operator * (VoltAmpere  VoltAmpere,
+                                             Decimal     Scalar)
+
+            => new (VoltAmpere.Value * Scalar);
+
+        #endregion
+
+        #region Operator /  (VoltAmpere,  Scalar)
+
+        /// <summary>
+        /// Divides a VoltAmpere with a scalar.
+        /// </summary>
+        /// <param name="VoltAmpere">A VoltAmpere value.</param>
+        /// <param name="Scalar">A scalar value.</param>
+        public static VoltAmpere operator / (VoltAmpere  VoltAmpere,
+                                             Decimal     Scalar)
+
+            => new (VoltAmpere.Value / Scalar);
 
         #endregion
 
@@ -802,7 +836,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} VA";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} VA";
 
         #endregion
 

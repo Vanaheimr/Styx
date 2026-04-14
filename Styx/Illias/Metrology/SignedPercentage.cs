@@ -15,6 +15,13 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Numerics;
+using System.Globalization;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -23,7 +30,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public readonly struct SignedPercentage : IEquatable <SignedPercentage>,
                                               IComparable<SignedPercentage>,
-                                              IComparable
+                                              IComparable,
+                                              IAdditionOperators   <SignedPercentage, SignedPercentage, SignedPercentage>,
+                                              ISubtractionOperators<SignedPercentage, SignedPercentage, SignedPercentage>
     {
 
         #region Properties
@@ -262,18 +271,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Clone()
-
-        /// <summary>
-        /// Clone this SignedPercentage.
-        /// </summary>
-        public SignedPercentage Clone()
-
-            => new (Value);
-
-        #endregion
-
-
         #region Operator overloading
 
         #region Operator == (SignedPercentage1, SignedPercentage2)
@@ -374,7 +371,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SignedPercentage1">A signedPercentage.</param>
         /// <param name="SignedPercentage2">Another signedPercentage.</param>
         public static SignedPercentage operator + (SignedPercentage SignedPercentage1,
-                                             SignedPercentage SignedPercentage2)
+                                                   SignedPercentage SignedPercentage2)
 
             => Parse(Math.Min(SignedPercentage1.Value + SignedPercentage2.Value, 100));
 
@@ -388,7 +385,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SignedPercentage1">A signedPercentage.</param>
         /// <param name="SignedPercentage2">Another signedPercentage.</param>
         public static SignedPercentage operator - (SignedPercentage SignedPercentage1,
-                                             SignedPercentage SignedPercentage2)
+                                                   SignedPercentage SignedPercentage2)
 
             => Parse(Math.Max(SignedPercentage1.Value - SignedPercentage2.Value, 0));
 
@@ -474,7 +471,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value} %";
+            => $"{Value.ToString(CultureInfo.InvariantCulture)} %";
 
         #endregion
 
