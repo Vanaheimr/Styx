@@ -21,35 +21,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// Extension methods for calculating powers of 10.
     /// </summary>
-    public static class Pow10
+    public static class MathHelpers
     {
 
         /// <summary>
         /// Returns 10 raised to the specified exponent.
         /// </summary>
-        /// <param name="exponent">The exponent to which 10 is raised. Must be between -28 and 28.</param>
-        public static Decimal Calc(Int32 exponent)
+        /// <param name="Exponent">The exponent to which 10 is raised. Must be between -28 and 28.</param>
+        public static Decimal Pow10(Int32 Exponent)
         {
 
-            if (exponent < -28 || exponent > 28)
+            if (Exponent < -28 || Exponent > 28)
                 throw new ArgumentOutOfRangeException(
-                          nameof(exponent),
-                          exponent,
+                          nameof(Exponent),
+                          Exponent,
                           "The exponent must be between -28 and 28!"
                       );
 
-            if (exponent == 0)
+            if (Exponent == 0)
                 return 1m;
 
             Decimal result = 1m;
-            var absExponent = Math.Abs(exponent);
+            var absExponent = Math.Abs(Exponent);
 
             for (var i = 0; i < absExponent; i++)
-                result = (exponent > 0)
+                result = (Exponent > 0)
                              ? result * 10m
                              : result / 10m;
 
             return result;
+
+        }
+
+
+        public static Boolean TryAddExponent(Int32?     BaseExponent,
+                                             Int32      UnitExponent,
+                                             out Int32  Exponent)
+        {
+
+            Exponent = default;
+
+            try
+            {
+                Exponent = checked((BaseExponent ?? 0) + UnitExponent);
+                return true;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
 
         }
 

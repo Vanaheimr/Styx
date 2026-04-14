@@ -662,7 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(Number * Pow10.Calc(Exponent ?? 0));
+                WattHour = new WattHour(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -690,7 +690,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(Number * Pow10.Calc(Exponent ?? 0));
+                WattHour = new WattHour(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -721,7 +721,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                WattHour = new WattHour(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -749,7 +749,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                WattHour = new WattHour(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -780,7 +780,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000000 * Number * Pow10.Calc(Exponent ?? 0));
+                WattHour = new WattHour(1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -808,7 +808,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                WattHour = new WattHour(1000000 * Number * Pow10.Calc(Exponent ?? 0));
+                WattHour = new WattHour(1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 

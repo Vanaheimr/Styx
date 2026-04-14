@@ -577,7 +577,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Int32?     Exponent = null)
         {
 
-            SquareMeter = new SquareMeter(Number * Pow10.Calc(Exponent ?? 0));
+            SquareMeter = new SquareMeter(Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -631,7 +631,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                SquareMeter = new SquareMeter(Number * Pow10.Calc(Exponent ?? 0));
+                SquareMeter = new SquareMeter(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -662,7 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            SquareMeter = new SquareMeter(1000000 * Number * Pow10.Calc(Exponent ?? 0));
+            SquareMeter = new SquareMeter(1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -716,7 +716,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                SquareMeter = new SquareMeter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                SquareMeter = new SquareMeter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;

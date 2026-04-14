@@ -881,7 +881,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -909,7 +909,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -940,7 +940,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -968,7 +968,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -999,7 +999,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -1027,7 +1027,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -1058,7 +1058,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -1086,7 +1086,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                BitsPerSecond = new BitsPerSecond(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                BitsPerSecond = new BitsPerSecond(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 

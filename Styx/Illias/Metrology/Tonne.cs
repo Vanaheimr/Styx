@@ -503,7 +503,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(Number * Pow10.Calc(Exponent ?? 0));
+                Tonne = new Tonne(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -534,7 +534,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(Number * Pow10.Calc(Exponent ?? 0));
+                Tonne = new Tonne(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -568,7 +568,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Tonne = new Tonne(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -599,7 +599,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Tonne = new Tonne(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Tonne = new Tonne(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;

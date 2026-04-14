@@ -954,7 +954,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+            Meter = new Meter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1008,7 +1008,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Meter = new Meter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1039,7 +1039,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+            Meter = new Meter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1093,7 +1093,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Meter = new Meter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1124,7 +1124,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Int32?     Exponent = null)
         {
 
-            Meter = new Meter(Number * Pow10.Calc(Exponent ?? 0));
+            Meter = new Meter(Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1178,7 +1178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(Number * Pow10.Calc(Exponent ?? 0));
+                Meter = new Meter(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -1209,7 +1209,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+            Meter = new Meter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -1263,7 +1263,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Meter = new Meter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Meter = new Meter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;

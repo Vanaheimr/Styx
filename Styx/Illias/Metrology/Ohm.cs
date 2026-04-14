@@ -681,7 +681,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
+                Ohm = new Ohm(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -709,7 +709,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
+                Ohm = new Ohm(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -740,7 +740,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
+                Ohm = new Ohm(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -768,7 +768,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
+                Ohm = new Ohm(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -799,7 +799,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
+                Ohm = new Ohm(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -827,7 +827,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Ohm = new Ohm(Number * Pow10.Calc(Exponent ?? 0));
+                Ohm = new Ohm(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 

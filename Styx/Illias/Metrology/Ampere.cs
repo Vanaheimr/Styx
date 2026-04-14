@@ -60,18 +60,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                     IComparable  <Ampere>,
                                     IComparable,
                                     IFormattable,
+                                    ISpanFormattable,
                                     IAdditionOperators   <Ampere,  Ampere,  Ampere>,
                                     ISubtractionOperators<Ampere,  Ampere,  Ampere>,
                                     IMultiplyOperators   <Ampere,  Decimal, Ampere>,
-                                    IDivisionOperators   <Ampere,  Decimal, Ampere>
+                                    IDivisionOperators   <Ampere,  Decimal, Ampere>,
+                                    IComparisonOperators <Ampere,  Ampere,  Boolean>,
+                                    IEqualityOperators   <Ampere,  Ampere,  Boolean>,
+                                    IAdditiveIdentity    <Ampere,  Ampere>
     {
 
         #region Properties
-
-        /// <summary>
-        /// The zero value of the Ampere.
-        /// </summary>
-        public static readonly Ampere Zero = new (0m);
 
         /// <summary>
         /// The value of the Ampere.
@@ -95,6 +94,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Decimal  kA
             => Value / 1000m;
 #pragma warning restore IDE1006 // Naming Styles
+
+
+        /// <summary>
+        /// The zero value of the Ampere.
+        /// </summary>
+        public static readonly Ampere Zero = new (0m);
+
+        /// <summary>
+        /// The additive identity of Ampere.
+        /// </summary>
+        public static Ampere AdditiveIdentity
+            => Zero;
 
         #endregion
 
@@ -190,14 +201,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Parse the given string as kilo Ampere.
         /// </summary>
-        /// <param name="Text">A text representation of a kA.</param>
+        /// <param name="Text">A text representation of a kilo Ampere.</param>
         public static Ampere ParseKA(String Text)
         {
 
             if (TryParseKA(Text, out var ampere))
                 return ampere;
 
-            throw new FormatException($"Invalid text representation of a kA: '{Text}'!");
+            throw new FormatException($"Invalid text representation of a kilo Ampere: '{Text}'!");
 
         }
 
@@ -207,50 +218,50 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromA      (Number, Exponent = null)
 
         /// <summary>
-        /// Convert the given number into an Ampere.
+        /// Convert the given number into Amperes.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere FromA(Decimal  Number,
                                    Int32?   Exponent = null)
 
-            => new (Number * Pow10.Calc(Exponent ?? 0));
+            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
-        /// Convert the given number into an Ampere.
+        /// Convert the given number into Amperes.
         /// </summary>
         /// <param name="Number">A numeric representation of an Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere FromA(Byte    Number,
                                    Int32?  Exponent = null)
 
-            => new (Number * Pow10.Calc(Exponent ?? 0));
+            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
         #region (static) FromKA     (Number, Exponent = null)
 
         /// <summary>
-        /// Convert the given number into a kilo Ampere.
+        /// Convert the given number into kilo Amperes.
         /// </summary>
         /// <param name="Number">A numeric representation of a kA.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere FromKA(Decimal  Number,
                                     Int32?   Exponent = null)
 
-            => new (1000 * Number * Pow10.Calc(Exponent ?? 0));
+            => new (1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
-        /// Convert the given number into a kilo Ampere.
+        /// Convert the given number into kilo Amperes.
         /// </summary>
         /// <param name="Number">A numeric representation of a kA.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere FromKA(Byte    Number,
                                     Int32?  Exponent = null)
 
-            => new (1000 * Number * Pow10.Calc(Exponent ?? 0));
+            => new (1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -318,7 +329,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given text as kilo Ampere.
         /// </summary>
-        /// <param name="Text">A text representation of a kA.</param>
+        /// <param name="Text">A text representation of a kilo Ampere.</param>
         public static Ampere? TryParseKA(String? Text)
         {
 
@@ -374,7 +385,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to convert the given number into a kilo Ampere.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Number">A numeric representation of a kilo Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere? TryFromKA(Decimal  Number,
                                         Int32?   Exponent = null)
@@ -391,7 +402,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to convert the given number into a kilo Ampere.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kA.</param>
+        /// <param name="Number">A numeric representation of a kilo Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere? TryFromKA(Byte    Number,
                                         Int32?  Exponent = null)
@@ -464,17 +475,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Span.IsEmpty)
                 return false;
 
-            var factor = 1m;
+            var exponent  = 0;
 
             if      (Span.EndsWith("kA".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
-                factor  = 1000m;
-                Span    = Span[..^2].TrimEnd();
+                exponent  = 3;
+                Span      = Span[..^2].TrimEnd();
             }
 
             else if (Span.EndsWith("A".AsSpan(),  StringComparison.OrdinalIgnoreCase))
             {
-                Span    = Span[..^1].TrimEnd();
+                Span      = Span[..^1].TrimEnd();
             }
 
             if (Decimal.TryParse(Span,
@@ -482,8 +493,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  NumberFormatInfo.GetInstance(FormatProvider),
                                  out var value))
             {
-                Ampere = new Ampere(value * factor);
-                return true;
+                return TryCreate(value, exponent, out Ampere);
             }
 
             return false;
@@ -491,7 +501,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
         #region (static) TryParseA  (Text,   out Ampere)
 
@@ -513,8 +522,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-                Ampere = new Ampere(value);
-                return true;
+                return TryCreate(value, 0, out Ampere);
             }
 
             return false;
@@ -528,7 +536,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to parse the given string as kilo Ampere using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of an Ampere.</param>
+        /// <param name="Text">A text representation of an kilo Ampere.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         public static Boolean TryParseKA(String? Text, out Ampere Ampere)
         {
@@ -543,8 +551,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-                Ampere = new Ampere(1000 * value);
-                return true;
+                return TryCreate(value, 3, out Ampere);
             }
 
             return false;
@@ -553,6 +560,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region (private static) TryCreate(Number, Exponent, out Ampere)
+
+        private static Boolean TryCreate(Decimal     Number,
+                                         Int32       Exponent,
+                                         out Ampere  Ampere)
+        {
+
+            Ampere = default;
+
+            if (Exponent < -28 || Exponent > 28)
+                return false;
+
+            if (Number == 0m)
+            {
+                Ampere = Zero;
+                return true;
+            }
+
+            try
+            {
+                Ampere = new Ampere(Number * MathHelpers.Pow10(Exponent));
+                return true;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
 
         #region (static) TryFromA   (Number, out Ampere, Exponent = null)
 
@@ -565,25 +608,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryFromA(Byte        Number,
                                        out Ampere  Ampere,
                                        Int32?      Exponent = null)
-        {
 
-            try
-            {
-                Ampere = new Ampere(Number * Pow10.Calc(Exponent ?? 0));
-                return true;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                Ampere = default;
-                return false;
-            }
-            catch (OverflowException)
-            {
-                Ampere = default;
-                return false;
-            }
-
-        }
+            => TryCreate(Number, Exponent ?? 0, out Ampere);
 
 
         /// <summary>
@@ -595,24 +621,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryFromA(Decimal     Number,
                                        out Ampere  Ampere,
                                        Int32?      Exponent = null)
-        {
 
-            try
-            {
-                Ampere = new Ampere(Number * Pow10.Calc(Exponent ?? 0));
-                return true;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                Ampere = default;
-                return false;
-            }
-            catch (OverflowException)
-            {
-                Ampere = default;
-                return false;
-            }
-        }
+            => TryCreate(Number, Exponent ?? 0, out Ampere);
 
         #endregion
 
@@ -621,29 +631,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Try to convert the given number into a kilo Ampere.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kA.</param>
-        /// <param name="Ampere">The parsed kA.</param>
+        /// <param name="Number">A numeric representation of a kilo Ampere.</param>
+        /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKA(Byte        Number,
                                         out Ampere  Ampere,
                                         Int32?      Exponent = null)
         {
 
-            try
-            {
-                Ampere = new Ampere(1000 * Number * Pow10.Calc(Exponent ?? 0));
-                return true;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                Ampere = default;
-                return false;
-            }
-            catch (OverflowException)
-            {
-                Ampere = default;
-                return false;
-            }
+            Ampere = default;
+
+            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
+                   TryCreate(Number, exponent, out Ampere);
 
         }
 
@@ -659,21 +658,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Int32?      Exponent = null)
         {
 
-            try
-            {
-                Ampere = new Ampere(1000 * Number * Pow10.Calc(Exponent ?? 0));
-                return true;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                Ampere = default;
-                return false;
-            }
-            catch (OverflowException)
-            {
-                Ampere = default;
-                return false;
-            }
+            Ampere = default;
+
+            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
+                   TryCreate(Number, exponent, out Ampere);
 
         }
 
@@ -917,6 +905,91 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region TryFormat(Destination, out CharsWritten, Format, FormatProvider)
+
+        /// <summary>
+        /// Try to format this Ampere into the given character span using the given format and culture-specific format provider.
+        /// </summary>
+        /// <param name="Destination">The destination span to write the formatted value.</param>
+        /// <param name="CharsWritten">The number of characters written to the destination span.</param>
+        /// <param name="Format">The format to use.</param>
+        /// <param name="FormatProvider">The format provider to use.</param>
+        public Boolean TryFormat(Span<Char>          Destination,
+                                 out Int32           CharsWritten,
+                                 ReadOnlySpan<Char>  Format,
+                                 IFormatProvider?    FormatProvider)
+        {
+
+            if (Format.IsEmpty ||
+                Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("A".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return TryFormatWithSuffix(
+                           Value,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " A".AsSpan()
+                       );
+            }
+
+            if (Format.Equals("kA".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           kA,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " kA".AsSpan()
+                       );
+
+            return TryFormatWithSuffix(
+                       Value,
+                       Destination,
+                       out CharsWritten,
+                       Format,
+                       FormatProvider,
+                       " A".AsSpan()
+                   );
+
+        }
+
+        #endregion
+
+        #region (private static) TryFormatWithSuffix(Value, Destination, out CharsWritten, NumericFormat, FormatProvider, Suffix)
+
+        private static Boolean TryFormatWithSuffix(Decimal             Value,
+                                                   Span<Char>          Destination,
+                                                   out Int32           CharsWritten,
+                                                   ReadOnlySpan<Char>  NumericFormat,
+                                                   IFormatProvider?    FormatProvider,
+                                                   ReadOnlySpan<Char>  Suffix)
+        {
+
+            CharsWritten = 0;
+
+            if (!Value.TryFormat(Destination,
+                                 out var valueCharsWritten,
+                                 NumericFormat,
+                                 FormatProvider))
+            {
+                return false;
+            }
+
+            if (Destination.Length < valueCharsWritten + Suffix.Length)
+                return false;
+
+            Suffix.CopyTo(Destination[valueCharsWritten..]);
+
+            CharsWritten = valueCharsWritten + Suffix.Length;
+            return true;
+
+        }
+
+        #endregion
+
         #region (override) ToString()
 
         /// <summary>
@@ -938,17 +1011,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                IFormatProvider?  FormatProvider)
         {
 
+            Span<Char> buffer = stackalloc Char[64];
+
+            if (TryFormat(buffer, out var charsWritten, Format.AsSpan(), FormatProvider))
+                return new String(buffer[..charsWritten]);
+
             if (String.IsNullOrEmpty(Format) ||
-                Format.Equals("G",  StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("A",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(Format, "A",  StringComparison.OrdinalIgnoreCase))
             {
                 return $"{Value.ToString("G", FormatProvider)} A";
             }
 
-            if (Format.Equals("kA", StringComparison.OrdinalIgnoreCase))
-            {
+            if (String.Equals(Format, "kA", StringComparison.OrdinalIgnoreCase))
                 return $"{kA.ToString("G", FormatProvider)} kA";
-            }
 
             return $"{Value.ToString(Format, FormatProvider)} A";
 

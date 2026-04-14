@@ -504,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpere = new VoltAmpere(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -532,7 +532,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpere = new VoltAmpere(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -563,7 +563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpere = new VoltAmpere(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -591,7 +591,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Voltampere = new VoltAmpere(Number * Pow10.Calc(Exponent ?? 0));
+                Voltampere = new VoltAmpere(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 

@@ -511,7 +511,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
+                Volt = new Volt(Number * MathHelpers.Pow10(Exponent ?? 0));
                 return true;
             }
             catch (ArgumentOutOfRangeException)
@@ -541,7 +541,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
+                Volt = new Volt(Number * MathHelpers.Pow10(Exponent ?? 0));
                 return true;
             }
             catch (ArgumentOutOfRangeException)
@@ -574,7 +574,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
+                Volt = new Volt(Number * MathHelpers.Pow10(Exponent ?? 0));
                 return true;
             }
             catch (ArgumentOutOfRangeException)
@@ -604,7 +604,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                Volt = new Volt(Number * Pow10.Calc(Exponent ?? 0));
+                Volt = new Volt(Number * MathHelpers.Pow10(Exponent ?? 0));
                 return true;
             }
             catch (ArgumentOutOfRangeException)

@@ -577,7 +577,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Int32?     Exponent = null)
         {
 
-            QubicMeter = new QubicMeter(Number * Pow10.Calc(Exponent ?? 0));
+            QubicMeter = new QubicMeter(Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -631,7 +631,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                QubicMeter = new QubicMeter(Number * Pow10.Calc(Exponent ?? 0));
+                QubicMeter = new QubicMeter(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -662,7 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          Int32?     Exponent = null)
         {
 
-            QubicMeter = new QubicMeter(1000000 * Number * Pow10.Calc(Exponent ?? 0));
+            QubicMeter = new QubicMeter(1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
             if (Number < 0)
                 return false;
@@ -716,7 +716,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                QubicMeter = new QubicMeter(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                QubicMeter = new QubicMeter(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;

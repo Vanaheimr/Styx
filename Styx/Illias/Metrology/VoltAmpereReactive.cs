@@ -504,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -532,7 +532,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -563,7 +563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 
@@ -591,7 +591,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                VoltAmpereReactive = new VoltAmpereReactive(Number * Pow10.Calc(Exponent ?? 0));
+                VoltAmpereReactive = new VoltAmpereReactive(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 return true;
 

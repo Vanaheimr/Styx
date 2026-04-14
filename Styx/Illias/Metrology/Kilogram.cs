@@ -504,7 +504,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(Number * Pow10.Calc(Exponent ?? 0));
+                Kilogram = new Kilogram(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -535,7 +535,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(Number * Pow10.Calc(Exponent ?? 0));
+                Kilogram = new Kilogram(Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -569,7 +569,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Kilogram = new Kilogram(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
@@ -600,7 +600,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                Kilogram = new Kilogram(1000 * Number * Pow10.Calc(Exponent ?? 0));
+                Kilogram = new Kilogram(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
 
                 if (Number < 0)
                     return false;
