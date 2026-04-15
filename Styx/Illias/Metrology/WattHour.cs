@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -25,6 +26,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
+    /// <summary>
+    /// Extension methods for WattHour (Wh) values.
+    /// </summary>
     public static class WattHourExtensions
     {
 
@@ -304,107 +308,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) FromWh      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into WattHours (Wh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of WattHours (Wh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromWh(Decimal  Number,
-                                      Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into WattHours (Wh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of WattHours (Wh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromWh(Byte    Number,
-                                      Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKWh     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into KiloWattHours (kWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of KiloWattHours (kWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromKWh(Decimal  Number,
-                                       Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into KiloWattHours (kWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of KiloWattHours (kWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromKWh(Byte    Number,
-                                       Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromMWh     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into MegaWattHours (MWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromMWh(Decimal  Number,
-                                       Int32?   Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into MegaWattHours (MWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromMWh(Byte    Number,
-                                       Int32?  Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromGWh     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into GigaWattHours (GWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromGWh(Decimal  Number,
-                                       Int32?   Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into GigaWattHours (GWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour FromGWh(Byte    Number,
-                                       Int32?  Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-
         #region (static) TryParse    (Text)
 
         /// <summary>
@@ -518,155 +421,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryFromWh   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into WattHours.
-        /// </summary>
-        /// <param name="Number">A numeric representation of WattHours.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromWh(Decimal  Number,
-                                          Int32?   Exponent = null)
-        {
-
-            if (TryFromWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into WattHours.
-        /// </summary>
-        /// <param name="Number">A numeric representation of WattHours.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromWh(Byte    Number,
-                                          Int32?  Exponent = null)
-        {
-
-            if (TryFromWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKWh  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into KiloWattHours (kWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of KiloWattHours (kWh)..</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromKWh(Decimal  Number,
-                                           Int32?   Exponent = null)
-        {
-
-            if (TryFromKWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into KiloWattHours (kWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of KiloWattHours (kWh)..</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromKWh(Byte    Number,
-                                           Int32?  Exponent = null)
-        {
-
-            if (TryFromKWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromMWh  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into MegaWattHours (MWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromMWh(Decimal  Number,
-                                           Int32?   Exponent = null)
-        {
-
-            if (TryFromMWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into MegaWattHours (MWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromMWh(Byte    Number,
-                                           Int32?  Exponent = null)
-        {
-
-            if (TryFromMWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromGWh  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into GigaWattHours (GWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromGWh(Decimal  Number,
-                                           Int32?   Exponent = null)
-        {
-
-            if (TryFromGWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into GigaWattHours (GWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static WattHour? TryFromGWh(Byte    Number,
-                                           Int32?  Exponent = null)
-        {
-
-            if (TryFromGWh(Number, out var wattHour, Exponent))
-                return wattHour;
-
-            return null;
-
-        }
-
-        #endregion
-
-
         #region (static) TryParse    (Text,                 out WattHour)
 
         /// <summary>
@@ -766,7 +520,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseWh  (Text,                 out WattHour)
 
         /// <summary>
-        /// Parse the given string as WattHours (Wh).
+        /// Try to parse the given string as WattHours (Wh).
         /// </summary>
         /// <param name="Text">A text representation of WattHours (Wh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
@@ -796,7 +550,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKWh (Text,                 out WattHour)
 
         /// <summary>
-        /// Parse the given string as KiloWattHours (kWh).
+        /// Try to parse the given string as KiloWattHours (kWh).
         /// </summary>
         /// <param name="Text">A text representation of KiloWattHours (kWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
@@ -826,9 +580,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseMWh (Text,                 out WattHour)
 
         /// <summary>
-        /// Parse the given string as GigaWattHours (MWh).
+        /// Try to parse the given string as MegaWattHours (MWh).
         /// </summary>
-        /// <param name="Text">A text representation of GigaWattHours (MWh).</param>
+        /// <param name="Text">A text representation of MegaWattHours (MWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
         public static Boolean TryParseMWh([NotNullWhen(true)] String?   Text,
                                           out                 WattHour  WattHour)
@@ -856,7 +610,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseGWh (Text,                 out WattHour)
 
         /// <summary>
-        /// Parse the given string as GigaWattHours (GWh).
+        /// Try to parse the given string as GigaWattHours (GWh).
         /// </summary>
         /// <param name="Text">A text representation of GigaWattHours (GWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
@@ -884,7 +638,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out WattHour)
+        #region (private static) Create    (Number, Exponent)
+
+        private static WattHour Create(Decimal  Number,
+                                       Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var wattHour))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return wattHour;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out WattHour)
 
         private static Boolean TryCreate(Decimal       Number,
                                          Int32         Exponent,
@@ -920,6 +689,176 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) FromWh      (Number,               Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into WattHours (Wh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of WattHours (Wh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour FromWh<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKWh     (Number,               Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into KiloWattHours (kWh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of KiloWattHours (kWh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour FromKWh<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) FromMWh     (Number,               Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into MegaWattHours (MWh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour FromMWh<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 6)
+                   );
+
+        #endregion
+
+        #region (static) FromGWh     (Number,               Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into GigaWattHours (GWh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour FromGWh<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 9)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromWh   (Number,               Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into WattHours (Wh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of WattHours (Wh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour? TryFromWh<TNumber>(TNumber  Number,
+                                                   Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromWh(Number, out var wattHour, Exponent))
+                return wattHour;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKWh  (Number,               Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into KiloWattHours (kWh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of KiloWattHours (kWh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour? TryFromKWh<TNumber>(TNumber  Number,
+                                                    Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKWh(Number, out var wattHour, Exponent))
+                return wattHour;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromMWh  (Number,               Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MegaWattHours (MWh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour? TryFromMWh<TNumber>(TNumber  Number,
+                                                    Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromMWh(Number, out var wattHour, Exponent))
+                return wattHour;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromGWh  (Number,               Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into GigaWattHours (GWh).
+        /// </summary>
+        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static WattHour? TryFromGWh<TNumber>(TNumber  Number,
+                                                    Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromGWh(Number, out var wattHour, Exponent))
+                return wattHour;
+
+            return null;
+
+        }
+
+        #endregion
+
+
         #region (static) TryFromWh   (Number, out WattHour, Exponent = null)
 
         /// <summary>
@@ -928,24 +867,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of WattHours (Wh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromWh(Byte          Number,
-                                        out WattHour  WattHour,
-                                        Int32?        Exponent = null)
+        public static Boolean TryFromWh<TNumber>(TNumber      Number,
+                                                out WattHour  WattHour,
+                                                Int32?        Exponent   = null)
 
-            => TryCreate(Number, Exponent ?? 0, out WattHour);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// Try to convert the given number into WattHours (Wh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of WattHours (Wh).</param>
-        /// <param name="WattHour">The parsed WattHour.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromWh(Decimal       Number,
-                                        out WattHour  WattHour,
-                                        Int32?        Exponent = null)
+            WattHour = default;
 
-            => TryCreate(Number, Exponent ?? 0, out WattHour);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out WattHour);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+
+        }
 
         #endregion
 
@@ -957,34 +907,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of KiloWattHours (kWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKWh(Byte          Number,
-                                         out WattHour  WattHour,
-                                         Int32?        Exponent = null)
+        public static Boolean TryFromKWh<TNumber>(TNumber      Number,
+                                                 out WattHour  WattHour,
+                                                 Int32?        Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             WattHour = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out WattHour);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into KiloWattHours (kWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of KiloWattHours (kWh).</param>
-        /// <param name="WattHour">The parsed WattHour.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKWh(Decimal       Number,
-                                         out WattHour  WattHour,
-                                         Int32?        Exponent = null)
-        {
-
-            WattHour = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out WattHour);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out WattHour);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -998,34 +947,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMWh(Byte          Number,
-                                         out WattHour  WattHour,
-                                         Int32?        Exponent = null)
+        public static Boolean TryFromMWh<TNumber>(TNumber      Number,
+                                                 out WattHour  WattHour,
+                                                 Int32?        Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             WattHour = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out WattHour);
+            if (!MathHelpers.TryAddExponent(Exponent, 6, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into MegaWattHours (MWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWattHours (MWh).</param>
-        /// <param name="WattHour">The parsed WattHour.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMWh(Decimal       Number,
-                                         out WattHour  WattHour,
-                                         Int32?        Exponent = null)
-        {
-
-            WattHour = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out WattHour);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out WattHour);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1039,34 +987,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGWh(Byte          Number,
-                                         out WattHour  WattHour,
-                                         Int32?        Exponent = null)
+        public static Boolean TryFromGWh<TNumber>(TNumber      Number,
+                                                 out WattHour  WattHour,
+                                                 Int32?        Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             WattHour = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out WattHour);
+            if (!MathHelpers.TryAddExponent(Exponent, 9, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into GigaWattHours (GWh).
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWattHours (GWh).</param>
-        /// <param name="WattHour">The parsed WattHour.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGWh(Decimal       Number,
-                                         out WattHour  WattHour,
-                                         Int32?        Exponent = null)
-        {
-
-            WattHour = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out WattHour);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out WattHour);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

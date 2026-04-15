@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Hertz.
+    /// Extension methods for Hertz (Hz) values.
     /// </summary>
     public static class HertzExtensions
     {
@@ -236,16 +237,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseHz     (Text)
 
         /// <summary>
-        /// Parse the given string as hertz.
+        /// Parse the given string as hertz (Hz).
         /// </summary>
-        /// <param name="Text">A text representation of hertz.</param>
+        /// <param name="Text">A text representation of hertz (Hz).</param>
         public static Hertz ParseHz(String Text)
         {
 
             if (TryParseHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of hertz: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of hertz (Hz): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -310,107 +311,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) FromHz      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into hertz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromHz(Decimal  Number,
-                                   Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into hertz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromHz(Byte    Number,
-                                   Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKHz     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromKHz(Decimal  Number,
-                                    Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into kHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromKHz(Byte    Number,
-                                    Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromMHz     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into MHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromMHz(Decimal  Number,
-                                    Int32?   Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into MHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromMHz(Byte    Number,
-                                    Int32?  Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromGHz     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into GHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromGHz(Decimal  Number,
-                                    Int32?   Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into GHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz FromGHz(Byte    Number,
-                                    Int32?  Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-
         #region (static) TryParse    (Text)
 
         /// <summary>
@@ -454,9 +354,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseHz  (Text)
 
         /// <summary>
-        /// Try to parse the given text as hertz.
+        /// Try to parse the given text as hertz (Hz).
         /// </summary>
-        /// <param name="Text">A text representation of hertz.</param>
+        /// <param name="Text">A text representation of hertz (Hz).</param>
         public static Hertz? TryParseHz(String? Text)
         {
 
@@ -515,155 +415,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseGHz(Text, out var hertz))
-                return hertz;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromHz   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into hertz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromHz(Decimal  Number,
-                                       Int32?   Exponent = null)
-        {
-
-            if (TryFromHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into hertz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromHz(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKHz  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromKHz(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryFromKHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromKHz(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromKHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromMHz  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into MHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromMHz(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryFromMHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into MHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromMHz(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromMHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromGHz  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into GHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromGHz(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryFromGHz(Number, out var hertz, Exponent))
-                return hertz;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into GHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GHz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Hertz? TryFromGHz(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromGHz(Number, out var hertz, Exponent))
                 return hertz;
 
             return null;
@@ -772,9 +523,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseHz  (Text,                 out Hertz)
 
         /// <summary>
-        /// Try to parse the given string as hertz using invariant culture.
+        /// Try to parse the given string as hertz (Hz).
         /// </summary>
-        /// <param name="Text">A text representation of hertz.</param>
+        /// <param name="Text">A text representation of hertz (Hz).</param>
         /// <param name="Hertz">The parsed Hertz.</param>
         public static Boolean TryParseHz([NotNullWhen(true)] String?  Text,
                                          out                 Hertz    Hertz)
@@ -802,7 +553,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKHz (Text,                 out Hertz)
 
         /// <summary>
-        /// Try to parse the given string as kHz using invariant culture.
+        /// Try to parse the given string as kHz.
         /// </summary>
         /// <param name="Text">A text representation of kHz.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
@@ -832,7 +583,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseMHz (Text,                 out Hertz)
 
         /// <summary>
-        /// Try to parse the given string as MHz using invariant culture.
+        /// Try to parse the given string as MHz.
         /// </summary>
         /// <param name="Text">A text representation of MHz.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
@@ -862,7 +613,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseGHz (Text,                 out Hertz)
 
         /// <summary>
-        /// Try to parse the given string as GHz using invariant culture.
+        /// Try to parse the given string as GHz.
         /// </summary>
         /// <param name="Text">A text representation of GHz.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
@@ -890,7 +641,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out Hertz)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Hertz Create(Decimal  Number,
+                                    Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var watt))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return watt;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Hertz)
 
         private static Boolean TryCreate(Decimal    Number,
                                          Int32      Exponent,
@@ -926,42 +692,211 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromHz   (Number, out Hertz, Exponent = null)
+        #region (static) FromHz      (Number,            Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into hertz.
+        /// Convert the given number into hertz (Hz).
         /// </summary>
-        /// <param name="Number">A numeric representation of hertz.</param>
-        /// <param name="Hertz">The parsed Hertz.</param>
+        /// <param name="Number">A numeric representation of hertz (Hz).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromHz(Byte       Number,
-                                        out Hertz  Hertz,
-                                        Int32?     Exponent = null)
+        public static Hertz FromHz<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKHz     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz FromKHz<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) FromMHz     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz FromMHz<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 6)
+                   );
+
+        #endregion
+
+        #region (static) FromGHz     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz FromGHz<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 9)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromHz   (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into hertz (Hz).
+        /// </summary>
+        /// <param name="Number">A numeric representation of hertz (Hz).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryFromHz<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
-            Hertz = default;
+            if (TryFromHz(Number, out var watt, Exponent))
+                return watt;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            return null;
 
         }
 
+        #endregion
+
+        #region (static) TryFromKHz  (Number,            Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into hertz.
+        /// Try to convert the given number into kHz.
         /// </summary>
-        /// <param name="Number">A numeric representation of hertz.</param>
+        /// <param name="Number">A numeric representation of kHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryFromKHz<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKHz(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromMHz  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of MHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryFromMHz<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromMHz(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromGHz  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into GHz.
+        /// </summary>
+        /// <param name="Number">A numeric representation of GHz.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Hertz? TryFromGHz<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromGHz(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryFromHz   (Number, out Hertz, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into hertz (Hz).
+        /// </summary>
+        /// <param name="Number">A numeric representation of hertz (Hz).</param>
         /// <param name="Hertz">The parsed Hertz.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromHz(Decimal    Number,
-                                        out Hertz  Hertz,
-                                        Int32?     Exponent = null)
+        public static Boolean TryFromHz<TNumber>(TNumber    Number,
+                                                 out Hertz  Hertz,
+                                                 Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Hertz = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Hertz);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -975,34 +910,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of kHz.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKHz(Byte       Number,
-                                         out Hertz  Hertz,
-                                         Int32?     Exponent = null)
+        public static Boolean TryFromKHz<TNumber>(TNumber    Number,
+                                                  out Hertz  Hertz,
+                                                  Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Hertz = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kHz.</param>
-        /// <param name="Hertz">The parsed Hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKHz(Decimal    Number,
-                                         out Hertz  Hertz,
-                                         Int32?     Exponent = null)
-        {
-
-            Hertz = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Hertz);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1016,34 +950,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of MHz.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMHz(Byte       Number,
-                                         out Hertz  Hertz,
-                                         Int32?     Exponent = null)
+        public static Boolean TryFromMHz<TNumber>(TNumber    Number,
+                                                  out Hertz  Hertz,
+                                                  Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Hertz = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            if (!MathHelpers.TryAddExponent(Exponent, 6, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into MHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MHz.</param>
-        /// <param name="Hertz">The parsed Hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMHz(Decimal    Number,
-                                         out Hertz  Hertz,
-                                         Int32?     Exponent = null)
-        {
-
-            Hertz = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Hertz);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1057,34 +990,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of GHz.</param>
         /// <param name="Hertz">The parsed Hertz.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGHz(Byte       Number,
-                                          out Hertz  Hertz,
-                                          Int32?     Exponent = null)
+        public static Boolean TryFromGHz<TNumber>(TNumber    Number,
+                                                  out Hertz  Hertz,
+                                                  Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Hertz = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            if (!MathHelpers.TryAddExponent(Exponent, 9, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into GHz.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GHz.</param>
-        /// <param name="Hertz">The parsed Hertz.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGHz(Decimal    Number,
-                                          out Hertz  Hertz,
-                                          Int32?     Exponent = null)
-        {
-
-            Hertz = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out Hertz);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Hertz);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

@@ -176,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter ParseSM(Decimal  Number,
-                                   Int32?   Exponent = null)
+                                   Int32?   Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -194,7 +194,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter ParseSM(Double  Number,
-                                   Int32?  Exponent = null)
+                                   Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -212,7 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter ParseSM(Byte    Number,
-                                   Int32?  Exponent = null)
+                                   Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -233,7 +233,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter ParseSKM(Decimal  Number,
-                                    Int32?   Exponent = null)
+                                    Int32?   Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -251,7 +251,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter ParseSKM(Double  Number,
-                                    Int32?  Exponent = null)
+                                    Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -269,7 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter ParseSKM(Byte    Number,
-                                    Int32?  Exponent = null)
+                                    Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -346,7 +346,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter? TryParseSM(Decimal  Number,
-                                       Int32?   Exponent = null)
+                                       Int32?   Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -363,7 +363,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter? TryParseSM(Double  Number,
-                                       Int32?  Exponent = null)
+                                       Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -380,7 +380,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter? TryParseSM(Byte    Number,
-                                       Int32?  Exponent = null)
+                                       Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -400,7 +400,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter? TryParseSKM(Decimal  Number,
-                                        Int32?   Exponent = null)
+                                        Int32?   Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -417,7 +417,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter? TryParseSKM(Double  Number,
-                                        Int32?  Exponent = null)
+                                        Int32?  Exponent   = null)
         {
 
             if (TryParseSKM(Number, out var squareMeter, Exponent))
@@ -434,7 +434,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m².</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static SquareMeter? TryParse(Byte    Number,
-                                      Int32?  Exponent = null)
+                                      Int32?  Exponent   = null)
         {
 
             if (TryParseSM(Number, out var squareMeter, Exponent))
@@ -574,7 +574,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseSM(Byte       Number,
                                         out SquareMeter  SquareMeter,
-                                        Int32?     Exponent = null)
+                                        Int32?     Exponent   = null)
         {
 
             SquareMeter = new SquareMeter(Number * MathHelpers.Pow10(Exponent ?? 0));
@@ -595,7 +595,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseSM(Double     Number,
                                         out SquareMeter  SquareMeter,
-                                        Int32?     Exponent = null)
+                                        Int32?     Exponent   = null)
         {
 
             try
@@ -625,7 +625,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SquareMeter">The parsed m².</param>
         public static Boolean TryParseSM(Decimal    Number,
                                         out SquareMeter  SquareMeter,
-                                        Int32?     Exponent = null)
+                                        Int32?     Exponent   = null)
         {
 
             try
@@ -659,7 +659,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseSKM(Byte       Number,
                                          out SquareMeter  SquareMeter,
-                                         Int32?     Exponent = null)
+                                         Int32?     Exponent   = null)
         {
 
             SquareMeter = new SquareMeter(1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
@@ -680,7 +680,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseSKM(Double     Number,
                                          out SquareMeter  SquareMeter,
-                                         Int32?     Exponent = null)
+                                         Int32?     Exponent   = null)
         {
 
             try
@@ -710,7 +710,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="SquareMeter">The parsed km.</param>
         public static Boolean TryParseSKM(Decimal    Number,
                                          out SquareMeter  SquareMeter,
-                                         Int32?     Exponent = null)
+                                         Int32?     Exponent   = null)
         {
 
             try

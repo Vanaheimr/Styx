@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Volt-Amperes.
+    /// Extension methods for VoltAmpere (VA) values.
     /// </summary>
     public static class VoltAmpereExtensions
     {
@@ -225,16 +225,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseVA     (Text)
 
         /// <summary>
-        /// Parse the given string as a Volt-Ampere (VA).
+        /// Parse the given string as Volt-Amperes (VA).
         /// </summary>
-        /// <param name="Text">A text representation of a Volt-Ampere (VA).</param>
+        /// <param name="Text">A text representation of Volt-Amperes (VA).</param>
         public static VoltAmpere ParseVA(String Text)
         {
 
             if (TryParseVA(Text, out var voltAmpere))
                 return voltAmpere;
 
-            throw new ArgumentException($"Invalid text representation of volt-amperes: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of Volt-Amperes (VA): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -244,16 +244,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKVA    (Text)
 
         /// <summary>
-        /// Parse the given string as kilo-Volt-Amperes.
+        /// Parse the given string as Kilo-Volt-Amperes (kVA).
         /// </summary>
-        /// <param name="Text">A text representation of kilo-Volt-Amperes.</param>
+        /// <param name="Text">A text representation of Kilo-Volt-Amperes (kVA).</param>
         public static VoltAmpere ParseKVA(String Text)
         {
 
             if (TryParseKVA(Text, out var voltAmpere))
                 return voltAmpere;
 
-            throw new ArgumentException($"Invalid text representation of kilo-volt-amperes: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of Kilo-Volt-Amperes (kVA): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -304,9 +304,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseVA  (Text)
 
         /// <summary>
-        /// Try to parse the given text as volt-amperes.
+        /// Try to parse the given text as Volt-Amperes (VA).
         /// </summary>
-        /// <param name="Text">A text representation of volt-amperes.</param>
+        /// <param name="Text">A text representation of Volt-Amperes (VA).</param>
         public static VoltAmpere? TryParseVA(String? Text)
         {
 
@@ -322,9 +322,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKVA (Text)
 
         /// <summary>
-        /// Try to parse the given text as kilo-volt-amperes.
+        /// Try to parse the given text as Kilo-Volt-Amperes (kVA).
         /// </summary>
-        /// <param name="Text">A text representation of kilo-volt-amperes.</param>
+        /// <param name="Text">A text representation of Kilo-Volt-Amperes (kVA).</param>
         public static VoltAmpere? TryParseKVA(String? Text)
         {
 
@@ -425,9 +425,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseVA  (Text,                 out VoltAmpere)
 
         /// <summary>
-        /// Try to parse the given string as volt-amperes using invariant culture.
+        /// Try to parse the given string as Volt-Amperes (VA).
         /// </summary>
-        /// <param name="Text">A text representation of volt-amperes.</param>
+        /// <param name="Text">A text representation of Volt-Amperes (VA).</param>
         /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
         public static Boolean TryParseVA([NotNullWhen(true)] String?     Text,
                                          out                 VoltAmpere  VoltAmpere)
@@ -455,9 +455,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKVA (Text,                 out VoltAmpere)
 
         /// <summary>
-        /// Try to parse the given string as kilo-volt-amperes using invariant culture.
+        /// Try to parse the given string as Kilo-Volt-Amperes (kVA).
         /// </summary>
-        /// <param name="Text">A text representation of kilo-volt-amperes.</param>
+        /// <param name="Text">A text representation of Kilo-Volt-Amperes (kVA).</param>
         /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
         public static Boolean TryParseKVA([NotNullWhen(true)] String?     Text,
                                           out                 VoltAmpere  VoltAmpere)
@@ -537,12 +537,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromVA      (Number,                 Exponent = null)
 
         /// <summary>
-        /// Convert the given number into voltAmpere.
+        /// Convert the given number into Volt-Amperes (VA).
         /// </summary>
-        /// <param name="Number">A numeric representation of voltAmpere.</param>
+        /// <param name="Number">A numeric representation of Volt-Amperes (VA).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static VoltAmpere FromVA<TNumber>(TNumber  Number,
-                                                Int32?   Exponent   = null)
+                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -556,9 +556,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromKVA     (Number,                 Exponent = null)
 
         /// <summary>
-        /// Convert the given number into kiloVoltAmpere.
+        /// Convert the given number into Kilo-Volt-Amperes (kVA).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloVoltAmpere.</param>
+        /// <param name="Number">A numeric representation of Kilo-Volt-Amperes (kVA).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static VoltAmpere FromKVA<TNumber>(TNumber  Number,
                                                   Int32?   Exponent   = null)
@@ -572,15 +572,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region (static) TryFromVA   (Number,                 Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into voltAmpere.
+        /// Try to convert the given number into Volt-Amperes (VA).
         /// </summary>
-        /// <param name="Number">A numeric representation of voltAmpere.</param>
+        /// <param name="Number">A numeric representation of Volt-Amperes (VA).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static VoltAmpere? TryFromVA<TNumber>(TNumber  Number,
-                                                     Int32?   Exponent = null)
+                                                     Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -598,12 +599,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKVA  (Number,                 Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kiloVoltAmpere.
+        /// Try to convert the given number into Kilo-Volt-Amperes (kVA).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloVoltAmpere.</param>
+        /// <param name="Number">A numeric representation of Kilo-Volt-Amperes (kVA).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static VoltAmpere? TryFromKVA<TNumber>(TNumber  Number,
-                                                      Int32?   Exponent = null)
+                                                      Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -618,12 +619,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region (static) TryFromVA   (Number, out VoltAmpere, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into voltAmpere.
+        /// Try to convert the given number into Volt-Amperes (VA).
         /// </summary>
-        /// <param name="Number">A numeric representation of voltAmpere.</param>
+        /// <param name="Number">A numeric representation of Volt-Amperes (VA).</param>
         /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromVA<TNumber>(TNumber         Number,
@@ -661,9 +663,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKVA  (Number, out VoltAmpere, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kiloVoltAmpere.
+        /// Try to convert the given number into Kilo-Volt-Amperes (kVA).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloVoltAmpere.</param>
+        /// <param name="Number">A numeric representation of Kilo-Volt-Amperes (kVA).</param>
         /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKVA<TNumber>(TNumber         Number,

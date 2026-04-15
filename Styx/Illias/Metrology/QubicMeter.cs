@@ -176,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter ParseQM(Decimal  Number,
-                                   Int32?   Exponent = null)
+                                   Int32?   Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -194,7 +194,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter ParseQM(Double  Number,
-                                   Int32?  Exponent = null)
+                                   Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -212,7 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter ParseQM(Byte    Number,
-                                   Int32?  Exponent = null)
+                                   Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -233,7 +233,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter ParseQKM(Decimal  Number,
-                                    Int32?   Exponent = null)
+                                    Int32?   Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -251,7 +251,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter ParseQKM(Double  Number,
-                                    Int32?  Exponent = null)
+                                    Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -269,7 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter ParseQKM(Byte    Number,
-                                    Int32?  Exponent = null)
+                                    Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -346,7 +346,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter? TryParseQM(Decimal  Number,
-                                       Int32?   Exponent = null)
+                                       Int32?   Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -363,7 +363,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter? TryParseQM(Double  Number,
-                                       Int32?  Exponent = null)
+                                       Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -380,7 +380,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter? TryParseQM(Byte    Number,
-                                       Int32?  Exponent = null)
+                                       Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -400,7 +400,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter? TryParseQKM(Decimal  Number,
-                                        Int32?   Exponent = null)
+                                        Int32?   Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -417,7 +417,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a km³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter? TryParseQKM(Double  Number,
-                                        Int32?  Exponent = null)
+                                        Int32?  Exponent   = null)
         {
 
             if (TryParseQKM(Number, out var qubicMeter, Exponent))
@@ -434,7 +434,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of a m³.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static QubicMeter? TryParse(Byte    Number,
-                                      Int32?  Exponent = null)
+                                      Int32?  Exponent   = null)
         {
 
             if (TryParseQM(Number, out var qubicMeter, Exponent))
@@ -574,7 +574,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseQM(Byte       Number,
                                         out QubicMeter  QubicMeter,
-                                        Int32?     Exponent = null)
+                                        Int32?     Exponent   = null)
         {
 
             QubicMeter = new QubicMeter(Number * MathHelpers.Pow10(Exponent ?? 0));
@@ -595,7 +595,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseQM(Double     Number,
                                         out QubicMeter  QubicMeter,
-                                        Int32?     Exponent = null)
+                                        Int32?     Exponent   = null)
         {
 
             try
@@ -625,7 +625,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="QubicMeter">The parsed m³.</param>
         public static Boolean TryParseQM(Decimal    Number,
                                         out QubicMeter  QubicMeter,
-                                        Int32?     Exponent = null)
+                                        Int32?     Exponent   = null)
         {
 
             try
@@ -659,7 +659,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseQKM(Byte       Number,
                                          out QubicMeter  QubicMeter,
-                                         Int32?     Exponent = null)
+                                         Int32?     Exponent   = null)
         {
 
             QubicMeter = new QubicMeter(1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
@@ -680,7 +680,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryParseQKM(Double     Number,
                                          out QubicMeter  QubicMeter,
-                                         Int32?     Exponent = null)
+                                         Int32?     Exponent   = null)
         {
 
             try
@@ -710,7 +710,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="QubicMeter">The parsed km.</param>
         public static Boolean TryParseQKM(Decimal    Number,
                                          out QubicMeter  QubicMeter,
-                                         Int32?     Exponent = null)
+                                         Int32?     Exponent   = null)
         {
 
             try

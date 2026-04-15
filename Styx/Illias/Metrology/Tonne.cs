@@ -19,6 +19,7 @@
 
 using System.Numerics;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -26,56 +27,103 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Tonne.
+    /// Extension methods for metric Tonne (t) values.
     /// </summary>
     public static class TonneExtensions
     {
 
+        #region Sum    (this TonneValues)
+
         /// <summary>
-        /// The sum of the given Tonne values.
+        /// The sum of the given enumeration of Tonne values.
         /// </summary>
-        /// <param name="Tonnes">An enumeration of Tonne values.</param>
-        public static Tonne Sum(this IEnumerable<Tonne> Tonnes)
+        /// <param name="TonneValues">An enumeration of Tonne values.</param>
+        public static Tonne Sum(this IEnumerable<Tonne> TonneValues)
         {
 
             var sum = Tonne.Zero;
 
-            foreach (var tonne in Tonnes)
-                sum = sum + tonne;
+            foreach (var tonne in TonneValues)
+                sum += tonne;
 
             return sum;
 
         }
 
+        #endregion
+
+        #region Avg    (this TonneValues)
+
+        /// <summary>
+        /// The average of the given enumeration of Tonne values.
+        /// </summary>
+        /// <param name="TonneValues">An enumeration of Tonne values.</param>
+        public static Tonne Avg(this IEnumerable<Tonne> TonneValues)
+        {
+
+            var sum    = Tonne.Zero;
+            var count  = 0;
+
+            foreach (var tonne in TonneValues)
+            {
+                sum += tonne;
+                count++;
+            }
+
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this TonneValues)
+
+        /// <summary>
+        /// The standard deviation of the given enumeration of Tonne values.
+        /// </summary>
+        /// <param name="TonneValues">An enumeration of Tonne values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Tonne> StdDev(this IEnumerable<Tonne>  TonneValues,
+                                           Boolean?                 IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Tonne>.From(
+                             TonneValues.Select(tonne => tonne.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Tonne>(
+                       Tonne.FromT(stdDev.Mean),
+                       Tonne.FromT(stdDev.StandardDeviation)
+                   );
+
+        }
+
+        #endregion
+
     }
 
 
     /// <summary>
-    /// A weight in Tonnes.
+    /// A metric Tonne value (t), the SI unit of mass, is defined as being equal to 1000 kilograms.
+    /// Do not mix up with the similar sounding "ton" which is a unit of mass used in the US and UK, but with different values:
+    ///   - ton (US)  ~907 kg
+    ///   - ton (UK) ~1016 kg
     /// </summary>
-    public readonly struct Tonne : IEquatable <Tonne>,
-                                   IComparable<Tonne>,
-                                   IComparable,
-                                   IAdditionOperators   <Tonne, Tonne,   Tonne>,
-                                   ISubtractionOperators<Tonne, Tonne,   Tonne>,
-                                   IMultiplyOperators   <Tonne, Decimal, Tonne>,
-                                   IDivisionOperators   <Tonne, Decimal, Tonne>
+    public readonly struct Tonne : IMetrology<Tonne>
     {
 
         #region Properties
 
         /// <summary>
-        /// The zero value of the Tonne.
-        /// </summary>
-        public static readonly Tonne Zero = new (0m);
-
-        /// <summary>
-        /// The value of the Tonne.
+        /// The value of the metric Tonne.
         /// </summary>
         public Decimal  Value    { get; }
 
         /// <summary>
-        /// The rounded integer value of the Tonne.
+        /// The rounded integer value of the metric Tonne.
         /// </summary>
         public Int32    RoundedIntegerValue
 
@@ -83,40 +131,93 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
                );
 
+
+#pragma warning disable IDE1006 // Naming Styles
+        /// <summary>
+        /// The value as kiloTonne.
+        /// </summary>
+        public Decimal  kT
+            => Value / 1000m;
+#pragma warning restore IDE1006 // Naming Styles
+
+
+        /// <summary>
+        /// The zero value of the metric Tonne.
+        /// </summary>
+        public static readonly Tonne Zero = new (0m);
+
+        /// <summary>
+        /// The additive identity of metric Tonne.
+        /// </summary>
+        public static Tonne AdditiveIdentity
+            => Zero;
+
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Tonne based on the given number.
+        /// Create a new metric Tonne (t) based on the given number.
         /// </summary>
-        /// <param name="Value">A numeric representation of a Tonne.</param>
+        /// <param name="Value">A numeric representation of tonne (t).</param>
         private Tonne(Decimal Value)
         {
-
-            this.Value = Value >= 0
-                             ? Value
-                             : 0;
-
+            this.Value = Value;
         }
 
         #endregion
 
 
-        #region (static) Parse       (Text)
+        #region (static) Parse      (Text)
 
         /// <summary>
-        /// Parse the given string as a Tonne.
+        /// Parse the given string as tonne using invariant culture.
+        /// Supports optional suffixes "t" and "kT".
         /// </summary>
-        /// <param name="Text">A text representation of a Tonne.</param>
+        /// <param name="Text">A text representation of tonne.</param>
         public static Tonne Parse(String Text)
+
+            => Parse(Text, CultureInfo.InvariantCulture);
+
+        #endregion
+
+        #region (static) Parse      (Text, FormatProvider)
+
+        /// <summary>
+        /// Parse the given string as tonne using the given format provider.
+        /// Supports optional suffixes "t" and "kT".
+        /// </summary>
+        /// <param name="Text">A text representation of tonne.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Tonne Parse(String            Text,
+                                  IFormatProvider?  FormatProvider)
         {
 
-            if (TryParse(Text, out var tonne))
+            if (TryParse(Text, FormatProvider, out var tonne))
                 return tonne;
 
-            throw new ArgumentException($"Invalid text representation of a Tonne: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of tonne: '{Text}'!");
+
+        }
+
+        #endregion
+
+        #region (static) Parse      (Span, FormatProvider)
+
+        /// <summary>
+        /// Parse the given text span as tonne using the given format provider.
+        /// Supports optional suffixes "t" and "kT".
+        /// </summary>
+        /// <param name="Span">A text representation of tonne.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Tonne Parse(ReadOnlySpan<Char>  Span,
+                                  IFormatProvider?    FormatProvider)
+        {
+
+            if (TryParse(Span, FormatProvider, out var tonne))
+                return tonne;
+
+            throw new FormatException($"Invalid text representation of tonne: '{Span}'!");
 
         }
 
@@ -125,17 +226,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseT     (Text)
 
         /// <summary>
-        /// Parse the given string as a Tonne.
+        /// Parse the given string as Tonne (t).
         /// </summary>
-        /// <param name="Text">A text representation of a Tonne.</param>
+        /// <param name="Text">A text representation of Tonne (t).</param>
         public static Tonne ParseT(String Text)
         {
 
             if (TryParseT(Text, out var tonne))
                 return tonne;
 
-            throw new ArgumentException($"Invalid text representation of a Tonne: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Tonne (t): '{Text}'!");
 
         }
 
@@ -144,112 +244,54 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKT    (Text)
 
         /// <summary>
-        /// Parse the given string as a kT.
+        /// Parse the given string as KiloTonne (kT).
         /// </summary>
-        /// <param name="Text">A text representation of a kT.</param>
+        /// <param name="Text">A text representation of KiloTonne (kT).</param>
         public static Tonne ParseKT(String Text)
         {
 
             if (TryParseKT(Text, out var tonne))
                 return tonne;
 
-            throw new ArgumentException($"Invalid text representation of a kT: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of KiloTonne (kT): '{Text}'!");
 
         }
 
         #endregion
 
 
-        #region (static) ParseT     (Number, Exponent = null)
+        #region (static) TryParse   (Text)
 
         /// <summary>
-        /// Parse the given number as a Tonne.
+        /// Try to parse the given text as tonne with an optional unit suffix ("t" or "kT")
+        /// using invariant culture.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Tonne.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne ParseT(Decimal  Number,
-                                    Int32?   Exponent = null)
+        /// <param name="Text">A text representation of tonne.</param>
+        public static Tonne? TryParse(String? Text)
         {
 
-            if (TryParseT(Number, out var tonne, Exponent))
+            if (TryParse(Text, CultureInfo.InvariantCulture, out var tonne))
                 return tonne;
 
-            throw new ArgumentException($"Invalid numeric representation of a Tonne: '{Number}'!",
-                                        nameof(Number));
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a Tonne.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Tonne.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne ParseT(Byte    Number,
-                                    Int32?  Exponent = null)
-        {
-
-            if (TryParseT(Number, out var tonne, Exponent))
-                return tonne;
-
-            throw new ArgumentException($"Invalid numeric representation of a Tonne: '{Number}'!",
-                                        nameof(Number));
+            return null;
 
         }
 
         #endregion
 
-        #region (static) ParseKT    (Number, Exponent = null)
+        #region (static) TryParse   (Text, FormatProvider)
 
         /// <summary>
-        /// Parse the given number as a kT.
+        /// Try to parse the given text as tonne with an optional unit suffix ("t" or "kT")
+        /// using the given format provider.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kT.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne ParseKT(Decimal  Number,
-                                     Int32?   Exponent = null)
+        /// <param name="Text">A text representation of tonne.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Tonne? TryParse(String?           Text,
+                                      IFormatProvider?  FormatProvider)
         {
 
-            if (TryParseKT(Number, out var tonne, Exponent))
-                return tonne;
-
-            throw new ArgumentException($"Invalid numeric representation of a kT: '{Number}'!",
-                                        nameof(Number));
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a kT.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a kT.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne ParseKT(Byte    Number,
-                                     Int32?  Exponent = null)
-        {
-
-            if (TryParseKT(Number, out var tonne, Exponent))
-                return tonne;
-
-            throw new ArgumentException($"Invalid numeric representation of a kT: '{Number}'!",
-                                        nameof(Number));
-
-        }
-
-        #endregion
-
-
-        #region (static) TryParse    (Text)
-
-        /// <summary>
-        /// Try to parse the given text as a Tonne.
-        /// </summary>
-        /// <param name="Text">A text representation of a Tonne.</param>
-        public static Tonne? TryParse(String Text)
-        {
-
-            if (TryParse(Text, out var tonne))
+            if (TryParse(Text, FormatProvider, out var tonne))
                 return tonne;
 
             return null;
@@ -261,10 +303,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseT  (Text)
 
         /// <summary>
-        /// Try to parse the given text as a Tonne.
+        /// Try to parse the given text as Tonne (t).
         /// </summary>
-        /// <param name="Text">A text representation of a Tonne.</param>
-        public static Tonne? TryParseT(String Text)
+        /// <param name="Text">A text representation of Tonne (t).</param>
+        public static Tonne? TryParseT(String? Text)
         {
 
             if (TryParseT(Text, out var tonne))
@@ -279,10 +321,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKT (Text)
 
         /// <summary>
-        /// Try to parse the given text as a kT.
+        /// Try to parse the given text as KiloTonne (kT).
         /// </summary>
-        /// <param name="Text">A text representation of a kT.</param>
-        public static Tonne? TryParseKT(String Text)
+        /// <param name="Text">A text representation of KiloTonne (kT).</param>
+        public static Tonne? TryParseKT(String? Text)
         {
 
             if (TryParseKT(Text, out var tonne))
@@ -295,89 +337,99 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseT  (Number, Exponent = null)
+        #region (static) TryParse   (Text,                 out Tonne)
 
         /// <summary>
-        /// Try to parse the given number as a Tonne.
+        /// Try to parse the given string as tonne using invariant culture.
+        /// Supports optional suffixes "t" and "kT".
         /// </summary>
-        /// <param name="Number">A numeric representation of a Tonne.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne? TryParseT(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryParseT(Number, out var tonne, Exponent))
-                return tonne;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as a Tonne.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Tonne.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne? TryParseT(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryParseT(Number, out var tonne, Exponent))
-                return tonne;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParseKT (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as a kT.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a kT.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne? TryParseKT(Decimal  Number,
-                                         Int32?   Exponent = null)
-        {
-
-            if (TryParseKT(Number, out var tonne, Exponent))
-                return tonne;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as a kT.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a kT.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Tonne? TryParseKT(Byte    Number,
-                                         Int32?  Exponent = null)
-        {
-
-            if (TryParseKT(Number, out var tonne, Exponent))
-                return tonne;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryParse   (Text,   out Tonne)
-
-        /// <summary>
-        /// Parse the given string as a Tonne.
-        /// </summary>
-        /// <param name="Text">A text representation of a Tonne.</param>
+        /// <param name="Text">A text representation of tonne.</param>
         /// <param name="Tonne">The parsed Tonne.</param>
-        public static Boolean TryParse(String Text, out Tonne Tonne)
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       out                 Tonne    Tonne)
+
+            => TryParse(Text.AsSpan(),
+                        CultureInfo.InvariantCulture,
+                        out Tonne);
+
+        #endregion
+
+        #region (static) TryParse   (Text, FormatProvider, out Tonne)
+
+        /// <summary>
+        /// Try to parse the given string as tonne using the given format provider.
+        /// Supports optional suffixes "t" and "kT".
+        /// </summary>
+        /// <param name="Text">A text representation of tonne.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        /// <param name="Tonne">The parsed Tonne.</param>
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       IFormatProvider?             FormatProvider,
+                                       out Tonne                    Tonne)
+
+            => TryParse(Text.AsSpan(),
+                        FormatProvider,
+                        out Tonne);
+
+        #endregion
+
+        #region (static) TryParse   (Span, FormatProvider, out Tonne)
+
+        /// <summary>
+        /// Try to parse the given text span as tonne using the given format provider.
+        /// Supports optional suffixes "t" and "kT".
+        /// </summary>
+        /// <param name="Span">A text representation of tonne.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        /// <param name="Tonne">The parsed Tonne.</param>
+        public static Boolean TryParse(ReadOnlySpan<Char>  Span,
+                                       IFormatProvider?    FormatProvider,
+                                       out Tonne           Tonne)
+        {
+
+            Tonne = default;
+
+            Span = Span.Trim();
+
+            if (Span.IsEmpty)
+                return false;
+
+            var exponent  = 0;
+
+            if      (Span.EndsWith("kT".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = 3;
+                Span      = Span[..^2].TrimEnd();
+            }
+
+            else if (Span.EndsWith("t".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            {
+                Span      = Span[..^1].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Span,
+                                 NumberStyles.Number,
+                                 NumberFormatInfo.GetInstance(FormatProvider),
+                                 out var value))
+            {
+                return TryCreate(value, exponent, out Tonne);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseT  (Text,                 out Tonne)
+
+        /// <summary>
+        /// Try to parse the given string as Tonne (t).
+        /// </summary>
+        /// <param name="Text">A text representation of Tonne (t).</param>
+        /// <param name="Tonne">The parsed Tonne.</param>
+        public static Boolean TryParseT([NotNullWhen(true)] String?  Text,
+                                        out                 Tonne    Tonne)
         {
 
             Tonne = default;
@@ -385,31 +437,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (String.IsNullOrWhiteSpace(Text))
                 return false;
 
-            Text = Text.Trim();
-
-            var factor = 1m;
-
-            if      (Text.EndsWith("kT", StringComparison.OrdinalIgnoreCase))
-            {
-                factor  = 1000m;
-                Text    = Text[..^2].TrimEnd();
-            }
-
-            else if (Text.EndsWith("T",  StringComparison.OrdinalIgnoreCase))
-            {
-                Text    = Text[..^1].TrimEnd();
-            }
-
-            if (Decimal.TryParse(Text,
+            if (Decimal.TryParse(Text.Trim(),
                                  NumberStyles.Number,
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-
-                Tonne = new Tonne(value * factor);
-
-                return true;
-
+                return TryCreate(value, 0, out Tonne);
             }
 
             return false;
@@ -418,133 +451,81 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseT  (Text,   out Tonne)
+        #region (static) TryParseKT (Text,                 out Tonne)
 
         /// <summary>
-        /// Parse the given string as a Tonne.
+        /// Try to parse the given string as KiloTonne (kT).
         /// </summary>
-        /// <param name="Text">A text representation of a Tonne.</param>
+        /// <param name="Text">A text representation of KiloTonne (kT).</param>
         /// <param name="Tonne">The parsed Tonne.</param>
-        public static Boolean TryParseT(String Text, out Tonne Tonne)
+        public static Boolean TryParseKT([NotNullWhen(true)] String?  Text,
+                                         out                 Tonne    Tonne)
         {
-
-            try
-            {
-
-                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Tonne = new Tonne(value);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
 
             Tonne = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
+            {
+                return TryCreate(value, 3, out Tonne);
+            }
+
             return false;
 
         }
 
         #endregion
 
-        #region (static) TryParseKT (Text,   out Tonne)
 
-        /// <summary>
-        /// Parse the given string as a kT.
-        /// </summary>
-        /// <param name="Text">A text representation of a kT.</param>
-        /// <param name="Tonne">The parsed kT.</param>
-        public static Boolean TryParseKT(String Text, out Tonne Tonne)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Tonne Create(Decimal  Number,
+                                    Int32    Exponent)
         {
 
-            try
-            {
+            if (!TryCreate(Number, Exponent, out var tonne))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
 
-                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
+            return tonne;
 
-                    Tonne = new Tonne(1000 * value);
+        }
 
-                    return true;
+        #endregion
 
-                }
+        #region (private static) TryCreate (Number, Exponent, out Tonne)
 
-            }
-            catch
-            { }
+        private static Boolean TryCreate(Decimal    Number,
+                                         Int32      Exponent,
+                                         out Tonne  Tonne)
+        {
 
             Tonne = default;
-            return false;
 
-        }
+            if (Exponent < -28 || Exponent > 28)
+                return false;
 
-        #endregion
-
-
-        #region (static) TryParseT  (Number, out Tonne, Exponent = null)
-
-        /// <summary>
-        /// Parse the given number as a Tonne.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Tonne.</param>
-        /// <param name="Tonne">The parsed Tonne.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseT(Byte       Number,
-                                         out Tonne  Tonne,
-                                         Int32?     Exponent = null)
-        {
+            if (Number == 0m)
+            {
+                Tonne = Zero;
+                return true;
+            }
 
             try
             {
-
-                Tonne = new Tonne(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
+                Tonne = new Tonne(Number * MathHelpers.Pow10(Exponent));
                 return true;
-
             }
-            catch
+            catch (OverflowException)
             {
-                Tonne = default;
                 return false;
             }
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a Tonne.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Tonne.</param>
-        /// <param name="Tonne">The parsed Tonne.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseT(Decimal    Number,
-                                         out Tonne  Tonne,
-                                         Int32?     Exponent = null)
-        {
-
-            try
+            catch (ArgumentOutOfRangeException)
             {
-
-                Tonne = new Tonne(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
-                return true;
-
-            }
-            catch
-            {
-                Tonne = default;
                 return false;
             }
 
@@ -552,68 +533,188 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKT (Number, out Tonne, Exponent = null)
+        #region (static) FromT      (Number,            Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a kT.
+        /// Convert the given number into Tonne (t).
         /// </summary>
-        /// <param name="Number">A numeric representation of a kT.</param>
-        /// <param name="Tonne">The parsed kT.</param>
+        /// <param name="Number">A numeric representation of Tonne (t).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKT(Byte       Number,
-                                          out Tonne  Tonne,
-                                          Int32?     Exponent = null)
+        public static Tonne FromT<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKT     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into KiloTonne (kT).
+        /// </summary>
+        /// <param name="Number">A numeric representation of KiloTonne (kT).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Tonne FromKT<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromT   (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Tonne (t).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Tonne (t).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Tonne? TryFromT<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
+
+            if (TryFromT(Number, out var tonne, Exponent))
+                return tonne;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKT  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into KiloTonne (kT).
+        /// </summary>
+        /// <param name="Number">A numeric representation of KiloTonne (kT).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Tonne? TryFromKT<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKT(Number, out var tonne, Exponent))
+                return tonne;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryFromT   (Number, out Tonne, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Tonne (t).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Tonne (t).</param>
+        /// <param name="Tonne">The parsed Tonne.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFromT<TNumber>(TNumber    Number,
+                                                out Tonne  Tonne,
+                                                Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            Tonne = default;
+
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
 
             try
             {
-
-                Tonne = new Tonne(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
-                return true;
-
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Tonne);
             }
-            catch
+            catch (OverflowException)
             {
-                Tonne = default;
+                return false;
+            }
+            catch (NotSupportedException)
+            {
                 return false;
             }
 
         }
 
+        #endregion
+
+        #region (static) TryFromKT  (Number, out Tonne, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a kT.
+        /// Try to convert the given number into KiloTonne (kT).
         /// </summary>
-        /// <param name="Number">A numeric representation of a kT.</param>
-        /// <param name="Tonne">The parsed kT.</param>
+        /// <param name="Number">A numeric representation of KiloTonne (kT).</param>
+        /// <param name="Tonne">The parsed Tonne.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKT(Decimal    Number,
-                                          out Tonne  Tonne,
-                                          Int32?     Exponent = null)
+        public static Boolean TryFromKT<TNumber>(TNumber    Number,
+                                                 out Tonne  Tonne,
+                                                 Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
+
+            Tonne = default;
+
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
             try
             {
-
-                Tonne = new Tonne(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
-                return true;
-
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Tonne);
             }
-            catch
+            catch (OverflowException)
             {
-                Tonne = default;
+                return false;
+            }
+            catch (NotSupportedException)
+            {
                 return false;
             }
 
         }
+
+        #endregion
+
+
+        #region Conversions to/from kilograms
+
+        /// <summary>
+        /// Convert the current value to its equivalent in kilograms.
+        /// </summary>
+        /// <returns></returns>
+        public Kilogram ToKilogram()
+            => Kilogram.FromKG(Value * 1000m);
+
+        /// <summary>
+        /// Convert the given kilogram value to its equivalent in tonnes.
+        /// </summary>
+        /// <param name="Kilogram">A kilogram value.</param>
+        public static Tonne FromKilogram(Kilogram Kilogram)
+            => FromT(Kilogram.Value / 1000m);
 
         #endregion
 
@@ -625,8 +726,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -640,8 +741,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -655,8 +756,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (Tonne Tonne1,
                                           Tonne Tonne2)
@@ -670,8 +771,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -685,8 +786,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (Tonne Tonne1,
                                           Tonne Tonne2)
@@ -700,8 +801,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Tonne Tonne1,
                                            Tonne Tonne2)
@@ -713,10 +814,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Tonne1, Tonne2)
 
         /// <summary>
-        /// Accumulates two Tonne.
+        /// Accumulates two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         public static Tonne operator + (Tonne Tonne1,
                                         Tonne Tonne2)
 
@@ -727,10 +828,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Tonne1, Tonne2)
 
         /// <summary>
-        /// Subtracts two Tonne.
+        /// Subtracts two instances of this object.
         /// </summary>
-        /// <param name="Tonne1">A Tonne.</param>
-        /// <param name="Tonne2">Another Tonne.</param>
+        /// <param name="Tonne1">A Tonne value.</param>
+        /// <param name="Tonne2">Another Tonne value.</param>
         public static Tonne operator - (Tonne Tonne1,
                                         Tonne Tonne2)
 
@@ -750,6 +851,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         Decimal  Scalar)
 
             => new (Tonne.Value * Scalar);
+
+        #endregion
+
+        #region Operator *  (Scalar, Tonne)
+
+        /// <summary>
+        /// Multiplies a scalar with a Tonne.
+        /// </summary>
+        /// <param name="Scalar">A scalar value.</param>
+        /// <param name="Tonne">A Tonne value.</param>
+        public static Tonne operator * (Decimal  Scalar,
+                                        Tonne    Tonne)
+
+            => new (Scalar * Tonne.Value);
 
         #endregion
 
@@ -779,10 +894,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A Tonne to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Tonne tonne
-                   ? CompareTo(tonne)
-                   : throw new ArgumentException("The given object is not a Tonne!",
-                                                 nameof(Object));
+            => Object switch {
+                   null         => 1,
+                   Tonne tonne  => CompareTo(tonne),
+                   _            => throw new ArgumentException("The given object is not a Tonne!", nameof(Object))
+               };
 
         #endregion
 
@@ -840,6 +956,91 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region TryFormat(Destination, out CharsWritten, Format, FormatProvider)
+
+        /// <summary>
+        /// Try to format this Tonne into the given character span using the given format and culture-specific format provider.
+        /// </summary>
+        /// <param name="Destination">The destination span to write the formatted value.</param>
+        /// <param name="CharsWritten">The number of characters written to the destination span.</param>
+        /// <param name="Format">The format to use.</param>
+        /// <param name="FormatProvider">The format provider to use.</param>
+        public Boolean TryFormat(Span<Char>          Destination,
+                                 out Int32           CharsWritten,
+                                 ReadOnlySpan<Char>  Format,
+                                 IFormatProvider?    FormatProvider)
+        {
+
+            if (Format.IsEmpty ||
+                Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("t".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return TryFormatWithSuffix(
+                           Value,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " t".AsSpan()
+                       );
+            }
+
+            if (Format.Equals("kT".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           kT,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " kT".AsSpan()
+                       );
+
+            return TryFormatWithSuffix(
+                       Value,
+                       Destination,
+                       out CharsWritten,
+                       Format,
+                       FormatProvider,
+                       " t".AsSpan()
+                   );
+
+        }
+
+        #endregion
+
+        #region (private static) TryFormatWithSuffix(Value, Destination, out CharsWritten, NumericFormat, FormatProvider, Suffix)
+
+        private static Boolean TryFormatWithSuffix(Decimal             Value,
+                                                   Span<Char>          Destination,
+                                                   out Int32           CharsWritten,
+                                                   ReadOnlySpan<Char>  NumericFormat,
+                                                   IFormatProvider?    FormatProvider,
+                                                   ReadOnlySpan<Char>  Suffix)
+        {
+
+            CharsWritten = 0;
+
+            if (!Value.TryFormat(Destination,
+                                 out var valueCharsWritten,
+                                 NumericFormat,
+                                 FormatProvider))
+            {
+                return false;
+            }
+
+            if (Destination.Length < valueCharsWritten + Suffix.Length)
+                return false;
+
+            Suffix.CopyTo(Destination[valueCharsWritten..]);
+
+            CharsWritten = valueCharsWritten + Suffix.Length;
+            return true;
+
+        }
+
+        #endregion
+
         #region (override) ToString()
 
         /// <summary>
@@ -847,7 +1048,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value.ToString(CultureInfo.InvariantCulture)} T";
+            => ToString(
+                   null,
+                   CultureInfo.InvariantCulture
+               );
+
+
+        /// <summary>
+        /// Return a text representation of this object using the given
+        /// format and culture-specific format provider.
+        /// </summary>
+        public String ToString(String?           Format,
+                               IFormatProvider?  FormatProvider)
+        {
+
+            Span<Char> buffer = stackalloc Char[64];
+
+            if (TryFormat(buffer, out var charsWritten, Format.AsSpan(), FormatProvider))
+                return new String(buffer[..charsWritten]);
+
+            if (String.IsNullOrEmpty(Format) ||
+                String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(Format, "t",  StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Value.ToString("G", FormatProvider)} t";
+            }
+
+            if (String.Equals(Format, "kT", StringComparison.OrdinalIgnoreCase))
+                return $"{kT.ToString("G", FormatProvider)} kT";
+
+            return $"{Value.ToString(Format, FormatProvider)} t";
+
+        }
 
         #endregion
 

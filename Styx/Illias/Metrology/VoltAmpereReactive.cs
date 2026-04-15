@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Volt-Ampere-Reactives.
+    /// Extension methods for VoltAmpereReactive (VAr) values.
     /// </summary>
     public static class VoltAmpereReactiveExtensions
     {
@@ -222,16 +223,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseVAr     (Text)
 
         /// <summary>
-        /// Parse the given string as a Volt-Ampere-Reactive (VAr).
+        /// Parse the given string as Volt-Ampere-Reactives (VAr).
         /// </summary>
-        /// <param name="Text">A text representation of a Volt-Ampere-Reactive (VAr).</param>
+        /// <param name="Text">A text representation of Volt-Ampere-Reactives (VAr).</param>
         public static VoltAmpereReactive ParseVAr(String Text)
         {
 
             if (TryParseVAr(Text, out var voltAmpereReactive))
                 return voltAmpereReactive;
 
-            throw new ArgumentException($"Invalid text representation of volt-ampere-reactives: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of Volt-Ampere-Reactives (VAr): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -241,70 +242,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKVAr    (Text)
 
         /// <summary>
-        /// Parse the given string as kilo-Volt-Ampere-Reactives.
+        /// Parse the given string as Kilo-Volt-Ampere-Reactives (kVAr).
         /// </summary>
-        /// <param name="Text">A text representation of kilo-Volt-Ampere-Reactives.</param>
+        /// <param name="Text">A text representation of Kilo-Volt-Ampere-Reactives (kVAr).</param>
         public static VoltAmpereReactive ParseKVAr(String Text)
         {
 
             if (TryParseKVAr(Text, out var voltAmpereReactive))
                 return voltAmpereReactive;
 
-            throw new ArgumentException($"Invalid text representation of kilo-volt-ampere-reactives: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of Kilo-Volt-Ampere-Reactives (kVAr): '{Text}'!",
                                         nameof(Text));
 
         }
-
-        #endregion
-
-
-        #region (static) FromVAr      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive FromVAr(Decimal  Number,
-                                                 Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive FromVAr(Byte    Number,
-                                                 Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKVAr     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kilo-volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive FromKVAr(Decimal  Number,
-                                                  Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into kilo-volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive FromKVAr(Byte    Number,
-                                                  Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -352,9 +302,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseVAr  (Text)
 
         /// <summary>
-        /// Try to parse the given text as volt-ampere-reactives.
+        /// Try to parse the given text as Volt-Ampere-Reactives (VAr).
         /// </summary>
-        /// <param name="Text">A text representation of volt-ampere-reactives.</param>
+        /// <param name="Text">A text representation of Volt-Ampere-Reactives (VAr).</param>
         public static VoltAmpereReactive? TryParseVAr(String? Text)
         {
 
@@ -370,88 +320,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKVAr (Text)
 
         /// <summary>
-        /// Try to parse the given text as kilo-volt-ampere-reactives.
+        /// Try to parse the given text as Kilo-Volt-Ampere-Reactives (kVAr).
         /// </summary>
-        /// <param name="Text">A text representation of kilo-volt-ampere-reactives.</param>
+        /// <param name="Text">A text representation of Kilo-Volt-Ampere-Reactives (kVAr).</param>
         public static VoltAmpereReactive? TryParseKVAr(String? Text)
         {
 
             if (TryParseKVAr(Text, out var voltAmpereReactive))
-                return voltAmpereReactive;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromVAr   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive? TryFromVAr(Decimal  Number,
-                                                     Int32?   Exponent = null)
-        {
-
-            if (TryFromVAr(Number, out var voltAmpereReactive, Exponent))
-                return voltAmpereReactive;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive? TryFromVAr(Byte    Number,
-                                                     Int32?  Exponent = null)
-        {
-
-            if (TryFromVAr(Number, out var voltAmpereReactive, Exponent))
-                return voltAmpereReactive;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKVAr  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as kilo-volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive? TryFromKVAr(Decimal  Number,
-                                                      Int32?   Exponent = null)
-        {
-
-            if (TryFromKVAr(Number, out var voltAmpereReactive, Exponent))
-                return voltAmpereReactive;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as kilo-volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-ampere-reactives.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpereReactive? TryFromKVAr(Byte    Number,
-                                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromKVAr(Number, out var voltAmpereReactive, Exponent))
                 return voltAmpereReactive;
 
             return null;
@@ -548,9 +423,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseVAr  (Text,                 out VoltAmpereReactive)
 
         /// <summary>
-        /// Try to parse the given string as volt-ampere-reactives using invariant culture.
+        /// Try to parse the given string as Volt-Ampere-Reactives (VAr).
         /// </summary>
-        /// <param name="Text">A text representation of volt-ampere-reactives.</param>
+        /// <param name="Text">A text representation of Volt-Ampere-Reactives (VAr).</param>
         /// <param name="VoltAmpereReactive">The parsed VoltAmpereReactive.</param>
         public static Boolean TryParseVAr([NotNullWhen(true)] String?             Text,
                                           out                 VoltAmpereReactive  VoltAmpereReactive)
@@ -578,9 +453,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKVAr (Text,                 out VoltAmpereReactive)
 
         /// <summary>
-        /// Try to parse the given string as kilo-volt-ampere-reactives using invariant culture.
+        /// Try to parse the given string as Kilo-Volt-Ampere-Reactives (kVAr).
         /// </summary>
-        /// <param name="Text">A text representation of kilo-volt-ampere-reactives.</param>
+        /// <param name="Text">A text representation of Kilo-Volt-Ampere-Reactives (kVAr).</param>
         /// <param name="VoltAmpereReactive">The parsed VoltAmpereReactive.</param>
         public static Boolean TryParseKVAr([NotNullWhen(true)] String?             Text,
                                            out                 VoltAmpereReactive  VoltAmpereReactive)
@@ -606,7 +481,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out VoltAmpereReactive)
+        #region (private static) Create    (Number, Exponent)
+
+        private static VoltAmpereReactive Create(Decimal  Number,
+                                                 Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var siemens))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return siemens;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out VoltAmpereReactive)
 
         private static Boolean TryCreate(Decimal                 Number,
                                          Int32                   Exponent,
@@ -642,42 +532,127 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromVAr   (Number, out VoltAmpereReactive, Exponent = null)
+        #region (static) FromVAr      (Number,                         Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into volt-ampere-reactives.
+        /// Convert the given number into Volt-Ampere-Reactives (VAr).
         /// </summary>
-        /// <param name="Number">A numeric representation of volt-ampere-reactives.</param>
-        /// <param name="VoltAmpereReactive">The parsed VoltAmpereReactive.</param>
+        /// <param name="Number">A numeric representation of Volt-Ampere-Reactives (VAr).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromVAr(Byte                    Number,
-                                         out VoltAmpereReactive  VoltAmpereReactive,
-                                         Int32?                  Exponent = null)
+        public static VoltAmpereReactive FromVAr<TNumber>(TNumber  Number,
+                                                          Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKVAr     (Number,                         Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into Kilo-Volt-Ampere-Reactives (kVAr).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Kilo-Volt-Ampere-Reactives (kVAr).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static VoltAmpereReactive FromKVAr<TNumber>(TNumber  Number,
+                                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromVAr   (Number,                         Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Volt-Ampere-Reactives (VAr).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Volt-Ampere-Reactives (VAr).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static VoltAmpereReactive? TryFromVAr<TNumber>(TNumber  Number,
+                                                              Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
-            VoltAmpereReactive = default;
+            if (TryFromVAr(Number, out var siemens, Exponent))
+                return siemens;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpereReactive);
+            return null;
 
         }
 
+        #endregion
+
+        #region (static) TryFromKVAr  (Number,                         Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into volt-ampere-reactives.
+        /// Try to convert the given number into Kilo-Volt-Ampere-Reactives (kVAr).
         /// </summary>
-        /// <param name="Number">A numeric representation of volt-ampere-reactives.</param>
+        /// <param name="Number">A numeric representation of Kilo-Volt-Ampere-Reactives (kVAr).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static VoltAmpereReactive? TryFromKVAr<TNumber>(TNumber  Number,
+                                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKVAr(Number, out var siemens, Exponent))
+                return siemens;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryFromVAr   (Number, out VoltAmpereReactive, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Volt-Ampere-Reactives (VAr).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Volt-Ampere-Reactives (VAr).</param>
         /// <param name="VoltAmpereReactive">The parsed VoltAmpereReactive.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromVAr(Decimal                 Number,
-                                         out VoltAmpereReactive  VoltAmpereReactive,
-                                         Int32?                  Exponent = null)
+        public static Boolean TryFromVAr<TNumber>(TNumber                 Number,
+                                                  out VoltAmpereReactive  VoltAmpereReactive,
+                                                  Int32?                  Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             VoltAmpereReactive = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpereReactive);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out VoltAmpereReactive);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -686,39 +661,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKVAr  (Number, out VoltAmpereReactive, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kilo-volt-ampere-reactives.
+        /// Try to convert the given number into Kilo-Volt-Ampere-Reactives (kVAr).
         /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-ampere-reactives.</param>
+        /// <param name="Number">A numeric representation of Kilo-Volt-Ampere-Reactives (kVAr).</param>
         /// <param name="VoltAmpereReactive">The parsed VoltAmpereReactive.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKVAr(Byte                    Number,
-                                          out VoltAmpereReactive  VoltAmpereReactive,
-                                          Int32?                  Exponent = null)
+        public static Boolean TryFromKVAr<TNumber>(TNumber                 Number,
+                                                   out VoltAmpereReactive  VoltAmpereReactive,
+                                                   Int32?                  Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             VoltAmpereReactive = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpereReactive);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kilo-volt-ampere-reactives.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-ampere-reactives.</param>
-        /// <param name="VoltAmpereReactive">The parsed VoltAmpereReactive.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKVAr(Decimal                Number,
-                                         out VoltAmpereReactive  VoltAmpereReactive,
-                                         Int32?                  Exponent = null)
-        {
-
-            VoltAmpereReactive = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpereReactive);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out VoltAmpereReactive);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

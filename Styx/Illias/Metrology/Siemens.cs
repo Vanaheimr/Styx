@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Siemens.
+    /// Extension methods for Siemens (S) values.
     /// </summary>
     public static class SiemensExtensions
     {
@@ -223,16 +223,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseS     (Text)
 
         /// <summary>
-        /// Parse the given string as siemens.
+        /// Parse the given string as Siemens (S).
         /// </summary>
-        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="Text">A text representation of Siemens (S).</param>
         public static Siemens ParseS(String Text)
         {
 
             if (TryParseS(Text, out var siemens))
                 return siemens;
 
-            throw new FormatException($"Invalid text representation of siemens: '{Text}'!");
+            throw new FormatException($"Invalid text representation of Siemens (S): '{Text}'!");
 
         }
 
@@ -241,16 +241,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKS    (Text)
 
         /// <summary>
-        /// Parse the given string as kiloSiemens.
+        /// Parse the given string as KiloSiemens (kS).
         /// </summary>
-        /// <param name="Text">A text representation of a kiloSiemens.</param>
+        /// <param name="Text">A text representation of KiloSiemens (kS).</param>
         public static Siemens ParseKS(String Text)
         {
 
             if (TryParseKS(Text, out var siemens))
                 return siemens;
 
-            throw new FormatException($"Invalid text representation of a kiloSiemens: '{Text}'!");
+            throw new FormatException($"Invalid text representation of KiloSiemens (kS): '{Text}'!");
 
         }
 
@@ -300,9 +300,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseS  (Text)
 
         /// <summary>
-        /// Try to parse the given text as siemens.
+        /// Try to parse the given text as Siemens (S).
         /// </summary>
-        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="Text">A text representation of Siemens (S).</param>
         public static Siemens? TryParseS(String? Text)
         {
 
@@ -318,9 +318,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKS (Text)
 
         /// <summary>
-        /// Try to parse the given text as kiloSiemens.
+        /// Try to parse the given text as KiloSiemens (kS).
         /// </summary>
-        /// <param name="Text">A text representation of a kiloSiemens.</param>
+        /// <param name="Text">A text representation of KiloSiemens (kS).</param>
         public static Siemens? TryParseKS(String? Text)
         {
 
@@ -421,9 +421,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseS  (Text,                 out Siemens)
 
         /// <summary>
-        /// Try to parse the given string as siemens using invariant culture.
+        /// Try to parse the given string as Siemens (S).
         /// </summary>
-        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="Text">A text representation of Siemens (S).</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         public static Boolean TryParseS([NotNullWhen(true)] String?  Text,
                                         out                 Siemens  Siemens)
@@ -451,9 +451,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKS (Text,                 out Siemens)
 
         /// <summary>
-        /// Try to parse the given string as kiloSiemens using invariant culture.
+        /// Try to parse the given string as KiloSiemens (kS).
         /// </summary>
-        /// <param name="Text">A text representation of an kiloSiemens.</param>
+        /// <param name="Text">A text representation of KiloSiemens (kS).</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         public static Boolean TryParseKS([NotNullWhen(true)] String?  Text,
                                          out                 Siemens  Siemens)
@@ -533,9 +533,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromS      (Number,              Exponent = null)
 
         /// <summary>
-        /// Convert the given number into siemens.
+        /// Convert the given number into Siemens (S).
         /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Number">A numeric representation of Siemens (S).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Siemens FromS<TNumber>(TNumber  Number,
                                              Int32?   Exponent   = null)
@@ -552,9 +552,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromKS     (Number,              Exponent = null)
 
         /// <summary>
-        /// Convert the given number into kiloSiemens.
+        /// Convert the given number into KiloSiemens (kS).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Number">A numeric representation of KiloSiemens (kS).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Siemens FromKS<TNumber>(TNumber  Number,
                                               Int32?   Exponent   = null)
@@ -568,15 +568,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region (static) TryFromS   (Number,              Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into siemens.
+        /// Try to convert the given number into Siemens (S).
         /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Number">A numeric representation of Siemens (S).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Siemens? TryFromS<TNumber>(TNumber  Number,
-                                                 Int32?   Exponent = null)
+                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -594,12 +595,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKS  (Number,              Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kiloSiemens.
+        /// Try to convert the given number into KiloSiemens (kS).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Number">A numeric representation of KiloSiemens (kS).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Siemens? TryFromKS<TNumber>(TNumber  Number,
-                                                  Int32?   Exponent = null)
+                                                  Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -614,17 +615,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region (static) TryFromS   (Number, out Siemens, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into siemens.
+        /// Try to convert the given number into Siemens (S).
         /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Number">A numeric representation of Siemens (S).</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromS<TNumber>(TNumber      Number,
                                                 out Siemens  Siemens,
-                                                Int32?       Exponent = null)
+                                                Int32?       Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -657,14 +659,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKS  (Number, out Siemens, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kiloSiemens.
+        /// Try to convert the given number into KiloSiemens (kS).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Number">A numeric representation of KiloSiemens (kS).</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKS<TNumber>(TNumber      Number,
                                                  out Siemens  Siemens,
-                                                 Int32?       Exponent = null)
+                                                 Int32?       Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 

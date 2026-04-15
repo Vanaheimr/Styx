@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for BitPerSecond.
+    /// Extension methods for BitPerSecond (bit/s) values.
     /// </summary>
     public static class BitPerSecondExtensions
     {
@@ -334,132 +335,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) FromBPS      (Number, Exponent = null)
-
-        /// <summary>
-        /// From the given number as bit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of bit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromBPS(Decimal  Number,
-                                           Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as bit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of bit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromBPS(Byte    Number,
-                                           Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKBPS     (Number, Exponent = null)
-
-        /// <summary>
-        /// From the given number as kbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromKBPS(Decimal  Number,
-                                            Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as bit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kBits/second.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromKBPS(Byte    Number,
-                                            Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromMBPS     (Number, Exponent = null)
-
-        /// <summary>
-        /// From the given number as Mbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Mbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromMBPS(Decimal  Number,
-                                            Int32?   Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as Mbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Mbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromMBPS(Byte    Number,
-                                            Int32?  Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromGBPS     (Number, Exponent = null)
-
-        /// <summary>
-        /// From the given number as Gbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Gbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromGBPS(Decimal  Number,
-                                            Int32?   Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as Gbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Gbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromGBPS(Byte    Number,
-                                            Int32?  Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromTBPS     (Number, Exponent = null)
-
-        /// <summary>
-        /// From the given number as Tbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Tbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromTBPS(Decimal  Number,
-                                            Int32?   Exponent = null)
-
-            => new (1000000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as Tbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Tbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond FromTBPS(Byte    Number,
-                                            Int32?  Exponent = null)
-
-            => new (1000000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-
         #region (static) TryParse     (Text)
 
         /// <summary>
@@ -582,192 +457,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseTBPS(Text, out var bitPerSecond))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromBPS   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into bit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of bit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromBPS(Decimal  Number,
-                                               Int32?   Exponent = null)
-        {
-
-            if (TryFromBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into bit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of bit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromBPS(Byte    Number,
-                                               Int32?  Exponent = null)
-        {
-
-            if (TryFromBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKBPS  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromKBPS(Decimal  Number,
-                                                Int32?   Exponent = null)
-        {
-
-            if (TryFromKBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromKBPS(Byte    Number,
-                                                Int32?  Exponent = null)
-        {
-
-            if (TryFromKBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromMBPS  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into Mbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Mbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromMBPS(Decimal  Number,
-                                                Int32?   Exponent = null)
-        {
-
-            if (TryFromMBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into Mbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Mbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromMBPS(Byte    Number,
-                                                Int32?  Exponent = null)
-        {
-
-            if (TryFromMBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromGBPS  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into Gbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Gbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromGBPS(Decimal  Number,
-                                                Int32?   Exponent = null)
-        {
-
-            if (TryFromGBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into Gbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Gbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromGBPS(Byte    Number,
-                                                Int32?  Exponent = null)
-        {
-
-            if (TryFromGBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromTBPS  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into Tbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Tbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromTBPS(Decimal  Number,
-                                                Int32?   Exponent = null)
-        {
-
-            if (TryFromTBPS(Number, out var bitPerSecond, Exponent))
-                return bitPerSecond;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into Tbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Tbit/s.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static BitPerSecond? TryFromTBPS(Byte    Number,
-                                                Int32?  Exponent = null)
-        {
-
-            if (TryFromTBPS(Number, out var bitPerSecond, Exponent))
                 return bitPerSecond;
 
             return null;
@@ -1071,7 +760,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out BitPerSecond)
+        #region (private static) Create    (Number, Exponent)
+
+        private static BitPerSecond Create(Decimal  Number,
+                                           Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var bitPerSecond))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return bitPerSecond;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Ampere)
 
         private static Boolean TryCreate(Decimal           Number,
                                          Int32             Exponent,
@@ -1107,42 +811,253 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromBPS   (Number, out BitPerSecond, Exponent = null)
+        #region (static) FromBPS      (Number, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into bit/s.
+        /// Convert the given number into Bit/s.
         /// </summary>
-        /// <param name="Number">A numeric representation of bit/s.</param>
-        /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
+        /// <param name="Number">A numeric representation of Bit/s.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromBPS(Byte              Number,
-                                         out BitPerSecond  BitPerSecond,
-                                         Int32?            Exponent = null)
+        public static BitPerSecond FromBPS<TNumber>(TNumber  Number,
+                                                    Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKBPS     (Number, Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond FromKBPS<TNumber>(TNumber  Number,
+                                                     Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) FromMBPS     (Number, Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into MBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of MBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond FromMBPS<TNumber>(TNumber  Number,
+                                                     Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 6)
+                   );
+
+        #endregion
+
+        #region (static) FromGBPS     (Number, Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into GBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of GBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond FromGBPS<TNumber>(TNumber  Number,
+                                                     Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 9)
+                   );
+
+        #endregion
+
+        #region (static) FromTBPS     (Number, Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into TBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of TBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond FromTBPS<TNumber>(TNumber  Number,
+                                                     Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 12)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromBPS   (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Bit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of Bit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond? TryFromBPS<TNumber>(TNumber  Number,
+                                                        Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
-            BitPerSecond = default;
+            if (TryFromBPS(Number, out var bitPerSecond, Exponent))
+                return bitPerSecond;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            return null;
 
         }
 
+        #endregion
+
+        #region (static) TryFromKBPS  (Number, Exponent = null)
 
         /// <summary>
-        /// From the given number as bit/s.
+        /// Try to convert the given number into kBit/s.
         /// </summary>
-        /// <param name="Number">A numeric representation of bit/s.</param>
+        /// <param name="Number">A numeric representation of kBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond? TryFromKBPS<TNumber>(TNumber  Number,
+                                                         Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKBPS(Number, out var bitPerSecond, Exponent))
+                return bitPerSecond;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromMBPS  (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of MBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond? TryFromMBPS<TNumber>(TNumber  Number,
+                                                         Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromMBPS(Number, out var bitPerSecond, Exponent))
+                return bitPerSecond;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromGBPS  (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into GBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of GBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond? TryFromGBPS<TNumber>(TNumber  Number,
+                                                         Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromGBPS(Number, out var bitPerSecond, Exponent))
+                return bitPerSecond;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromTBPS  (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into TBit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of TBit/s.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static BitPerSecond? TryFromTBPS<TNumber>(TNumber  Number,
+                                                         Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromTBPS(Number, out var bitPerSecond, Exponent))
+                return bitPerSecond;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryFromBPS   (Number, out BitPerSecond, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Bit/s.
+        /// </summary>
+        /// <param name="Number">A numeric representation of Bit/s.</param>
         /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromBPS(Decimal           Number,
-                                         out BitPerSecond  BitPerSecond,
-                                         Int32?            Exponent = null)
+        public static Boolean TryFromBPS<TNumber>(TNumber           Number,
+                                                  out BitPerSecond  BitPerSecond,
+                                                  Int32?            Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             BitPerSecond = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out BitPerSecond);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1151,39 +1066,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKBPS  (Number, out BitPerSecond, Exponent = null)
 
         /// <summary>
-        /// From the given number as kbit/s.
+        /// From the given number as kBit/s.
         /// </summary>
-        /// <param name="Number">A numeric representation of kbit/s.</param>
+        /// <param name="Number">A numeric representation of kBit/s.</param>
         /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKBPS(Byte              Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
+        public static Boolean TryFromKBPS<TNumber>(TNumber           Number,
+                                                   out BitPerSecond  BitPerSecond,
+                                                   Int32?            Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             BitPerSecond = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// From the given number as kbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kbit/s.</param>
-        /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKBPS(Decimal           Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
-        {
-
-            BitPerSecond = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out BitPerSecond);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1192,39 +1106,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromMBPS  (Number, out BitPerSecond, Exponent = null)
 
         /// <summary>
-        /// From the given number as Mbit/s.
+        /// From the given number as MBit/s.
         /// </summary>
-        /// <param name="Number">A numeric representation of Mbit/s.</param>
+        /// <param name="Number">A numeric representation of MBit/s.</param>
         /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMBPS(Byte              Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
+        public static Boolean TryFromMBPS<TNumber>(TNumber           Number,
+                                                   out BitPerSecond  BitPerSecond,
+                                                   Int32?            Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             BitPerSecond = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            if (!MathHelpers.TryAddExponent(Exponent, 6, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// From the given number as Mbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Mbit/s.</param>
-        /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMBPS(Decimal           Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
-        {
-
-            BitPerSecond = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out BitPerSecond);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1233,39 +1146,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromGBPS  (Number, out BitPerSecond, Exponent = null)
 
         /// <summary>
-        /// From the given number as Gbit/s.
+        /// From the given number as GBit/s.
         /// </summary>
-        /// <param name="Number">A numeric representation of Gbit/s.</param>
+        /// <param name="Number">A numeric representation of GBit/s.</param>
         /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGBPS(Byte              Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
+        public static Boolean TryFromGBPS<TNumber>(TNumber           Number,
+                                                   out BitPerSecond  BitPerSecond,
+                                                   Int32?            Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             BitPerSecond = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            if (!MathHelpers.TryAddExponent(Exponent, 9, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// From the given number as Gbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Gbit/s.</param>
-        /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGBPS(Decimal           Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
-        {
-
-            BitPerSecond = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out BitPerSecond);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1274,39 +1186,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromTBPS  (Number, out BitPerSecond, Exponent = null)
 
         /// <summary>
-        /// From the given number as Tbit/s.
+        /// From the given number as TBit/s.
         /// </summary>
-        /// <param name="Number">A numeric representation of Tbit/s.</param>
+        /// <param name="Number">A numeric representation of TBit/s.</param>
         /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromTBPS(Byte              Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
+        public static Boolean TryFromTBPS<TNumber>(TNumber           Number,
+                                                   out BitPerSecond  BitPerSecond,
+                                                   Int32?            Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             BitPerSecond = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 12, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            if (!MathHelpers.TryAddExponent(Exponent, 12, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// From the given number as Tbit/s.
-        /// </summary>
-        /// <param name="Number">A numeric representation of Tbit/s.</param>
-        /// <param name="BitPerSecond">The parsed BitPerSecond.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromTBPS(Decimal           Number,
-                                          out BitPerSecond  BitPerSecond,
-                                          Int32?            Exponent = null)
-        {
-
-            BitPerSecond = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 12, out var exponent) &&
-                   TryCreate(Number, exponent, out BitPerSecond);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out BitPerSecond);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

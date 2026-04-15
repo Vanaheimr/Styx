@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Meters.
+    /// Extension methods for Meter (m) values.
     /// </summary>
     public static class MeterExtensions
     {
@@ -234,16 +235,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseCM    (Text)
 
         /// <summary>
-        /// Parse the given string as centimeters.
+        /// Parse the given string as centimeters (cm).
         /// </summary>
-        /// <param name="Text">A text representation of centimeters.</param>
+        /// <param name="Text">A text representation of centimeters (cm).</param>
         public static Meter ParseCM(String Text)
         {
 
             if (TryParseCM(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of centimeters: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of centimeters (cm): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -253,16 +254,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseDM    (Text)
 
         /// <summary>
-        /// Parse the given string as decimeters.
+        /// Parse the given string as decimeters (dm).
         /// </summary>
-        /// <param name="Text">A text representation of decimeters.</param>
+        /// <param name="Text">A text representation of decimeters (dm).</param>
         public static Meter ParseDM(String Text)
         {
 
             if (TryParseDM(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of decimeters: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of decimeters (dm): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -272,16 +273,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseM     (Text)
 
         /// <summary>
-        /// Parse the given string as meters.
+        /// Parse the given string as meters (m).
         /// </summary>
-        /// <param name="Text">A text representation of meter.</param>
+        /// <param name="Text">A text representation of meters (m).</param>
         public static Meter ParseM(String Text)
         {
 
             if (TryParseM(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of meters: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of meters (m): '{Text}'!",
                                         nameof(Text));
 
         }
@@ -291,164 +292,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKM    (Text)
 
         /// <summary>
-        /// Parse the given string as kilometers.
+        /// Parse the given string as kilometers (km).
         /// </summary>
-        /// <param name="Text">A text representation of kilometers.</param>
+        /// <param name="Text">A text representation of kilometers (km).</param>
         public static Meter ParseKM(String Text)
         {
 
             if (TryParseKM(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of kilometers: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of kilometers (km): '{Text}'!",
                                         nameof(Text));
 
         }
-
-        #endregion
-
-
-        #region (static) FromCM     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a centimeter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromCM(Decimal  Number,
-                                   Int32?   Exponent = null)
-
-            => new (          Number / 100m * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a centimeter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromCM(Double  Number,
-                                   Int32?  Exponent = null)
-
-            => new ((Decimal) Number / 100m * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a centimeter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromCM(Byte    Number,
-                                   Int32?  Exponent = null)
-
-            => new (          Number / 100m * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromDM     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a decimeter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromDM(Decimal  Number,
-                                   Int32?   Exponent = null)
-
-            => new (          Number / 10m * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a decimeter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromDM(Double  Number,
-                                   Int32?  Exponent = null)
-
-            => new ((Decimal) Number / 10m * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a decimeter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromDM(Byte    Number,
-                                   Int32?  Exponent = null)
-
-            => new (          Number / 10m * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromM      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into Meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromM(Decimal  Number,
-                                  Int32?   Exponent = null)
-
-            => new (          Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into Meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromM(Double  Number,
-                                  Int32?  Exponent = null)
-
-            => new ((Decimal) Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into Meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromM(Byte    Number,
-                                  Int32?  Exponent = null)
-
-            => new (          Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKM     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kilometers.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a km.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromKM(Decimal  Number,
-                                   Int32?   Exponent = null)
-
-            => new (1000m *           Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as a km.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a km.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromKM(Double  Number,
-                                   Int32?  Exponent = null)
-
-            => new (1000m * (Decimal) Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// From the given number as a km.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a km.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromKM(Byte    Number,
-                                   Int32?  Exponent = null)
-
-            => new (1000m *           Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -496,9 +352,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseCM (Text)
 
         /// <summary>
-        /// Try to parse the given text as centimeters.
+        /// Try to parse the given text as centimeters (cm).
         /// </summary>
-        /// <param name="Text">A text representation of a centimeter.</param>
+        /// <param name="Text">A text representation of a centimeters (cm).</param>
         public static Meter? TryParseCM(String? Text)
         {
 
@@ -557,223 +413,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseKM(Text, out var meter))
-                return meter;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromCM  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of centimeters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromCM(Decimal  Number,
-                                       Int32?   Exponent = null)
-        {
-
-            if (TryFromCM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of centimeters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromCM(Double  Number,
-                                       Int32?  Exponent = null)
-        {
-
-            if (TryFromCM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of centimeters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromCM(Byte    Number,
-                                       Int32?  Exponent = null)
-        {
-
-            if (TryFromCM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromDM  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of decimeters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromDM(Decimal  Number,
-                                       Int32?   Exponent = null)
-        {
-
-            if (TryFromDM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of decimeters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromDM(Double  Number,
-                                       Int32?  Exponent = null)
-        {
-
-            if (TryFromDM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of decimeters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromDM(Byte    Number,
-                                       Int32?  Exponent = null)
-        {
-
-            if (TryFromDM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromM   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of meters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromM(Decimal  Number,
-                                      Int32?   Exponent = null)
-        {
-
-            if (TryFromM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of meters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromM(Double  Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of meters.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromM(Byte    Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKM  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kilometers.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilometers.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromKM(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryFromKM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kilometers.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilometers.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromKM(Double  Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromKM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kilometers.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilometers.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromKM(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromKM(Number, out var meter, Exponent))
                 return meter;
 
             return null;
@@ -882,9 +521,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseCM (Text,   out Meter)
 
         /// <summary>
-        /// Parse the given string as centimeters.
+        /// Parse the given string as centimeters (cm).
         /// </summary>
-        /// <param name="Text">A text representation of centimeters.</param>
+        /// <param name="Text">A text representation of centimeters (cm).</param>
         /// <param name="Meter">The parsed Meter.</param>
         public static Boolean TryParseCM([NotNullWhen(true)] String?  Text,
                                          out                 Meter    Meter)
@@ -1000,7 +639,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out Meter)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Meter Create(Decimal  Number,
+                                    Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var meter))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return meter;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Meter)
 
         private static Boolean TryCreate(Decimal    Number,
                                          Int32      Exponent,
@@ -1036,171 +690,333 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) FromCM     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into centimeters (cm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of centimeters (cm).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter FromCM<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) - 2)
+                   );
+
+        #endregion
+
+        #region (static) FromDM     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into decimeters (dm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of decimeters (dm).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter FromDM<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) - 1)
+                   );
+
+        #endregion
+
+        #region (static) FromM      (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into meters (m).
+        /// </summary>
+        /// <param name="Number">A numeric representation of meters (m).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter FromM<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKM     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kilometers (km).
+        /// </summary>
+        /// <param name="Number">A numeric representation of kilometers (km).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter FromKM<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromCM  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into centimeters (cm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of centimeters (cm).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryFromCM<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromCM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromDM  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into decimeters (dm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of decimeters (dm).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryFromDM<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromDM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromM   (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into meters (m).
+        /// </summary>
+        /// <param name="Number">A numeric representation of meters (m).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryFromM<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKM  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kilometers (km).
+        /// </summary>
+        /// <param name="Number">A numeric representation of kilometers (km).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryFromKM<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKM(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+
         #region (static) TryFromCM  (Number, out Meter, Exponent = null)
 
         /// <summary>
-        /// From the given number as centimeters.
+        /// Try to convert the given number into centimeters (cm).
         /// </summary>
-        /// <param name="Number">A numeric representation of centimeters.</param>
+        /// <param name="Number">A numeric representation of centimeters (cm).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromCM(Byte       Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
+        public static Boolean TryFromCM<TNumber>(TNumber    Number,
+                                                 out Meter  Meter,
+                                                 Int32?     Exponent   = null)
 
-            => TryCreate(          Number, Exponent ?? -2, out Meter);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// From the given number as centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of centimeters.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromCM(Double     Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
+            Meter = default;
 
-            => TryCreate((Decimal) Number, Exponent ?? -2, out Meter);
+            if (!MathHelpers.TryAddExponent(Exponent, -2, out var combinedExponent))
+                return false;
 
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Meter);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// From the given number as centimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of centimeters.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromCM(Decimal    Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
-
-            => TryCreate(          Number, Exponent ?? -2, out Meter);
+        }
 
         #endregion
 
         #region (static) TryFromDM  (Number, out Meter, Exponent = null)
 
         /// <summary>
-        /// From the given number as decimeters.
+        /// Try to convert the given number into decimeters (dm).
         /// </summary>
-        /// <param name="Number">A numeric representation of decimeters.</param>
+        /// <param name="Number">A numeric representation of decimeters (dm).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromDM(Byte       Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
+        public static Boolean TryFromDM<TNumber>(TNumber    Number,
+                                                 out Meter  Meter,
+                                                 Int32?     Exponent   = null)
 
-            => TryCreate(          Number, Exponent ?? -1, out Meter);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// From the given number as decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of decimeters.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromDM(Double     Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
+            Meter = default;
 
-            => TryCreate((Decimal) Number, Exponent ?? -1, out Meter);
+            if (!MathHelpers.TryAddExponent(Exponent, -1, out var combinedExponent))
+                return false;
 
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Meter);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// From the given number as decimeters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of decimeters.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromDM(Decimal    Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
-
-            => TryCreate(          Number, Exponent ?? -1, out Meter);
+        }
 
         #endregion
 
         #region (static) TryFromM   (Number, out Meter, Exponent = null)
 
         /// <summary>
-        /// From the given number as meters.
+        /// Try to convert the given number into meters (m).
         /// </summary>
-        /// <param name="Number">A numeric representation of meters.</param>
+        /// <param name="Number">A numeric representation of meters (m).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromM(Byte       Number,
-                                       out Meter  Meter,
-                                       Int32?     Exponent = null)
+        public static Boolean TryFromM<TNumber>(TNumber    Number,
+                                                out Meter  Meter,
+                                                Int32?     Exponent   = null)
 
-            => TryCreate(          Number, Exponent ?? 0, out Meter);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// From the given number as meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of meters.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromM(Double     Number,
-                                       out Meter  Meter,
-                                       Int32?     Exponent = null)
+            Meter = default;
 
-            => TryCreate((Decimal) Number, Exponent ?? 0, out Meter);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
 
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Meter);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// From the given number as meters.
-        /// </summary>
-        /// <param name="Number">A numeric representation of meters.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromM(Decimal    Number,
-                                       out Meter  Meter,
-                                       Int32?     Exponent = null)
-
-            => TryCreate(          Number, Exponent ?? 0, out Meter);
+        }
 
         #endregion
 
         #region (static) TryFromKM  (Number, out Meter, Exponent = null)
 
         /// <summary>
-        /// From the given number as kilometers.
+        /// Try to convert the given number into kilometers (km).
         /// </summary>
-        /// <param name="Number">A numeric representation of kilometers.</param>
+        /// <param name="Number">A numeric representation of kilometers (km).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKM(Byte       Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
+        public static Boolean TryFromKM<TNumber>(TNumber    Number,
+                                                 out Meter  Meter,
+                                                 Int32?     Exponent   = null)
 
-            => TryCreate(          Number, Exponent ?? 0, out Meter);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// From the given number as kilometers.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilometers.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKM(Double     Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
+            Meter = default;
 
-            => TryCreate((Decimal) Number, Exponent ?? 0, out Meter);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Meter);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// From the given number as kilometers.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilometers.</param>
-        /// <param name="Meter">The parsed Meter.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKM(Decimal    Number,
-                                        out Meter  Meter,
-                                        Int32?     Exponent = null)
-
-            => TryCreate(          Number, Exponent ?? 0, out Meter);
+        }
 
         #endregion
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -26,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Watts.
+    /// Extension methods for Watt (W) values.
     /// </summary>
     public static class WattExtensions
     {
@@ -234,16 +235,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseW     (Text)
 
         /// <summary>
-        /// Parse the given string as watts.
+        /// Parse the given string as Watts (W).
         /// </summary>
-        /// <param name="Text">A text representation of watts.</param>
+        /// <param name="Text">A text representation of Watts (W).</param>
         public static Watt ParseW(String Text)
         {
 
             if (TryParseW(Text, out var watt))
                 return watt;
 
-            throw new FormatException($"Invalid text representation of watts: '{Text}'!");
+            throw new FormatException($"Invalid text representation of Watts (W): '{Text}'!");
 
         }
 
@@ -252,9 +253,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKW    (Text)
 
         /// <summary>
-        /// Parse the given string as kiloWatts.
+        /// Parse the given string as KiloWatts (kW).
         /// </summary>
-        /// <param name="Text">A text representation of kiloWatts.</param>
+        /// <param name="Text">A text representation of KiloWatts (kW).</param>
         public static Watt ParseKW(String Text)
         {
 
@@ -270,9 +271,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseMW    (Text)
 
         /// <summary>
-        /// Parse the given string as MegaWatts.
+        /// Parse the given string as MegaWatts (MW).
         /// </summary>
-        /// <param name="Text">A text representation of MegaWatts.</param>
+        /// <param name="Text">A text representation of MegaWatts (MW).</param>
         public static Watt ParseMW(String Text)
         {
 
@@ -288,9 +289,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseGW    (Text)
 
         /// <summary>
-        /// Parse the given string as GigaWatts.
+        /// Parse the given string as GigaWatts (GW).
         /// </summary>
-        /// <param name="Text">A text representation of GigaWatts.</param>
+        /// <param name="Text">A text representation of GigaWatts (GW).</param>
         public static Watt ParseGW(String Text)
         {
 
@@ -300,107 +301,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             throw new FormatException($"Invalid text representation of GigaWatts: '{Text}'!");
 
         }
-
-        #endregion
-
-
-        #region (static) FromW      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into watts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of watts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromW(Decimal  Number,
-                                 Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into watts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of watts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromW(Byte    Number,
-                                 Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKW     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kiloWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromKW(Decimal  Number,
-                                  Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into kiloWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromKW(Byte    Number,
-                                  Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromMW     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into MegaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromMW(Decimal  Number,
-                                  Int32?   Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into MegaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromMW(Byte    Number,
-                                  Int32?  Exponent = null)
-
-            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromGW     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into GigaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromGW(Decimal  Number,
-                                  Int32?   Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into GigaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt FromGW(Byte    Number,
-                                  Int32?  Exponent = null)
-
-            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -448,9 +348,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseW  (Text)
 
         /// <summary>
-        /// Try to parse the given text as watts.
+        /// Try to parse the given text as Watts (W).
         /// </summary>
-        /// <param name="Text">A text representation of watts.</param>
+        /// <param name="Text">A text representation of Watts (W).</param>
         public static Watt? TryParseW(String? Text)
         {
 
@@ -466,9 +366,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKW (Text)
 
         /// <summary>
-        /// Try to parse the given text as kiloWatts.
+        /// Try to parse the given text as KiloWatts (kW).
         /// </summary>
-        /// <param name="Text">A text representation of kiloWatts.</param>
+        /// <param name="Text">A text representation of KiloWatts (kW).</param>
         public static Watt? TryParseKW(String? Text)
         {
 
@@ -484,9 +384,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseMW (Text)
 
         /// <summary>
-        /// Try to parse the given text as MegaWatts.
+        /// Try to parse the given text as MegaWatts (MW).
         /// </summary>
-        /// <param name="Text">A text representation of MegaWatts.</param>
+        /// <param name="Text">A text representation of MegaWatts (MW).</param>
         public static Watt? TryParseMW(String? Text)
         {
 
@@ -502,162 +402,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseGW (Text)
 
         /// <summary>
-        /// Try to parse the given text as GigaWatts.
+        /// Try to parse the given text as GigaWatts (GW).
         /// </summary>
-        /// <param name="Text">A text representation of GigaWatts.</param>
+        /// <param name="Text">A text representation of GigaWatts (GW).</param>
         public static Watt? TryParseGW(String? Text)
         {
 
             if (TryParseGW(Text, out var watt))
-                return watt;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromW   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into watts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of watts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromW(Decimal  Number,
-                                     Int32?   Exponent = null)
-        {
-
-            if (TryFromW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into watts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of watts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromW(Byte    Number,
-                                     Int32?  Exponent = null)
-        {
-
-            if (TryFromW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKW  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kiloWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromKW(Decimal  Number,
-                                      Int32?   Exponent = null)
-        {
-
-            if (TryFromKW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromKW(Byte    Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromKW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromMW  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into MegaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromMW(Decimal  Number,
-                                      Int32?   Exponent = null)
-        {
-
-            if (TryFromMW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into MegaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromMW(Byte    Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromMW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromGW  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into GigaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromGW(Decimal  Number,
-                                      Int32?   Exponent = null)
-        {
-
-            if (TryFromGW(Number, out var watt, Exponent))
-                return watt;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into GigaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWatts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Watt? TryFromGW(Byte    Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromGW(Number, out var watt, Exponent))
                 return watt;
 
             return null;
@@ -766,9 +517,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseW  (Text,                 out Watt)
 
         /// <summary>
-        /// Try to parse the given string as watts using invariant culture.
+        /// Try to parse the given string as Watts (W).
         /// </summary>
-        /// <param name="Text">A text representation of watts.</param>
+        /// <param name="Text">A text representation of Watts (W).</param>
         /// <param name="Watt">The parsed Watt.</param>
         public static Boolean TryParseW(String? Text, out Watt Watt)
         {
@@ -795,9 +546,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKW (Text,                 out Watt)
 
         /// <summary>
-        /// Try to parse the given string as kiloWatts using invariant culture.
+        /// Try to parse the given string as KiloWatts (kW).
         /// </summary>
-        /// <param name="Text">A text representation of a kiloWatts.</param>
+        /// <param name="Text">A text representation of a KiloWatts (kW).</param>
         /// <param name="Watt">The parsed Watt.</param>
         public static Boolean TryParseKW(String? Text, out Watt Watt)
         {
@@ -824,9 +575,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseMW (Text,                 out Watt)
 
         /// <summary>
-        /// Try to parse the given string as MegaWatts using invariant culture.
+        /// Try to parse the given string as MegaWatts (MW).
         /// </summary>
-        /// <param name="Text">A text representation of MegaWatts.</param>
+        /// <param name="Text">A text representation of MegaWatts (MW).</param>
         /// <param name="Watt">The parsed Watt.</param>
         public static Boolean TryParseMW(String? Text, out Watt Watt)
         {
@@ -853,9 +604,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseGW (Text,                 out Watt)
 
         /// <summary>
-        /// Try to parse the given string as GigaWatts using invariant culture.
+        /// Try to parse the given string as GigaWatts (GW).
         /// </summary>
-        /// <param name="Text">A text representation of GigaWatts.</param>
+        /// <param name="Text">A text representation of GigaWatts (GW).</param>
         /// <param name="Watt">The parsed Watt.</param>
         public static Boolean TryParseGW(String? Text, out Watt Watt)
         {
@@ -880,7 +631,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out Watt)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Watt Create(Decimal  Number,
+                                   Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var watt))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return watt;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Watt)
 
         private static Boolean TryCreate(Decimal   Number,
                                          Int32     Exponent,
@@ -916,71 +682,251 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) FromW      (Number,           Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into Watts (W).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Watts (W).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt FromW<TNumber>(TNumber  Number,
+                                          Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKW     (Number,           Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into KiloWatts (kW).
+        /// </summary>
+        /// <param name="Number">A numeric representation of KiloWatts (kW).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt FromKW<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) FromMW     (Number,           Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into MegaWatts (MW).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MegaWatts (MW).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt FromMW<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 6)
+                   );
+
+        #endregion
+
+        #region (static) FromGW     (Number,           Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into GigaWatts (GW).
+        /// </summary>
+        /// <param name="Number">A numeric representation of GigaWatts (GW).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt FromGW<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 9)
+                   );
+
+        #endregion
+
+
+        #region (static) TryFromW   (Number,           Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into Watts (W).
+        /// </summary>
+        /// <param name="Number">A numeric representation of Watts (W).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt? TryFromW<TNumber>(TNumber  Number,
+                                              Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromW(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKW  (Number,           Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into KiloWatts (kW).
+        /// </summary>
+        /// <param name="Number">A numeric representation of KiloWatts (kW).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt? TryFromKW<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKW(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromMW  (Number,           Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MegaWatts (MW).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MegaWatts (MW).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt? TryFromMW<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromMW(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromGW  (Number,           Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into GigaWatts (GW).
+        /// </summary>
+        /// <param name="Number">A numeric representation of GigaWatts (GW).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Watt? TryFromGW<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromGW(Number, out var watt, Exponent))
+                return watt;
+
+            return null;
+
+        }
+
+        #endregion
+
+
         #region (static) TryFromW   (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into watts.
+        /// Try to convert the given number into Watts (W).
         /// </summary>
-        /// <param name="Number">A numeric representation of watts.</param>
+        /// <param name="Number">A numeric representation of Watts (W).</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromW(Byte      Number,
-                                       out Watt  Watt,
-                                       Int32?    Exponent = null)
+        public static Boolean TryFromW<TNumber>(TNumber   Number,
+                                                out Watt  Watt,
+                                                Int32?    Exponent   = null)
 
-            => TryCreate(Number, Exponent ?? 0, out Watt);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// Try to convert the given number into watts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of watts.</param>
-        /// <param name="Watt">The parsed Watt.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromW(Decimal   Number,
-                                       out Watt  Watt,
-                                       Int32?    Exponent = null)
+            Watt = default;
 
-            => TryCreate(Number, Exponent ?? 0, out Watt);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Watt);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+
+        }
 
         #endregion
 
         #region (static) TryFromKW  (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a kiloWatts.
+        /// Try to convert the given number into KiloWatts (kW).
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloWatts.</param>
+        /// <param name="Number">A numeric representation of KiloWatts (kW).</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKW(Byte      Number,
-                                        out Watt  Watt,
-                                        Int32?    Exponent = null)
+        public static Boolean TryFromKW<TNumber>(TNumber   Number,
+                                                 out Watt  Watt,
+                                                 Int32?    Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Watt = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Watt);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into a kiloWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloWatts.</param>
-        /// <param name="Watt">The parsed Watt.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKW(Decimal   Number,
-                                        out Watt  Watt,
-                                        Int32?    Exponent = null)
-        {
-
-            Watt = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Watt);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Watt);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -989,39 +935,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromMW  (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into MegaWatts.
+        /// Try to convert the given number into MegaWatts (MW).
         /// </summary>
-        /// <param name="Number">A numeric representation of MegaWatts.</param>
+        /// <param name="Number">A numeric representation of MegaWatts (MW).</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMW(Byte      Number,
-                                        out Watt  Watt,
-                                        Int32?    Exponent = null)
+        public static Boolean TryFromMW<TNumber>(TNumber   Number,
+                                                 out Watt  Watt,
+                                                 Int32?    Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Watt = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out Watt);
+            if (!MathHelpers.TryAddExponent(Exponent, 6, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into MegaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of MegaWatts.</param>
-        /// <param name="Watt">The parsed Watt.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMW(Decimal   Number,
-                                        out Watt  Watt,
-                                        Int32?    Exponent = null)
-        {
-
-            Watt = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 6, out var exponent) &&
-                   TryCreate(Number, exponent, out Watt);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Watt);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -1030,39 +975,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromGW  (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into GigaWatts.
+        /// Try to convert the given number into GigaWatts (GW).
         /// </summary>
-        /// <param name="Number">A numeric representation of GigaWatts.</param>
+        /// <param name="Number">A numeric representation of GigaWatts (GW).</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGW(Byte      Number,
-                                        out Watt  Watt,
-                                        Int32?    Exponent = null)
+        public static Boolean TryFromGW<TNumber>(TNumber   Number,
+                                                 out Watt  Watt,
+                                                 Int32?    Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Watt = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out Watt);
+            if (!MathHelpers.TryAddExponent(Exponent, 9, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into GigaWatts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of GigaWatts.</param>
-        /// <param name="Watt">The parsed Watt.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromGW(Decimal   Number,
-                                        out Watt  Watt,
-                                        Int32?    Exponent = null)
-        {
-
-            Watt = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 9, out var exponent) &&
-                   TryCreate(Number, exponent, out Watt);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Watt);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

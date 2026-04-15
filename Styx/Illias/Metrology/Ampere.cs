@@ -27,7 +27,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extension methods for Amperes.
+    /// Extension methods for Ampere (A) values.
     /// </summary>
     public static class AmpereExtensions
     {
@@ -568,6 +568,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region (static) TryFromA   (Number,             Exponent = null)
 
         /// <summary>
@@ -576,7 +577,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of amperes.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere? TryFromA<TNumber>(TNumber  Number,
-                                                Int32?   Exponent = null)
+                                                Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -599,7 +600,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of kiloAmpere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Ampere? TryFromKA<TNumber>(TNumber  Number,
-                                                 Int32?   Exponent = null)
+                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -614,6 +615,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
         #region (static) TryFromA   (Number, out Ampere, Exponent = null)
 
         /// <summary>
@@ -624,7 +626,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromA<TNumber>(TNumber     Number,
                                                 out Ampere  Ampere,
-                                                Int32?      Exponent = null)
+                                                Int32?      Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -664,7 +666,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKA<TNumber>(TNumber     Number,
                                                  out Ampere  Ampere,
-                                                 Int32?      Exponent = null)
+                                                 Int32?      Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
