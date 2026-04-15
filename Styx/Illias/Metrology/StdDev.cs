@@ -34,122 +34,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class StdDevExtensions
     {
 
-        #region MeanAndStdDev (Enumerable, IsSampleData = true)
-
-        /// <summary>
-        /// Calculates the mean and standard deviation of the given enumeration of numbers.
-        /// </summary>
-        /// <param name="Enumerable">An enumeration of numbers.</param>
-        /// <param name="IsSampleData">true = sampled stddev (÷(n-1)), false = entire population stddev (÷n).</param>
-        public static StdDev<T>
-
-            MeanAndStdDev<T>(this IEnumerable<T>  Enumerable,
-                             Boolean              IsSampleData   = true)
-
-            where T : IFloatingPointIeee754<T>
-
-        {
-
-            T     mean   = T.Zero;
-            T     m2     = T.Zero;
-            Int64 count  = 0;
-
-            foreach (var element in Enumerable)
-            {
-
-                count++;
-                var delta1  = element - mean;
-
-                mean += delta1 / T.CreateChecked(count);
-                var delta2  = element - mean;
-
-                m2   += delta1 * delta2;
-
-            }
-
-            if (count == 0)
-                return new StdDev<T>(
-                           T.Zero,
-                           T.Zero
-                       );
-
-            if (count == 1)
-                return new StdDev<T>(
-                           mean,
-                           T.Zero
-                       );
-
-            return new StdDev<T>(
-                       mean,
-                       T.Sqrt(
-                           m2 / T.CreateChecked(IsSampleData
-                                                    ? count - 1
-                                                    : count)
-                       )
-                   );
-
-        }
-
-        #endregion
-
-        #region MeanAndStdDev (Span,       IsSampleData = true)
-
-        /// <summary>
-        /// Calculates the mean and standard deviation of the given span of numbers.
-        /// </summary>
-        /// <param name="Span">A span of numbers.</param>
-        /// <param name="IsSampleData">true = sampled stddev (÷(n-1)), false = entire population stddev (÷n).</param>
-        public static StdDev<T>
-
-            MeanAndStdDev<T>(this ReadOnlySpan<T>  Span,
-                             Boolean               IsSampleData   = true)
-
-            where T : IFloatingPointIeee754<T>
-
-        {
-
-            if (Span.IsEmpty)
-                return new StdDev<T>(
-                           T.Zero,
-                           T.Zero
-                       );
-
-            var mean  = T.Zero;
-            var m2    = T.Zero;
-
-            for (var i = 0; i < Span.Length; i++)
-            {
-
-                var n = (long) i + 1;
-                T delta  = Span[i] - mean;
-
-                mean += delta / T.CreateChecked(n);
-                T delta2 = Span[i] - mean;
-
-                m2 += delta * delta2;
-
-            }
-
-            if (Span.Length == 1)
-                return new StdDev<T>(
-                           mean,
-                           T.Zero
-                       );
-
-            return new StdDev<T>(
-                       mean,
-                       T.Sqrt(
-                           m2 / T.CreateChecked(IsSampleData
-                                                    ? Span.Length - 1
-                                                    : Span.Length)
-                       )
-                   );
-
-        }
-
-        #endregion
-
-
         public static JArray ToJSON<T>(this StdDev<T> StdDev,
                                        String? Unit = null)
 
@@ -194,10 +78,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
           IComparable<StdDev<T>>,
           IComparable
 
-         where T : IFloatingPointIeee754<T>,
+         where T : IParsable<T>,
                    IEquatable<T>,
                    IComparable<T>,
-                   IParsable<T>
+                   IComparable
 
     {
 
@@ -215,6 +99,180 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        public static StdDev<T> From(T Mean,
+                                     T StandardDeviation)
+
+            => new (Mean, StandardDeviation);
+
+
+        #region From (Enumerable, IsSampleData = true)
+
+        /// <summary>
+        /// Calculates the mean and standard deviation of the given enumeration of numbers.
+        /// </summary>
+        /// <param name="Enumerable">An enumeration of numbers.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<T2>
+
+            From<T2>(IEnumerable<T2>  Enumerable,
+                     Boolean?         IsSampleData   = true)
+
+            where T2 : IFloatingPointIeee754<T2>
+
+        {
+
+            var   mean   = T2.Zero;
+            var   m2     = T2.Zero;
+            Int64 count  = 0;
+
+            foreach (var element in Enumerable)
+            {
+
+                count++;
+                var delta1  = element - mean;
+
+                mean += delta1 / T2.CreateChecked(count);
+                var delta2  = element - mean;
+
+                m2   += delta1 * delta2;
+
+            }
+
+            if (count == 0)
+                return new StdDev<T2>(
+                           T2.Zero,
+                           T2.Zero
+                       );
+
+            if (count == 1)
+                return new StdDev<T2>(
+                           mean,
+                           T2.Zero
+                       );
+
+            return new StdDev<T2>(
+                       mean,
+                       T2.Sqrt(
+                           m2 / T2.CreateChecked(IsSampleData == true
+                                                     ? count - 1
+                                                     : count)
+                       )
+                   );
+
+        }
+
+
+        /// <summary>
+        /// Calculates the mean and standard deviation of the given enumeration of numbers.
+        /// </summary>
+        /// <param name="Enumerable">An enumeration of numbers.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Decimal>
+
+            From(IEnumerable<Decimal>  Enumerable,
+                 Boolean?              IsSampleData   = true)
+
+        {
+
+            var   mean   = Decimal.Zero;
+            var   m2     = Decimal.Zero;
+            Int64 count  = 0;
+
+            foreach (var element in Enumerable)
+            {
+
+                count++;
+                var delta1  = element - mean;
+
+                mean += delta1 / Decimal.CreateChecked(count);
+                var delta2  = element - mean;
+
+                m2   += delta1 * delta2;
+
+            }
+
+            if (count == 0)
+                return new StdDev<Decimal>(
+                           Decimal.Zero,
+                           Decimal.Zero
+                       );
+
+            if (count == 1)
+                return new StdDev<Decimal>(
+                           mean,
+                           Decimal.Zero
+                       );
+
+            return new StdDev<Decimal>(
+                       mean,
+                       (Decimal) Math.Sqrt(
+                           (Double) (m2 / Decimal.CreateChecked(IsSampleData == true
+                                                                    ? count - 1
+                                                                    : count))
+                       )
+                   );
+
+        }
+
+        #endregion
+
+        #region From (Span,       IsSampleData = true)
+
+        /// <summary>
+        /// Calculates the mean and standard deviation of the given span of numbers.
+        /// </summary>
+        /// <param name="Span">A span of numbers.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<T2>
+
+            From<T2>(ReadOnlySpan<T2>  Span,
+                     Boolean?          IsSampleData   = true)
+
+            where T2 : IFloatingPointIeee754<T2>
+
+        {
+
+            if (Span.IsEmpty)
+                return new StdDev<T2>(
+                           T2.Zero,
+                           T2.Zero
+                       );
+
+            var mean  = T2.Zero;
+            var m2    = T2.Zero;
+
+            for (var i = 0; i < Span.Length; i++)
+            {
+
+                var n = (long) i + 1;
+                T2 delta  = Span[i] - mean;
+
+                mean += delta / T2.CreateChecked(n);
+                T2 delta2 = Span[i] - mean;
+
+                m2 += delta * delta2;
+
+            }
+
+            if (Span.Length == 1)
+                return new StdDev<T2>(
+                           mean,
+                           T2.Zero
+                       );
+
+            return new StdDev<T2>(
+                       mean,
+                       T2.Sqrt(
+                           m2 / T2.CreateChecked(IsSampleData == true
+                                                     ? Span.Length - 1
+                                                     : Span.Length)
+                       )
+                   );
+
+        }
+
+        #endregion
 
 
 
@@ -316,11 +374,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (parts.Length != 2)
                 return false;
 
-            if (!T.TryParse(parts[0], provider, out var value) ||
+            if (!T.TryParse(parts[0], provider, out var mean) ||
                 !T.TryParse(parts[1], provider, out var stdDev))
+            {
                 return false;
+            }
 
-            StdDev = new StdDev<T>(value, stdDev);
+            StdDev = new StdDev<T>(
+                         mean,
+                         stdDev
+                     );
 
             return true;
 

@@ -19,6 +19,7 @@
 
 using System.Numerics;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -28,7 +29,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A percentage (Internal Byte variant).
     /// </summary>
-    public readonly struct PercentageByte : IEquatable <PercentageByte>,
+    public readonly struct PercentageByte : IParsable  <PercentageByte>,
+                                            IEquatable <PercentageByte>,
                                             IComparable<PercentageByte>,
                                             IComparable,
                                             IAdditionOperators   <PercentageByte, PercentageByte, PercentageByte>,
@@ -348,17 +350,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse    (Number, StdDev, out Percentage, NumberExponent = null, StdDevExponent = null)
+        #region (static) TryParse    (Mean, StdDev, out Percentage, NumberExponent = null, StdDevExponent = null)
 
         /// <summary>
         /// Parse the given number as a percentage with standard deviation.
         /// </summary>
-        /// <param name="Number">A numeric representation of a percentage.</param>
+        /// <param name="Mean">A numeric representation of a percentage.</param>
         /// <param name="StdDev">The standard deviation of the value.</param>
         /// <param name="Percentage">The parsed percentage with standard deviation.</param>
         /// <param name="NumberExponent">An optional 10^exponent for the number.</param>
         /// <param name="StdDevExponent">An optional 10^exponent for the standard deviation.</param>
-        public static Boolean TryParse(Byte                        Number,
+        public static Boolean TryParse(Byte                        Mean,
                                        Byte                        StdDev,
                                        out StdDev<PercentageByte>  Percentage,
                                        Int32?                      NumberExponent = null,
@@ -367,11 +369,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                if (TryParse(Number, out var number) &&
+                if (TryParse(Mean,   out var mean) &&
                     TryParse(StdDev, out var stddev))
                 {
 
-                    Percentage = new StdDev<PercentageByte>(number, stddev);
+                    Percentage = new StdDev<PercentageByte>(mean, stddev);
 
                     return true;
 
@@ -497,7 +499,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Percentage1, Percentage2)
 
         /// <summary>
-        /// Substracts two percentages.
+        /// Subtracts two percentages.
         /// </summary>
         /// <param name="Percentage1">A percentage.</param>
         /// <param name="Percentage2">Another percentage.</param>
@@ -591,6 +593,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => $"{Value.ToString(CultureInfo.InvariantCulture)} %";
 
         #endregion
+
+        public static PercentageByte Parse(String s, IFormatProvider? provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Boolean TryParse([NotNullWhen(true)] String? s, IFormatProvider? provider, [MaybeNullWhen(false)] out PercentageByte result)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 

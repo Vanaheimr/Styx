@@ -844,7 +844,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (SquareMeter1, SquareMeter2)
 
         /// <summary>
-        /// Substracts two SquareMeters.
+        /// Subtracts two SquareMeters.
         /// </summary>
         /// <param name="SquareMeter1">A m².</param>
         /// <param name="SquareMeter2">Another m².</param>

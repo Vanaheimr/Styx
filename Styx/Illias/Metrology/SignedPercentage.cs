@@ -19,6 +19,7 @@
 
 using System.Numerics;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -28,7 +29,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A signedPercentage between -100% and +100%
     /// </summary>
-    public readonly struct SignedPercentage : IEquatable <SignedPercentage>,
+    public readonly struct SignedPercentage : IParsable  <SignedPercentage>,
+                                              IEquatable <SignedPercentage>,
                                               IComparable<SignedPercentage>,
                                               IComparable,
                                               IAdditionOperators   <SignedPercentage, SignedPercentage, SignedPercentage>,
@@ -231,17 +233,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse (Number, StdDev, out SignedPercentage, NumberExponent = null, StdDevExponent = null)
+        #region (static) TryParse (Mean, StdDev, out SignedPercentage, NumberExponent = null, StdDevExponent = null)
 
         /// <summary>
         /// Parse the given number as a signed percentage with standard deviation.
         /// </summary>
-        /// <param name="Number">A numeric representation of a signed percentage.</param>
+        /// <param name="Mean">A numeric representation of a signed percentage.</param>
         /// <param name="StdDev">The standard deviation of the value.</param>
         /// <param name="SignedPercentage">The parsed signedPercentage with standard deviation.</param>
         /// <param name="NumberExponent">An optional 10^exponent for the number.</param>
         /// <param name="StdDevExponent">An optional 10^exponent for the standard deviation.</param>
-        public static Boolean TryParse(Decimal                       Number,
+        public static Boolean TryParse(Decimal                       Mean,
                                        Decimal                       StdDev,
                                        out StdDev<SignedPercentage>  SignedPercentage,
                                        Int32?                        NumberExponent = null,
@@ -250,11 +252,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                if (TryParse(Number, out var number) &&
+                if (TryParse(Mean,   out var mean) &&
                     TryParse(StdDev, out var stddev))
                 {
 
-                    SignedPercentage = new StdDev<SignedPercentage>(number, stddev);
+                    SignedPercentage = new StdDev<SignedPercentage>(mean, stddev);
 
                     return true;
 
@@ -380,7 +382,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (SignedPercentage1, SignedPercentage2)
 
         /// <summary>
-        /// Substracts two signedPercentages.
+        /// Subtracts two signedPercentages.
         /// </summary>
         /// <param name="SignedPercentage1">A signedPercentage.</param>
         /// <param name="SignedPercentage2">Another signedPercentage.</param>
@@ -474,6 +476,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => $"{Value.ToString(CultureInfo.InvariantCulture)} %";
 
         #endregion
+
+        public static SignedPercentage Parse(String s, IFormatProvider? provider)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Boolean TryParse([NotNullWhen(true)] String? s, IFormatProvider? provider, [MaybeNullWhen(false)] out SignedPercentage result)
+        {
+            throw new NotImplementedException();
+        }
 
     }
 

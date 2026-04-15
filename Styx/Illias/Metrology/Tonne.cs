@@ -727,7 +727,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Tonne1, Tonne2)
 
         /// <summary>
-        /// Substracts two Tonne.
+        /// Subtracts two Tonne.
         /// </summary>
         /// <param name="Tonne1">A Tonne.</param>
         /// <param name="Tonne2">Another Tonne.</param>

@@ -24,36 +24,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static partial class StdDevTimeSpanExtensions
     {
 
-        #region (static) FromMilliseconds (Number, StdDev)
+        #region (static) FromMilliseconds (Mean, StdDev)
 
         /// <summary>
         /// Parse the given numbers as a milliseconds time span with standard deviation.
         /// </summary>
-        /// <param name="Number">A numeric representation of milliseconds.</param>
+        /// <param name="Mean">A numeric representation of milliseconds.</param>
         /// <param name="StdDev">The standard deviation of the value in milliseconds.</param>
-        public static StdDev<TimeSpan> FromMilliseconds(Double Number,
+        public static StdDev<TimeSpan> FromMilliseconds(Double Mean,
                                                         Double StdDev)
 
             => new (
-                   TimeSpan.FromMilliseconds(Number),
+                   TimeSpan.FromMilliseconds(Mean),
                    TimeSpan.FromMilliseconds(StdDev)
                );
 
         #endregion
 
-        #region (static) FromSeconds      (Number, StdDev)
+        #region (static) FromSeconds      (Mean, StdDev)
 
         /// <summary>
         /// Parse the given numbers as a seconds time span with standard deviation.
         /// </summary>
-        /// <param name="Number">A numeric representation of seconds.</param>
+        /// <param name="Mean">A numeric representation of seconds.</param>
         /// <param name="StdDev">The standard deviation of the value in seconds.</param>
-        public static StdDev<TimeSpan> FromSeconds(Double Number,
+        public static StdDev<TimeSpan> FromSeconds(Double Mean,
                                                    Double StdDev)
 
             => new (
-                   TimeSpan.FromSeconds(Number),
+                   TimeSpan.FromSeconds(Mean),
                    TimeSpan.FromSeconds(StdDev)
+               );
+
+        #endregion
+
+        #region (static) FromMinutes      (Mean, StdDev)
+
+        /// <summary>
+        /// Parse the given numbers as a minutes time span with standard deviation.
+        /// </summary>
+        /// <param name="Mean">A numeric representation of minutes.</param>
+        /// <param name="StdDev">The standard deviation of the value in minutes.</param>
+        public static StdDev<TimeSpan> FromMinutes(Double Mean,
+                                                   Double StdDev)
+
+            => new (
+                   TimeSpan.FromMinutes(Mean),
+                   TimeSpan.FromMinutes(StdDev)
                );
 
         #endregion

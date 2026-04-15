@@ -17,8 +17,9 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 #endregion
 
@@ -31,43 +32,87 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class SiemensExtensions
     {
 
+        #region Sum    (this SiemensValues)
+
         /// <summary>
-        /// The sum of the given Siemens values.
+        /// The sum of the given enumeration of Siemens values.
         /// </summary>
-        /// <param name="Siemens">An enumeration of Siemens values.</param>
-        public static Siemens Sum(this IEnumerable<Siemens> Siemens)
+        /// <param name="SiemensValues">An enumeration of Siemens values.</param>
+        public static Siemens Sum(this IEnumerable<Siemens> SiemensValues)
         {
 
-            var sum = Illias.Siemens.Zero;
+            var sum = Siemens.Zero;
 
-            foreach (var siemens in Siemens)
-                sum = sum + siemens;
+            foreach (var siemens in SiemensValues)
+                sum += siemens;
 
             return sum;
 
         }
 
+        #endregion
+
+        #region Avg    (this SiemensValues)
+
+        /// <summary>
+        /// The average of the given enumeration of Siemens values.
+        /// </summary>
+        /// <param name="SiemensValues">An enumeration of Siemens values.</param>
+        public static Siemens Avg(this IEnumerable<Siemens> SiemensValues)
+        {
+
+            var sum    = Siemens.Zero;
+            var count  = 0;
+
+            foreach (var siemens in SiemensValues)
+            {
+                sum += siemens;
+                count++;
+            }
+
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this SiemensValues)
+
+        /// <summary>
+        /// The standard deviation of the given enumeration of Siemens values.
+        /// </summary>
+        /// <param name="SiemensValues">An enumeration of Siemens values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Siemens> StdDev(this IEnumerable<Siemens>  SiemensValues,
+                                             Boolean?                   IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Siemens>.From(
+                             SiemensValues.Select(siemens => siemens.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Siemens>(
+                       Siemens.FromS(stdDev.Mean),
+                       Siemens.FromS(stdDev.StandardDeviation)
+                   );
+
+        }
+
+        #endregion
+
     }
 
 
     /// <summary>
-    /// A Siemens value.
+    /// A Siemens value (S), the SI unit of electric conductance.
     /// </summary>
-    public readonly struct Siemens : IEquatable <Siemens>,
-                                     IComparable<Siemens>,
-                                     IComparable,
-                                     IAdditionOperators   <Siemens, Siemens, Siemens>,
-                                     ISubtractionOperators<Siemens, Siemens, Siemens>,
-                                     IMultiplyOperators   <Siemens, Decimal, Siemens>,
-                                     IDivisionOperators   <Siemens, Decimal, Siemens>
+    public readonly struct Siemens : IMetrology<Siemens>
     {
 
         #region Properties
-
-        /// <summary>
-        /// The zero value of the Siemens.
-        /// </summary>
-        public static readonly Siemens Zero = new (0m);
 
         /// <summary>
         /// The value of the Siemens.
@@ -84,20 +129,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
                );
 
 
+#pragma warning disable IDE1006 // Naming Styles
         /// <summary>
-        /// The value as Kilo-Siemens.
+        /// The value as kiloSiemens.
         /// </summary>
-        public Decimal  KS
-            => Value / 1000;
+        public Decimal  kS
+            => Value / 1000m;
+#pragma warning restore IDE1006 // Naming Styles
+
+
+        /// <summary>
+        /// The zero value of the Siemens.
+        /// </summary>
+        public static readonly Siemens Zero = new (0m);
+
+        /// <summary>
+        /// The additive identity of Siemens.
+        /// </summary>
+        public static Siemens AdditiveIdentity
+            => Zero;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Siemens based on the given number.
+        /// Create a new Siemens (S) based on the given number.
         /// </summary>
-        /// <param name="Value">A numeric representation of a Siemens.</param>
+        /// <param name="Value">A numeric representation of siemens (S).</param>
         private Siemens(Decimal Value)
         {
             this.Value = Value;
@@ -109,17 +168,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Parse      (Text)
 
         /// <summary>
-        /// Parse the given string as a Siemens.
+        /// Parse the given string as siemens using invariant culture.
+        /// Supports optional suffixes "S" and "kS".
         /// </summary>
-        /// <param name="Text">A text representation of a Siemens.</param>
+        /// <param name="Text">A text representation of siemens.</param>
         public static Siemens Parse(String Text)
+
+            => Parse(Text, CultureInfo.InvariantCulture);
+
+        #endregion
+
+        #region (static) Parse      (Text, FormatProvider)
+
+        /// <summary>
+        /// Parse the given string as siemens using the given format provider.
+        /// Supports optional suffixes "S" and "kS".
+        /// </summary>
+        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Siemens Parse(String            Text,
+                                    IFormatProvider?  FormatProvider)
         {
 
-            if (TryParse(Text, out var siemens))
+            if (TryParse(Text, FormatProvider, out var siemens))
                 return siemens;
 
-            throw new ArgumentException($"Invalid text representation of a Siemens: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of siemens: '{Text}'!");
+
+        }
+
+        #endregion
+
+        #region (static) Parse      (Span, FormatProvider)
+
+        /// <summary>
+        /// Parse the given text span as siemens using the given format provider.
+        /// Supports optional suffixes "S" and "kS".
+        /// </summary>
+        /// <param name="Span">A text representation of siemens.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Siemens Parse(ReadOnlySpan<Char>  Span,
+                                    IFormatProvider?    FormatProvider)
+        {
+
+            if (TryParse(Span, FormatProvider, out var siemens))
+                return siemens;
+
+            throw new FormatException($"Invalid text representation of siemens: '{Span}'!");
 
         }
 
@@ -128,17 +223,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseS     (Text)
 
         /// <summary>
-        /// Parse the given string as a Siemens.
+        /// Parse the given string as siemens.
         /// </summary>
-        /// <param name="Text">A text representation of a Siemens.</param>
+        /// <param name="Text">A text representation of siemens.</param>
         public static Siemens ParseS(String Text)
         {
 
             if (TryParseS(Text, out var siemens))
                 return siemens;
 
-            throw new ArgumentException($"Invalid text representation of a Siemens: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of siemens: '{Text}'!");
 
         }
 
@@ -147,98 +241,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKS    (Text)
 
         /// <summary>
-        /// Parse the given string as a Kilo-Siemens (kS).
+        /// Parse the given string as kiloSiemens.
         /// </summary>
-        /// <param name="Text">A text representation of a Kilo-Siemens (kS).</param>
+        /// <param name="Text">A text representation of a kiloSiemens.</param>
         public static Siemens ParseKS(String Text)
         {
 
             if (TryParseKS(Text, out var siemens))
                 return siemens;
 
-            throw new ArgumentException($"Invalid text representation of a Kilo-Siemens (kS): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a kiloSiemens: '{Text}'!");
 
         }
 
         #endregion
 
 
-        #region (static) ParseS     (Number, Exponent = null)
+        #region (static) FromS      (Number, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a Siemens.
+        /// Convert the given number into siemens.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Siemens.</param>
+        /// <param name="Number">A numeric representation of siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens ParseS(Decimal  Number,
-                                     Int32?   Exponent = null)
-        {
+        public static Siemens FromS<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
 
-            if (TryParseS(Number, out var siemens, Exponent))
-                return siemens;
+            where TNumber : INumberBase<TNumber>
 
-            throw new ArgumentException($"Invalid numeric representation of a Siemens: '{Number}'!",
-                                        nameof(Number));
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a Siemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Siemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens ParseS(Byte    Number,
-                                     Int32?  Exponent = null)
-        {
-
-            if (TryParseS(Number, out var siemens, Exponent))
-                return siemens;
-
-            throw new ArgumentException($"Invalid numeric representation of a Siemens: '{Number}'!",
-                                        nameof(Number));
-
-        }
+                => Create(Decimal.CreateChecked(Number), Exponent ?? 0);
 
         #endregion
 
-        #region (static) ParseKS    (Number, Exponent = null)
+        #region (static) FromKS     (Number, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a Kilo-Siemens (kS).
+        /// Convert the given number into kiloSiemens.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Kilo-Siemens (kS).</param>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens ParseKS(Decimal  Number,
-                                      Int32?   Exponent = null)
-        {
+        public static Siemens FromKS<TNumber>(TNumber  Number,
+                                              Int32?   Exponent   = null)
 
-            if (TryParseKS(Number, out var siemens, Exponent))
-                return siemens;
+            where TNumber : INumberBase<TNumber>
 
-            throw new ArgumentException($"Invalid numeric representation of a Kilo-Siemens (kS): '{Number}'!",
-                                        nameof(Number));
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a Kilo-Siemens (kS).
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Kilo-Siemens (kS).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens ParseKS(Byte    Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryParseKS(Number, out var siemens, Exponent))
-                return siemens;
-
-            throw new ArgumentException($"Invalid numeric representation of a Kilo-Siemens (kS): '{Number}'!",
-                                        nameof(Number));
-
-        }
+                => Create(1000m * Decimal.CreateChecked(Number), Exponent ?? 0);
 
         #endregion
 
@@ -246,13 +293,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParse   (Text)
 
         /// <summary>
-        /// Try to parse the given text as a Siemens.
+        /// Try to parse the given text as siemens with an optional unit suffix ("S" or "kS")
+        /// using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a Siemens.</param>
-        public static Siemens? TryParse(String Text)
+        /// <param name="Text">A text representation of siemens.</param>
+        public static Siemens? TryParse(String? Text)
         {
 
-            if (TryParse(Text, out var siemens))
+            if (TryParse(Text, CultureInfo.InvariantCulture, out var siemens))
+                return siemens;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse   (Text, FormatProvider)
+
+        /// <summary>
+        /// Try to parse the given text as siemens with an optional unit suffix ("S" or "kS")
+        /// using the given format provider.
+        /// </summary>
+        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Siemens? TryParse(String?           Text,
+                                        IFormatProvider?  FormatProvider)
+        {
+
+            if (TryParse(Text, FormatProvider, out var siemens))
                 return siemens;
 
             return null;
@@ -264,10 +333,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseS  (Text)
 
         /// <summary>
-        /// Try to parse the given text as a Siemens.
+        /// Try to parse the given text as siemens.
         /// </summary>
-        /// <param name="Text">A text representation of a Siemens.</param>
-        public static Siemens? TryParseS(String Text)
+        /// <param name="Text">A text representation of siemens.</param>
+        public static Siemens? TryParseS(String? Text)
         {
 
             if (TryParseS(Text, out var siemens))
@@ -282,10 +351,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKS (Text)
 
         /// <summary>
-        /// Try to parse the given text as a Kilo-Siemens (kS).
+        /// Try to parse the given text as kiloSiemens.
         /// </summary>
-        /// <param name="Text">A text representation of a Kilo-Siemens (kS).</param>
-        public static Siemens? TryParseKS(String Text)
+        /// <param name="Text">A text representation of a kiloSiemens.</param>
+        public static Siemens? TryParseKS(String? Text)
         {
 
             if (TryParseKS(Text, out var siemens))
@@ -298,18 +367,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseS  (Number, Exponent = null)
+        #region (static) TryFromS   (Number, Exponent = null)
 
         /// <summary>
-        /// Try to parse the given number as a Siemens.
+        /// Try to convert the given number into siemens.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Siemens.</param>
+        /// <param name="Number">A numeric representation of siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryParseS(Decimal  Number,
+        public static Siemens? TryFromS(Decimal  Number,
+                                        Int32?   Exponent = null)
+        {
+
+            if (TryFromS(Number, out var siemens, Exponent))
+                return siemens;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to convert the given number into siemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Siemens? TryFromS(Byte    Number,
+                                        Int32?  Exponent = null)
+        {
+
+            if (TryFromS(Number, out var siemens, Exponent))
+                return siemens;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKS  (Number, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kiloSiemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Siemens? TryFromKS(Decimal  Number,
                                          Int32?   Exponent = null)
         {
 
-            if (TryParseS(Number, out var siemens, Exponent))
+            if (TryFromKS(Number, out var siemens, Exponent))
                 return siemens;
 
             return null;
@@ -318,52 +424,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to parse the given number as a Siemens.
+        /// Try to convert the given number into kiloSiemens.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Siemens.</param>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryParseS(Byte    Number,
+        public static Siemens? TryFromKS(Byte    Number,
                                          Int32?  Exponent = null)
         {
 
-            if (TryParseS(Number, out var siemens, Exponent))
-                return siemens;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParseKS (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as a Kilo-Siemens (kS).
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Kilo-Siemens (kS).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryParseKS(Decimal  Number,
-                                          Int32?   Exponent = null)
-        {
-
-            if (TryParseKS(Number, out var siemens, Exponent))
-                return siemens;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as a Kilo-Siemens (kS).
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Kilo-Siemens (kS).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryParseKS(Byte    Number,
-                                          Int32?  Exponent = null)
-        {
-
-            if (TryParseKS(Number, out var siemens, Exponent))
+            if (TryFromKS(Number, out var siemens, Exponent))
                 return siemens;
 
             return null;
@@ -373,14 +442,99 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text,   out Siemens)
+        #region (static) TryParse   (Text,                 out Siemens)
 
         /// <summary>
-        /// Parse the given string as a Siemens.
+        /// Try to parse the given string as siemens using invariant culture.
+        /// Supports optional suffixes "S" and "kS".
         /// </summary>
-        /// <param name="Text">A text representation of a Siemens.</param>
+        /// <param name="Text">A text representation of siemens.</param>
         /// <param name="Siemens">The parsed Siemens.</param>
-        public static Boolean TryParse(String Text, out Siemens Siemens)
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       out                 Siemens  Siemens)
+
+            => TryParse(Text.AsSpan(),
+                        CultureInfo.InvariantCulture,
+                        out Siemens);
+
+        #endregion
+
+        #region (static) TryParse   (Text, FormatProvider, out Siemens)
+
+        /// <summary>
+        /// Try to parse the given string as siemens using the given format provider.
+        /// Supports optional suffixes "S" and "kS".
+        /// </summary>
+        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        /// <param name="Siemens">The parsed Siemens.</param>
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       IFormatProvider?             FormatProvider,
+                                       out Siemens                  Siemens)
+
+            => TryParse(Text.AsSpan(),
+                        FormatProvider,
+                        out Siemens);
+
+        #endregion
+
+        #region (static) TryParse   (Span, FormatProvider, out Siemens)
+
+        /// <summary>
+        /// Try to parse the given text span as siemens using the given format provider.
+        /// Supports optional suffixes "S" and "kS".
+        /// </summary>
+        /// <param name="Span">A text representation of siemens.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        /// <param name="Siemens">The parsed Siemens.</param>
+        public static Boolean TryParse(ReadOnlySpan<Char>  Span,
+                                       IFormatProvider?    FormatProvider,
+                                       out Siemens         Siemens)
+        {
+
+            Siemens = default;
+
+            Span = Span.Trim();
+
+            if (Span.IsEmpty)
+                return false;
+
+            var exponent  = 0;
+
+            if      (Span.EndsWith("kS".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = 3;
+                Span      = Span[..^2].TrimEnd();
+            }
+
+            else if (Span.EndsWith("S".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            {
+                Span      = Span[..^1].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Span,
+                                 NumberStyles.Number,
+                                 NumberFormatInfo.GetInstance(FormatProvider),
+                                 out var value))
+            {
+                return TryCreate(value, exponent, out Siemens);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseS  (Text,                 out Siemens)
+
+        /// <summary>
+        /// Try to parse the given string as siemens using invariant culture.
+        /// </summary>
+        /// <param name="Text">A text representation of siemens.</param>
+        /// <param name="Siemens">The parsed Siemens.</param>
+        public static Boolean TryParseS([NotNullWhen(true)] String?  Text,
+                                        out                 Siemens  Siemens)
         {
 
             Siemens = default;
@@ -388,31 +542,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (String.IsNullOrWhiteSpace(Text))
                 return false;
 
-            Text = Text.Trim();
-
-            var factor = 1m;
-
-            if      (Text.EndsWith("kS", StringComparison.OrdinalIgnoreCase))
-            {
-                factor  = 1000m;
-                Text    = Text[..^2].TrimEnd();
-            }
-
-            else if (Text.EndsWith("S",  StringComparison.OrdinalIgnoreCase))
-            {
-                Text    = Text[..^1].TrimEnd();
-            }
-
-            if (Decimal.TryParse(Text,
+            if (Decimal.TryParse(Text.Trim(),
                                  NumberStyles.Number,
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-
-                Siemens = new Siemens(value * factor);
-
-                return true;
-
+                return TryCreate(value, 0, out Siemens);
             }
 
             return false;
@@ -421,66 +556,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseS  (Text,   out Siemens)
+        #region (static) TryParseKS (Text,                 out Siemens)
 
         /// <summary>
-        /// Parse the given string as a Siemens.
+        /// Try to parse the given string as kiloSiemens using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a Siemens.</param>
+        /// <param name="Text">A text representation of an kiloSiemens.</param>
         /// <param name="Siemens">The parsed Siemens.</param>
-        public static Boolean TryParseS(String Text, out Siemens Siemens)
+        public static Boolean TryParseKS([NotNullWhen(true)] String?  Text,
+                                         out                 Siemens  Siemens)
         {
 
-            try
-            {
-
-                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
-                {
-
-                    Siemens = new Siemens(value);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
             Siemens = default;
-            return false;
 
-        }
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
 
-        #endregion
-
-        #region (static) TryParseKS (Text,   out Siemens)
-
-        /// <summary>
-        /// Parse the given string as a Kilo-Siemens (kS).
-        /// </summary>
-        /// <param name="Text">A text representation of a Kilo-Siemens (kS).</param>
-        /// <param name="Siemens">The parsed Kilo-Siemens (kS).</param>
-        public static Boolean TryParseKS(String Text, out Siemens Siemens)
-        {
-
-            try
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
             {
-
-                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
-                {
-
-                    Siemens = new Siemens(1000 * value);
-
-                    return true;
-
-                }
-
+                return TryCreate(value, 3, out Siemens);
             }
-            catch
-            { }
 
-            Siemens = default;
             return false;
 
         }
@@ -488,119 +587,133 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseS  (Number, out Siemens, Exponent = null)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Siemens Create(Decimal Number, Int32 Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var siemens))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return siemens;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Siemens)
+
+        private static Boolean TryCreate(Decimal      Number,
+                                         Int32        Exponent,
+                                         out Siemens  Siemens)
+        {
+
+            Siemens = default;
+
+            if (Exponent < -28 || Exponent > 28)
+                return false;
+
+            if (Number == 0m)
+            {
+                Siemens = Zero;
+                return true;
+            }
+
+            try
+            {
+                Siemens = new Siemens(Number * MathHelpers.Pow10(Exponent));
+                return true;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryFromS   (Number, out Siemens, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a Siemens.
+        /// Try to convert the given number into siemens.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Siemens.</param>
+        /// <param name="Number">A numeric representation of siemens.</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseS(Byte         Number,
+        public static Boolean TryFromS(Byte         Number,
+                                       out Siemens  Siemens,
+                                       Int32?       Exponent = null)
+        {
+
+            Siemens = default;
+
+            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
+                   TryCreate(Number, exponent, out Siemens);
+
+        }
+
+
+        /// <summary>
+        /// Try to convert the given number into siemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Siemens">The parsed Siemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFromS(Decimal      Number,
+                                       out Siemens  Siemens,
+                                       Int32?       Exponent = null)
+        {
+
+            Siemens = default;
+
+            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
+                   TryCreate(Number, exponent, out Siemens);
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKS  (Number, out Siemens, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kiloSiemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Siemens">The parsed Siemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFromKS(Byte         Number,
                                         out Siemens  Siemens,
                                         Int32?       Exponent = null)
         {
 
-            try
-            {
+            Siemens = default;
 
-                Siemens = new Siemens(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                return true;
-
-            }
-            catch
-            {
-                Siemens = default;
-                return false;
-            }
+            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
+                   TryCreate(Number, exponent, out Siemens);
 
         }
 
 
         /// <summary>
-        /// Parse the given number as a Siemens.
+        /// Try to convert the given number into kiloSiemens.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Siemens.</param>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseS(Decimal      Number,
+        public static Boolean TryFromKS(Decimal      Number,
                                         out Siemens  Siemens,
                                         Int32?       Exponent = null)
         {
 
-            try
-            {
+            Siemens = default;
 
-                Siemens = new Siemens(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                return true;
-
-            }
-            catch
-            {
-                Siemens = default;
-                return false;
-            }
-
-        }
-
-        #endregion
-
-        #region (static) TryParseKS (Number, out Siemens, Exponent = null)
-
-        /// <summary>
-        /// Parse the given number as a Kilo-Siemens (kS).
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Kilo-Siemens (kS).</param>
-        /// <param name="Siemens">The parsed Kilo-Siemens (kS).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKS(Byte         Number,
-                                         out Siemens  Siemens,
-                                         Int32?       Exponent = null)
-        {
-
-            try
-            {
-
-                Siemens = new Siemens(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                return true;
-
-            }
-            catch
-            {
-                Siemens = default;
-                return false;
-            }
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a Kilo-Siemens (kS).
-        /// </summary>
-        /// <param name="Number">A numeric representation of a Kilo-Siemens (kS).</param>
-        /// <param name="Siemens">The parsed Kilo-Siemens (kS).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKS(Decimal      Number,
-                                         out Siemens  Siemens,
-                                         Int32?       Exponent = null)
-        {
-
-            try
-            {
-
-                Siemens = new Siemens(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                return true;
-
-            }
-            catch
-            {
-                Siemens = default;
-                return false;
-            }
+            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
+                   TryCreate(Number, exponent, out Siemens);
 
         }
 
@@ -614,8 +727,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (Siemens Siemens1,
                                            Siemens Siemens2)
@@ -629,8 +742,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Siemens Siemens1,
                                            Siemens Siemens2)
@@ -644,8 +757,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (Siemens Siemens1,
                                           Siemens Siemens2)
@@ -659,8 +772,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Siemens Siemens1,
                                            Siemens Siemens2)
@@ -674,8 +787,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (Siemens Siemens1,
                                           Siemens Siemens2)
@@ -689,8 +802,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Siemens Siemens1,
                                            Siemens Siemens2)
@@ -702,10 +815,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Siemens1, Siemens2)
 
         /// <summary>
-        /// Accumulates two Siemens.
+        /// Accumulates two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         public static Siemens operator + (Siemens Siemens1,
                                           Siemens Siemens2)
 
@@ -716,10 +829,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Siemens1, Siemens2)
 
         /// <summary>
-        /// Substracts two Siemens.
+        /// Subtracts two instances of this object.
         /// </summary>
-        /// <param name="Siemens1">A Siemens.</param>
-        /// <param name="Siemens2">Another Siemens.</param>
+        /// <param name="Siemens1">A Siemens value.</param>
+        /// <param name="Siemens2">Another Siemens value.</param>
         public static Siemens operator - (Siemens Siemens1,
                                           Siemens Siemens2)
 
@@ -739,6 +852,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           Decimal  Scalar)
 
             => new (Siemens.Value * Scalar);
+
+        #endregion
+
+        #region Operator *  (Scalar,   Siemens)
+
+        /// <summary>
+        /// Multiplies a scalar with a Siemens.
+        /// </summary>
+        /// <param name="Scalar">A scalar value.</param>
+        /// <param name="Siemens">A Siemens value.</param>
+        public static Siemens operator * (Decimal  Scalar,
+                                          Siemens  Siemens)
+
+            => new (Scalar * Siemens.Value);
 
         #endregion
 
@@ -768,10 +895,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A Siemens to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Siemens siemens
-                   ? CompareTo(siemens)
-                   : throw new ArgumentException("The given object is not a Siemens!",
-                                                 nameof(Object));
+            => Object switch {
+                   null             => 1,
+                   Siemens siemens  => CompareTo(siemens),
+                   _                => throw new ArgumentException("The given object is not a Siemens!", nameof(Object))
+               };
 
         #endregion
 
@@ -829,6 +957,91 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region TryFormat(Destination, out CharsWritten, Format, FormatProvider)
+
+        /// <summary>
+        /// Try to format this Siemens into the given character span using the given format and culture-specific format provider.
+        /// </summary>
+        /// <param name="Destination">The destination span to write the formatted value.</param>
+        /// <param name="CharsWritten">The number of characters written to the destination span.</param>
+        /// <param name="Format">The format to use.</param>
+        /// <param name="FormatProvider">The format provider to use.</param>
+        public Boolean TryFormat(Span<Char>          Destination,
+                                 out Int32           CharsWritten,
+                                 ReadOnlySpan<Char>  Format,
+                                 IFormatProvider?    FormatProvider)
+        {
+
+            if (Format.IsEmpty ||
+                Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("S".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return TryFormatWithSuffix(
+                           Value,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " S".AsSpan()
+                       );
+            }
+
+            if (Format.Equals("kS".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           kS,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " kS".AsSpan()
+                       );
+
+            return TryFormatWithSuffix(
+                       Value,
+                       Destination,
+                       out CharsWritten,
+                       Format,
+                       FormatProvider,
+                       " S".AsSpan()
+                   );
+
+        }
+
+        #endregion
+
+        #region (private static) TryFormatWithSuffix(Value, Destination, out CharsWritten, NumericFormat, FormatProvider, Suffix)
+
+        private static Boolean TryFormatWithSuffix(Decimal             Value,
+                                                   Span<Char>          Destination,
+                                                   out Int32           CharsWritten,
+                                                   ReadOnlySpan<Char>  NumericFormat,
+                                                   IFormatProvider?    FormatProvider,
+                                                   ReadOnlySpan<Char>  Suffix)
+        {
+
+            CharsWritten = 0;
+
+            if (!Value.TryFormat(Destination,
+                                 out var valueCharsWritten,
+                                 NumericFormat,
+                                 FormatProvider))
+            {
+                return false;
+            }
+
+            if (Destination.Length < valueCharsWritten + Suffix.Length)
+                return false;
+
+            Suffix.CopyTo(Destination[valueCharsWritten..]);
+
+            CharsWritten = valueCharsWritten + Suffix.Length;
+            return true;
+
+        }
+
+        #endregion
+
         #region (override) ToString()
 
         /// <summary>
@@ -836,7 +1049,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value.ToString(CultureInfo.InvariantCulture)} V";
+            => ToString(
+                   null,
+                   CultureInfo.InvariantCulture
+               );
+
+
+        /// <summary>
+        /// Return a text representation of this object using the given
+        /// format and culture-specific format provider.
+        /// </summary>
+        public String ToString(String?           Format,
+                               IFormatProvider?  FormatProvider)
+        {
+
+            Span<Char> buffer = stackalloc Char[64];
+
+            if (TryFormat(buffer, out var charsWritten, Format.AsSpan(), FormatProvider))
+                return new String(buffer[..charsWritten]);
+
+            if (String.IsNullOrEmpty(Format) ||
+                String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(Format, "S",  StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Value.ToString("G", FormatProvider)} S";
+            }
+
+            if (String.Equals(Format, "kS", StringComparison.OrdinalIgnoreCase))
+                return $"{kS.ToString("G", FormatProvider)} kS";
+
+            return $"{Value.ToString(Format, FormatProvider)} S";
+
+        }
 
         #endregion
 

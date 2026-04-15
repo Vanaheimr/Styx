@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -32,18 +31,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class MeterExtensions
     {
 
-        #region Sum (this Meters)
+        #region Sum    (this MeterValues)
 
         /// <summary>
-        /// The sum of the given Meter values.
+        /// The sum of the given enumeration of Meter values.
         /// </summary>
-        /// <param name="Meters">An enumeration of Meter values.</param>
-        public static Meter Sum(this IEnumerable<Meter> Meters)
+        /// <param name="MeterValues">An enumeration of Meter values.</param>
+        public static Meter Sum(this IEnumerable<Meter> MeterValues)
         {
 
             var sum = Meter.Zero;
 
-            foreach (var meter in Meters)
+            foreach (var meter in MeterValues)
                 sum += meter;
 
             return sum;
@@ -52,27 +51,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Avg (this Meters)
+        #region Avg    (this MeterValues)
 
         /// <summary>
-        /// The average of the given Meter values.
+        /// The average of the given enumeration of Meter values.
         /// </summary>
-        /// <param name="Meters">An enumeration of Meter values.</param>
-        public static Meter Avg(this IEnumerable<Meter> Meters)
+        /// <param name="MeterValues">An enumeration of Meter values.</param>
+        public static Meter Avg(this IEnumerable<Meter> MeterValues)
         {
 
             var sum    = Meter.Zero;
             var count  = 0;
 
-            foreach (var meter in Meters)
+            foreach (var meter in MeterValues)
             {
                 sum += meter;
                 count++;
             }
 
-            return count == 0
-                       ? Meter.Zero
-                       : sum / count;
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this MeterValues)
+
+        /// <summary>
+        /// The standard deviation of the given enumeration of Meter values.
+        /// </summary>
+        /// <param name="MeterValues">An enumeration of Meter values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Meter> StdDev(this IEnumerable<Meter>  MeterValues,
+                                           Boolean?                 IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Meter>.From(
+                             MeterValues.Select(ampere => ampere.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Meter>(
+                       Meter.FromM(stdDev.Mean),
+                       Meter.FromM(stdDev.StandardDeviation)
+                   );
 
         }
 
@@ -84,20 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A Meter value (m), the SI unit of length.
     /// </summary>
-    public readonly struct Meter : IParsable    <Meter>,
-                                   ISpanParsable<Meter>,
-                                   IEquatable   <Meter>,
-                                   IComparable  <Meter>,
-                                   IComparable,
-                                   IFormattable,
-                                   ISpanFormattable,
-                                   IAdditionOperators   <Meter, Meter,   Meter>,
-                                   ISubtractionOperators<Meter, Meter,   Meter>,
-                                   IMultiplyOperators   <Meter, Decimal, Meter>,
-                                   IDivisionOperators   <Meter, Decimal, Meter>,
-                                   IComparisonOperators <Meter, Meter,   Boolean>,
-                                   IEqualityOperators   <Meter, Meter,   Boolean>,
-                                   IAdditiveIdentity    <Meter, Meter>
+    public readonly struct Meter : IMetrology<Meter>
     {
 
         #region Properties
@@ -488,7 +499,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as centimeters.
         /// </summary>
         /// <param name="Text">A text representation of a centimeter.</param>
-        public static Meter? TryParseCM(String Text)
+        public static Meter? TryParseCM(String? Text)
         {
 
             if (TryParseCM(Text, out var meter))
@@ -506,7 +517,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as decimeters.
         /// </summary>
         /// <param name="Text">A text representation of decimeters.</param>
-        public static Meter? TryParseDM(String Text)
+        public static Meter? TryParseDM(String? Text)
         {
 
             if (TryParseDM(Text, out var meter))
@@ -524,7 +535,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as meters.
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
-        public static Meter? TryParseM(String Text)
+        public static Meter? TryParseM(String? Text)
         {
 
             if (TryParseM(Text, out var meter))
@@ -542,7 +553,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as kilometers.
         /// </summary>
         /// <param name="Text">A text representation of kilometers.</param>
-        public static Meter? TryParseKM(String Text)
+        public static Meter? TryParseKM(String? Text)
         {
 
             if (TryParseKM(Text, out var meter))
@@ -875,7 +886,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of centimeters.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseCM(String Text, out Meter Meter)
+        public static Boolean TryParseCM([NotNullWhen(true)] String?  Text,
+                                         out                 Meter    Meter)
         {
 
             Meter = default;
@@ -904,7 +916,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of decimeters.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseDM(String Text, out Meter Meter)
+        public static Boolean TryParseDM([NotNullWhen(true)] String?  Text,
+                                         out                 Meter    Meter)
         {
 
             Meter = default;
@@ -933,7 +946,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseM(String Text, out Meter Meter)
+        public static Boolean TryParseM([NotNullWhen(true)] String?  Text,
+                                        out                 Meter    Meter)
         {
 
             Meter = default;
@@ -962,7 +976,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of kilometers.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseKM(String Text, out Meter Meter)
+        public static Boolean TryParseKM([NotNullWhen(true)] String?  Text,
+                                         out                 Meter    Meter)
         {
 
             Meter = default;
@@ -1285,7 +1300,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Meter1, Meter2)
 
         /// <summary>
-        /// Accumulates two Meters.
+        /// Accumulates two instances of this object.
         /// </summary>
         /// <param name="Meter1">A Meter.</param>
         /// <param name="Meter2">Another Meter.</param>
@@ -1299,7 +1314,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Meter1, Meter2)
 
         /// <summary>
-        /// Substracts two Meters.
+        /// Subtracts two instances of this object.
         /// </summary>
         /// <param name="Meter1">A Meter.</param>
         /// <param name="Meter2">Another Meter.</param>

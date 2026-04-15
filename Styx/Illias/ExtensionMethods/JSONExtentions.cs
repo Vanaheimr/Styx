@@ -63,7 +63,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     public delegate Boolean  TryJArrayParser   <TResult>     (JArray  Input, out TResult? arg);
     public delegate Boolean  TryJArrayParser2  <TResult>     (JArray  Input, out TResult? arg, out String? ErrorResponse);
-    public delegate Boolean  TryJArrayParser3  <T>           (JArray  Input, out StdDev<T>? arg, out String? ErrorResponse) where T: struct;
+    public delegate Boolean  TryJArrayParser3  <T>           (JArray  Input, out StdDev<T>? arg, out String? ErrorResponse) where T: IParsable<T>,
+                                                                                                                                     IEquatable<T>,
+                                                                                                                                     IComparable<T>,
+                                                                                                                                     IComparable;
 
     public delegate TResult?    ParserNullable <TResult>(String  Input)                                                    where TResult: struct;
     public delegate Boolean  TryParserNullable1<TResult>(String  Input, out TResult? arg)                                  where TResult: struct;
@@ -1640,7 +1643,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            HertzValue     = Hertz.ParseHz(decimalValue);
+            HertzValue     = Hertz.FromHz(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1816,7 +1819,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            SiemensValue      = Siemens.ParseS(decimalValue);
+            SiemensValue      = Siemens.FromS(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1904,7 +1907,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            VoltampereValue      = VoltAmpere.ParseVA(decimalValue);
+            VoltampereValue      = VoltAmpere.FromVA(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -1948,7 +1951,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            VoltampereReactivValue      = VoltAmpereReactive.ParseVAR(decimalValue);
+            VoltampereReactivValue      = VoltAmpereReactive.FromVAr(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -5089,7 +5092,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    HertzValue    = Hertz.ParseHz(decimalValue, Multiplicator);
+                    HertzValue    = Hertz.FromHz(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -5316,7 +5319,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    SiemensValue     = Siemens.ParseS(decimalValue, Multiplicator);
+                    SiemensValue     = Siemens.FromS(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -5408,7 +5411,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    VoltampereValue     = VoltAmpere.ParseVA(decimalValue, Multiplicator);
+                    VoltampereValue     = VoltAmpere.FromVA(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -5454,7 +5457,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    VoltampereReactivValue     = VoltAmpereReactive.ParseVAR(decimalValue, Multiplicator);
+                    VoltampereReactivValue     = VoltAmpereReactive.FromVAr(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -7074,7 +7077,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         out StdDev<T>?       Value,
                                                         out String?          ErrorResponse)
 
-            where T : struct
+            where T : IParsable<T>,
+                      IEquatable<T>,
+                      IComparable<T>,
+                      IComparable
 
         {
 

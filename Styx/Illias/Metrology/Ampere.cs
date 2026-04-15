@@ -17,9 +17,9 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 #endregion
 
@@ -32,18 +32,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class AmpereExtensions
     {
 
-        #region Sum (this Amperes)
+        #region Sum    (this AmpereValues)
 
         /// <summary>
-        /// The sum of the given Ampere values.
+        /// The sum of the given enumeration of Ampere values.
         /// </summary>
-        /// <param name="Amperes">An enumeration of Ampere values.</param>
-        public static Ampere Sum(this IEnumerable<Ampere> Amperes)
+        /// <param name="AmpereValues">An enumeration of Ampere values.</param>
+        public static Ampere Sum(this IEnumerable<Ampere> AmpereValues)
         {
 
             var sum = Ampere.Zero;
 
-            foreach (var ampere in Amperes)
+            foreach (var ampere in AmpereValues)
                 sum += ampere;
 
             return sum;
@@ -52,27 +52,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Avg (this Amperes)
+        #region Avg    (this AmpereValues)
 
         /// <summary>
-        /// The average of the given Ampere values.
+        /// The average of the given enumeration of Ampere values.
         /// </summary>
-        /// <param name="Amperes">An enumeration of Ampere values.</param>
-        public static Ampere Avg(this IEnumerable<Ampere> Amperes)
+        /// <param name="AmpereValues">An enumeration of Ampere values.</param>
+        public static Ampere Avg(this IEnumerable<Ampere> AmpereValues)
         {
 
             var sum    = Ampere.Zero;
             var count  = 0;
 
-            foreach (var ampere in Amperes)
+            foreach (var ampere in AmpereValues)
             {
                 sum += ampere;
                 count++;
             }
 
-            return count == 0
-                       ? Ampere.Zero
-                       : sum / count;
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this AmpereValues)
+
+        /// <summary>
+        /// The standard deviation of the given enumeration of Ampere values.
+        /// </summary>
+        /// <param name="AmpereValues">An enumeration of Ampere values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Ampere> StdDev(this IEnumerable<Ampere>  AmpereValues,
+                                            Boolean?                  IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Ampere>.From(
+                             AmpereValues.Select(ampere => ampere.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Ampere>(
+                       Ampere.FromA(stdDev.Mean),
+                       Ampere.FromA(stdDev.StandardDeviation)
+                   );
 
         }
 
@@ -84,20 +109,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// An Ampere value (A), the SI unit of electric current.
     /// </summary>
-    public readonly struct Ampere : IParsable    <Ampere>,
-                                    ISpanParsable<Ampere>,
-                                    IEquatable   <Ampere>,
-                                    IComparable  <Ampere>,
-                                    IComparable,
-                                    IFormattable,
-                                    ISpanFormattable,
-                                    IAdditionOperators   <Ampere,  Ampere,  Ampere>,
-                                    ISubtractionOperators<Ampere,  Ampere,  Ampere>,
-                                    IMultiplyOperators   <Ampere,  Decimal, Ampere>,
-                                    IDivisionOperators   <Ampere,  Decimal, Ampere>,
-                                    IComparisonOperators <Ampere,  Ampere,  Boolean>,
-                                    IEqualityOperators   <Ampere,  Ampere,  Boolean>,
-                                    IAdditiveIdentity    <Ampere,  Ampere>
+    public readonly struct Ampere : IMetrology<Ampere>
     {
 
         #region Properties
@@ -252,21 +264,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of amperes.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere FromA(Decimal  Number,
-                                   Int32?   Exponent = null)
+        public static Ampere FromA<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
 
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
+            where TNumber : INumberBase<TNumber>
 
-
-        /// <summary>
-        /// Convert the given number into amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere FromA(Byte    Number,
-                                   Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
+                => Create(Decimal.CreateChecked(Number), Exponent ?? 0);
 
         #endregion
 
@@ -277,21 +280,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Number">A numeric representation of kiloAmperes.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere FromKA(Decimal  Number,
-                                    Int32?   Exponent = null)
+        public static Ampere FromKA<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
 
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
+            where TNumber : INumberBase<TNumber>
 
-
-        /// <summary>
-        /// Convert the given number into kiloAmperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloAmperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere FromKA(Byte    Number,
-                                    Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
+                => Create(1000m * Decimal.CreateChecked(Number), Exponent ?? 0);
 
         #endregion
 
@@ -532,14 +526,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseA  (Text,   out Ampere)
+        #region (static) TryParseA  (Text,                 out Ampere)
 
         /// <summary>
         /// Try to parse the given string as amperes using invariant culture.
         /// </summary>
         /// <param name="Text">A text representation of amperes.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
-        public static Boolean TryParseA(String? Text, out Ampere Ampere)
+        public static Boolean TryParseA([NotNullWhen(true)] String?  Text,
+                                        out                 Ampere   Ampere)
         {
 
             Ampere = default;
@@ -561,14 +556,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKA (Text,   out Ampere)
+        #region (static) TryParseKA (Text,                 out Ampere)
 
         /// <summary>
         /// Try to parse the given string as kiloAmperes using invariant culture.
         /// </summary>
         /// <param name="Text">A text representation of an kiloAmperes.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
-        public static Boolean TryParseKA(String? Text, out Ampere Ampere)
+        public static Boolean TryParseKA([NotNullWhen(true)] String?  Text,
+                                         out                 Ampere   Ampere)
         {
 
             Ampere = default;
@@ -591,7 +587,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out Ampere)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Ampere Create(Decimal Number, Int32 Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var ampere))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return ampere;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Ampere)
 
         private static Boolean TryCreate(Decimal     Number,
                                          Int32       Exponent,
@@ -671,9 +681,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKA  (Number, out Ampere, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a kiloAmperes.
+        /// Try to convert the given number into kiloAmperes.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kiloAmperes.</param>
+        /// <param name="Number">A numeric representation of kiloAmperes.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKA(Byte        Number,
@@ -690,9 +700,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a kiloAmperes.
+        /// Try to convert the given number into kiloAmperes.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kiloAmperes.</param>
+        /// <param name="Number">A numeric representation of kiloAmperes.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKA(Decimal     Number,
@@ -805,7 +815,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Ampere1, Ampere2)
 
         /// <summary>
-        /// Accumulates two Amperes.
+        /// Accumulates two instances of this object.
         /// </summary>
         /// <param name="Ampere1">An Ampere value.</param>
         /// <param name="Ampere2">Another Ampere value.</param>
@@ -819,7 +829,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Ampere1, Ampere2)
 
         /// <summary>
-        /// Substracts two Amperes.
+        /// Subtracts two instances of this object.
         /// </summary>
         /// <param name="Ampere1">An Ampere value.</param>
         /// <param name="Ampere2">Another Ampere value.</param>

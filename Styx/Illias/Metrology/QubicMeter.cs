@@ -844,7 +844,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (QubicMeter1, QubicMeter2)
 
         /// <summary>
-        /// Substracts two QubicMeters.
+        /// Subtracts two QubicMeters.
         /// </summary>
         /// <param name="QubicMeter1">A m³.</param>
         /// <param name="QubicMeter2">Another m³.</param>

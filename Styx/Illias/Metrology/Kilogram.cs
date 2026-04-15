@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -32,18 +31,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class KilogramExtensions
     {
 
-        #region Sum (this Kilograms)
+        #region Sum    (this KilogramValues)
 
         /// <summary>
-        /// The sum of the given kilogram values.
+        /// The sum of the given enumeration of Kilogram values.
         /// </summary>
-        /// <param name="Kilograms">An enumeration of kilogram values.</param>
-        public static Kilogram Sum(this IEnumerable<Kilogram> Kilograms)
+        /// <param name="KilogramValues">An enumeration of Kilogram values.</param>
+        public static Kilogram Sum(this IEnumerable<Kilogram> KilogramValues)
         {
 
             var sum = Kilogram.Zero;
 
-            foreach (var kilogram in Kilograms)
+            foreach (var kilogram in KilogramValues)
                 sum += kilogram;
 
             return sum;
@@ -52,27 +51,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Avg (this Kilograms)
+        #region Avg    (this KilogramValues)
 
         /// <summary>
-        /// The average of the given kilogram values.
+        /// The average of the given enumeration of Kilogram values.
         /// </summary>
-        /// <param name="Kilograms">An enumeration of kilogram values.</param>
-        public static Kilogram Avg(this IEnumerable<Kilogram> Kilograms)
+        /// <param name="KilogramValues">An enumeration of Kilogram values.</param>
+        public static Kilogram Avg(this IEnumerable<Kilogram> KilogramValues)
         {
 
             var sum    = Kilogram.Zero;
             var count  = 0;
 
-            foreach (var kilogram in Kilograms)
+            foreach (var kilogram in KilogramValues)
             {
                 sum += kilogram;
                 count++;
             }
 
-            return count == 0
-                       ? Kilogram.Zero
-                       : sum / count;
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this KilogramValues)
+
+        /// <summary>
+        /// The standard deviation of the given enumeration of Kilogram values.
+        /// </summary>
+        /// <param name="KilogramValues">An enumeration of Kilogram values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Kilogram> StdDev(this IEnumerable<Kilogram>  KilogramValues,
+                                              Boolean?                    IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Kilogram>.From(
+                             KilogramValues.Select(ampere => ampere.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Kilogram>(
+                       Kilogram.FromKG(stdDev.Mean),
+                       Kilogram.FromKG(stdDev.StandardDeviation)
+                   );
 
         }
 
@@ -84,20 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A kilogram value (kg), the SI unit of mass.
     /// </summary>
-    public readonly struct Kilogram : IParsable    <Kilogram>,
-                                      ISpanParsable<Kilogram>,
-                                      IEquatable   <Kilogram>,
-                                      IComparable  <Kilogram>,
-                                      IComparable,
-                                      IFormattable,
-                                      ISpanFormattable,
-                                      IAdditionOperators   <Kilogram,  Kilogram,  Kilogram>,
-                                      ISubtractionOperators<Kilogram,  Kilogram,  Kilogram>,
-                                      IMultiplyOperators   <Kilogram,  Decimal, Kilogram>,
-                                      IDivisionOperators   <Kilogram,  Decimal, Kilogram>,
-                                      IComparisonOperators <Kilogram,  Kilogram,  Boolean>,
-                                      IEqualityOperators   <Kilogram,  Kilogram,  Boolean>,
-                                      IAdditiveIdentity    <Kilogram,  Kilogram>
+    public readonly struct Kilogram : IMetrology<Kilogram>
     {
 
         #region Properties
@@ -344,7 +355,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as kilograms.
         /// </summary>
         /// <param name="Text">A text representation of kilograms.</param>
-        public static Kilogram? TryParseKG(String Text)
+        public static Kilogram? TryParseKG(String? Text)
         {
 
             if (TryParseKG(Text, out var kilogram))
@@ -362,7 +373,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as grams.
         /// </summary>
         /// <param name="Text">A text representation of grams.</param>
-        public static Kilogram? TryParseGram(String Text)
+        public static Kilogram? TryParseG(String? Text)
         {
 
             if (TryParseG(Text, out var kilogram))
@@ -535,14 +546,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKG (Text,   out Kilogram)
+        #region (static) TryParseKG (Text,                 out Kilogram)
 
         /// <summary>
         /// Parse the given string as a kilogram.
         /// </summary>
         /// <param name="Text">A text representation of a kilogram.</param>
         /// <param name="Kilogram">The parsed Kilogram.</param>
-        public static Boolean TryParseKG(String Text, out Kilogram Kilogram)
+        public static Boolean TryParseKG([NotNullWhen(true)] String?   Text,
+                                         out                 Kilogram  Kilogram)
         {
 
             Kilogram = default;
@@ -564,14 +576,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseG  (Text,   out Kilogram)
+        #region (static) TryParseG  (Text,                 out Kilogram)
 
         /// <summary>
         /// Parse the given string as a gram.
         /// </summary>
         /// <param name="Text">A text representation of a gram.</param>
         /// <param name="Kilogram">The parsed gram.</param>
-        public static Boolean TryParseG(String Text, out Kilogram Kilogram)
+        public static Boolean TryParseG([NotNullWhen(true)] String?   Text,
+                                        out                 Kilogram  Kilogram)
         {
 
             Kilogram = default;
@@ -808,7 +821,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Kilogram1, Kilogram2)
 
         /// <summary>
-        /// Accumulates two kilograms.
+        /// Accumulates two instances of this object.
         /// </summary>
         /// <param name="Kilogram1">A kilogram.</param>
         /// <param name="Kilogram2">Another kilogram.</param>
@@ -822,7 +835,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Kilogram1, Kilogram2)
 
         /// <summary>
-        /// Substracts two kilograms.
+        /// Subtracts two instances of this object.
         /// </summary>
         /// <param name="Kilogram1">A kilogram.</param>
         /// <param name="Kilogram2">Another kilogram.</param>

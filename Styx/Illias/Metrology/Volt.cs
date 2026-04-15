@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -32,18 +31,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class VoltExtensions
     {
 
-        #region Sum (this Amperes)
+        #region Sum    (this VoltValues)
 
         /// <summary>
-        /// The sum of the given Volt values.
+        /// The sum of the given enumeration of Volt values.
         /// </summary>
-        /// <param name="Volts">An enumeration of Volt values.</param>
-        public static Volt Sum(this IEnumerable<Volt> Volts)
+        /// <param name="VoltValues">An enumeration of Volt values.</param>
+        public static Volt Sum(this IEnumerable<Volt> VoltValues)
         {
 
             var sum = Volt.Zero;
 
-            foreach (var volt in Volts)
+            foreach (var volt in VoltValues)
                 sum += volt;
 
             return sum;
@@ -52,27 +51,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Avg (this Volts)
+        #region Avg    (this VoltValues)
 
         /// <summary>
-        /// The average of the given Volt values.
+        /// The average of the given enumeration of Volt values.
         /// </summary>
-        /// <param name="Volts">An enumeration of Volt values.</param>
-        public static Volt Avg(this IEnumerable<Volt> Volts)
+        /// <param name="VoltValues">An enumeration of Volt values.</param>
+        public static Volt Avg(this IEnumerable<Volt> VoltValues)
         {
 
             var sum    = Volt.Zero;
             var count  = 0;
 
-            foreach (var volt in Volts)
+            foreach (var volt in VoltValues)
             {
                 sum += volt;
                 count++;
             }
 
-            return count == 0
-                       ? Volt.Zero
-                       : sum / count;
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this VoltValues)
+
+        /// <summary>
+        /// The standard deviation of the given enumeration of Volt values.
+        /// </summary>
+        /// <param name="VoltValues">An enumeration of Volt values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Volt> StdDev(this IEnumerable<Volt>  VoltValues,
+                                          Boolean?                IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Volt>.From(
+                             VoltValues.Select(volt => volt.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Volt>(
+                       Volt.FromV(stdDev.Mean),
+                       Volt.FromV(stdDev.StandardDeviation)
+                   );
 
         }
 
@@ -84,20 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A Volt value (V), the SI unit of electric potential.
     /// </summary>
-    public readonly struct Volt : IParsable    <Volt>,
-                                  ISpanParsable<Volt>,
-                                  IEquatable   <Volt>,
-                                  IComparable  <Volt>,
-                                  IComparable,
-                                  IFormattable,
-                                  ISpanFormattable,
-                                  IAdditionOperators   <Volt, Volt,    Volt>,
-                                  ISubtractionOperators<Volt, Volt,    Volt>,
-                                  IMultiplyOperators   <Volt, Decimal, Volt>,
-                                  IDivisionOperators   <Volt, Decimal, Volt>,
-                                  IComparisonOperators <Volt, Volt,  Boolean>,
-                                  IEqualityOperators   <Volt, Volt,  Boolean>,
-                                  IAdditiveIdentity    <Volt, Volt>
+    public readonly struct Volt : IMetrology<Volt>
     {
 
         #region Properties
@@ -341,7 +352,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as volts.
         /// </summary>
         /// <param name="Text">A text representation of volts.</param>
-        public static Volt? TryParseV(String Text)
+        public static Volt? TryParseV(String? Text)
         {
 
             if (TryParseV(Text, out var volt))
@@ -359,7 +370,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as kiloVolts.
         /// </summary>
         /// <param name="Text">A text representation of kiloVolts.</param>
-        public static Volt? TryParseKV(String Text)
+        public static Volt? TryParseKV(String? Text)
         {
 
             if (TryParseKV(Text, out var volt))
@@ -447,7 +458,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text,   out Volt)
+        #region (static) TryParse   (Text,                 out Volt)
 
         /// <summary>
         /// Try to parse the given string as volts using invariant culture.
@@ -455,7 +466,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Text">A text representation of volts.</param>
         /// <param name="Volt">The parsed Volt.</param>
-        public static Boolean TryParse(String Text, out Volt Volt)
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       out                 Volt     Volt)
 
             => TryParse(Text.AsSpan(),
                         CultureInfo.InvariantCulture,
@@ -530,14 +542,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseV  (Text,   out Volt)
+        #region (static) TryParseV  (Text,                 out Volt)
 
         /// <summary>
         /// Try to parse the given string as volts using invariant culture.
         /// </summary>
         /// <param name="Text">A text representation of volts.</param>
         /// <param name="Volt">The parsed Volt.</param>
-        public static Boolean TryParseV(String? Text, out Volt Volt)
+        public static Boolean TryParseV([NotNullWhen(true)] String?  Text,
+                                        out                 Volt     Volt)
         {
 
             Volt = default;
@@ -559,14 +572,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKV (Text,   out Volt)
+        #region (static) TryParseKV (Text,                 out Volt)
 
         /// <summary>
         /// Try to parse the given string as kiloVolts using invariant culture.
         /// </summary>
         /// <param name="Text">A text representation of kiloVolts.</param>
         /// <param name="Volt">The parsed Volt.</param>
-        public static Boolean TryParseKV(String Text, out Volt Volt)
+        public static Boolean TryParseKV([NotNullWhen(true)] String?  Text,
+                                         out                 Volt     Volt)
         {
 
             Volt = default;
@@ -791,7 +805,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Volt1, Volt2)
 
         /// <summary>
-        /// Accumulates two Volts.
+        /// Accumulates two instances of this object.
         /// </summary>
         /// <param name="Volt1">A Volt.</param>
         /// <param name="Volt2">Another Volt.</param>
@@ -805,7 +819,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Volt1, Volt2)
 
         /// <summary>
-        /// Substracts two Volts.
+        /// Subtracts two instances of this object.
         /// </summary>
         /// <param name="Volt1">A Volt.</param>
         /// <param name="Volt2">Another Volt.</param>

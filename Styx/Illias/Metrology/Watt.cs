@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -32,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class WattExtensions
     {
 
-        #region Sum (this Watts)
+        #region Sum    (this Watts)
 
         /// <summary>
         /// The sum of the given Watt values.
@@ -52,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Avg (this Watts)
+        #region Avg    (this Watts)
 
         /// <summary>
         /// The average of the given Watt values.
@@ -70,9 +69,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 count++;
             }
 
-            return count == 0
-                       ? Watt.Zero
-                       : sum / count;
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this Watts)
+
+        /// <summary>
+        /// The standard deviation of the given Watt values.
+        /// </summary>
+        /// <param name="Watts">An enumeration of Watt values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<Watt> StdDev(this IEnumerable<Watt>  Watts,
+                                          Boolean?                IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<Watt>.From(
+                             Watts.Select(watt => watt.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<Watt>(
+                       Watt.FromW(stdDev.Mean),
+                       Watt.FromW(stdDev.StandardDeviation)
+                   );
 
         }
 
@@ -84,21 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A Watt value (W), the SI unit of power.
     /// </summary>
-    public readonly struct Watt : IParsable    <Watt>,
-                                  ISpanParsable<Watt>,
-                                  IEquatable   <Watt>,
-                                  IComparable  <Watt>,
-                                  IComparable,
-                                  IFormattable,
-                                  ISpanFormattable,
-                                  IAdditionOperators   <Watt, Watt,    Watt>,
-                                  ISubtractionOperators<Watt, Watt,    Watt>,
-                                  IDivisionOperators   <Watt, Volt,    Ampere>,
-                                  IMultiplyOperators   <Watt, Decimal, Watt>,
-                                  IDivisionOperators   <Watt, Decimal, Watt>,
-                                  IComparisonOperators <Watt, Watt,    Boolean>,
-                                  IEqualityOperators   <Watt, Watt,    Boolean>,
-                                  IAdditiveIdentity    <Watt, Watt>
+    public readonly struct Watt : IMetrology<Watt>
     {
 
         #region Properties
@@ -753,7 +763,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseW  (Text,   out Watt)
+        #region (static) TryParseW  (Text,                 out Watt)
 
         /// <summary>
         /// Try to parse the given string as watts using invariant culture.
@@ -782,7 +792,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKW (Text,   out Watt)
+        #region (static) TryParseKW (Text,                 out Watt)
 
         /// <summary>
         /// Try to parse the given string as kiloWatts using invariant culture.
@@ -811,7 +821,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseMW (Text,   out Watt)
+        #region (static) TryParseMW (Text,                 out Watt)
 
         /// <summary>
         /// Try to parse the given string as MegaWatts using invariant culture.
@@ -840,7 +850,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseGW (Text,   out Watt)
+        #region (static) TryParseGW (Text,                 out Watt)
 
         /// <summary>
         /// Try to parse the given string as GigaWatts using invariant culture.
@@ -1154,7 +1164,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (Watt1, Watt2)
 
         /// <summary>
-        /// Accumulates two Watts.
+        /// Accumulates two instances of this object.
         /// </summary>
         /// <param name="Watt1">A Watt.</param>
         /// <param name="Watt2">Another Watt.</param>
@@ -1168,7 +1178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (Watt1, Watt2)
 
         /// <summary>
-        /// Substracts two Watts.
+        /// Subtracts two instances of this object.
         /// </summary>
         /// <param name="Watt1">A Watt.</param>
         /// <param name="Watt2">Another Watt.</param>

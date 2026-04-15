@@ -17,7 +17,6 @@
 
 #region Usings
 
-using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -29,7 +28,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class WattHourExtensions
     {
 
-        #region Avg (this WattHours)
+        #region Sum    (this WattHours)
 
         /// <summary>
         /// The sum of the given WattHour values.
@@ -49,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Avg (this WattHours)
+        #region Avg    (this WattHours)
 
         /// <summary>
         /// The average of the given WattHour values.
@@ -67,9 +66,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 count++;
             }
 
-            return count == 0
-                       ? WattHour.Zero
-                       : sum / count;
+            return count > 0
+                       ? sum / count
+                       : throw new InvalidOperationException("The sequence must not be empty!");
+
+        }
+
+        #endregion
+
+        #region StdDev (this WattHours)
+
+        /// <summary>
+        /// The standard deviation of the given WattHour values.
+        /// </summary>
+        /// <param name="WattHours">An enumeration of WattHour values.</param>
+        /// <param name="IsSampleData">Whether the given data is a sample (n-1) or the entire population (n).</param>
+        public static StdDev<WattHour> StdDev(this IEnumerable<WattHour>  WattHours,
+                                              Boolean?                    IsSampleData   = null)
+        {
+
+            var stdDev = StdDev<WattHour>.From(
+                             WattHours.Select(wattHour => wattHour.Value),
+                             IsSampleData
+                         );
+
+            return new StdDev<WattHour>(
+                       WattHour.FromWh(stdDev.Mean),
+                       WattHour.FromWh(stdDev.StandardDeviation)
+                   );
 
         }
 
@@ -81,20 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A WattHour (Wh) value, the SI unit of energy.
     /// </summary>
-    public readonly struct WattHour : IParsable    <WattHour>,
-                                      ISpanParsable<WattHour>,
-                                      IEquatable   <WattHour>,
-                                      IComparable  <WattHour>,
-                                      IComparable,
-                                      IFormattable,
-                                      ISpanFormattable,
-                                      IAdditionOperators   <WattHour,  WattHour,  WattHour>,
-                                      ISubtractionOperators<WattHour,  WattHour,  WattHour>,
-                                      IMultiplyOperators   <WattHour,  Decimal, WattHour>,
-                                      IDivisionOperators   <WattHour,  Decimal, WattHour>,
-                                      IComparisonOperators <WattHour,  WattHour,  Boolean>,
-                                      IEqualityOperators   <WattHour,  WattHour,  Boolean>,
-                                      IAdditiveIdentity    <WattHour,  WattHour>
+    public readonly struct WattHour : IMetrology<WattHour>
     {
 
         #region Properties
@@ -440,7 +451,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as WattHours (Wh).
         /// </summary>
         /// <param name="Text">A text representation of WattHours (Wh).</param>
-        public static WattHour? TryParseWh(String Text)
+        public static WattHour? TryParseWh(String? Text)
         {
 
             if (TryParseWh(Text, out var wattHour))
@@ -458,7 +469,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as KiloWattHours (kWh).
         /// </summary>
         /// <param name="Text">A text representation of KiloWattHours (kWh).</param>
-        public static WattHour? TryParseKWh(String Text)
+        public static WattHour? TryParseKWh(String? Text)
         {
 
             if (TryParseKWh(Text, out var wattHour))
@@ -476,7 +487,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as MegaWattHours (MWh).
         /// </summary>
         /// <param name="Text">A text representation of MegaWattHours (MWh).</param>
-        public static WattHour? TryParseMWh(String Text)
+        public static WattHour? TryParseMWh(String? Text)
         {
 
             if (TryParseMWh(Text, out var wattHour))
@@ -494,7 +505,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Try to parse the given text as GigaWattHours (GWh).
         /// </summary>
         /// <param name="Text">A text representation of GigaWattHours (GWh).</param>
-        public static WattHour? TryParseGWh(String Text)
+        public static WattHour? TryParseGWh(String? Text)
         {
 
             if (TryParseGWh(Text, out var wattHour))
@@ -752,14 +763,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseWh  (Text,   out WattHour)
+        #region (static) TryParseWh  (Text,                 out WattHour)
 
         /// <summary>
         /// Parse the given string as WattHours (Wh).
         /// </summary>
         /// <param name="Text">A text representation of WattHours (Wh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
-        public static Boolean TryParseWh(String Text, out WattHour WattHour)
+        public static Boolean TryParseWh([NotNullWhen(true)] String?   Text,
+                                         out                 WattHour  WattHour)
         {
 
             WattHour = default;
@@ -781,14 +793,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKWh (Text,   out WattHour)
+        #region (static) TryParseKWh (Text,                 out WattHour)
 
         /// <summary>
         /// Parse the given string as KiloWattHours (kWh).
         /// </summary>
         /// <param name="Text">A text representation of KiloWattHours (kWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
-        public static Boolean TryParseKWh(String Text, out WattHour WattHour)
+        public static Boolean TryParseKWh([NotNullWhen(true)] String?   Text,
+                                          out                 WattHour  WattHour)
         {
 
             WattHour = default;
@@ -810,14 +823,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseMWh (Text,   out WattHour)
+        #region (static) TryParseMWh (Text,                 out WattHour)
 
         /// <summary>
         /// Parse the given string as GigaWattHours (MWh).
         /// </summary>
         /// <param name="Text">A text representation of GigaWattHours (MWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
-        public static Boolean TryParseMWh(String Text, out WattHour WattHour)
+        public static Boolean TryParseMWh([NotNullWhen(true)] String?   Text,
+                                          out                 WattHour  WattHour)
         {
 
             WattHour = default;
@@ -839,14 +853,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseGWh (Text,   out WattHour)
+        #region (static) TryParseGWh (Text,                 out WattHour)
 
         /// <summary>
         /// Parse the given string as GigaWattHours (GWh).
         /// </summary>
         /// <param name="Text">A text representation of GigaWattHours (GWh).</param>
         /// <param name="WattHour">The parsed WattHour.</param>
-        public static Boolean TryParseGWh(String Text, out WattHour WattHour)
+        public static Boolean TryParseGWh([NotNullWhen(true)] String?   Text,
+                                          out                 WattHour  WattHour)
         {
 
             WattHour = default;
@@ -1153,7 +1168,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator +  (WattHour1, WattHour2)
 
         /// <summary>
-        /// Accumulates two WattHours.
+        /// Accumulates two instances of this object.
         /// </summary>
         /// <param name="WattHour1">A WattHour.</param>
         /// <param name="WattHour2">Another WattHour.</param>
@@ -1167,7 +1182,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Operator -  (WattHour1, WattHour2)
 
         /// <summary>
-        /// Substracts two WattHours.
+        /// Subtracts two instances of this object.
         /// </summary>
         /// <param name="WattHour1">A WattHour.</param>
         /// <param name="WattHour2">Another WattHour.</param>
