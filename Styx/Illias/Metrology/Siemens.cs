@@ -17,9 +17,9 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 #endregion
 
@@ -257,39 +257,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) FromS      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into siemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens FromS<TNumber>(TNumber  Number,
-                                             Int32?   Exponent   = null)
-
-            where TNumber : INumberBase<TNumber>
-
-                => Create(Decimal.CreateChecked(Number), Exponent ?? 0);
-
-        #endregion
-
-        #region (static) FromKS     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kiloSiemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens FromKS<TNumber>(TNumber  Number,
-                                              Int32?   Exponent   = null)
-
-            where TNumber : INumberBase<TNumber>
-
-                => Create(1000m * Decimal.CreateChecked(Number), Exponent ?? 0);
-
-        #endregion
-
-
         #region (static) TryParse   (Text)
 
         /// <summary>
@@ -358,81 +325,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseKS(Text, out var siemens))
-                return siemens;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromS   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into siemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryFromS(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryFromS(Number, out var siemens, Exponent))
-                return siemens;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into siemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryFromS(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromS(Number, out var siemens, Exponent))
-                return siemens;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKS  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kiloSiemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryFromKS(Decimal  Number,
-                                         Int32?   Exponent = null)
-        {
-
-            if (TryFromKS(Number, out var siemens, Exponent))
-                return siemens;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloSiemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Siemens? TryFromKS(Byte    Number,
-                                         Int32?  Exponent = null)
-        {
-
-            if (TryFromKS(Number, out var siemens, Exponent))
                 return siemens;
 
             return null;
@@ -589,7 +481,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (private static) Create    (Number, Exponent)
 
-        private static Siemens Create(Decimal Number, Int32 Exponent)
+        private static Siemens Create(Decimal  Number,
+                                      Int32    Exponent)
         {
 
             if (!TryCreate(Number, Exponent, out var siemens))
@@ -637,6 +530,90 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) FromS      (Number,              Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into siemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Siemens FromS<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKS     (Number,              Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kiloSiemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Siemens FromKS<TNumber>(TNumber  Number,
+                                              Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) TryFromS   (Number,              Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into siemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of siemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Siemens? TryFromS<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromS(Number, out var siemens, Exponent))
+                return siemens;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKS  (Number,              Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kiloSiemens.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloSiemens.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Siemens? TryFromKS<TNumber>(TNumber  Number,
+                                                  Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKS(Number, out var siemens, Exponent))
+                return siemens;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (static) TryFromS   (Number, out Siemens, Exponent = null)
 
         /// <summary>
@@ -645,34 +622,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of siemens.</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromS(Byte         Number,
-                                       out Siemens  Siemens,
-                                       Int32?       Exponent = null)
+        public static Boolean TryFromS<TNumber>(TNumber      Number,
+                                                out Siemens  Siemens,
+                                                Int32?       Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Siemens = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out Siemens);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into siemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of siemens.</param>
-        /// <param name="Siemens">The parsed Siemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromS(Decimal      Number,
-                                       out Siemens  Siemens,
-                                       Int32?       Exponent = null)
-        {
-
-            Siemens = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out Siemens);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Siemens);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -686,34 +662,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of kiloSiemens.</param>
         /// <param name="Siemens">The parsed Siemens.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKS(Byte         Number,
-                                        out Siemens  Siemens,
-                                        Int32?       Exponent = null)
+        public static Boolean TryFromKS<TNumber>(TNumber      Number,
+                                                 out Siemens  Siemens,
+                                                 Int32?       Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Siemens = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Siemens);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloSiemens.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloSiemens.</param>
-        /// <param name="Siemens">The parsed Siemens.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKS(Decimal      Number,
-                                        out Siemens  Siemens,
-                                        Int32?       Exponent = null)
-        {
-
-            Siemens = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Siemens);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Siemens);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

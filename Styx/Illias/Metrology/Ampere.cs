@@ -17,9 +17,9 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
-using System.Numerics;
 
 #endregion
 
@@ -257,39 +257,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) FromA      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere FromA<TNumber>(TNumber  Number,
-                                            Int32?   Exponent   = null)
-
-            where TNumber : INumberBase<TNumber>
-
-                => Create(Decimal.CreateChecked(Number), Exponent ?? 0);
-
-        #endregion
-
-        #region (static) FromKA     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kiloAmperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloAmperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere FromKA<TNumber>(TNumber  Number,
-                                             Int32?   Exponent   = null)
-
-            where TNumber : INumberBase<TNumber>
-
-                => Create(1000m * Decimal.CreateChecked(Number), Exponent ?? 0);
-
-        #endregion
-
-
         #region (static) TryParse   (Text)
 
         /// <summary>
@@ -358,81 +325,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseKA(Text, out var ampere))
-                return ampere;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromA   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere? TryFromA(Decimal  Number,
-                                       Int32?   Exponent = null)
-        {
-
-            if (TryFromA(Number, out var ampere, Exponent))
-                return ampere;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere? TryFromA(Byte    Number,
-                                       Int32?  Exponent = null)
-        {
-
-            if (TryFromA(Number, out var ampere, Exponent))
-                return ampere;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKA  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kiloAmperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloAmperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere? TryFromKA(Decimal  Number,
-                                        Int32?   Exponent = null)
-        {
-
-            if (TryFromKA(Number, out var ampere, Exponent))
-                return ampere;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloAmperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloAmperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ampere? TryFromKA(Byte    Number,
-                                        Int32?  Exponent = null)
-        {
-
-            if (TryFromKA(Number, out var ampere, Exponent))
                 return ampere;
 
             return null;
@@ -589,7 +481,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (private static) Create    (Number, Exponent)
 
-        private static Ampere Create(Decimal Number, Int32 Exponent)
+        private static Ampere Create(Decimal  Number,
+                                     Int32    Exponent)
         {
 
             if (!TryCreate(Number, Exponent, out var ampere))
@@ -637,6 +530,90 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) FromA      (Number,             Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into amperes.
+        /// </summary>
+        /// <param name="Number">A numeric representation of amperes.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere FromA<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKA     (Number,             Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kiloAmpere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloAmpere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere FromKA<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) TryFromA   (Number,             Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into amperes.
+        /// </summary>
+        /// <param name="Number">A numeric representation of amperes.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere? TryFromA<TNumber>(TNumber  Number,
+                                                Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromA(Number, out var amperes, Exponent))
+                return amperes;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKA  (Number,             Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kiloAmpere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloAmpere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ampere? TryFromKA<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKA(Number, out var amperes, Exponent))
+                return amperes;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (static) TryFromA   (Number, out Ampere, Exponent = null)
 
         /// <summary>
@@ -645,34 +622,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of amperes.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromA(Byte        Number,
-                                       out Ampere  Ampere,
-                                       Int32?      Exponent = null)
+        public static Boolean TryFromA<TNumber>(TNumber     Number,
+                                                out Ampere  Ampere,
+                                                Int32?      Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Ampere = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out Ampere);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of amperes.</param>
-        /// <param name="Ampere">The parsed Ampere.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromA(Decimal     Number,
-                                       out Ampere  Ampere,
-                                       Int32?      Exponent = null)
-        {
-
-            Ampere = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out Ampere);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Ampere);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -681,39 +657,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKA  (Number, out Ampere, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kiloAmperes.
+        /// Try to convert the given number into kiloAmpere.
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloAmperes.</param>
+        /// <param name="Number">A numeric representation of kiloAmpere.</param>
         /// <param name="Ampere">The parsed Ampere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKA(Byte        Number,
-                                        out Ampere  Ampere,
-                                        Int32?      Exponent = null)
+        public static Boolean TryFromKA<TNumber>(TNumber     Number,
+                                                 out Ampere  Ampere,
+                                                 Int32?      Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Ampere = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Ampere);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloAmperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloAmperes.</param>
-        /// <param name="Ampere">The parsed Ampere.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKA(Decimal     Number,
-                                        out Ampere  Ampere,
-                                        Int32?      Exponent = null)
-        {
-
-            Ampere = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Ampere);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Ampere);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

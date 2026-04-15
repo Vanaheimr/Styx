@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -143,7 +144,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static readonly Volt Zero = new (0m);
 
         /// <summary>
-        /// The additive identity of Ampere.
+        /// The additive identity of Volt.
         /// </summary>
         public static Volt AdditiveIdentity
             => Zero;
@@ -189,8 +190,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  IFormatProvider?  FormatProvider)
         {
 
-            if (TryParse(Text, FormatProvider, out var ampere))
-                return ampere;
+            if (TryParse(Text, FormatProvider, out var volt))
+                return volt;
 
             throw new FormatException($"Invalid text representation of volts: '{Text}'!");
 
@@ -210,8 +211,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  IFormatProvider?    FormatProvider)
         {
 
-            if (TryParse(Span, FormatProvider, out var ampere))
-                return ampere;
+            if (TryParse(Span, FormatProvider, out var volt))
+                return volt;
 
             throw new FormatException($"Invalid text representation of volts: '{Span}'!");
 
@@ -252,57 +253,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             throw new FormatException($"Invalid text representation of kiloVolts: '{Text}'!");
 
         }
-
-        #endregion
-
-
-        #region (static) FromV      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into volts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt FromV(Decimal  Number,
-                                 Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into volts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt FromV(Byte    Number,
-                                 Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKV     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kiloVolts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloVolts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt FromKV(Decimal  Number,
-                                  Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into kiloVolts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloVolts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt FromKV(Byte    Number,
-                                  Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -374,81 +324,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseKV(Text, out var volt))
-                return volt;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromV   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into volts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryFromV(Decimal  Number,
-                                     Int32?   Exponent = null)
-        {
-
-            if (TryFromV(Number, out var volt, Exponent))
-                return volt;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into volts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryFromV(Byte    Number,
-                                     Int32?  Exponent = null)
-        {
-
-            if (TryFromV(Number, out var volt, Exponent))
-                return volt;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKV  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kiloVolts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloVolts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryFromKV(Decimal  Number,
-                                      Int32?   Exponent = null)
-        {
-
-            if (TryFromKV(Number, out var volt, Exponent))
-                return volt;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloVolts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloVolts.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Volt? TryFromKV(Byte    Number,
-                                      Int32?  Exponent = null)
-        {
-
-            if (TryFromKV(Number, out var volt, Exponent))
                 return volt;
 
             return null;
@@ -603,7 +478,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out Volt)
+        #region (private static) Create    (Number, Exponent)
+
+        private static Volt Create(Decimal  Number,
+                                   Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var volt))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return volt;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out Volt)
 
         private static Boolean TryCreate(Decimal   Number,
                                          Int32     Exponent,
@@ -639,6 +529,90 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) FromV      (Number,           Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into volts.
+        /// </summary>
+        /// <param name="Number">A numeric representation of volts.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Volt FromV<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKV     (Number,           Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kiloVolt.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloVolt.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Volt FromKV<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) TryFromV   (Number,           Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into volts.
+        /// </summary>
+        /// <param name="Number">A numeric representation of volts.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Volt? TryFromV<TNumber>(TNumber  Number,
+                                                Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromV(Number, out var volts, Exponent))
+                return volts;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromKV  (Number,           Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kiloVolt.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloVolt.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Volt? TryFromKV<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKV(Number, out var volts, Exponent))
+                return volts;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region (static) TryFromV   (Number, out Volt, Exponent = null)
 
         /// <summary>
@@ -647,63 +621,73 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of volts.</param>
         /// <param name="Volt">The parsed Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromV(Byte      Number,
-                                       out Volt  Volt,
-                                       Int32?    Exponent = null)
+        public static Boolean TryFromV<TNumber>(TNumber     Number,
+                                                out Volt  Volt,
+                                                Int32?      Exponent = null)
 
-            => TryCreate(Number, Exponent ?? 0, out Volt);
+            where TNumber : INumberBase<TNumber>
 
+        {
 
-        /// <summary>
-        /// Try to convert the given number into volts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volts.</param>
-        /// <param name="Volt">The parsed Volt.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromV(Decimal   Number,
-                                       out Volt  Volt,
-                                       Int32?    Exponent = null)
+            Volt = default;
 
-            => TryCreate(Number, Exponent ?? 0, out Volt);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Volt);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+
+        }
 
         #endregion
 
         #region (static) TryFromKV  (Number, out Volt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kiloVolts.
+        /// Try to convert the given number into kiloVolt.
         /// </summary>
-        /// <param name="Number">A numeric representation of kiloVolts.</param>
+        /// <param name="Number">A numeric representation of kiloVolt.</param>
         /// <param name="Volt">The parsed Volt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKV(Byte      Number,
-                                        out Volt  Volt,
-                                        Int32?    Exponent = null)
+        public static Boolean TryFromKV<TNumber>(TNumber     Number,
+                                                 out Volt  Volt,
+                                                 Int32?      Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             Volt = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Volt);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kiloVolts.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kiloVolts.</param>
-        /// <param name="Volt">The parsed Volt.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKV(Decimal   Number,
-                                        out Volt  Volt,
-                                        Int32?    Exponent = null)
-        {
-
-            Volt = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out Volt);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Volt);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
@@ -260,57 +261,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) FromVA      (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere FromVA(Decimal  Number,
-                                        Int32?   Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere FromVA(Byte    Number,
-                                        Int32?  Exponent = null)
-
-            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-        #region (static) FromKVA     (Number, Exponent = null)
-
-        /// <summary>
-        /// Convert the given number into kilo-volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere FromKVA(Decimal  Number,
-                                         Int32?   Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-
-        /// <summary>
-        /// Convert the given number into kilo-volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere FromKVA(Byte    Number,
-                                         Int32?  Exponent = null)
-
-            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-        #endregion
-
-
         #region (static) TryParse    (Text)
 
         /// <summary>
@@ -379,81 +329,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (TryParseKVA(Text, out var voltAmpere))
-                return voltAmpere;
-
-            return null;
-
-        }
-
-        #endregion
-
-
-        #region (static) TryFromVA   (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere? TryFromVA(Decimal  Number,
-                                            Int32?   Exponent = null)
-        {
-
-            if (TryFromVA(Number, out var voltAmpere, Exponent))
-                return voltAmpere;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere? TryFromVA(Byte    Number,
-                                            Int32?  Exponent = null)
-        {
-
-            if (TryFromVA(Number, out var voltAmpere, Exponent))
-                return voltAmpere;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKVA  (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as kilo-volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere? TryFromKVA(Decimal  Number,
-                                             Int32?   Exponent = null)
-        {
-
-            if (TryFromKVA(Number, out var voltAmpere, Exponent))
-                return voltAmpere;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as kilo-volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-amperes.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static VoltAmpere? TryFromKVA(Byte    Number,
-                                             Int32?  Exponent = null)
-        {
-
-            if (TryFromKVA(Number, out var voltAmpere, Exponent))
                 return voltAmpere;
 
             return null;
@@ -608,7 +483,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (private static) TryCreate(Number, Exponent, out VoltAmpere)
+        #region (private static) Create    (Number, Exponent)
+
+        private static VoltAmpere Create(Decimal  Number,
+                                         Int32    Exponent)
+        {
+
+            if (!TryCreate(Number, Exponent, out var voltAmpere))
+                throw new ArgumentOutOfRangeException(nameof(Exponent));
+
+            return voltAmpere;
+
+        }
+
+        #endregion
+
+        #region (private static) TryCreate (Number, Exponent, out VoltAmpere)
 
         private static Boolean TryCreate(Decimal         Number,
                                          Int32           Exponent,
@@ -644,42 +534,125 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromVA   (Number, out VoltAmpere, Exponent = null)
+        #region (static) FromVA      (Number,                 Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into volt-amperes.
+        /// Convert the given number into voltAmpere.
         /// </summary>
-        /// <param name="Number">A numeric representation of volt-amperes.</param>
-        /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
+        /// <param name="Number">A numeric representation of voltAmpere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromVA(Byte            Number,
-                                        out VoltAmpere  VoltAmpere,
-                                        Int32?          Exponent = null)
+        public static VoltAmpere FromVA<TNumber>(TNumber  Number,
+                                                Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       Exponent ?? 0
+                   );
+
+        #endregion
+
+        #region (static) FromKVA     (Number,                 Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into kiloVoltAmpere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of kiloVoltAmpere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static VoltAmpere FromKVA<TNumber>(TNumber  Number,
+                                                  Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) + 3)
+                   );
+
+        #endregion
+
+        #region (static) TryFromVA   (Number,                 Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into voltAmpere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of voltAmpere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static VoltAmpere? TryFromVA<TNumber>(TNumber  Number,
+                                                     Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
-            VoltAmpere = default;
+            if (TryFromVA(Number, out var voltAmpere, Exponent))
+                return voltAmpere;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpere);
+            return null;
 
         }
 
+        #endregion
+
+        #region (static) TryFromKVA  (Number,                 Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into volt-amperes.
+        /// Try to convert the given number into kiloVoltAmpere.
         /// </summary>
-        /// <param name="Number">A numeric representation of volt-amperes.</param>
+        /// <param name="Number">A numeric representation of kiloVoltAmpere.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static VoltAmpere? TryFromKVA<TNumber>(TNumber  Number,
+                                                      Int32?   Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFromKVA(Number, out var voltAmpere, Exponent))
+                return voltAmpere;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFromVA   (Number, out VoltAmpere, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into voltAmpere.
+        /// </summary>
+        /// <param name="Number">A numeric representation of voltAmpere.</param>
         /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromVA(Decimal         Number,
-                                        out VoltAmpere  VoltAmpere,
-                                        Int32?          Exponent = null)
+        public static Boolean TryFromVA<TNumber>(TNumber         Number,
+                                                 out VoltAmpere  VoltAmpere,
+                                                 Int32?          Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             VoltAmpere = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpere);
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out VoltAmpere);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
@@ -688,39 +661,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKVA  (Number, out VoltAmpere, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into kilo-volt-amperes.
+        /// Try to convert the given number into kiloVoltAmpere.
         /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-amperes.</param>
+        /// <param name="Number">A numeric representation of kiloVoltAmpere.</param>
         /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKVA(Byte            Number,
-                                         out VoltAmpere  VoltAmpere,
-                                         Int32?          Exponent = null)
+        public static Boolean TryFromKVA<TNumber>(TNumber         Number,
+                                                  out VoltAmpere  VoltAmpere,
+                                                  Int32?          Exponent = null)
+
+            where TNumber : INumberBase<TNumber>
+
         {
 
             VoltAmpere = default;
 
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpere);
+            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+                return false;
 
-        }
-
-
-        /// <summary>
-        /// Try to convert the given number into kilo-volt-amperes.
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilo-volt-amperes.</param>
-        /// <param name="VoltAmpere">The parsed VoltAmpere.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKVA(Decimal         Number,
-                                         out VoltAmpere  VoltAmpere,
-                                         Int32?          Exponent = null)
-        {
-
-            VoltAmpere = default;
-
-            return MathHelpers.TryAddExponent(Exponent, 3, out var exponent) &&
-                   TryCreate(Number, exponent, out VoltAmpere);
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out VoltAmpere);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
         }
 
