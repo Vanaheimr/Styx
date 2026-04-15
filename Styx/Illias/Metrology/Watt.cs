@@ -32,6 +32,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class WattExtensions
     {
 
+        #region Sum (this Watts)
+
         /// <summary>
         /// The sum of the given Watt values.
         /// </summary>
@@ -42,17 +44,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var sum = Watt.Zero;
 
             foreach (var watt in Watts)
-                sum = sum + watt;
+                sum += watt;
 
             return sum;
 
         }
 
+        #endregion
+
+        #region Avg (this Watts)
+
+        /// <summary>
+        /// The average of the given Watt values.
+        /// </summary>
+        /// <param name="Watts">An enumeration of Watt values.</param>
+        public static Watt Avg(this IEnumerable<Watt> Watts)
+        {
+
+            var sum    = Watt.Zero;
+            var count  = 0;
+
+            foreach (var watt in Watts)
+            {
+                sum += watt;
+                count++;
+            }
+
+            return count == 0
+                       ? Watt.Zero
+                       : sum / count;
+
+        }
+
+        #endregion
+
     }
 
 
     /// <summary>
-    /// A Watt value.
+    /// A Watt value (W), the SI unit of power.
     /// </summary>
     public readonly struct Watt : IParsable    <Watt>,
                                   ISpanParsable<Watt>,
@@ -81,9 +111,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The rounded integer value of the Watt.
         /// </summary>
-        public Int32    RoundedIntegerValue
+        public Int64    RoundedIntegerValue
 
-            => Decimal.ToInt32(
+            => Decimal.ToInt64(
                    Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
                );
 
@@ -125,9 +155,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Watt based on the given number.
+        /// Create a new Watt (W) based on the given number.
         /// </summary>
-        /// <param name="Value">A numeric representation of a Watt.</param>
+        /// <param name="Value">A numeric representation of watts (W).</param>
         private Watt(Decimal Value)
         {
             this.Value = Value;
@@ -139,10 +169,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Parse      (Text)
 
         /// <summary>
-        /// Parse the given string as Watt using invariant culture.
+        /// Parse the given string as watts using invariant culture.
         /// Supports optional suffixes "W", "kW", "MW", and "GW".
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         public static Watt Parse(String Text)
 
             => Parse(Text, CultureInfo.InvariantCulture);
@@ -152,10 +182,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Parse      (Text, FormatProvider)
 
         /// <summary>
-        /// Parse the given string as Watt using the given format provider.
+        /// Parse the given string as watts using the given format provider.
         /// Supports optional suffixes "W", "kW", "MW", and "GW".
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
         public static Watt Parse(String            Text,
                                  IFormatProvider?  FormatProvider)
@@ -164,7 +194,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, FormatProvider, out var watt))
                 return watt;
 
-            throw new FormatException($"Invalid text representation of a Watt: '{Text}'!");
+            throw new FormatException($"Invalid text representation of watts: '{Text}'!");
 
         }
 
@@ -173,19 +203,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) Parse      (Span, FormatProvider)
 
         /// <summary>
-        /// Parse the given text span as Watt using the given format provider.
+        /// Parse the given text span as watts using the given format provider.
         /// Supports optional suffixes "W", "kW", "MW", and "GW".
         /// </summary>
-        /// <param name="Span">A text representation of a Watt.</param>
+        /// <param name="Span">A text representation of watts.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
         public static Watt Parse(ReadOnlySpan<Char>  Span,
-                                   IFormatProvider?    FormatProvider)
+                                 IFormatProvider?    FormatProvider)
         {
 
             if (TryParse(Span, FormatProvider, out var ampere))
                 return ampere;
 
-            throw new FormatException($"Invalid text representation of a Watt: '{Span}'!");
+            throw new FormatException($"Invalid text representation of watts: '{Span}'!");
 
         }
 
@@ -194,16 +224,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseW     (Text)
 
         /// <summary>
-        /// Parse the given string as a W.
+        /// Parse the given string as watts.
         /// </summary>
-        /// <param name="Text">A text representation of a W.</param>
+        /// <param name="Text">A text representation of watts.</param>
         public static Watt ParseW(String Text)
         {
 
             if (TryParseW(Text, out var watt))
                 return watt;
 
-            throw new FormatException($"Invalid text representation of a Watt: '{Text}'!");
+            throw new FormatException($"Invalid text representation of watts: '{Text}'!");
 
         }
 
@@ -212,16 +242,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseKW    (Text)
 
         /// <summary>
-        /// Parse the given string as a kW.
+        /// Parse the given string as kiloWatts.
         /// </summary>
-        /// <param name="Text">A text representation of a kW.</param>
+        /// <param name="Text">A text representation of kiloWatts.</param>
         public static Watt ParseKW(String Text)
         {
 
             if (TryParseKW(Text, out var watt))
                 return watt;
 
-            throw new FormatException($"Invalid text representation of a kW: '{Text}'!");
+            throw new FormatException($"Invalid text representation of kiloWatts: '{Text}'!");
 
         }
 
@@ -230,16 +260,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseMW    (Text)
 
         /// <summary>
-        /// Parse the given string as a MW.
+        /// Parse the given string as MegaWatts.
         /// </summary>
-        /// <param name="Text">A text representation of a MW.</param>
+        /// <param name="Text">A text representation of MegaWatts.</param>
         public static Watt ParseMW(String Text)
         {
 
             if (TryParseMW(Text, out var watt))
                 return watt;
 
-            throw new FormatException($"Invalid text representation of a MW: '{Text}'!");
+            throw new FormatException($"Invalid text representation of MegaWatts: '{Text}'!");
 
         }
 
@@ -248,16 +278,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseGW    (Text)
 
         /// <summary>
-        /// Parse the given string as a GW.
+        /// Parse the given string as GigaWatts.
         /// </summary>
-        /// <param name="Text">A text representation of a GW.</param>
+        /// <param name="Text">A text representation of GigaWatts.</param>
         public static Watt ParseGW(String Text)
         {
 
             if (TryParseGW(Text, out var watt))
                 return watt;
 
-            throw new FormatException($"Invalid text representation of a GW: '{Text}'!");
+            throw new FormatException($"Invalid text representation of GigaWatts: '{Text}'!");
 
         }
 
@@ -267,9 +297,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromW      (Number, Exponent = null)
 
         /// <summary>
-        /// Convert the given number into Watts.
+        /// Convert the given number into watts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Watt.</param>
+        /// <param name="Number">A numeric representation of watts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromW(Decimal  Number,
                                  Int32?   Exponent = null)
@@ -278,9 +308,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Convert the given number into Watts.
+        /// Convert the given number into watts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Watt.</param>
+        /// <param name="Number">A numeric representation of watts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromW(Byte    Number,
                                  Int32?  Exponent = null)
@@ -292,25 +322,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromKW     (Number, Exponent = null)
 
         /// <summary>
-        /// Convert the given number into kilo Watts.
+        /// Convert the given number into kiloWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kW.</param>
+        /// <param name="Number">A numeric representation of kiloWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromKW(Decimal  Number,
                                   Int32?   Exponent = null)
 
-            => new (1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
-        /// Convert the given number into kilo Watts.
+        /// Convert the given number into kiloWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kW.</param>
+        /// <param name="Number">A numeric representation of kiloWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromKW(Byte    Number,
                                   Int32?  Exponent = null)
 
-            => new (1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            => new (1000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -319,23 +349,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Convert the given number into MegaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a MW.</param>
+        /// <param name="Number">A numeric representation of MegaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromMW(Decimal  Number,
                                   Int32?   Exponent = null)
 
-            => new (1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
         /// Convert the given number into MegaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a MW.</param>
+        /// <param name="Number">A numeric representation of MegaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromMW(Byte    Number,
                                   Int32?  Exponent = null)
 
-            => new (1000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            => new (1000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -344,23 +374,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Convert the given number into GigaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a GW.</param>
+        /// <param name="Number">A numeric representation of GigaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromGW(Decimal  Number,
                                   Int32?   Exponent = null)
 
-            => new (1000000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
         /// Convert the given number into GigaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a GW.</param>
+        /// <param name="Number">A numeric representation of GigaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt FromGW(Byte    Number,
                                   Int32?  Exponent = null)
 
-            => new (1000000000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            => new (1000000000m * Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
@@ -368,10 +398,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParse   (Text)
 
         /// <summary>
-        /// Try to parse the given text as Watt with an optional unit suffix ("W", "kW", "MW", "GW")
+        /// Try to parse the given text as watts with an optional unit suffix ("W", "kW", "MW", "GW")
         /// using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         public static Watt? TryParse(String? Text)
         {
 
@@ -387,10 +417,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParse   (Text, FormatProvider)
 
         /// <summary>
-        /// Try to parse the given text as Watt with an optional unit suffix ("W", "kW", "MW", "GW")
+        /// Try to parse the given text as watts with an optional unit suffix ("W", "kW", "MW", "GW")
         /// using the given format provider.
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
         public static Watt? TryParse(String?           Text,
                                      IFormatProvider?  FormatProvider)
@@ -408,9 +438,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseW  (Text)
 
         /// <summary>
-        /// Try to parse the given text as a W.
+        /// Try to parse the given text as watts.
         /// </summary>
-        /// <param name="Text">A text representation of a W.</param>
+        /// <param name="Text">A text representation of watts.</param>
         public static Watt? TryParseW(String? Text)
         {
 
@@ -426,9 +456,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKW (Text)
 
         /// <summary>
-        /// Try to parse the given text as a kW.
+        /// Try to parse the given text as kiloWatts.
         /// </summary>
-        /// <param name="Text">A text representation of a kW.</param>
+        /// <param name="Text">A text representation of kiloWatts.</param>
         public static Watt? TryParseKW(String? Text)
         {
 
@@ -444,9 +474,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseMW (Text)
 
         /// <summary>
-        /// Try to parse the given text as a MW.
+        /// Try to parse the given text as MegaWatts.
         /// </summary>
-        /// <param name="Text">A text representation of a MW.</param>
+        /// <param name="Text">A text representation of MegaWatts.</param>
         public static Watt? TryParseMW(String? Text)
         {
 
@@ -462,9 +492,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseGW (Text)
 
         /// <summary>
-        /// Try to parse the given text as a GW.
+        /// Try to parse the given text as GigaWatts.
         /// </summary>
-        /// <param name="Text">A text representation of a GW.</param>
+        /// <param name="Text">A text representation of GigaWatts.</param>
         public static Watt? TryParseGW(String? Text)
         {
 
@@ -481,9 +511,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromW   (Number, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a Watt.
+        /// Try to convert the given number into watts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Watt.</param>
+        /// <param name="Number">A numeric representation of watts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromW(Decimal  Number,
                                      Int32?   Exponent = null)
@@ -498,9 +528,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a Watt.
+        /// Try to convert the given number into watts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Watt.</param>
+        /// <param name="Number">A numeric representation of watts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromW(Byte    Number,
                                      Int32?  Exponent = null)
@@ -518,9 +548,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKW  (Number, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a kilo Watt.
+        /// Try to convert the given number into kiloWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilo Watt.</param>
+        /// <param name="Number">A numeric representation of kiloWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromKW(Decimal  Number,
                                       Int32?   Exponent = null)
@@ -535,9 +565,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a kilo Watt.
+        /// Try to convert the given number into kiloWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilo Watt.</param>
+        /// <param name="Number">A numeric representation of kiloWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromKW(Byte    Number,
                                       Int32?  Exponent = null)
@@ -555,9 +585,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromMW  (Number, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a MegaWatt.
+        /// Try to convert the given number into MegaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a MegaWatt.</param>
+        /// <param name="Number">A numeric representation of MegaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromMW(Decimal  Number,
                                       Int32?   Exponent = null)
@@ -572,9 +602,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a MegaWatt.
+        /// Try to convert the given number into MegaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a MegaWatt.</param>
+        /// <param name="Number">A numeric representation of MegaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromMW(Byte    Number,
                                       Int32?  Exponent = null)
@@ -592,9 +622,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromGW  (Number, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a GigaWatt.
+        /// Try to convert the given number into GigaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a GigaWatt.</param>
+        /// <param name="Number">A numeric representation of GigaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromGW(Decimal  Number,
                                       Int32?   Exponent = null)
@@ -609,9 +639,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a GigaWatt.
+        /// Try to convert the given number into GigaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a GigaWatt.</param>
+        /// <param name="Number">A numeric representation of GigaWatts.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Watt? TryFromGW(Byte    Number,
                                       Int32?  Exponent = null)
@@ -630,10 +660,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParse   (Text,                 out Watt)
 
         /// <summary>
-        /// Try to parse the given string as Watt using invariant culture.
+        /// Try to parse the given string as watts using invariant culture.
         /// Supports optional suffixes "W", "kW", "MW", "GW".
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         public static Boolean TryParse([NotNullWhen(true)] String?  Text,
                                        out                 Watt     Watt)
@@ -647,15 +677,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParse   (Text, FormatProvider, out Watt)
 
         /// <summary>
-        /// Try to parse the given string as Watt using the given format provider.
+        /// Try to parse the given string as watts using the given format provider.
         /// Supports optional suffixes "W", "kW", "MW", "GW".
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        public static Boolean TryParse([NotNullWhen(true)] String? Text,
-                                       IFormatProvider?            FormatProvider,
-                                       out Watt                    Watt)
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       IFormatProvider?             FormatProvider,
+                                       out Watt                     Watt)
 
             => TryParse(Text.AsSpan(),
                         FormatProvider,
@@ -666,10 +696,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParse   (Span, FormatProvider, out Watt)
 
         /// <summary>
-        /// Try to parse the given text span as Watt using the given format provider.
+        /// Try to parse the given text span as watts using the given format provider.
         /// Supports optional suffixes "W", "kW", "MW", "GW".
         /// </summary>
-        /// <param name="Span">A text representation of a Watt.</param>
+        /// <param name="Span">A text representation of watts.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
         /// <param name="Watt">The parsed Watt.</param>
         public static Boolean TryParse(ReadOnlySpan<Char>  Span,
@@ -726,11 +756,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseW  (Text,   out Watt)
 
         /// <summary>
-        /// Try to parse the given string as Watt using invariant culture.
+        /// Try to parse the given string as watts using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a Watt.</param>
+        /// <param name="Text">A text representation of watts.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        public static Boolean TryParseW(String Text, out Watt Watt)
+        public static Boolean TryParseW(String? Text, out Watt Watt)
         {
 
             Watt = default;
@@ -755,11 +785,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseKW (Text,   out Watt)
 
         /// <summary>
-        /// Try to parse the given string as kilo Watt using invariant culture.
+        /// Try to parse the given string as kiloWatts using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a kilo Watt.</param>
+        /// <param name="Text">A text representation of a kiloWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        public static Boolean TryParseKW(String Text, out Watt Watt)
+        public static Boolean TryParseKW(String? Text, out Watt Watt)
         {
 
             Watt = default;
@@ -784,11 +814,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseMW (Text,   out Watt)
 
         /// <summary>
-        /// Try to parse the given string as MegaWatt using invariant culture.
+        /// Try to parse the given string as MegaWatts using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a MegaWatt.</param>
+        /// <param name="Text">A text representation of MegaWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        public static Boolean TryParseMW(String Text, out Watt Watt)
+        public static Boolean TryParseMW(String? Text, out Watt Watt)
         {
 
             Watt = default;
@@ -813,11 +843,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseGW (Text,   out Watt)
 
         /// <summary>
-        /// Try to parse the given string as GigaWatt using invariant culture.
+        /// Try to parse the given string as GigaWatts using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a GigaWatt.</param>
+        /// <param name="Text">A text representation of GigaWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
-        public static Boolean TryParseGW(String Text, out Watt Watt)
+        public static Boolean TryParseGW(String? Text, out Watt Watt)
         {
 
             Watt = default;
@@ -879,9 +909,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromW   (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a Watt.
+        /// Try to convert the given number into watts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Watt.</param>
+        /// <param name="Number">A numeric representation of watts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromW(Byte      Number,
@@ -892,9 +922,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a Watt.
+        /// Try to convert the given number into watts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a Watt.</param>
+        /// <param name="Number">A numeric representation of watts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromW(Decimal   Number,
@@ -908,9 +938,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromKW  (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a kilo Watt.
+        /// Try to convert the given number into a kiloWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilo Watt.</param>
+        /// <param name="Number">A numeric representation of kiloWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKW(Byte      Number,
@@ -927,9 +957,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a kilo Watt.
+        /// Try to convert the given number into a kiloWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilo Watt.</param>
+        /// <param name="Number">A numeric representation of kiloWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromKW(Decimal   Number,
@@ -949,9 +979,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromMW  (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a MegaWatt.
+        /// Try to convert the given number into MegaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a MegaWatt.</param>
+        /// <param name="Number">A numeric representation of MegaWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromMW(Byte      Number,
@@ -968,9 +998,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a MegaWatt.
+        /// Try to convert the given number into MegaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a MegaWatt.</param>
+        /// <param name="Number">A numeric representation of MegaWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromMW(Decimal   Number,
@@ -990,9 +1020,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromGW  (Number, out Watt, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into a GigaWatt.
+        /// Try to convert the given number into GigaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a GigaWatt.</param>
+        /// <param name="Number">A numeric representation of GigaWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromGW(Byte      Number,
@@ -1009,9 +1039,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to convert the given number into a GigaWatt.
+        /// Try to convert the given number into GigaWatts.
         /// </summary>
-        /// <param name="Number">A numeric representation of a GigaWatt.</param>
+        /// <param name="Number">A numeric representation of GigaWatts.</param>
         /// <param name="Watt">The parsed Watt.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromGW(Decimal   Number,

@@ -19,6 +19,7 @@
 
 using System.Numerics;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -31,6 +32,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class KilogramExtensions
     {
 
+        #region Sum (this Kilograms)
+
         /// <summary>
         /// The sum of the given kilogram values.
         /// </summary>
@@ -41,33 +44,63 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var sum = Kilogram.Zero;
 
             foreach (var kilogram in Kilograms)
-                sum = sum + kilogram;
+                sum += kilogram;
 
             return sum;
 
         }
 
+        #endregion
+
+        #region Avg (this Kilograms)
+
+        /// <summary>
+        /// The average of the given kilogram values.
+        /// </summary>
+        /// <param name="Kilograms">An enumeration of kilogram values.</param>
+        public static Kilogram Avg(this IEnumerable<Kilogram> Kilograms)
+        {
+
+            var sum    = Kilogram.Zero;
+            var count  = 0;
+
+            foreach (var kilogram in Kilograms)
+            {
+                sum += kilogram;
+                count++;
+            }
+
+            return count == 0
+                       ? Kilogram.Zero
+                       : sum / count;
+
+        }
+
+        #endregion
+
     }
 
 
     /// <summary>
-    /// A mass in kilogram (kg).
+    /// A kilogram value (kg), the SI unit of mass.
     /// </summary>
-    public readonly struct Kilogram : IEquatable <Kilogram>,
-                                      IComparable<Kilogram>,
+    public readonly struct Kilogram : IParsable    <Kilogram>,
+                                      ISpanParsable<Kilogram>,
+                                      IEquatable   <Kilogram>,
+                                      IComparable  <Kilogram>,
                                       IComparable,
-                                      IAdditionOperators   <Kilogram, Kilogram, Kilogram>,
-                                      ISubtractionOperators<Kilogram, Kilogram, Kilogram>,
-                                      IMultiplyOperators   <Kilogram, Decimal,  Kilogram>,
-                                      IDivisionOperators   <Kilogram, Decimal,  Kilogram>
+                                      IFormattable,
+                                      ISpanFormattable,
+                                      IAdditionOperators   <Kilogram,  Kilogram,  Kilogram>,
+                                      ISubtractionOperators<Kilogram,  Kilogram,  Kilogram>,
+                                      IMultiplyOperators   <Kilogram,  Decimal, Kilogram>,
+                                      IDivisionOperators   <Kilogram,  Decimal, Kilogram>,
+                                      IComparisonOperators <Kilogram,  Kilogram,  Boolean>,
+                                      IEqualityOperators   <Kilogram,  Kilogram,  Boolean>,
+                                      IAdditiveIdentity    <Kilogram,  Kilogram>
     {
 
         #region Properties
-
-        /// <summary>
-        /// The zero value of a kilogram.
-        /// </summary>
-        public static readonly Kilogram Zero = new (0m);
 
         /// <summary>
         /// The value of the kilogram.
@@ -83,77 +116,130 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
                );
 
+
+#pragma warning disable IDE1006 // Naming Styles
+        /// <summary>
+        /// The value as grams.
+        /// </summary>
+        public Decimal  g
+            => Value * 1000m;
+#pragma warning restore IDE1006 // Naming Styles
+
+
+        /// <summary>
+        /// The zero value of a kilogram.
+        /// </summary>
+        public static readonly Kilogram Zero = new (0m);
+
+        /// <summary>
+        /// The additive identity of Kilogram.
+        /// </summary>
+        public static Kilogram AdditiveIdentity
+            => Zero;
+
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new mass in kilogram based on the given number.
+        /// Create a new kilogram (kg) based on the given number.
         /// </summary>
-        /// <param name="Value">A numeric representation of a mass in kilograms.</param>
+        /// <param name="Value">A numeric representation of kilograms (kg).</param>
         private Kilogram(Decimal Value)
         {
-
-            this.Value = Value >= 0
-                             ? Value
-                             : 0;
-
+            this.Value = Value;
         }
 
         #endregion
 
 
-        #region (static) Parse         (Text)
+        #region (static) Parse      (Text)
 
         /// <summary>
-        /// Parse the given string as a kilogram.
+        /// Parse the given string as kilograms using invariant culture.
+        /// Supports optional suffixes "kg" and "g".
         /// </summary>
-        /// <param name="Text">A text representation of a kilogram.</param>
+        /// <param name="Text">A text representation of kilograms.</param>
         public static Kilogram Parse(String Text)
+
+            => Parse(Text, CultureInfo.InvariantCulture);
+
+        #endregion
+
+        #region (static) Parse      (Text, FormatProvider)
+
+        /// <summary>
+        /// Parse the given string as kilograms using the given format provider.
+        /// Supports optional suffixes "kg" and "g".
+        /// </summary>
+        /// <param name="Text">A text representation of kilograms.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Kilogram Parse(String            Text,
+                                     IFormatProvider?  FormatProvider)
         {
 
-            if (TryParse(Text, out var kilogram))
+            if (TryParse(Text, FormatProvider, out var kilogram))
                 return kilogram;
 
-            throw new ArgumentException($"Invalid text representation of a kilogram: '{Text}'!",
+            throw new FormatException($"Invalid text representation of kilograms: '{Text}'!");
+
+        }
+
+        #endregion
+
+        #region (static) Parse      (Span, FormatProvider)
+
+        /// <summary>
+        /// Parse the given text span as kilograms using the given format provider.
+        /// Supports optional suffixes "kg" and "g".
+        /// </summary>
+        /// <param name="Span">A text representation of kilograms.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Kilogram Parse(ReadOnlySpan<Char>  Span,
+                                     IFormatProvider?    FormatProvider)
+        {
+
+            if (TryParse(Span, FormatProvider, out var kilogram))
+                return kilogram;
+
+            throw new FormatException($"Invalid text representation of kilograms: '{Span}'!");
+
+        }
+
+        #endregion
+
+        #region (static) ParseKG    (Text)
+
+        /// <summary>
+        /// Parse the given string as kilograms.
+        /// </summary>
+        /// <param name="Text">A text representation of kilograms.</param>
+        public static Kilogram ParseKG(String Text)
+        {
+
+            if (TryParseKG(Text, out var kilogram))
+                return kilogram;
+
+            throw new ArgumentException($"Invalid text representation of kilograms: '{Text}'!",
                                         nameof(Text));
 
         }
 
         #endregion
 
-        #region (static) ParseKilogram (Text)
+        #region (static) ParseG     (Text)
 
         /// <summary>
-        /// Parse the given string as a kilogram.
+        /// Parse the given string as grams.
         /// </summary>
-        /// <param name="Text">A text representation of a kilogram.</param>
-        public static Kilogram ParseKilogram(String Text)
-        {
-
-            if (TryParseKilogram(Text, out var kilogram))
-                return kilogram;
-
-            throw new ArgumentException($"Invalid text representation of a kilogram: '{Text}'!",
-                                        nameof(Text));
-
-        }
-
-        #endregion
-
-        #region (static) ParseGram     (Text)
-
-        /// <summary>
-        /// Parse the given string as a gram.
-        /// </summary>
-        /// <param name="Text">A text representation of a gram.</param>
+        /// <param name="Text">A text representation of grams.</param>
         public static Kilogram ParseGram(String Text)
         {
 
-            if (TryParseGram(Text, out var kilogram))
+            if (TryParseG(Text, out var kilogram))
                 return kilogram;
 
-            throw new ArgumentException($"Invalid text representation of a gram: '{Text}'!",
+            throw new ArgumentException($"Invalid text representation of grams: '{Text}'!",
                                         nameof(Text));
 
         }
@@ -161,95 +247,68 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) ParseKilogram (Number, Exponent = null)
+        #region (static) FromKG     (Number, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a kilogram.
+        /// Convert the given number into kilograms.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilogram.</param>
+        /// <param name="Number">A numeric representation of kilograms.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram ParseKilogram(Decimal  Number,
-                                             Int32?   Exponent = null)
-        {
+        public static Kilogram FromKG(Decimal  Number,
+                                      Int32?   Exponent = null)
 
-            if (TryParseKilogram(Number, out var kilogram, Exponent))
-                return kilogram;
-
-            throw new ArgumentException($"Invalid numeric representation of a kilogram: '{Number}'!",
-                                        nameof(Number));
-
-        }
+            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
-        /// Parse the given number as a kilogram.
+        /// Convert the given number into kilograms.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilogram.</param>
+        /// <param name="Number">A numeric representation of kilograms.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram ParseKilogram(Byte    Number,
-                                             Int32?  Exponent = null)
-        {
+        public static Kilogram FromKG(Byte    Number,
+                                      Int32?  Exponent = null)
 
-            if (TryParseKilogram(Number, out var kilogram, Exponent))
-                return kilogram;
-
-            throw new ArgumentException($"Invalid numeric representation of a kilogram: '{Number}'!",
-                                        nameof(Number));
-
-        }
+            => new (Number * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
-        #region (static) ParseGram     (Number, Exponent = null)
+        #region (static) FromG      (Number, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a gram.
+        /// Convert the given number into grams.
         /// </summary>
-        /// <param name="Number">A numeric representation of a gram.</param>
+        /// <param name="Number">A numeric representation of grams.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram ParseGram(Decimal  Number,
-                                         Int32?   Exponent = null)
-        {
+        public static Kilogram FromG(Decimal  Number,
+                                     Int32?   Exponent = null)
 
-            if (TryParseGram(Number, out var kilogram, Exponent))
-                return kilogram;
-
-            throw new ArgumentException($"Invalid numeric representation of a gram: '{Number}'!",
-                                        nameof(Number));
-
-        }
+            => new (Number / 1000m * MathHelpers.Pow10(Exponent ?? 0));
 
 
         /// <summary>
-        /// Parse the given number as a gram.
+        /// Convert the given number into grams.
         /// </summary>
-        /// <param name="Number">A numeric representation of a gram.</param>
+        /// <param name="Number">A numeric representation of grams.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram ParseGram(Byte    Number,
-                                         Int32?  Exponent = null)
-        {
+        public static Kilogram FromG(Byte    Number,
+                                     Int32?  Exponent = null)
 
-            if (TryParseGram(Number, out var kilogram, Exponent))
-                return kilogram;
-
-            throw new ArgumentException($"Invalid numeric representation of a gram: '{Number}'!",
-                                        nameof(Number));
-
-        }
+            => new (Number / 1000m * MathHelpers.Pow10(Exponent ?? 0));
 
         #endregion
 
 
-        #region (static) TryParse         (Text)
+        #region (static) TryParse   (Text)
 
         /// <summary>
-        /// Try to parse the given text as a kilogram.
+        /// Try to parse the given text as kilograms with an optional unit suffix ("kg" and "g")
+        /// using invariant culture.
         /// </summary>
-        /// <param name="Text">A text representation of a kilogram.</param>
-        public static Kilogram? TryParse(String Text)
+        /// <param name="Text">A text representation of kilograms.</param>
+        public static Kilogram? TryParse(String? Text)
         {
 
-            if (TryParse(Text, out var kilogram))
+            if (TryParse(Text, CultureInfo.InvariantCulture, out var kilogram))
                 return kilogram;
 
             return null;
@@ -258,16 +317,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKilogram (Text)
+        #region (static) TryParse   (Text, FormatProvider)
 
         /// <summary>
-        /// Try to parse the given text as a kilogram.
+        /// Try to parse the given text as kilograms with an optional unit suffix ("kg" and "g")
+        /// using the given format provider.
         /// </summary>
-        /// <param name="Text">A text representation of a kilogram.</param>
-        public static Kilogram? TryParseKilogram(String Text)
+        /// <param name="Text">A text representation of kilograms.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static Kilogram? TryParse(String?           Text,
+                                         IFormatProvider?  FormatProvider)
         {
 
-            if (TryParseKilogram(Text, out var kilogram))
+            if (TryParse(Text, FormatProvider, out var kilogram))
                 return kilogram;
 
             return null;
@@ -276,16 +338,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseGram     (Text)
+        #region (static) TryParseKG (Text)
 
         /// <summary>
-        /// Try to parse the given text as a gram.
+        /// Try to parse the given text as kilograms.
         /// </summary>
-        /// <param name="Text">A text representation of a gram.</param>
+        /// <param name="Text">A text representation of kilograms.</param>
+        public static Kilogram? TryParseKG(String Text)
+        {
+
+            if (TryParseKG(Text, out var kilogram))
+                return kilogram;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseG  (Text)
+
+        /// <summary>
+        /// Try to parse the given text as grams.
+        /// </summary>
+        /// <param name="Text">A text representation of grams.</param>
         public static Kilogram? TryParseGram(String Text)
         {
 
-            if (TryParseGram(Text, out var kilogram))
+            if (TryParseG(Text, out var kilogram))
                 return kilogram;
 
             return null;
@@ -295,18 +375,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseKilogram (Number, Exponent = null)
+        #region (static) TryFromKG  (Number, Exponent = null)
 
         /// <summary>
-        /// Try to parse the given number as a kilogram.
+        /// Try to convert the given number into kilograms.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilogram.</param>
+        /// <param name="Number">A numeric representation of kilograms.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram? TryParseKilogram(Decimal  Number,
-                                                 Int32?   Exponent = null)
+        public static Kilogram? TryFromKG(Decimal  Number,
+                                          Int32?   Exponent = null)
         {
 
-            if (TryParseKilogram(Number, out var kilogram, Exponent))
+            if (TryFromKG(Number, out var kilogram, Exponent))
                 return kilogram;
 
             return null;
@@ -315,52 +395,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         /// <summary>
-        /// Try to parse the given number as a kilogram.
+        /// Try to convert the given number into kilograms.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilogram.</param>
+        /// <param name="Number">A numeric representation of kilograms.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram? TryParseKilogram(Byte    Number,
-                                                 Int32?  Exponent = null)
+        public static Kilogram? TryFromKG(Byte    Number,
+                                          Int32?  Exponent = null)
         {
 
-            if (TryParseKilogram(Number, out var kilogram, Exponent))
-                return kilogram;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryParseGram     (Number, Exponent = null)
-
-        /// <summary>
-        /// Try to parse the given number as a gram.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a gram.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram? TryParseGram(Decimal  Number,
-                                             Int32?   Exponent = null)
-        {
-
-            if (TryParseGram(Number, out var kilogram, Exponent))
-                return kilogram;
-
-            return null;
-
-        }
-
-
-        /// <summary>
-        /// Try to parse the given number as a gram.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a gram.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Kilogram? TryParseGram(Byte    Number,
-                                             Int32?  Exponent = null)
-        {
-
-            if (TryParseGram(Number, out var kilogram, Exponent))
+            if (TryFromKG(Number, out var kilogram, Exponent))
                 return kilogram;
 
             return null;
@@ -369,15 +412,137 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) TryFromG   (Number, Exponent = null)
 
-        #region (static) TryParse         (Text,   out Kilogram)
+        /// <summary>
+        /// Try to convert the given number into grams.
+        /// </summary>
+        /// <param name="Number">A numeric representation of grams.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Kilogram? TryFromG(Decimal  Number,
+                                         Int32?   Exponent = null)
+        {
+
+            if (TryFromG(Number, out var kilogram, Exponent))
+                return kilogram;
+
+            return null;
+
+        }
+
+
+        /// <summary>
+        /// Try to convert the given number into grams.
+        /// </summary>
+        /// <param name="Number">A numeric representation of grams.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Kilogram? TryFromG(Byte    Number,
+                                         Int32?  Exponent = null)
+        {
+
+            if (TryFromG(Number, out var kilogram, Exponent))
+                return kilogram;
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParse   (Text,                 out Kilogram)
+
+        /// <summary>
+        /// Try to parse the given string as kilograms using invariant culture.
+        /// Supports optional suffixes "kg" and "g".
+        /// </summary>
+        /// <param name="Text">A text representation of kilograms.</param>
+        /// <param name="Kilogram">The parsed Kilogram.</param>
+        public static Boolean TryParse([NotNullWhen(true)] String?   Text,
+                                       out                 Kilogram  Kilogram)
+
+            => TryParse(Text.AsSpan(),
+                        CultureInfo.InvariantCulture,
+                        out Kilogram);
+
+        #endregion
+
+        #region (static) TryParse   (Text, FormatProvider, out Kilogram)
+
+        /// <summary>
+        /// Try to parse the given string as kilograms using the given format provider.
+        /// Supports optional suffixes "kg" and "g".
+        /// </summary>
+        /// <param name="Text">A text representation of kilograms.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        /// <param name="Kilogram">The parsed Kilogram.</param>
+        public static Boolean TryParse([NotNullWhen(true)] String?  Text,
+                                       IFormatProvider?             FormatProvider,
+                                       out Kilogram                 Kilogram)
+
+            => TryParse(Text.AsSpan(),
+                        FormatProvider,
+                        out Kilogram);
+
+        #endregion
+
+        #region (static) TryParse   (Span, FormatProvider, out Kilogram)
+
+        /// <summary>
+        /// Try to parse the given text span as kilograms using the given format provider.
+        /// Supports optional suffixes "kg" and "g".
+        /// </summary>
+        /// <param name="Span">A text representation of kilograms.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        /// <param name="Kilogram">The parsed Kilogram.</param>
+        public static Boolean TryParse(ReadOnlySpan<Char>  Span,
+                                       IFormatProvider?    FormatProvider,
+                                       out Kilogram        Kilogram)
+        {
+
+            Kilogram = default;
+
+            Span = Span.Trim();
+
+            if (Span.IsEmpty)
+                return false;
+
+            var exponent  = 0;
+
+            if      (Span.EndsWith("kg".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = 0;
+                Span      = Span[..^2].TrimEnd();
+            }
+
+            else if (Span.EndsWith("g".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = -3;
+                Span      = Span[..^1].TrimEnd();
+            }
+
+            if (Decimal.TryParse(Span,
+                                 NumberStyles.Number,
+                                 NumberFormatInfo.GetInstance(FormatProvider),
+                                 out var value))
+            {
+                return TryCreate(value, exponent, out Kilogram);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParseKG (Text,   out Kilogram)
 
         /// <summary>
         /// Parse the given string as a kilogram.
         /// </summary>
         /// <param name="Text">A text representation of a kilogram.</param>
         /// <param name="Kilogram">The parsed Kilogram.</param>
-        public static Boolean TryParse(String Text, out Kilogram Kilogram)
+        public static Boolean TryParseKG(String Text, out Kilogram Kilogram)
         {
 
             Kilogram = default;
@@ -385,32 +550,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (String.IsNullOrWhiteSpace(Text))
                 return false;
 
-            Text = Text.Trim();
-
-            var factor = 1m;
-
-            if      (Text.EndsWith("g",  StringComparison.OrdinalIgnoreCase) &&
-                    !Text.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
-            {
-                factor  = 1/1000;
-                Text    = Text[..^1].TrimEnd();
-            }
-
-            else if (Text.EndsWith("kg", StringComparison.OrdinalIgnoreCase))
-            {
-                Text    = Text[..^2].TrimEnd();
-            }
-
-            if (Decimal.TryParse(Text,
+            if (Decimal.TryParse(Text.Trim(),
                                  NumberStyles.Number,
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-
-                Kilogram = new Kilogram(value * factor);
-
-                return true;
-
+                return TryCreate(value, 3, out Kilogram);
             }
 
             return false;
@@ -419,68 +564,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKilogram (Text,   out Kilogram)
-
-        /// <summary>
-        /// Parse the given string as a kilogram.
-        /// </summary>
-        /// <param name="Text">A text representation of a kilogram.</param>
-        /// <param name="Kilogram">The parsed Kilogram.</param>
-        public static Boolean TryParseKilogram(String Text, out Kilogram Kilogram)
-        {
-
-            try
-            {
-
-                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Kilogram = new Kilogram(value);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
-            Kilogram = default;
-            return false;
-
-        }
-
-        #endregion
-
-        #region (static) TryParseGram     (Text,   out Kilogram)
+        #region (static) TryParseG  (Text,   out Kilogram)
 
         /// <summary>
         /// Parse the given string as a gram.
         /// </summary>
         /// <param name="Text">A text representation of a gram.</param>
         /// <param name="Kilogram">The parsed gram.</param>
-        public static Boolean TryParseGram(String Text, out Kilogram Kilogram)
+        public static Boolean TryParseG(String Text, out Kilogram Kilogram)
         {
 
-            try
-            {
-
-                if (Decimal.TryParse(Text.Trim(), NumberStyles.Number, CultureInfo.InvariantCulture, out var value) &&
-                    value >= 0)
-                {
-
-                    Kilogram = new Kilogram(value / 1000);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
             Kilogram = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
+            {
+                return TryCreate(value, 0, out Kilogram);
+            }
+
             return false;
 
         }
@@ -488,64 +594,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParseKilogram (Number, out Kilogram, Exponent = null)
+        #region (private static) TryCreate(Number, Exponent, out Kilogram)
 
-        /// <summary>
-        /// Parse the given number as a kilogram.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a kilogram.</param>
-        /// <param name="Kilogram">The parsed Kilogram.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKilogram(Byte          Number,
-                                               out Kilogram  Kilogram,
-                                               Int32?        Exponent = null)
+        private static Boolean TryCreate(Decimal       Number,
+                                         Int32         Exponent,
+                                         out Kilogram  Kilogram)
         {
+
+            Kilogram = default;
+
+            if (Exponent < -28 || Exponent > 28)
+                return false;
+
+            if (Number == 0m)
+            {
+                Kilogram = Zero;
+                return true;
+            }
 
             try
             {
-
-                Kilogram = new Kilogram(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
+                Kilogram = new Kilogram(Number * MathHelpers.Pow10(Exponent));
                 return true;
-
             }
-            catch
+            catch (OverflowException)
             {
-                Kilogram = default;
                 return false;
             }
-
-        }
-
-
-        /// <summary>
-        /// Parse the given number as a kilogram.
-        /// </summary>
-        /// <param name="Number">A numeric representation of a kilogram.</param>
-        /// <param name="Kilogram">The parsed Kilogram.</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseKilogram(Decimal       Number,
-                                               out Kilogram  Kilogram,
-                                               Int32?        Exponent = null)
-        {
-
-            try
+            catch (ArgumentOutOfRangeException)
             {
-
-                Kilogram = new Kilogram(Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
-                return true;
-
-            }
-            catch
-            {
-                Kilogram = default;
                 return false;
             }
 
@@ -553,66 +630,83 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseGram     (Number, out Kilogram, Exponent = null)
+        #region (static) TryFromKG  (Number, out Kilogram, Exponent = null)
 
         /// <summary>
-        /// Parse the given number as a kilokilogram.
+        /// Parse the given number as kilograms.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilokilogram.</param>
-        /// <param name="Kilogram">The parsed kilokilogram.</param>
+        /// <param name="Number">A numeric representation of kilograms.</param>
+        /// <param name="Kilogram">The parsed Kilogram.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseGram(Byte          Number,
-                                           out Kilogram  Kilogram,
-                                           Int32?        Exponent = null)
+        public static Boolean TryFromKG(Byte          Number,
+                                        out Kilogram  Kilogram,
+                                        Int32?        Exponent = null)
         {
 
-            try
-            {
+            Kilogram = default;
 
-                Kilogram = new Kilogram(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
-
-                if (Number < 0)
-                    return false;
-
-                return true;
-
-            }
-            catch
-            {
-                Kilogram = default;
-                return false;
-            }
+            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
+                   TryCreate(Number, exponent, out Kilogram);
 
         }
 
 
         /// <summary>
-        /// Parse the given number as a kilokilogram.
+        /// Parse the given number as kilograms.
         /// </summary>
-        /// <param name="Number">A numeric representation of a kilokilogram.</param>
-        /// <param name="Kilogram">The parsed kilokilogram.</param>
+        /// <param name="Number">A numeric representation of kilograms.</param>
+        /// <param name="Kilogram">The parsed Kilogram.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryParseGram(Decimal       Number,
-                                           out Kilogram  Kilogram,
-                                           Int32?        Exponent = null)
+        public static Boolean TryFromKG(Decimal       Number,
+                                        out Kilogram  Kilogram,
+                                        Int32?        Exponent = null)
         {
 
-            try
-            {
+            Kilogram = default;
 
-                Kilogram = new Kilogram(1000 * Number * MathHelpers.Pow10(Exponent ?? 0));
+            return MathHelpers.TryAddExponent(Exponent, 0, out var exponent) &&
+                   TryCreate(Number, exponent, out Kilogram);
 
-                if (Number < 0)
-                    return false;
+        }
 
-                return true;
+        #endregion
 
-            }
-            catch
-            {
-                Kilogram = default;
-                return false;
-            }
+        #region (static) TryFromG   (Number, out Kilogram, Exponent = null)
+
+        /// <summary>
+        /// Parse the given number as grams.
+        /// </summary>
+        /// <param name="Number">A numeric representation of grams.</param>
+        /// <param name="Kilogram">The parsed grams.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFromG(Byte          Number,
+                                       out Kilogram  Kilogram,
+                                       Int32?        Exponent = null)
+        {
+
+            Kilogram = default;
+
+            return MathHelpers.TryAddExponent(Exponent, -3, out var exponent) &&
+                   TryCreate(Number, exponent, out Kilogram);
+
+        }
+
+
+        /// <summary>
+        /// Parse the given number as grams.
+        /// </summary>
+        /// <param name="Number">A numeric representation of grams.</param>
+        /// <param name="Kilogram">The parsed grams.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFromG(Decimal       Number,
+                                       out Kilogram  Kilogram,
+                                       Int32?        Exponent = null)
+        {
+
+            Kilogram = default;
+
+            return MathHelpers.TryAddExponent(Exponent, -3, out var exponent) &&
+                   TryCreate(Number, exponent, out Kilogram);
 
         }
 
@@ -754,6 +848,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Operator *  (Scalar,    Kilogram)
+
+        /// <summary>
+        /// Multiplies a scalar with a Kilogram.
+        /// </summary>
+        /// <param name="Scalar">A scalar value.</param>
+        /// <param name="Kilogram">A Kilogram value.</param>
+        public static Kilogram operator * (Decimal   Scalar,
+                                           Kilogram  Kilogram)
+
+            => new (Scalar * Kilogram.Value);
+
+        #endregion
+
         #region Operator /  (Kilogram,  Scalar)
 
         /// <summary>
@@ -780,10 +888,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Object">A kilogram to compare with.</param>
         public Int32 CompareTo(Object? Object)
 
-            => Object is Kilogram kilogram
-                   ? CompareTo(kilogram)
-                   : throw new ArgumentException("The given object is not a kilogram!",
-                                                 nameof(Object));
+            => Object switch {
+                   null               => 1,
+                   Kilogram kilogram  => CompareTo(kilogram),
+                   _                  => throw new ArgumentException("The given object is not a Kilogram!", nameof(Object))
+               };
 
         #endregion
 
@@ -841,6 +950,91 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region TryFormat(Destination, out CharsWritten, Format, FormatProvider)
+
+        /// <summary>
+        /// Try to format this Kilogram into the given character span using the given format and culture-specific format provider.
+        /// </summary>
+        /// <param name="Destination">The destination span to write the formatted value.</param>
+        /// <param name="CharsWritten">The number of characters written to the destination span.</param>
+        /// <param name="Format">The format to use.</param>
+        /// <param name="FormatProvider">The format provider to use.</param>
+        public Boolean TryFormat(Span<Char>          Destination,
+                                 out Int32           CharsWritten,
+                                 ReadOnlySpan<Char>  Format,
+                                 IFormatProvider?    FormatProvider)
+        {
+
+            if (Format.IsEmpty ||
+                Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
+                Format.Equals("kg".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                return TryFormatWithSuffix(
+                           Value,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " kg".AsSpan()
+                       );
+            }
+
+            if (Format.Equals("g".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           g,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " g".AsSpan()
+                       );
+
+            return TryFormatWithSuffix(
+                       Value,
+                       Destination,
+                       out CharsWritten,
+                       Format,
+                       FormatProvider,
+                       " kg".AsSpan()
+                   );
+
+        }
+
+        #endregion
+
+        #region (private static) TryFormatWithSuffix(Value, Destination, out CharsWritten, NumericFormat, FormatProvider, Suffix)
+
+        private static Boolean TryFormatWithSuffix(Decimal             Value,
+                                                   Span<Char>          Destination,
+                                                   out Int32           CharsWritten,
+                                                   ReadOnlySpan<Char>  NumericFormat,
+                                                   IFormatProvider?    FormatProvider,
+                                                   ReadOnlySpan<Char>  Suffix)
+        {
+
+            CharsWritten = 0;
+
+            if (!Value.TryFormat(Destination,
+                                 out var valueCharsWritten,
+                                 NumericFormat,
+                                 FormatProvider))
+            {
+                return false;
+            }
+
+            if (Destination.Length < valueCharsWritten + Suffix.Length)
+                return false;
+
+            Suffix.CopyTo(Destination[valueCharsWritten..]);
+
+            CharsWritten = valueCharsWritten + Suffix.Length;
+            return true;
+
+        }
+
+        #endregion
+
         #region (override) ToString()
 
         /// <summary>
@@ -848,7 +1042,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{Value.ToString(CultureInfo.InvariantCulture)} kg";
+            => ToString(
+                   null,
+                   CultureInfo.InvariantCulture
+               );
+
+
+        /// <summary>
+        /// Return a text representation of this object using the given
+        /// format and culture-specific format provider.
+        /// </summary>
+        public String ToString(String?           Format,
+                               IFormatProvider?  FormatProvider)
+        {
+
+            Span<Char> buffer = stackalloc Char[64];
+
+            if (TryFormat(buffer, out var charsWritten, Format.AsSpan(), FormatProvider))
+                return new String(buffer[..charsWritten]);
+
+            if (String.IsNullOrEmpty(Format) ||
+                String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
+                String.Equals(Format, "kg", StringComparison.OrdinalIgnoreCase))
+            {
+                return $"{Value.ToString("G", FormatProvider)} kg";
+            }
+
+            if (String.Equals(Format, "g", StringComparison.OrdinalIgnoreCase))
+                return $"{g.ToString("G", FormatProvider)} g";
+
+            return $"{Value.ToString(Format, FormatProvider)} kg";
+
+        }
 
         #endregion
 

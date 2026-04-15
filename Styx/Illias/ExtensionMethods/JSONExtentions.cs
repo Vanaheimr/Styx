@@ -1684,7 +1684,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            MeterValue     = Meter.ParseM(decimalValue);
+            MeterValue     = Meter.FromM(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -2036,7 +2036,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            WattHourValue  = WattHour.ParseWh(decimalValue);
+            WattHourValue  = WattHour.FromWh(decimalValue);
             ErrorResponse    = null;
             return true;
 
@@ -5135,7 +5135,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    MeterValue    = Meter.ParseM(decimalValue, Multiplicator);
+                    MeterValue    = Meter.FromM(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
@@ -5546,7 +5546,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    WattHourValue = WattHour.TryParseWh(decimalValue, Multiplicator);
+                    WattHourValue = WattHour.FromWh(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";

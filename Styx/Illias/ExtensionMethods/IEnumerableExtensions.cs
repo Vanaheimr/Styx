@@ -33,55 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class IEnumerableExtensions
     {
 
-        #region StdDev(this IEnumerable)
-
-        /// <summary>
-        /// Calculates the standard deviation of the given enumeration of doubles.
-        /// </summary>
-        /// <param name="IEnumerable">An enumeration of Doubles.</param>
-        /// <returns>The stddev of the given enumeration of doubles.</returns>
-        public static Double StdDev(this IEnumerable<Double> IEnumerable)
-
-            => IEnumerable.AverageAndStdDev().Item2;
-
-        #endregion
-
-        #region AverageAndStdDev(this IEnumerable)
-
-        /// <summary>
-        /// Calculates the standard deviation of the given enumeration of doubles.
-        /// </summary>
-        /// <param name="IEnumerable">An enumeration of Doubles.</param>
-        /// <returns>The mean and stddev of the given enumeration of doubles.</returns>
-        public static Tuple<Double, Double> AverageAndStdDev(this IEnumerable<Double> IEnumerable)
-        {
-
-            #region Initial Checks
-
-            if (IEnumerable is null)
-                throw new ArgumentNullException(nameof(IEnumerable), "The given enumeration of doubles must not be null!");
-
-            var count = IEnumerable.Count();
-
-            if (count == 0)
-                return new Tuple<Double, Double>(0, 0);
-
-            if (count == 1)
-                return new Tuple<Double, Double>(IEnumerable.First(), 0);
-
-            #endregion
-
-            var average  = IEnumerable.Average();
-            var sum      = 0.0;
-
-            foreach (var value in IEnumerable)
-                sum += (value - average) * (value - average);
-
-            return new Tuple<Double, Double>(average, Math.Sqrt(sum / (count - 1)));
-
-        }
-
-        #endregion
+        
 
 
         #region CalcHashCode(this IEnumerable)
