@@ -24,7 +24,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class IListExtensions
     {
 
-        #region AddAndReturnList      (this List, Element)
+        #region AddAndReturnList       (this List, Element)
 
         /// <summary>
         /// Another way to add an element to a list.
@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnList      (this List, Elements)
+        #region AddAndReturnList       (this List, Elements)
 
         /// <summary>
         /// Another way to add an element to a list.
@@ -92,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region AddAndReturnElement   (this List, Element)
+        #region AddAndReturnElement    (this List, Element)
 
         /// <summary>
         /// Another way to add an value to a list.
@@ -110,7 +110,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region RemoveAndReturnList   (this List, Element)
+        #region RemoveAndReturnList    (this List, Element)
 
         /// <summary>
         /// Remove the given element and return the updated list.
@@ -147,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RemoveAndReturnElement(this List, Element)
+        #region RemoveAndReturnElement (this List, Element)
 
         /// <summary>
         /// Remove the given element and return the element.
@@ -167,7 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RemoveAndReturnFirst  (this List)
+        #region RemoveAndReturnFirst   (this List)
 
         /// <summary>
         /// Remove and return first element of the given list;
@@ -186,7 +186,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region RemoveAndReturnLast   (this List)
+        #region RemoveAndReturnLast    (this List)
 
         /// <summary>
         /// Remove and return last element of the given list;

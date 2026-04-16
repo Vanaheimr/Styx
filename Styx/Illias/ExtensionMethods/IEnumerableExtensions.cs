@@ -33,9 +33,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class IEnumerableExtensions
     {
 
-        
-
-
         #region CalcHashCode(this IEnumerable)
 
         /// <summary>
@@ -1218,6 +1215,76 @@ namespace org.GraphDefined.Vanaheimr.Illias
             list.Reverse();
 
             return list;
+
+        }
+
+        #endregion
+
+
+        #region GetRandomElement    (this Enumeration)
+
+        /// <summary>
+        /// Return a random element from the given enumeration.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="Enumeration">An enumeration of elements.</param>
+        public static T GetRandomElement<T>(this IEnumerable<T> Enumeration)
+        {
+
+            if (Enumeration.IsNullOrEmpty())
+                throw new ArgumentException("The given enumeration must not be null or empty!", nameof(Enumeration));
+
+            if (Enumeration is IList<T> list)
+            {
+
+                if (list.Count == 0)
+                    throw new ArgumentException("The given enumeration must not be null or empty!", nameof(Enumeration));
+
+                return list[Random.Shared.Next(list.Count)];
+
+            }
+
+            var materialized = Enumeration.ToList();
+
+            if (materialized.Count == 0)
+                throw new ArgumentException("The given enumeration must not be null or empty!", nameof(Enumeration));
+
+            return materialized[Random.Shared.Next(materialized.Count)];
+
+        }
+
+        #endregion
+
+        #region TryGetRandomElement (this Enumeration)
+
+        /// <summary>
+        /// Try to return a random element from the given enumeration.
+        /// When the enumeration is null or empty, default(T) will be returned.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements.</typeparam>
+        /// <param name="Enumeration">An enumeration of elements.</param>
+        public static T? TryGetRandomElement<T>(this IEnumerable<T> Enumeration)
+        {
+
+            if (Enumeration.IsNullOrEmpty())
+                return default;
+
+            if (Enumeration is IList<T> list)
+            {
+
+                if (list.Count == 0)
+                    return default;
+
+                return list[Random.Shared.Next(list.Count)];
+
+            }
+
+            var materialized = Enumeration.ToList();
+
+            if (materialized.Count == 0)
+                return default;
+
+            return materialized[Random.Shared.Next(materialized.Count)];
 
         }
 
