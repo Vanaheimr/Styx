@@ -5762,7 +5762,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var JSONValue = JSONToken?.Value<String>();
                 if (JSONValue is null)
                 {
-                    ErrorResponse  = "Unknown '{PropertyDescription}'!";
+                    ErrorResponse  = $"Unknown '{PropertyDescription}'!";
                     EnumValue      = null;
                     return false;
                 }
@@ -5775,7 +5775,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 else
                 {
-                    ErrorResponse  = "Invalid value for '{PropertyDescription}'!";
+                    ErrorResponse  = $"Invalid value for '{PropertyDescription}'!";
                     EnumValue      = null;
                 }
 
@@ -5818,13 +5818,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
             if (JSONToken is not JArray JSONArray)
             {
-                ErrorResponse  = "Invalid '{PropertyDescription}'!";
+                ErrorResponse  = $"Invalid '{PropertyDescription}'!";
                 return false;
             }
 
@@ -5883,7 +5883,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken.Type != JTokenType.Array)
                 {
-                    ErrorResponse  = "Invalid '{PropertyDescription}'!";
+                    ErrorResponse  = $"Invalid '{PropertyDescription}'!";
                     return false;
                 }
 
