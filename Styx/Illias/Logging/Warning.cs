@@ -32,15 +32,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class Warnings
     {
 
-        #region (static) Create(Text,           Context = null)
+        #region (static) Create(Text, Context = null)
 
         /// <summary>
-        /// Create a new enumeration of warnings based on the given warning.
+        /// Create an enumeration of warnings based on the given warning.
         /// </summary>
         /// <param name="Text">The text of the warning.</param>
         /// <param name="Context">An optional context of the warning.</param>
-        public static IEnumerable<Warning> Create(String      Text,
-                                                  Object?     Context  = null)
+        public static IEnumerable<Warning> Create(String   Text,
+                                                  Object?  Context  = null)
 
             => [
                     Warning.Create(
@@ -48,6 +48,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         Context
                     )
                ];
+
+        #endregion
+
+        #region (static) Create(Texts)
+
+        /// <summary>
+        /// Create an enumeration of warnings based on the given enumeration of warnings.
+        /// </summary>
+        /// <param name="Text">The enumeration of warnings.</param>
+        public static IEnumerable<Warning> From(IEnumerable<String> Texts)
+
+            => Texts.Select(text => Warning.Create(text));
 
         #endregion
 
