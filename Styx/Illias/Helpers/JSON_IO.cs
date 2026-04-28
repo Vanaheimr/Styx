@@ -83,6 +83,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a JSON object.
+        /// </summary>
+        /// <param name="Text">A text representation of a JSON object.</param>
+        public static JObject? TryParse(String? Text)
+        {
+
+            if (Text.IsNullOrEmpty())
+                return null;
+
+            try
+            {
+                return JObject.Parse(Text);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+
+        #endregion
+
+
         #region ToUTF8Bytes(this JSONObject, Format = None)
 
         public static Byte[] ToUTF8Bytes(this JObject                JSONObject,
@@ -152,6 +178,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return data.Length > 0
                        ? [.. data]
                        : [];
+
+        }
+
+        #endregion
+
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a JSON array.
+        /// </summary>
+        /// <param name="Text">A text representation of a JSON array.</param>
+        public static JArray? TryParse(String? Text)
+        {
+
+            if (Text.IsNullOrEmpty())
+                return null;
+
+            try
+            {
+                return JArray.Parse(Text);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
         }
 
