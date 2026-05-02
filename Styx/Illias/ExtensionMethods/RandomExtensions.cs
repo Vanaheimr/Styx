@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Security.Cryptography;
 using System.Text;
 
 #endregion
@@ -108,14 +109,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region RandomBytes        (Length)
 
         /// <summary>
-        /// Fill a byte array of the given length with random bytes.
+        /// Fill a byte array of the given length with pseudo random bytes.
         /// </summary>
-        /// <param name="Length">The expected length of the random byte array.</param>
+        /// <param name="Length">The expected length of the pseudo random byte array.</param>
         public static Byte[] RandomBytes(UInt16 Length)
         {
 
             var byteArray = new Byte[Length];
             Random.Shared.NextBytes(byteArray);
+
+            return byteArray;
+
+        }
+
+        #endregion
+
+        #region SecureRandomBytes  (Length)
+
+        /// <summary>
+        /// Fill a byte array of the given length with secure random bytes.
+        /// </summary>
+        /// <param name="Length">The expected length of the secure random byte array.</param>
+        public static Byte[] SecureRandomBytes(UInt16 Length)
+        {
+
+            var byteArray = new Byte[Length];
+            RandomNumberGenerator.Fill(byteArray);
 
             return byteArray;
 
