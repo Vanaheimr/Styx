@@ -95,8 +95,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                          );
 
             return new StdDev<Ohm>(
-                       Ohm.FromΩ(stdDev.Mean),
-                       Ohm.FromΩ(stdDev.StandardDeviation)
+                       Ohm.From_Ω(stdDev.Mean),
+                       Ohm.From_Ω(stdDev.StandardDeviation)
                    );
 
         }
@@ -130,11 +130,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 #pragma warning disable IDE1006 // Naming Styles
+
+        /// <summary>
+        /// The value as µΩ (microOhm).
+        /// </summary>
+        public Decimal µΩ
+            => Value * 1000000m;
+
+        /// <summary>
+        /// The value as mΩ (milliOhm).
+        /// </summary>
+        public Decimal mΩ
+            => Value * 1000m;
+
         /// <summary>
         /// The value as kΩ.
         /// </summary>
         public Decimal  kΩ
             => Value / 1000m;
+
 #pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
@@ -171,11 +185,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse      (Text)
+        #region (static) Parse       (Text)
 
         /// <summary>
         /// Parse the given string as ohms using invariant culture.
-        /// Supports optional suffixes "Ω", "kΩ" and "MΩ".
+        /// Supports optional suffixes "µΩ", "mΩ", "Ω", "kΩ" and "MΩ".
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         public static Ohm Parse(String Text)
@@ -184,11 +198,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse      (Text, FormatProvider)
+        #region (static) Parse       (Text, FormatProvider)
 
         /// <summary>
         /// Parse the given string as ohms using the given format provider.
-        /// Supports optional suffixes "Ω", "kΩ" and "MΩ".
+        /// Supports optional suffixes "µΩ", "mΩ", "Ω", "kΩ" and "MΩ".
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -199,17 +213,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, FormatProvider, out var ohm))
                 return ohm;
 
-            throw new FormatException($"Invalid text representation of ohms: '{Text}'!");
+            throw new FormatException($"Invalid text representation of Ωs: '{Text}'!");
 
         }
 
         #endregion
 
-        #region (static) Parse      (Span, FormatProvider)
+        #region (static) Parse       (Span, FormatProvider)
 
         /// <summary>
         /// Parse the given text span as ohms using the given format provider.
-        /// Supports optional suffixes "Ω", "kΩ" and "MΩ".
+        /// Supports optional suffixes "µΩ", "mΩ", "Ω", "kΩ" and "MΩ".
         /// </summary>
         /// <param name="Span">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -220,22 +234,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Span, FormatProvider, out var ohm))
                 return ohm;
 
-            throw new FormatException($"Invalid text representation of ohm: '{Span}'!");
+            throw new FormatException($"Invalid text representation of Ωs: '{Span}'!");
 
         }
 
         #endregion
 
-        #region (static) ParseΩ     (Text)
+        #region (static) Parse_µΩ    (Text)
+
+        /// <summary>
+        /// Parse the given string as MicroOhms (µΩ).
+        /// </summary>
+        /// <param name="Text">A text representation of MicroOhms (µΩ).</param>
+        public static Ohm Parse_µΩ(String Text)
+        {
+            if (TryParse_µΩ(Text, out var ohm))
+                return ohm;
+            throw new ArgumentException($"Invalid text representation of MicroOhms (µΩ): '{Text}'!",
+                                        nameof(Text));
+        }
+        #endregion
+
+        #region (static) Parse_mΩ    (Text)
+        /// <summary>
+        /// Parse the given string as MilliOhms (mΩ).
+        /// </summary>
+        /// <param name="Text">A text representation of MilliOhms (mΩ).</param>
+        public static Ohm Parse_mΩ(String Text)
+        {
+            if (TryParse_mΩ(Text, out var ohm))
+                return ohm;
+            throw new ArgumentException($"Invalid text representation of MilliOhms (mΩ): '{Text}'!",
+                                        nameof(Text));
+        }
+        #endregion
+
+        #region (static) Parse_Ω     (Text)
 
         /// <summary>
         /// Parse the given string as Ohms (Ω).
         /// </summary>
         /// <param name="Text">A text representation of Ohms (Ω).</param>
-        public static Ohm ParseΩ(String Text)
+        public static Ohm Parse_Ω(String Text)
         {
 
-            if (TryParseΩ(Text, out var ohm))
+            if (TryParse_Ω(Text, out var ohm))
                 return ohm;
 
             throw new ArgumentException($"Invalid text representation of Ohms (Ω): '{Text}'!",
@@ -245,16 +288,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseKΩ    (Text)
+        #region (static) Parse_KΩ    (Text)
 
         /// <summary>
         /// Parse the given string as KiloOhms (kΩ).
         /// </summary>
         /// <param name="Text">A text representation of KiloOhms (kΩ).</param>
-        public static Ohm ParseKΩ(String Text)
+        public static Ohm Parse_KΩ(String Text)
         {
 
-            if (TryParseKΩ(Text, out var ohm))
+            if (TryParse_KΩ(Text, out var ohm))
                 return ohm;
 
             throw new ArgumentException($"Invalid text representation of KiloOhms (kΩ): '{Text}'!",
@@ -264,16 +307,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseMΩ    (Text)
+        #region (static) Parse_MΩ    (Text)
 
         /// <summary>
         /// Parse the given string as MegaOhms (MΩ).
         /// </summary>
         /// <param name="Text">A text representation of MegaOhms (MΩ).</param>
-        public static Ohm ParseMΩ(String Text)
+        public static Ohm Parse_MΩ(String Text)
         {
 
-            if (TryParseMΩ(Text, out var ohm))
+            if (TryParse_MΩ(Text, out var ohm))
                 return ohm;
 
             throw new ArgumentException($"Invalid text representation of MegaOhms (MΩ): '{Text}'!",
@@ -284,10 +327,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text)
+        #region (static) TryParse    (Text)
 
         /// <summary>
-        /// Try to parse the given text as ohms with an optional unit suffix ("Ω", "kΩ" and "MΩ")
+        /// Try to parse the given text as ohms with an optional unit suffix ("µΩ", "mΩ", "Ω", "kΩ" and "MΩ")
         /// using invariant culture.
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
@@ -303,16 +346,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Text, FormatProvider)
+        #region (static) TryParse    (Text, FormatProvider)
 
         /// <summary>
-        /// Try to parse the given text as ohms with an optional unit suffix ("Ω", "kΩ" and "MΩ")
+        /// Try to parse the given text as ohms with an optional unit suffix ("µΩ", "mΩ", "Ω", "kΩ" and "MΩ")
         /// using the given format provider.
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
         public static Ohm? TryParse(String?           Text,
-                                      IFormatProvider?  FormatProvider)
+                                    IFormatProvider?  FormatProvider)
         {
 
             if (TryParse(Text, FormatProvider, out var ohm))
@@ -324,16 +367,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseΩ  (Text)
+        #region (static) TryParse_µΩ (Text)
+
+        /// <summary>
+        /// Try to parse the given text as MicroOhms (µΩ).
+        /// </summary>
+        /// <param name="Text">A text representation of MicroOhms (µΩ).</param>
+        public static Ohm? TryParse_µΩ(String? Text)
+        {
+
+            if (TryParse_µΩ(Text, out var ohm))
+                return ohm;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse_mΩ (Text)
+
+        /// <summary>
+        /// Try to parse the given text as MilliOhms (mΩ).
+        /// </summary>
+        /// <param name="Text">A text representation of MilliOhms (mΩ).</param>
+        public static Ohm? TryParse_mΩ(String? Text)
+        {
+
+            if (TryParse_mΩ(Text, out var ohm))
+                return ohm;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse_Ω  (Text)
 
         /// <summary>
         /// Try to parse the given text as Ohms (Ω).
         /// </summary>
         /// <param name="Text">A text representation of Ohms (Ω).</param>
-        public static Ohm? TryParseΩ(String? Text)
+        public static Ohm? TryParse_Ω(String? Text)
         {
 
-            if (TryParseΩ(Text, out var ohm))
+            if (TryParse_Ω(Text, out var ohm))
                 return ohm;
 
             return null;
@@ -342,16 +421,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKΩ (Text)
+        #region (static) TryParse_KΩ (Text)
 
         /// <summary>
         /// Try to parse the given text as KiloOhms (kΩ).
         /// </summary>
         /// <param name="Text">A text representation of KiloOhms (kΩ).</param>
-        public static Ohm? TryParseKΩ(String? Text)
+        public static Ohm? TryParse_KΩ(String? Text)
         {
 
-            if (TryParseKΩ(Text, out var ohm))
+            if (TryParse_KΩ(Text, out var ohm))
                 return ohm;
 
             return null;
@@ -360,16 +439,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseMΩ (Text)
+        #region (static) TryParse_MΩ (Text)
 
         /// <summary>
         /// Try to parse the given text as MegaOhms (MΩ).
         /// </summary>
         /// <param name="Text">A text representation of MegaOhms (MΩ).</param>
-        public static Ohm? TryParseMΩ(String? Text)
+        public static Ohm? TryParse_MΩ(String? Text)
         {
 
-            if (TryParseMΩ(Text, out var ohm))
+            if (TryParse_MΩ(Text, out var ohm))
                 return ohm;
 
             return null;
@@ -379,7 +458,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text,                 out Ohm)
+        #region (static) TryParse    (Text,                 out Ohm)
 
         /// <summary>
         /// Try to parse the given string as ohms using invariant culture.
@@ -396,7 +475,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Text, FormatProvider, out Ohm)
+        #region (static) TryParse    (Text, FormatProvider, out Ohm)
 
         /// <summary>
         /// Try to parse the given string as ohms using the given format provider.
@@ -415,7 +494,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Span, FormatProvider, out Ohm)
+        #region (static) TryParse    (Span, FormatProvider, out Ohm)
 
         /// <summary>
         /// Try to parse the given text span as ohms using the given format provider.
@@ -438,7 +517,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("µOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = -6;
+                Span      = Span[..^4].TrimEnd();
+            }
+
+            else if (Span.EndsWith("mOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = -3;
+                Span      = Span[..^4].TrimEnd();
+            }
+
+            else if (Span.EndsWith("kOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
                 exponent  = 3;
                 Span      = Span[..^3].TrimEnd();
@@ -475,15 +566,75 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseΩ  (Text,                 out Ohm)
+        #region (static) TryParse_µΩ (Text,                 out Ohm)
+
+        /// <summary>
+        /// Try to parse the given string as MicroOhms (µΩ).
+        /// </summary>
+        /// <param name="Text">A text representation of MicroOhms (µΩ).</param>
+        /// <param name="Ohm">The parsed Ohm.</param>
+        public static Boolean TryParse_µΩ([NotNullWhen(true)] String?  Text,
+                                          out                 Ohm      Ohm)
+        {
+
+            Ohm = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
+            {
+                return TryCreate(value, -6, out Ohm);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse_mΩ (Text,                 out Ohm)
+
+        /// <summary>
+        /// Try to parse the given string as MilliOhms (mΩ).
+        /// </summary>
+        /// <param name="Text">A text representation of MilliOhms (mΩ).</param>
+        /// <param name="Ohm">The parsed Ohm.</param>
+        public static Boolean TryParse_mΩ([NotNullWhen(true)] String?  Text,
+                                          out                 Ohm      Ohm)
+        {
+
+            Ohm = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
+            {
+                return TryCreate(value, -3, out Ohm);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse_Ω  (Text,                 out Ohm)
 
         /// <summary>
         /// Try to parse the given string as Ohms (Ω).
         /// </summary>
         /// <param name="Text">A text representation of Ohms (Ω).</param>
         /// <param name="Ohm">The parsed Ohm.</param>
-        public static Boolean TryParseΩ([NotNullWhen(true)] String?  Text,
-                                        out                 Ohm      Ohm)
+        public static Boolean TryParse_Ω([NotNullWhen(true)] String?  Text,
+                                         out                 Ohm      Ohm)
         {
 
             Ohm = default;
@@ -505,15 +656,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKΩ (Text,                 out Ohm)
+        #region (static) TryParse_KΩ (Text,                 out Ohm)
 
         /// <summary>
         /// Try to parse the given string as KiloOhms (kΩ).
         /// </summary>
         /// <param name="Text">A text representation of KiloOhms (kΩ).</param>
         /// <param name="Ohm">The parsed Ohm.</param>
-        public static Boolean TryParseKΩ([NotNullWhen(true)] String?  Text,
-                                         out                 Ohm      Ohm)
+        public static Boolean TryParse_KΩ([NotNullWhen(true)] String?  Text,
+                                          out                 Ohm      Ohm)
         {
 
             Ohm = default;
@@ -535,15 +686,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseMΩ (Text,                 out Ohm)
+        #region (static) TryParse_MΩ (Text,                 out Ohm)
 
         /// <summary>
         /// Try to parse the given string as MegaOhms (MΩ).
         /// </summary>
         /// <param name="Text">A text representation of MegaOhms (MΩ).</param>
         /// <param name="Ohm">The parsed Ohm.</param>
-        public static Boolean TryParseMΩ([NotNullWhen(true)] String?  Text,
-                                         out                 Ohm      Ohm)
+        public static Boolean TryParse_MΩ([NotNullWhen(true)] String?  Text,
+                                          out                 Ohm      Ohm)
         {
 
             Ohm = default;
@@ -617,15 +768,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromΩ      (Number,          Exponent = null)
+        #region (static) From_µΩ     (Number,          Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into MicroOhms (µΩ).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MicroOhms (µΩ).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ohm From_µΩ<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) - 6)
+                   );
+
+        #endregion
+
+        #region (static) From_mΩ     (Number,          Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into MilliOhms (mΩ).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MilliOhms (mΩ).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ohm From_mΩ<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) - 3)
+                   );
+
+        #endregion
+
+        #region (static) From_Ω      (Number,          Exponent = null)
 
         /// <summary>
         /// Convert the given number into Ohms (Ω).
         /// </summary>
         /// <param name="Number">A numeric representation of Ohms (Ω).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ohm FromΩ<TNumber>(TNumber  Number,
-                                         Int32?   Exponent   = null)
+        public static Ohm From_Ω<TNumber>(TNumber  Number,
+                                          Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -636,15 +825,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromKΩ     (Number,          Exponent = null)
+        #region (static) From_KΩ     (Number,          Exponent = null)
 
         /// <summary>
         /// Convert the given number into KiloOhms (kΩ).
         /// </summary>
         /// <param name="Number">A numeric representation of KiloOhms (kΩ).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ohm FromKΩ<TNumber>(TNumber  Number,
-                                          Int32?   Exponent   = null)
+        public static Ohm From_KΩ<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -655,15 +844,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromMΩ     (Number,          Exponent = null)
+        #region (static) From_MΩ     (Number,          Exponent = null)
 
         /// <summary>
         /// Convert the given number into MegaOhms (MΩ).
         /// </summary>
         /// <param name="Number">A numeric representation of MegaOhms (MΩ).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ohm FromMΩ<TNumber>(TNumber  Number,
-                                          Int32?   Exponent   = null)
+        public static Ohm From_MΩ<TNumber>(TNumber  Number,
+                                           Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -675,21 +864,67 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryFromΩ   (Number,          Exponent = null)
+        #region (static) TryFrom_µΩ  (Number,          Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MicroOhms (µΩ).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MicroOhms (µΩ).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ohm? TryFrom_µΩ<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFrom_µΩ(Number, out var ohm, Exponent))
+                return ohm;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_mΩ  (Number,          Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MilliOhms (mΩ).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MilliOhms (mΩ).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Ohm? TryFrom_mΩ<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFrom_mΩ(Number, out var ohm, Exponent))
+                return ohm;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_Ω   (Number,          Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into Ohms (Ω).
         /// </summary>
         /// <param name="Number">A numeric representation of Ohms (Ω).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ohm? TryFromΩ<TNumber>(TNumber  Number,
-                                             Int32?   Exponent   = null)
+        public static Ohm? TryFrom_Ω<TNumber>(TNumber  Number,
+                                              Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
         {
 
-            if (TryFromΩ(Number, out var ohm, Exponent))
+            if (TryFrom_Ω(Number, out var ohm, Exponent))
                 return ohm;
 
             return null;
@@ -698,21 +933,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromKΩ  (Number,          Exponent = null)
+        #region (static) TryFrom_KΩ  (Number,          Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into KiloOhms (kΩ).
         /// </summary>
         /// <param name="Number">A numeric representation of KiloOhms (kΩ).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ohm? TryFromKΩ<TNumber>(TNumber  Number,
-                                              Int32?   Exponent   = null)
+        public static Ohm? TryFrom_KΩ<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
         {
 
-            if (TryFromKΩ(Number, out var ohm, Exponent))
+            if (TryFrom_KΩ(Number, out var ohm, Exponent))
                 return ohm;
 
             return null;
@@ -721,21 +956,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromMΩ  (Number,          Exponent = null)
+        #region (static) TryFrom_MΩ  (Number,          Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into MegaOhms (MΩ).
         /// </summary>
         /// <param name="Number">A numeric representation of KiloOhms (MΩ).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Ohm? TryFromMΩ<TNumber>(TNumber  Number,
-                                              Int32?   Exponent   = null)
+        public static Ohm? TryFrom_MΩ<TNumber>(TNumber  Number,
+                                               Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
         {
 
-            if (TryFromMΩ(Number, out var ohm, Exponent))
+            if (TryFrom_MΩ(Number, out var ohm, Exponent))
                 return ohm;
 
             return null;
@@ -745,7 +980,87 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryFromΩ   (Number, out Ohm, Exponent = null)
+        #region (static) TryFrom_µΩ  (Number, out Ohm, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MicroOhms (µΩ).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MicroOhms (µΩ).</param>
+        /// <param name="Ohm">The parsed Ohm.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFrom_µΩ<TNumber>(TNumber  Number,
+                                                  out Ohm  Ohm,
+                                                  Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            Ohm = default;
+
+            if (!MathHelpers.TryAddExponent(Exponent, -6, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Ohm);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_mΩ  (Number, out Ohm, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into MilliOhms (mΩ).
+        /// </summary>
+        /// <param name="Number">A numeric representation of MilliOhms (mΩ).</param>
+        /// <param name="Ohm">The parsed Ohm.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFrom_mΩ<TNumber>(TNumber  Number,
+                                                  out Ohm  Ohm,
+                                                  Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            Ohm = default;
+
+            if (!MathHelpers.TryAddExponent(Exponent, -3, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Ohm);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_Ω   (Number, out Ohm, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into Ohms (Ω).
@@ -753,9 +1068,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of Ohms (Ω).</param>
         /// <param name="Ohm">The parsed Ohm.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromΩ<TNumber>(TNumber  Number,
-                                                out Ohm  Ohm,
-                                                Int32?   Exponent   = null)
+        public static Boolean TryFrom_Ω<TNumber>(TNumber  Number,
+                                                 out Ohm  Ohm,
+                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -785,7 +1100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromKΩ  (Number, out Ohm, Exponent = null)
+        #region (static) TryFrom_KΩ  (Number, out Ohm, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into KiloOhms (kΩ).
@@ -793,9 +1108,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of KiloOhms (kΩ).</param>
         /// <param name="Ohm">The parsed Ohm.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKΩ<TNumber>(TNumber  Number,
-                                                 out Ohm  Ohm,
-                                                 Int32?   Exponent   = null)
+        public static Boolean TryFrom_KΩ<TNumber>(TNumber  Number,
+                                                  out Ohm  Ohm,
+                                                  Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -825,7 +1140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromMΩ  (Number, out Ohm, Exponent = null)
+        #region (static) TryFrom_MΩ  (Number, out Ohm, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into MegaOhms (MΩ).
@@ -833,9 +1148,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of MegaOhms (MΩ).</param>
         /// <param name="Ohm">The parsed Ohm.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromMΩ<TNumber>(TNumber  Number,
-                                                 out Ohm  Ohm,
-                                                 Int32?   Exponent   = null)
+        public static Boolean TryFrom_MΩ<TNumber>(TNumber  Number,
+                                                  out Ohm  Ohm,
+                                                  Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -1133,6 +1448,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
+            if (Format.Equals("µΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           µΩ,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " µΩ".AsSpan()
+                       );
+
+            if (Format.Equals("mΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           mΩ,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " mΩ".AsSpan()
+                       );
+
             if (Format.Equals("kΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 return TryFormatWithSuffix(
                            kΩ,
@@ -1230,6 +1565,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
                 return $"{Value.ToString("G", FormatProvider)} Ω";
             }
+
+            if (String.Equals(Format, "µΩ", StringComparison.OrdinalIgnoreCase))
+                return $"{µΩ.ToString("G", FormatProvider)} µΩ";
+
+            if (String.Equals(Format, "mΩ", StringComparison.OrdinalIgnoreCase))
+                return $"{mΩ.ToString("G", FormatProvider)} mΩ";
 
             if (String.Equals(Format, "kΩ", StringComparison.OrdinalIgnoreCase))
                 return $"{kΩ.ToString("G", FormatProvider)} kΩ";

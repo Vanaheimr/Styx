@@ -90,13 +90,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             var stdDev = StdDev<Meter>.From(
-                             MeterValues.Select(ampere => ampere.Value),
+                             MeterValues.Select(meter => meter.m),
                              IsSampleData
                          );
 
             return new StdDev<Meter>(
-                       Meter.FromM(stdDev.Mean),
-                       Meter.FromM(stdDev.StandardDeviation)
+                       Meter.From_m(stdDev.Mean),
+                       Meter.From_m(stdDev.StandardDeviation)
                    );
 
         }
@@ -114,10 +114,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Properties
 
+#pragma warning disable IDE1006 // Naming Styles
+
         /// <summary>
-        /// The value of the Meter.
+        /// The value as meters (m).
         /// </summary>
-        public Decimal  Value    { get; }
+        public Decimal  m    { get; }
+
+#pragma warning restore IDE1006 // Naming Styles
+
 
         /// <summary>
         /// The rounded integer value of the Meter.
@@ -125,28 +130,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Int64    RoundedIntegerValue
 
             => Decimal.ToInt64(
-                   Decimal.Round(Value, 0, MidpointRounding.AwayFromZero)
+                   Decimal.Round(m, 0, MidpointRounding.AwayFromZero)
                );
 
 
-        /// <summary>
-        /// The value as centimeters.
-        /// </summary>
-        public Decimal  CM
-            => Value * 100;
-
-        /// <summary>
-        /// The value as decimeters.
-        /// </summary>
-        public Decimal  DM
-            => Value * 10;
-
 #pragma warning disable IDE1006 // Naming Styles
+
         /// <summary>
-        /// The value as KiloMeters.
+        /// The value as millimeters (mm).
         /// </summary>
-        public Decimal  kM
-            => Value / 1000m;
+        public Decimal  mm
+            => m * 1000;
+
+        /// <summary>
+        /// The value as centimeters (cm).
+        /// </summary>
+        public Decimal  cm
+            => m * 100;
+
+        /// <summary>
+        /// The value as decimeters (dm).
+        /// </summary>
+        public Decimal  dm
+            => m * 10;
+
+        /// <summary>
+        /// The value as KiloMeters (km).
+        /// </summary>
+        public Decimal  km
+            => m / 1000m;
+
 #pragma warning restore IDE1006 // Naming Styles
 
 
@@ -171,17 +184,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Value">A numeric representation of meters (m).</param>
         private Meter(Decimal Value)
         {
-            this.Value = Value;
+            this.m = Value;
         }
 
         #endregion
 
 
-        #region (static) Parse      (Text)
+        #region (static) Parse       (Text)
 
         /// <summary>
         /// Parse the given string as meters using invariant culture.
-        /// Supports optional suffixes "CM", "DM", "M" and "KM".
+        /// Supports optional suffixes "mm", "mm", "cm", "dm", "m" and "km".
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
         public static Meter Parse(String Text)
@@ -190,11 +203,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse      (Text, FormatProvider)
+        #region (static) Parse       (Text, FormatProvider)
 
         /// <summary>
         /// Parse the given string as meters using the given format provider.
-        /// Supports optional suffixes "CM", "DM", "M" and "KM".
+        /// Supports optional suffixes "mm", "cm", "dm", "m" and "km".
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -211,11 +224,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse      (Span, FormatProvider)
+        #region (static) Parse       (Span, FormatProvider)
 
         /// <summary>
         /// Parse the given text span as meters using the given format provider.
-        /// Supports optional suffixes "CM", "DM", "M" and "KM".
+        /// Supports optional suffixes "mm", "cm", "dm", "m" and "km".
         /// </summary>
         /// <param name="Span">A text representation of a Meter.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -232,16 +245,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseCM    (Text)
+        #region (static) Parse_mm    (Text)
+
+        /// <summary>
+        /// Parse the given string as millimeters (mm).
+        /// </summary>
+        /// <param name="Text">A text representation of millimeters (mm).</param>
+        public static Meter Parse_mm(String Text)
+        {
+
+            if (TryParse_mm(Text, out var meter))
+                return meter;
+
+            throw new ArgumentException($"Invalid text representation of millimeters (mm): '{Text}'!",
+                                        nameof(Text));
+
+        }
+
+        #endregion
+
+        #region (static) Parse_cm    (Text)
 
         /// <summary>
         /// Parse the given string as centimeters (cm).
         /// </summary>
         /// <param name="Text">A text representation of centimeters (cm).</param>
-        public static Meter ParseCM(String Text)
+        public static Meter Parse_cm(String Text)
         {
 
-            if (TryParseCM(Text, out var meter))
+            if (TryParse_cm(Text, out var meter))
                 return meter;
 
             throw new ArgumentException($"Invalid text representation of centimeters (cm): '{Text}'!",
@@ -251,16 +283,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseDM    (Text)
+        #region (static) Parse_dm    (Text)
 
         /// <summary>
         /// Parse the given string as decimeters (dm).
         /// </summary>
         /// <param name="Text">A text representation of decimeters (dm).</param>
-        public static Meter ParseDM(String Text)
+        public static Meter Parse_dm(String Text)
         {
 
-            if (TryParseDM(Text, out var meter))
+            if (TryParse_dm(Text, out var meter))
                 return meter;
 
             throw new ArgumentException($"Invalid text representation of decimeters (dm): '{Text}'!",
@@ -270,16 +302,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseM     (Text)
+        #region (static) Parse_m     (Text)
 
         /// <summary>
         /// Parse the given string as meters (m).
         /// </summary>
         /// <param name="Text">A text representation of meters (m).</param>
-        public static Meter ParseM(String Text)
+        public static Meter Parse_m(String Text)
         {
 
-            if (TryParseM(Text, out var meter))
+            if (TryParse_m(Text, out var meter))
                 return meter;
 
             throw new ArgumentException($"Invalid text representation of meters (m): '{Text}'!",
@@ -289,16 +321,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseKM    (Text)
+        #region (static) Parse_km    (Text)
 
         /// <summary>
         /// Parse the given string as kilometers (km).
         /// </summary>
         /// <param name="Text">A text representation of kilometers (km).</param>
-        public static Meter ParseKM(String Text)
+        public static Meter Parse_km(String Text)
         {
 
-            if (TryParseKM(Text, out var meter))
+            if (TryParse_km(Text, out var meter))
                 return meter;
 
             throw new ArgumentException($"Invalid text representation of kilometers (km): '{Text}'!",
@@ -309,10 +341,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text)
+        #region (static) TryParse    (Text)
 
         /// <summary>
-        /// Try to parse the given text as meters with an optional unit suffix ("cm", "dm", "m" or "km")
+        /// Try to parse the given text as meters with an optional unit suffix ("mm", "cm", "dm", "m" or "km")
         /// using invariant culture.
         /// </summary>
         /// <param name="Text">A text representation of a Meter.</param>
@@ -328,10 +360,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Text, FormatProvider)
+        #region (static) TryParse    (Text, FormatProvider)
 
         /// <summary>
-        /// Try to parse the given text as meters with an optional unit suffix ("cm", "dm", "m" or "km")
+        /// Try to parse the given text as meters with an optional unit suffix ("mm", "cm", "dm", "m" or "km")
         /// using the given format provider.
         /// </summary>
         /// <param name="Text">A text representation of a Meter.</param>
@@ -349,16 +381,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseCM (Text)
+        #region (static) TryParse_mm (Text)
+
+        /// <summary>
+        /// Try to parse the given text as millimeters (mm).
+        /// </summary>
+        /// <param name="Text">A text representation of a millimeters (mm).</param>
+        public static Meter? TryParse_mm(String? Text)
+        {
+
+            if (TryParse_mm(Text, out var meter))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse_cm (Text)
 
         /// <summary>
         /// Try to parse the given text as centimeters (cm).
         /// </summary>
         /// <param name="Text">A text representation of a centimeters (cm).</param>
-        public static Meter? TryParseCM(String? Text)
+        public static Meter? TryParse_cm(String? Text)
         {
 
-            if (TryParseCM(Text, out var meter))
+            if (TryParse_cm(Text, out var meter))
                 return meter;
 
             return null;
@@ -367,16 +417,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseDM (Text)
+        #region (static) TryParse_dm (Text)
 
         /// <summary>
         /// Try to parse the given text as decimeters.
         /// </summary>
         /// <param name="Text">A text representation of decimeters.</param>
-        public static Meter? TryParseDM(String? Text)
+        public static Meter? TryParse_dm(String? Text)
         {
 
-            if (TryParseDM(Text, out var meter))
+            if (TryParse_dm(Text, out var meter))
                 return meter;
 
             return null;
@@ -385,16 +435,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseM  (Text)
+        #region (static) TryParse_m  (Text)
 
         /// <summary>
         /// Try to parse the given text as meters.
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
-        public static Meter? TryParseM(String? Text)
+        public static Meter? TryParse_m(String? Text)
         {
 
-            if (TryParseM(Text, out var meter))
+            if (TryParse_m(Text, out var meter))
                 return meter;
 
             return null;
@@ -403,16 +453,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKM (Text)
+        #region (static) TryParse_km (Text)
 
         /// <summary>
         /// Try to parse the given text as kilometers.
         /// </summary>
         /// <param name="Text">A text representation of kilometers.</param>
-        public static Meter? TryParseKM(String? Text)
+        public static Meter? TryParse_km(String? Text)
         {
 
-            if (TryParseKM(Text, out var meter))
+            if (TryParse_km(Text, out var meter))
                 return meter;
 
             return null;
@@ -422,11 +472,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryParse   (Text,                 out Meter)
+        #region (static) TryParse    (Text,                 out Meter)
 
         /// <summary>
         /// Try to parse the given string as meters using invariant culture.
-        /// Supports optional suffixes "CM", "DM", "M" and "KM".
+        /// Supports optional suffixes "mm", "cm", "dm", "m" and "km".
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
         /// <param name="Meter">The parsed Meter.</param>
@@ -439,11 +489,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Text, FormatProvider, out Meter)
+        #region (static) TryParse    (Text, FormatProvider, out Meter)
 
         /// <summary>
         /// Try to parse the given string as meters using the given format provider.
-        /// Supports optional suffixes "CM", "DM", "M" and "KM".
+        /// Supports optional suffixes "mm", "cm", "dm", "m" and "km".
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -458,11 +508,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse   (Span, FormatProvider, out Meter)
+        #region (static) TryParse    (Span, FormatProvider, out Meter)
 
         /// <summary>
         /// Try to parse the given text span as meters using the given format provider.
-        /// Supports optional suffixes "CM", "DM", "M" and "KM".
+        /// Supports optional suffixes "mm", "cm", "dm", "m" and "km".
         /// </summary>
         /// <param name="Span">A text representation of meters.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -481,7 +531,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("cm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("mm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            {
+                exponent  = -3;
+                Span      = Span[..^2].TrimEnd();
+            }
+
+            else if (Span.EndsWith("cm".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
                 exponent  = -2;
                 Span      = Span[..^2].TrimEnd();
@@ -518,15 +574,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseCM (Text,   out Meter)
+        #region (static) TryParse_mm (Text,   out Meter)
+
+        /// <summary>
+        /// Parse the given string as millimeters (mm).
+        /// </summary>
+        /// <param name="Text">A text representation of millimeters (mm).</param>
+        /// <param name="Meter">The parsed Meter.</param>
+        public static Boolean TryParse_mm([NotNullWhen(true)] String?  Text,
+                                          out                 Meter    Meter)
+        {
+
+            Meter = default;
+
+            if (String.IsNullOrWhiteSpace(Text))
+                return false;
+
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.Number,
+                                 CultureInfo.InvariantCulture,
+                                 out var value))
+            {
+                return TryCreate(value, -3, out Meter);
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse_cm (Text,   out Meter)
 
         /// <summary>
         /// Parse the given string as centimeters (cm).
         /// </summary>
         /// <param name="Text">A text representation of centimeters (cm).</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseCM([NotNullWhen(true)] String?  Text,
-                                         out                 Meter    Meter)
+        public static Boolean TryParse_cm([NotNullWhen(true)] String?  Text,
+                                          out                 Meter    Meter)
         {
 
             Meter = default;
@@ -548,15 +634,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseDM (Text,   out Meter)
+        #region (static) TryParse_dm (Text,   out Meter)
 
         /// <summary>
         /// Parse the given string as decimeters.
         /// </summary>
         /// <param name="Text">A text representation of decimeters.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseDM([NotNullWhen(true)] String?  Text,
-                                         out                 Meter    Meter)
+        public static Boolean TryParse_dm([NotNullWhen(true)] String?  Text,
+                                          out                 Meter    Meter)
         {
 
             Meter = default;
@@ -578,15 +664,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseM  (Text,   out Meter)
+        #region (static) TryParse_m  (Text,   out Meter)
 
         /// <summary>
         /// Parse the given string as meters.
         /// </summary>
         /// <param name="Text">A text representation of meters.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseM([NotNullWhen(true)] String?  Text,
-                                        out                 Meter    Meter)
+        public static Boolean TryParse_m([NotNullWhen(true)] String?  Text,
+                                         out                 Meter    Meter)
         {
 
             Meter = default;
@@ -608,15 +694,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseKM (Text,   out Meter)
+        #region (static) TryParse_km (Text,   out Meter)
 
         /// <summary>
         /// Parse the given string as kilometers.
         /// </summary>
         /// <param name="Text">A text representation of kilometers.</param>
         /// <param name="Meter">The parsed Meter.</param>
-        public static Boolean TryParseKM([NotNullWhen(true)] String?  Text,
-                                         out                 Meter    Meter)
+        public static Boolean TryParse_km([NotNullWhen(true)] String?  Text,
+                                          out                 Meter    Meter)
         {
 
             Meter = default;
@@ -690,15 +776,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromCM     (Number,            Exponent = null)
+        #region (static) From_mm     (Number,            Exponent = null)
+
+        /// <summary>
+        /// Convert the given number into millimeters (mm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of millimeters (mm).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter From_mm<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+                => Create(
+                       Decimal.CreateChecked(Number),
+                       checked((Exponent ?? 0) - 3)
+                   );
+
+        #endregion
+
+        #region (static) From_cm     (Number,            Exponent = null)
 
         /// <summary>
         /// Convert the given number into centimeters (cm).
         /// </summary>
         /// <param name="Number">A numeric representation of centimeters (cm).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromCM<TNumber>(TNumber  Number,
-                                            Int32?   Exponent   = null)
+        public static Meter From_cm<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -709,15 +814,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromDM     (Number,            Exponent = null)
+        #region (static) From_dm     (Number,            Exponent = null)
 
         /// <summary>
         /// Convert the given number into decimeters (dm).
         /// </summary>
         /// <param name="Number">A numeric representation of decimeters (dm).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromDM<TNumber>(TNumber  Number,
-                                            Int32?   Exponent   = null)
+        public static Meter From_dm<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -728,15 +833,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromM      (Number,            Exponent = null)
+        #region (static) From_m      (Number,            Exponent = null)
 
         /// <summary>
         /// Convert the given number into meters (m).
         /// </summary>
         /// <param name="Number">A numeric representation of meters (m).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromM<TNumber>(TNumber  Number,
-                                           Int32?   Exponent   = null)
+        public static Meter From_m<TNumber>(TNumber  Number,
+                                            Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -747,15 +852,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) FromKM     (Number,            Exponent = null)
+        #region (static) From_km     (Number,            Exponent = null)
 
         /// <summary>
         /// Convert the given number into kilometers (km).
         /// </summary>
         /// <param name="Number">A numeric representation of kilometers (km).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter FromKM<TNumber>(TNumber  Number,
-                                            Int32?   Exponent   = null)
+        public static Meter From_km<TNumber>(TNumber  Number,
+                                             Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -767,21 +872,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryFromCM  (Number,            Exponent = null)
+        #region (static) TryFrom_mm  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into millimeters (mm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of millimeters (mm).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryFrom_mm<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFrom_mm(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_cm  (Number,            Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into centimeters (cm).
         /// </summary>
         /// <param name="Number">A numeric representation of centimeters (cm).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromCM<TNumber>(TNumber  Number,
-                                                Int32?   Exponent   = null)
+        public static Meter? TryFrom_cm<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
         {
 
-            if (TryFromCM(Number, out var meter, Exponent))
+            if (TryFrom_cm(Number, out var meter, Exponent))
                 return meter;
 
             return null;
@@ -790,21 +918,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromDM  (Number,            Exponent = null)
+        #region (static) TryFrom_dm  (Number,            Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into decimeters (dm).
         /// </summary>
         /// <param name="Number">A numeric representation of decimeters (dm).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromDM<TNumber>(TNumber  Number,
-                                                Int32?   Exponent   = null)
+        public static Meter? TryFrom_dm<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
         {
 
-            if (TryFromDM(Number, out var meter, Exponent))
+            if (TryFrom_dm(Number, out var meter, Exponent))
                 return meter;
 
             return null;
@@ -813,44 +941,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromM   (Number,            Exponent = null)
+        #region (static) TryFrom_m   (Number,            Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into meters (m).
         /// </summary>
         /// <param name="Number">A numeric representation of meters (m).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromM<TNumber>(TNumber  Number,
-                                               Int32?   Exponent   = null)
-
-            where TNumber : INumberBase<TNumber>
-
-        {
-
-            if (TryFromM(Number, out var meter, Exponent))
-                return meter;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region (static) TryFromKM  (Number,            Exponent = null)
-
-        /// <summary>
-        /// Try to convert the given number into kilometers (km).
-        /// </summary>
-        /// <param name="Number">A numeric representation of kilometers (km).</param>
-        /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Meter? TryFromKM<TNumber>(TNumber  Number,
+        public static Meter? TryFrom_m<TNumber>(TNumber  Number,
                                                 Int32?   Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
         {
 
-            if (TryFromKM(Number, out var meter, Exponent))
+            if (TryFrom_m(Number, out var meter, Exponent))
+                return meter;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_km  (Number,            Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into kilometers (km).
+        /// </summary>
+        /// <param name="Number">A numeric representation of kilometers (km).</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Meter? TryFrom_km<TNumber>(TNumber  Number,
+                                                 Int32?   Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            if (TryFrom_km(Number, out var meter, Exponent))
                 return meter;
 
             return null;
@@ -860,7 +988,47 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) TryFromCM  (Number, out Meter, Exponent = null)
+        #region (static) TryFrom_mm  (Number, out Meter, Exponent = null)
+
+        /// <summary>
+        /// Try to convert the given number into millimeters (mm).
+        /// </summary>
+        /// <param name="Number">A numeric representation of millimeters (mm).</param>
+        /// <param name="Meter">The parsed Meter.</param>
+        /// <param name="Exponent">An optional 10^exponent.</param>
+        public static Boolean TryFrom_mm<TNumber>(TNumber    Number,
+                                                  out Meter  Meter,
+                                                  Int32?     Exponent   = null)
+
+            where TNumber : INumberBase<TNumber>
+
+        {
+
+            Meter = default;
+
+            if (!MathHelpers.TryAddExponent(Exponent, -3, out var combinedExponent))
+                return false;
+
+            try
+            {
+                return TryCreate(Decimal.CreateChecked(Number),
+                                 combinedExponent,
+                                 out Meter);
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryFrom_cm  (Number, out Meter, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into centimeters (cm).
@@ -868,9 +1036,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of centimeters (cm).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromCM<TNumber>(TNumber    Number,
-                                                 out Meter  Meter,
-                                                 Int32?     Exponent   = null)
+        public static Boolean TryFrom_cm<TNumber>(TNumber    Number,
+                                                  out Meter  Meter,
+                                                  Int32?     Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -900,7 +1068,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromDM  (Number, out Meter, Exponent = null)
+        #region (static) TryFrom_dm  (Number, out Meter, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into decimeters (dm).
@@ -908,9 +1076,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of decimeters (dm).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromDM<TNumber>(TNumber    Number,
-                                                 out Meter  Meter,
-                                                 Int32?     Exponent   = null)
+        public static Boolean TryFrom_dm<TNumber>(TNumber    Number,
+                                                  out Meter  Meter,
+                                                  Int32?     Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -940,7 +1108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromM   (Number, out Meter, Exponent = null)
+        #region (static) TryFrom_m   (Number, out Meter, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into meters (m).
@@ -948,9 +1116,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of meters (m).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromM<TNumber>(TNumber    Number,
-                                                out Meter  Meter,
-                                                Int32?     Exponent   = null)
+        public static Boolean TryFrom_m<TNumber>(TNumber    Number,
+                                                 out Meter  Meter,
+                                                 Int32?     Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -980,7 +1148,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryFromKM  (Number, out Meter, Exponent = null)
+        #region (static) TryFrom_km  (Number, out Meter, Exponent = null)
 
         /// <summary>
         /// Try to convert the given number into kilometers (km).
@@ -988,9 +1156,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Number">A numeric representation of kilometers (km).</param>
         /// <param name="Meter">The parsed Meter.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
-        public static Boolean TryFromKM<TNumber>(TNumber    Number,
-                                                 out Meter  Meter,
-                                                 Int32?     Exponent   = null)
+        public static Boolean TryFrom_km<TNumber>(TNumber    Number,
+                                                  out Meter  Meter,
+                                                  Int32?     Exponent   = null)
 
             where TNumber : INumberBase<TNumber>
 
@@ -1123,7 +1291,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Meter operator + (Meter Meter1,
                                         Meter Meter2)
 
-            => new (Meter1.Value + Meter2.Value);
+            => new (Meter1.m + Meter2.m);
 
         #endregion
 
@@ -1137,7 +1305,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Meter operator - (Meter Meter1,
                                         Meter Meter2)
 
-            => new (Meter1.Value - Meter2.Value);
+            => new (Meter1.m - Meter2.m);
 
         #endregion
 
@@ -1152,7 +1320,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Meter operator * (Meter    Meter,
                                         Decimal  Scalar)
 
-            => new (Meter.Value * Scalar);
+            => new (Meter.m * Scalar);
 
         #endregion
 
@@ -1166,7 +1334,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Meter operator * (Decimal  Scalar,
                                         Meter    Meter)
 
-            => new (Scalar * Meter.Value);
+            => new (Scalar * Meter.m);
 
         #endregion
 
@@ -1180,7 +1348,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Meter operator / (Meter    Meter,
                                         Decimal  Scalar)
 
-            => new (Meter.Value / Scalar);
+            => new (Meter.m / Scalar);
 
         #endregion
 
@@ -1212,7 +1380,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Meter">A meter to compare with.</param>
         public Int32 CompareTo(Meter Meter)
 
-            => Value.CompareTo(Meter.Value);
+            => m.CompareTo(Meter.m);
 
         #endregion
 
@@ -1241,7 +1409,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Meter">A meter to compare with.</param>
         public Boolean Equals(Meter Meter)
 
-            => Value.Equals(Meter.Value);
+            => m.Equals(Meter.m);
 
         #endregion
 
@@ -1254,7 +1422,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override Int32 GetHashCode()
 
-            => Value.GetHashCode();
+            => m.GetHashCode();
 
         #endregion
 
@@ -1279,7 +1447,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 Format.Equals("m".AsSpan(), StringComparison.OrdinalIgnoreCase))
             {
                 return TryFormatWithSuffix(
-                           Value,
+                           m,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
@@ -1288,9 +1456,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
+            if (Format.Equals("mm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                return TryFormatWithSuffix(
+                           mm,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " mm".AsSpan()
+                       );
+
             if (Format.Equals("cm".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 return TryFormatWithSuffix(
-                           CM,
+                           cm,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
@@ -1300,7 +1478,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.Equals("dm".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 return TryFormatWithSuffix(
-                           DM,
+                           dm,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
@@ -1310,7 +1488,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.Equals("km".AsSpan(), StringComparison.OrdinalIgnoreCase))
                 return TryFormatWithSuffix(
-                           kM,
+                           km,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
@@ -1319,7 +1497,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
 
             return TryFormatWithSuffix(
-                       Value,
+                       m,
                        Destination,
                        out CharsWritten,
                        Format,
@@ -1393,19 +1571,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
                 String.Equals(Format, "m",  StringComparison.OrdinalIgnoreCase))
             {
-                return $"{Value.ToString("G", FormatProvider)} m";
+                return $"{m.ToString("G", FormatProvider)} m";
             }
 
+            if (String.Equals(Format, "mm", StringComparison.OrdinalIgnoreCase))
+                return $"{mm.ToString("G", FormatProvider)} mm";
+
             if (String.Equals(Format, "cm", StringComparison.OrdinalIgnoreCase))
-                return $"{CM.ToString("G", FormatProvider)} cm";
+                return $"{cm.ToString("G", FormatProvider)} cm";
 
             if (String.Equals(Format, "dm", StringComparison.OrdinalIgnoreCase))
-                return $"{DM.ToString("G", FormatProvider)} dm";
+                return $"{dm.ToString("G", FormatProvider)} dm";
 
             if (String.Equals(Format, "km", StringComparison.OrdinalIgnoreCase))
-                return $"{kM.ToString("G", FormatProvider)} km";
+                return $"{km.ToString("G", FormatProvider)} km";
 
-            return $"{Value.ToString(Format, FormatProvider)} m";
+            return $"{m.ToString(Format, FormatProvider)} m";
 
         }
 

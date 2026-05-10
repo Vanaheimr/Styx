@@ -1687,7 +1687,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            MeterValue     = Meter.FromM(decimalValue);
+            MeterValue     = Meter.From_m(decimalValue);
             ErrorResponse  = null;
             return true;
 
@@ -5138,7 +5138,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (Decimal.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-                    MeterValue    = Meter.FromM(decimalValue, Multiplicator);
+                    MeterValue    = Meter.From_m(decimalValue, Multiplicator);
 
                 else
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
