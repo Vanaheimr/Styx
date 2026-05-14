@@ -286,7 +286,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Create(          Text, Context = null)
+        #region (static) Create (          Text, Context = null)
 
         /// <summary>
         /// Create a new error.
@@ -313,7 +313,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Create(Language, Text, Context = null)
+        #region (static) Create (Language, Text, Context = null)
 
         /// <summary>
         /// Create a new error.
@@ -321,17 +321,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Language">The language of the error.</param>
         /// <param name="Text">The text of the error.</param>
         /// <param name="Context">An optional context of the error.</param>
-        public static Error Create(Languages   Language,
-                                     String      Text,
-                                     Object?     Context  = null)
+        public static Error Create(Languages  Language,
+                                   String     Text,
+                                   Object?    Context  = null)
 
             => new (I18NString.Create(Language, Text),
                     Context);
 
         #endregion
 
+        #region (static) Create (Exception,      Context = null)
 
-        
+        /// <summary>
+        /// Create a new error based on the given exception.
+        /// </summary>
+        /// <param name="Exception">The exception to create the error from.</param>
+        /// <param name="Context">An optional context of the error.</param>
+        public static Error Create(Exception  Exception,
+                                   Object?    Context  = null)
+
+            => new (I18NString.Create(Exception.Message),
+                    Context);
+
+        #endregion
 
 
         #region ToString()
