@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
     }
 
-    public class Logger<TEnum> : ILogger<TEnum>
+    public class Logger<TEnum> : ILogger_old<TEnum>
         where TEnum : struct, IComparable, IFormattable, IConvertible
     {
 

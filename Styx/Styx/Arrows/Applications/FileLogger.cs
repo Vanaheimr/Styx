@@ -24,7 +24,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 {
 
-    public class FileLogger<TEnum> : ILogger<TEnum>
+    public class FileLogger<TEnum> : ILogger_old<TEnum>
         where TEnum : struct, IComparable, IFormattable, IConvertible
     {
 
