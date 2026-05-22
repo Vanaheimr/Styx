@@ -700,7 +700,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var JSON = JSONObject.Create(
 
-                           new JProperty("24/7", IsOpen24Hours),
+                                 new JProperty("24/7", IsOpen24Hours),
 
                            regularOpenings.Count != 0
                                ? new JProperty("regularOpenings",       new JArray(regularOpenings.Select(regularOpening =>
