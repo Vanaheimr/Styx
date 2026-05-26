@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         DateTimeOffset         Created           { get; set; }
         DateTimeOffset         LastChangeDate    { get; set; }
 
-        JObject                CustomData        { get; }
+        CustomDataNew          CustomData        { get; }
         UserDefinedDictionary  InternalData      { get; }
 
 

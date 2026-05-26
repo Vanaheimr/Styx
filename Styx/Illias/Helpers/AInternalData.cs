@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         String? DataSource { get; }
 
         public Context(String?                 DataSource     = null,
-                       JObject?                CustomData     = null,
+                       CustomDataNew?          CustomData     = null,
                        UserDefinedDictionary?  InternalData   = null,
                        DateTimeOffset?         LastChange     = null)
 
@@ -257,7 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
         [Optional]
-        public JObject                CustomData      { get; }
+        public CustomDataNew          CustomData      { get; }
 
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="CustomData">Optional customer specific data, e.g. in combination with custom parsers and serializers.</param>
         /// <param name="InternalData">Optional internal customer specific data, e.g. in combination with custom parsers and serializers, which will not be serialized.</param>
         /// <param name="LastChange">The optional timestamp of the last changes within this object.</param>
-        protected AInternalData(JObject?                CustomData,
+        protected AInternalData(CustomDataNew?          CustomData,
                                 UserDefinedDictionary?  InternalData,
                                 DateTimeOffset?         Created      = null,
                                 DateTimeOffset?         LastChange   = null)
@@ -549,7 +549,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// Optional custom data, e.g. in combination with custom parsers and serializers.
             /// </summary>
             [Optional]
-            public JObject                CustomData        { get; }
+            public CustomDataNew          CustomData        { get; }
 
 
             /// <summary>
@@ -572,7 +572,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// Create a new data structure for customer specific data.
             /// </summary>
             /// <param name="InternalData">An optional dictionary of internal data.</param>
-            protected Builder(JObject?                CustomData,
+            protected Builder(CustomDataNew?          CustomData,
                               UserDefinedDictionary?  InternalData,
                               DateTimeOffset?         Created      = null,
                               DateTimeOffset?         LastChange   = null)

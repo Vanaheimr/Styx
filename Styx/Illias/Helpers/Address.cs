@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of Illias <https://www.github.com/Vanaheimr/Illias>
+ * This file is part of Vanaheimr Illias <https://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        IEnumerable<Languages>?  OfficialLanguages   = null,
                        I18NString?              Comment             = null,
 
-                       JObject?                 CustomData          = null,
+                       CustomDataNew?           CustomData          = null,
                        UserDefinedDictionary?   InternalData        = null,
                        DateTimeOffset?          LastChangeDate      = null)
 
@@ -418,7 +418,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               officialLanguages,
                               comment,
 
-                              customData
+                              customData is not null
+                                  ? CustomDataNew.ParseJSON(customData.ToString(Newtonsoft.Json.Formatting.None))
+                                  : null
 
                           );
 
@@ -526,7 +528,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                ? new JProperty("comment",             Comment.ToJSON())
                                : null,
 
-                           CustomData is not null && CustomData.HasValues
+                           CustomData is not null && !CustomData.IsEmpty
                                ? new JProperty("customData",          CustomData)
                                : null
 
