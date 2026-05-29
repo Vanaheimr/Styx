@@ -20,6 +20,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Collections;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -122,6 +123,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => Encoding.UTF8.GetString(
                    ToJSONBytes(Indented)
+               );
+
+        #endregion
+
+        #region ToJObject()
+
+        /// <summary>
+        /// Serialize this object as a Newtonsoft.Json.Linq.JObject.
+        /// </summary>
+        public JObject ToJObject()
+
+            => JObject.Parse(
+                   ToJSONString()
                );
 
         #endregion
@@ -362,6 +376,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => GetEnumerator();
 
         #endregion
+
+
+        public override Int32 GetHashCode()
+        {
+            return this.Select(p => (p.KeyId, p.Value)).Aggregate(0, (hash, pair) => {
+                unchecked
+                {
+                    hash = hash * 31 + pair.KeyId.GetHashCode();
+                    hash = hash * 31 + pair.Value.GetHashCode();
+                    return hash;
+                }
+            });
+        }
 
     }
 

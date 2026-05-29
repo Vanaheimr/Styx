@@ -21,25 +21,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// A compact JSON property.
     /// </summary>
-    public readonly struct CustomDataProperty
+    public readonly struct CustomDataProperty(Int32            KeyId,
+                                              CustomDataValue  Value)
     {
 
-        public Int32           KeyId { get; }
-        public CustomDataValue Value { get; }
+        #region Properties
 
-        public String Key
+        /// <summary>
+        /// The key of the JSON property.
+        /// </summary>
+        public String           Key
             => CustomDataPropertyKeyLookup.GetText(KeyId);
 
-        public CustomDataProperty(String          Key,
-                                  CustomDataValue Value)
-            : this(CustomDataPropertyKeyLookup.GetOrAdd(Key), Value)
-        { }
+        /// <summary>
+        /// The internal keyId of the JSON property.
+        /// </summary>
+        public Int32            KeyId    { get; } = KeyId;
 
-        public CustomDataProperty(Int32           KeyId,
-                                  CustomDataValue Value)
+        /// <summary>
+        /// The value of the JSON property.
+        /// </summary>
+        public CustomDataValue  Value    { get; } = Value;
+
+        #endregion
+
+
+        public static CustomDataProperty Create(String           Key,
+                                                CustomDataValue  Value)
+
+            => new (
+                   CustomDataPropertyKeyLookup.GetOrAdd(Key),
+                   Value
+               );
+
+        public override Int32 GetHashCode()
         {
-            this.KeyId  = KeyId;
-            this.Value  = Value;
+            return HashCode.Combine(KeyId, Value);
         }
 
     }

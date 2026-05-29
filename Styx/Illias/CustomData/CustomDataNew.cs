@@ -287,6 +287,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
+        public CustomDataNew Clone()
+
+            => new (
+                   (CustomDataProperty[]) properties.Clone(),
+                   true
+               );
+
+
         public CustomDataNew Merge(CustomDataNew Other)
         {
 

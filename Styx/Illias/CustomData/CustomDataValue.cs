@@ -367,6 +367,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        public override Int32 GetHashCode()
+        {
+            return HashCode.Combine(
+                       Kind,
+                       Int64Value,
+                       UInt64Value,
+                       DecimalValue,
+                       DoubleValue,
+                       StringValue,
+                       ObjectValue,
+                       ArrayValue
+                   );
+        }
+
     }
 
 }
