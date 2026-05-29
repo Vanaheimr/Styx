@@ -186,12 +186,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An event called whenever the current free disk space was reported.
         /// </summary>
-        public event DiskSpaceMonitorHandler?      OnDiskSpace;
+        public event DiskSpaceMonitorHandler?         OnDiskSpace;
 
         /// <summary>
         /// An event called whenever the current free disk space is below its threshold.
         /// </summary>
-        public event DiskSpaceMonitorHandler?      OnLowDiskSpace;
+        public event DiskSpaceMonitorHandler?         OnLowDiskSpace;
 
         #endregion
 
@@ -425,8 +425,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             using (var process = Process.Start(processInfo))
             {
 
-                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
-                                 ?? Array.Empty<String>();
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n") ?? [];
 
                 if (output.Length >= 2 && UInt64.TryParse(output[1].Trim(), out var ramUsage))
                     return ramUsage;
@@ -458,8 +457,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             using (var process = Process.Start(processInfo))
             {
 
-                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
-                                 ?? Array.Empty<String>();
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n") ?? [];
 
                 if (output.Length >= 1 && Double.TryParse(output[0], out var ramUsage))
                     return (UInt64) ramUsage;
@@ -490,8 +488,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             using (var process = Process.Start(processInfo))
             {
 
-                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
-                                 ?? Array.Empty<String>();
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n") ?? [];
 
                 if (output.Length == 2)
                 {
@@ -500,8 +497,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     var totalMemoryParts  = output[1].Split("=", StringSplitOptions.RemoveEmptyEntries);
 
                     return new MemoryMetrics(
-                               Total: Math.Round(Double.Parse(totalMemoryParts[1]) / 1024, 0),
-                               Free:  Math.Round(Double.Parse(freeMemoryParts[1])  / 1024, 0)
+                               Total:  Math.Round(Double.Parse(totalMemoryParts[1]) / 1024, 0),
+                               Free:   Math.Round(Double.Parse(freeMemoryParts[1])  / 1024, 0)
                            );
 
                 }
@@ -533,8 +530,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             using (var process = Process.Start(processInfo))
             {
 
-                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n")
-                                 ?? Array.Empty<String>();
+                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n") ?? [];
 
                 if (output.Length == 2)
                 {
@@ -543,9 +539,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (memory.Length >= 4)
                         return new MemoryMetrics(
-                                   Total: Double.Parse(memory[1]),
-                                   Used:  Double.Parse(memory[2]),
-                                   Free:  Double.Parse(memory[3])
+                                   Total:  Double.Parse(memory[1]),
+                                   Used:   Double.Parse(memory[2]),
+                                   Free:   Double.Parse(memory[3])
                                );
 
                 }
@@ -557,7 +553,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
 
 
         #region StartMonitoring()
