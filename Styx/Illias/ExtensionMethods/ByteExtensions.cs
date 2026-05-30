@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+using System.Security.Cryptography;
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -336,7 +338,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => await Stream.WriteAsync(ByteArray, CancellationToken).ConfigureAwait(false);
 
 
-        #region Aggregate  (this ByteArrays)
+        #region Aggregate          (this ByteArrays)
 
         /// <summary>
         /// Aggregates multiple byte arrays into a single byte array.
@@ -361,7 +363,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Pad        (this ByteArray, Size)
+        #region Pad                (this ByteArray,  Size)
 
         /// <summary>
         /// Pads the given byte array to the given size.
@@ -384,30 +386,63 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region IsEqualTo  (this ByteArray1, ByteArray2)
+        #region IsEqualTo          (this ByteArray1, ByteArray2)
 
         /// <summary>
         /// Compares two byte arrays for equality.
         /// </summary>
-        public static Boolean IsEqualTo(this Byte[] ByteArray1, Byte[] ByteArray2)
+        /// <param name="ByteArray1">The first byte array.</param>
+        /// <param name="ByteArray2">The second byte array.</param>
+        public static Boolean IsEqualTo(this Byte[]? ByteArray1,
+                                             Byte[]? ByteArray2)
         {
 
-            if (ByteArray1 is null || ByteArray2 is null || ByteArray1.Length != ByteArray2.Length)
+            if (ReferenceEquals(ByteArray1, ByteArray2))
+                return true;
+
+            if (ByteArray1 is null || ByteArray2 is null)
                 return false;
 
-            for (var i = 0; i < ByteArray1.Length; i++)
-            {
-                if (ByteArray1[i] != ByteArray2[i])
-                    return false;
-            }
+            if (ByteArray1.Length != ByteArray2.Length)
+                return false;
 
-            return true;
+            return ByteArray1.SequenceEqual(ByteArray2);
 
         }
 
         #endregion
 
-        #region IsPrefixOf (this ByteArray, Data)
+        #region IsFixedTimeEqualTo (this ByteArray1, ByteArray2)
+
+        /// <summary>
+        /// Compares two byte arrays for equality in a fixed time manner,
+        /// which is resistant to timing attacks.
+        /// </summary>
+        /// <param name="ByteArray1">The first byte array.</param>
+        /// <param name="ByteArray2">The second byte array.</param>
+        public static Boolean IsFixedTimeEqualTo(this Byte[]? ByteArray1,
+                                                      Byte[]? ByteArray2)
+        {
+
+            if (ReferenceEquals(ByteArray1, ByteArray2))
+                return true;
+
+            if (ByteArray1 is null || ByteArray2 is null)
+                return false;
+
+            if (ByteArray1.Length != ByteArray2.Length)
+                return false;
+
+            return CryptographicOperations.FixedTimeEquals(
+                       ByteArray1,
+                       ByteArray2
+                   );
+
+        }
+
+        #endregion
+
+        #region IsPrefixOf         (this ByteArray,  Data)
 
         /// <summary>
         /// Checks whether the first byte array is a prefix of the second byte array.
