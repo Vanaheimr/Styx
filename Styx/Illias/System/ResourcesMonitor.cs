@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 #endregion
@@ -530,18 +531,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
             using (var process = Process.Start(processInfo))
             {
 
-                var output = process?.StandardOutput.ReadToEnd()?.Trim()?.Split("\n") ?? [];
+                var output = process?.
+                                 StandardOutput.
+                                 ReadToEnd()?.
+                                 Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) ?? [];
 
-                if (output.Length == 2)
+                var memoryLine = output.FirstOrDefault(line => line.StartsWith("Mem:", StringComparison.OrdinalIgnoreCase));
+
+                if (memoryLine is not null)
                 {
 
-                    var memory = output[1].Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    var memory = memoryLine.Split(" ", StringSplitOptions.RemoveEmptyEntries);
 
                     if (memory.Length >= 4)
                         return new MemoryMetrics(
-                                   Total:  Double.Parse(memory[1]),
-                                   Used:   Double.Parse(memory[2]),
-                                   Free:   Double.Parse(memory[3])
+                                   Total:  Double.Parse(memory[1], CultureInfo.InvariantCulture),
+                                   Used:   Double.Parse(memory[2], CultureInfo.InvariantCulture),
+                                   Free:   Double.Parse(memory[3], CultureInfo.InvariantCulture)
                                );
 
                 }
