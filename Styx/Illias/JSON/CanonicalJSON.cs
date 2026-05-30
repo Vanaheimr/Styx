@@ -19,12 +19,15 @@
 
 using System.Globalization;
 using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 #endregion
 
@@ -398,6 +401,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     break;
 
             }
+
+        }
+
+        #endregion
+
+
+
+        #region Sign_ECDSA_SHA256 (Plaintext, PrivateKey)
+
+        public static Byte[] Sign_ECDSA_SHA256(String                  Plaintext,
+                                               ECPrivateKeyParameters  PrivateKey)
+        {
+
+            var sha256Hash  = SHA256.HashData(Plaintext.ToUTF8Bytes());
+
+            var signer      = SignerUtilities.GetSigner("NONEwithECDSA");
+            signer.Init(true, PrivateKey);
+            signer.BlockUpdate(sha256Hash, 0, sha256Hash.Length);
+
+            return signer.GenerateSignature();
+
+        }
+
+        #endregion
+
+        #region Sign_ECDSA_SHA512 (Plaintext, PrivateKey)
+
+        public static Byte[] Sign_ECDSA_SHA512(String                  Plaintext,
+                                               ECPrivateKeyParameters  PrivateKey)
+        {
+
+            var sha256Hash  = SHA512.HashData(Plaintext.ToUTF8Bytes());
+
+            var signer      = SignerUtilities.GetSigner("NONEwithECDSA");
+            signer.Init(true, PrivateKey);
+            signer.BlockUpdate(sha256Hash, 0, sha256Hash.Length);
+
+            return signer.GenerateSignature();
 
         }
 
