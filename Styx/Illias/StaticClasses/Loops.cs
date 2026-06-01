@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -44,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0; i < Loops; i++)
                 Do();
@@ -61,7 +53,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0U; i < Loops; i++)
                 Do();
@@ -78,7 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0L; i < Loops; i++)
                 Do();
@@ -95,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0UL; i < Loops; i++)
                 Do();
@@ -116,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0; i < Loops; i++)
                 Do(i);
@@ -133,7 +125,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0U; i < Loops; i++)
                 Do(i);
@@ -150,7 +142,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0L; i < Loops; i++)
                 Do(i);
@@ -167,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0UL; i < Loops; i++)
                 Do(i);
@@ -189,7 +181,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0; i < Loops; i++)
                 Do(i, Loops);
@@ -207,7 +199,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0U; i < Loops; i++)
                 Do(i, Loops);
@@ -225,7 +217,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0L; i < Loops; i++)
                 Do(i, Loops);
@@ -243,7 +235,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Do is null)
-                throw new ArgumentNullException("Do", "The parameter 'Do' must not be null!");
+                throw new ArgumentNullException(nameof(Do), "The parameter 'Do' must not be null!");
 
             for (var i = 0UL; i < Loops; i++)
                 Do(i, Loops);

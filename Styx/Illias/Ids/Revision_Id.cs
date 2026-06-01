@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -30,7 +22,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// A RevId is an identifier for a specific IElement revision in
     /// a distributed system consisting of a timestamp and a SystemId.
     /// </summary>
-    public class RevisionId : IComparable, IComparable<RevisionId>, IEquatable<RevisionId>
+    public class Revision_Id : IEquatable<Revision_Id>,
+                               IComparable<Revision_Id>,
+                               IComparable
     {
 
         #region Properties
@@ -56,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Generates a RevisionId based on the actual timestamp and the given SystemId.
         /// </summary>
         /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
-        public RevisionId(System_Id SystemId)
+        public Revision_Id(System_Id SystemId)
         {
             this.Timestamp = (UInt64) UniqueTimestamp.Ticks;
             this.SystemId  = SystemId;
@@ -71,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Timestamp">A timestamp</param>
         /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
-        public RevisionId(UInt64 Timestamp, System_Id SystemId)
+        public Revision_Id(UInt64 Timestamp, System_Id SystemId)
         {
             this.Timestamp = Timestamp;
             this.SystemId  = SystemId;
@@ -86,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="DateTime">A DateTime object</param>
         /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
-        public RevisionId(DateTime DateTime, System_Id SystemId)
+        public Revision_Id(DateTime DateTime, System_Id SystemId)
         {
             this.Timestamp = (UInt64) DateTime.Ticks;
             this.SystemId  = SystemId;
@@ -103,7 +97,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DateTimeString">A DateTime object as "yyyyddMM.HHmmss.fffffff"-formatted string</param>
         /// <param name="SystemId">An unique identifier for the generating system, process or thread</param>
         /// <exception cref="System.FormatException"></exception>
-        public RevisionId(String DateTimeString, System_Id SystemId)
+        public Revision_Id(String DateTimeString, System_Id SystemId)
         {
             try
             {
@@ -125,7 +119,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// formatted string representation of a RevId.
         /// </summary>
         /// <param name="RevIdString">A RevId object as "yyyyddMM.HHmmss.fffffff(SystemId)"-formatted string</param>
-        public RevisionId(String RevIdString)
+        public Revision_Id(String RevIdString)
         {
 
             try
@@ -160,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RevisionId RevId1, RevisionId RevId2)
+        public static Boolean operator == (Revision_Id RevId1, Revision_Id RevId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -185,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RevisionId RevId1, RevisionId RevId2)
+        public static Boolean operator != (Revision_Id RevId1, Revision_Id RevId2)
         {
             return !(RevId1 == RevId2);
         }
@@ -200,7 +194,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RevisionId RevId1, RevisionId RevId2)
+        public static Boolean operator < (Revision_Id RevId1, Revision_Id RevId2)
         {
 
             if (RevId1.Timestamp < RevId2.Timestamp)
@@ -227,7 +221,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RevisionId RevId1, RevisionId RevId2)
+        public static Boolean operator <= (Revision_Id RevId1, Revision_Id RevId2)
         {
             return !(RevId1 > RevId2);
         }
@@ -242,7 +236,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RevisionId RevId1, RevisionId RevId2)
+        public static Boolean operator > (Revision_Id RevId1, Revision_Id RevId2)
         {
 
             if (RevId1.Timestamp > RevId2.Timestamp)
@@ -269,7 +263,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RevisionId RevId1, RevisionId RevId2)
+        public static Boolean operator >= (Revision_Id RevId1, Revision_Id RevId2)
         {
             return !(RevId1 < RevId2);
         }
@@ -293,7 +287,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a RevId.
-            var _RevId = Object as RevisionId;
+            var _RevId = Object as Revision_Id;
             if ((Object) _RevId is null)
                 throw new ArgumentException("The given object is not a RevId!");
 
@@ -312,7 +306,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RevisionId">A RevisionId to compare with.</param>
-        public Int32 CompareTo(RevisionId RevisionId)
+        public Int32 CompareTo(Revision_Id RevisionId)
         {
 
             if ((Object) RevisionId is null)
@@ -345,7 +339,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
 
             // Check if the given object is a RevId.
-            var _RevId = Object as RevisionId;
+            var _RevId = Object as Revision_Id;
             if ((Object) _RevId is null)
                 return false;
 
@@ -362,7 +356,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="RevisionId">A RevisionId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RevisionId RevisionId)
+        public Boolean Equals(Revision_Id RevisionId)
         {
 
             if ((Object) RevisionId is null)

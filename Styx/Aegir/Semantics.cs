@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Aegir
 {
 
@@ -30,10 +24,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     public static class Semantics
     {
 
-        public static String Measurements = "Measurements";
-        public static String Longitude    = "Longitude";
-        public static String Latitude     = "Latitude";
-        public static String Altitude     = "Altitude";
+        public const String Measurements = "Measurements";
+        public const String Longitude    = "Longitude";
+        public const String Latitude     = "Latitude";
+        public const String Altitude     = "Altitude";
 
     }
 
