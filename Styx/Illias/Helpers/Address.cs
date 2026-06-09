@@ -525,11 +525,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                : null,
 
                            Comment is not null && Comment.IsNotNullOrEmpty()
-                               ? new JProperty("comment",             Comment.ToJSON())
+                               ? new JProperty("comment",             Comment.       ToJSON())
                                : null,
 
                            CustomData is not null && !CustomData.IsEmpty
-                               ? new JProperty("customData",          CustomData)
+                               ? new JProperty("customData",          CustomData.    ToJObject())
                                : null
 
                        );

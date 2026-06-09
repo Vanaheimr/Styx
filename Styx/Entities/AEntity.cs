@@ -490,7 +490,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                    : new JProperty("@context",     JSONLDContext. ToString()),
 
                                CustomData is not null
-                                   ? new JProperty("customData",   CustomData)
+                                   ? new JProperty("customData",   CustomData.    ToJObject())
                                    : null,
 
                                DataSource.IsNotNullOrEmpty()
