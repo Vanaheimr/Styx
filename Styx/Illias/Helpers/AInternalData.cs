@@ -257,7 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
         [Optional]
-        public CustomDataNew          CustomData      { get; }
+        public CustomDataNew          CustomData      { get; private set; }
 
 
         /// <summary>
@@ -477,36 +477,63 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         public Boolean IsEmpty
+
             => InternalData.IsEmpty;
 
         public Boolean IsNotEmpty
+
             => InternalData.IsNotEmpty;
 
         public Boolean IsDefined(String Key)
+
             => InternalData.ContainsKey(Key);
 
         public Boolean IsDefined(String Key, Object? Value)
-            => InternalData.Contains(Key, Value);
+
+            => InternalData.Contains(
+                   Key,
+                   Value
+               );
 
         public void IfDefined(String          Key,
                               Action<Object>  ValueDelegate)
-            => InternalData.IfDefined(Key, ValueDelegate);
+
+            => InternalData.IfDefined(
+                   Key,
+                   ValueDelegate
+               );
 
         public void IfDefinedAs<T>(String     Key,
                                    Action<T>  ValueDelegate)
-            => InternalData.IfDefinedAs<T>(Key, ValueDelegate);
+
+            => InternalData.IfDefinedAs<T>(
+                   Key,
+                   ValueDelegate
+               );
 
         public Object? GetInternalData(String Key)
+
             => InternalData.Get(Key);
 
         public T? GetInternalDataAs<T>(String Key)
+
             => InternalData.GetAs<T>(Key);
 
-        public Boolean TryGetInternalData(String Key, out Object? Value)
-            => InternalData.TryGet(Key, out Value);
+        public Boolean TryGetInternalData(String       Key,
+                                          out Object?  Value)
 
-        public Boolean TryGetInternalDataAs<T>(String Key, out T? Value)
-            => InternalData.TryGetAs<T>(Key, out Value);
+            => InternalData.TryGet(
+                   Key,
+                   out Value
+               );
+
+        public Boolean TryGetInternalDataAs<T>(String  Key,
+                                               out T?  Value)
+
+            => InternalData.TryGetAs(
+                   Key,
+                   out Value
+               );
 
 
 
@@ -516,11 +543,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  Context?           DataSource        = null,
                                                  EventTracking_Id?  EventTrackingId   = null)
 
-            => InternalData.Set(Key,
-                                NewValue,
-                                OldValue,
-                                DataSource,
-                                EventTrackingId);
+            => InternalData.Set(
+                   Key,
+                   NewValue,
+                   OldValue,
+                   DataSource,
+                   EventTrackingId
+               );
 
 
 
@@ -589,37 +618,65 @@ namespace org.GraphDefined.Vanaheimr.Illias
             #endregion
 
 
-            public Boolean IsEmpty
+            public Boolean  IsEmpty
+
                 => InternalData.IsEmpty;
 
-            public Boolean IsNotEmpty
+            public Boolean  IsNotEmpty
+
                 => InternalData.IsNotEmpty;
 
-            public Boolean IsDefined(String Key)
+            public Boolean  IsDefined(String Key)
+
                 => InternalData.ContainsKey(Key);
 
-            public Boolean IsDefined(String Key, Object? Value)
-                => InternalData.Contains(Key, Value);
+            public Boolean  IsDefined(String   Key,
+                                      Object?  Value)
 
-            public void IfDefined(String          Key,
-                                  Action<Object>  ValueDelegate)
-                => InternalData.IfDefined(Key, ValueDelegate);
+                => InternalData.Contains(
+                       Key,
+                       Value
+                   );
+
+            public void     IfDefined(String          Key,
+                                      Action<Object>  ValueDelegate)
+
+                => InternalData.IfDefined(
+                       Key,
+                       ValueDelegate
+                   );
 
             public void IfDefinedAs<T>(String     Key,
                                        Action<T>  ValueDelegate)
-                => InternalData.IfDefinedAs<T>(Key, ValueDelegate);
+
+                => InternalData.IfDefinedAs(
+                       Key,
+                       ValueDelegate
+                   );
 
             public Object? GetInternalData(String Key)
+
                 => InternalData.Get(Key);
 
             public T? GetInternalDataAs<T>(String Key)
+
                 => InternalData.GetAs<T>(Key);
 
-            public Boolean TryGetInternalData(String Key, out Object? Value)
-                => InternalData.TryGet(Key, out Value);
+            public Boolean TryGetInternalData(String       Key,
+                                              out Object?  Value)
 
-            public Boolean TryGetInternalDataAs<T>(String Key, out T? Value)
-                => InternalData.TryGetAs<T>(Key, out Value);
+                => InternalData.TryGet(
+                       Key,
+                       out Value
+                   );
+
+            public Boolean TryGetInternalDataAs<T>(String  Key,
+                                                   out T?  Value)
+
+                => InternalData.TryGetAs<T>(
+                       Key,
+                       out Value
+                   );
 
 
 
@@ -629,27 +686,37 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                      Context?           DataSource        = null,
                                                      EventTracking_Id?  EventTrackingId   = null)
 
-                => InternalData.Set(Key,
-                                    NewValue,
-                                    OldValue,
-                                    DataSource,
-                                    EventTrackingId);
+                => InternalData.Set(
+                       Key,
+                       NewValue,
+                       OldValue,
+                       DataSource,
+                       EventTrackingId
+                   );
 
 
-            public void DeleteProperty<T>(ref T? FieldToChange,
-                                          [CallerMemberName] String PropertyName = "")
+            public void DeleteProperty<T>(ref T?                     FieldToChange,
+                                          [CallerMemberName] String  PropertyName   = "")
             {
                 
             }
 
 
-            public void PropertyChanged<T>(String PropertyName, T OldValue, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null)
+            public void PropertyChanged<T>(String             PropertyName,
+                                           T                  OldValue,
+                                           T                  NewValue,
+                                           Context?           DataSource        = null,
+                                           EventTracking_Id?  EventTrackingId   = null)
             {
                 
             }
 
 
-            public void SetProperty<T>(ref T FieldToChange, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] String PropertyName = "")
+            public void SetProperty<T>(ref T                      FieldToChange,
+                                       T                          NewValue,
+                                       Context?                   DataSource        = null,
+                                       EventTracking_Id?          EventTrackingId   = null,
+                                       [CallerMemberName] String  PropertyName      = "")
             {
                 
             }
