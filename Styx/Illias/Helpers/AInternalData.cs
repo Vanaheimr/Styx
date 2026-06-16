@@ -257,7 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Optional custom data, e.g. in combination with custom parsers and serializers.
         /// </summary>
         [Optional]
-        public CustomDataNew          CustomData      { get; private set; }
+        public CustomDataNew          CustomData      { get; protected set; }
 
 
         /// <summary>
