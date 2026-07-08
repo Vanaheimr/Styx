@@ -42,6 +42,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Helpers
+
+        private IEnumerable<Timestamped<T>> Normalize(IEnumerable<Timestamped<T>> StatusList)
+
+            => StatusList.
+                   GroupBy(status => status.Timestamp.ToISO8601()).
+                   Select (group  => group.Last()).
+                   OrderByDescending(status => status.Timestamp).
+                   Take(MaxStatusHistorySize);
+
+        #endregion
+
         #region Properties
 
         #region CurrentStatus
@@ -53,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Timestamped<T> CurrentStatus
 
-            => currentStatus;
+            => CheckCurrentStatus();
 
         #endregion
 
@@ -76,8 +88,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The next status.
         /// </summary>
         public Timestamped<T>? NextStatus
-
-            => nextStatus;
+        {
+            get
+            {
+                CheckCurrentStatus();
+                return nextStatus;
+            }
+        }
 
         #endregion
 
@@ -161,6 +178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             statusSchedule.Add(InitialValue);
+            CheckCurrentStatus();
 
         }
 
@@ -178,6 +196,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             statusSchedule.Add(InitialValue);
+            CheckCurrentStatus();
 
         }
 
@@ -201,6 +220,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
                 var Now = Timestamp.Now;
                 statusSchedule.AddRange(InitialValues.Select(_ => new Timestamped<T>(Now, _)));
+                statusSchedule.Sort((Status1, Status2) => Status2.Timestamp.CompareTo(Status1.Timestamp));
+                CheckCurrentStatus();
             }
 
         }
@@ -219,7 +240,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (InitialValues.IsNeitherNullNorEmpty())
-                statusSchedule.AddRange(InitialValues);
+            {
+                statusSchedule.AddRange(Normalize(InitialValues));
+                CheckCurrentStatus();
+            }
 
         }
 
@@ -274,9 +298,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             lock (statusSchedule)
             {
 
+                CheckCurrentStatus();
+
                 // Ignore 'insert' if the values are the same
                 if (statusSchedule.Count == 0 ||
-                    !EqualityComparer<T>.Default.Equals(Value, statusSchedule.First().Value))
+                    !EqualityComparer<T>.Default.Equals(Value, currentStatus.Value))
                 {
 
                     var oldStatus          = currentStatus;
@@ -286,7 +312,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  Where (status => status.Timestamp.ToISO8601() != Timestamp.ToISO8601()).
                                                  ToList();
 
-                    newStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
+                    newStatusSchedule.Add(
+                        new Timestamped<T>(Timestamp, Value)
+                    );
 
                     statusSchedule.Clear();
                     statusSchedule.AddRange(
@@ -328,15 +356,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var oldStatus          = currentStatus;
 
                 // Remove any old status having the same timestamp!
-                var newStatusSchedule  = StatusList.
-                                             GroupBy(status => status.Timestamp).
-                                             Select (group  => group.
-                                                                   OrderByDescending(status => status.Timestamp).
-                                                                   First()).
-                                             OrderByDescending(v => v.Timestamp).
-                                             Take(MaxStatusHistorySize).
+                var newStatusSchedule  = Normalize(statusSchedule.Concat(StatusList)).
                                              ToArray();
 
+                statusSchedule.Clear();
                 statusSchedule.AddRange(newStatusSchedule);
 
                 CheckCurrentStatus(oldStatus,
@@ -385,13 +408,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 var oldStatus          = currentStatus;
 
                 // Remove any status having the same timestamp!
-                var newStatusSchedule  = StatusList.
-                                             GroupBy(status => status.Timestamp).
-                                             Select (group  => group.
-                                                                   OrderByDescending(status => status.Timestamp).
-                                                                   First()).
-                                             OrderByDescending(v => v.Timestamp).
-                                             Take(MaxStatusHistorySize).
+                var newStatusSchedule  = Normalize(StatusList).
                                              ToArray();
 
                 statusSchedule.Clear();
@@ -423,13 +440,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 var now            = Timestamp.Now;
 
-                var historyList    = statusSchedule.Where(status => status.Timestamp <= now).ToArray();
+                var historyList    = statusSchedule.
+                                         Where(status => status.Timestamp <= now).
+                                         OrderByDescending(status => status.Timestamp).
+                                         ToArray();
+
                 if (historyList.Length > 0)
                     currentStatus  = historyList.First();
 
-                var futureList     = statusSchedule.Where(status => status.Timestamp  > now).ToArray();
+                var futureList     = statusSchedule.
+                                         Where(status => status.Timestamp  > now).
+                                         OrderBy(status => status.Timestamp).
+                                         ToArray();
+
                     nextStatus     = futureList.Length > 0
-                                         ? futureList.Last()
+                                         ? futureList.First()
                                          : null;
 
                 callChangeEvents   = !EqualityComparer<T>.Default.Equals(
@@ -440,6 +465,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (callChangeEvents)
+            {
+
                 OnStatusChanged?.Invoke(
                     Timestamp.Now,
                     EventTracking_Id.New,
@@ -448,6 +475,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     oldStatus,
                     DataSource
                 );
+
+                DebugX.Log($"StatusSchedule: Current status changed from '{oldStatus}' to '{currentStatus}'!");
+
+            }
 
             return currentStatus;
 
