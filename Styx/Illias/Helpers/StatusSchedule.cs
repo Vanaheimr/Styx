@@ -476,7 +476,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     DataSource
                 );
 
-                DebugX.Log($"StatusSchedule: Current status changed from '{oldStatus}' to '{currentStatus}'!");
+                //DebugX.Log($"StatusSchedule: Current status changed from '{oldStatus}' to '{currentStatus}'!");
 
             }
 
