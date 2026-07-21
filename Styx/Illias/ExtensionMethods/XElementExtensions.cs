@@ -1728,9 +1728,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ParentXElement">The XML parent XML element.</param>
         /// <param name="XName">The System.Xml.Linq.XName to match.</param>
         /// <param name="ExceptionMessage">An optional exception message.</param>
-        public static String ElementValueOrFail(this XElement  ParentXElement,
-                                                XName          XName,
-                                                String?        ExceptionMessage = null)
+        public static String? ElementValueOrFail(this XElement  ParentXElement,
+                                                 XName          XName,
+                                                 String?        ExceptionMessage = null)
         {
 
             var xElement = ParentXElement.Element(XName);
@@ -2161,9 +2161,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region MapValueOrNull(ParentXElement, XName, ValueMapper)
 
-        public static T MapValueOrNull<T>(this XElement    ParentXElement,
-                                          XName            XName,
-                                          Func<String, T>  ValueMapper)
+        public static T? MapValueOrNull<T>(this XElement    ParentXElement,
+                                           XName            XName,
+                                           Func<String, T>  ValueMapper)
         {
 
             var xElement = ParentXElement.Element(XName);
