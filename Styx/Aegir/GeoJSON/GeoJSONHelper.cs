@@ -219,8 +219,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 foreach (var value in GeoCoordinates)
                 {
 
-                    lng = Double.Parse(value[0].Value<String>(), CultureInfo.InvariantCulture);
-                    lat = Double.Parse(value[1].Value<String>(), CultureInfo.InvariantCulture);
+                    lng = Double.Parse(value[0]!.Value<String>()!, CultureInfo.InvariantCulture);
+                    lat = Double.Parse(value[1]!.Value<String>()!, CultureInfo.InvariantCulture);
 
                     if (min_lat > lat) min_lat = lat;
                     if (max_lat < lat) max_lat = lat;

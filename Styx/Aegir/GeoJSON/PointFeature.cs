@@ -77,8 +77,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                 return new PointFeature(GeoJSON["id"]?.Value<String>(),
                                         Aegir.GeoJSON.ParseProperties(GeoJSON["properties"] as JObject),
-                                        GeoCoordinate.Parse(coordinatesJSON[1].Value<Double>(),
-                                                            coordinatesJSON[0].Value<Double>()));
+                                        GeoCoordinate.Parse(coordinatesJSON[1]!.Value<Double>(),
+                                                            coordinatesJSON[0]!.Value<Double>()));
 
             }
 

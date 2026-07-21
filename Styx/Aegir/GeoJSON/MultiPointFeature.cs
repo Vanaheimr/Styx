@@ -94,8 +94,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (coordinates is JArray)
                     {
 
-                        points.Add(GeoCoordinate.Parse(coordinates[1].Value<Double>(),
-                                                       coordinates[0].Value<Double>()));
+                        points.Add(GeoCoordinate.Parse(coordinates[1]!.Value<Double>(),
+                                                       coordinates[0]!.Value<Double>()));
 
                     }
 

@@ -502,7 +502,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <typeparam name="T">The type of the elements of the enumeration.</typeparam>
         /// <param name="Enumerable">An enumeration.</param>
-        public static Boolean IsNullOrEmpty<T>(this IEnumerable<T> Enumerable)
+        public static Boolean IsNullOrEmpty<T>([NotNullWhen(false)] this IEnumerable<T>? Enumerable)
         {
 
             if (Enumerable is null || !Enumerable.Any())
@@ -516,7 +516,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region IsNeitherNullNorEmpty<T>(this Enumerable)
 
-        public static Boolean IsNeitherNullNorEmpty<T>(this IEnumerable<T> Enumerable)
+        public static Boolean IsNeitherNullNorEmpty<T>([NotNullWhen(true)] this IEnumerable<T>? Enumerable)
         {
 
             if (Enumerable is null)
@@ -531,7 +531,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region CountIsAtLeast<T>(this Enumerable, NumberOfElements)
 
-        public static Boolean CountIsAtLeast<T>(this IEnumerable<T> Enumerable, UInt64 NumberOfElements)
+        public static Boolean CountIsAtLeast<T>([NotNullWhen(true)] this IEnumerable<T>? Enumerable, UInt64 NumberOfElements)
         {
 
             if (Enumerable is null)
@@ -550,7 +550,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region CountIsGreater<T>(this Enumerable, NumberOfElements)
 
-        public static Boolean CountIsGreater<T>(this IEnumerable<T> Enumerable, UInt64 NumberOfElements)
+        public static Boolean CountIsGreater<T>([NotNullWhen(true)] this IEnumerable<T>? Enumerable, UInt64 NumberOfElements)
         {
 
             if (Enumerable is null)
@@ -569,7 +569,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region CountIsGreaterOrEquals<T>(this Enumerable, NumberOfElements)
 
-        public static Boolean CountIsGreaterOrEquals<T>(this IEnumerable<T> Enumerable, UInt64 NumberOfElements)
+        public static Boolean CountIsGreaterOrEquals<T>([NotNullWhen(true)] this IEnumerable<T>? Enumerable, UInt64 NumberOfElements)
         {
 
             if (Enumerable is null)

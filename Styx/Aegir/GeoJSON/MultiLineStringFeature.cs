@@ -100,8 +100,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (outer is JArray)
                     {
 
-                        lineStrings.Add(outer.Select(coordinates => GeoCoordinate.Parse(coordinates[1].Value<Double>(),
-                                                                                        coordinates[0].Value<Double>())).ToList());
+                        lineStrings.Add(outer.Select(coordinates => GeoCoordinate.Parse(coordinates[1]!.Value<Double>(),
+                                                                                        coordinates[0]!.Value<Double>())).ToList());
 
                     }
 

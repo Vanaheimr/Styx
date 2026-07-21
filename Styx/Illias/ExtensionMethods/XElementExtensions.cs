@@ -1871,7 +1871,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static T? MapElement<T>(this XElement                           ParentXElement,
                                        XName                                   XName,
-                                       Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                       Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                        OnExceptionDelegate?                    OnException   = null,
                                        T?                                      Default       = default)
         {
@@ -1894,7 +1894,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static T MapElementOrFail<T>(this XElement                           ParentXElement,
                                             XName                                   XName,
-                                            Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                            Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                             OnExceptionDelegate?                    OnException        = null,
                                             String?                                 ExceptionMessage   = null)
         {
@@ -2009,7 +2009,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static T? MapElementOrNullable<T>(this XElement                           ParentXElement,
                                                  XName                                   XName,
-                                                 Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                                 Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                                  OnExceptionDelegate?                    OnException = null)
 
             where T : struct
@@ -2064,7 +2064,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static IEnumerable<T> MapElements<T>(this XElement                           ParentXElement,
                                                     XName                                   XName,
-                                                    Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                                    Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                                     OnExceptionDelegate?                    OnException = null)
         {
 
@@ -2119,7 +2119,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> MapElements<T>(this XElement                           ParentXElement,
                                                     XName                                   XWrapper,
                                                     XName                                   XName,
-                                                    Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                                    Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                                     OnExceptionDelegate?                    OnException = null)
         {
 
@@ -2149,7 +2149,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static IEnumerable<T> MapElementsOrFail<T>(this XElement                           ParentXElement,
                                                           XName                                   XName,
-                                                          Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                                          Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                                           OnExceptionDelegate?                    OnException        = null,
                                                           String?                                 ExceptionMessage   = null)
         {
@@ -2227,7 +2227,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> MapElementsOrFail<T>(this XElement                           ParentXElement,
                                                           XName                                   XWrapper,
                                                           XName                                   XName,
-                                                          Func<XElement, OnExceptionDelegate, T>  Mapper,
+                                                          Func<XElement, OnExceptionDelegate?, T>  Mapper,
                                                           OnExceptionDelegate?                    OnException        = null,
                                                           String?                                 ExceptionMessage   = null)
         {
@@ -2594,7 +2594,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapValueOrFail<T>(this XElement                         ParentXElement,
                                           XName                                 XWrapper,
                                           XName                                 XName,
-                                          Func<String, OnExceptionDelegate, T>  ValueMapper,
+                                          Func<String, OnExceptionDelegate?, T>  ValueMapper,
                                           OnExceptionDelegate?                  OnException       = null,
                                           String?                               ExceptionMessage  = null)
         {

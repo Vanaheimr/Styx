@@ -103,12 +103,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                         // Object       = 1
                         case JTokenType.Object:
-                            properties.Add(property.Key, property.Value.Value<JObject>());
+                            properties.Add(property.Key, property.Value.Value<JObject>()!);
                             break;
 
                         // Array        = 2
                         case JTokenType.Array:
-                            properties.Add(property.Key, property.Value.Value<JArray>());
+                            properties.Add(property.Key, property.Value.Value<JArray>()!);
                             break;
 
                         // Integer      = 6
@@ -133,7 +133,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                         // Bytes        = 14
                         case JTokenType.Bytes:
-                            properties.Add(property.Key, property.Value.Value<Byte[]>());
+                            properties.Add(property.Key, property.Value.Value<Byte[]>()!);
                             break;
 
                         // Guid         = 15
@@ -143,7 +143,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
                         // Uri          = 16
                         case JTokenType.Uri:
-                            properties.Add(property.Key, property.Value.Value<Uri>());
+                            properties.Add(property.Key, property.Value.Value<Uri>()!);
                             break;
 
                         // TimeSpan     = 17
@@ -156,7 +156,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                         // String       = 8
                         // Raw          = 13
                         default:
-                            properties.Add(property.Key, property.Value.Value<String>());
+                            properties.Add(property.Key, property.Value.Value<String>()!);
                             break;
 
                     }

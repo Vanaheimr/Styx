@@ -151,31 +151,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Added properties
 
-            if (Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
+            var added = Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).ToArray();
+
+            if (added.Length != 0)
             {
 
-                foreach (var property in Added.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                var addedJSON = new JObject();
+                JSON.Add("added", addedJSON);
+
+                foreach (var property in added)
                 {
 
-                    if (!JSON.ContainsKey("added"))
-                        JSON.Add("added", new JObject());
-
+                    // A masked property still belongs to its own section ("added"),
+                    // just with its value hidden - it must not be written to a
+                    // (possibly non-existent) "removed" object.
                     if (MaskProperty(property.Name))
-                        (JSON["removed"] as JObject).Add(property.Name, "n/a");
+                        addedJSON.Add(property.Name, "n/a");
+
+                    else if (property.Value is String text)
+                        addedJSON.Add(property.Name, text);
+
+                    else if (property.Value is DateTime timestamp)
+                        addedJSON.Add(property.Name, timestamp.ToISO8601());
 
                     else
-                    {
-
-                        if (property.Value is String text)
-                            (JSON["added"] as JObject).Add(property.Name, text);
-
-                        else if (property.Value is DateTime timestamp)
-                            (JSON["added"] as JObject).Add(property.Name, timestamp.ToISO8601());
-
-                        else
-                            (JSON["added"] as JObject).Add(property.Name, property.Value.ToString());
-
-                    }
+                        addedJSON.Add(property.Name, property.Value.ToString());
 
                 }
 
@@ -185,31 +185,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Updated properties
 
-            if (Updated.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
+            var updated = Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)).ToArray();
+
+            if (updated.Length != 0)
             {
 
-                foreach (var property in Updated.Where(propertyWithValues => IncludeProperty(propertyWithValues.Name)))
+                var updatedJSON = new JObject();
+                JSON.Add("updated", updatedJSON);
+
+                foreach (var property in updated)
                 {
 
-                    if (!JSON.ContainsKey("updated"))
-                        JSON.Add("updated", new JObject());
-
                     if (MaskProperty(property.Name))
-                        (JSON["removed"] as JObject).Add(property.Name, "n/a");
+                        updatedJSON.Add(property.Name, "n/a");
+
+                    else if (property.NewValue is String)
+                        updatedJSON.Add(property.Name, new JArray(property.NewValue as String, property.OldValue as String));
+
+                    else if (property.NewValue is DateTime)
+                        updatedJSON.Add(property.Name, new JArray(((DateTime) property.NewValue).ToISO8601(), ((DateTime) property.OldValue).ToISO8601()));
 
                     else
-                    {
-
-                        if (property.NewValue is String)
-                            (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue as String, property.OldValue as String));
-
-                        else if (property.NewValue is DateTime)
-                            (JSON["updated"] as JObject).Add(property.Name, new JArray(((DateTime)property.NewValue).ToISO8601(), ((DateTime)property.OldValue).ToISO8601()));
-
-                        else
-                            (JSON["updated"] as JObject).Add(property.Name, new JArray(property.NewValue.ToString(), property.OldValue.ToString()));
-
-                    }
+                        updatedJSON.Add(property.Name, new JArray(property.NewValue.ToString(), property.OldValue.ToString()));
 
                 }
 
@@ -219,31 +216,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Removed properties
 
-            if (Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).SafeAny())
+            var removed = Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)).ToArray();
+
+            if (removed.Length != 0)
             {
 
-                foreach (var property in Removed.Where(propertyWithValue => IncludeProperty(propertyWithValue.Name)))
+                var removedJSON = new JObject();
+                JSON.Add("removed", removedJSON);
+
+                foreach (var property in removed)
                 {
 
-                    if (!JSON.ContainsKey("removed"))
-                        JSON.Add("removed", new JObject());
-
                     if (MaskProperty(property.Name))
-                        (JSON["removed"] as JObject).Add(property.Name, "n/a");
+                        removedJSON.Add(property.Name, "n/a");
+
+                    else if (property.Value is String text)
+                        removedJSON.Add(property.Name, text);
+
+                    else if (property.Value is DateTime timestamp)
+                        removedJSON.Add(property.Name, timestamp.ToISO8601());
 
                     else
-                    {
-
-                        if (property.Value is String text)
-                            (JSON["removed"] as JObject).Add(property.Name, text);
-
-                        else if (property.Value is DateTime timestamp)
-                            (JSON["removed"] as JObject).Add(property.Name, timestamp.ToISO8601());
-
-                        else
-                            (JSON["removed"] as JObject).Add(property.Name, property.Value.ToString());
-
-                    }
+                        removedJSON.Add(property.Name, property.Value.ToString());
 
                 }
 
