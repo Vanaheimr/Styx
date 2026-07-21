@@ -64,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Turns the recording of the message delivery path ON or OFF.
         /// </summary>
-        public Boolean              RecordMessagePath    { get; set; }
+        public Boolean               RecordMessagePath    { get; set; }
 
         /// <summary>
         /// Returns the message path.

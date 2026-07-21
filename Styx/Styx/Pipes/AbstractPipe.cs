@@ -422,7 +422,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public abstract class AbstractPipe<S1, S2, E> : IPipe<S1, S2, E>
         where S1 : notnull
         where S2 : notnull
-        where E : notnull
+        where E  : notnull
     {
 
         #region Data
@@ -431,19 +431,18 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// The first source pipe.
         /// </summary>
         // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
-        protected IEndPipe<S1> SourcePipe1 = null!;
+        protected IEndPipe<S1>  SourcePipe1        { get; private set; }
 
         /// <summary>
         /// The second source pipe.
         /// </summary>
         // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
-        protected IEndPipe<S2> SourcePipe2 = null!;
-
+        protected IEndPipe<S2>  SourcePipe2        { get; private set; }
         /// <summary>
         /// The current element in the pipe.
         /// </summary>
         // The current element; default(E) until the first MoveNext() assigns it.
-        protected E _CurrentElement = default!;
+        protected E             _CurrentElement    { get; set; }
 
         #endregion
 
@@ -470,9 +469,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
                             S2  SourceElement2)
         {
 
-            SourceElement1.CheckNull("SourceElement1");
-            SourceElement2.CheckNull("SourceElement2");
-
             this.SourcePipe1 = new EndPipe<S1>((new List<S1>() { SourceElement1 }).GetEnumerator());
             this.SourcePipe2 = new EndPipe<S2>((new List<S2>() { SourceElement2 }).GetEnumerator());
 
@@ -490,9 +486,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public AbstractPipe(IEndPipe<S1>  SourcePipe1,
                             IEndPipe<S2>  SourcePipe2)
         {
-
-            SourcePipe1.CheckNull("SourcePipe1");
-            SourcePipe2.CheckNull("SourcePipe2");
 
             this.SourcePipe1 = SourcePipe1;
             this.SourcePipe2 = SourcePipe2;
@@ -512,9 +505,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
                             IEnumerator<S2>  SourceEnumerator2)
         {
 
-            SourceEnumerator1.CheckNull("SourceEnumerator1");
-            SourceEnumerator2.CheckNull("SourceEnumerator2");
-
             this.SourcePipe1 = new EndPipe<S1>(SourceEnumerator1);
             this.SourcePipe2 = new EndPipe<S2>(SourceEnumerator2);
 
@@ -532,9 +522,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public AbstractPipe(IEnumerable<S1>  SourceEnumerable1,
                             IEnumerable<S2>  SourceEnumerable2)
         {
-
-            SourceEnumerable1.CheckNull("SourceEnumerable1");
-            SourceEnumerable2.CheckNull("SourceEnumerable2");
 
             this.SourcePipe1 = new EndPipe<S1>(SourceEnumerable1.GetEnumerator());
             this.SourcePipe2 = new EndPipe<S2>(SourceEnumerable2.GetEnumerator());
@@ -554,7 +541,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource1(S1 SourceElement)
         {
-            SourceElement.CheckNull("SourceElement");
             SourcePipe1 = new EndPipe<S1>((new List<S1>() { SourceElement }).GetEnumerator());
         }
 
@@ -568,7 +554,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceElement">A single source element.</param>
         public virtual void SetSource2(S2 SourceElement)
         {
-            SourceElement.CheckNull("SourceElement");
             SourcePipe2 = new EndPipe<S2>((new List<S2>() { SourceElement }).GetEnumerator());
         }
 
@@ -583,7 +568,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe as element source.</param>
         public virtual void SetSource1(IEndPipe<S1> SourcePipe)
         {
-            SourcePipe.CheckNull("SourcePipe");
             SourcePipe1 = SourcePipe;
         }
 
@@ -597,7 +581,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe as element source.</param>
         public virtual void SetSource2(IEndPipe<S2> SourcePipe)
         {
-            SourcePipe.CheckNull("SourcePipe");
             SourcePipe2 = SourcePipe;
         }
 
@@ -612,7 +595,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceEnumerator">An enumerator as element source.</param>
         public virtual void SetSource1(IEnumerator<S1> SourceEnumerator)
         {
-            SourceEnumerator.CheckNull("SourceEnumerator");
             SourcePipe1 = new EndPipe<S1>(SourceEnumerator);
         }
 
@@ -626,7 +608,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceEnumerator">An enumerator as element source.</param>
         public virtual void SetSource2(IEnumerator<S2> SourceEnumerator)
         {
-            SourceEnumerator.CheckNull("SourceEnumerator");
             SourcePipe2 = new EndPipe<S2>(SourceEnumerator);
         }
 
@@ -641,7 +622,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceEnumerable">An enumerable as element source.</param>
         public virtual void SetSource1(IEnumerable<S1> SourceEnumerable)
         {
-            SourceEnumerable.CheckNull("SourceEnumerable");
             SourcePipe1 = new EndPipe<S1>(SourceEnumerable.GetEnumerator());
         }
 
@@ -655,7 +635,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceEnumerable">An enumerable as element source.</param>
         public virtual void SetSource2(IEnumerable<S2> SourceEnumerable)
         {
-            SourceEnumerable.CheckNull("SourceEnumerable");
             SourcePipe2 = new EndPipe<S2>(SourceEnumerable.GetEnumerator());
         }
 
@@ -683,12 +662,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Gets the current element in the collection.
         /// </summary>
         public E Current
-        {
-            get
-            {
-                return _CurrentElement;
-            }
-        }
+            => _CurrentElement;
 
         #endregion
 
@@ -717,6 +691,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             SourcePipe1.Reset();
             SourcePipe2.Reset();
+            //_CurrentElement = null;
 
             return this;
 

@@ -4413,7 +4413,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 try
                 {
 
-                    TOut = Mapper(_JToken?.Value<String>());
+                    TOut = Mapper(_JToken?.Value<String>()!);
 
                     return !TOut.Equals(InvalidResult);
 
@@ -5650,7 +5650,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
 
                 if (!Parser(JSONToken.Type == JTokenType.String
-                                ? JSONToken.Value<String>()
+                                ? JSONToken.Value<String>()!
                                 : JSONToken.ToString(),
                             out TStruct value,
                             out         ErrorResponse))
@@ -6505,7 +6505,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
 
                 if (!Parser(JSONToken.Type == JTokenType.String
-                                ? JSONToken.Value<String>()
+                                ? JSONToken.Value<String>()!
                                 : JSONToken.ToString(),
                             out Value))
                 {
@@ -6555,7 +6555,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
 
                 if (!Parser(JSONToken.Type == JTokenType.String
-                                ? JSONToken.Value<String>()
+                                ? JSONToken.Value<String>()!
                                 : JSONToken.ToString(),
                             out Value,
                             out var ErrorResponse2))

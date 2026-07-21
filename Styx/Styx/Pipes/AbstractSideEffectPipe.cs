@@ -178,7 +178,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     public abstract class AbstractSideEffectPipe<S1, S2, E, T> : AbstractPipe<S1, S2, E>, ISideEffectPipe<S1, S2, E, T>
         where S1 : notnull
         where S2 : notnull
-        where E : notnull
+        where E  : notnull
     {
 
         #region Properties

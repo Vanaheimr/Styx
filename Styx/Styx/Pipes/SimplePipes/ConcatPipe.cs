@@ -44,32 +44,24 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// Maps/converts the consuming objects to emitting objects.
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
-    public class ConcatPipe<S> : AbstractPipe<S, IEndPipe<S>, S>
+    public class ConcatPipe<S>(IEndPipe<S>           FirstPipe,
+                               params IEndPipe<S>[]  OtherPipes)
+
+        : AbstractPipe<S, IEndPipe<S>, S>(
+              FirstPipe,
+              new EndPipe<IEndPipe<S>>(OtherPipes)
+          )
+
         where S : notnull
+
     {
 
         #region Data
 
-        private IEndPipe<S>  CurrentPipe;
+        private IEndPipe<S>? CurrentPipe = FirstPipe;
 
         #endregion
 
-        #region Constructor(s)
-
-        #region ConcatPipe(FirstPipe, params OtherPipes)
-
-        public ConcatPipe(IEndPipe<S>           FirstPipe,
-                          params IEndPipe<S>[]  OtherPipes)
-
-            : base(FirstPipe, new EndPipe<IEndPipe<S>>(OtherPipes))
-
-        {
-            this.CurrentPipe  = FirstPipe;
-        }
-
-        #endregion
-
-        #endregion
 
         #region MoveNext()
 

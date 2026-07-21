@@ -73,7 +73,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private readonly Regex               IgnoreLines;  
+        private readonly Regex               IgnoreLines;
         private readonly String[]            Separators;
         private readonly StringSplitOptions  StringSplitOptions;
         private readonly UInt16?             ExpectedNumberOfColumns;
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly Regex               EmptyColumRegex;
 
-        private          String?              _CurrentLine;
+        private          String?             _CurrentLine;
 
         #endregion
 
