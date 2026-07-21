@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -166,7 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">A key.</param>
         /// <param name="Value">The associated value.</param>
         /// <returns>True if the returned value is valid. False otherwise.</returns>
-        Boolean TryGetProperty(TKey Key, out TValue Value);
+        Boolean TryGetProperty(TKey Key, [NotNullWhen(true)] out TValue Value);
 
         /// <summary>
         /// Return the value associated with the given key.
@@ -175,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Value">The associated value.</param>
         /// <typeparam name="T">Check if the value is of the given type.</typeparam>
         /// <returns>True if the returned value is valid. False otherwise.</returns>
-        Boolean TryGetProperty<T>(TKey Key, out T Value);
+        Boolean TryGetProperty<T>(TKey Key, [NotNullWhen(true)] out T Value);
 
         /// <summary>
         /// Return a filtered enumeration of all KeyValuePairs.
