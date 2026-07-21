@@ -282,12 +282,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Events
-
-        public event OnPropertyChangedDelegate?  OnPropertyChanged;
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -330,94 +324,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         #endregion
-
-
-        //#region SetProperty<T>(ref FieldToChange, NewValue, [CallerMemberName])
-
-        ///// <summary>
-        ///// Change the given field and call the OnPropertyChanged event.
-        ///// </summary>
-        ///// <typeparam name="T">The type of the field to be changed.</typeparam>
-        ///// <param name="FieldToChange">A reference to the field to be changed.</param>
-        ///// <param name="NewValue">The new value of the field to be changed.</param>
-        ///// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
-        //public void SetProperty<T>(ref                T       FieldToChange,
-        //                                              T       NewValue,
-        //                           [CallerMemberName] String  PropertyName = "")
-        //{
-
-        //    if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
-        //    {
-
-        //        var OldValue       = FieldToChange;
-        //            FieldToChange  = NewValue;
-
-        //        PropertyChanged(PropertyName, OldValue, NewValue);
-
-        //    }
-
-        //}
-
-        //#endregion
-
-        //#region DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
-
-        ///// <summary>
-        ///// Delete the given field and call the OnPropertyChanged event.
-        ///// </summary>
-        ///// <typeparam name="T">The type of the field to be deleted.</typeparam>
-        ///// <param name="FieldToChange">A reference to the field to be deleted.</param>
-        ///// <param name="PropertyName">The name of the property to be deleted (set by the compiler!)</param>
-        //public void DeleteProperty<T>(ref                T       FieldToChange,
-        //                              [CallerMemberName] String  PropertyName = "")
-        //{
-
-        //    if (FieldToChange is not null)
-        //    {
-
-        //        var OldValue       = FieldToChange;
-        //            FieldToChange  = default(T);
-
-        //        PropertyChanged(PropertyName, OldValue, default(T));
-
-        //    }
-
-        //}
-
-        //#endregion
-
-        //#region PropertyChanged<T>(PropertyName, OldValue, NewValue)
-
-        ///// <summary>
-        ///// Notify subscribers that a property has changed.
-        ///// </summary>
-        ///// <typeparam name="T">The type of the changed property.</typeparam>
-        ///// <param name="PropertyName">The name of the changed property.</param>
-        ///// <param name="OldValue">The old value of the changed property.</param>
-        ///// <param name="NewValue">The new value of the changed property.</param>
-        //public void PropertyChanged<T>(String  PropertyName,
-        //                               T       OldValue,
-        //                               T       NewValue)
-        //{
-
-        //    #region Initial checks
-
-        //    if (PropertyName is null)
-        //        throw new ArgumentNullException(nameof(PropertyName), "The given property name must not be null!");
-
-        //    #endregion
-
-        //    this.LastChange = Timestamp.Now;
-
-        //    OnPropertyChanged?.Invoke(LastChange,
-        //                              this,
-        //                              PropertyName,
-        //                              OldValue,
-        //                              NewValue);
-
-        //}
-
-        //#endregion
 
 
         //#region this[PropertyName]
@@ -648,12 +554,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
             /// </summary>
             [Optional]
             public String?               DataSource      { get; set; }
-
-            #endregion
-
-            #region Events
-
-            public event OnPropertyChangedDelegate?  OnPropertyChanged;
 
             #endregion
 
