@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -75,7 +76,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Key">The key.</param>
         /// <param name="Value">The value.</param>
         /// <returns>True, if the key was found in the grouped collection; False otherwise.</returns>
-        Boolean TryGetByKey   (TKey Key, out TValue Value);
+        Boolean TryGetByKey   (TKey Key, [MaybeNullWhen(false)] out TValue Value);
 
         /// <summary>
         /// Attempts to get the values associated with the specified group.

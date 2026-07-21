@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         {
             _Queue               = new Queue<T>();
             _IEnumerator         = myIEnumerator;
-            _CurrentQueueElement = default(T);
+            _CurrentQueueElement = default!;
             _ValidQueueElement   = false;
         }
     

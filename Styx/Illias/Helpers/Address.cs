@@ -270,7 +270,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!JSON.ParseMandatory("country",
                                          "country",
                                          Illias.Country.TryParse,
-                                         out Country country,
+                                         out Country? country,
                                          out ErrorResponse))
                 {
                     return false;

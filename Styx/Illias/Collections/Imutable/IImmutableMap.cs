@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 
 #endregion
@@ -46,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         Boolean              ContainsValue (TValue Value);
         Boolean              Contains      (KeyValuePair<TKey, TValue> KeyValuePair);
 
-        Boolean              TryGetValue   (TKey Key, out TValue Value);
+        Boolean              TryGetValue   (TKey Key, [MaybeNullWhen(false)] out TValue Value);
 
         //TValue this[TKey key] { get; }
 

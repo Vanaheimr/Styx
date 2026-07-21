@@ -306,7 +306,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String                             PropertyName,
                                                 String                             PropertyDescription,
                                                 TryParser<T>                       TryParser,
-                                                [NotNullWhen(true)]  out T         Value,
+                                                [NotNullWhen(true)]  out T?        Value,
                                                 [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
@@ -410,7 +410,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String                             PropertyName,
                                                 String                             PropertyDescription,
                                                 TryParser2<T>                      TryParser,
-                                                [NotNullWhen(true)]  out T         Value,
+                                                [NotNullWhen(true)]  out T?        Value,
                                                 [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
@@ -513,8 +513,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String                           PropertyName,
                                                 String                           PropertyDescription,
                                                 TryParser3<T>                    TryParser,
-                                                [NotNullWhen(true)]  out T       Value,
-                                                [NotNullWhen(false)] out String  ErrorResponse,
+                                                [NotNullWhen(true)]  out T?      Value,
+                                                [NotNullWhen(false)] out String? ErrorResponse,
                                                 CustomJObjectParserDelegate<T>?  CustomParser = null)
         {
 
@@ -564,8 +564,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String                           PropertyName,
                                                  String                           PropertyDescription,
                                                  TryParser4<T>                    TryParser,
-                                                 [NotNullWhen(true)]  out T       Value,
-                                                 [NotNullWhen(false)] out String  ErrorResponse,
+                                                 [NotNullWhen(true)]  out T?      Value,
+                                                 [NotNullWhen(false)] out String? ErrorResponse,
                                                  OnExceptionDelegate              OnException)
         {
 
@@ -672,7 +672,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                  String                            PropertyName,
                                                  String                            PropertyDescription,
                                                  ParserNullable<T>                 TryParser,
-                                                 [NotNullWhen(true)]  out T        Value,
+                                                 [NotNullWhen(true)]  out T?       Value,
                                                  [NotNullWhen(false)] out String?  ErrorResponse)
 
             where T : struct
@@ -2733,7 +2733,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                           String                            PropertyName,
                                                           String                            PropertyDescription,
                                                           TryJObjectParser2a<T>              TryJObjectParser,
-                                                          [NotNullWhen(true)]  out T        Value,
+                                                          [NotNullWhen(true)]  out T?       Value,
                                                           [NotNullWhen(false)] out String?  ErrorResponse)
 
             where T : struct

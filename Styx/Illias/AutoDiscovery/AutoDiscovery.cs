@@ -309,7 +309,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 try
                 {
 
-                    Instance = (TClass) Activator.CreateInstance(_Type);
+                    Instance = (TClass) Activator.CreateInstance(_Type)!;
 
                     // If it fails because of concurrency it does not matter!
                     _InstanceLookup.TryAdd(Identificator, Instance);

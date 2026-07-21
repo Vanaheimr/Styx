@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An optional element causing this exception.
         /// </summary>
-        public T          Element { get; private set; }
+        public T?         Element { get; private set; }
 
         /// <summary>
         /// A general bintree exception occurred!
@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Element">An optional element causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public BintreeException(Bintree<T> Bintree, T Element = default(T), String? Message = null, Exception? InnerException = null)
+        public BintreeException(Bintree<T> Bintree, T? Element = default, String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
             this.Bintree = Bintree;

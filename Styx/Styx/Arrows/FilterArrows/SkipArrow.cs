@@ -100,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
                 return true;
             }
 
-            MessageOut = default;
+            MessageOut = default!;
             return false;
 
         }

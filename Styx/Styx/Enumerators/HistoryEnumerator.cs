@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public HistoryEnumerator(IEnumerator<T> IEnumerator)
         {
             _InternalEnumerator  = IEnumerator;
-            _Last                = default(T);
+            _Last                = default!;
             _FirstMove           = true;
             _Finished            = false;
         }
@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public HistoryEnumerator(IEnumerable<T> IEnumerable)
         {
             _InternalEnumerator  = IEnumerable.GetEnumerator();
-            _Last                = default(T);
+            _Last                = default!;
             _FirstMove           = true;
             _Finished            = false;
         }
@@ -176,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public void Reset()
         {
             //_InternalEnumerator.Reset();
-            _Last   = default(T);
+            _Last   = default!;
         }
 
         #endregion

@@ -268,9 +268,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe.</param>
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         /// <param name="DefaultValue">A default value.</param>
-        public static T FirstOrDefault<T>(this IEndPipe<T>  SourcePipe,
-                                          Func<T, Boolean>? IncludeFilter  = null,
-                                          T                 DefaultValue   = default(T))
+        public static T? FirstOrDefault<T>(this IEndPipe<T>  SourcePipe,
+                                           Func<T, Boolean>? IncludeFilter  = null,
+                                           T?                DefaultValue   = default)
             where T : notnull
         {
 
@@ -301,20 +301,26 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe.</param>
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         /// <param name="DefaultValue">A default value.</param>
-        public static T LastOrDefault<T>(this IEndPipe<T>  SourcePipe,
-                                         Func<T, Boolean>? IncludeFilter  = null,
-                                         T                 DefaultValue   = default(T))
+        public static T? LastOrDefault<T>(this IEndPipe<T>  SourcePipe,
+                                          Func<T, Boolean>? IncludeFilter  = null,
+                                          T?                DefaultValue   = default)
             where T : notnull
         {
 
             if (SourcePipe is null)
                 return DefaultValue;
 
-            T Value = DefaultValue;
+            T? Value = DefaultValue;
 
-            foreach (var Item in SourcePipe)
-                if (IncludeFilter(Item))
+            // Note: a missing filter used to dereference a null delegate;
+            // with no filter every item qualifies, so keep the last one.
+            if (IncludeFilter is null)
+                foreach (var Item in SourcePipe)
                     Value = Item;
+            else
+                foreach (var Item in SourcePipe)
+                    if (IncludeFilter(Item))
+                        Value = Item;
 
             return Value;
 

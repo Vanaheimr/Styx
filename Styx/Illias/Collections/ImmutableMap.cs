@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -186,7 +187,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region TryGetValue(Key, out Value)
 
-        public Boolean TryGetValue(TKey Key, out TValue Value)
+        public Boolean TryGetValue(TKey Key, [MaybeNullWhen(false)] out TValue Value)
         {
             return this.InternalIDictionary.TryGetValue(Key, out Value);
         }
