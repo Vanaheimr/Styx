@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias.Collections
 {
 
@@ -40,23 +34,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static dynamic GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue> IProperties, TKey Key)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static dynamic GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                               TKey                            Key)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
 
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
+            if (IProperties.TryGetProperty(Key, out TValue dynamicValue))
+                return (dynamic) dynamicValue!;
 
-            #endregion
-
-            TValue _Value;
-
-            if (IProperties.TryGetProperty(Key, out _Value))
-                return (dynamic)_Value!;
-
-            return default(TValue);
+            return (dynamic) default(TValue);
 
         }
 
@@ -73,24 +64,21 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property.</param>
-        public static dynamic GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue> IProperties, TKey Key, Type PropertyType)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static dynamic GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                               TKey                            Key,
+                                                               Type                            PropertyType)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
+            if (IProperties.TryGetProperty(Key, out TValue dynamicValue))
+                if (dynamicValue?.GetType().Equals(PropertyType) ?? false)
+                    return (dynamic) dynamicValue;
 
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IProperties.TryGetProperty(Key, out _Value))
-                if (_Value.GetType().Equals(PropertyType))
-                    return (dynamic)_Value;
-
-            return default(TValue);
+            return (dynamic) default(TValue);
 
         }
 

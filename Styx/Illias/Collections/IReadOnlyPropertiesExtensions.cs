@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static TValue GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key)
+        public static TValue? GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key)
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
@@ -161,10 +161,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the associated property value of the given property key.</param>
         /// <param name="OnErrorFunc">A delegate to call for the associated property key when the key was not found.</param>
-        public static TResult PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                                  TKey                                   Key,
-                                                                  Func<TValue, TResult>                  OnSuccessFunc,
-                                                                  Func<TKey, TResult>?                   OnErrorFunc = null)
+        public static TResult? PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
+                                                                   TKey                                   Key,
+                                                                   Func<TValue, TResult>                  OnSuccessFunc,
+                                                                   Func<TKey, TResult>?                   OnErrorFunc = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -205,10 +205,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the key and associated value of the given property key.</param>
-        public static TResult PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                                  TKey                                   Key,
-                                                                  Func<TKey, TValue, TResult>            OnSuccessFunc,
-                                                                  Func<TKey, TResult>?                   OnErrorFunc = null)
+        public static TResult? PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
+                                                                   TKey                                   Key,
+                                                                   Func<TKey, TValue, TResult>            OnSuccessFunc,
+                                                                   Func<TKey, TResult>?                   OnErrorFunc = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -252,7 +252,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property.</param>
-        public static TValue GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key, Type PropertyType)
+        public static TValue? GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key, Type PropertyType)
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
@@ -446,10 +446,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the associated value of the given property key.</param>
-        public static Object PropertyFunc<TKey, TValue>(this IProperties<TKey, TValue> IProperties,
-                                                        TKey                           Key,
-                                                        Type                           PropertyType,
-                                                        Func<TValue, Object>           OnSuccessFunc)
+        public static Object? PropertyFunc<TKey, TValue>(this IProperties<TKey, TValue> IProperties,
+                                                         TKey                           Key,
+                                                         Type                           PropertyType,
+                                                         Func<TValue, Object>           OnSuccessFunc)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -488,10 +488,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the key and associated value of the given property key.</param>
-        public static Object PropertyFunc<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                        TKey                                   Key,
-                                                        Type                                   PropertyType,
-                                                        Func<TKey, TValue, Object>             OnSuccessFunc)
+        public static Object? PropertyFunc<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
+                                                         TKey                                   Key,
+                                                         Type                                   PropertyType,
+                                                         Func<TKey, TValue, Object>             OnSuccessFunc)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -1056,7 +1056,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region ListGet<TKey>(this IReadOnlyProperties, Key)
 
-        public static List<Object> ListGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key)
+        public static List<Object>? ListGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key)
             
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -1123,7 +1123,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region SetGet<TKey>(this IReadOnlyProperties, Key)
 
-        public static HashedSet<Object> SetGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key)
+        public static HashedSet<Object>? SetGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
