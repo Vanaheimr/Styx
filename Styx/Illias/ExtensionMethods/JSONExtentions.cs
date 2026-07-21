@@ -2302,14 +2302,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ParseMandatory       (this JSON, PropertyName, PropertyDescription,                               out JObject,                out ErrorResponse)
 
-        public static Boolean ParseMandatory(this JObject                      JSON,
-                                             String                            PropertyName,
-                                             String                            PropertyDescription,
-                                             [NotNullWhen(true)]  out JObject  JObject,
-                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        public static Boolean ParseMandatory(this JObject                       JSON,
+                                             String                             PropertyName,
+                                             String                             PropertyDescription,
+                                             [NotNullWhen(true)]  out JObject?  JObject,
+                                             [NotNullWhen(false)] out String?   ErrorResponse)
         {
 
-            JObject = null;
+            JObject       = null;
+            ErrorResponse = null;
 
             if (JSON is null)
             {
@@ -2325,25 +2326,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
             try
             {
-
                 JObject = JSONToken as JObject;
-
             }
             catch
-            {
-                ErrorResponse = $"Invalid '{PropertyDescription}'!";
-                return false;
-            }
+            { }
 
-            ErrorResponse = null;
-            return true;
+            if (JObject is not null)
+                return true;
 
+            ErrorResponse = $"Invalid '{PropertyDescription}'!";
+            return false;
+ 
         }
 
         #endregion
@@ -2353,11 +2352,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseMandatory(this JObject                      JSON,
                                              String                            PropertyName,
                                              String                            PropertyDescription,
-                                             [NotNullWhen(true)]  out JArray   JArray,
+                                             [NotNullWhen(true)]  out JArray?  JArray,
                                              [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            JArray = null;
+            JArray        = null;
+            ErrorResponse = null;
 
             if (JSON is null)
             {
@@ -2373,24 +2373,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!JSON.TryGetValue(PropertyName, out var JSONToken))
             {
-                ErrorResponse = "Missing property '" + PropertyName + "'!";
+                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
             try
             {
-
                 JArray = JSONToken as JArray;
-
             }
             catch
-            {
-                ErrorResponse = $"Invalid '{PropertyDescription}'!";
-                return false;
-            }
+            { }
 
-            ErrorResponse = null;
-            return true;
+            if (JArray is not null)
+                return true;
+
+            ErrorResponse = $"Invalid '{PropertyDescription}'!";
+            return false;
 
         }
 
@@ -4260,7 +4258,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                          [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            Value = default;
+            Value         = default;
+            ErrorResponse = null;
 
             if (JSON is null)
             {
@@ -4293,11 +4292,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (TryJArrayParser(JSONValue, out var value))
-            {
-                Value          = value;
-                ErrorResponse  = null;
+                Value = value;
+
+            if (Value is not null)
                 return true;
-            }
 
             ErrorResponse = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed!";
             return false;
@@ -4312,7 +4310,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                          [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            Value = default;
+            Value         = default;
+            ErrorResponse = null;
 
             if (JSON is null)
             {
@@ -4348,12 +4347,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 out var value,
                                 out var errorResponse))
             {
-                Value          = value;
-                ErrorResponse  = null;
-                return true;
+                Value = value;
             }
 
-            ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse}";
+            if (Value is not null)
+                return true;
+
+            ErrorResponse = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse}";
             return false;
 
         }
@@ -4392,41 +4392,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        public static Boolean ParseMandatory<T>(this JObject      JSON,
-                                                String            PropertyName,
-                                                Func<String, T>   Mapper,
-                                                T                 InvalidResult,
-                                                [MaybeNullWhen(false)] out T TOut)
-        {
+        //public static Boolean ParseMandatory<T>(this JObject      JSON,
+        //                                        String            PropertyName,
+        //                                        Func<String, T>   Mapper,
+        //                                        T                 InvalidResult,
+        //                                        [MaybeNullWhen(false)] out T TOut)
+        //{
 
-            if (JSON is null ||
-                PropertyName.IsNullOrEmpty() ||
-                Mapper is null)
-            {
-                TOut = default;
-                return false;
-            }
+        //    if (JSON.TryGetValue(
+        //            PropertyName,
+        //            out JToken? _JToken
+        //        ) && _JToken?.Value<String>() is not null)
+        //    {
 
-            if (JSON.TryGetValue(PropertyName, out JToken? _JToken) && _JToken?.Value<String>() is not null)
-            {
+        //        try
+        //        {
 
-                try
-                {
+        //            TOut = Mapper(_JToken?.Value<String>()!);
 
-                    TOut = Mapper(_JToken?.Value<String>()!);
+        //            return !TOut.Equals(InvalidResult);
 
-                    return !TOut.Equals(InvalidResult);
+        //        }
+        //        catch
+        //        { }
 
-                }
-                catch
-                { }
+        //    }
 
-            }
+        //    TOut = default;
+        //    return false;
 
-            TOut = default;
-            return false;
-
-        }
+        //}
 
 
 
@@ -7573,6 +7568,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
+            ErrorResponse = $"The given property '{PropertyName}' is missing!";
             return false;
 
         }
