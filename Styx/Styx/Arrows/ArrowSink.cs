@@ -143,7 +143,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Gets the current element in the collection.
         /// </summary>
         Object IEnumerator.Current
-            => internalEnumerator.Current;
+            => internalEnumerator.Current!;
 
         #endregion
 

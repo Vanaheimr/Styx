@@ -94,10 +94,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Return the current element of the internal IEnumertor.
         /// </summary>
         Object System.Collections.IEnumerator.Current
-        {    
+        {
             get
             {
-                return _CurrentEnumerator!.Current;
+                return _CurrentEnumerator!.Current!;
             }
         }
 

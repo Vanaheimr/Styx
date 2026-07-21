@@ -93,10 +93,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
             {
 
                 if (_ValidQueueElement)
-                    return _CurrentQueueElement;
+                    return _CurrentQueueElement!;
 
                 else
-                    return _IEnumerator.Current;
+                    return _IEnumerator.Current!;
 
             }
         }

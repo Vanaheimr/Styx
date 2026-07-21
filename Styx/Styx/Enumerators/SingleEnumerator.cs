@@ -109,12 +109,12 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Return the current element of the internal IEnumertor.
         /// </summary>
         Object System.Collections.IEnumerator.Current
-        {    
+        {
             get
             {
 
                 if (_InternalState == SingleEnumeratorState.AT)
-                    return _Element;
+                    return _Element!;
 
                 throw new InvalidOperationException();
 
@@ -130,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             {
 
                 if (_InternalState == SingleEnumeratorState.AT)
-                    return _Element;
+                    return _Element!;
 
                 throw new InvalidOperationException();
 
