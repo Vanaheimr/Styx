@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static dynamic GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+        public static dynamic? GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
                                                                TKey                            Key)
 
             where TKey : IEquatable<TKey>,
@@ -47,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             if (IProperties.TryGetProperty(Key, out TValue dynamicValue))
                 return (dynamic) dynamicValue!;
 
-            return (dynamic) default(TValue);
+            return default(TValue);
 
         }
 
@@ -64,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property.</param>
-        public static dynamic GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+        public static dynamic? GetDynamicProperty<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
                                                                TKey                            Key,
                                                                Type                            PropertyType)
 
@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                 if (dynamicValue?.GetType().Equals(PropertyType) ?? false)
                     return (dynamic) dynamicValue;
 
-            return (dynamic) default(TValue);
+            return default(TValue);
 
         }
 

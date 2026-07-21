@@ -2432,7 +2432,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                EnumerationOfStrings = [.. JArray.Select(item => item.Value<String>())];
+                EnumerationOfStrings = [.. JArray.Select(item => item.Value<String>()).OfType<String>()];
 
             }
             catch
@@ -4377,7 +4377,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Values = _Values.AsEnumerable().
                                  Select(jtoken => jtoken.Value<String>()).
-                                 Where (value  => value is not null);
+                                 OfType<String>();
 
                 return true;
 
@@ -7148,9 +7148,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                JSONObject = JSONToken as JObject;
-
-                if (JSONObject is null)
+                if (JSONToken is JObject jsonObject)
+                    JSONObject = jsonObject;
+                else
                     ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON object!";
 
                 return true;

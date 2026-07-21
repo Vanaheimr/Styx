@@ -186,7 +186,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
             this.LongRunning           = LongRunning;
             this.Name                  = Name;
-            this.TXObject              = TransactionObjectCreator();
+            this.TXObject              = TransactionObjectCreator is not null
+                                             ? TransactionObjectCreator()
+                                             : default!;
 
         }
 

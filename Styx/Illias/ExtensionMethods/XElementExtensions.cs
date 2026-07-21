@@ -3088,7 +3088,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Int32 Value = 0;
 
-                foreach (var elementT in xElements.Select(__XElement => ValueMapper(__XElement.Value)))
+                foreach (var elementT in xElements.Select(__XElement => ValueMapper(__XElement!.Value)))
                     Value |= (Int32) (Object) elementT;
 
                 return (T) Enum.ToObject(typeof(T), Value);
