@@ -88,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Description">An optional description of the result.</param>
         /// <param name="Warnings">Optional warnings or additional information.</param>
         /// <param name="Runtime">An optional runtime of the command till this result.</param>
-        public AResult(T                      Entity,
+        public AResult(T?                     Entity,
                        CommandResult          Result,
                        EventTracking_Id?      EventTrackingId   = null,
                        IId?                   SenderId          = null,

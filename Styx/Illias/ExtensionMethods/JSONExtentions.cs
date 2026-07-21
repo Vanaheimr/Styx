@@ -4366,9 +4366,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region GetMandatory(this JSON, Key, out Values)
 
-        public static Boolean GetMandatory(this JObject             JSON,
-                                           String                   Key,
-                                           out IEnumerable<String>  Values)
+        public static Boolean GetMandatory(this JObject                                 JSON,
+                                           String                                       Key,
+                                           [NotNullWhen(true)] out IEnumerable<String>?  Values)
         {
 
             if (JSON.TryGetValue(Key, out var JSONToken) && 

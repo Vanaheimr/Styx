@@ -195,7 +195,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                             do
                             {
                                 _CurrentElement[i] += _CurrentElement[j];
-                                _CurrentElement[j] = null;
+                                _CurrentElement[j] = null!;  // transient: filtered out by the "column is not null" pass below
                                 j++;
                             }
                             while (!_CurrentElement[i].EndsWith(@""""));
