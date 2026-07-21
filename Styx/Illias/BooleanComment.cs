@@ -55,7 +55,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="myBoolean">The boolean value.</param>
         /// <param name="myComment">The maximum value.</param>
-        public BooleanComment(Boolean myBoolean, String myComment = null)
+        public BooleanComment(Boolean myBoolean, String? myComment = null)
         {
             Boolean = myBoolean;
             Comment = myComment;

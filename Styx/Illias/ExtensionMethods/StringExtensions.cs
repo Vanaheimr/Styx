@@ -1258,7 +1258,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionMessage">An optional message to be added to the exception.</param>
         /// <param name="ParameterName">The parameter name of the given string (CallerMemberName).</param>
         public static void FailIfNullOrEmpty(this String                GivenString,
-                                             String                     ExceptionMessage = null,
+                                             String?                    ExceptionMessage = null,
                                              [CallerMemberName] String  ParameterName    = "")
         {
 
@@ -1286,7 +1286,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionMessage">An optional message to be added to the exception.</param>
         /// <param name="ParameterName">The parameter name of the given string (CallerMemberName).</param>
         public static void FailIfNotNullOrEmpty(this String                GivenString,
-                                                String                     ExceptionMessage = null,
+                                                String?                    ExceptionMessage = null,
                                                 [CallerMemberName] String  ParameterName    = "")
         {
 

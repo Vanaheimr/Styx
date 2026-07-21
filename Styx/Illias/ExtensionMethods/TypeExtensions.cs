@@ -39,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Interface">The starting innterface.</param>
         /// <param name="AllInterfaces">A list of all interfaces found.</param>
-        public static IEnumerable<Type> GetRecursiveInterfaces(this Type Interface, List<Type> AllInterfaces = null)
+        public static IEnumerable<Type> GetRecursiveInterfaces(this Type Interface, List<Type>? AllInterfaces = null)
         {
 
             if (AllInterfaces is null)

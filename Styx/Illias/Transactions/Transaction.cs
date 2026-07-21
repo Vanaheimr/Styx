@@ -207,7 +207,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
                            IsolationLevel           IsolationLevel           = IsolationLevel.Write,
                            DateTime?                CreationTime             = null,
                            DateTime?                InvalidationTime         = null,
-                           Func<TTransactionObject> TransactionObjectCreator = null)
+                           Func<TTransactionObject>? TransactionObjectCreator = null)
         {
 
             this._NestedTransactions  = new List<Transaction<TTransactionId, TSystemId, TTransactionObject>>();

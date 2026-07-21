@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         public static TilesXY2GeoCoordinateArrow ToGeoCoordinate(this IArrowSender<TilesXY>  ArrowSender,
                                                                  UInt32                      ZoomLevel,
-                                                                 Func<Exception, Exception>  OnError     = null)
+                                                                 Func<Exception, Exception>? OnError     = null)
         {
             return new TilesXY2GeoCoordinateArrow(ZoomLevel, OnError, ArrowSender);
         }

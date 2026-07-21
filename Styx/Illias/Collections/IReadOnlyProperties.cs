@@ -182,7 +182,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// </summary>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <returns>A enumeration of all key/value pairs matching the given KeyValueFilter.</returns>
-        IEnumerable<KeyValuePair<TKey, TValue>> GetProperties(KeyValueFilter<TKey, TValue> KeyValueFilter = null);
+        IEnumerable<KeyValuePair<TKey, TValue>> GetProperties(KeyValueFilter<TKey, TValue>? KeyValueFilter = null);
 
         #endregion
 

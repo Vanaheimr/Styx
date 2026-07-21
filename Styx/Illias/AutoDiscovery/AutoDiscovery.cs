@@ -143,7 +143,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="AutoStart">Automatically start the reflection process.</param>
         /// <param name="IdentificatorFunc">A transformation delegate to provide an unique identification for every matching class.</param>
-        public AutoDiscovery(Boolean AutoStart, Func<TClass, String> IdentificatorFunc = null)
+        public AutoDiscovery(Boolean AutoStart, Func<TClass, String>? IdentificatorFunc = null)
         {
 
             _TypeLookup     = new ConcurrentDictionary<String, Type>();
@@ -168,7 +168,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Paths">An enumeration of paths to search for implementations.</param>
         /// <param name="FileExtensions">A enumeration of file extensions for filtering.</param>
         /// <param name="IdentificatorFunc">A transformation delegate to provide an unique identification for every matching class.</param>
-        public void FindAndRegister(Boolean ClearTypeDictionary = true, IEnumerable<String> Paths = null, IEnumerable<String> FileExtensions = null, Func<TClass, String> IdentificatorFunc = null)
+        public void FindAndRegister(Boolean ClearTypeDictionary = true, IEnumerable<String>? Paths = null, IEnumerable<String>? FileExtensions = null, Func<TClass, String>? IdentificatorFunc = null)
         {
 
             #region Get a list of interesting files

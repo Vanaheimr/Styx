@@ -573,7 +573,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// </summary>
         /// <param name="KeyValueFilter">A delegate to remove properties based on their keys and values.</param>
         /// <returns>A enumeration of all key/value pairs removed by the given KeyValueFilter before their removal.</returns>
-        IEnumerable<KeyValuePair<TKey, TValue>> Remove(KeyValueFilter<TKey, TValue> KeyValueFilter = null);
+        IEnumerable<KeyValuePair<TKey, TValue>> Remove(KeyValueFilter<TKey, TValue>? KeyValueFilter = null);
 
         #endregion
 

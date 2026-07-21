@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static IEnumerable<FileInfo> FileFilterPipe(this IEndPipe<String>  SourcePipe,
                                                                 String              SearchPattern = "*",
                                                                 SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
-                                                                FileFilter          FileFilter    = null)
+                                                                FileFilter?         FileFilter    = null)
         {
             return new FileFilterPipe(SourcePipe, SearchPattern, SearchOption, FileFilter).AsEnumerable();
         }

@@ -259,8 +259,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToHTML     (IncludeProperty = null, MaskProperty = null)
 
-        public String ToHTML(Func<String, Boolean>  IncludeProperty   = null,
-                             Func<String, Boolean>  MaskProperty      = null)
+        public String ToHTML(Func<String, Boolean>? IncludeProperty   = null,
+                             Func<String, Boolean>? MaskProperty      = null)
         {
 
             #region Init
@@ -397,8 +397,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToTelegram (IncludeProperty = null, MaskProperty = null)
 
-        public String ToTelegram(Func<String, Boolean>  IncludeProperty   = null,
-                                 Func<String, Boolean>  MaskProperty      = null)
+        public String ToTelegram(Func<String, Boolean>? IncludeProperty   = null,
+                                 Func<String, Boolean>? MaskProperty      = null)
         {
 
             #region Init
@@ -503,8 +503,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ToText     (IncludeProperty = null, MaskProperty = null)
 
-        public String ToText(Func<String, Boolean>  IncludeProperty   = null,
-                             Func<String, Boolean>  MaskProperty      = null)
+        public String ToText(Func<String, Boolean>? IncludeProperty   = null,
+                             Func<String, Boolean>? MaskProperty      = null)
         {
 
             #region Init

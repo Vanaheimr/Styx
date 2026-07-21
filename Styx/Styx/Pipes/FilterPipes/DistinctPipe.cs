@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
         public static DistinctPipe<S> Distinct<S>(this IEndPipe<S>      SourcePipe,
-                                                  IEqualityComparer<S>  EqualityComparer = null)
+                                                  IEqualityComparer<S>? EqualityComparer = null)
         {
             return new DistinctPipe<S>(SourcePipe, EqualityComparer);
         }
@@ -66,7 +66,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Creates a new DistinctPipe.
         /// </summary>
-        public DistinctPipe(IEndPipe<S> SourcePipe, IEqualityComparer<S> EqualityComparer = null)
+        public DistinctPipe(IEndPipe<S> SourcePipe, IEqualityComparer<S>? EqualityComparer = null)
             : base(SourcePipe)
         {
             this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;

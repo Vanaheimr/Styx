@@ -50,8 +50,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="TrimColumns">Remove leading and trailing whitespaces.</param>
         /// <returns>An enumeration of string arrays.</returns>
         public static IEndPipe<String[]> ToCSV(this IEndPipe<String>    SourcePipe,
-                                                    Regex               IgnoreLines                = null,
-                                                    String[]            Separators                 = null,
+                                                    Regex?              IgnoreLines                = null,
+                                                    String[]?           Separators                 = null,
                                                     StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
                                                     UInt16?             ExpectedNumberOfColumns    = null,
                                                     Boolean             FailOnWrongNumberOfColumns = false,
@@ -103,8 +103,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="FailOnWrongNumberOfColumns">What to do when the current and expected number of columns do not match.</param>
         /// <param name="TrimColumns">Remove leading and trailing whitespaces.</param>
         public CSVReaderPipe(IEndPipe<String>    SourcePipe,
-                             Regex               IgnoreLines                = null,
-                             String[]            Separators                 = null,
+                             Regex?              IgnoreLines                = null,
+                             String[]?           Separators                 = null,
                              StringSplitOptions  StringSplitOptions         = StringSplitOptions.None,
                              UInt16?             ExpectedNumberOfColumns    = null,
                              Boolean             FailOnWrongNumberOfColumns = false,

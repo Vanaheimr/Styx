@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
-        public static RandomFilterPipe<S> RandomFilter<S>(this IEndPipe<S> SourcePipe, Double Bias, Random Random = null)
+        public static RandomFilterPipe<S> RandomFilter<S>(this IEndPipe<S> SourcePipe, Double Bias, Random? Random = null)
         {
             return new RandomFilterPipe<S>(SourcePipe, Bias, Random);
         }
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceElement">A single value as element source.</param>
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
-        public RandomFilterPipe(S SourceElement, Double Bias, Random Random = null)
+        public RandomFilterPipe(S SourceElement, Double Bias, Random? Random = null)
             : base(SourceElement)
         {
             this.Bias    = Bias;
@@ -99,7 +99,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe as element source.</param>
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
-        public RandomFilterPipe(IEndPipe<S> SourcePipe, Double Bias, Random Random = null)
+        public RandomFilterPipe(IEndPipe<S> SourcePipe, Double Bias, Random? Random = null)
             : base(SourcePipe)
         {
             this.Bias    = Bias;
@@ -116,7 +116,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceEnumerator">An enumerator as element source.</param>
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
-        public RandomFilterPipe(IEnumerator<S> SourceEnumerator, Double Bias, Random Random = null)
+        public RandomFilterPipe(IEnumerator<S> SourceEnumerator, Double Bias, Random? Random = null)
             : base(SourceEnumerator)
         {
             this.Bias    = Bias;
@@ -133,7 +133,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourceEnumerable">An enumerable as element source.</param>
         /// <param name="Bias">The bias.</param>
         /// <param name="Random">An optional source of randomness.</param>
-        public RandomFilterPipe(IEnumerable<S> SourceEnumerable, Double Bias, Random Random = null)
+        public RandomFilterPipe(IEnumerable<S> SourceEnumerable, Double Bias, Random? Random = null)
             : base(SourceEnumerable)
         {
             this.Bias    = Bias;

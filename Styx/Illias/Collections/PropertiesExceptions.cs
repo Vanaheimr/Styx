@@ -37,7 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// </summary>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public PropertiesException(String Message = null, Exception InnerException = null)
+        public PropertiesException(String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         { }
 
@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// </summary>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public IdentificationChangeException(String Message = null, Exception InnerException = null)
+        public IdentificationChangeException(String? Message = null, Exception? InnerException = null)
             : base("Changing the Id property is not allowed!" + Message, InnerException)
         { }
 
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// </summary>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public RevIdentificationChangeException(String Message = null, Exception InnerException = null)
+        public RevIdentificationChangeException(String? Message = null, Exception? InnerException = null)
             : base("Changing the RevId property is not allowed!" + Message, InnerException)
         { }
 

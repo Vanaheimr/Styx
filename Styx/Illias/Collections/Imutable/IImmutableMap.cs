@@ -36,11 +36,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
     {
 
-        IEnumerable<TKey>    Keys          (ItemFilter<TKey>   KeyFilter   = null);
-        UInt64               KeyCount      (ItemFilter<TKey>   KeyFilter   = null);
+        IEnumerable<TKey>    Keys          (ItemFilter<TKey>?  KeyFilter   = null);
+        UInt64               KeyCount      (ItemFilter<TKey>?  KeyFilter   = null);
 
-        IEnumerable<TValue>  Values        (ItemFilter<TValue> ValueFilter = null);
-        UInt64               ValueCount    (ItemFilter<TValue> ValueFilter = null);
+        IEnumerable<TValue>  Values        (ItemFilter<TValue>? ValueFilter = null);
+        UInt64               ValueCount    (ItemFilter<TValue>? ValueFilter = null);
 
         Boolean              ContainsKey   (TKey   Key);
         Boolean              ContainsValue (TValue Value);

@@ -49,7 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public TransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public TransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
             _Transaction = Transaction;
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
         public CouldNotBeginTransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject>
-            Transaction, String Message = null, Exception InnerException = null)
+            Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -111,7 +111,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public CouldNotCommitNestedTransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public CouldNotCommitNestedTransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -140,7 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public CouldNotRolleBackNestedTransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public CouldNotRolleBackNestedTransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public TransactionAlreadyCommitedException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public TransactionAlreadyCommitedException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -198,7 +198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public TransactionAlreadyRolledbackException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public TransactionAlreadyRolledbackException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -227,7 +227,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public TransactionAlreadyRunningException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public TransactionAlreadyRunningException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -256,7 +256,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public TransactionCurrentlyCommittingException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public TransactionCurrentlyCommittingException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 
@@ -285,7 +285,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Transaction">A transaction.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public TransactionCurrentlyRollingBackException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String Message = null, Exception InnerException = null)
+        public TransactionCurrentlyRollingBackException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Transaction, Message, InnerException)
         { }
 

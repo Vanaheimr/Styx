@@ -1612,7 +1612,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static XElement ElementOrFail(this XElement  ParentXElement,
                                              XName          XName,
-                                             String         Message = null)
+                                             String?        Message = null)
         {
 
             #region Initial checks
@@ -1637,7 +1637,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static IEnumerable<XElement> ElementsOrFail(this XElement  ParentXElement,
                                                            XName          XName,
-                                                           String         Message = null)
+                                                           String?        Message = null)
         {
 
             #region Initial checks
@@ -1696,7 +1696,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DefaultValue">A default value.</param>
         public static String ElementValueOrDefault(this XElement  ParentXElement,
                                                    XName          XName,
-                                                   String         DefaultValue = null)
+                                                   String?        DefaultValue = null)
         {
 
             #region Initial checks
@@ -1730,7 +1730,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String ElementValueOrDefault(this XElement  ParentXElement,
                                                    XName          NestedXName,
                                                    XName          XName,
-                                                   String         DefaultValue = null)
+                                                   String?        DefaultValue = null)
         {
 
             if (ParentXElement is null)
@@ -1763,7 +1763,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionMessage">An optional exception message.</param>
         public static String ElementValueOrFail(this XElement  ParentXElement,
                                                 XName          XName,
-                                                String         ExceptionMessage = null)
+                                                String?        ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -2010,7 +2010,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T? MapElementOrNullable<T>(this XElement                           ParentXElement,
                                                  XName                                   XName,
                                                  Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                                 OnExceptionDelegate                     OnException = null)
+                                                 OnExceptionDelegate?                    OnException = null)
 
             where T : struct
 
@@ -2042,7 +2042,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> MapElements<T>(this XElement        ParentXElement,
                                                     XName                XName,
                                                     Func<XElement, T>    Mapper,
-                                                    OnExceptionDelegate  OnException = null)
+                                                    OnExceptionDelegate? OnException = null)
         {
 
             #region Initial checks
@@ -2065,7 +2065,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> MapElements<T>(this XElement                           ParentXElement,
                                                     XName                                   XName,
                                                     Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                                    OnExceptionDelegate                     OnException = null)
+                                                    OnExceptionDelegate?                    OnException = null)
         {
 
             #region Initial checks
@@ -2093,7 +2093,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                     XName                XWrapper,
                                                     XName                XName,
                                                     Func<XElement, T>    Mapper,
-                                                    OnExceptionDelegate  OnException = null)
+                                                    OnExceptionDelegate? OnException = null)
         {
 
             #region Initial checks
@@ -2120,7 +2120,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                     XName                                   XWrapper,
                                                     XName                                   XName,
                                                     Func<XElement, OnExceptionDelegate, T>  Mapper,
-                                                    OnExceptionDelegate                     OnException = null)
+                                                    OnExceptionDelegate?                    OnException = null)
         {
 
             #region Initial checks
@@ -2337,7 +2337,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T? MapValueOrNullable<T>(this XElement    ParentXElement,
                                                XName            XName,
                                                Func<String, T>  ValueMapper,
-                                               String           ExceptionMessage = null)
+                                               String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -2595,8 +2595,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           XName                                 XWrapper,
                                           XName                                 XName,
                                           Func<String, OnExceptionDelegate, T>  ValueMapper,
-                                          OnExceptionDelegate                   OnException       = null,
-                                          String                                ExceptionMessage  = null)
+                                          OnExceptionDelegate?                  OnException       = null,
+                                          String?                               ExceptionMessage  = null)
         {
 
             #region Initial checks
@@ -2657,7 +2657,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           XName            XWrapper,
                                           XName            XName,
                                           Func<String, T>  ValueMapper,
-                                          String           ExceptionMessage = null)
+                                          String?          ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -2787,7 +2787,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static Boolean MapBooleanOrFail(this XElement  ParentXElement,
                                                XName          XName,
-                                               String         ExceptionMessage = null)
+                                               String?        ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -2880,8 +2880,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static DateTime ParseTimestampOrFail(this XElement        ParentXElement,
                                                     XName                XName,
-                                                    OnExceptionDelegate  OnException       = null,
-                                                    String               ExceptionMessage  = null)
+                                                    OnExceptionDelegate? OnException       = null,
+                                                    String?              ExceptionMessage  = null)
         {
 
             #region Initial checks
@@ -2937,8 +2937,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static TimeSpan ParseTimeSpanOrFail(this XElement        ParentXElement,
                                                    XName                XName,
-                                                   OnExceptionDelegate  OnException       = null,
-                                                   String               ExceptionMessage  = null)
+                                                   OnExceptionDelegate? OnException       = null,
+                                                   String?              ExceptionMessage  = null)
         {
 
             #region Initial checks
@@ -3096,7 +3096,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static IEnumerable<T> MapValuesOrFail<T>(this XElement    ParentXElement,
                                                         XName            XName,
                                                         Func<String, T>  ValueMapper,
-                                                        String           ExceptionMessage = null)
+                                                        String?          ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -3126,7 +3126,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         XName            XWrapper,
                                                         XName            XName,
                                                         Func<String, T>  ValueMapper,
-                                                        String           ExceptionMessage = null)
+                                                        String?          ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -3167,7 +3167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapEnumValues<T>(this XElement    ParentXElement,
                                          XName            XName,
                                          Func<String, T>  ValueMapper,
-                                         String           ExceptionMessage = null)
+                                         String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3218,7 +3218,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                          XName            XWrapper,
                                          XName            XName,
                                          Func<String, T>  ValueMapper,
-                                         String           ExceptionMessage = null)
+                                         String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3277,7 +3277,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T? MapEnumValuesOrNull<T>(this XElement    ParentXElement,
                                                 XName            XName,
                                                 Func<String, T>  ValueMapper,
-                                                String           ExceptionMessage = null)
+                                                String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3328,7 +3328,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 XName            XWrapper,
                                                 XName            XName,
                                                 Func<String, T>  ValueMapper,
-                                                String           ExceptionMessage = null)
+                                                String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3387,7 +3387,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapEnumValuesOrFail<T>(this XElement    ParentXElement,
                                                XName            XName,
                                                Func<String, T>  ValueMapper,
-                                               String           ExceptionMessage = null)
+                                               String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3438,7 +3438,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                XName            XWrapper,
                                                XName            XName,
                                                Func<String, T>  ValueMapper,
-                                               String           ExceptionMessage = null)
+                                               String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3497,7 +3497,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 XName            XWrapper,
                                                 XName            XName,
                                                 Func<String, T>  ValueMapper,
-                                                String           ExceptionMessage = null)
+                                                String?          ExceptionMessage = null)
 
             where T : struct
 
@@ -3601,7 +3601,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionMessage">An optional exception message.</param>
         public static String AttributeValueOrFail(this XElement  ParentXElement,
                                                   XName          XName,
-                                                  String         ExceptionMessage = null)
+                                                  String?        ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -3638,7 +3638,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapAttributeValueOrFail<T>(this XElement    ParentXElement,
                                                    XName            XName,
                                                    Func<String, T>  ValueMapper,
-                                                   String           ExceptionMessage = null)
+                                                   String?          ExceptionMessage = null)
         {
 
             #region Initial checks
@@ -3691,7 +3691,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapAttributeValueOrDefault<T>(this XElement    ParentXElement,
                                                       XName            XName,
                                                       Func<String, T>  ValueMapper,
-                                                      String           ExceptionMessage  = null)
+                                                      String?          ExceptionMessage  = null)
         {
 
             #region Initial checks
@@ -3741,7 +3741,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExceptionMessage">An optional exception message.</param>
         public static String MapAttributeValueOrDefault(this XElement  ParentXElement,
                                                         XName          XName,
-                                                        String         ExceptionMessage  = null)
+                                                        String?        ExceptionMessage  = null)
         {
 
             #region Initial checks
@@ -3774,7 +3774,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T? MapAttributeValueOrNullable<T>(this XElement    ParentXElement,
                                                         XName            XName,
                                                         Func<String, T>  ValueMapper,
-                                                        String           ExceptionMessage = null)
+                                                        String?          ExceptionMessage = null)
 
             where T : struct
 

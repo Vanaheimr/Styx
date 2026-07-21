@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixel">An optional pixel causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public QuadtreeException(Quadtree<T> Quadtree, IPixel<T> Pixel = null, String Message = null, Exception InnerException = null)
+        public QuadtreeException(Quadtree<T> Quadtree, IPixel<T>? Pixel = null, String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
             this.Quadtree = Quadtree;
@@ -90,7 +90,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixel">An optional pixel causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public QuadtreeException(Quadtree<T, TValue> Quadtree, IPixel<T> Pixel = null, String Message = null, Exception InnerException = null)
+        public QuadtreeException(Quadtree<T, TValue> Quadtree, IPixel<T>? Pixel = null, String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
             this.Quadtree = Quadtree;
@@ -121,7 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Quadtree">The quadtree causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public QT_ZeroDimensionException(Quadtree<T> Quadtree, String Message = null, Exception InnerException = null)
+        public QT_ZeroDimensionException(Quadtree<T> Quadtree, String? Message = null, Exception? InnerException = null)
             : base(Quadtree, Message: "The given quadtree has at least one zero dimension!" + Message, InnerException: InnerException)
         { }
 
@@ -148,7 +148,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Quadtree">The quadtree causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public QT_ZeroDimensionException(Quadtree<T, TValue> Quadtree, String Message = null, Exception InnerException = null)
+        public QT_ZeroDimensionException(Quadtree<T, TValue> Quadtree, String? Message = null, Exception? InnerException = null)
             : base(Quadtree, Message: "The given quadtree has at least one zero dimension!" + Message, InnerException: InnerException)
         { }
 
@@ -176,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixel">The pixel causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public QT_OutOfBoundsException(Quadtree<T> Quadtree, IPixel<T> Pixel, String Message = null, Exception InnerException = null)
+        public QT_OutOfBoundsException(Quadtree<T> Quadtree, IPixel<T> Pixel, String? Message = null, Exception? InnerException = null)
             : base(Quadtree, Pixel, "The given pixel is located outside of the quadtree bounds!" + Message, InnerException)
         { }
 
@@ -204,7 +204,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixel">The pixel causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public QT_OutOfBoundsException(Quadtree<T, TValue> Quadtree, IPixel<T> Pixel, String Message = null, Exception InnerException = null)
+        public QT_OutOfBoundsException(Quadtree<T, TValue> Quadtree, IPixel<T> Pixel, String? Message = null, Exception? InnerException = null)
             : base(Quadtree, Pixel, "The given pixel is located outside of the quadtree bounds!" + Message, InnerException)
         { }
 

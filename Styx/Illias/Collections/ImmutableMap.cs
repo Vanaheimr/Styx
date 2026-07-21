@@ -73,7 +73,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Keys(KeyFilter = null)
 
-        public IEnumerable<TKey> Keys(ItemFilter<TKey> KeyFilter = null)
+        public IEnumerable<TKey> Keys(ItemFilter<TKey>? KeyFilter = null)
         {
 
             if (KeyFilter is null)
@@ -91,7 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region KeyCount(KeyFilter = null)
 
-        public UInt64 KeyCount(ItemFilter<TKey> KeyFilter = null)
+        public UInt64 KeyCount(ItemFilter<TKey>? KeyFilter = null)
         {
             
             if (KeyFilter is null)
@@ -110,7 +110,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Values(ValueFilter = null)
 
-        public IEnumerable<TValue> Values(ItemFilter<TValue> ValueFilter = null)
+        public IEnumerable<TValue> Values(ItemFilter<TValue>? ValueFilter = null)
         {
 
             if (ValueFilter is null)
@@ -130,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ValueCount(ValueFilter = null)
 
-        public UInt64 ValueCount(ItemFilter<TValue> ValueFilter = null)
+        public UInt64 ValueCount(ItemFilter<TValue>? ValueFilter = null)
         {
 
             if (ValueFilter is null)

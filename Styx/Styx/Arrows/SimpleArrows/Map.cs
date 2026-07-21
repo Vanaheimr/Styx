@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         public static MapArrow<TIn, TOut> Map<TIn, TOut>(this IArrowSender<TIn>      ArrowSender,
                                                          Func<TIn, TOut>             MessageProcessor,
-                                                         Func<Exception, Exception>  OnError = null)
+                                                         Func<Exception, Exception>? OnError = null)
         {
             return new MapArrow<TIn, TOut>(MessageProcessor, OnError, ArrowSender);
         }
@@ -62,7 +62,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         public static MapArrow<TIn1, TIn2, TOut> Map<TIn1, TIn2, TOut>(this IArrowSender<TIn1, TIn2>  ArrowSender,
                                                                        Func<TIn1, TIn2, TOut>         MessageProcessor,
-                                                                       Func<Exception, Exception>     OnError = null)
+                                                                       Func<Exception, Exception>?    OnError = null)
         {
             return new MapArrow<TIn1, TIn2, TOut>(MessageProcessor, OnError, ArrowSender);
         }
@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <param name="OnError">A delegate to transform an incoming error into an outgoing error.</param>
         public static MapArrow<TIn1, TIn2, TIn3, TOut> Map<TIn1, TIn2, TIn3, TOut>(this IArrowSender<TIn1, TIn2, TIn3>  ArrowSender,
                                                                                    Func<TIn1, TIn2, TIn3, TOut>         MessageProcessor,
-                                                                                   Func<Exception, Exception>           OnError = null)
+                                                                                   Func<Exception, Exception>?          OnError = null)
         {
             return new MapArrow<TIn1, TIn2, TIn3, TOut>(MessageProcessor, OnError, ArrowSender);
         }

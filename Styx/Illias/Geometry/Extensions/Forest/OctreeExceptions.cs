@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Voxel">An optional voxel causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public OctreeException(Octree<T> Octree, IVoxel<T> Voxel = null, String Message = null, Exception InnerException = null)
+        public OctreeException(Octree<T> Octree, IVoxel<T>? Voxel = null, String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
             this.Octree = Octree;
@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Octree">The octree causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public OT_ZeroDimensionException(Octree<T> Octree, String Message = null, Exception InnerException = null)
+        public OT_ZeroDimensionException(Octree<T> Octree, String? Message = null, Exception? InnerException = null)
             : base(Octree, Message: "The given octree has at least one zero dimension!" + Message, InnerException: InnerException)
         { }
 
@@ -108,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Voxel">The voxel causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public OT_OutOfBoundsException(Octree<T> Octree, IVoxel<T> Voxel, String Message = null, Exception InnerException = null)
+        public OT_OutOfBoundsException(Octree<T> Octree, IVoxel<T> Voxel, String? Message = null, Exception? InnerException = null)
             : base(Octree, Voxel, "The given voxel is located outside of the octree bounds!" + Message, InnerException)
         { }
 

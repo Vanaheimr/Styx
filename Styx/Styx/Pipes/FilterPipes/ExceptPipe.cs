@@ -31,21 +31,21 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public static ExceptPipe<S> Except<S>(this IEndPipe<S>      SourcePipe,
                                               S                     Value,
-                                              IEqualityComparer<S>  EqualityComparer = null)
+                                              IEqualityComparer<S>? EqualityComparer = null)
         {
             return new ExceptPipe<S>(SourcePipe, Value, EqualityComparer);
         }
 
         public static ExceptPipe<S> Except<S>(this IEndPipe<S>      FirstPipe,
                                               IEndPipe<S>           SecondPipe,
-                                              IEqualityComparer<S>  EqualityComparer = null)
+                                              IEqualityComparer<S>? EqualityComparer = null)
         {
             return new ExceptPipe<S>(FirstPipe, SecondPipe, EqualityComparer);
         }
 
         public static ExceptPipe<S> Except<S>(this IEndPipe<S>      SourcePipe,
                                               IEnumerable<S>        Enumeration,
-                                              IEqualityComparer<S>  EqualityComparer = null)
+                                              IEqualityComparer<S>? EqualityComparer = null)
         {
             return new ExceptPipe<S>(SourcePipe, Enumeration, EqualityComparer);
         }
@@ -69,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Creates a new ExceptPipe.
         /// </summary>
-        public ExceptPipe(IEndPipe<S> SourcePipe, S Value, IEqualityComparer<S> EqualityComparer = null)
+        public ExceptPipe(IEndPipe<S> SourcePipe, S Value, IEqualityComparer<S>? EqualityComparer = null)
             : base(SourcePipe)
         {
             this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;
@@ -83,7 +83,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Creates a new ExceptPipe.
         /// </summary>
-        public ExceptPipe(IEndPipe<S> FirstPipe, IEndPipe<S> SecondPipe, IEqualityComparer<S> EqualityComparer = null)
+        public ExceptPipe(IEndPipe<S> FirstPipe, IEndPipe<S> SecondPipe, IEqualityComparer<S>? EqualityComparer = null)
             : base(FirstPipe)
         {
             this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;
@@ -97,7 +97,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Creates a new ExceptPipe.
         /// </summary>
-        public ExceptPipe(IEndPipe<S> SourcePipe, IEnumerable<S> Enumeration, IEqualityComparer<S> EqualityComparer = null)
+        public ExceptPipe(IEndPipe<S> SourcePipe, IEnumerable<S> Enumeration, IEqualityComparer<S>? EqualityComparer = null)
             : base(SourcePipe)
         {
             this.EqualityComparer  = (EqualityComparer is not null) ? EqualityComparer : EqualityComparer<S>.Default;

@@ -67,8 +67,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 #if !SILVERLIGHT
                               FileOptions           FileOptions,
 #endif
-                              IEnumerable<FileInfo> IEnumerable = null,
-                              IEnumerator<FileInfo> IEnumerator = null)
+                              IEnumerable<FileInfo>? IEnumerable = null,
+                              IEnumerator<FileInfo>? IEnumerator = null)
 
             : base(SourcePipe)
 

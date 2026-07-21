@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
                                                      TKey                                   Key,
                                                      Action<TValue>                         OnSuccess,
-                                                     Action<TKey>                           OnError = null)
+                                                     Action<TKey>?                          OnError = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -121,7 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
                                                      TKey                                   Key,
                                                      Action<TKey, TValue>                   OnSuccess,
-                                                     Action<TKey>                           OnError = null)
+                                                     Action<TKey>?                          OnError = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -164,7 +164,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         public static TResult PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
                                                                   TKey                                   Key,
                                                                   Func<TValue, TResult>                  OnSuccessFunc,
-                                                                  Func<TKey, TResult>                    OnErrorFunc = null)
+                                                                  Func<TKey, TResult>?                   OnErrorFunc = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -208,7 +208,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         public static TResult PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
                                                                   TKey                                   Key,
                                                                   Func<TKey, TValue, TResult>            OnSuccessFunc,
-                                                                  Func<TKey, TResult>                    OnErrorFunc = null)
+                                                                  Func<TKey, TResult>?                   OnErrorFunc = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -358,7 +358,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                                                      TKey                                   Key,
                                                      Type                                   PropertyType,
                                                      Action<TValue>                         OnSuccess,
-                                                     Action<TKey>                           OnError = null)
+                                                     Action<TKey>?                          OnError = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -404,7 +404,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
                                                      TKey                                   Key,
                                                      Type                                   PropertyType,
                                                      Action<TKey, TValue>                   OnSuccess,
-                                                     Action<TKey>                           OnError = null)
+                                                     Action<TKey>?                          OnError = null)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 

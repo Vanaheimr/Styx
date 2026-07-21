@@ -57,9 +57,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public FileFilterPipe(IEndPipe<String>    SourcePipe,
                               String              SearchPattern = "*",
                               SearchOption        SearchOption  = SearchOption.TopDirectoryOnly,
-                              FileFilter          FileFilter    = null,
-                              IEnumerable<String> IEnumerable   = null,
-                              IEnumerator<String> IEnumerator   = null)
+                              FileFilter?         FileFilter    = null,
+                              IEnumerable<String>? IEnumerable   = null,
+                              IEnumerator<String>? IEnumerator   = null)
 
             : base(SourcePipe)
 

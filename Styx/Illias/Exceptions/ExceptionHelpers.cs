@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -47,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">Any object.</param>
         /// <param name="ObjectName">The name of the object.</param>
-        public static void CheckNull(this Object Object, String ObjectName)
+        public static void CheckNull([NotNull] this Object? Object, String ObjectName)
         {
 
             if (Object is null)

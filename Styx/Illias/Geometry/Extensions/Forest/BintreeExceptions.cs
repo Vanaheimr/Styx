@@ -51,7 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Element">An optional element causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public BintreeException(Bintree<T> Bintree, T Element = default(T), String Message = null, Exception InnerException = null)
+        public BintreeException(Bintree<T> Bintree, T Element = default(T), String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
             this.Bintree = Bintree;
@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Bintree">The bintree causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public BT_ZeroDimensionException(Bintree<T> Bintree, String Message = null, Exception InnerException = null)
+        public BT_ZeroDimensionException(Bintree<T> Bintree, String? Message = null, Exception? InnerException = null)
             : base(Bintree, Message: "The given bintree has at least one zero dimension!" + Message, InnerException: InnerException)
         { }
 
@@ -108,7 +108,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Element">The element causing this exception.</param>
         /// <param name="Message">The message that describes the error.</param>
         /// <param name="InnerException">The exception that is the cause of the current exception.</param>
-        public BT_OutOfBoundsException(Bintree<T> Bintree, T Element, String Message = null, Exception InnerException = null)
+        public BT_OutOfBoundsException(Bintree<T> Bintree, T Element, String? Message = null, Exception? InnerException = null)
             : base(Bintree, Element, "The given element is located outside of the bintree bounds!" + Message, InnerException)
         { }
 

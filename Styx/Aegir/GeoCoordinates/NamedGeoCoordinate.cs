@@ -79,10 +79,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="AttachedFiles">Optional files attached to this geographical coordinate.</param>
         /// <param name="CustomData">Optional custom data at this geographical coordinate.</param>
         public NamedGeoCoordinate(GeoCoordinate               GeoCoordinate,
-                                  I18NString                  Description      = null,
-                                  IEnumerable<String>         AttachedImages   = null,
-                                  IEnumerable<String>         AttachedFiles    = null,
-                                  Dictionary<String, Object>  CustomData       = null)
+                                  I18NString?                 Description      = null,
+                                  IEnumerable<String>?        AttachedImages   = null,
+                                  IEnumerable<String>?        AttachedFiles    = null,
+                                  Dictionary<String, Object>? CustomData       = null)
         {
 
             this.GeoCoordinate    = GeoCoordinate;
@@ -101,7 +101,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// Return a JSON representation of this object.
         /// </summary>
-        public JObject ToJSON(CustomJObjectSerializerDelegate<NamedGeoCoordinate> CustomNamedGeoCoordinateSerializer = null)
+        public JObject ToJSON(CustomJObjectSerializerDelegate<NamedGeoCoordinate>? CustomNamedGeoCoordinateSerializer = null)
         {
 
             var JSON = JSONObject.Create(

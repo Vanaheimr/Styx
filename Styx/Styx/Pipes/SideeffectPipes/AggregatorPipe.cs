@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Creates a new AggregatorPipe.
         /// </summary>
         /// <param name="ICollection">An optional ICollection to store the passed objects.</param>
-        public AggregatorPipe(ICollection<S> ICollection = null)
+        public AggregatorPipe(ICollection<S>? ICollection = null)
         {
             if (ICollection is null)
                 InternalSideEffect = new List<S>();

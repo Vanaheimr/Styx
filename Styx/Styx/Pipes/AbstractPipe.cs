@@ -46,12 +46,15 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// The source pipe.
         /// </summary>
-        protected IEndPipe<S> SourcePipe;
+        // Set by every element-consuming constructor or by SetSource(...) before the
+        // pipe is iterated, so the non-null contract holds by construction (null-forgiving).
+        protected IEndPipe<S> SourcePipe = null!;
 
         /// <summary>
         /// The current element in the pipe.
         /// </summary>
-        protected E _CurrentElement;
+        // The current element; default(E) until the first MoveNext() assigns it.
+        protected E _CurrentElement = default!;
 
         #endregion
 
@@ -422,17 +425,20 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// The first source pipe.
         /// </summary>
-        protected IEndPipe<S1> SourcePipe1;
+        // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
+        protected IEndPipe<S1> SourcePipe1 = null!;
 
         /// <summary>
         /// The second source pipe.
         /// </summary>
-        protected IEndPipe<S2> SourcePipe2;
+        // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
+        protected IEndPipe<S2> SourcePipe2 = null!;
 
         /// <summary>
         /// The current element in the pipe.
         /// </summary>
-        protected E _CurrentElement;
+        // The current element; default(E) until the first MoveNext() assigns it.
+        protected E _CurrentElement = default!;
 
         #endregion
 
@@ -832,22 +838,26 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// The first source pipe.
         /// </summary>
-        protected IEndPipe<S1> SourcePipe1;
+        // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
+        protected IEndPipe<S1> SourcePipe1 = null!;
 
         /// <summary>
         /// The second source pipe.
         /// </summary>
-        protected IEndPipe<S2> SourcePipe2;
+        // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
+        protected IEndPipe<S2> SourcePipe2 = null!;
 
         /// <summary>
         /// The third source pipe.
         /// </summary>
-        protected IEndPipe<S3> SourcePipe3;
+        // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
+        protected IEndPipe<S3> SourcePipe3 = null!;
 
         /// <summary>
         /// The current element in the pipe.
         /// </summary>
-        protected E _CurrentElement;
+        // The current element; default(E) until the first MoveNext() assigns it.
+        protected E _CurrentElement = default!;
 
         #endregion
 

@@ -329,7 +329,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ShortOption">A short option.</param>
         /// <param name="Delegate">What to do with the value of the character option.</param>
         /// <param name="Verification">An optional regular expression for verification.</param>
-        public CommandLineParser AddOption(Char ShortOption, Action<String> Delegate, String Verification = null)
+        public CommandLineParser AddOption(Char ShortOption, Action<String> Delegate, String? Verification = null)
         {
             ShortOptions.Add(ShortOption, Delegate);
             return this;
@@ -346,7 +346,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LongOption">A long option.</param>
         /// <param name="Delegate">What to do with the value of the string option.</param>
         /// <param name="Verification">An optional regular expression for verification.</param>
-        public CommandLineParser AddOption(String LongOption, Action<String> Delegate, String Verification = null)
+        public CommandLineParser AddOption(String LongOption, Action<String> Delegate, String? Verification = null)
         {
             LongOptions.Add(LongOption, Delegate);
             return this;
@@ -364,7 +364,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="LongOption">A long option.</param>
         /// <param name="Delegate">What to do with the value of the short and/or long option.</param>
         /// <param name="Verification">An optional regular expression for verification.</param>
-        public CommandLineParser AddOption(Char ShortOption, String LongOption, Action<String> Delegate, String Verification = null)
+        public CommandLineParser AddOption(Char ShortOption, String LongOption, Action<String> Delegate, String? Verification = null)
         {
             AddOption(ShortOption, Delegate, Verification);
             AddOption(LongOption,  Delegate, Verification);

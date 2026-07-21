@@ -129,7 +129,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Creates a new FuncPipe using the given Func&lt;S, E&gt;.
         /// </summary>
-        public SplitPipe(Byte Ids, IEnumerable<S> IEnumerable = null, IEnumerator<S> IEnumerator = null)
+        public SplitPipe(Byte Ids, IEnumerable<S>? IEnumerable = null, IEnumerator<S>? IEnumerator = null)
         {
 
             if (IEnumerator is not null && IEnumerable is not null)

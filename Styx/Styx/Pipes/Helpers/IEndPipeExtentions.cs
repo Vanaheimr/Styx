@@ -198,7 +198,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <returns>True if the pipe contains an item that has the specified value; otherwise, false.</returns>
         public static Boolean Contains<T>(this IEndPipe<T>      SourcePipe,
                                           T                     Value,
-                                          IEqualityComparer<T>  ValueComparer = null)
+                                          IEqualityComparer<T>? ValueComparer = null)
         {
 
             if (SourcePipe is null)
@@ -226,7 +226,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe.</param>
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         public static UInt64 Count<T>(this IEndPipe<T>  SourcePipe,
-                                      Func<T, Boolean>  IncludeFilter = null)
+                                      Func<T, Boolean>? IncludeFilter = null)
         {
 
             if (SourcePipe is null)
@@ -260,7 +260,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         /// <param name="DefaultValue">A default value.</param>
         public static T FirstOrDefault<T>(this IEndPipe<T>  SourcePipe,
-                                          Func<T, Boolean>  IncludeFilter  = null,
+                                          Func<T, Boolean>? IncludeFilter  = null,
                                           T                 DefaultValue   = default(T))
         {
 
@@ -292,7 +292,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         /// <param name="DefaultValue">A default value.</param>
         public static T LastOrDefault<T>(this IEndPipe<T>  SourcePipe,
-                                         Func<T, Boolean>  IncludeFilter  = null,
+                                         Func<T, Boolean>? IncludeFilter  = null,
                                          T                 DefaultValue   = default(T))
         {
 
@@ -315,7 +315,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public static Boolean SequenceEqual<T>(this IEndPipe<T>      first,
                                                IEndPipe<T>           second,
-                                               IEqualityComparer<T>  comparer = null)
+                                               IEqualityComparer<T>? comparer = null)
         {
 
             if (comparer is null)
@@ -389,7 +389,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEndPipe<T>         SourcePipe,
                                                                              Func<T, TKey>            KeySelector,
                                                                              Func<T, TValue>          ValueSelector,
-                                                                             IEqualityComparer<TKey>  Comparer         = null,
+                                                                             IEqualityComparer<TKey>? Comparer         = null,
                                                                              Boolean                  ResetPipeBefore  = false,
                                                                              Boolean                  ResetPipeAfter   = false)
         {

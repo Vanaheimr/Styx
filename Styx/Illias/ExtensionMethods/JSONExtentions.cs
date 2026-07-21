@@ -8575,7 +8575,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapValueOrFail<T>(this JObject     ParentJObject,
                                           String           PropertyName,
                                           Func<JToken, T>  ValueMapper,
-                                          String           ExceptionMessage = null)
+                                          String?          ExceptionMessage = null)
         {
 
             #region Initial checks

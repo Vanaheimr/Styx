@@ -190,7 +190,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                                                                             ScreenXY                                       OnScreenUpperLeft,
                                                                             UInt32                                         ZoomLevel,
                                                                             Boolean                                        CloseShape,
-                                                                            Func<Exception, Exception>                     OnError     = null)
+                                                                            Func<Exception, Exception>?                    OnError     = null)
         {
             return new GeoCoordinates2ShapeDefinitionArrow(OnScreenUpperLeft, ZoomLevel, CloseShape, OnError, ArrowSender);
         }
@@ -223,8 +223,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoCoordinates2ShapeDefinitionPipe(ScreenXY                                 OnScreenUpperLeft,
                                                   UInt32                                   ZoomLevel,
                                                   Boolean                                  CloseShape,
-                                                  IEnumerable<IEnumerable<GeoCoordinate>>  IEnumerable = null,
-                                                  IEnumerator<IEnumerable<GeoCoordinate>>  IEnumerator = null)
+                                                  IEnumerable<IEnumerable<GeoCoordinate>>? IEnumerable = null,
+                                                  IEnumerator<IEnumerable<GeoCoordinate>>? IEnumerator = null)
 
             : base(IEnumerable,
                    Item => Item.GeoCoordinates2ShapeDefinition(OnScreenUpperLeft, ZoomLevel, CloseShape))
@@ -256,8 +256,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public GeoCoordinates2ShapeDefinitionArrow(ScreenXY                                  OnScreenUpperLeft,
                                                    UInt32                                    ZoomLevel,
                                                    Boolean                                   CloseShape,
-                                                   Func<Exception, Exception>                OnError     = null,
-                                                   IArrowSender<IEnumerable<GeoCoordinate>>  ArrowSender = null)
+                                                   Func<Exception, Exception>?               OnError     = null,
+                                                   IArrowSender<IEnumerable<GeoCoordinate>>? ArrowSender = null)
 
             : base(Item => Item.GeoCoordinates2ShapeDefinition(OnScreenUpperLeft, ZoomLevel, CloseShape),
                    OnError,
