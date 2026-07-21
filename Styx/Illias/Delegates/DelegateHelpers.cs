@@ -15,14 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -43,12 +35,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static T2 IfNotNull<T1, T2>(this T1       SomeObject,
-                                           Func<T1, T2>  SomeDelegate)
+        public static T2? IfNotNull<T1, T2>(this T1       SomeObject,
+                                            Func<T1, T2>  SomeDelegate)
         {
 
             if (SomeObject is null || SomeDelegate is null)
-                return default(T2);
+                return default;
 
             return SomeDelegate(SomeObject);
 

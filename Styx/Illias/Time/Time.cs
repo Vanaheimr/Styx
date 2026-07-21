@@ -572,7 +572,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 Days++;
             }
 
-            return new TimeSpan(Hours, Minutes, Seconds.Value).
+            return new TimeSpan(Hours, Minutes, Seconds ?? 0).
                        Add(TimeSpan.FromDays(Days));
 
         }

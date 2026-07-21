@@ -166,7 +166,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
 
             foreach (var Item in this.InternalIDictionary.Values)
-                if (Item.Equals(Value))
+                if (Value.Equals(Item))
                     return true;
 
             return false;

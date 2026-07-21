@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 {
 
@@ -41,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <summary>
         /// The transaction causing this exception.
         /// </summary>
-        protected Transaction<TTransactionId, TSystemId, TTransactionObject> _Transaction = null;
+        protected Transaction<TTransactionId, TSystemId, TTransactionObject>? transaction = null;
 
         /// <summary>
         /// An exception during transaction processing occurred!
@@ -52,7 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         public TransactionException(Transaction<TTransactionId, TSystemId, TTransactionObject> Transaction, String? Message = null, Exception? InnerException = null)
             : base(Message, InnerException)
         {
-            _Transaction = Transaction;
+            transaction = Transaction;
         }
 
     }

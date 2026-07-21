@@ -17,10 +17,6 @@
 
 #region Usings
 
-using System;
-using System.Linq;
-using System.Threading;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 #endregion
@@ -199,36 +195,36 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="CreationTime"></param>
         /// <param name="InvalidationTime"></param>
         /// <param name="TransactionObjectCreator"></param>
-        public Transaction(TTransactionId           Id,
-                           TSystemId                SystemId,
-                           String                   Name                     = "",
-                           Boolean                  Distributed              = false,
-                           Boolean                  LongRunning              = false,
-                           IsolationLevel           IsolationLevel           = IsolationLevel.Write,
-                           DateTime?                CreationTime             = null,
-                           DateTime?                InvalidationTime         = null,
-                           Func<TTransactionObject>? TransactionObjectCreator = null)
+        public Transaction(TTransactionId             Id,
+                           TSystemId                  SystemId,
+                           String                     Name                       = "",
+                           Boolean                    Distributed                = false,
+                           Boolean                    LongRunning                = false,
+                           IsolationLevel             IsolationLevel             = IsolationLevel.Write,
+                           DateTime?                  CreationTime               = null,
+                           DateTime?                  InvalidationTime           = null,
+                           Func<TTransactionObject>?  TransactionObjectCreator   = null)
         {
 
-            this._NestedTransactions  = new List<Transaction<TTransactionId, TSystemId, TTransactionObject>>();
-            this.Id                   = Id;
-            this.SystemId             = SystemId;
-            this._State               = TransactionState.Running;
+            this._NestedTransactions   = [];
+            this.Id                    = Id;
+            this.SystemId              = SystemId;
+            this._State                = TransactionState.Running;
 
             if (CreationTime.HasValue)
-                this.CreationTime     = CreationTime.Value;
+                this.CreationTime      = CreationTime.Value;
             else
-                this.CreationTime     = UniqueTimestamp.Now;
+                this.CreationTime      = UniqueTimestamp.Now;
 
-            this.IsolationLevel       = IsolationLevel;
-            this.Distributed          = Distributed;
+            this.IsolationLevel        = IsolationLevel;
+            this.Distributed           = Distributed;
 
             if (InvalidationTime.HasValue)
-                this.InvalidationTime = InvalidationTime.Value;
+                this.InvalidationTime  = InvalidationTime.Value;
 
-            this.LongRunning          = LongRunning;
-            this.Name                 = Name;
-            this.TXObject    = TransactionObjectCreator();
+            this.LongRunning           = LongRunning;
+            this.Name                  = Name;
+            this.TXObject              = TransactionObjectCreator();
 
         }
 
@@ -382,11 +378,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <param name="Name">A name or identification for the nested transaction.</param>
         /// <param name="TimeStamp">A timestamp.</param>
         public Transaction<TTransactionId, TSystemId, TTransactionObject>
-                   BeginNestedTransaction(Boolean        Distributed    = false,
-                                          Boolean        LongRunning    = false,
-                                          IsolationLevel IsolationLevel = IsolationLevel.Read,
-                                          String         Name           = "",
-                                          DateTime?      TimeStamp      = null)
+                   BeginNestedTransaction(Boolean         Distributed      = false,
+                                          Boolean         LongRunning      = false,
+                                          IsolationLevel  IsolationLevel   = IsolationLevel.Read,
+                                          String          Name             = "",
+                                          DateTime?       TimeStamp        = null)
         {
 
             switch (State)

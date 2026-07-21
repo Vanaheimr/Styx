@@ -29,28 +29,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// An object comparison result.
     /// </summary>
-    public readonly struct ComparisonResult
+    /// <remarks>
+    /// Create a new object comparizion result.
+    /// </remarks>
+    /// <param name="Added">An enumeration of added properties.</param>
+    /// <param name="Updated">An enumeration of updated properties.</param>
+    /// <param name="Removed">An enumeration of removed properties.</param>
+    public readonly struct ComparisonResult(IEnumerable<ComparisonResult.PropertyWithValue>   Added,
+                                            IEnumerable<ComparisonResult.PropertyWithValues>  Updated,
+                                            IEnumerable<ComparisonResult.PropertyWithValue>   Removed)
     {
 
         #region (struct) PropertyWithValue
 
-        public readonly struct PropertyWithValue
+        public readonly struct PropertyWithValue(String  Name,
+                                                 Object  Value)
         {
 
-            public readonly String  Name     { get; }
+            public readonly String  Name    { get; } = Name;
 
-            public readonly Object  Value    { get; }
+            public readonly Object  Value   { get; } = Value;
 
-            public PropertyWithValue(String  Name,
-                                     Object  Value)
-            {
 
-                this.Name   = Name;
-                this.Value  = Value;
-
-            }
-
-            public override String ToString()
+            public override String  ToString()
 
                 => String.Concat(Name, ": '", Value, "'");
 
@@ -60,28 +61,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (struct) PropertyWithValues
 
-        public readonly struct PropertyWithValues
+        public readonly struct PropertyWithValues(String  Name,
+                                                  Object  OldValue,
+                                                  Object  NewValue)
         {
 
-            public readonly String  Name        { get; }
+            public readonly String  Name        { get; } = Name;
 
-            public readonly Object  OldValue    { get; }
+            public readonly Object  OldValue    { get; } = OldValue;
 
-            public readonly Object  NewValue    { get; }
+            public readonly Object  NewValue    { get; } = NewValue;
 
 
-            public PropertyWithValues(String  Name,
-                                      Object  OldValue,
-                                      Object  NewValue)
-            {
-
-                this.Name      = Name;
-                this.OldValue  = OldValue;
-                this.NewValue  = NewValue;
-
-            }
-
-            public override String ToString()
+            public override String  ToString()
 
                 => String.Concat(Name, ": '", OldValue, "' => '", NewValue, "'");
 
@@ -95,38 +87,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The enumeration of added properties.
         /// </summary>
-        public IEnumerable<PropertyWithValue>   Added      { get; }
+        public IEnumerable<PropertyWithValue> Added { get; } = Added;
 
         /// <summary>
         /// The enumeration of updated properties.
         /// </summary>
-        public IEnumerable<PropertyWithValues>  Updated    { get; }
+        public IEnumerable<PropertyWithValues> Updated { get; } = Updated;
 
         /// <summary>
         /// The enumeration of removed properties.
         /// </summary>
-        public IEnumerable<PropertyWithValue>   Removed    { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new object comparizion result.
-        /// </summary>
-        /// <param name="Added">An enumeration of added properties.</param>
-        /// <param name="Updated">An enumeration of updated properties.</param>
-        /// <param name="Removed">An enumeration of removed properties.</param>
-        public ComparisonResult(IEnumerable<PropertyWithValue>   Added,
-                                 IEnumerable<PropertyWithValues>  Updated,
-                                 IEnumerable<PropertyWithValue>   Removed)
-        {
-
-            this.Added    = Added;
-            this.Updated  = Updated;
-            this.Removed  = Removed;
-
-        }
+        public IEnumerable<PropertyWithValue> Removed { get; } = Removed;
 
         #endregion
 
@@ -139,13 +110,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Init
 
-            if (IncludeProperty is null)
-                IncludeProperty = _ => true;
+            IncludeProperty ??= _ => true;
+            MaskProperty    ??= _ => false;
 
-            if (MaskProperty is null)
-                MaskProperty = _ => false;
-
-            var JSON = new JObject();
+            var json = new JObject();
 
             #endregion
 
@@ -157,7 +125,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var addedJSON = new JObject();
-                JSON.Add("added", addedJSON);
+                json.Add("added", addedJSON);
 
                 foreach (var property in added)
                 {
@@ -191,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var updatedJSON = new JObject();
-                JSON.Add("updated", updatedJSON);
+                json.Add("updated", updatedJSON);
 
                 foreach (var property in updated)
                 {
@@ -200,13 +168,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         updatedJSON.Add(property.Name, "n/a");
 
                     else if (property.NewValue is String)
-                        updatedJSON.Add(property.Name, new JArray(property.NewValue as String, property.OldValue as String));
+                        updatedJSON.Add(property.Name, new JArray(
+                                                           property.NewValue as String,
+                                                           property.OldValue as String
+                                                       ));
 
-                    else if (property.NewValue is DateTime)
-                        updatedJSON.Add(property.Name, new JArray(((DateTime) property.NewValue).ToISO8601(), ((DateTime) property.OldValue).ToISO8601()));
+                    else if (property.NewValue is DateTime time1)
+                        updatedJSON.Add(property.Name, new JArray(
+                                                           time1.ToISO8601(),
+                                                           ((DateTime) property.OldValue).ToISO8601()
+                                                       ));
+
+                    else if (property.NewValue is DateTimeOffset time2)
+                        updatedJSON.Add(property.Name, new JArray(
+                                                           time2.ToISO8601(),
+                                                           ((DateTimeOffset) property.OldValue).ToISO8601()
+                                                       ));
 
                     else
-                        updatedJSON.Add(property.Name, new JArray(property.NewValue.ToString(), property.OldValue.ToString()));
+                        updatedJSON.Add(property.Name, new JArray(
+                                                           property.NewValue?.ToString() ?? "",
+                                                           property.OldValue?.ToString() ?? ""
+                                                       ));
 
                 }
 
@@ -222,7 +205,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 var removedJSON = new JObject();
-                JSON.Add("removed", removedJSON);
+                json.Add("removed", removedJSON);
 
                 foreach (var property in removed)
                 {
@@ -245,7 +228,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            return JSON;
+            return json;
 
         }
 
@@ -259,11 +242,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Init
 
-            if (IncludeProperty is null)
-                IncludeProperty = _ => true;
-
-            if (MaskProperty is null)
-                MaskProperty = _ => false;
+            IncludeProperty ??= _ => true;
+            MaskProperty    ??= _ => false;
 
             #endregion
 
@@ -397,11 +377,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Init
 
-            if (IncludeProperty is null)
-                IncludeProperty = _ => true;
-
-            if (MaskProperty is null)
-                MaskProperty = _ => false;
+            IncludeProperty ??= _ => true;
+            MaskProperty    ??= _ => false;
 
             #endregion
 
@@ -503,11 +480,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Init
 
-            if (IncludeProperty is null)
-                IncludeProperty = _ => true;
-
-            if (MaskProperty is null)
-                MaskProperty = _ => false;
+            IncludeProperty ??= _ => true;
+            MaskProperty    ??= _ => false;
 
             #endregion
 
@@ -519,7 +493,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 Removed.Any() ? Removed.Max(_ => IncludeProperty(_.Name) ? _.Name.Length : 0) : 0
                                             }.Max();
 
-            var maxUpdatedOldValueLength  = Updated.Any() ? Updated.Max(_ => IncludeProperty(_.Name) ? _.OldValue.ToString().Length : 0) : 0;
+            var maxUpdatedOldValueLength  = Updated.Any() ? Updated.Max(_ => IncludeProperty(_.Name) ? _.OldValue.ToString()?.Length ?? 0 : 0) : 0;
 
             var sb = new StringBuilder();
 
@@ -568,7 +542,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (!MaskProperty(property.Name))
                     {
-                        sb.Append(property.OldValue.ToString().PadRight(maxUpdatedOldValueLength + 3));
+                        sb.Append((property.OldValue.ToString() ?? "").PadRight(maxUpdatedOldValueLength + 3));
                         sb.AppendLine(property.NewValue.ToString());
                     }
                     else

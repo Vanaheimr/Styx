@@ -255,9 +255,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             foreach (var _Tri3 in Triangles)
             {
-                (_Tri3.P1 as IPixelValuePair<T, SensorInfo<T>>).Value.DelaunayTriangles.Add(_Tri3);
-                (_Tri3.P2 as IPixelValuePair<T, SensorInfo<T>>).Value.DelaunayTriangles.Add(_Tri3);
-                (_Tri3.P3 as IPixelValuePair<T, SensorInfo<T>>).Value.DelaunayTriangles.Add(_Tri3);
+                (_Tri3.P1 as IPixelValuePair<T, SensorInfo<T>>)!.Value.DelaunayTriangles.Add(_Tri3);
+                (_Tri3.P2 as IPixelValuePair<T, SensorInfo<T>>)!.Value.DelaunayTriangles.Add(_Tri3);
+                (_Tri3.P3 as IPixelValuePair<T, SensorInfo<T>>)!.Value.DelaunayTriangles.Add(_Tri3);
             }
 
             return Triangles;

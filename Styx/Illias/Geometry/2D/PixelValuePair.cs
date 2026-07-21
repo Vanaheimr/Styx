@@ -233,7 +233,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             return String.Format("PixelValuePair: X={0}, Y={1}, Value={2}",
                                  X.ToString(),
                                  Y.ToString(),
-                                 Value.ToString());
+                                 Value?.ToString());
         }
 
         #endregion

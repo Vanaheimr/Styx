@@ -482,8 +482,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             foreach (var pinfo in propertyInfos)
             {
 
-                var getter1 = Entity.GetType().InvokeMember(pinfo.Name, System.Reflection.BindingFlags.GetProperty, null, Entity, Array.Empty<Object>());
-                var getter2 = this.  GetType().InvokeMember(pinfo.Name, System.Reflection.BindingFlags.GetProperty, null, this,   Array.Empty<Object>());
+                var getter1 = Entity.GetType().InvokeMember(pinfo.Name, System.Reflection.BindingFlags.GetProperty, null, Entity, []);
+                var getter2 = this.  GetType().InvokeMember(pinfo.Name, System.Reflection.BindingFlags.GetProperty, null, this,   []);
 
                 if (getter1 is null && getter2 is null)
                 { }

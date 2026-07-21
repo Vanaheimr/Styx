@@ -302,6 +302,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Rectangle(IPixel<T> Pixel, T Width, T Height)
         {
 
+            this.Math     = MathsFactory<T>.Instance;
+
             #region Initial Checks
 
             if (Pixel  is null)
@@ -314,8 +316,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 throw new ArgumentNullException("The given height must not be null or zero!");
 
             #endregion
-
-            this.Math     = MathsFactory<T>.Instance;
 
             this.Left     = Pixel.X;
             this.Top      = Pixel.Y;            

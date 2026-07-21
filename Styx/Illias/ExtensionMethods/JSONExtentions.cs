@@ -5887,7 +5887,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                var JSONList = JSONToken as JArray;
+                var JSONList = (JArray) JSONToken;
                 var List     = new List<T>();
 
                 foreach (var JSONItem in JSONList)

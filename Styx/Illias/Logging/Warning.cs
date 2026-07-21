@@ -219,9 +219,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              "warning text",
                                              I18NString.TryParse,
                                              out I18NString? Text,
-                                             out ErrorResponse) ||
-                     Text is null)
+                                             out ErrorResponse))
                 {
+                    ErrorResponse = "The given JSON representation of a warning is invalid: " + ErrorResponse;
                     return false;
                 }
 

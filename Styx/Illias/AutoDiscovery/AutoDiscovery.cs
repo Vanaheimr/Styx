@@ -40,8 +40,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private readonly ConcurrentDictionary<String, Type>   _TypeLookup;
-        private readonly ConcurrentDictionary<String, TClass> _InstanceLookup;
+        private readonly ConcurrentDictionary<String, Type>   typeLookup;
+        private readonly ConcurrentDictionary<String, TClass> instanceLookup;
 
         #endregion
 
@@ -71,7 +71,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             get
             {
-                return _TypeLookup.Keys;
+                return typeLookup.Keys;
             }
         }
 
@@ -91,7 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
 
                     return from   _StringTypePair
-                           in     _TypeLookup
+                           in     typeLookup
                            select (TClass) Activator.CreateInstance(_StringTypePair.Value)!;
 
                 }
@@ -111,12 +111,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Returns the number of registered implementations of the interface T.
         /// </summary>
         public UInt64 Count
-        {
-            get
-            {
-                return (UInt64) _TypeLookup.LongCount();
-            }
-        }
+            => (UInt64) typeLookup.Count;
 
         #endregion
 
@@ -146,8 +141,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public AutoDiscovery(Boolean AutoStart, Func<TClass, String>? IdentificatorFunc = null)
         {
 
-            _TypeLookup     = new ConcurrentDictionary<String, Type>();
-            _InstanceLookup = new ConcurrentDictionary<String, TClass>();
+            typeLookup     = new ConcurrentDictionary<String, Type>();
+            instanceLookup = new ConcurrentDictionary<String, TClass>();
 
             if (AutoStart)
                 FindAndRegister(IdentificatorFunc: IdentificatorFunc);
@@ -173,41 +168,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Get a list of interesting files
 
-            var _ConcurrentBag = new ConcurrentBag<String>();
+            var concurrentBag = new ConcurrentBag<String>();
 
-            if (Paths is null)
-                Paths = new List<String> { "." };
+            Paths          ??= [ "." ];
+            FileExtensions ??= [ ".dll", ".exe" ];
 
-            if (FileExtensions is null)
-                FileExtensions = new List<String> { ".dll", ".exe" };
-
-            foreach (var _Path in Paths)
+            foreach (var path in Paths)
             {
 
-                Parallel.ForEach(Directory.GetFiles(_Path), _ActualFile =>
-                {
+                Parallel.ForEach(Directory.GetFiles(path), actualFile => {
 
-                    var _FileInfo = new FileInfo(_ActualFile);
+                    var fileInfo = new FileInfo(actualFile);
 
-                    if (FileExtensions.Contains(_FileInfo.Extension))
-                        _ConcurrentBag.Add(_FileInfo.FullName);
+                    if (FileExtensions.Contains(fileInfo.Extension))
+                        concurrentBag.Add(fileInfo.FullName);
 
                 });
 
             }
 
             if (ClearTypeDictionary)
-                _TypeLookup.Clear();
+                typeLookup.Clear();
 
             #endregion
 
             #region Scan files of implementations of T
 
-            Parallel.ForEach(_ConcurrentBag, _File =>
-            {
+            Parallel.ForEach(concurrentBag, actualFile => {
 
                 // Seems to be a mono bug!
-                if (_File is not null)
+                if (actualFile is not null)
                 {
 
                    // Console.WriteLine(_File);
@@ -215,48 +205,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     try
                     {
 
-                        if (_File is not null)
-                            foreach (var _ActualType in Assembly.LoadFrom(_File).GetTypes())
+                        if (actualFile is not null)
+                            foreach (var actualType in Assembly.LoadFrom(actualFile).GetTypes())
                             {
 
-                                if (!_ActualType.IsAbstract &&
-                                     _ActualType.IsPublic   &&
-                                     _ActualType.IsVisible)
+                                if (!actualType.IsAbstract &&
+                                     actualType.IsPublic   &&
+                                     actualType.IsVisible)
                                 {
 
-                                    var _ActualTypeGetInterfaces = _ActualType.GetInterfaces();
+                                    var actualTypeGetInterfaces = actualType.GetInterfaces();
 
-                                    if (_ActualTypeGetInterfaces is not null)
+                                    if (actualTypeGetInterfaces is not null)
                                     {
 
-                                        foreach (var _Interface in _ActualTypeGetInterfaces)
+                                        foreach (var actualInterface in actualTypeGetInterfaces)
                                         {
 
                                             // The following check is not valid for Bifrost HTTPService interfaces and must be fixed!
 
-                                            if (_Interface == typeof(TClass))
+                                            if (actualInterface == typeof(TClass))
                                             {
 
                                                 try
                                                 {
 
-                                                    var __Id = _ActualType.Name;
+                                                    var __Id = actualType.Name;
 
                                                     if (IdentificatorFunc is not null)
                                                     {
-                                                        var _T = Activator.CreateInstance(_ActualType) as TClass;
+                                                        var _T = Activator.CreateInstance(actualType) as TClass;
                                                         if (_T is not null)
                                                             __Id = IdentificatorFunc(_T);
                                                     }
 
                                                     if (__Id is not null && __Id != String.Empty)
-                                                        _TypeLookup.TryAdd(__Id, _ActualType);
+                                                        typeLookup.TryAdd(__Id, actualType);
 
                                                 }
 
                                                 catch (Exception e)
                                                 {
-                                                    throw new AutoDiscoveryException("Could not activate or register " + typeof(TClass).Name + "-instance '" + _ActualType.Name + "'!", e);
+                                                    throw new AutoDiscoveryException("Could not activate or register " + typeof(TClass).Name + "-instance '" + actualType.Name + "'!", e);
                                                 }
 
                                             }
@@ -276,7 +266,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     catch (Exception e)
                     {
-                        throw new AutoDiscoveryException("Autodiscovering implementations of interface '" + typeof(TClass).Name + "' within file '" + _File + "' failed!", e);
+                        throw new AutoDiscoveryException("Autodiscovering implementations of interface '" + typeof(TClass).Name + "' within file '" + actualFile + "' failed!", e);
                     }
 
                 }
@@ -297,13 +287,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean TryGetInstance(String Identificator, out TClass Instance)
         {
 
-            Instance = default(TClass);
+            Instance = default;
 
-            if (_InstanceLookup.TryGetValue(Identificator, out Instance))
+            if (instanceLookup.TryGetValue(Identificator, out Instance))
                 return true;
 
-            Type? _Type = null;
-            if (_TypeLookup.TryGetValue(Identificator, out _Type))
+            if (typeLookup.TryGetValue(Identificator, out Type? _Type))
             {
 
                 try
@@ -312,14 +301,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Instance = (TClass) Activator.CreateInstance(_Type)!;
 
                     // If it fails because of concurrency it does not matter!
-                    _InstanceLookup.TryAdd(Identificator, Instance);
+                    instanceLookup.TryAdd(Identificator, Instance);
 
                     return true;
 
                 }
                 catch (Exception e)
                 {
-                    throw new AutoDiscoveryException("An instance of " + typeof(TClass).Name + " with identifier '" + Identificator + "' could not be activated!", e);
+                    throw new AutoDiscoveryException($"An instance of {typeof(TClass).Name} with identifier '{Identificator}' could not be activated!", e);
                 }
 
             }
@@ -338,7 +327,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             TClass Instance;
 
-            foreach (var Identificator in _TypeLookup.Keys)
+            foreach (var Identificator in typeLookup.Keys)
                 if (TryGetInstance(Identificator, out Instance))
                     yield return Instance;
 
@@ -347,10 +336,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
 
-            TClass Instance;
-
-            foreach (var Identificator in _TypeLookup.Keys)
-                if (TryGetInstance(Identificator, out Instance))
+            foreach (var Identificator in typeLookup.Keys)
+                if (TryGetInstance(Identificator, out TClass Instance))
                     yield return Instance;
 
         }

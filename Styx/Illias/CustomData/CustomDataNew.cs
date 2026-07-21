@@ -312,16 +312,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         public static implicit operator CustomDataNew(Newtonsoft.Json.Linq.JObject JSONObject)
+            => ParseJSON(JSONObject.ToString(Newtonsoft.Json.Formatting.None));
 
-            => JSONObject is not null
-                   ? ParseJSON(JSONObject.ToString(Newtonsoft.Json.Formatting.None))
-                   : null;
 
         public static implicit operator Newtonsoft.Json.Linq.JObject(CustomDataNew JSONObject)
-
-            => JSONObject is not null
-                   ? Newtonsoft.Json.Linq.JObject.Parse(JSONObject.ToJSONString())
-                   : null;
+            => Newtonsoft.Json.Linq.JObject.Parse(JSONObject.ToJSONString());
 
 
         #region (private) FindPropertyIndex(PropertyKeyId)
@@ -383,7 +378,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             properties.Sort(static (a, b) => a.KeyId.CompareTo(b.KeyId));
 
-            return properties.ToArray();
+            return [.. properties];
 
         }
 

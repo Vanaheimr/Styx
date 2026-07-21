@@ -340,11 +340,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             int firstPoint = 0;
             int lastPoint = Points.Count - 1;
-            var pointIndexsToKeep = new List<int>();
-
-            // Add the first and last index to the keepers
-            pointIndexsToKeep.Add(firstPoint);
-            pointIndexsToKeep.Add(lastPoint);
+            var pointIndexsToKeep = new List<Int32> {
+                // Add the first and last index to the keepers
+                firstPoint,
+                lastPoint
+            };
 
             // The first and the last point can not be the same
             while (Points[firstPoint].Equals(Points[lastPoint]))
@@ -473,31 +473,45 @@ namespace org.GraphDefined.Vanaheimr.Aegir
     }
 
 
-    public struct Point : IEquatable<Point>
+    public readonly struct Point(Double x, Double y) : IEquatable<Point>
     {
 
-        public Double X { get; }
-        public Double Y { get; }
+        public Double  X    { get; } = x;
+        public Double  Y    { get; } = y;
 
-
-        public Point(Double x, Double y)
+        public Boolean  Equals(Point other)
         {
-            X = x;
-            Y = y;
+            // For coordinates, exact equality is usually what you want in a struct.
+            // Use a small epsilon comparison only if you specifically need tolerance.
+            return X == other.X && Y == other.Y;
         }
 
-        public Boolean Equals(Point other)
+
+        public static Boolean operator == (Point left, Point right)
+            => left.Equals(right);
+
+        public static Boolean operator != (Point left, Point right)
+            => !left.Equals(right);
+
+
+        public override Boolean Equals(object? obj)
         {
-
-            if (X != other.X)
-                return false;
-
-            if (Y != other.Y)
-                return false;
-
-            return true;
-
+            return obj is Point other && Equals(other);
         }
+
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + X.GetHashCode();
+                hash = hash * 23 + Y.GetHashCode();
+                return hash;
+            }
+        }
+
+        public override String ToString()
+            => $"Point({X}, {Y})";
 
     }
 

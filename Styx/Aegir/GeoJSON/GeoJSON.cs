@@ -36,9 +36,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Data
 
-        private readonly Dictionary<String, Object>  _Properties;
+        private readonly Dictionary<String, Object>  properties;
 
-        private readonly List<AGeoJSONFeature>       _Features;
+        private readonly List<AGeoJSONFeature>       features;
 
         #endregion
 
@@ -48,13 +48,13 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// An enumeration of all GeoJSON properties.
         /// </summary>
         public IEnumerable<KeyValuePair<String, Object>>  Properties
-            => _Properties;
+            => properties;
 
         /// <summary>
         /// An enumeration of all GeoJSON features.
         /// </summary>
         public IEnumerable<AGeoJSONFeature>               Features
-            => _Features;
+            => features;
 
         #endregion
 
@@ -64,8 +64,11 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                         IEnumerable<AGeoJSONFeature>  Features)
         {
 
-            this._Properties  = Properties ?? new Dictionary<String, Object>();
-            this._Features    = Features is not null ? new List<AGeoJSONFeature>(Features) : new List<AGeoJSONFeature>();
+            this.properties  = Properties ?? [];
+
+            this.features    = Features is not null
+                                   ? [.. Features]
+                                   : [];
 
         }
 
@@ -291,7 +294,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         public override String ToString()
 
-            => _Properties["Id"]?.ToString() ?? "";
+            => properties["Id"]?.ToString() ?? "";
 
         #endregion
 

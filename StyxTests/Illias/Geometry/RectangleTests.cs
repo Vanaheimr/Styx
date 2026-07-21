@@ -129,6 +129,28 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Geometry
 
         #endregion
 
+        #region Rectangle_FromPixelWidthHeight()
+
+        [Test]
+        public void Rectangle_FromPixelWidthHeight()
+        {
+
+            // The (Pixel, Width, Height) constructor used to dereference the
+            // (still unassigned) Math helper inside its Initial Checks, so it
+            // threw a NullReferenceException for every non-null Width/Height.
+            var rectangle = new Rectangle<Double>(new Pixel<Double>(3.0, 4.0), 10.0, 20.0);
+
+            Assert.That(rectangle.Left,   Is.EqualTo( 3.0));
+            Assert.That(rectangle.Top,    Is.EqualTo( 4.0));
+            Assert.That(rectangle.Right,  Is.EqualTo(13.0));
+            Assert.That(rectangle.Bottom, Is.EqualTo(24.0));
+            Assert.That(rectangle.Width,  Is.EqualTo(10.0));
+            Assert.That(rectangle.Height, Is.EqualTo(20.0));
+
+        }
+
+        #endregion
+
     }
 
 }

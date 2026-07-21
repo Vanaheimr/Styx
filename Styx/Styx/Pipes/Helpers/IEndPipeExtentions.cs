@@ -282,7 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     return Item;
 
             foreach (var Item in SourcePipe)
-                if (IncludeFilter(Item))
+                if (IncludeFilter!(Item))
                     return Item;
 
             return DefaultValue;

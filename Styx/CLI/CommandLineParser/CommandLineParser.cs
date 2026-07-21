@@ -157,7 +157,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (LongOption is null || LongOption.Trim() == "")
-                throw new ArgumentNullException("LongOption", "The parameter must not be null or empty!");
+                throw new ArgumentNullException(nameof(LongOption), "The parameter must not be null or empty!");
 
             this.LongOption = LongOption.Trim();
 
@@ -177,7 +177,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (RegularExpression is null || RegularExpression.Trim() == "")
-                throw new ArgumentNullException("RegularExpression", "The parameter must not be null or empty!");
+                throw new ArgumentNullException(nameof(RegularExpression), "The parameter must not be null or empty!");
 
             this.RegularExpression = new Regex(RegularExpression);
 
@@ -197,7 +197,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Delegate is null)
-                throw new ArgumentNullException("Delegate", "The delegate must not be null or empty!");
+                throw new ArgumentNullException(nameof(Delegate), "The delegate must not be null or empty!");
 
             this.Verification = Delegate;
 
@@ -217,10 +217,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             if (Delegate is null)
-                throw new ArgumentNullException("Delegate", "The parameter must not be null!");
+                throw new ArgumentNullException(nameof(Delegate), "The parameter must not be null!");
 
-            this.Action = Action;
-            
+            this.Action = Delegate;
+
             return this;
 
         }
@@ -402,14 +402,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (Arguments[i].StartsWith("--"))
                 {
 
-                    if (LongOptions.ContainsKey(Arguments[i].Remove(0, 2)))
+                    if (LongOptions.ContainsKey(Arguments[i][2..]))
                     {
 
-                        var Action = LongOptions[Arguments[i].Remove(0, 2)];
+                        var Action = LongOptions[Arguments[i][2..]];
                         var s = "";
                         var j = i + 1;
 
-                        while (!Arguments[j].StartsWith("-"))
+                        while (!Arguments[j].StartsWith('-'))
                         {
                             s += " " + Arguments[j];
                             j++;
@@ -429,7 +429,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 #region Parse -shortoption
 
-                if (Arguments[i].StartsWith("-"))
+                if (Arguments[i].StartsWith('-'))
                 {
 
                     if (ShortOptions.ContainsKey(Arguments[i][1]))
@@ -439,7 +439,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         var s = "";
                         var j = i + 1;
 
-                        while (!Arguments[j].StartsWith("-"))
+                        while (!Arguments[j].StartsWith('-'))
                         {
                             s += " " + Arguments[j];
                             j++;

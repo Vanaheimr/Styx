@@ -231,7 +231,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                                  P1.ToString(),
                                  P2.ToString(),
                                  P3.ToString(),
-                                 Value.ToString());
+                                 Value?.ToString());
         }
 
         #endregion
