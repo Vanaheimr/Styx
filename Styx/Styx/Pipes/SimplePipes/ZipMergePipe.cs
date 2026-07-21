@@ -118,8 +118,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #region Data
 
         private readonly Func<Boolean>            ProcessingDelegate;
-        private readonly Func<S1, S2, E>          ZipDelegate;
-        private readonly Func<S1, S2, UInt64, E>  CountedZipDelegate;
+        private readonly Func<S1, S2, E>?          ZipDelegate;
+        private readonly Func<S1, S2, UInt64, E>?  CountedZipDelegate;
         private          UInt64                   Counter;
 
         #endregion
@@ -356,8 +356,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #region Data
 
         private readonly Func<Boolean>                ProcessingDelegate;
-        private readonly Func<S1, S2, S3, E>          ZipDelegate;
-        private readonly Func<S1, S2, S3, UInt64, E>  CountedZipDelegate;
+        private readonly Func<S1, S2, S3, E>?          ZipDelegate;
+        private readonly Func<S1, S2, S3, UInt64, E>?  CountedZipDelegate;
         private          UInt64                       Counter;
 
         #endregion

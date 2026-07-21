@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An optional voxel causing this exception.
         /// </summary>
-        public IVoxel<T>   Voxel    { get; private set; }
+        public IVoxel<T>?   Voxel    { get; private set; }
 
         /// <summary>
         /// A general octree exception occurred!

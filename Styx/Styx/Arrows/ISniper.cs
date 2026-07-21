@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Signals to a FireCancellationToken that it should be canceled.
         /// </summary>
-        CancellationTokenSource FireCancellationTokenSource { get; }
+        CancellationTokenSource? FireCancellationTokenSource { get; }
 
         /// <summary>
         /// Propogates notification that the asynchronous fireing should be canceled.
@@ -62,7 +62,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// The internal task for fireing the messages/objects.
         /// </summary>
-        Task FireTask { get; }
+        Task? FireTask { get; }
 
         /// <summary>
         /// The interval will throttle the automatic measurement of passive

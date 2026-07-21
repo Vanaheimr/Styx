@@ -30,7 +30,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Data
 
-        private StreamWriter LogfileWriter;
+        private StreamWriter? LogfileWriter;
 
         #endregion
 
@@ -38,7 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Logfile
 
-        private String _Filename;
+        private String _Filename = "";
 
         public String Filename
         {
@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         public void Log(DateTimeOffset Timestamp, TEnum Topics, params Object[] Arguments)
         {
 
-            LogfileWriter.WriteLine(Timestamp + " - " + Arguments.Select(v => v.ToString()).AggregateOrDefault((a, b) => a + ", " + b, String.Empty));
+            LogfileWriter!.WriteLine(Timestamp + " - " + Arguments.Select(v => v.ToString()).AggregateOrDefault((a, b) => a + ", " + b, String.Empty));
 
         }
 

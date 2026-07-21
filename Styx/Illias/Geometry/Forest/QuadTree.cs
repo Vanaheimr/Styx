@@ -71,10 +71,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
         #region Data
 
-        private Quadtree<T> Subtree1;
-        private Quadtree<T> Subtree2;
-        private Quadtree<T> Subtree3;
-        private Quadtree<T> Subtree4;
+        private Quadtree<T>? Subtree1;
+        private Quadtree<T>? Subtree2;
+        private Quadtree<T>? Subtree3;
+        private Quadtree<T>? Subtree4;
 
         private HashedSet<IPixel<T>> EmbeddedPixels;
 
@@ -87,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An event to notify about a quadtree split happening.
         /// </summary>
-        public event QuadtreeSplitEventHandler<T> OnTreeSplit;
+        public event QuadtreeSplitEventHandler<T>? OnTreeSplit;
 
         #endregion
 
@@ -688,10 +688,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
         #region Data
 
-        private Quadtree<T, TValue> Subtree1;
-        private Quadtree<T, TValue> Subtree2;
-        private Quadtree<T, TValue> Subtree3;
-        private Quadtree<T, TValue> Subtree4;
+        private Quadtree<T, TValue>? Subtree1;
+        private Quadtree<T, TValue>? Subtree2;
+        private Quadtree<T, TValue>? Subtree3;
+        private Quadtree<T, TValue>? Subtree4;
 
         private HashedSet<IPixelValuePair<T, TValue>> EmbeddedPixels;
 
@@ -704,7 +704,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An event to notify about a quadtree split happening.
         /// </summary>
-        public event QuadtreeSplitEventHandler<T, TValue> OnTreeSplit;
+        public event QuadtreeSplitEventHandler<T, TValue>? OnTreeSplit;
 
         #endregion
 

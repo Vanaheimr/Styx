@@ -68,8 +68,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
         #region Data
 
-        private Bintree<T> Subtree1;
-        private Bintree<T> Subtree2;
+        private Bintree<T>? Subtree1;
+        private Bintree<T>? Subtree2;
 
         private HashedSet<T> EmbeddedData;
 
@@ -82,7 +82,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An event to notify about a bintree split happening.
         /// </summary>
-        public event BintreeSplitEventHandler<T> OnTreeSplit;
+        public event BintreeSplitEventHandler<T>? OnTreeSplit;
 
         #endregion
 

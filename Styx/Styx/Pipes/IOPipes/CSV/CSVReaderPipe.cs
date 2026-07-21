@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly Regex               EmptyColumRegex;
 
-        private          String              _CurrentLine;
+        private          String?              _CurrentLine;
 
         #endregion
 

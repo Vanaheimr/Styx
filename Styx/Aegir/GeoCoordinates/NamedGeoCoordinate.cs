@@ -86,10 +86,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         {
 
             this.GeoCoordinate    = GeoCoordinate;
-            this.Description      = Description;
+            this.Description      = Description ?? I18NString.Empty;
             this.AttachedImages   = AttachedImages ?? new String[0];
             this.AttachedFiles    = AttachedFiles  ?? new String[0];
-            this.CustomData       = CustomData;
+            this.CustomData       = CustomData  ?? new Dictionary<String, Object>();
 
         }
 

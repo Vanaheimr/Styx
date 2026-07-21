@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The comment text.
         /// </summary>
-        public readonly String Comment;
+        public readonly String? Comment;
 
         #endregion
 

@@ -233,20 +233,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             Center          = new Line2D<T>(_Line12.Center, _Normale12.X, _Normale12.Y).
                                   Intersection(
-                              new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y));
+                              new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y))
 
-            if (Center is not null)
-            {
-                X               = Center.X;
-                Y               = Center.Y;
-                Radius          = Pixel1.DistanceTo(X, Y);
-            }
-            else
-            {
-                X      = default(T);
-                Y      = default(T);
-                Radius = default(T);
-            }
+                              ?? throw new ArgumentException("The three pixels must not be collinear - no circumcircle exists!");
+
+            X               = Center.X;
+            Y               = Center.Y;
+            Radius          = Pixel1.DistanceTo(X, Y);
 
         }
 
@@ -311,7 +304,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             var Center      = new Line2D<T>(_Line12.Center, _Normale12.X, _Normale12.Y).
                                   Intersection(
-                              new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y));
+                              new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y))
+
+                              ?? throw new ArgumentException("The three pixels must not be collinear - no circumcircle exists!");
 
             return (Center.DistanceTo(Pixel).
                         IsLessThanOrEquals(

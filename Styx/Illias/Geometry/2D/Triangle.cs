@@ -93,7 +93,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                 return new Line2D<T>(_Line12.Center, _Normale12.X, _Normale12.Y).
                            Intersection(
-                       new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y));
+                       new Line2D<T>(_Line23.Center, _Normale23.X, _Normale23.Y))
+
+                       ?? throw new InvalidOperationException("A degenerate (collinear) triangle has no circumcenter!");
 
 
             }

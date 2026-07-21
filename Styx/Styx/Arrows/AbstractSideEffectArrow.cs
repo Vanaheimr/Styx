@@ -39,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected TSideEffect SideEffectProtected;
+        protected TSideEffect SideEffectProtected = default!;
 
         #endregion
 
@@ -105,14 +105,14 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T1 SideEffect1Protected;
+        protected T1 SideEffect1Protected = default!;
 
         /// <summary>
         /// The second SideEffect produced by this Arrow.
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T2 SideEffect2Protected;
+        protected T2 SideEffect2Protected = default!;
 
         #endregion
 
@@ -196,21 +196,21 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T1 SideEffect1Protected;
+        protected T1 SideEffect1Protected = default!;
 
         /// <summary>
         /// The second SideEffect produced by this Arrow.
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T2 SideEffect2Protected;
+        protected T2 SideEffect2Protected = default!;
 
         /// <summary>
         /// The third SideEffect produced by this Arrow.
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref _SideEffect);
         /// </summary>
-        protected T3 SideEffect3Protected;
+        protected T3 SideEffect3Protected = default!;
 
         #endregion
 

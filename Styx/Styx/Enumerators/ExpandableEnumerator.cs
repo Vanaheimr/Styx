@@ -39,7 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly Queue<T>       _Queue;
         private readonly IEnumerator<T> _IEnumerator;
-        private          T              _CurrentQueueElement;
+        private          T              _CurrentQueueElement = default!;
         private          Boolean        _ValidQueueElement;
 
         #endregion

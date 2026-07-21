@@ -33,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private StreamReader _StreamReader;
+        private StreamReader? _StreamReader;
 
         #endregion
 

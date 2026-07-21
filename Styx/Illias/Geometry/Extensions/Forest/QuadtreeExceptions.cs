@@ -42,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An optional pixel causing this exception.
         /// </summary>
-        public IPixel<T>   Pixel    { get; private set; }
+        public IPixel<T>?   Pixel    { get; private set; }
 
         /// <summary>
         /// A general quadtree exception occurred!
@@ -81,7 +81,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An optional pixel causing this exception.
         /// </summary>
-        public IPixel<T>   Pixel    { get; private set; }
+        public IPixel<T>?   Pixel    { get; private set; }
 
         /// <summary>
         /// A general quadtree exception occurred!

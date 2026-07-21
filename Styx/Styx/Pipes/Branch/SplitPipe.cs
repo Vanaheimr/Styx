@@ -113,12 +113,12 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// The internal enumerator of the collection.
         /// </summary>
-        protected IEnumerator<S> _InternalEnumerator;
+        protected IEnumerator<S>? _InternalEnumerator;
 
         /// <summary>
         /// The internal current element in the collection.
         /// </summary>
-        protected S _CurrentElement;
+        protected S _CurrentElement = default!;
 
         private readonly Byte _Ids;
         private Boolean[] Moved;

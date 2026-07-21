@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <summary>
         /// The parent transaction, if this is a nested transaction.
         /// </summary>
-        public Transaction<TTransactionId, TSystemId, TTransactionObject> ParentTransaction { get; private set; }
+        public Transaction<TTransactionId, TSystemId, TTransactionObject>? ParentTransaction { get; private set; }
 
         /// <summary>
         /// The creation time of this transaction.

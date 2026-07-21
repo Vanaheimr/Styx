@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private IEnumerator<S> _TempIterator;
+        private IEnumerator<S>? _TempIterator;
 
         #endregion
 

@@ -141,7 +141,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// An event fired whenever the current status changed.
         /// </summary>
-        public event OnStatusChangedDelegate OnStatusChanged;
+        public event OnStatusChangedDelegate? OnStatusChanged;
 
         #endregion
 

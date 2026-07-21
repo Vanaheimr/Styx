@@ -144,13 +144,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private readonly TKey[] Keys;
+        private readonly TKey[]? Keys;
 
-        private readonly KeyValueFilter<TKey, TValue> KeyValueFilter;
+        private readonly KeyValueFilter<TKey, TValue>? KeyValueFilter;
 
-        private IEnumerator<TKey> KeysInterator;
+        private IEnumerator<TKey>? KeysInterator;
 
-        private IEnumerator<KeyValuePair<TKey, TValue>> KeyValueInterator;
+        private IEnumerator<KeyValuePair<TKey, TValue>>? KeyValueInterator;
 
         #endregion
 
@@ -310,7 +310,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     while (KeyValueInterator.MoveNext())
                     {
 
-                        if (KeyValueFilter(KeyValueInterator.Current.Key, KeyValueInterator.Current.Value))
+                        if (KeyValueFilter!(KeyValueInterator.Current.Key, KeyValueInterator.Current.Value))
                         {
                             _CurrentElement = KeyValueInterator.Current.Value;
                             return true;

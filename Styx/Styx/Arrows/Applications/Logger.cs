@@ -30,7 +30,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     public class Logger
     {
 
-        public event LoggerDelegate OnOutput;
+        public event LoggerDelegate? OnOutput;
 
         #region Log(LogLevel, params Arguments)
 
@@ -56,7 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         where TEnum : struct, IComparable, IFormattable, IConvertible
     {
 
-        public event LoggerDelegate<TEnum> OnOutput;
+        public event LoggerDelegate<TEnum>? OnOutput;
 
         #region Log(LogLevel, params Arguments)
 

@@ -37,8 +37,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly String                _SearchPattern;
         private readonly SearchOption          _SearchOption;
-        private readonly FileFilter            _FileFilter;
-        private          IEnumerator<FileInfo> _TempIterator;
+        private readonly FileFilter?            _FileFilter;
+        private          IEnumerator<FileInfo>? _TempIterator;
 
         #endregion
 

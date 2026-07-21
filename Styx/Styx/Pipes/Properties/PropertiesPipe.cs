@@ -139,9 +139,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private readonly TKey[] Keys;
+        private readonly TKey[]? Keys;
 
-        private readonly KeyValueFilter<TKey, TValue> KeyValueFilter;
+        private readonly KeyValueFilter<TKey, TValue>? KeyValueFilter;
 
         #endregion
 
@@ -273,7 +273,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
                     _CurrentElement = from   KeyValuePair
                                       in     SourcePipe.Current
-                                      where  KeyValueFilter(KeyValuePair.Key, KeyValuePair.Value)
+                                      where  KeyValueFilter!(KeyValuePair.Key, KeyValuePair.Value)
                                       select KeyValuePair.Value;
 
                     return true;

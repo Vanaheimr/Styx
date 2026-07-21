@@ -36,7 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #region Data
 
         private readonly IEnumerator<T>  _InternalEnumerator;
-        private          T               _Last;
+        private          T               _Last = default!;
         private          Boolean         _FirstMove, _Finished;
 
         #endregion

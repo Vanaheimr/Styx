@@ -55,14 +55,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
         #region Data
 
-        private Octree<T> Subtree1;
-        private Octree<T> Subtree2;
-        private Octree<T> Subtree3;
-        private Octree<T> Subtree4;
-        private Octree<T> Subtree5;
-        private Octree<T> Subtree6;
-        private Octree<T> Subtree7;
-        private Octree<T> Subtree8;
+        private Octree<T>? Subtree1;
+        private Octree<T>? Subtree2;
+        private Octree<T>? Subtree3;
+        private Octree<T>? Subtree4;
+        private Octree<T>? Subtree5;
+        private Octree<T>? Subtree6;
+        private Octree<T>? Subtree7;
+        private Octree<T>? Subtree8;
 
         private HashedSet<IVoxel<T>> EmbeddedVoxels;
 
@@ -75,7 +75,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <summary>
         /// An event to notify about an octree split happening.
         /// </summary>
-        public event OctreeSplitEventHandler<T> OnTreeSplit;
+        public event OctreeSplitEventHandler<T>? OnTreeSplit;
 
         #endregion
 

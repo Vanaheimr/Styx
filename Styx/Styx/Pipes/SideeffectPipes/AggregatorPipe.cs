@@ -43,7 +43,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private IEnumerator<S> _AggregateEnumerator;
+        private IEnumerator<S>? _AggregateEnumerator;
 
         #endregion
 

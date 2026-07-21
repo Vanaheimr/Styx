@@ -88,9 +88,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// The internal source of messages/objects.
         /// </summary>
-        private readonly IEnumerator<TOut>  IEnumerator;
+        private readonly IEnumerator<TOut>?  IEnumerator;
 
-        private readonly Func<TOut>         Func;
+        private readonly Func<TOut>?         Func;
 
         #endregion
 
@@ -110,7 +110,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Signals to a FireCancellationToken that it should be canceled.
         /// </summary>
-        public CancellationTokenSource  FireCancellationTokenSource    { get; private set; }
+        public CancellationTokenSource?  FireCancellationTokenSource    { get; private set; }
 
         /// <summary>
         /// Propogates notification that the asynchronous fireing should be canceled.
@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// The internal task for fireing the messages/objects.
         /// </summary>
-        public Task                     FireTask                       { get; private set; }
+        public Task?                     FireTask                       { get; private set; }
 
         /// <summary>
         /// The interval will throttle the automatic measurement of passive

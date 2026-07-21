@@ -57,7 +57,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly TKey                     Key;
         private readonly ComparisonFilter<TValue> ComparisonFilter;
-        private          TValue                   ActualValue;
+        private          TValue                   ActualValue = default!;
 
         #endregion
 
@@ -202,7 +202,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly TKey Key;
         private readonly ComparisonFilter<TCast> ComparisonFilter;
-        private TValue ActualValue;
+        private TValue ActualValue = default!;
 
         #endregion
 

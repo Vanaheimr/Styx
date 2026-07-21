@@ -50,22 +50,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The long option.
         /// </summary>
-        public String                 LongOption          { get; private set; }
+        public String?                LongOption          { get; private set; }
 
         /// <summary>
         /// An optional regular expression for verification.
         /// </summary>
-        public Regex                  RegularExpression   { get; private set; }
+        public Regex?                 RegularExpression   { get; private set; }
 
         /// <summary>
         /// An optional delegate for verification.
         /// </summary>
-        public Func<String, Boolean>  Verification        { get; private set; }
+        public Func<String, Boolean>? Verification        { get; private set; }
 
         /// <summary>
         /// The action delegate.
         /// </summary>
-        public Action<String>         Action              { get; private set; }
+        public Action<String>?        Action              { get; private set; }
 
         #endregion
 

@@ -146,7 +146,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event VotingEventHandler<T1, T2, V> OnVoting;
+        public event VotingEventHandler<T1, T2, V>? OnVoting;
 
         #endregion
 
@@ -214,7 +214,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event VotingEventHandler<T1, T2, T3, V> OnVoting;
+        public event VotingEventHandler<T1, T2, T3, V>? OnVoting;
 
         #endregion
 
@@ -280,7 +280,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event VotingEventHandler<T1, T2, T3, T4, V> OnVoting;
+        public event VotingEventHandler<T1, T2, T3, T4, V>? OnVoting;
 
         #endregion
 
@@ -346,7 +346,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event VotingEventHandler<T1, T2, T3, T4, T5, V> OnVoting;
+        public event VotingEventHandler<T1, T2, T3, T4, T5, V>? OnVoting;
 
         #endregion
 
@@ -412,7 +412,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
 
         #region Events
 
-        public event VotingEventHandler<T1, T2, T3, T4, T5, T6, V> OnVoting;
+        public event VotingEventHandler<T1, T2, T3, T4, T5, T6, V>? OnVoting;
 
         #endregion
 

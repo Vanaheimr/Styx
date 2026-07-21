@@ -98,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #region Data
 
         private readonly IEnumerator<E> Enumerator;
-        private          E              _Current;
+        private          E              _Current = default!;
 
         #endregion
 

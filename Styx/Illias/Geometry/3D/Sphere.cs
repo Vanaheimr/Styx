@@ -150,6 +150,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             this.Left   = Left;
             this.Top    = Top;
+            this.Front  = Front;
             this.Center = new Voxel<T>(Left, Top, Front);
             this.Radius = Radius;
 

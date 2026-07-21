@@ -41,19 +41,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
             {
                 
                 if      (typeof(T) == typeof(Double))
-                    return MathsDouble.Instance as IMaths<T>;
+                    return (MathsDouble.Instance as IMaths<T>)!;
 
                 else if (typeof(T) == typeof(Single))
-                    return MathsSingle.Instance as IMaths<T>;
+                    return (MathsSingle.Instance as IMaths<T>)!;
 
                 else if (typeof(T) == typeof(Int32))
-                    return MathsInt32. Instance as IMaths<T>;
+                    return (MathsInt32. Instance as IMaths<T>)!;
 
                 else if (typeof(T) == typeof(Int64))
-                    return MathsInt64.Instance as IMaths<T>;
+                    return (MathsInt64.Instance as IMaths<T>)!;
 
                 else if (typeof(T) == typeof(UInt32))
-                    return MathsUInt32.Instance as IMaths<T>;
+                    return (MathsUInt32.Instance as IMaths<T>)!;
 
                 else
                     throw new Exception("No math class found for datatype '" + typeof(T).Name + "'!");

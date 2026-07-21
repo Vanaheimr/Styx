@@ -44,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        private readonly ISideEffectPipe<S, S, T> _PipeToCap;
+        private readonly ISideEffectPipe<S, S, T> _PipeToCap = default!;
         private          Boolean                  _Alive;
 
         #endregion

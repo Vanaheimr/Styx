@@ -38,7 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         #region Data
 
         private readonly IEnumerator<IEnumerator<T>>  _AllEnumerators;
-        private          IEnumerator<T>               _CurrentEnumerator;
+        private          IEnumerator<T>?               _CurrentEnumerator;
 
         #endregion
 
@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         {
             get
             {
-                return _CurrentEnumerator.Current;
+                return _CurrentEnumerator!.Current;
             }
         }
 
@@ -97,7 +97,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         {    
             get
             {
-                return _CurrentEnumerator.Current;
+                return _CurrentEnumerator!.Current;
             }
         }
 

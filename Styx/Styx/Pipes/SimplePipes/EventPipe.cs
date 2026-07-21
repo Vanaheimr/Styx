@@ -37,7 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Data
 
-        public event PipeEvent<S> Event;
+        public event PipeEvent<S>? Event;
 
         #endregion
 

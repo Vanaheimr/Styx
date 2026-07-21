@@ -69,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// Returns the message path.
         /// </summary>
-        public IEnumerable<Object>  Path                 { get; protected set;  }
+        public IEnumerable<Object>?  Path                 { get; protected set;  }
 
         #endregion
 

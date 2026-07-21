@@ -13,7 +13,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         where T : notnull
     {
 
-        private Dictionary<T, Boolean> InternalDictionary;
+        private Dictionary<T, Boolean> InternalDictionary = new();
 
 
         public UInt64 Count

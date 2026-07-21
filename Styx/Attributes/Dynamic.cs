@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tags">Some tags.</param>
         public DynamicAttribute(params String[] Tags)
         {
-            this.tags = Tags?.Where(tag => !tag.IsNullOrEmpty()).ToArray();
+            this.tags = Tags?.Where(tag => !tag.IsNullOrEmpty()).ToArray() ?? [];
         }
 
     }
