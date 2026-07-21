@@ -176,13 +176,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     else if (property.NewValue is DateTime time1)
                         updatedJSON.Add(property.Name, new JArray(
                                                            time1.ToISO8601(),
-                                                           ((DateTime) property.OldValue).ToISO8601()
+                                                           ((DateTime) property.OldValue!).ToISO8601()
                                                        ));
 
                     else if (property.NewValue is DateTimeOffset time2)
                         updatedJSON.Add(property.Name, new JArray(
                                                            time2.ToISO8601(),
-                                                           ((DateTimeOffset) property.OldValue).ToISO8601()
+                                                           ((DateTimeOffset) property.OldValue!).ToISO8601()
                                                        ));
 
                     else
