@@ -178,9 +178,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean MapMandatory<T>(this JObject     JSON,
                                               String           PropertyName,
                                               String           PropertyDescription,
-                                              Func<String, T>  Mapper,
-                                              out T            Value,
-                                              out String       ErrorResponse)
+                                              Func<String, T>          Mapper,
+                                              [MaybeNullWhen(false)] out T Value,
+                                              out String               ErrorResponse)
         {
 
             Value = default;
@@ -6977,7 +6977,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                         String               PropertyName,
                                                         String               PropertyDescription,
                                                         TryJArrayParser2<T>  JArrayParser,
-                                                        out T                Value,
+                                                        out T?               Value,
                                                         out String?          ErrorResponse)
         {
 
@@ -8525,10 +8525,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PropertyName">The property name to match.</param>
         /// <param name="ValueMapper">A delegate to map the JSON property value.</param>
         /// <param name="DefaultValue">A default value.</param>
-        public static T MapValueOrDefault<T>(this JObject     ParentJObject,
-                                             String           PropertyName,
-                                             Func<JToken, T>  ValueMapper,
-                                             T                DefaultValue = default(T))
+        public static T? MapValueOrDefault<T>(this JObject     ParentJObject,
+                                              String           PropertyName,
+                                              Func<JToken, T>  ValueMapper,
+                                              T?               DefaultValue = default)
         {
 
             #region Initial checks

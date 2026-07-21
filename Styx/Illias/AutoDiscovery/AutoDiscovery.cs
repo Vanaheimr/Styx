@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
@@ -35,49 +31,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// implementation of T for you.
     /// </summary>
     public class AutoDiscovery<TClass> : IEnumerable<TClass>
+
         where TClass : class
+
     {
 
         #region Data
 
-        private readonly ConcurrentDictionary<String, Type>   typeLookup;
-        private readonly ConcurrentDictionary<String, TClass> instanceLookup;
+        private readonly ConcurrentDictionary<String, Type>    typeLookup;
+        private readonly ConcurrentDictionary<String, TClass>  instanceLookup;
 
         #endregion
 
         #region Properties
 
-        #region SearchingFor
-
         /// <summary>
         /// Returns the Name of the interface T.
         /// </summary>
         public String SearchingFor
-        {
-            get
-            {
-                return typeof(TClass).Name;
-            }
-        }
 
-        #endregion
+            => typeof(TClass).Name;
 
-        #region RegisteredNames
 
         /// <summary>
         /// Returns an enumeration of the names of all registered types of T.
         /// </summary>
         public IEnumerable<String> RegisteredNames
-        {
-            get
-            {
-                return typeLookup.Keys;
-            }
-        }
 
-        #endregion
+            => typeLookup.Keys;
 
-        #region RegisteredTypes
 
         /// <summary>
         /// Returns an enumeration of activated instances of all registered types of T.
@@ -103,17 +85,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
         }
 
-        #endregion
-
-        #region Count
 
         /// <summary>
         /// Returns the number of registered implementations of the interface T.
         /// </summary>
         public UInt64 Count
-            => (UInt64) typeLookup.Count;
 
-        #endregion
+            => (UInt64) typeLookup.Count;
 
         #endregion
 
@@ -163,7 +141,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Paths">An enumeration of paths to search for implementations.</param>
         /// <param name="FileExtensions">A enumeration of file extensions for filtering.</param>
         /// <param name="IdentificatorFunc">A transformation delegate to provide an unique identification for every matching class.</param>
-        public void FindAndRegister(Boolean ClearTypeDictionary = true, IEnumerable<String>? Paths = null, IEnumerable<String>? FileExtensions = null, Func<TClass, String>? IdentificatorFunc = null)
+        public void FindAndRegister(Boolean                ClearTypeDictionary   = true,
+                                    IEnumerable<String>?   Paths                 = null,
+                                    IEnumerable<String>?   FileExtensions        = null,
+                                    Func<TClass, String>?  IdentificatorFunc     = null)
         {
 
             #region Get a list of interesting files
@@ -199,8 +180,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 // Seems to be a mono bug!
                 if (actualFile is not null)
                 {
-
-                   // Console.WriteLine(_File);
 
                     try
                     {
@@ -246,7 +225,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                                                 catch (Exception e)
                                                 {
-                                                    throw new AutoDiscoveryException("Could not activate or register " + typeof(TClass).Name + "-instance '" + actualType.Name + "'!", e);
+                                                    throw new AutoDiscoveryException($"Could not activate or register {typeof(TClass).Name}-instance '{actualType.Name}'!", e);
                                                 }
 
                                             }
@@ -266,7 +245,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     catch (Exception e)
                     {
-                        throw new AutoDiscoveryException("Autodiscovering implementations of interface '" + typeof(TClass).Name + "' within file '" + actualFile + "' failed!", e);
+                        throw new AutoDiscoveryException($"Autodiscovering implementations of interface '{typeof(TClass).Name}' within file '{actualFile}' failed!", e);
                     }
 
                 }
@@ -284,34 +263,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Attempts to get an instance associated with the identifier.
         /// </summary>
-        public Boolean TryGetInstance(String Identificator, out TClass Instance)
+        public Boolean TryGetInstance(String                           Identificator,
+                                      [NotNullWhen(true)] out TClass?  Instance)
         {
 
             Instance = default;
 
-            if (instanceLookup.TryGetValue(Identificator, out Instance))
-                return true;
-
-            if (typeLookup.TryGetValue(Identificator, out Type? _Type))
+            try
             {
 
-                try
+                if (instanceLookup.TryGetValue(Identificator, out Instance))
+                    return true;
+
+                if (typeLookup.TryGetValue(Identificator, out var foundType))
                 {
 
-                    Instance = (TClass) Activator.CreateInstance(_Type)!;
+                    Instance = (TClass) Activator.CreateInstance(foundType)!;
 
                     // If it fails because of concurrency it does not matter!
-                    instanceLookup.TryAdd(Identificator, Instance);
+                    instanceLookup.TryAdd(
+                        Identificator,
+                        Instance
+                    );
 
                     return true;
 
                 }
-                catch (Exception e)
-                {
-                    throw new AutoDiscoveryException($"An instance of {typeof(TClass).Name} with identifier '{Identificator}' could not be activated!", e);
-                }
 
             }
+            catch
+            { }
 
             return false;
 
@@ -325,10 +306,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public IEnumerator<TClass> GetEnumerator()
         {
 
-            TClass Instance;
-
             foreach (var Identificator in typeLookup.Keys)
-                if (TryGetInstance(Identificator, out Instance))
+                if (TryGetInstance(Identificator, out var Instance))
                     yield return Instance;
 
         }
@@ -337,7 +316,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
 
             foreach (var Identificator in typeLookup.Keys)
-                if (TryGetInstance(Identificator, out TClass Instance))
+                if (TryGetInstance(Identificator, out var Instance))
                     yield return Instance;
 
         }
