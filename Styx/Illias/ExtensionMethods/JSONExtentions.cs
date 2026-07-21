@@ -4400,7 +4400,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String            PropertyName,
                                                 Func<String, T>   Mapper,
                                                 T                 InvalidResult,
-                                                out T             TOut)
+                                                [MaybeNullWhen(false)] out T TOut)
         {
 
             if (JSON is null ||
@@ -6482,7 +6482,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                String            PropertyName,
                                                String            PropertyDescription,
                                                TryParser<T>      Parser,
-                                               out T             Value,
+                                               out T?            Value,
                                                out String?       ErrorResponse)
         {
 
@@ -6532,7 +6532,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                String            PropertyName,
                                                String            PropertyDescription,
                                                TryParser2<T>     Parser,
-                                               out T             Value,
+                                               out T?            Value,
                                                out String?       ErrorResponse)
         {
 
