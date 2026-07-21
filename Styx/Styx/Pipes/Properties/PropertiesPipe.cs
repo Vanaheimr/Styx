@@ -143,10 +143,6 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         private readonly KeyValueFilter<TKey, TValue> KeyValueFilter;
 
-        private IEnumerator<TKey> KeysInterator;
-
-        private IEnumerator<KeyValuePair<TKey, TValue>> KeyValueInterator;
-
         #endregion
 
         #region Constructor(s)

@@ -105,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             {
                 return Reduce(Reduce(Prefix, SourcePipe.Select(Item => Map(Item)).Aggregate(Reduce)), Suffix);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return DefaultValue;
             }

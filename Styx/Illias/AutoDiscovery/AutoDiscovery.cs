@@ -271,7 +271,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     }
 
-                    catch (BadImageFormatException e)
+                    catch (BadImageFormatException)
                     { }
 
                     catch (Exception e)

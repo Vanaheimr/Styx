@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -106,8 +105,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             while (_Enumerator.MoveNext())
                 _Counter++;
 
-            ClassicAssert.AreEqual(6, _Counter);
-            ClassicAssert.IsFalse(_Enumerator.MoveNext());
+            Assert.That(_Counter, Is.EqualTo(6));
+            Assert.That(_Enumerator.MoveNext(), Is.False);
 
 
             _List = new List<String>() { null, null, null, null, null, null };
@@ -117,8 +116,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             while (_Enumerator.MoveNext())
                 _Counter++;
 
-            ClassicAssert.AreEqual(6, _Counter);
-            ClassicAssert.IsFalse(_Enumerator.MoveNext());
+            Assert.That(_Counter, Is.EqualTo(6));
+            Assert.That(_Enumerator.MoveNext(), Is.False);
 
         }
 

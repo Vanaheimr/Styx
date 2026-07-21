@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -41,8 +40,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
                 var s = _Pipe.Current;
             }
 
-            ClassicAssert.AreEqual(  0.0, _Pipe.SideEffect1);
-            ClassicAssert.AreEqual(505.0, _Pipe.SideEffect2);
+            Assert.That(_Pipe.SideEffect1, Is.EqualTo(  0.0));
+            Assert.That(_Pipe.SideEffect2, Is.EqualTo(505.0));
 
         }
 
@@ -60,8 +59,8 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
                 var s = _Pipe.Current;
             }
 
-            ClassicAssert.AreEqual( 22.92, Math.Round(_Pipe.SideEffect1, 2));
-            ClassicAssert.AreEqual(501.25, _Pipe.SideEffect2);
+            Assert.That(Math.Round(_Pipe.SideEffect1, 2), Is.EqualTo( 22.92));
+            Assert.That(_Pipe.SideEffect2, Is.EqualTo(501.25));
 
         }
 

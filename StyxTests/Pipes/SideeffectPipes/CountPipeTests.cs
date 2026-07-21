@@ -18,7 +18,6 @@
 #region Usings
 
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 
 #endregion
 
@@ -42,12 +41,12 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             while (_Pipe.MoveNext())
             {
                 var s = _Pipe.Current;
-                ClassicAssert.IsTrue(s.Equals("marko") || s.Equals("antonio") || s.Equals("rodriguez") || s.Equals("was") || s.Equals("here") || s.Equals("."));
+                Assert.That(s.Equals("marko") || s.Equals("antonio") || s.Equals("rodriguez") || s.Equals("was") || s.Equals("here") || s.Equals("."), Is.True);
                 _Counter++;
-                ClassicAssert.AreEqual(_Counter, _Pipe.SideEffect);
+                Assert.That(_Pipe.SideEffect, Is.EqualTo(_Counter));
             }
 
-            ClassicAssert.AreEqual(6UL, _Pipe.SideEffect);
+            Assert.That(_Pipe.SideEffect, Is.EqualTo(6UL));
 
         }
 
@@ -65,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
             while (_Pipe.MoveNext())
             { }
 
-            ClassicAssert.AreEqual(0UL, _Pipe.SideEffect);
+            Assert.That(_Pipe.SideEffect, Is.EqualTo(0UL));
 
         }
 
