@@ -37,6 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerable">A collection of objects implementing IPropertyEdge.</param>
         public static SplitPipe<S> SplitPipe<S>(this IEnumerable<S> IEnumerable, Byte Ids)
+            where S : notnull
         {
             return new SplitPipe<S>(Ids, IEnumerable);
         }
@@ -51,6 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         /// <param name="IEnumerator">A enumerator of objects implementing IPropertyEdge.</param>
         public static SplitPipe<S> SplitPipe<S>(this IEnumerator<S> IEnumerator, Byte Ids)
+            where S : notnull
         {
             return new SplitPipe<S>(Ids, null, IEnumerator);
         }
@@ -61,6 +63,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
 
     public class Stub<S, E> : AbstractPipe<S, E>
+        where S : notnull
+        where E : notnull
     {
 
         Byte _Id;
@@ -101,6 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class SplitPipe<S> : ISplitPipe<S, S, S>
+        where S : notnull
     {
 
         #region Data

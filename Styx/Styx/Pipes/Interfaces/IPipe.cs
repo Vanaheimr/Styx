@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -52,6 +52,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         : IStartPipe<S>,
           IEndPipe<E>,
           IPipe
+        where S : notnull
+        where E : notnull
     { }
 
     #endregion
@@ -70,6 +72,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
         : IStartPipe<S1, S2>,
           IEndPipe<E>,
           IPipe
+        where S1 : notnull
+        where S2 : notnull
+        where E : notnull
     { }
 
     #endregion
@@ -89,6 +94,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         : IStartPipe<S1, S2, S3>,
           IEndPipe<E>,
           IPipe
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where E : notnull
     { }
 
     #endregion
@@ -109,6 +118,11 @@ namespace org.GraphDefined.Vanaheimr.Styx
         : IStartPipe<S1, S2, S3, S4>,
           IEndPipe<E>,
           IPipe
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where S4 : notnull
+        where E : notnull
     { }
 
     #endregion
@@ -130,6 +144,12 @@ namespace org.GraphDefined.Vanaheimr.Styx
         : IStartPipe<S1, S2, S3, S4, S5>,
           IEndPipe<E>,
           IPipe
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where S4 : notnull
+        where S5 : notnull
+        where E : notnull
     { }
 
     #endregion

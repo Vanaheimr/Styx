@@ -29,6 +29,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class HasCountPipe<S> : AbstractPipe<S, Boolean>
+        where S : notnull
     {
 
         #region Data

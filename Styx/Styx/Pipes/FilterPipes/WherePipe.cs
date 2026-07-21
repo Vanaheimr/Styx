@@ -37,6 +37,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public static WherePipe<S> Where<S, E>(this IEndPipe<S>  SourcePipe,
                                                Predicate<S>      Include)
+            where S : notnull
+            where E : notnull
         {
             return new WherePipe<S>(SourcePipe, Include);
         }
@@ -50,6 +52,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         public static WhereCountedPipe<S> Where<S, E>(this IEndPipe<S>     SourcePipe,
                                                       CountedPredicate<S>  CountedInclude)
+            where S : notnull
+            where E : notnull
         {
             return new WhereCountedPipe<S>(SourcePipe, CountedInclude);
         }
@@ -66,6 +70,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class WherePipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data
@@ -166,6 +171,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class WhereCountedPipe<S> : AbstractSideEffectPipe<S, S, UInt64>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

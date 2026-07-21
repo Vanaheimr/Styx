@@ -35,6 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
         public static DistinctPipe<S> Distinct<S>(this IEndPipe<S>      SourcePipe,
                                                   IEqualityComparer<S>? EqualityComparer = null)
+            where S : notnull
         {
             return new DistinctPipe<S>(SourcePipe, EqualityComparer);
         }
@@ -50,6 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class DistinctPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

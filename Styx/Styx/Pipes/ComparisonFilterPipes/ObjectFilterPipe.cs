@@ -30,7 +30,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class ObjectFilterPipe<S> : AbstractComparisonFilterPipe<S, S>
-        where S : IComparable
+        where S : notnull, IComparable
     {
 
         #region Data

@@ -47,6 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IEnumerable">An enumeration of objects of type S.</param>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
         public static RangeFilterPipe<S> RangeFilter<S>(this IEndPipe<S> SourcePipe, Int32 Low, Int32 High)
+            where S : notnull
         {
             return new RangeFilterPipe<S>(SourcePipe, Low, High);
         }
@@ -64,6 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class RangeFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

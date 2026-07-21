@@ -30,6 +30,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class ActionPipe<S> : AbstractPipe<S, S>
+        where S : notnull
     {
 
         #region Data

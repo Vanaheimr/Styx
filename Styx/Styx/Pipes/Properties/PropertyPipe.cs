@@ -52,6 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
+            where TValue : notnull
         {
             return new PropertyPipe<TKey, TValue>(Properties, Keys);
         }
@@ -73,6 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
+            where TValue : notnull
         {
             return new PropertyPipe<TKey, TValue>(SourcePipe, Keys);
         }
@@ -94,6 +96,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                  KeyValueFilter<TKey, TValue> KeyValueFilter)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TValue : notnull
         {
             return new PropertyPipe<TKey, TValue>(Properties, KeyValueFilter);
         }
@@ -114,6 +117,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                  KeyValueFilter<TKey, TValue> KeyValueFilter)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TValue : notnull
         {
             return new PropertyPipe<TKey, TValue>(SourcePipe, KeyValueFilter);
         }
@@ -132,8 +136,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="TKey">The type of the keys.</typeparam>
     /// <typeparam name="TValue">The type of the values.</typeparam>
     public class PropertyPipe<TKey, TValue> : AbstractPipe<IReadOnlyProperties<TKey, TValue>, TValue>
-        
-        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+
+        where TKey   : IEquatable<TKey>, IComparable<TKey>, IComparable
+        where TValue : notnull
 
     {
 

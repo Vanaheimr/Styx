@@ -33,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// types of comparisons are evaluated.
     /// </summary>
     public abstract class AbstractComparisonFilterPipe<S, T> : AbstractPipe<S, S>, IComparisonFilterPipe<S, T>
-        where S : IComparable
+        where S : notnull, IComparable
         where T : IComparable
 
     {

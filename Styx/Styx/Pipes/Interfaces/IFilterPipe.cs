@@ -31,6 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public interface IFilterPipe<S> : IPipe<S, S>, IFilterPipe
+        where S : notnull
     { }
 
 }

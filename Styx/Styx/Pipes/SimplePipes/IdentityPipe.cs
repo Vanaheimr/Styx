@@ -32,6 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the pipe.</typeparam>
     public class IdentityPipe<S> : AbstractPipe<S, S>
+        where S : notnull
     {
 
         #region MoveNext()

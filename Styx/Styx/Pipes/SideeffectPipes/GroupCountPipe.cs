@@ -31,6 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// The map's values are the number of times that the key object has come into the pipe.
     /// </summary>
     public class GroupCountPipe<S> : AbstractPipe<S, S>, ISideEffectPipe<S, S, IDictionary<S, UInt64>>
+        where S : notnull
     {
 
         #region Data

@@ -33,6 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class OrFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

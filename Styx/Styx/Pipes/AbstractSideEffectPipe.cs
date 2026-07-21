@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -36,6 +36,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
     public abstract class AbstractSideEffectPipe<S, E, T> : AbstractPipe<S, E>, ISideEffectPipe<S, E, T>
+        where S : notnull
+        where E : notnull
     {
 
         #region Properties
@@ -47,7 +49,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect);
         /// </summary>
-        protected T InternalSideEffect;
+        // The side effect; default(T) until a constructor or subclass assigns it.
+        protected T InternalSideEffect = default!;
 
         /// <summary>
         /// The side effect produced by this pipe.
@@ -173,6 +176,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
     public abstract class AbstractSideEffectPipe<S1, S2, E, T> : AbstractPipe<S1, S2, E>, ISideEffectPipe<S1, S2, E, T>
+        where S1 : notnull
+        where S2 : notnull
+        where E : notnull
     {
 
         #region Properties
@@ -184,7 +190,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect);
         /// </summary>
-        protected T InternalSideEffect;
+        // The side effect; default(T) until a constructor or subclass assigns it.
+        protected T InternalSideEffect = default!;
 
         /// <summary>
         /// The side effect produced by this pipe.
@@ -327,6 +334,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
     public abstract class AbstractSideEffectPipe<S1, S2, S3, E, T> : AbstractPipe<S1, S2, S3, E>, ISideEffectPipe<S1, S2, S3, E, T>
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where E : notnull
     {
 
         #region Properties
@@ -338,7 +349,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect);
         /// </summary>
-        protected T InternalSideEffect;
+        // The side effect; default(T) until a constructor or subclass assigns it.
+        protected T InternalSideEffect = default!;
 
         /// <summary>
         /// The side effect produced by this pipe.
@@ -481,6 +493,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="T1">The type of the first sideeffect.</typeparam>
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
     public abstract class AbstractTwoSideEffectsPipe<S, E, T1, T2> : AbstractPipe<S, E>, ITwoSideEffectsPipe<S, E, T1, T2>
+        where S : notnull
+        where E : notnull
     {
 
         #region Properties
@@ -492,7 +506,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect1);
         /// </summary>
-        protected T1 InternalSideEffect1;
+        // The first side effect; default(T1) until a constructor or subclass assigns it.
+        protected T1 InternalSideEffect1 = default!;
 
         /// <summary>
         /// The first side effect produced by this pipe.
@@ -521,7 +536,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect2);
         /// </summary>
-        protected T2 InternalSideEffect2;
+        // The second side effect; default(T2) until a constructor or subclass assigns it.
+        protected T2 InternalSideEffect2 = default!;
 
         /// <summary>
         /// The second side effect produced by this pipe.
@@ -670,6 +686,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="T2">The type of the second sideeffect.</typeparam>
     /// <typeparam name="T3">The type of the third sideeffect.</typeparam>
     public abstract class AbstractThreeSideEffectsPipe<S, E, T1, T2, T3> : AbstractPipe<S, E>, IThreeSideEffectsPipe<S, E, T1, T2, T3>
+        where S : notnull
+        where E : notnull
     {
 
         #region Properties
@@ -681,7 +699,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect1);
         /// </summary>
-        protected T1 InternalSideEffect1;
+        // The first side effect; default(T1) until a constructor or subclass assigns it.
+        protected T1 InternalSideEffect1 = default!;
 
         /// <summary>
         /// The first side effect produced by this pipe.
@@ -710,7 +729,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect2);
         /// </summary>
-        protected T2 InternalSideEffect2;
+        // The second side effect; default(T2) until a constructor or subclass assigns it.
+        protected T2 InternalSideEffect2 = default!;
 
         /// <summary>
         /// The second side effect produced by this pipe.
@@ -739,7 +759,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Use this reference for operations like:
         /// Interlocked.Increment(ref InternalSideEffect3);
         /// </summary>
-        protected T3 InternalSideEffect3;
+        // The third side effect; default(T3) until a constructor or subclass assigns it.
+        protected T3 InternalSideEffect3 = default!;
 
         /// <summary>
         /// The third side effect produced by this pipe.

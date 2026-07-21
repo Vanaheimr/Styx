@@ -45,6 +45,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E1">The type of the first emitting objects.</typeparam>
     /// <typeparam name="E2">The type of the second emitting objects.</typeparam>
     public interface ISplitPipe<in S, out E1, out E2> : ISplitPipe
+        where S  : notnull
+        where E1 : notnull
+        where E2 : notnull
 	{ }
 
     #endregion

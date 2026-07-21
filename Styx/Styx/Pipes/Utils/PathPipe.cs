@@ -47,6 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class PathPipe<S> : AbstractPipe<S, IEnumerable<Object>>, IEndPipe<IEnumerable<Object>>
+        where S : notnull
     {
 
         #region 

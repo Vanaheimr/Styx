@@ -42,6 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="Element">The single element within the pipe.</param>
         /// <returns>A pipe emitting the given element.</returns>
         public static EndPipe<E> CreatePipe<E>(E Element)
+            where E : notnull
         {
             return new EndPipe<E>(new E[] { Element });
         }
@@ -57,6 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="Enumeration">An enumeration of elements.</param>
         /// <returns>A pipe emitting the given enumeration of elements.</returns>
         public static EndPipe<E> CreatePipe<E>(this IEnumerable<E> Enumeration)
+            where E : notnull
         {
             return new EndPipe<E>(Enumeration.GetEnumerator());
         }
@@ -73,6 +75,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <returns>A pipe emitting the elements emitted by the given enumerator.</returns>
 
         public static EndPipe<E> CreatePipe<E>(this IEnumerator<E> Enumerator)
+            where E : notnull
         {
             return new EndPipe<E>(Enumerator);
         }
@@ -89,6 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="E">The type of the emitted elements.</typeparam>
     public class EndPipe<E> : IEndPipe<E>
+        where E : notnull
     {
 
         #region Data

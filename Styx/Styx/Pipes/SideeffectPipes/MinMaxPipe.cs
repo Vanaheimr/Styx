@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class MinMaxPipe<S> : AbstractTwoSideEffectsPipe<S, S, S, S>
-        where S: IComparable, IComparable<S>, IEquatable<S>
+        where S : notnull, IComparable, IComparable<S>, IEquatable<S>
     {
 
         #region Properties

@@ -35,6 +35,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="T">The type of the sideeffect.</typeparam>
     public class SideEffectCapPipe<S, T> : AbstractPipe<S, T>, IStartPipe
+        where S : notnull
+        where T : notnull
     {
 
         // Note: Usage of IStartPipe in order to allow explicit

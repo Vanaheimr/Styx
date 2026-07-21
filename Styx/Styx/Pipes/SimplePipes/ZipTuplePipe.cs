@@ -38,6 +38,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ZipTuplePipe<S1, S2> Zip<S1, S2>(this IEndPipe<S1>                 SourcePipe1,
                                                             IEndPipe<S2>                 SourcePipe2,
                                                             Func<S1, S2, Tuple<S1, S2>>  ZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
         {
             return new ZipTuplePipe<S1, S2>(SourcePipe1, SourcePipe2, ZipDelegate);
         }
@@ -52,6 +54,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ZipTuplePipe<S1, S2> Zip<S1, S2>(this IEndPipe<S1>                         SourcePipe1,
                                                             IEndPipe<S2>                         SourcePipe2,
                                                             Func<S1, S2, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
         {
             return new ZipTuplePipe<S1, S2>(SourcePipe1, SourcePipe2, CountedZipDelegate);
         }
@@ -65,6 +69,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                     IEndPipe<S2>                     SourcePipe2,
                                                                     IEndPipe<S3>                     SourcePipe3,
                                                                     Func<S1, S2, S3, Tuple<S1, S2>>  ZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
+            where S3 : notnull
         {
             return new ZipTuplePipe<S1, S2, S3>(SourcePipe1, SourcePipe2, SourcePipe3, ZipDelegate);
         }
@@ -80,6 +87,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                     IEndPipe<S2>                             SourcePipe2,
                                                                     IEndPipe<S3>                             SourcePipe3,
                                                                     Func<S1, S2, S3, UInt64, Tuple<S1, S2>>  CountedZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
+            where S3 : notnull
         {
             return new ZipTuplePipe<S1, S2, S3>(SourcePipe1, SourcePipe2, SourcePipe3, CountedZipDelegate);
         }
@@ -97,6 +107,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S1">The type of the consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the consuming objects.</typeparam>
     public class ZipTuplePipe<S1, S2> : AbstractPipe<S1, S2, Tuple<S1, S2>>
+        where S1 : notnull
+        where S2 : notnull
     {
 
         #region Data
@@ -330,6 +342,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the consuming objects.</typeparam>
     public class ZipTuplePipe<S1, S2, S3> : AbstractPipe<S1, S2, S3, Tuple<S1, S2>>
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
     {
 
         #region Data

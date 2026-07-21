@@ -10,6 +10,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
     // HashSet is basically implemented as a reduction of Dictionary<T, Boolean>
     // 
     public class HashedSet<T> : IEnumerable<T>
+        where T : notnull
     {
 
         private Dictionary<T, Boolean> InternalDictionary;

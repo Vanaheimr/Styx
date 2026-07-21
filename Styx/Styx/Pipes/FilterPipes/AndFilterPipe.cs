@@ -33,6 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class AndFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

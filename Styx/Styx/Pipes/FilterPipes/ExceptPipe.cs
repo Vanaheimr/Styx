@@ -32,6 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ExceptPipe<S> Except<S>(this IEndPipe<S>      SourcePipe,
                                               S                     Value,
                                               IEqualityComparer<S>? EqualityComparer = null)
+            where S : notnull
         {
             return new ExceptPipe<S>(SourcePipe, Value, EqualityComparer);
         }
@@ -39,6 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ExceptPipe<S> Except<S>(this IEndPipe<S>      FirstPipe,
                                               IEndPipe<S>           SecondPipe,
                                               IEqualityComparer<S>? EqualityComparer = null)
+            where S : notnull
         {
             return new ExceptPipe<S>(FirstPipe, SecondPipe, EqualityComparer);
         }
@@ -46,6 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ExceptPipe<S> Except<S>(this IEndPipe<S>      SourcePipe,
                                               IEnumerable<S>        Enumeration,
                                               IEqualityComparer<S>? EqualityComparer = null)
+            where S : notnull
         {
             return new ExceptPipe<S>(SourcePipe, Enumeration, EqualityComparer);
         }
@@ -53,6 +56,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     }
 
     public class ExceptPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

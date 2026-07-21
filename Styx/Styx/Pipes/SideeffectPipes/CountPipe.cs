@@ -31,6 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// number of objects that have passed through it.
     /// </summary>
     public class CountPipe<S> : AbstractSideEffectPipe<S, S, Int64>
+        where S : notnull
     {
 
         #region Constructor(s)

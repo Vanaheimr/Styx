@@ -1110,6 +1110,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static HashedSet<T> ToHashedSet<T>(this IEnumerable<T> Enumeration)
 
+            where T : notnull
+
             => new (Enumeration);
 
         #endregion

@@ -36,6 +36,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ZipMergePipe<S1, S2, E> Zip<S1, S2, E>(this IEndPipe<S1>     SourcePipe1,
                                                                   IEndPipe<S2>     SourcePipe2,
                                                                   Func<S1, S2, E>  ZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
+            where E : notnull
         {
             return new ZipMergePipe<S1, S2, E>(SourcePipe1, SourcePipe2, ZipDelegate);
         }
@@ -50,6 +53,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static ZipMergePipe<S1, S2, E> Zip<S1, S2, E>(this IEndPipe<S1>             SourcePipe1,
                                                                   IEndPipe<S2>             SourcePipe2,
                                                                   Func<S1, S2, UInt64, E>  CountedZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
+            where E : notnull
         {
             return new ZipMergePipe<S1, S2, E>(SourcePipe1, SourcePipe2, CountedZipDelegate);
         }
@@ -63,6 +69,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                           IEndPipe<S2>         SourcePipe2,
                                                                           IEndPipe<S3>         SourcePipe3,
                                                                           Func<S1, S2, S3, E>  ZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
+            where S3 : notnull
+            where E : notnull
         {
             return new ZipMergePipe<S1, S2, S3, E>(SourcePipe1, SourcePipe2, SourcePipe3, ZipDelegate);
         }
@@ -78,6 +88,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                           IEndPipe<S2>                 SourcePipe2,
                                                                           IEndPipe<S3>                 SourcePipe3,
                                                                           Func<S1, S2, S3, UInt64, E>  CountedZipDelegate)
+            where S1 : notnull
+            where S2 : notnull
+            where S3 : notnull
+            where E : notnull
         {
             return new ZipMergePipe<S1, S2, S3, E>(SourcePipe1, SourcePipe2, SourcePipe3, CountedZipDelegate);
         }
@@ -96,6 +110,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public class ZipMergePipe<S1, S2, E> : AbstractPipe<S1, S2, E>
+        where S1 : notnull
+        where S2 : notnull
+        where E : notnull
     {
 
         #region Data
@@ -330,6 +347,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S3">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public class ZipMergePipe<S1, S2, S3, E> : AbstractPipe<S1, S2, S3, E>
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where E : notnull
     {
 
         #region Data

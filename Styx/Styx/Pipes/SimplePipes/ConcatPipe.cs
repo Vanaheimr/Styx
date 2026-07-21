@@ -34,6 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public static ConcatPipe<S> Concat<S>(this IEndPipe<S>      FirstPipe,
                                               params IEndPipe<S>[]  OtherPipes)
+            where S : notnull
         {
             return new ConcatPipe<S>(FirstPipe, OtherPipes);
         }
@@ -50,6 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class ConcatPipe<S> : AbstractPipe<S, IEndPipe<S>, S>
+        where S : notnull
     {
 
         #region Data

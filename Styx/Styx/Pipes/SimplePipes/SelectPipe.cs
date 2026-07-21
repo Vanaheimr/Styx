@@ -35,6 +35,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         public static SelectPipe<S, E> Select<S, E>(this IEndPipe<S>  SourcePipe,
                                                          Func<S, E>   SelectDelegate)
+            where S : notnull
+            where E : notnull
         {
             return new SelectPipe<S, E>(SourcePipe, SelectDelegate);
         }
@@ -48,6 +50,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         public static SelectCountedPipe<S, E> Select<S, E>(this IEndPipe<S>    SourcePipe,
                                                            Func<S, UInt64, E>  CountedSelectDelegate)
+            where S : notnull
+            where E : notnull
         {
             return new SelectCountedPipe<S, E>(SourcePipe, CountedSelectDelegate);
         }
@@ -65,6 +69,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public class SelectPipe<S, E> : AbstractPipe<S, E>
+        where S : notnull
+        where E : notnull
     {
 
         #region Data
@@ -172,6 +178,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public class SelectCountedPipe<S, E> : AbstractSideEffectPipe<S, E, UInt64>
+        where S : notnull
+        where E : notnull
     {
 
         #region Data

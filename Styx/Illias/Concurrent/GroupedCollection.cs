@@ -37,6 +37,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <typeparam name="TValue">The type of the collection values.</typeparam>
     /// <typeparam name="TGroup">The type of the collection groups.</typeparam>
     public class GroupedCollection<TKey, TValue, TGroup> : IGroupedCollection<TKey, TValue, TGroup>
+        where TKey   : notnull
+        where TGroup : notnull
     {
 
         #region Data

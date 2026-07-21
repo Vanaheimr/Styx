@@ -46,6 +46,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="Random">An optional source of randomness.</param>
         /// <typeparam name="S">The type of the elements within the filter.</typeparam>
         public static RandomFilterPipe<S> RandomFilter<S>(this IEndPipe<S> SourcePipe, Double Bias, Random? Random = null)
+            where S : notnull
         {
             return new RandomFilterPipe<S>(SourcePipe, Bias, Random);
         }
@@ -63,6 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class RandomFilterPipe<S> : AbstractPipe<S, S>, IFilterPipe<S>
+        where S : notnull
     {
 
         #region Data

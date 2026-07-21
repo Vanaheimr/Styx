@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the objects to filter.</typeparam>
     public abstract class APropertyFilterPipe<TKey, TValue, S> : AbstractPipe<S, S>, IFilterPipe<S>
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S    : IReadOnlyProperties<TKey, TValue>
+        where S : notnull, IReadOnlyProperties<TKey, TValue>
     {
 
         #region Data
@@ -195,7 +195,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the objects to filter.</typeparam>
     public abstract class APropertyFilterPipe<TKey, TValue, TCast, S> : AbstractPipe<S, S>, IFilterPipe<S>
         where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-        where S    : IReadOnlyProperties<TKey, TValue>
+        where S : notnull, IReadOnlyProperties<TKey, TValue>
     {
 
         #region Data

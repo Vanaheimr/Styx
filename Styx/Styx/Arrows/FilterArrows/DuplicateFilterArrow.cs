@@ -34,6 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
     /// </summary>
     /// <typeparam name="TMessage">The type of the consuming and emitting messages/objects.</typeparam>
     public class DuplicateFilterArrow<TMessage> : AbstractArrow<TMessage, TMessage>, IFilterArrow<TMessage>
+        where TMessage : notnull
     {
 
         #region Data

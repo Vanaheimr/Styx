@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -39,6 +39,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S, E> : IPipe<S, E>
+        where S : notnull
+        where E : notnull
     {
 
         #region Data
@@ -418,6 +420,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, E> : IPipe<S1, S2, E>
+        where S1 : notnull
+        where S2 : notnull
+        where E : notnull
     {
 
         #region Data
@@ -831,6 +836,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public abstract class AbstractPipe<S1, S2, S3, E> : IPipe<S1, S2, S3, E>
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where E : notnull
     {
 
         #region Data

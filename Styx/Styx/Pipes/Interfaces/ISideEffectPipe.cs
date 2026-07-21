@@ -45,6 +45,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the side effect.</typeparam>
     public interface ISideEffectPipe<S, E, out T> : ISideEffectPipe, IPipe<S, E>
+        where S : notnull
+        where E : notnull
     {
 
         /// <summary>
@@ -67,6 +69,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the side effect.</typeparam>
     public interface ISideEffectPipe<S1, S2, E, out T> : ISideEffectPipe, IPipe<S1, S2, E>
+        where S1 : notnull
+        where S2 : notnull
+        where E : notnull
     {
 
         /// <summary>
@@ -90,6 +95,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     /// <typeparam name="T">The type of the side effect.</typeparam>
     public interface ISideEffectPipe<S1, S2, S3, E, out T> : ISideEffectPipe, IPipe<S1, S2, S3, E>
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where E : notnull
     {
 
         /// <summary>
@@ -113,6 +122,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="T1">The type of the first side effect.</typeparam>
     /// <typeparam name="T2">The type of the second side effect.</typeparam>
     public interface ITwoSideEffectsPipe<S, E, out T1, out T2> : ISideEffectPipe, IPipe<S, E>
+        where S : notnull
+        where E : notnull
     {
 
         /// <summary>
@@ -141,6 +152,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="T2">The type of the second side effect.</typeparam>
     /// <typeparam name="T3">The type of the third side effect.</typeparam>
     public interface IThreeSideEffectsPipe<S, E, out T1, out T2, out T3> : ISideEffectPipe, IPipe<S, E>
+        where S : notnull
+        where E : notnull
     {
 
         /// <summary>

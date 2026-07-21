@@ -31,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S"></typeparam>
     /// <typeparam name="T"></typeparam>
     public interface IComparisonFilterPipe<S, T> : IFilterPipe<S>
-        where S : IComparable
+        where S : notnull, IComparable
         where T : IComparable
     {
 

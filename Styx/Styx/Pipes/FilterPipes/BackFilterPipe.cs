@@ -41,6 +41,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="VertexFilter">An optional delegate for vertex filtering.</param>
         /// <returns>The incomming vertices of the given PropertyEdges.</returns>
         public static BackFilterPipe<E, S> BackFilter<E, S>(this IPipe<S, E> IPipe, UInt64 Steps)
+            where E : notnull
+            where S : notnull
         {
             return new BackFilterPipe<E, S>(IPipe, Steps);
         }
@@ -59,6 +61,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the elements within the filter.</typeparam>
     public class BackFilterPipe<E, S> : AbstractPipe<E, S>
+        where E : notnull
+        where S : notnull
     {
 
         private IPipe<S, E> IPipe;

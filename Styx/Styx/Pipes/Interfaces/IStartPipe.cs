@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -48,6 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public interface IStartPipe<S> : IStartPipe
+        where S : notnull
     {
 
         /// <summary>
@@ -88,6 +89,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S1">The type of the first consuming objects.</typeparam>
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     public interface IStartPipe<S1, S2> : IStartPipe
+        where S1 : notnull
+        where S2 : notnull
     {
 
         /// <summary>
@@ -156,6 +159,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S2">The type of the second consuming objects.</typeparam>
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     public interface IStartPipe<S1, S2, S3> : IStartPipe
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
     {
 
         /// <summary>
@@ -249,6 +255,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S3">The type of the third consuming objects.</typeparam>
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     public interface IStartPipe<S1, S2, S3, S4> : IStartPipe
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where S4 : notnull
     {
 
         /// <summary>
@@ -342,6 +352,11 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S4">The type of the fourth consuming objects.</typeparam>
     /// <typeparam name="S5">The type of the fifth consuming objects.</typeparam>
     public interface IStartPipe<S1, S2, S3, S4, S5> : IStartPipe
+        where S1 : notnull
+        where S2 : notnull
+        where S3 : notnull
+        where S4 : notnull
+        where S5 : notnull
     {
 
         /// <summary>

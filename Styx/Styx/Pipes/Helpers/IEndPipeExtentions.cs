@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -47,9 +47,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe.</param>
         /// <param name="AggreationDelegate">The delegate to aggregate the items emitted by the pipe.</param>
         /// <param name="DefaultValue">The default value to return for an empty pipe.</param>
-        public static T Aggregate<T>(this IEndPipe<T> SourcePipe,
-                                     Func<T, T, T>    AggreationDelegate,
-                                     T                DefaultValue = default(T))
+        public static T? Aggregate<T>(this IEndPipe<T> SourcePipe,
+                                      Func<T, T, T>    AggreationDelegate,
+                                      T?               DefaultValue = default)
+            where T : notnull
         {
 
             #region Initial checks
@@ -90,12 +91,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <typeparam name="T">The type of the items emitted by the pipe.</typeparam>
         /// <param name="SourcePipe">A pipe.</param>
         /// <param name="DefaultValue">The default value to return for an empty pipe.</param>
-        public static T Aggregate<T>(this IEndPipe<T>  SourcePipe,
-                                     T                 Prefix,
-                                     Func<T, T>        Map,
-                                     Func<T, T, T>     Reduce,
-                                     T                 Suffix,
-                                     T                 DefaultValue = default(T))
+        public static T? Aggregate<T>(this IEndPipe<T>  SourcePipe,
+                                      T                 Prefix,
+                                      Func<T, T>        Map,
+                                      Func<T, T, T>     Reduce,
+                                      T                 Suffix,
+                                      T?                DefaultValue = default)
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -103,7 +105,9 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             try
             {
-                return Reduce(Reduce(Prefix, SourcePipe.Select(Item => Map(Item)).Aggregate(Reduce)), Suffix);
+                // An empty mapped source yields no inner aggregate (default); mirror the
+                // historic behaviour of feeding that (possibly null) value into Reduce.
+                return Reduce(Reduce(Prefix, SourcePipe.Select(Item => Map(Item)).Aggregate(Reduce)!), Suffix);
             }
             catch (Exception)
             {
@@ -124,6 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         /// <returns>True if every item of the pipe passes the specified filter, or if the pipe is empty; otherwise, false.</returns>
         public static Boolean All<T>(this IEndPipe<T> SourcePipe, Func<T, Boolean> IncludeFilter)
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -148,6 +153,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="SourcePipe">A pipe.</param>
         /// <returns>True if the pipe emits any items; otherwise, false.</returns>
         public static Boolean Any<T>(this IEndPipe<T> SourcePipe)
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -170,6 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         /// <returns>True if the pipe emits any matching items; otherwise, false.</returns>
         public static Boolean Any<T>(this IEndPipe<T> SourcePipe, Func<T, Boolean> IncludeFilter)
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -199,6 +206,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static Boolean Contains<T>(this IEndPipe<T>      SourcePipe,
                                           T                     Value,
                                           IEqualityComparer<T>? ValueComparer = null)
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -227,6 +235,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IncludeFilter">A delegate to test each item emitted by the pipe for a condition.</param>
         public static UInt64 Count<T>(this IEndPipe<T>  SourcePipe,
                                       Func<T, Boolean>? IncludeFilter = null)
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -262,6 +271,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static T FirstOrDefault<T>(this IEndPipe<T>  SourcePipe,
                                           Func<T, Boolean>? IncludeFilter  = null,
                                           T                 DefaultValue   = default(T))
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -294,6 +304,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static T LastOrDefault<T>(this IEndPipe<T>  SourcePipe,
                                          Func<T, Boolean>? IncludeFilter  = null,
                                          T                 DefaultValue   = default(T))
+            where T : notnull
         {
 
             if (SourcePipe is null)
@@ -316,6 +327,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static Boolean SequenceEqual<T>(this IEndPipe<T>      first,
                                                IEndPipe<T>           second,
                                                IEqualityComparer<T>? comparer = null)
+            where T : notnull
         {
 
             if (comparer is null)
@@ -353,6 +365,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static T[] ToArray<T>(this IEndPipe<T>  SourcePipe,
                                      Boolean           ResetPipeBefore  = false,
                                      Boolean           ResetPipeAfter   = false)
+            where T : notnull
         {
 
             new List<String>().ToArray();
@@ -392,6 +405,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
                                                                              IEqualityComparer<TKey>? Comparer         = null,
                                                                              Boolean                  ResetPipeBefore  = false,
                                                                              Boolean                  ResetPipeAfter   = false)
+            where T    : notnull
+            where TKey : notnull
         {
 
             if (Comparer is null)
@@ -420,6 +435,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public static List<T> ToList<T>(this IEndPipe<T>  SourcePipe,
                                         Boolean           ResetPipeBefore  = false,
                                         Boolean           ResetPipeAfter   = false)
+            where T : notnull
         {
 
             var List = new List<T>();

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -43,6 +43,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     /// <typeparam name="E">The type of the emitting objects.</typeparam>
     public interface IMetaPipe<S, E> : IPipe<S, E>, IMetaPipe
+        where S : notnull
+        where E : notnull
     {
 
         /// <summary>

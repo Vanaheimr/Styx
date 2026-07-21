@@ -31,6 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     {
 
         public static EndPipeEnumerable<E> AsEnumerable<E>(this IEndPipe<E> EndPipe)
+            where E : notnull
         {
             return new EndPipeEnumerable<E>(EndPipe);
         }
@@ -38,6 +39,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     }
 
     public class EndPipeEnumerable<E> : IEnumerable<E>
+        where E : notnull
     {
 
         private readonly IEndPipe<E> EndPipe;

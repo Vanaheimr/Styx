@@ -30,6 +30,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming objects.</typeparam>
     public class GatherPipe<S> : SideEffectCapPipe<S, IEnumerable<S>>
+        where S : notnull
     {
 
         #region Constructor(s)

@@ -32,6 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// </summary>
     /// <typeparam name="S">The type of the consuming and emitting objects.</typeparam>
     public class FairMergePipe<S> : AbstractPipe<S, S>//, IMetaPipe<S, S>
+        where S : notnull
     {
 
         #region Data

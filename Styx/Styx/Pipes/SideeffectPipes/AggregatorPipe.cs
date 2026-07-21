@@ -38,6 +38,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// write/read times.
     /// </summary>
     public class AggregatorPipe<S> : AbstractSideEffectPipe<S, S, ICollection<S>>
+        where S : notnull
     {
 
         #region Data
