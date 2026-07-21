@@ -42,24 +42,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static TValue? GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static TValue? GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                        TKey                                    Key)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
 
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                return value;
 
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return _Value;
-
-            else
-                return default(TValue);
+            return default;
 
         }
 
@@ -76,29 +72,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccess">A delegate to call for the associated value of the given property key and its value.</param>
         /// <param name="OnError">A delegate to call for the associated value of the given property key when an error occurs.</param>
-        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                     TKey                                   Key,
-                                                     Action<TValue>                         OnSuccess,
-                                                     Action<TKey>?                          OnError = null)
+        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                     TKey                                    Key,
+                                                     Action<TValue>                          OnSuccess,
+                                                     Action<TKey>?                           OnError = null)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                OnSuccess(_Value);
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                OnSuccess(value);
 
             else if (OnError is not null)
                 OnError(Key);
@@ -118,29 +104,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccess">A delegate to call for the associated value of the given property key and its value.</param>
         /// <param name="OnError">A delegate to call for the associated value of the given property key when an error occurs.</param>
-        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                     TKey                                   Key,
-                                                     Action<TKey, TValue>                   OnSuccess,
-                                                     Action<TKey>?                          OnError = null)
+        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                     TKey                                    Key,
+                                                     Action<TKey, TValue>                    OnSuccess,
+                                                     Action<TKey>?                           OnError = null)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                OnSuccess(Key, _Value);
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                OnSuccess(Key, value);
 
             else if (OnError is not null)
                 OnError(Key);
@@ -161,34 +137,24 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the associated property value of the given property key.</param>
         /// <param name="OnErrorFunc">A delegate to call for the associated property key when the key was not found.</param>
-        public static TResult? PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                                   TKey                                   Key,
-                                                                   Func<TValue, TResult>                  OnSuccessFunc,
-                                                                   Func<TKey, TResult>?                   OnErrorFunc = null)
+        public static TResult? PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                                   TKey                                    Key,
+                                                                   Func<TValue, TResult>                   OnSuccessFunc,
+                                                                   Func<TKey, TResult>?                    OnErrorFunc = null)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return OnSuccessFunc(_Value);
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                return OnSuccessFunc(value);
 
             if (OnErrorFunc is not null)
                 return OnErrorFunc(Key);
 
-            return default(TResult);
+            return default;
 
         }
 
@@ -205,34 +171,24 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the key and associated value of the given property key.</param>
-        public static TResult? PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                                   TKey                                   Key,
-                                                                   Func<TKey, TValue, TResult>            OnSuccessFunc,
-                                                                   Func<TKey, TResult>?                   OnErrorFunc = null)
+        public static TResult? PropertyFunc<TKey, TValue, TResult>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                                   TKey                                    Key,
+                                                                   Func<TKey, TValue, TResult>             OnSuccessFunc,
+                                                                   Func<TKey, TResult>?                    OnErrorFunc = null)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return OnSuccessFunc(Key, _Value);
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                return OnSuccessFunc(Key, value);
 
             if (OnErrorFunc is not null)
                 return OnErrorFunc(Key);
 
-            return default(TResult);
+            return default;
 
         }
 
@@ -252,24 +208,21 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property.</param>
-        public static TValue? GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key, Type PropertyType)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static TValue? GetProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                        TKey                                    Key,
+                                                        Type                                    PropertyType)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                if (value.GetType().Equals(PropertyType))
+                    return value;
 
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                if (_Value.GetType().Equals(PropertyType))
-                    return _Value;
-
-            return default(TValue);
+            return default;
 
         }
 
@@ -284,21 +237,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static String GetString<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static String GetString<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                     TKey                                    Key)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return (String) (Object) _Value!;
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                return (String) (Object) value!;
 
             throw new Exception("404!");
 
@@ -315,25 +264,25 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TValue">The type of the property value.</typeparam>
         /// <param name="IReadOnlyProperties">An object implementing IReadOnlyProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static Double GetDouble<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties, TKey Key)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static Double GetDouble<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                     TKey                                    Key)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
             {
-                if (_Value is Double)
-                    return (Double) (Object) _Value;
+                if (value is Double)
+                    return (Double) (Object) value;
                 else
-                    return Double.Parse(_Value.ToString().Replace(",","."), NumberStyles.Float, CultureInfo.InvariantCulture);
+                    return Double.Parse(
+                               value.ToString()?.Replace(",",".") ?? "",
+                               NumberStyles.Float,
+                               CultureInfo.InvariantCulture
+                           );
             }
 
             throw new Exception("404!");
@@ -354,32 +303,22 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccess">A delegate to call for the associated value of the given property key.</param>
-        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                     TKey                                   Key,
-                                                     Type                                   PropertyType,
-                                                     Action<TValue>                         OnSuccess,
-                                                     Action<TKey>?                          OnError = null)
+        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                     TKey                                    Key,
+                                                     Type                                    PropertyType,
+                                                     Action<TValue>                          OnSuccess,
+                                                     Action<TKey>?                           OnError = null)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
             {
-                if (_Value.GetType().Equals(PropertyType))
-                    OnSuccess(_Value);
+                if (value.GetType().Equals(PropertyType))
+                    OnSuccess((TValue) (object) value);
             }
             else if (OnError is not null)
                 OnError(Key);
@@ -400,32 +339,22 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccess">A delegate to call for the key and associated value of the given property key.</param>
-        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                     TKey                                   Key,
-                                                     Type                                   PropertyType,
-                                                     Action<TKey, TValue>                   OnSuccess,
-                                                     Action<TKey>?                          OnError = null)
+        public static void UseProperty<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                     TKey                                    Key,
+                                                     Type                                    PropertyType,
+                                                     Action<TKey, TValue>                    OnSuccess,
+                                                     Action<TKey>?                           OnError = null)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
             {
-                if (_Value.GetType().Equals(PropertyType))
-                    OnSuccess(Key, _Value);
+                if (value.GetType().Equals(PropertyType))
+                    OnSuccess(Key, (TValue) (object) value);
             }
             else if (OnError is not null)
                 OnError(Key);
@@ -446,29 +375,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the associated value of the given property key.</param>
-        public static Object? PropertyFunc<TKey, TValue>(this IProperties<TKey, TValue> IProperties,
-                                                         TKey                           Key,
-                                                         Type                           PropertyType,
-                                                         Func<TValue, Object>           OnSuccessFunc)
+        public static Object? PropertyFunc<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                         TKey                            Key,
+                                                         Type                            PropertyType,
+                                                         Func<TValue, Object>            OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-            if (IProperties.TryGetProperty(Key, out _Value))
-                if (_Value.GetType().Equals(PropertyType))
-                    return OnSuccessFunc(_Value);
+            if (IProperties.TryGetProperty(Key, out var value))
+                if (value.GetType().Equals(PropertyType))
+                    return OnSuccessFunc(value);
 
             return default(TValue);
 
@@ -488,30 +408,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccessFunc">A delegate to call for the key and associated value of the given property key.</param>
-        public static Object? PropertyFunc<TKey, TValue>(this IReadOnlyProperties<TKey, TValue> IReadOnlyProperties,
-                                                         TKey                                   Key,
-                                                         Type                                   PropertyType,
-                                                         Func<TKey, TValue, Object>             OnSuccessFunc)
+        public static Object? PropertyFunc<TKey, TValue>(this IReadOnlyProperties<TKey, TValue>  IReadOnlyProperties,
+                                                         TKey                                    Key,
+                                                         Type                                    PropertyType,
+                                                         Func<TKey, TValue, Object>              OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException("The given IReadOnlyProperties must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            TValue _Value;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                if (_Value.GetType().Equals(PropertyType))
-                    return OnSuccessFunc(Key, _Value);
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                if (value.GetType().Equals(PropertyType))
+                    return OnSuccessFunc(Key, value);
 
             return default(TValue);
 
@@ -538,8 +448,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <typeparam name="TCast">The casted type of the properety values.</typeparam>
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
-        public static TCast GetCastedProperty<TKey, TValue, TCast>(this IReadOnlyProperties<TKey, TValue> IProperties, TKey Key)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static TCast GetCastedProperty<TKey, TValue, TCast>(this IReadOnlyProperties<TKey, TValue>  IProperties,
+                                                                   TKey                                    Key)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
             return (TCast) (Object) IProperties[Key]!;
@@ -567,20 +482,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccess">A delegate to call for a matching KeyValuePair.</param>
-        public static void GetKeyValuePair<TKey, TValue>(this IProperties<TKey, TValue>     IProperties,
-                                                         TKey                               Key,
-                                                         Action<KeyValuePair<TKey, TValue>> OnSuccess)
+        public static void GetKeyValuePair<TKey, TValue>(this IProperties<TKey, TValue>      IProperties,
+                                                         TKey                                Key,
+                                                         Action<KeyValuePair<TKey, TValue>>  OnSuccess)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException(nameof(OnSuccess), "The given delegate must not be null!");
-
-            #endregion
 
             if (IProperties.TryGetProperty(Key, out var value))
                 OnSuccess(new KeyValuePair<TKey, TValue>(Key, value));
@@ -602,21 +512,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccess">A delegate to call for a matching KeyValuePair.</param>
-        public static void GetKeyValuePair<TKey, TValue>(this IProperties<TKey, TValue>     IProperties,
-                                                         TKey                               Key,
-                                                         Type                               PropertyType,
-                                                         Action<KeyValuePair<TKey, TValue>> OnSuccess)
+        public static void GetKeyValuePair<TKey, TValue>(this IProperties<TKey, TValue>      IProperties,
+                                                         TKey                                Key,
+                                                         Type                                PropertyType,
+                                                         Action<KeyValuePair<TKey, TValue>>  OnSuccess)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException(nameof(OnSuccess), "The given delegate must not be null!");
-
-            #endregion
 
             if (IProperties.TryGetProperty(Key, out var value) &&
                 value is not null &&
@@ -641,20 +546,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="Key">The property key.</param>
         /// <param name="OnSuccessFunc">A delegate to call for a matching KeyValuePair.</param>
-        public static TResult? KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
-                                                                       TKey                                      Key,
-                                                                       Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
+        public static TResult? KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>             IProperties,
+                                                                       TKey                                       Key,
+                                                                       Func<KeyValuePair<TKey, TValue>, TResult>  OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException(nameof(OnSuccessFunc), "The given delegate must not be null!");
-
-            #endregion
 
             if (IProperties.TryGetProperty(Key, out var value))
                 return OnSuccessFunc(new KeyValuePair<TKey, TValue>(Key, value));
@@ -679,21 +579,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="Key">The property key.</param>
         /// <param name="PropertyType">The expected type of the property value.</param>
         /// <param name="OnSuccessFunc">A delegate to call for a matching KeyValuePair.</param>
-        public static TResult? KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
-                                                                       TKey                                      Key,
-                                                                       Type                                      PropertyType,
-                                                                       Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
+        public static TResult? KeyValuePairFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>             IProperties,
+                                                                       TKey                                       Key,
+                                                                       Type                                       PropertyType,
+                                                                       Func<KeyValuePair<TKey, TValue>, TResult>  OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException(nameof(OnSuccessFunc),  "The given delegate must not be null!");
-
-            #endregion
 
             if (IProperties.TryGetProperty(Key, out TValue value) &&
                 value is not null &&
@@ -722,26 +617,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <param name="OnSuccess">A delegate called for the associated value of each matching KeyValuePair.</param>
-        public static void UseProperties<TKey, TValue>(this IProperties<TKey, TValue> IProperties,
-                                                       KeyValueFilter<TKey, TValue>   KeyValueFilter,
-                                                       Action<TValue>                 OnSuccess)
+        public static void UseProperties<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                       KeyValueFilter<TKey, TValue>    KeyValueFilter,
+                                                       Action<TValue>                  OnSuccess)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
 
             foreach (var Property in IProperties.GetProperties(KeyValueFilter))
                 OnSuccess(Property.Value);
@@ -760,26 +644,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <param name="OnSuccess">A delegate to call for each matching KeyValuePair.</param>
-        public static void UseProperties<TKey, TValue>(this IProperties<TKey, TValue> IProperties,
-                                                       KeyValueFilter<TKey, TValue>   KeyValueFilter,
-                                                       Action<TKey, TValue>           OnSuccess)
+        public static void UseProperties<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                       KeyValueFilter<TKey, TValue>    KeyValueFilter,
+                                                       Action<TKey, TValue>            OnSuccess)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
 
             foreach (var Property in IProperties.GetProperties(KeyValueFilter))
                 OnSuccess(Property.Key, Property.Value);
@@ -798,26 +671,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <param name="OnSuccess">A delegate to call for each matching KeyValuePair.</param>
-        public static void UseProperties<TKey, TValue>(this IProperties<TKey, TValue>     IProperties,
-                                                       KeyValueFilter<TKey, TValue>       KeyValueFilter,
-                                                       Action<KeyValuePair<TKey, TValue>> OnSuccess)
+        public static void UseProperties<TKey, TValue>(this IProperties<TKey, TValue>      IProperties,
+                                                       KeyValueFilter<TKey, TValue>        KeyValueFilter,
+                                                       Action<KeyValuePair<TKey, TValue>>  OnSuccess)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            if (OnSuccess is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
 
             IProperties.GetProperties(KeyValueFilter).ForEach(OnSuccess);
 
@@ -836,26 +698,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <param name="OnSuccessFunc">A delegate returning an object for the associated value of each matching KeyValuePair.</param>
-        public static IEnumerable<TResult> PropertiesFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue> IProperties,
-                                                                                 KeyValueFilter<TKey, TValue>   KeyValueFilter,
-                                                                                 Func<TValue, TResult>          OnSuccessFunc)
+        public static IEnumerable<TResult> PropertiesFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>  IProperties,
+                                                                                 KeyValueFilter<TKey, TValue>    KeyValueFilter,
+                                                                                 Func<TValue, TResult>           OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
 
             foreach (var Property in IProperties.GetProperties(KeyValueFilter))
                 yield return OnSuccessFunc(Property.Value);
@@ -875,28 +726,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <param name="OnSuccessFunc">A delegate returning an object for each matching KeyValuePair.</param>
-        public static IEnumerable<TResult> PropertiesFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue> IProperties,
-                                                                                 KeyValueFilter<TKey, TValue>   KeyValueFilter,
-                                                                                 Func<TKey, TValue, TResult>    OnSuccessFunc)
+        public static IEnumerable<TResult> PropertiesFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>  IProperties,
+                                                                                 KeyValueFilter<TKey, TValue>    KeyValueFilter,
+                                                                                 Func<TKey, TValue, TResult>     OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
-
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            //return IProperties.GetProperties(KeyValueFilter).Map(OnSuccessFunc);
 
             foreach (var Property in IProperties.GetProperties(KeyValueFilter))
                 yield return OnSuccessFunc(Property.Key, Property.Value);
@@ -916,28 +754,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter properties based on their keys and values.</param>
         /// <param name="OnSuccessFunc">A delegate returning an object for each matching KeyValuePair.</param>
-        public static IEnumerable<TResult> PropertiesFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>            IProperties,
-                                                                                 KeyValueFilter<TKey, TValue>              KeyValueFilter,
-                                                                                 Func<KeyValuePair<TKey, TValue>, TResult> OnSuccessFunc)
+        public static IEnumerable<TResult> PropertiesFunc<TKey, TValue, TResult>(this IProperties<TKey, TValue>             IProperties,
+                                                                                 KeyValueFilter<TKey, TValue>               KeyValueFilter,
+                                                                                 Func<KeyValuePair<TKey, TValue>, TResult>  OnSuccessFunc)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IProperties is null)
-                throw new ArgumentNullException("The given IProperties must not be null!");
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            if (OnSuccessFunc is null)
-                throw new ArgumentNullException("The given delegate must not be null!");
-
-            #endregion
-
-            return IProperties.GetProperties(KeyValueFilter).Select(OnSuccessFunc);
+            return IProperties.
+                       GetProperties(KeyValueFilter).
+                       Select       (OnSuccessFunc);
 
         }
 
@@ -957,18 +786,18 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter KeyValuePairs based on their keys and values.</param>
         /// <returns>An enumeration of all selected property values.</returns>
-        public static IEnumerable<TKey> FilteredKeys<TKey, TValue>(this IProperties<TKey, TValue> IProperties, KeyValueFilter<TKey, TValue> KeyValueFilter)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static IEnumerable<TKey> FilteredKeys<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                                   KeyValueFilter<TKey, TValue>    KeyValueFilter)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            #endregion
-
-            return from _KeyValuePair in IProperties.GetProperties(KeyValueFilter) select _KeyValuePair.Key;
+            return from   keyValuePair
+                   in     IProperties.GetProperties(KeyValueFilter)
+                   select keyValuePair.Key;
 
         }
 
@@ -984,18 +813,18 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <param name="IProperties">An object implementing IProperties.</param>
         /// <param name="KeyValueFilter">A delegate to filter KeyValuePairs based on their keys and values.</param>
         /// <returns>An enumeration of all selected property values.</returns>
-        public static IEnumerable<TValue> FilteredValues<TKey, TValue>(this IProperties<TKey, TValue> IProperties, KeyValueFilter<TKey, TValue> KeyValueFilter)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static IEnumerable<TValue> FilteredValues<TKey, TValue>(this IProperties<TKey, TValue>  IProperties,
+                                                                       KeyValueFilter<TKey, TValue>    KeyValueFilter)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
-
-            if (KeyValueFilter is null)
-                throw new ArgumentNullException("The given KeyValueFilter must not be null!");
-
-            #endregion
-
-            return from _KeyValuePair in IProperties.GetProperties(KeyValueFilter) select _KeyValuePair.Value;
+            return from   keyValuePair
+                   in     IProperties.GetProperties(KeyValueFilter)
+                   select keyValuePair.Value;
 
         }
 
@@ -1007,36 +836,41 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
         /// <summary>
         /// Compares the properties of two different IElement objects (vertices or edges).
         /// </summary>
-        /// <param name="myIProperties1">A vertex or edge</param>
-        /// <param name="myIProperties2">Another vertex or edge</param>
+        /// <param name="Properties1">A vertex or edge</param>
+        /// <param name="Properties2">Another vertex or edge</param>
         /// <returns>true if both IElement objects carry the same properties</returns>
-        public static Boolean CompareProperties<TKey, TValue>(this IProperties<TKey, TValue> myIProperties1, IProperties<TKey, TValue> myIProperties2)
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static Boolean CompareProperties<TKey, TValue>(this IProperties<TKey, TValue>  Properties1,
+                                                              IProperties<TKey, TValue>       Properties2)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            if (Object.ReferenceEquals(myIProperties1, myIProperties2))
+            if (Object.ReferenceEquals(Properties1, Properties2))
                 return true;
 
             // Get a ordered list of all properties from both
-            var _Properties1 = (from _KeyValuePair in myIProperties1 orderby _KeyValuePair.Key select _KeyValuePair).ToList();
-            var _Properties2 = (from _KeyValuePair in myIProperties2 orderby _KeyValuePair.Key select _KeyValuePair).ToList();
+            var properties1 = (from _KeyValuePair in Properties1 orderby _KeyValuePair.Key select _KeyValuePair).ToList();
+            var properties2 = (from _KeyValuePair in Properties2 orderby _KeyValuePair.Key select _KeyValuePair).ToList();
 
             // Check the total number of entries
-            if (_Properties1.Count != _Properties2.Count)
+            if (properties1.Count != properties2.Count)
                 return false;
 
             // Check the entries in detail
-            for (var i=0; i<_Properties1.Count; i++)
+            for (var i=0; i<properties1.Count; i++)
             {
 
-                if (!_Properties1[i].Key.Equals(_Properties2[i].Key))
+                if (!properties1[i].Key.Equals(properties2[i].Key))
                     return false;
 
-                if (Object.ReferenceEquals(_Properties1[i].Key, _Properties2[i].Key))
+                if (Object.ReferenceEquals(properties1[i].Key, properties2[i].Key))
                     continue;
 
                 // Handle with care as just objects are compared!
-                if (!_Properties1[i].Value.Equals(_Properties2[i].Value))
+                if (!properties1[i].Value.Equals(properties2[i].Value))
                     return false;
 
             }
@@ -1056,26 +890,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region ListGet<TKey>(this IReadOnlyProperties, Key)
 
-        public static List<Object>? ListGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key)
-            
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+        public static List<Object>? ListGet<TKey>(this IReadOnlyProperties<TKey, Object>  IReadOnlyProperties,
+                                                  TKey                                    Key)
+
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException();
-
-            if (Key is null)
-                throw new ArgumentNullException();
-
-            #endregion
-
-            Object? _Value = null;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return _Value as List<Object>;
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                return value as List<Object>;
 
             return null;
 
@@ -1085,29 +910,21 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region ListTryGet<TKey>(this IReadOnlyProperties, Key, out List)
 
-        public static Boolean ListTryGet<TKey>(this IProperties<TKey, Object> IReadOnlyProperties, TKey Key, out List<Object>? List)
+        public static Boolean ListTryGet<TKey>(this IProperties<TKey, Object>  IReadOnlyProperties,
+                                               TKey                            Key,
+                                               out List<Object>?               List)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
 
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException();
-
-            if (Key is null)
-                throw new ArgumentNullException();
-
-            #endregion
-
-            Object? _Value = null;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
             {
-                
-                List = _Value as List<Object>;
-                
+
+                List = value as List<Object>;
+
                 if (List is not null)
                     return true;
 
@@ -1123,25 +940,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region SetGet<TKey>(this IReadOnlyProperties, Key)
 
-        public static HashedSet<Object>? SetGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key)
+        public static HashedSet<Object>? SetGet<TKey>(this IReadOnlyProperties<TKey, Object>  IReadOnlyProperties,
+                                                      TKey                                    Key)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException();
-
-            if (Key is null)
-                throw new ArgumentNullException();
-
-            #endregion
-
-            Object? _Value = null;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return _Value as HashedSet<Object>;
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
+                return value as HashedSet<Object>;
 
             return null;
 
@@ -1151,27 +960,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region SetTryGet<TKey>(this IReadOnlyProperties, Key, out Set)
 
-        public static Boolean SetTryGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key, out HashedSet<Object>? Set)
+        public static Boolean SetTryGet<TKey>(this IReadOnlyProperties<TKey, Object>  IReadOnlyProperties,
+                                              TKey                                    Key,
+                                              out HashedSet<Object>?                  Set)
 
-            where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
+            where TKey : IEquatable<TKey>,
+                         IComparable<TKey>,
+                         IComparable
+
         {
 
-            #region Initial checks
-
-            if (IReadOnlyProperties is null)
-                throw new ArgumentNullException();
-
-            if (Key is null)
-                throw new ArgumentNullException();
-
-            #endregion
-
-            Object? _Value = null;
-
-            if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
+            if (IReadOnlyProperties.TryGetProperty(Key, out var value))
             {
 
-                Set = _Value as HashedSet<Object>;
+                Set = value as HashedSet<Object>;
 
                 if (Set is not null)
                     return true;
