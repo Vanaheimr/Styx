@@ -38,84 +38,70 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
         #region Data
 
-        /// <summary>
-        /// The Id of this transaction.
-        /// </summary>
-        public TTransactionId Id { get; private set; }
+        private TransactionState state;
 
-        /// <summary>
-        /// The SystemId of the QuadStore initiating this transaction.
-        /// </summary>
-        public TSystemId SystemId { get; private set; }
-
-        /// <summary>
-        /// A user-friendly name or identification for this transaction.
-        /// </summary>
-        public String Name { get; private set; }
-
-        /// <summary>
-        /// The parent transaction, if this is a nested transaction.
-        /// </summary>
-        public Transaction<TTransactionId, TSystemId, TTransactionObject>? ParentTransaction { get; private set; }
-
-        /// <summary>
-        /// The creation time of this transaction.
-        /// </summary>
-        public DateTime CreationTime { get; private set; }
-
-        /// <summary>
-        /// The isolation level of this transaction.
-        /// </summary>
-        public IsolationLevel IsolationLevel { get; private set; }
-
-        /// <summary>
-        /// Whether this transaction should be synched within an distributed QuadStore.
-        /// </summary>
-        public Boolean Distributed { get; private set; }
-
-        /// <summary>
-        /// Whether this transaction is a long-running transaction.
-        /// Long-running transactions may e.g. be swapped on disc.
-        /// </summary>
-        public Boolean LongRunning { get; private set; }
-
-        /// <summary>
-        /// A timestamp after this transaction will no longer be valid.
-        /// </summary>
-        public DateTime InvalidationTime { get; private set; }
-
-        /// <summary>
-        /// The transaction object.
-        /// </summary>
-        public TTransactionObject TXObject { get; private set; }
-
-        internal readonly List<Transaction<TTransactionId, TSystemId, TTransactionObject>> _NestedTransactions;
-
-        #endregion
-
-        #region Events
-
-        ///// <summary>
-        ///// Subscribe to this event to get informed if the transaction was closed unexpected.
-        ///// </summary>
-        //public event TransactionDisposedHandler OnDispose;
+        internal readonly List<Transaction<TTransactionId, TSystemId, TTransactionObject>> nestedTransactions;
 
         #endregion
 
         #region Properties
 
-        #region Finished
+        /// <summary>
+        /// The Id of this transaction.
+        /// </summary>
+        public TTransactionId      Id                  { get; private set; }
+
+        /// <summary>
+        /// The SystemId of the QuadStore initiating this transaction.
+        /// </summary>
+        public TSystemId           SystemId            { get; private set; }
+
+        /// <summary>
+        /// A user-friendly name or identification for this transaction.
+        /// </summary>
+        public String              Name                { get; private set; }
+
+        /// <summary>
+        /// The parent transaction, if this is a nested transaction.
+        /// </summary>
+        public Transaction<TTransactionId, TSystemId, TTransactionObject>?  ParentTransaction    { get; private set; }
+
+        /// <summary>
+        /// The creation time of this transaction.
+        /// </summary>
+        public DateTime            CreationTime        { get; private set; }
+
+        /// <summary>
+        /// The isolation level of this transaction.
+        /// </summary>
+        public IsolationLevel      IsolationLevel      { get; private set; }
+
+        /// <summary>
+        /// Whether this transaction should be synched within an distributed QuadStore.
+        /// </summary>
+        public Boolean             Distributed         { get; private set; }
+
+        /// <summary>
+        /// Whether this transaction is a long-running transaction.
+        /// Long-running transactions may e.g. be swapped on disc.
+        /// </summary>
+        public Boolean             LongRunning         { get; private set; }
+
+        /// <summary>
+        /// A timestamp after this transaction will no longer be valid.
+        /// </summary>
+        public DateTime            InvalidationTime    { get; private set; }
+
+        /// <summary>
+        /// The transaction object.
+        /// </summary>
+        public TTransactionObject  TXObject            { get; private set; }
 
         /// <summary>
         /// The timestamp when this transaction was finished (committed or rolled-back).
         /// </summary>
-        public DateTime FinishingTime { get; private set; }
+        public DateTimeOffset      FinishingTime      { get; private set; }
 
-        #endregion
-
-        #region State
-
-        private TransactionState _State;
 
         /// <summary>
         /// The current state of this transaction.
@@ -124,7 +110,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         {
             get
             {
-                switch (_State)
+                switch (state)
                 {
 
                     case TransactionState.Running:
@@ -133,51 +119,27 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
                         return TransactionState.Running;
 
                     default:
-                        return _State;
+                        return state;
 
                 }
             }
         }
 
-        #endregion
-
-        #region IsNestedTransaction
 
         /// <summary>
         /// Returns true if this transaction is a nested transaction.
         /// </summary>
         public Boolean IsNestedTransaction
-        {
-            get
-            {
-                return ParentTransaction is not null;
-            }
-        }
+            => ParentTransaction is not null;
 
-        #endregion
-
-        #region HasNestedTransactions
 
         /// <summary>
         /// Returns true if this transaction contains nested transactions.
         /// </summary>
         public Boolean HasNestedTransactions
-        {
-            get
-            {
-
-                if (_NestedTransactions is null || !_NestedTransactions.Any())
-                    return false;
-
-                return true;
-
-            }
-        }
+            => nestedTransactions.Count == 0;
 
         #endregion
-
-        #endregion
-
 
         #region Constructor(s)
 
@@ -206,10 +168,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
                            Func<TTransactionObject>?  TransactionObjectCreator   = null)
         {
 
-            this._NestedTransactions   = [];
+            this.nestedTransactions    = [];
             this.Id                    = Id;
             this.SystemId              = SystemId;
-            this._State                = TransactionState.Running;
+            this.state                 = TransactionState.Running;
 
             if (CreationTime.HasValue)
                 this.CreationTime      = CreationTime.Value;
@@ -235,14 +197,26 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// <summary>
         /// Creates a new nested transaction.
         /// </summary>
-        /// <param name="Id"></param>
-        /// <param name="SystemId"></param>
-        /// <param name="ParentTransaction"></param>
-        internal Transaction(TTransactionId Id, TSystemId SystemId, Transaction<TTransactionId, TSystemId, TTransactionObject> ParentTransaction)
-            : this(Id, SystemId, "", ParentTransaction.Distributed, ParentTransaction.LongRunning, ParentTransaction.IsolationLevel)
+        /// <param name="Id">The Id of the nested transaction.</param>
+        /// <param name="SystemId">The SystemId of the nested transaction.</param>
+        /// <param name="ParentTransaction">The parent transaction of the nested transaction.</param>
+        internal Transaction(TTransactionId                                              Id,
+                             TSystemId                                                   SystemId,
+                             Transaction<TTransactionId, TSystemId, TTransactionObject>  ParentTransaction)
+
+            : this(Id,
+                   SystemId,
+                   "",
+                   ParentTransaction.Distributed,
+                   ParentTransaction.LongRunning,
+                   ParentTransaction.IsolationLevel)
+
         {
+
             this.ParentTransaction = ParentTransaction;
-            Name = ParentTransaction.Name + "#" + ParentTransaction._NestedTransactions.Count + 1;
+
+            Name = $"{ParentTransaction.Name}#{ParentTransaction.nestedTransactions.Count + 1}";
+
         }
 
         #endregion
@@ -266,17 +240,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
                 // Running => Committed
                 case TransactionState.Running:
-                    _State = TransactionState.Committing;
+                    state = TransactionState.Committing;
                     // Do actual some work!
                     FinishingTime = UniqueTimestamp.Now;
-                    _State = TransactionState.Committed;
+                    state = TransactionState.Committed;
                     return true;
 
 
                 // NestedTransactions => Error!
                 // At the moment do not allow to auto-commit the nested transaction!
                 case TransactionState.NestedTransaction:
-                    if (_NestedTransactions.Last().State == TransactionState.Committed)
+                    if (nestedTransactions.Last().State == TransactionState.Committed)
                         goto case TransactionState.Running;
                     throw new CouldNotCommitNestedTransactionException<TTransactionId, TSystemId, TTransactionObject>(this);
 
@@ -323,12 +297,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
                 // Running => RollingBack => Rolledback
                 case TransactionState.Running:
-                    _State = TransactionState.RollingBack;
+                    state = TransactionState.RollingBack;
                     // Do actual some work!
                     //        //if (OnDispose is not null)
                     //        //    OnDispose(this, new TransactionDisposedEventArgs(this, _SessionTokenReference));
                     FinishingTime = UniqueTimestamp.Now;
-                    _State = TransactionState.RolledBack;
+                    state = TransactionState.RolledBack;
                     Debug.WriteLine("Transaction rolledback on Thread " + Thread.CurrentThread.ManagedThreadId + "!");
                     return true;
 
@@ -391,7 +365,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
                 // Running => Rolledback
                 case TransactionState.Running:
                     var _NestedTransaction = new Transaction<TTransactionId, TSystemId, TTransactionObject>(default(TTransactionId), SystemId, this);
-                    _NestedTransactions.Add(_NestedTransaction);
+                    nestedTransactions.Add(_NestedTransaction);
                     return _NestedTransaction;
 
 
@@ -420,7 +394,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
 
                 default:
-                    throw new TransactionException<TTransactionId, TSystemId, TTransactionObject>(this, Message: "Transaction.BeginNestedTransaction() is invalid!");
+                    throw new TransactionException<TTransactionId, TSystemId, TTransactionObject>(
+                              this,
+                              Message: "Transaction.BeginNestedTransaction() is invalid!"
+                          );
 
             }
 
@@ -434,9 +411,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
         /// Return the current nested transaction.
         /// </summary>
         public Transaction<TTransactionId, TSystemId, TTransactionObject> GetNestedTransaction()
-        {
-            return _NestedTransactions.Last();
-        }
+            => nestedTransactions.Last();
 
         #endregion
 

@@ -1840,17 +1840,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static T MapElementOrFail<T>(this XElement                            ParentXElement,
                                             XName                                    XName,
                                             Func<XElement, OnExceptionDelegate?, T>  Mapper,
-                                            OnExceptionDelegate?                     OnException        = null,
+                                            OnExceptionDelegate                      OnException,
                                             String?                                  ExceptionMessage   = null)
         {
 
             var xElement = ParentXElement.Element(XName);
 
             if (xElement is null)
-                if (OnException is not null)
-                    OnException(Timestamp.Now, ParentXElement, new Exception(ExceptionMessage));
-                else
-                    throw new Exception(ExceptionMessage);
+            {
+
+                OnException?.Invoke(
+                    Timestamp.Now,
+                    ParentXElement,
+                    new Exception(ExceptionMessage)
+                );
+
+                throw new Exception(ExceptionMessage);
+
+            }
 
             return Mapper(xElement, OnException);
 
@@ -1861,12 +1868,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              XName              XName,
                                              Func<XElement, T>  Mapper)
         {
-
-            if (ParentXElement is null)
-                throw new Exception("The parent XML element must not be null!");
-
-            if (Mapper is null)
-                throw new Exception("Mapper delegate must not be null!");
 
             var xElement = ParentXElement.Element(XName)
                              ?? throw new Exception("The XElement must not be null!");
@@ -1882,20 +1883,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                   out T?             Element,
                                                   out String?        ErrorResponse)
         {
-
-            if (ParentXElement is null)
-            {
-                Element        = default;
-                ErrorResponse  = "The parent XML element must not be null!";
-                return false;
-            }
-
-            if (Mapper is null)
-            {
-                Element        = default;
-                ErrorResponse  = "The mapper delegate must not be null!";
-                return false;
-            }
 
             var xElement = ParentXElement.Element(XName);
 
@@ -1942,19 +1929,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            #region Initial checks
+            var xElement = ParentXElement.Element(XName);
 
-            if (ParentXElement is null || Mapper is null)
+            if (xElement is null)
                 return new T?();
 
-            #endregion
-
-            var _XElement = ParentXElement.Element(XName);
-
-            if (_XElement is null)
-                return new T?();
-
-            return Mapper(_XElement, OnException);
+            return Mapper(xElement, OnException);
 
         }
 

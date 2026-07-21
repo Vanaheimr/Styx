@@ -179,9 +179,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Error">The parsed error.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject                            JSON,
-                                       [NotNullWhen(true)]  out Error?  Error,
-                                       [NotNullWhen(false)] out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                           JSON,
+                                       [NotNullWhen(true)]  out Error?   Error,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
 
             => TryParse(JSON,
                         out Error,
@@ -196,9 +196,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Error">The parsed error.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomErrorParser">An optional delegate to parse custom error JSON objects.</param>
-        public static Boolean TryParse(JObject                                JSON,
+        public static Boolean TryParse(JObject                              JSON,
                                        [NotNullWhen(true)]  out Error?      Error,
-                                       [NotNullWhen(false)] out String?       ErrorResponse,
+                                       [NotNullWhen(false)] out String?     ErrorResponse,
                                        CustomJObjectParserDelegate<Error>?  CustomErrorParser   = null)
         {
 
@@ -219,9 +219,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              "error text",
                                              I18NString.TryParse,
                                              out I18NString? Text,
-                                             out ErrorResponse) ||
-                     Text is null)
+                                             out ErrorResponse))
                 {
+                    ErrorResponse = "The given JSON representation of a error is invalid: " + ErrorResponse;
                     return false;
                 }
 
@@ -235,21 +235,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
                 Error = new Error(
-                              Text,
-                              Context
-                          );
+                            Text,
+                            Context
+                        );
 
 
                 if (CustomErrorParser is not null)
-                    Error = CustomErrorParser(JSON,
-                                                  Error);
+                    Error = CustomErrorParser(JSON, Error);
 
                 return true;
 
             }
             catch (Exception e)
             {
-                Error        = default;
+                Error          = default;
                 ErrorResponse  = "The given JSON representation of a error is invalid: " + e.Message;
                 return false;
             }

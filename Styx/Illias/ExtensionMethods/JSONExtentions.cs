@@ -222,11 +222,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
             }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch
-#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
-#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
             Value          = default;
@@ -240,7 +236,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 //                                                String           PropertyDescription,
 //                                                Func<String, T>  Mapper,
 //                                                out T?           Value,
-//                                                out String       ErrorResponse)
+//                                                out String?      ErrorResponse)
 
 //            where T : struct
 
@@ -615,7 +611,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                        String               PropertyDescription,
         //                                        TryParser3<T>        TryParser,
         //                                        out T?               Value,
-        //                                        out String           ErrorResponse,
+        //                                        out String?          ErrorResponse,
         //                                        OnExceptionDelegate  OnException)
 
         //    where T : struct
@@ -1003,7 +999,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //                                        String               PropertyDescription,
         //                                        TryParser3<T>        TryParser,
         //                                        out T?               Value,
-        //                                        out String           ErrorResponse,
+        //                                        out String?          ErrorResponse,
         //                                        OnExceptionDelegate  OnException)
 
         //    where T : struct
@@ -2406,7 +2402,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              String                   PropertyName,
                                              String                   PropertyDescription,
                                              out IEnumerable<String>  EnumerationOfStrings,
-                                             out String               ErrorResponse)
+                                             out String?              ErrorResponse)
         {
 
             EnumerationOfStrings = [];
@@ -2438,7 +2434,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                EnumerationOfStrings = JArray.SafeSelect(item => item.Value<String>()).ToArray();
+                EnumerationOfStrings = [.. JArray.Select(item => item.Value<String>())];
 
             }
             catch
@@ -2766,7 +2762,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!(JSONToken is JObject JSONValue))
+            if (JSONToken is not JObject JSONValue)
             {
                 ErrorResponse = $"Invalid JSON object '{PropertyName}' ({PropertyDescription})!";
                 return false;
@@ -2779,8 +2775,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            Value         = value;
-            ErrorResponse = null;
+            Value          = value;
+            ErrorResponse  = null;
             return true;
  
         }
@@ -5624,7 +5620,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                            String               PropertyDescription,
                                                            TryParser2<TStruct>  Parser,
                                                            out TStruct?         Value,
-                                                           out String           ErrorResponse)
+                                                           out String?          ErrorResponse)
 
             where TStruct : struct
 
@@ -5801,7 +5797,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            EnumValues     = new HashSet<TEnum>();
+            EnumValues     = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -5855,13 +5851,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                      String              PropertyDescription,
                                                      TryParser<T>        TryParser,
                                                      out IEnumerable<T>  Values,
-                                                     out String          ErrorResponse)
+                                                     out String?         ErrorResponse)
 
             where T : struct
 
         {
 
-            Values         = new T[0];
+            Values         = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -5893,7 +5889,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 foreach (var JSONItem in JSONList)
                 {
 
-                    if (TryParser(JSONItem?.Value<String>(), out T Value))
+                    if (TryParser(JSONItem?.Value<String>() ?? "", out T Value))
                         List.Add(Value);
 
                     else
@@ -6320,9 +6316,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (!(JSONToken is JArray JSONArray))
+                if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -6775,7 +6771,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            //ErrorResponse = "Invalid JSON property!";
+            ErrorResponse = "Invalid JSON property!";
             return false;
 
         }
@@ -6813,14 +6809,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JObject JSON2))
-                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+                if (JSONToken is not JObject JSON2)
+                    ErrorResponse  = $"Invalid {PropertyDescription}!";
 
                 else if (JObjectParser(JSON2, out T value, out var errorResponse2))
                     Value = value;
 
                 else
-                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + errorResponse2;
+                    ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
 
                 return true;
 
@@ -7003,11 +6999,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSON2))
-                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+                if (JSONToken is not JArray JSON2)
+                    ErrorResponse  = $"Invalid {PropertyDescription}!";
 
                 else if (!JArrayParser(JSON2, out Value, out var ErrorResponse2))
-                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
+                    ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {ErrorResponse2}";
 
                 return true;
 
@@ -7050,14 +7046,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSON2))
-                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+                if (JSONToken is not JArray JSON2)
+                    ErrorResponse  = $"Invalid {PropertyDescription}!";
 
                 else if (JArrayParser(JSON2, out T value, out var ErrorResponse2))
                     Value = value;
 
                 else
-                    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
+                    ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {ErrorResponse2}";
 
                 return true;
 
@@ -7106,14 +7102,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
                     return false;
 
-                if (!(JSONToken is JArray JSON2))
-                    ErrorResponse  = "Invalid " + PropertyDescription + "!";
+                if (JSONToken is not JArray)
+                    ErrorResponse  = $"Invalid {PropertyDescription}!";
 
                 //else if (JArrayParser(JSON2, out StdDev<T>? value, out String? ErrorResponse2, Parser))
                 //    Value = value;
 
                 //else
-                //    ErrorResponse  = "JSON property '" + PropertyName + "' (" + PropertyDescription + ") could not be parsed: " + ErrorResponse2;
+                //    ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {ErrorResponse2}";
 
                 return true;
 
@@ -7131,7 +7127,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String          PropertyName,
                                             String          PropertyDescription,
                                             out JObject     JSONObject,
-                                            out String      ErrorResponse)
+                                            out String?     ErrorResponse)
 
         {
 
@@ -7160,7 +7156,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONObject = JSONToken as JObject;
 
                 if (JSONObject is null)
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON object!";
+                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON object!";
 
                 return true;
 
@@ -7178,11 +7174,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                             String          PropertyName,
                                             String          PropertyDescription,
                                             out JArray      JSONArray,
-                                            out String      ErrorResponse)
+                                            out String?     ErrorResponse)
 
         {
 
-            JSONArray      = new JArray();
+            JSONArray      = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7201,15 +7197,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
-                    return false;
+                if (JSONToken is not null &&
+                    JSONToken.Type == JTokenType.Null &&
+                    JSONToken is JArray jsonArray)
+                {
+                    JSONArray = jsonArray;
+                    return true;
+                }
 
-                JSONArray = JSONToken as JArray;
-
-                if (JSONArray is null)
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
-
-                return true;
+                ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
 
             }
 
@@ -7567,7 +7563,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 EnumerableT = list;
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -7640,7 +7636,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 EnumerableT = list;
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -7733,7 +7729,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            HashSet        = new HashSet<T>();
+            HashSet        = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7793,7 +7789,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -7813,7 +7809,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            HashSet        = new HashSet<T>();
+            HashSet        = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7873,7 +7869,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -7894,7 +7890,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            HashSet        = new HashSet<T>();
+            HashSet        = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7955,7 +7951,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -8027,7 +8023,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -8100,7 +8096,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                if (errorResponses.Any())
+                if (errorResponses.Count > 0)
                     ErrorResponse = errorResponses.AggregateWith(Environment.NewLine);
 
                 return true;
@@ -8142,7 +8138,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           out String?              ErrorResponse)
         {
 
-            Values         = Array.Empty<String>();
+            Values         = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -8531,27 +8527,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                               T?               DefaultValue = default)
         {
 
-            #region Initial checks
-
-            if (ParentJObject is null)
-                return DefaultValue;
-
-            #endregion
-
-            JToken? JSONValue;
-
-            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
+            if (ParentJObject.TryGetValue(PropertyName, out var JSONValue))
             {
 
                 try
                 {
                     return ValueMapper(JSONValue);
                 }
-#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
-#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch
-#pragma warning restore RECS0022
-#pragma warning restore RCS1075
                 { }
 
             }
@@ -8578,19 +8561,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                           String?          ExceptionMessage = null)
         {
 
-            #region Initial checks
-
-            if (ParentJObject is null)
-                throw new ArgumentNullException(nameof(ParentJObject),  "The given JSON object must not be null!");
-
-            if (ValueMapper is null)
-                throw new ArgumentNullException(nameof(ValueMapper),    "The given JSON value mapper delegate must not be null!");
-
-            #endregion
-
-            JToken? JSONValue;
-
-            if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
+            if (ParentJObject.TryGetValue(PropertyName, out var JSONValue))
             {
 
                 try
