@@ -431,18 +431,18 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// The first source pipe.
         /// </summary>
         // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
-        protected IEndPipe<S1>  SourcePipe1        { get; private set; }
+        protected IEndPipe<S1>  SourcePipe1        { get; private set; } = null!;
 
         /// <summary>
         /// The second source pipe.
         /// </summary>
         // Set by a constructor or SetSource(...) before iteration (null-forgiving; see SourcePipe).
-        protected IEndPipe<S2>  SourcePipe2        { get; private set; }
+        protected IEndPipe<S2>  SourcePipe2        { get; private set; } = null!;
         /// <summary>
         /// The current element in the pipe.
         /// </summary>
         // The current element; default(E) until the first MoveNext() assigns it.
-        protected E             _CurrentElement    { get; set; }
+        protected E             _CurrentElement    { get; set; } = default!;
 
         #endregion
 
