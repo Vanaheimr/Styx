@@ -1395,7 +1395,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var Dictionary = new Dictionary<String, String>();
 
-            Text = Text?.Trim();
+            Text = Text?.Trim() ?? "";
 
             if (Text.IsNullOrEmpty())
                 return Dictionary;

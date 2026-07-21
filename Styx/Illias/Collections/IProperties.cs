@@ -56,8 +56,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            HashedSet<Object> _Set = null;
-            Object _Value = null;
+            HashedSet<Object>? _Set = null;
+            Object? _Value = null;
 
             if (IProperties.TryGetProperty(Key, out _Value))
             {
@@ -212,12 +212,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            List<Object> _List = null;
-            Object _Value = null;
+            List<Object>? _List = null;
+            Object? _Value = null;
 
             if (IProperties.TryGetProperty(Key, out _Value))
             {
-                
+
                 _List = _Value as List<Object>;
 
                 if (_List is null)
@@ -272,8 +272,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            Dictionary<Object, UInt64> _ZSet          = null;
-            Object                     _CountedValue  = null;
+            Dictionary<Object, UInt64>? _ZSet          = null;
+            Object?                     _CountedValue  = null;
             UInt64                     _Counter;
 
             if (IProperties.TryGetProperty(Key, out _CountedValue))

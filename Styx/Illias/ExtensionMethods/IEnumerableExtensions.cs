@@ -1057,8 +1057,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var enumerator = IEnumerable.GetEnumerator();
 
-            T a = default;
-            T b = default;
+            T a = default!;
+            T b = default!;
             Byte Emit = 0;
 
             while (enumerator.MoveNext())

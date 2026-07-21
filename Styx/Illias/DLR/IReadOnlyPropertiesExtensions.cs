@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             TValue _Value;
 
             if (IProperties.TryGetProperty(Key, out _Value))
-                return (dynamic)_Value;
+                return (dynamic)_Value!;
 
             return default(TValue);
 

@@ -92,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     return from   _StringTypePair
                            in     _TypeLookup
-                           select (TClass) Activator.CreateInstance(_StringTypePair.Value);
+                           select (TClass) Activator.CreateInstance(_StringTypePair.Value)!;
 
                 }
                 catch (Exception e)
@@ -302,7 +302,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (_InstanceLookup.TryGetValue(Identificator, out Instance))
                 return true;
 
-            Type _Type = null;
+            Type? _Type = null;
             if (_TypeLookup.TryGetValue(Identificator, out _Type))
             {
 

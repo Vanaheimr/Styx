@@ -128,13 +128,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IPixelValuePair<T, TValue>.
-            var IPixelValuePair = (IPixelValuePair<T, TValue>) Object;
-            if ((Object) IPixelValuePair is not null)
+            var IPixelValuePair = Object as IPixelValuePair<T, TValue>;
+            if (IPixelValuePair is not null)
                 return IPixelValuePair.CompareTo(this);
 
             // Check if the given object is an IPixel<T>.
-            var IPixel = (IPixel<T>) Object;
-            if ((Object) IPixel is not null)
+            var IPixel = Object as IPixel<T>;
+            if (IPixel is not null)
                 return IPixel.CompareTo(this);
 
             throw new ArgumentException("The given object is neither a PixelValuePair<T, TValue> nor a Pixel<T>!");
@@ -174,13 +174,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return false;
 
             // Check if the given object is an IPixelValuePair<T, TValue>.
-            var IPixelValuePair = (IPixelValuePair<T, TValue>) Object;
-            if ((Object) IPixelValuePair is not null)
+            var IPixelValuePair = Object as IPixelValuePair<T, TValue>;
+            if (IPixelValuePair is not null)
                 return this.Equals(IPixelValuePair);
 
             // Check if the given object is an IPixel<T>.
-            var IPixel = (IPixel<T>) Object;
-            if ((Object) IPixel is not null)
+            var IPixel = Object as IPixel<T>;
+            if (IPixel is not null)
                 return this.Equals(IPixel);
 
             return false;

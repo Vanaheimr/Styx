@@ -298,7 +298,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             TValue _Value;
 
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
-                return (String) (Object) _Value;
+                return (String) (Object) _Value!;
 
             throw new Exception("404!");
 
@@ -542,7 +542,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {
 
-            return (TCast) (Object) IProperties[Key];
+            return (TCast) (Object) IProperties[Key]!;
 
         }
 
@@ -1072,7 +1072,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            Object _Value = null;
+            Object? _Value = null;
 
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
                 return _Value as List<Object>;
@@ -1101,7 +1101,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            Object _Value = null;
+            Object? _Value = null;
 
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
             {
@@ -1138,7 +1138,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            Object _Value = null;
+            Object? _Value = null;
 
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
                 return _Value as HashedSet<Object>;
@@ -1166,7 +1166,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
             #endregion
 
-            Object _Value = null;
+            Object? _Value = null;
 
             if (IReadOnlyProperties.TryGetProperty(Key, out _Value))
             {

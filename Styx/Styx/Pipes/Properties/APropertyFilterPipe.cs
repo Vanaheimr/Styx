@@ -265,7 +265,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                     try
                     {
 
-                        if (ComparisonFilter((TCast) (Object) ActualValue))
+                        if (ComparisonFilter((TCast) (Object) ActualValue!))
                         {
                             _CurrentElement = SourcePipe.Current;
                             return true;

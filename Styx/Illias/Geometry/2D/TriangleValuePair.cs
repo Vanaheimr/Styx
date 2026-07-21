@@ -129,13 +129,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an ITriangleValuePair<T, TValue>.
-            var ITriangleValuePair = (ITriangleValuePair<T, TValue>)Object;
-            if ((Object) ITriangleValuePair is not null)
+            var ITriangleValuePair = Object as ITriangleValuePair<T, TValue>;
+            if (ITriangleValuePair is not null)
                 return ITriangleValuePair.CompareTo(this);
 
             // Check if the given object is an ITriangle<T>.
-            var ITriangle = (ITriangle<T>) Object;
-            if ((Object) ITriangle is not null)
+            var ITriangle = Object as ITriangle<T>;
+            if (ITriangle is not null)
                 return ITriangle.CompareTo(this);
 
             throw new ArgumentException("The given object is neither a ITriangleValuePair<T, TValue> nor a ITriangle<T>!");

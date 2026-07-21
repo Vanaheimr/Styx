@@ -332,11 +332,10 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Points">The points.</param>
         /// <param name="Tolerance">The tolerance.</param>
-        /// <returns></returns>
         public static IList<Point> DouglasPeuckerReduction(IList<Point> Points, double Tolerance)
         {
 
-            if (Points is null || Points.Count < 3)
+            if (Points.Count < 3)
                 return Points;
 
             int firstPoint = 0;
@@ -361,6 +360,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             }
 
             return returnPoints;
+
         }
 
 

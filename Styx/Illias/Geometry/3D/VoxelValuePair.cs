@@ -127,13 +127,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an IVoxelValuePair<T, TValue>.
-            var IVoxelValuePair = (IVoxelValuePair<T, TValue>) Object;
-            if ((Object) IVoxelValuePair is not null)
+            var IVoxelValuePair = Object as IVoxelValuePair<T, TValue>;
+            if (IVoxelValuePair is not null)
                 return IVoxelValuePair.CompareTo(this);
 
             // Check if the given object is an IVoxel<T>.
-            var IVoxel = (IVoxel<T>) Object;
-            if ((Object) IVoxel is not null)
+            var IVoxel = Object as IVoxel<T>;
+            if (IVoxel is not null)
                 return IVoxel.CompareTo(this);
 
             throw new ArgumentException("The given object is neither a VoxelValuePair<T, TValue> nor a Voxel<T>!");
@@ -173,13 +173,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return false;
 
             // Check if the given object is an IVoxelValuePair<T, TValue>.
-            var IVoxelValuePair = (IVoxelValuePair<T, TValue>) Object;
-            if ((Object) IVoxelValuePair is not null)
+            var IVoxelValuePair = Object as IVoxelValuePair<T, TValue>;
+            if (IVoxelValuePair is not null)
                 return this.Equals(IVoxelValuePair);
 
             // Check if the given object is an IVoxel<T>.
-            var IVoxel = (IVoxel<T>) Object;
-            if ((Object) IVoxel is not null)
+            var IVoxel = Object as IVoxel<T>;
+            if (IVoxel is not null)
                 return this.Equals(IVoxel);
 
             return false;

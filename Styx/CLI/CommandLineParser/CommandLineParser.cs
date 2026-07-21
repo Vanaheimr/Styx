@@ -34,9 +34,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private CommandLineParser CommandLineParser;
+        private readonly  CommandLineParser  CommandLineParser;
 
-        private Nullable<Char> _Short;
+        private           Char?              shortOption;
 
         #endregion
 
@@ -45,33 +45,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The short option.
         /// </summary>
-        public Char                   ShortOption         { get { return _Short.Value; } }
+        public Char                    ShortOption
+            => shortOption ?? '\0';
 
         /// <summary>
         /// The long option.
         /// </summary>
-        public String?                LongOption          { get; private set; }
+        public String?                 LongOption          { get; private set; }
 
         /// <summary>
         /// An optional regular expression for verification.
         /// </summary>
-        public Regex?                 RegularExpression   { get; private set; }
+        public Regex?                  RegularExpression   { get; private set; }
 
         /// <summary>
         /// An optional delegate for verification.
         /// </summary>
-        public Func<String, Boolean>? Verification        { get; private set; }
+        public Func<String, Boolean>?  Verification        { get; private set; }
 
         /// <summary>
         /// The action delegate.
         /// </summary>
-        public Action<String>?        Action              { get; private set; }
+        public Action<String>?         Action              { get; private set; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region CommandLineParserOption(CommandLineParser)
+        #region CommandLineParserOption(             CommandLineParser)
 
         /// <summary>
         /// Create a new fluent interface to add command line parser options.
@@ -79,7 +80,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="CommandLineParser">The command line parser.</param>
         public CommandLineParserOption(CommandLineParser CommandLineParser)
         {
+
             this.CommandLineParser = CommandLineParser;
+
         }
 
         #endregion
@@ -91,29 +94,37 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="ShortOption">The short option.</param>
         /// <param name="CommandLineParser">The command line parser.</param>
-        public CommandLineParserOption(Char ShortOption, CommandLineParser CommandLineParser)
+        public CommandLineParserOption(Char               ShortOption,
+                                       CommandLineParser  CommandLineParser)
+
             : this(CommandLineParser)
+
         {
-            this._Short = new Nullable<Char>(ShortOption);
+
+            this.shortOption = new Nullable<Char>(ShortOption);
+
         }
 
         #endregion
 
-        #region CommandLineParserOption(LongOption, CommandLineParser)
+        #region CommandLineParserOption(LongOption,  CommandLineParser)
 
         /// <summary>
         /// Create a new fluent interface to add command line parser options.
         /// </summary>
         /// <param name="LongOption">The long option.</param>
         /// <param name="CommandLineParser">The command line parser.</param>
-        public CommandLineParserOption(String LongOption, CommandLineParser CommandLineParser)
+        public CommandLineParserOption(String             LongOption,
+                                       CommandLineParser  CommandLineParser)
+
             : this(CommandLineParser)
+
         {
 
-            if (LongOption is null || LongOption.Trim() == "")
-                throw new ArgumentNullException(nameof(LongOption), "The parameter must not be null or empty!");
-
             this.LongOption = LongOption.Trim();
+
+            if (this.LongOption.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(LongOption), "The parameter must not be null or empty!");
 
         }
 
@@ -130,7 +141,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ShortOption">The short option.</param>
         public CommandLineParserOption Short(Char ShortOption)
         {
-            this._Short = new Nullable<Char>(ShortOption);
+            this.shortOption = new Nullable<Char>(ShortOption);
             return this;
         }
 
@@ -226,14 +237,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public CommandLineParser Apply()
         {
 
-            if (!_Short.HasValue && LongOption is null)
+            if (!shortOption.HasValue && LongOption is null)
                 throw new ArgumentException("Either a short or long option must be defined!");
 
             if (Action is null)
                 throw new ArgumentException("An action has to be defined for this option!");
 
-            if (_Short.HasValue)
-                CommandLineParser.AddOption(_Short.Value, Action);
+            if (shortOption.HasValue)
+                CommandLineParser.AddOption(shortOption.Value, Action);
 
             if (LongOption is not null)
                 CommandLineParser.AddOption(LongOption, Action);

@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Keys.TryAdd(Key, Value))
             {
 
-                LinkedList<TValue> _Group = null;
+                LinkedList<TValue>? _Group = null;
 
                 lock (Groups)
                 {
@@ -181,7 +181,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UInt64 Count(TGroup Group)
         {
 
-            LinkedList<TValue> _Group = null;
+            LinkedList<TValue>? _Group = null;
 
             if (Groups.TryGetValue(Group, out _Group))
                 return (UInt64) _Group.Count;
@@ -221,7 +221,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean TryGetByGroup(TGroup Group, out IEnumerable<TValue> Values)
         {
 
-            LinkedList<TValue> _Group = null;
+            LinkedList<TValue>? _Group = null;
 
             if (Groups.TryGetValue(Group, out _Group))
             {
@@ -250,14 +250,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean TryRemoveValue(TKey Key, TValue Value, TGroup Group)
         {
 
-            TValue _Value;
+            TValue? _Value;
 
             // Remove value from Key-lookup...
             if (this.Keys.TryRemove(Key, out _Value))
             {
 
                 // Remove value from Group-lookup...
-                LinkedList<TValue> _Group = null;
+                LinkedList<TValue>? _Group = null;
 
                 if (Groups.TryGetValue(Group, out _Group))
                 {
@@ -267,7 +267,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         // Remove entire group if no value is left!
                         if (_Group.Count == 0)
                         {
-                            LinkedList<TValue> _RemovedGroup;
+                            LinkedList<TValue>? _RemovedGroup;
                             return Groups.TryRemove(Group, out _RemovedGroup);
                         }
 

@@ -45,7 +45,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
             if (StreamReader is null)
                 throw new ArgumentNullException("StreamReader", "StreamReader must not be null!");
 
-            String CurrentLine;
+            String? CurrentLine;
 
             while ((CurrentLine = StreamReader.ReadLine()) is not null)
                 yield return CurrentLine;

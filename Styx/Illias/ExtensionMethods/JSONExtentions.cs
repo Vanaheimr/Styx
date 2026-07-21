@@ -8538,7 +8538,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            JToken JSONValue;
+            JToken? JSONValue;
 
             if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
             {
@@ -8588,7 +8588,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
-            JToken JSONValue;
+            JToken? JSONValue;
 
             if (ParentJObject.TryGetValue(PropertyName, out JSONValue))
             {

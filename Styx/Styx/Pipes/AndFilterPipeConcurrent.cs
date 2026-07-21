@@ -108,9 +108,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.Concurrent
                                     select Task<Boolean>.Factory.StartNew((_Pipe2) =>
                                     {
 
-                                        ((IPipe<S,Boolean>) _Pipe2).SetSource(new SingleEnumerator<S>(_S));
-                
-                                        var _return = ((IPipe<S,Boolean>) _Pipe2).MoveNext();
+                                        ((IPipe<S,Boolean>) _Pipe2!).SetSource(new SingleEnumerator<S>(_S));
+
+                                        var _return = ((IPipe<S,Boolean>) _Pipe2!).MoveNext();
                         
 //                                         Interlocked.Decrement(ref _NumberOfTasks);
                         

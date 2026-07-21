@@ -90,16 +90,12 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (property.Key == "features")
                         continue;
 
-                    switch (property.Value.Type)
+                    switch (property.Value?.Type)
                     {
 
-                        case JTokenType.None:           // None         = 0
-                        case JTokenType.Constructor:    // Constructor  = 3
-                        case JTokenType.Comment:        // Comment      = 5
-                        case JTokenType.Null:           // Null         = 10
-                        case JTokenType.Undefined:      // Undefined    = 11
+                        // None         = 0
+                        case JTokenType.None:
                             break;
-
 
                         // Object       = 1
                         case JTokenType.Object:
@@ -109,6 +105,19 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                         // Array        = 2
                         case JTokenType.Array:
                             properties.Add(property.Key, property.Value.Value<JArray>()!);
+                            break;
+
+                        // Constructor  = 3
+                        case JTokenType.Constructor:
+                            break;
+
+                        // Property     = 4
+                        case JTokenType.Property:
+                            properties.Add(property.Key, property.Value?.Value<String>()!);
+                            break;
+
+                        // Comment      = 5
+                        case JTokenType.Comment:
                             break;
 
                         // Integer      = 6
@@ -121,9 +130,22 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                             properties.Add(property.Key, property.Value.Value<Single>());
                             break;
 
+                        // String       = 8
+                        case JTokenType.String:
+                            properties.Add(property.Key, property.Value?.Value<String>()!);
+                            break;
+
                         // Boolean      = 9
                         case JTokenType.Boolean:
                             properties.Add(property.Key, property.Value.Value<Boolean>());
+                            break;
+
+                        // Null         = 10
+                        case JTokenType.Null:
+                            break;
+
+                        // Undefined    = 11
+                        case JTokenType.Undefined:
                             break;
 
                         // Date         = 12
@@ -152,11 +174,14 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                             break;
 
 
-                        // Property     = 4
-                        // String       = 8
+
+
+
+
+
                         // Raw          = 13
                         default:
-                            properties.Add(property.Key, property.Value.Value<String>()!);
+                            properties.Add(property.Key, property.Value?.Value<String>()!);
                             break;
 
                     }
@@ -193,7 +218,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                     if (feature is JObject JSONFeature)
                     {
 
-                        switch (JSONFeature["geometry"]["type"].Value<String>().ToLower())
+                        switch (JSONFeature["geometry"]?["type"]?.Value<String>()?.ToLower())
                         {
 
                             case "point":
@@ -265,7 +290,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Get a string representation of this object.
         /// </summary>
         public override String ToString()
-            => _Properties["Id"]?.ToString();
+
+            => _Properties["Id"]?.ToString() ?? "";
 
         #endregion
 
