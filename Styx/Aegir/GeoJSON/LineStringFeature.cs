@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Constructor(s)
 
-        public LineStringFeature(String                      Id,
+        public LineStringFeature(String?                     Id,
                                  Dictionary<String, Object>  Properties,
                                  IEnumerable<GeoCoordinate>  Points)
 

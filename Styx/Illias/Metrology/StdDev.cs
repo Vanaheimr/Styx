@@ -333,7 +333,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return result;
 
             throw new FormatException($"String '{s}' was not recognized as a valid StdDev<{typeof(T).Name}>. " +
-                                      $"Expected format: 'value ± stddev' (example: \"{new StdDev<T>(default, default)}\").");
+                                      $"Expected format: 'value ± stddev' (example: \"{new StdDev<T>(default!, default!)}\").");
 
         }
 

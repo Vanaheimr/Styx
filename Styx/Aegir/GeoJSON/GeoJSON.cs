@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         #endregion
 
 
-        internal static Dictionary<String, Object> ParseProperties(JObject GeoJSON)
+        internal static Dictionary<String, Object> ParseProperties(JObject? GeoJSON)
         {
 
             var properties  = new Dictionary<String, Object>();

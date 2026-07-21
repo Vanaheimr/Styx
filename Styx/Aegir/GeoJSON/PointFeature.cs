@@ -41,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Constructor(s)
 
-        public PointFeature(String                      Id,
+        public PointFeature(String?                     Id,
                             Dictionary<String, Object>  Properties,
                             GeoCoordinate               GeoCoordinate)
 

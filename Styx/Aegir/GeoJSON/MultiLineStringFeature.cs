@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Constructor(s)
 
-        public MultiLineStringFeature(String                                   Id,
+        public MultiLineStringFeature(String?                                  Id,
                                       Dictionary<String, Object>               Properties,
                                       IEnumerable<IEnumerable<GeoCoordinate>>  Rings)
 

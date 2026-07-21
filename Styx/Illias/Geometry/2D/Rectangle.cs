@@ -459,22 +459,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             #endregion
 
 
-            // Check if any corner of the given rectangle
-            // is located within this rectangle
-
-            if (Contains(Rectangle.Left,  Rectangle.Top))
-                return true;
-
-            if (Contains(Rectangle.Right, Rectangle.Top))
-                return true;
-
-            if (Contains(Rectangle.Left,  Rectangle.Bottom))
-                return true;
-
-            if (Contains(Rectangle.Right, Rectangle.Bottom))
-                return true;
-
-            return false;
+            // Two axis-aligned rectangles overlap if and only if their
+            // projections onto both axes overlap (inclusive boundaries,
+            // matching Contains). The previous version only tested whether a
+            // *corner* of the given rectangle fell inside this rectangle, which
+            // missed e.g. crossing rectangles and was not even symmetric.
+            return Left.CompareTo(Rectangle.Right)  <= 0 && Right. CompareTo(Rectangle.Left) >= 0 &&
+                   Top. CompareTo(Rectangle.Bottom) <= 0 && Bottom.CompareTo(Rectangle.Top)  >= 0;
 
         }
 

@@ -48,7 +48,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Constructor(s)
 
-        public MultiPointFeature(String                      Id,
+        public MultiPointFeature(String?                     Id,
                                  Dictionary<String, Object>  Properties,
                                  IEnumerable<GeoCoordinate>  Points)
 

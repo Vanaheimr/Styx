@@ -41,7 +41,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// The GeoJSON feature identification.
         /// </summary>
-        public String                                     Id                { get; }
+        public String?                                    Id                { get; }
 
         /// <summary>
         /// The GeoJSON feature type.
@@ -52,7 +52,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
         #region Constructor(s)
 
-        public AGeoJSONFeature(String                      Id,
+        public AGeoJSONFeature(String?                     Id,
                                String                      Type,
                                Dictionary<String, Object>  Properties)
         {
@@ -94,7 +94,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Get a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Id;
+            => Id ?? Type;
 
         #endregion
 

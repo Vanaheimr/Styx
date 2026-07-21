@@ -235,13 +235,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Math Checks
 
-            if (Math.Distance(Left, Right).Equals(Math.Zero))
+            // Note: check the actual coordinate spans of the two voxels -
+            // the previous version read the still-unassigned Left/Right/...
+            // properties (default(T)), so it always threw.
+            if (Math.Distance(Voxel1.X, Voxel2.X).Equals(Math.Zero))
                 throw new ArgumentException("The resulting width must not be zero!");
 
-            if (Math.Distance(Top, Bottom).Equals(Math.Zero))
+            if (Math.Distance(Voxel1.Y, Voxel2.Y).Equals(Math.Zero))
                 throw new ArgumentException("The resulting height must not be zero!");
 
-            if (Math.Distance(Front, Behind).Equals(Math.Zero))
+            if (Math.Distance(Voxel1.Z, Voxel2.Z).Equals(Math.Zero))
                 throw new ArgumentException("The resulting depth must not be zero!");
 
             #endregion
@@ -289,14 +292,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region Math Checks
 
-            if (Math.Distance(Left, Right).Equals(Math.Zero))
-                throw new ArgumentException("The resulting width must not be zero!");
+            // Note: check the given dimensions directly - the previous
+            // version read the still-unassigned Left/Right/... properties
+            // (default(T)), so it always threw.
+            if (Width.Equals(Math.Zero))
+                throw new ArgumentException("The given width must not be zero!");
 
-            if (Math.Distance(Top, Bottom).Equals(Math.Zero))
-                throw new ArgumentException("The resulting height must not be zero!");
+            if (Height.Equals(Math.Zero))
+                throw new ArgumentException("The given height must not be zero!");
 
-            if (Math.Distance(Front, Behind).Equals(Math.Zero))
-                throw new ArgumentException("The resulting depth must not be zero!");
+            if (Depth.Equals(Math.Zero))
+                throw new ArgumentException("The given depth must not be zero!");
 
             #endregion
 
@@ -449,34 +455,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             #endregion
 
 
-            // Check if any corner of the given cube
-            // is located within this cube
-
-            if (Contains(ICube.Left,  ICube.Top,    ICube.Front))
-                return true;
-
-            if (Contains(ICube.Right, ICube.Top,    ICube.Front))
-                return true;
-
-            if (Contains(ICube.Left,  ICube.Bottom, ICube.Front))
-                return true;
-
-            if (Contains(ICube.Right, ICube.Bottom, ICube.Front))
-                return true;
-
-            if (Contains(ICube.Left,  ICube.Top,    ICube.Behind))
-                return true;
-
-            if (Contains(ICube.Right, ICube.Top,    ICube.Behind))
-                return true;
-
-            if (Contains(ICube.Left,  ICube.Bottom, ICube.Behind))
-                return true;
-
-            if (Contains(ICube.Right, ICube.Bottom, ICube.Behind))
-                return true;
-
-            return false;
+            // Two axis-aligned cubes overlap if and only if their projections
+            // onto every axis overlap (inclusive boundaries, matching Contains).
+            // The previous version only tested whether a *corner* of the given
+            // cube fell inside this cube, which missed e.g. crossing cubes and
+            // was not even symmetric.
+            return Left.  CompareTo(ICube.Right)  <= 0 && Right. CompareTo(ICube.Left)   >= 0 &&
+                   Top.   CompareTo(ICube.Bottom) <= 0 && Bottom.CompareTo(ICube.Top)    >= 0 &&
+                   Front. CompareTo(ICube.Behind) <= 0 && Behind.CompareTo(ICube.Front)  >= 0;
 
         }
 

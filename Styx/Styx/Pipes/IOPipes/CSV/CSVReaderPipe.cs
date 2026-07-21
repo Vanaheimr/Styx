@@ -158,7 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
 
                     // Ignore empty lines
-                    if (_CurrentLine is null | _CurrentLine == "")
+                    if (_CurrentLine is null || _CurrentLine == "")
                         continue;
 
 

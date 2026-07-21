@@ -74,7 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 while (SourcePipe.MoveNext())
                 {
 
-                    if (SourcePipe.Current is not null)
+                    if (SourcePipe.Current is null)
                         continue;
 
                     _StreamReader = new StreamReader(SourcePipe.Current);
