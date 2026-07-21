@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Collections.Generic;
 
@@ -142,9 +143,9 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="JSONObject">A JSON object.</param>
         /// <param name="NamedGeoCoordinate">The parsed named geo coordinate.</param>
         /// <param name="ErrorResponse">An error message.</param>
-        public static Boolean TryParseJSON(JObject                 JSONObject,
-                                           out NamedGeoCoordinate  NamedGeoCoordinate,
-                                           out String              ErrorResponse)
+        public static Boolean TryParseJSON(JObject                                       JSONObject,
+                                           [NotNullWhen(true)]  out NamedGeoCoordinate?  NamedGeoCoordinate,
+                                           [NotNullWhen(false)] out String?              ErrorResponse)
         {
 
             try
@@ -260,13 +261,17 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 //                                LastModifed:      LastModified,
                 //                                DataSource:       DataSource);
 
-                ErrorResponse = null;
-                return true;
+                // The actual JSON parsing is not yet implemented (see the
+                // commented-out body above); do not claim success with a
+                // null result. [NotNullWhen(true)] on the out parameter
+                // makes that contract explicit.
+                ErrorResponse = "Parsing named geo coordinates from JSON is not yet implemented!";
+                return false;
 
             }
             catch (Exception e)
             {
-                ErrorResponse = e.Message;
+                ErrorResponse       = e.Message;
                 NamedGeoCoordinate  = null;
                 return false;
             }

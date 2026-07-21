@@ -559,6 +559,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <param name="GeoString">A string to parse.</param>
         /// <returns>A new geo position or null.</returns>
         public static T? ParseString<T>(String GeoString, Func<Latitude, Longitude, T> Processor)
+            where T : notnull
         {
 
             if (TryParseString(GeoString, Processor, out var t))
@@ -624,6 +625,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public static Boolean TryParseString<T>(String                        GeoString,
                                                 Func<Latitude, Longitude, T>  Processor,
                                                 [NotNullWhen(true)] out T?    Value)
+            where T : notnull
         {
 
             var match = IsDecimalGeoPositionRegExpr.Match(GeoString);

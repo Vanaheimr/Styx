@@ -122,8 +122,8 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region SelectPipe(SourceEnumerable, SelectDelegate)
 
-        public SelectPipe(IEnumerable<S>  SourceEnumerable,
-                          Func<S, E>      SelectDelegate)
+        public SelectPipe(IEnumerable<S>?  SourceEnumerable,
+                          Func<S, E>       SelectDelegate)
 
             : base(SourceEnumerable)
 

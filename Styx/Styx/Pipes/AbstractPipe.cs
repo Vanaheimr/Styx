@@ -112,7 +112,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Creates an new abstract pipe using the given enumeration as element source.
         /// </summary>
         /// <param name="SourceEnumeration">An enumeration as element source.</param>
-        public AbstractPipe(IEnumerable<S> SourceEnumeration)
+        public AbstractPipe(IEnumerable<S>? SourceEnumeration)
         {
 
             SourceEnumeration.CheckNull("SourceEnumerable");
