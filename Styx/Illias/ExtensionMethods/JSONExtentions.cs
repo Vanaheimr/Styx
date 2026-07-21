@@ -7063,8 +7063,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalJSONArrayX<T>(this JObject         JSON,
                                                         String               PropertyName,
                                                         String               PropertyDescription,
-                                                        TryJArrayParser3<T>  JArrayParser,
-                                                        Func<JToken, T>      Parser,
+                                                        //TryJArrayParser3<T>  JArrayParser,
+                                                        //Func<JToken, T>      Parser,
                                                         out StdDev<T>?       Value,
                                                         out String?          ErrorResponse)
 

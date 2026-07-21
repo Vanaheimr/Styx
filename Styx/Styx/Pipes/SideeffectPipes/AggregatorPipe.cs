@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.Styx
 {
 
@@ -49,21 +42,18 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
         #region Constructor(s)
 
-        #region AggregatorPipe(ICollection = null)
-
         /// <summary>
         /// Creates a new AggregatorPipe.
         /// </summary>
         /// <param name="ICollection">An optional ICollection to store the passed objects.</param>
         public AggregatorPipe(ICollection<S>? ICollection = null)
         {
-            if (ICollection is null)
-                InternalSideEffect = new List<S>();
-            else
-                InternalSideEffect = ICollection;
-        }
 
-        #endregion
+            this.InternalSideEffect = ICollection is not null
+                                          ? ICollection
+                                          : [] ;
+
+        }
 
         #endregion
 

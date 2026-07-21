@@ -31,28 +31,31 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
         #region testAggregatorPipe()
 
         [Test]
-        public void testAggregatorPipe()
+        public void TestAggregatorPipe()
         {
 
-            //var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };            
-            //var _Pipe = new AggregatorPipe<String>(new List<String>());
-            //_Pipe.SetSourceCollection(_List);
+            var list     = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var pipe     = new AggregatorPipe<String>([]);
+            pipe.SetSource(list);
+            var counter = 0;
 
-            //int _Counter = 0;
-            //while (_Pipe.MoveNext())
-            //{
-            //    ClassicAssert.AreEqual(_List[_Counter], _Pipe.Current);
-            //    _Counter++;
-            //}
+            while (pipe.MoveNext())
+            {
+                Assert.That(list[counter],  Is.EqualTo(pipe.Current));
+                counter++;
+            }
 
-            //ClassicAssert.AreEqual(6, _Counter);
-            //ClassicAssert.AreEqual(_Counter, _Pipe.SideEffect.Count);
-            //ClassicAssert.AreEqual(_Counter, _List.Count);
-            
-            //for (int i = 0; i < _Counter; i++)
-            //{
-            //    ClassicAssert.AreEqual(_Pipe.SideEffect.ToArray()[i], _List[i]);
-            //}
+
+            Assert.That(counter,  Is.EqualTo(6));
+            Assert.That(counter,  Is.EqualTo(pipe.SideEffect.Count));
+            Assert.That(counter,  Is.EqualTo(list.Count));
+
+            var pipeContent = pipe.SideEffect.ToArray();
+
+            for (var i = 0; i < counter; i++)
+            {
+                Assert.That(pipeContent[i], Is.EqualTo(list[i]));
+            }
 
         }
 
@@ -61,14 +64,18 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
         #region testSelfFilter()
 
         [Test]
-        public void testSelfFilter()
+        public void TestSelfFilter()
         {
 
-            //var _List     = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            //var _Pipe1    = new AggregatorPipe<String>(new List<String>());
-            //var _Pipe2    = new CollectionFilterPipe<String>(_Pipe1.SideEffect, ComparisonFilter.NOT_EQUAL);
-            //var _Pipeline = new Pipeline<String, String>(_Pipe1, _Pipe2);
-            //_Pipeline.SetSourceCollection(_List);
+            var list      = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+
+            var pipe1     = new AggregatorPipe<String>([]);
+            pipe1.SetSource(list);
+
+            var pipe2     = new CollectionFilterPipe<String>(pipe1.SideEffect, ComparisonFilter.NOT_EQUAL);
+
+            //var pipeline  = new Pipeline<String, String>(_Pipe1, _Pipe2);
+            //_Pipeline.SetSource(_List);
 
             //var _Counter = 0;
             //while (_Pipeline.MoveNext())
@@ -95,29 +102,29 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
         #region testNullIterator()
 
         [Test]
-        public void testNullIterator()
+        public void TestNullIterator()
         {
 
-            var _List = new List<String>() { "marko", "antonio", "rodriguez", "was", "here", "." };
-            IEnumerator<String> _Enumerator = _List.GetEnumerator();
+            var list        = new List<String?>() { "marko", "antonio", "rodriguez", "was", "here", "." };
+            var enumerator  = list.GetEnumerator();
+            var counter     = 0;
 
-            var _Counter = 0;
-            while (_Enumerator.MoveNext())
-                _Counter++;
+            while (enumerator.MoveNext())
+                counter++;
 
-            Assert.That(_Counter, Is.EqualTo(6));
-            Assert.That(_Enumerator.MoveNext(), Is.False);
+            Assert.That(counter,                Is.EqualTo(6));
+            Assert.That(enumerator.MoveNext(),  Is.False);
 
 
-            _List = new List<String>() { null, null, null, null, null, null };
-            _Enumerator = _List.GetEnumerator();
+            list        = [ null, null, null, null, null, null ];
+            enumerator  = list.GetEnumerator();
+            counter     = 0;
 
-            _Counter = 0;
-            while (_Enumerator.MoveNext())
-                _Counter++;
+            while (enumerator.MoveNext())
+                counter++;
 
-            Assert.That(_Counter, Is.EqualTo(6));
-            Assert.That(_Enumerator.MoveNext(), Is.False);
+            Assert.That(counter,                Is.EqualTo(6));
+            Assert.That(enumerator.MoveNext(),  Is.False);
 
         }
 

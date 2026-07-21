@@ -23,14 +23,16 @@ namespace org.GraphDefined.Vanaheimr.Styx
     /// However, it will remember what was last returned out of the IEnumerator.
     /// </summary>
     /// <typeparam name="T">The type of the stored elements.</typeparam>
-    public class HistoryEnumerator<T> : IHistoryEnumerator, IEnumerator<T>
+    public class HistoryEnumerator<T> : IHistoryEnumerator,
+                                        IEnumerator<T>
     {
 
         #region Data
 
-        private readonly IEnumerator<T>  _InternalEnumerator;
-        private          T               _Last = default!;
-        private          Boolean         _FirstMove, _Finished;
+        private readonly IEnumerator<T>  internalEnumerator;
+        private          T               last = default!;
+        private          Boolean         firstMove;
+        private          Boolean         finished;
 
         #endregion
 
@@ -44,10 +46,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IEnumerator">The enumerator to be wrapped.</param>
         public HistoryEnumerator(IEnumerator<T> IEnumerator)
         {
-            _InternalEnumerator  = IEnumerator;
-            _Last                = default!;
-            _FirstMove           = true;
-            _Finished            = false;
+            this.internalEnumerator  = IEnumerator;
+            this.last                = default!;
+            this.firstMove           = true;
+            this.finished            = false;
         }
 
         #endregion
@@ -60,10 +62,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <param name="IEnumerable">The enumerable to be wrapped.</param>
         public HistoryEnumerator(IEnumerable<T> IEnumerable)
         {
-            _InternalEnumerator  = IEnumerable.GetEnumerator();
-            _Last                = default!;
-            _FirstMove           = true;
-            _Finished            = false;
+            this.internalEnumerator  = IEnumerable.GetEnumerator();
+            this.last                = default!;
+            this.firstMove           = true;
+            this.finished            = false;
         }
 
         #endregion
@@ -77,23 +79,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Return the current element of the internal IEnumertor.
         /// </summary>
         public T Current
-        {
-            get
-            {
-                return _InternalEnumerator.Current;
-            }
-        }
+            => internalEnumerator.Current;
 
         /// <summary>
         /// Return the current element of the internal IEnumertor.
         /// </summary>
         Object System.Collections.IEnumerator.Current
-        {
-            get
-            {
-                return _InternalEnumerator.Current!;
-            }
-        }
+            => internalEnumerator.Current!;
 
         #endregion
 
@@ -103,23 +95,13 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// Return the last element of the internal IEnumertor&lt;T&gt;.
         /// </summary>
         public T Last
-        {
-            get
-            {
-                return _Last;
-            }
-        }
+            => last;
 
         /// <summary>
         /// Return the last element of the internal IEnumertor.
         /// </summary>
         Object IHistoryEnumerator.Last
-        {
-            get
-            {
-                return _Last!;
-            }
-        }
+            => last!;
 
         #endregion
 
@@ -128,20 +110,21 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// <summary>
         /// Advances the enumerator to the next element of the collection.
         /// </summary>
-        /// <returns>True if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
+        /// <returns>True if the enumerator was successfully advanced to the next element;
+        /// false if the enumerator has passed the end of the collection.</returns>
         public Boolean MoveNext()
         {
 
-            //if (_Finished)
-            //    return false;
+            if (finished)
+                return false;
 
-            if (_FirstMove)
+            if (firstMove)
             {
 
-                if (_InternalEnumerator.MoveNext())
+                if (internalEnumerator.MoveNext())
                 {
-                    _Last       = _InternalEnumerator.Current;
-                    _FirstMove  = false;
+                    last       = internalEnumerator.Current;
+                    firstMove  = false;
                     return true;
                 }
 
@@ -149,10 +132,10 @@ namespace org.GraphDefined.Vanaheimr.Styx
 
             }
 
-            var result = _InternalEnumerator.MoveNext();
+            var result = internalEnumerator.MoveNext();
 
             if (!result)
-                _Finished = true;
+                finished = true;
 
             return result;
 
@@ -169,7 +152,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         public void Reset()
         {
             //_InternalEnumerator.Reset();
-            _Last   = default!;
+            last   = default!;
         }
 
         #endregion
@@ -182,7 +165,7 @@ namespace org.GraphDefined.Vanaheimr.Styx
         /// </summary>
         public void Dispose()
         {
-            _InternalEnumerator.Dispose();
+            internalEnumerator.Dispose();
         }
 
         #endregion

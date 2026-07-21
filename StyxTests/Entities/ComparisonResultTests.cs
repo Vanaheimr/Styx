@@ -129,6 +129,169 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Entities
 
         #endregion
 
+
+        // -------------------------------------------------------------------
+        // Updated-section value semantics.
+        //
+        // The "updated" section emits, per property, a two-element JSON array.
+        // Two contracts are pinned here:
+        //
+        //   (a) The array must be ordered [OldValue, NewValue] - the same
+        //       old -> new direction as the PropertyWithValues(Name, Old, New)
+        //       constructor, its ToString ("old => new"), and every text
+        //       renderer (ToHTML / ToText / ToTelegram). ToJSON currently
+        //       emits [New, Old] - the inverted order - so these tests are RED
+        //       until the value order in ComparisonResult.ToJSON is corrected.
+        //
+        //   (b) OldValue and NewValue may carry *different* runtime types (a
+        //       property whose type changed, or a null <-> value transition).
+        //       ToJSON must not assume OldValue shares NewValue's type. It
+        //       currently branches on NewValue's type and then hard-casts
+        //       OldValue to the same type ((DateTime) / (DateTimeOffset)),
+        //       throwing InvalidCastException on any mismatch.
+        // -------------------------------------------------------------------
+
+        #region ToJSON_UpdatedStrings_AreOrderedOldThenNew()
+
+        [Test]
+        public void ToJSON_UpdatedStrings_AreOrderedOldThenNew()
+        {
+
+            var result = new ComparisonResult(
+                             [],
+                             [ new ComparisonResult.PropertyWithValues("size", "S", "L") ],
+                             []
+                         );
+
+            var array = result.ToJSON()["updated"]?["size"] as JArray;
+
+            Assert.That(array,                    Is.Not.Null);
+            Assert.That(array!.Count,             Is.EqualTo(2));
+            Assert.That(array[0].Value<String>(), Is.EqualTo("S"));   // old first
+            Assert.That(array[1].Value<String>(), Is.EqualTo("L"));   // new second
+
+        }
+
+        #endregion
+
+        #region ToJSON_UpdatedInt32_AreOrderedOldThenNew()
+
+        [Test]
+        public void ToJSON_UpdatedInt32_AreOrderedOldThenNew()
+        {
+
+            // The else-branch: neither String nor DateTime(Offset).
+            var result = new ComparisonResult(
+                             [],
+                             [ new ComparisonResult.PropertyWithValues("count", 3, 5) ],
+                             []
+                         );
+
+            var array = result.ToJSON()["updated"]?["count"] as JArray;
+
+            Assert.That(array,                    Is.Not.Null);
+            Assert.That(array![0].Value<String>(), Is.EqualTo("3"));   // old first
+            Assert.That(array[1].Value<String>(),  Is.EqualTo("5"));   // new second
+
+        }
+
+        #endregion
+
+        #region ToJSON_UpdatedDateTimes_AreOrderedOldThenNew()
+
+        [Test]
+        public void ToJSON_UpdatedDateTimes_AreOrderedOldThenNew()
+        {
+
+            var oldTime = new DateTime(2024, 1,  2,  3, 4,  5, DateTimeKind.Utc);
+            var newTime = new DateTime(2025, 6,  7,  8, 9, 10, DateTimeKind.Utc);
+
+            var result = new ComparisonResult(
+                             [],
+                             [ new ComparisonResult.PropertyWithValues("when", oldTime, newTime) ],
+                             []
+                         );
+
+            var array = result.ToJSON()["updated"]?["when"] as JArray;
+
+            Assert.That(array,                    Is.Not.Null);
+            Assert.That(array![0].Value<String>(), Is.EqualTo(oldTime.ToISO8601()));   // old first
+            Assert.That(array[1].Value<String>(),  Is.EqualTo(newTime.ToISO8601()));   // new second
+
+        }
+
+        #endregion
+
+        #region ToJSON_UpdatedDateTimeOffsets_AreOrderedOldThenNew()
+
+        [Test]
+        public void ToJSON_UpdatedDateTimeOffsets_AreOrderedOldThenNew()
+        {
+
+            var oldTime = new DateTimeOffset(2024, 1, 2, 3, 4,  5, TimeSpan.Zero);
+            var newTime = new DateTimeOffset(2025, 6, 7, 8, 9, 10, TimeSpan.Zero);
+
+            var result = new ComparisonResult(
+                             [],
+                             [ new ComparisonResult.PropertyWithValues("when", oldTime, newTime) ],
+                             []
+                         );
+
+            var array = result.ToJSON()["updated"]?["when"] as JArray;
+
+            Assert.That(array,                    Is.Not.Null);
+            Assert.That(array![0].Value<String>(), Is.EqualTo(oldTime.ToISO8601()));   // old first
+            Assert.That(array[1].Value<String>(),  Is.EqualTo(newTime.ToISO8601()));   // new second
+
+        }
+
+        #endregion
+
+        #region ToJSON_UpdatedNewDateTime_OldString_DoesNotThrow()
+
+        // NewValue is a DateTime, OldValue is a String: ToJSON branches on the
+        // DateTime new value and then does ((DateTime) property.OldValue!),
+        // which throws InvalidCastException on the String old value.
+        [Test]
+        public void ToJSON_UpdatedNewDateTime_OldString_DoesNotThrow()
+        {
+
+            var newTime = new DateTime(2025, 6, 7, 8, 9, 10, DateTimeKind.Utc);
+
+            var result = new ComparisonResult(
+                             [],
+                             [ new ComparisonResult.PropertyWithValues("when", "never", newTime) ],
+                             []
+                         );
+
+            Assert.That(() => result.ToJSON(), Throws.Nothing);
+
+        }
+
+        #endregion
+
+        #region ToJSON_UpdatedNewDateTimeOffset_OldString_DoesNotThrow()
+
+        // Same mismatch for the DateTimeOffset branch:
+        // ((DateTimeOffset) property.OldValue!) on a String old value.
+        [Test]
+        public void ToJSON_UpdatedNewDateTimeOffset_OldString_DoesNotThrow()
+        {
+
+            var newTime = new DateTimeOffset(2025, 6, 7, 8, 9, 10, TimeSpan.Zero);
+
+            var result = new ComparisonResult(
+                             [],
+                             [ new ComparisonResult.PropertyWithValues("when", "never", newTime) ],
+                             []
+                         );
+
+            Assert.That(() => result.ToJSON(), Throws.Nothing);
+
+        }
+
+        #endregion
+
     }
 
 }

@@ -499,9 +499,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            return new ComparisonResult(Added,
-                                         Updated,
-                                         Removed);
+            return new ComparisonResult(
+                       Added,
+                       Updated,
+                       Removed
+                   );
 
         }
 

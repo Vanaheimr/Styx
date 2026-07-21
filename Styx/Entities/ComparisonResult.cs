@@ -87,17 +87,40 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The enumeration of added properties.
         /// </summary>
-        public IEnumerable<PropertyWithValue> Added { get; } = Added;
+        public IEnumerable<PropertyWithValue>   Added      { get; } = Added;
 
         /// <summary>
         /// The enumeration of updated properties.
         /// </summary>
-        public IEnumerable<PropertyWithValues> Updated { get; } = Updated;
+        public IEnumerable<PropertyWithValues>  Updated    { get; } = Updated;
 
         /// <summary>
         /// The enumeration of removed properties.
         /// </summary>
-        public IEnumerable<PropertyWithValue> Removed { get; } = Removed;
+        public IEnumerable<PropertyWithValue>   Removed    { get; } = Removed;
+
+        #endregion
+
+
+        #region (private, static) ValueAsToken(Value)
+
+        /// <summary>
+        /// Render a single (old or new) property value as its own JSON token,
+        /// independent of the other value's runtime type. An updated property's
+        /// old and new values may differ in type (a type migration, or a
+        /// null &lt;-&gt; value transition), so each is inspected on its own and
+        /// never cast to the partner's type.
+        /// </summary>
+        /// <param name="Value">The old or new property value.</param>
+        private static JToken ValueAsToken(Object? Value)
+
+            => Value switch {
+                   null                  => JValue.CreateNull(),
+                   String          text  => text,
+                   DateTime        dt    => dt.ToISO8601(),
+                   DateTimeOffset  dto   => dto.ToISO8601(),
+                   _                     => Value.ToString() ?? ""
+               };
 
         #endregion
 
@@ -167,28 +190,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     if (MaskProperty(property.Name))
                         updatedJSON.Add(property.Name, "n/a");
 
-                    else if (property.NewValue is String)
-                        updatedJSON.Add(property.Name, new JArray(
-                                                           property.NewValue as String,
-                                                           property.OldValue as String
-                                                       ));
-
-                    else if (property.NewValue is DateTime time1)
-                        updatedJSON.Add(property.Name, new JArray(
-                                                           time1.ToISO8601(),
-                                                           ((DateTime) property.OldValue!).ToISO8601()
-                                                       ));
-
-                    else if (property.NewValue is DateTimeOffset time2)
-                        updatedJSON.Add(property.Name, new JArray(
-                                                           time2.ToISO8601(),
-                                                           ((DateTimeOffset) property.OldValue!).ToISO8601()
-                                                       ));
-
+                    // [old, new] - same direction as the constructor, ToString
+                    // and the ToHTML/ToText/ToTelegram renderers. Each value is
+                    // rendered on its own type; old and new need not match.
                     else
                         updatedJSON.Add(property.Name, new JArray(
-                                                           property.NewValue?.ToString() ?? "",
-                                                           property.OldValue?.ToString() ?? ""
+                                                           ValueAsToken(property.OldValue),
+                                                           ValueAsToken(property.NewValue)
                                                        ));
 
                 }
