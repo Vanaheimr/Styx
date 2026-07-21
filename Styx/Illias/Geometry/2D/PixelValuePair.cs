@@ -87,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) PixelValuePair1 is null) || ((Object) PixelValuePair2 is null))
+            if ((PixelValuePair1 is null) || (PixelValuePair2 is null))
                 return false;
 
             return PixelValuePair1.Equals(PixelValuePair2);
@@ -121,7 +121,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
+        public override Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -149,7 +149,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="IPixelValuePair">An object to compare with.</param>
-        public Int32 CompareTo(IPixelValuePair<T, TValue> IPixelValuePair)
+        public Int32 CompareTo(IPixelValuePair<T, TValue>? IPixelValuePair)
         {
             return base.CompareTo(IPixelValuePair);
         }
@@ -167,7 +167,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -196,10 +196,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="IPixelValuePair">A PixelValuePair to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(IPixelValuePair<T, TValue> IPixelValuePair)
+        public Boolean Equals(IPixelValuePair<T, TValue>? IPixelValuePair)
         {
 
-            if ((Object) IPixelValuePair is null)
+            if (IPixelValuePair is null)
                 return false;
 
             return X.Equals(IPixelValuePair.X) &&

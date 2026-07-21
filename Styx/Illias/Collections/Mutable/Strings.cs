@@ -58,7 +58,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //        return true;
 
         //    // If one is null, but not both, return false.
-        //    if (((Object) MultiString1 is null) || ((Object) MultiString2 is null))
+        //    if ((MultiString1 is null) || (MultiString2 is null))
         //        return false;
 
         //    return MultiString1.Equals(MultiString2);
@@ -93,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //public static Boolean operator < (MultiString MultiString1, MultiString MultiString2)
         //{
 
-        //    if ((Object) MultiString1 is null)
+        //    if (MultiString1 is null)
         //        throw new ArgumentNullException("The given MultiString1 must not be null!");
 
         //    return MultiString1.CompareTo(MultiString2) < 0;
@@ -128,7 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         //public static Boolean operator > (MultiString MultiString1, MultiString MultiString2)
         //{
 
-        //    if ((Object) MultiString1 is null)
+        //    if (MultiString1 is null)
         //        throw new ArgumentNullException("The given MultiString1 must not be null!");
 
         //    return MultiString1.CompareTo(MultiString2) > 0;
@@ -162,7 +162,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -170,7 +170,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             // Check if the given object is an MultiString.
             var MultiString = Object as MultiString;
-            if ((Object) MultiString is null)
+            if (MultiString is null)
                 throw new ArgumentException("The given object is not a MultiString!");
 
             return CompareTo(MultiString);
@@ -185,10 +185,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="OtherMultiString">An object to compare with.</param>
-        public Int32 CompareTo(MultiString OtherMultiString)
+        public Int32 CompareTo(MultiString? OtherMultiString)
         {
 
-            if ((Object) OtherMultiString is null)
+            if (OtherMultiString is null)
                 throw new ArgumentNullException("The given MultiString must not be null!");
 
             // Compare the length of the MultiStrings
@@ -219,7 +219,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -227,7 +227,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             // Check if the given object is an MultiString.
             var MultiString = Object as MultiString;
-            if ((Object) MultiString is null)
+            if (MultiString is null)
                 return false;
 
             return this.Equals(MultiString);

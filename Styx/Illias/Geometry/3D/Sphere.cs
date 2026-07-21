@@ -295,7 +295,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Sphere1 is null) || ((Object) Sphere2 is null))
+            if ((Sphere1 is null) || (Sphere2 is null))
                 return false;
 
             return Sphere1.Equals(Sphere2);
@@ -330,7 +330,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -338,7 +338,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an Sphere<T>.
             var SphereT = (Sphere<T>) Object;
-            if ((Object) SphereT is null)
+            if (SphereT is null)
                 return false;
 
             return this.Equals(SphereT);
@@ -354,10 +354,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="ISphere">A sphere to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ISphere<T> ISphere)
+        public Boolean Equals(ISphere<T>? ISphere)
         {
 
-            if ((Object) ISphere is null)
+            if (ISphere is null)
                 return false;
 
             return this.Left.  Equals(ISphere.Left)  &&

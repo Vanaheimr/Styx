@@ -154,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Revision_Id RevId1, Revision_Id RevId2)
+        public static Boolean operator == (Revision_Id? RevId1, Revision_Id? RevId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -162,7 +162,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RevId1 is null) || ((Object) RevId2 is null))
+            if (RevId1 is null || RevId2 is null)
                 return false;
 
             return RevId1.Equals(RevId2);
@@ -179,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="RevId1">A RevId.</param>
         /// <param name="RevId2">Another RevId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Revision_Id RevId1, Revision_Id RevId2)
+        public static Boolean operator != (Revision_Id? RevId1, Revision_Id? RevId2)
         {
             return !(RevId1 == RevId2);
         }
@@ -280,7 +280,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -288,7 +288,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             // Check if the given object is a RevId.
             var _RevId = Object as Revision_Id;
-            if ((Object) _RevId is null)
+            if (_RevId is null)
                 throw new ArgumentException("The given object is not a RevId!");
 
             if (this < _RevId) return -1;
@@ -306,10 +306,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RevisionId">A RevisionId to compare with.</param>
-        public Int32 CompareTo(Revision_Id RevisionId)
+        public Int32 CompareTo(Revision_Id? RevisionId)
         {
 
-            if ((Object) RevisionId is null)
+            if (RevisionId is null)
                 throw new ArgumentNullException();
 
             if (this < RevisionId) return -1;
@@ -332,7 +332,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -340,7 +340,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             // Check if the given object is a RevId.
             var _RevId = Object as Revision_Id;
-            if ((Object) _RevId is null)
+            if (_RevId is null)
                 return false;
 
             return Equals(_RevId);
@@ -356,10 +356,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="RevisionId">A RevisionId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Revision_Id RevisionId)
+        public Boolean Equals(Revision_Id? RevisionId)
         {
 
-            if ((Object) RevisionId is null)
+            if (RevisionId is null)
                 return false;
 
             // Check if the inner fields have the same values

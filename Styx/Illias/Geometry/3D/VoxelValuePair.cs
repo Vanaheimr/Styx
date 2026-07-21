@@ -86,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) VoxelValuePair1 is null) || ((Object) VoxelValuePair2 is null))
+            if ((VoxelValuePair1 is null) || (VoxelValuePair2 is null))
                 return false;
 
             return VoxelValuePair1.Equals(VoxelValuePair2);
@@ -120,7 +120,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public override Int32 CompareTo(Object Object)
+        public override Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -148,7 +148,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="IVoxelValuePair">An object to compare with.</param>
-        public Int32 CompareTo(IVoxelValuePair<T, TValue> IVoxelValuePair)
+        public Int32 CompareTo(IVoxelValuePair<T, TValue>? IVoxelValuePair)
         {
             return base.CompareTo(IVoxelValuePair);
         }
@@ -166,7 +166,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -195,10 +195,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="IVoxelValuePair">A voxel to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(IVoxelValuePair<T, TValue> IVoxelValuePair)
+        public Boolean Equals(IVoxelValuePair<T, TValue>? IVoxelValuePair)
         {
 
-            if ((Object) IVoxelValuePair is null)
+            if (IVoxelValuePair is null)
                 return false;
 
             return X.Equals(IVoxelValuePair.X) &&

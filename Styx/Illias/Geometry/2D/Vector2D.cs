@@ -645,7 +645,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Vector1 is null) || ((Object) Vector2 is null))
+            if ((Vector1 is null) || (Vector2 is null))
                 return false;
 
             return Vector1.Equals(Vector2);
@@ -680,7 +680,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -688,7 +688,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an Vector2D<T>.
             var VectorT = (Vector2D<T>) Object;
-            if ((Object) VectorT is null)
+            if (VectorT is null)
                 return false;
 
             return this.Equals(VectorT);
@@ -704,10 +704,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="IVector">A vector to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(IVector2D<T> IVector)
+        public Boolean Equals(IVector2D<T>? IVector)
         {
 
-            if ((Object) IVector is null)
+            if (IVector is null)
                 return false;
 
             return this.X.  Equals(IVector.X) &&
@@ -721,12 +721,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
         #region IComparable Members
 
-        public int CompareTo(IVector2D<T> other)
+        public int CompareTo(IVector2D<T>? other)
         {
             throw new NotImplementedException();
         }
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             throw new NotImplementedException();
         }

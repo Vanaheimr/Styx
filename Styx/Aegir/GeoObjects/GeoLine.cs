@@ -473,7 +473,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Line1 is null) || ((Object) Line2 is null))
+            if ((Line1 is null) || (Line2 is null))
                 return false;
 
             return Line1.Equals(Line2);
@@ -508,7 +508,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -516,7 +516,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             // Check if the given object is an GeoLine.
             var LineT = (GeoLine) Object;
-            if ((Object) LineT is null)
+            if (LineT is null)
                 return false;
 
             return this.Equals(LineT);
@@ -535,7 +535,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoLine ILine)
         {
 
-            if ((Object) ILine is null)
+            if (ILine is null)
                 return false;
 
                    // Normal direction

@@ -171,7 +171,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="EventTrackingId1">An event tracking identification.</param>
         /// <param name="EventTrackingId2">Another event tracking identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EventTracking_Id EventTrackingId1, EventTracking_Id EventTrackingId2)
+        public static Boolean operator == (EventTracking_Id? EventTrackingId1, EventTracking_Id? EventTrackingId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -179,7 +179,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EventTrackingId1 is null) || ((Object) EventTrackingId2 is null))
+            if (EventTrackingId1 is null || EventTrackingId2 is null)
                 return false;
 
             return EventTrackingId1.Equals(EventTrackingId2);
@@ -196,7 +196,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="EventTrackingId1">An event tracking identification.</param>
         /// <param name="EventTrackingId2">Another event tracking identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EventTracking_Id EventTrackingId1, EventTracking_Id EventTrackingId2)
+        public static Boolean operator != (EventTracking_Id? EventTrackingId1, EventTracking_Id? EventTrackingId2)
             => !(EventTrackingId1 == EventTrackingId2);
 
         #endregion
@@ -212,7 +212,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator < (EventTracking_Id EventTrackingId1, EventTracking_Id EventTrackingId2)
         {
 
-            if ((Object) EventTrackingId1 is null)
+            if (EventTrackingId1 is null)
                 throw new ArgumentNullException("The given EventTrackingId1 must not be null!");
 
             return EventTrackingId1.CompareTo(EventTrackingId2) < 0;
@@ -245,7 +245,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator > (EventTracking_Id EventTrackingId1, EventTracking_Id EventTrackingId2)
         {
 
-            if ((Object) EventTrackingId1 is null)
+            if (EventTrackingId1 is null)
                 throw new ArgumentNullException("The given EventTrackingId1 must not be null!");
 
             return EventTrackingId1.CompareTo(EventTrackingId2) > 0;
@@ -277,7 +277,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -298,10 +298,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EventTrackingId">An object to compare with.</param>
-        public Int32 CompareTo(EventTracking_Id EventTrackingId)
+        public Int32 CompareTo(EventTracking_Id? EventTrackingId)
         {
 
-            if ((Object) EventTrackingId is null)
+            if (EventTrackingId is null)
                 throw new ArgumentNullException(nameof(EventTrackingId), "The given event tracking identification must not be null!");
 
             return String.Compare(InternalId, EventTrackingId.InternalId, StringComparison.OrdinalIgnoreCase);
@@ -321,7 +321,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -343,7 +343,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="EventTrackingId">A EventTrackingId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EventTracking_Id EventTrackingId)
+        public Boolean Equals(EventTracking_Id? EventTrackingId)
         {
 
             if (EventTrackingId is null)

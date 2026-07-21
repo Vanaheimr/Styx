@@ -552,7 +552,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Vector1 is null) || ((Object) Vector2 is null))
+            if ((Vector1 is null) || (Vector2 is null))
                 return false;
 
             return Vector1.Equals(Vector2);
@@ -587,7 +587,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -595,7 +595,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             // Check if the given object is an Vector2D<T>.
             var VectorT = (GeoVector) Object;
-            if ((Object) VectorT is null)
+            if (VectorT is null)
                 return false;
 
             return this.Equals(VectorT);
@@ -614,7 +614,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoVector IVector)
         {
 
-            if ((Object) IVector is null)
+            if (IVector is null)
                 return false;
 
             return this.P.Longitude.Equals(IVector.P.Longitude) &&
@@ -633,7 +633,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
             throw new NotImplementedException();
         }
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             throw new NotImplementedException();
         }

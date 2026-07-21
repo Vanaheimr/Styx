@@ -453,7 +453,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Circle1 is null) || ((Object) Circle2 is null))
+            if ((Circle1 is null) || (Circle2 is null))
                 return false;
 
             return Circle1.Equals(Circle2);
@@ -488,7 +488,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -496,7 +496,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an Circle<T>.
             var CircleT = (Circle<T>) Object;
-            if ((Object) CircleT is null)
+            if (CircleT is null)
                 return false;
 
             return this.Equals(CircleT);
@@ -512,10 +512,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="ICircle">A circle to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ICircle<T> ICircle)
+        public Boolean Equals(ICircle<T>? ICircle)
         {
 
-            if ((Object) ICircle is null)
+            if (ICircle is null)
                 return false;
 
             return this.X.     Equals(ICircle.X) &&

@@ -195,7 +195,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Voxel1 is null) || ((Object) Voxel2 is null))
+            if ((Voxel1 is null) || (Voxel2 is null))
                 return false;
 
             return Voxel1.Equals(Voxel2);
@@ -229,7 +229,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public virtual Int32 CompareTo(Object Object)
+        public virtual Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -237,7 +237,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an IVoxel<T>.
             var IVoxelT = Object as IVoxel<T>;
-            if ((Object) IVoxelT is null)
+            if (IVoxelT is null)
                 throw new ArgumentException("The given object is not a valid voxel!");
 
             return CompareTo(IVoxelT);
@@ -252,10 +252,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="IVoxelT">An object to compare with.</param>
-        public Int32 CompareTo(IVoxel<T> IVoxelT)
+        public Int32 CompareTo(IVoxel<T>? IVoxelT)
         {
             
-            if ((Object) IVoxelT is null)
+            if (IVoxelT is null)
                 throw new ArgumentNullException("The given voxel must not be null!");
 
             // Compare the x-coordinate of the voxels
@@ -282,7 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -290,7 +290,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an IVoxel<T>.
             var IVoxelT = (IVoxel<T>) Object;
-            if ((Object) IVoxelT is null)
+            if (IVoxelT is null)
                 return false;
 
             return this.Equals(IVoxelT);
@@ -306,10 +306,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="IVoxel">A voxel to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(IVoxel<T> IVoxel)
+        public Boolean Equals(IVoxel<T>? IVoxel)
         {
 
-            if ((Object) IVoxel is null)
+            if (IVoxel is null)
                 return false;
 
             return X.Equals(IVoxel.X) &&

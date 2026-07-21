@@ -499,7 +499,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Rectangle1 is null) || ((Object) Rectangle2 is null))
+            if ((Rectangle1 is null) || (Rectangle2 is null))
                 return false;
 
             return Rectangle1.Equals(Rectangle2);
@@ -534,7 +534,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -542,7 +542,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an Rectangle<T>.
             var RectangleT = (Rectangle<T>) Object;
-            if ((Object) RectangleT is null)
+            if (RectangleT is null)
                 return false;
 
             return this.Equals(RectangleT);
@@ -558,10 +558,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="IRectangle">A rectangle to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(IRectangle<T> IRectangle)
+        public Boolean Equals(IRectangle<T>? IRectangle)
         {
 
-            if ((Object) IRectangle is null)
+            if (IRectangle is null)
                 return false;
 
             return this.Left.  Equals(IRectangle.Left)  &&

@@ -192,7 +192,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Pixel1 is null) || ((Object) Pixel2 is null))
+            if ((Pixel1 is null) || (Pixel2 is null))
                 return false;
 
             return Pixel1.Equals(Pixel2);
@@ -226,7 +226,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public virtual Int32 CompareTo(Object Object)
+        public virtual Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -234,7 +234,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an IPixel<T>.
             var IPixelT = Object as IPixel<T>;
-            if ((Object) IPixelT is null)
+            if (IPixelT is null)
                 throw new ArgumentException("The given object is not a valid pixel!");
 
             return CompareTo(IPixelT);
@@ -249,10 +249,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="IPixelT">An object to compare with.</param>
-        public Int32 CompareTo(IPixel<T> IPixelT)
+        public Int32 CompareTo(IPixel<T>? IPixelT)
         {
             
-            if ((Object) IPixelT is null)
+            if (IPixelT is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
             // Compare the x-coordinate of the pixels
@@ -279,7 +279,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -287,7 +287,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an Pixel<T>.
             var PixelT = (Pixel<T>) Object;
-            if ((Object) PixelT is null)
+            if (PixelT is null)
                 return false;
 
             return this.Equals(PixelT);
@@ -303,10 +303,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="IPixel">A pixel to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(IPixel<T> IPixel)
+        public Boolean Equals(IPixel<T>? IPixel)
         {
 
-            if ((Object) IPixel is null)
+            if (IPixel is null)
                 return false;
 
             return X.Equals(IPixel.X) &&

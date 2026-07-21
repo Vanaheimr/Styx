@@ -391,7 +391,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public Int32 CompareTo(Object? Object)
 
             => Object is NamedGeoCoordinate namedGeoCoordinate
                    ? CompareTo(namedGeoCoordinate)
@@ -405,7 +405,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two latitudes.
         /// </summary>
         /// <param name="NamedGeoCoordinate">Another geographical coordinate with additional information.</param>
-        public Int32 CompareTo(NamedGeoCoordinate NamedGeoCoordinate)
+        public Int32 CompareTo(NamedGeoCoordinate? NamedGeoCoordinate)
 
             => NamedGeoCoordinate is null
                    ? throw new ArgumentNullException(nameof(Object), "The given geographical coordinate with additional information must not be null!")
@@ -424,7 +424,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
 
             => Object is NamedGeoCoordinate namedGeoCoordinate &&
                    Equals(namedGeoCoordinate);
@@ -438,7 +438,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="NamedGeoCoordinate">Another geographical coordinate with additional information.</param>
         /// <returns>True if both are equal; False otherwise.</returns>
-        public Boolean Equals(NamedGeoCoordinate NamedGeoCoordinate)
+        public Boolean Equals(NamedGeoCoordinate? NamedGeoCoordinate)
 
             => !(NamedGeoCoordinate is null) &&
 

@@ -501,7 +501,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) Cube1 is null) || ((Object) Cube2 is null))
+            if ((Cube1 is null) || (Cube2 is null))
                 return false;
 
             return Cube1.Equals(Cube2);
@@ -536,7 +536,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -544,7 +544,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             // Check if the given object is an Cube<T>.
             var CubeT = (Cube<T>) Object;
-            if ((Object) CubeT is null)
+            if (CubeT is null)
                 return false;
 
             return this.Equals(CubeT);
@@ -560,10 +560,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="ICube">A cube to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ICube<T> ICube)
+        public Boolean Equals(ICube<T>? ICube)
         {
 
-            if ((Object) ICube is null)
+            if (ICube is null)
                 return false;
 
             return this.Left.  Equals(ICube.Left)   &&

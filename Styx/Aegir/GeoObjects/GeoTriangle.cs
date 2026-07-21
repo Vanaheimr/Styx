@@ -276,7 +276,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object)Triangle1 is null) || ((Object)Triangle2 is null))
+            if ((Triangle1 is null) || (Triangle2 is null))
                 return false;
 
             return Triangle1.Equals(Triangle2);
@@ -310,7 +310,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public virtual Int32 CompareTo(Object Object)
+        public virtual Int32 CompareTo(Object? Object)
         {
 
             if (Object is null)
@@ -318,7 +318,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             // Check if the given object is an IGeoTriangle.
             var ITriangle = Object as GeoTriangle;
-            if ((Object)ITriangle is null)
+            if (ITriangle is null)
                 throw new ArgumentException("The given object is not a valid triangle!");
 
             return CompareTo(ITriangle);
@@ -336,7 +336,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Int32 CompareTo(GeoTriangle ITriangle)
         {
 
-            if ((Object)ITriangle is null)
+            if (ITriangle is null)
                 throw new ArgumentNullException("The given triangle must not be null!");
 
             // Compare the x-coordinate of the circumcenter
@@ -363,7 +363,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
         /// <returns>true|false</returns>
-        public override Boolean Equals(Object Object)
+        public override Boolean Equals(Object? Object)
         {
 
             if (Object is null)
@@ -371,7 +371,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
 
             // Check if the given object is an GeoTriangle.
             var TriangleT = (GeoTriangle)Object;
-            if ((Object)TriangleT is null)
+            if (TriangleT is null)
                 return false;
 
             return this.Equals(TriangleT);
@@ -390,7 +390,7 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         public Boolean Equals(GeoTriangle ITriangle)
         {
 
-            if ((Object)ITriangle is null)
+            if (ITriangle is null)
                 return false;
 
             return (this.P1.Equals(ITriangle.P1) &&
