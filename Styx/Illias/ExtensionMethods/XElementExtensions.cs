@@ -1082,7 +1082,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static Boolean TryParseOptionalText(this XElement                      ParentXElement,
                                                    XName                              XName,
-                                                   String                             Description,
+                                                   //String                             Description,
                                                    [MaybeNullWhen(true)] out String?  Text,
                                                    [NotNullWhen(false)]  out String?  ErrorResponse)
         {
@@ -1230,12 +1230,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         public static Boolean TryParseOptionalTextAttribute(this XElement                      ParentXElement,
                                                             XName                              XName,
-                                                            String                             Description,
+                                                            //String                             Description,
                                                             [MaybeNullWhen(true)] out String?  Text,
                                                             [NotNullWhen(false)]  out String?  ErrorResponse)
         {
 
-            Text         = default;
+            Text           = default;
             ErrorResponse  = null;
 
             if (ParentXElement is null)
@@ -1943,17 +1943,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         // Map XML Elements
 
-        #region MapElements      (ParentXElement, XName, Mapper, OnException = null)
+        #region MapElements      (ParentXElement, XName, Mapper)
 
         public static IEnumerable<T> MapElements<T>(this XElement         ParentXElement,
                                                     XName                 XName,
-                                                    Func<XElement, T>     Mapper,
-                                                    OnExceptionDelegate?  OnException = null)
+                                                    Func<XElement, T>     Mapper)
         {
 
             var xElements = ParentXElement.Elements(XName);
 
-            if (xElements is null || !xElements.Any())
+            if (!xElements.Any())
                 return [];
 
             return xElements.Select(XML   => Mapper(XML)).
@@ -1969,7 +1968,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var xElements = ParentXElement.Elements(XName);
 
-            if (xElements is null || !xElements.Any())
+            if (!xElements.Any())
                 return [];
 
             return xElements.Select(XML   => Mapper(XML, OnException)).
@@ -1979,13 +1978,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region MapElements      (ParentXElement, XWrapper, XName, Mapper, OnException = null)
+        #region MapElements      (ParentXElement, XWrapper, XName, Mapper)
 
-        public static IEnumerable<T> MapElements<T>(this XElement         ParentXElement,
-                                                    XName                 XWrapper,
-                                                    XName                 XName,
-                                                    Func<XElement, T>     Mapper,
-                                                    OnExceptionDelegate?  OnException = null)
+        public static IEnumerable<T> MapElements<T>(this XElement      ParentXElement,
+                                                    XName              XWrapper,
+                                                    XName              XName,
+                                                    Func<XElement, T>  Mapper)
         {
 
             var xElement  = ParentXElement.Element(XWrapper);
@@ -1993,7 +1991,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return [];
 
             var xElements = xElement.Elements(XName);
-            if (xElements is null || !xElements.Any())
+            if (!xElements.Any())
                 return [];
 
             return xElements.Select(XML   => Mapper(XML)).
@@ -2034,7 +2032,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var xElements = ParentXElement.Elements(XName);
 
-            if (xElements is null || !xElements.Any())
+            if (!xElements.Any())
             {
 
                 if (OnException is not null)
@@ -2067,7 +2065,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var xElements = ParentXElement.Elements(XName);
 
-            if (xElements is null || !xElements.Any())
+            if (!xElements.Any())
                 throw new Exception("The given XML elements must not be null!");
 
             return xElements.Select(XML   => Mapper(XML)).
@@ -2214,12 +2212,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return new T?();
 
 
-            var _XElement = xWrapper.Element(XName);
+            var xElement = xWrapper.Element(XName);
 
-            if (_XElement is null || _XElement.Value.IsNullOrEmpty())
+            if (xElement is null || xElement.Value.IsNullOrEmpty())
                 return new T?();
 
-            return ValueMapper(_XElement.Value);
+            return ValueMapper(xElement.Value);
 
         }
 
@@ -2380,14 +2378,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                         : $"Missing XML wrapper element '{XWrapper.LocalName}'!");
 
 
-            var _XElement = xWrapper.Element(XName);
+            var xElement = xWrapper.Element(XName);
 
-            if (_XElement is null)
+            if (xElement is null)
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : $"Missing XML element '{XWrapper.LocalName}' > '{XName.LocalName}'!");
 
-            if (_XElement.Value.IsNullOrEmpty())
+            if (xElement.Value.IsNullOrEmpty())
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()
                                         ? ExceptionMessage
                                         : $"The value of the given XML element '{XWrapper.LocalName}' > '{XName.LocalName}' must not be null!");
@@ -2396,14 +2394,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                return ValueMapper(_XElement.Value, OnException);
+                return ValueMapper(xElement.Value, OnException);
 
             }
             catch (Exception e)
             {
 
                 OnException?.Invoke(Timestamp.Now,
-                                    _XElement,
+                                    xElement,
                                     e);
 
                 throw new Exception(ExceptionMessage.IsNotNullOrEmpty()

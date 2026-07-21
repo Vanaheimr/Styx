@@ -489,7 +489,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 { }
 
                 else if (getter1 is null)
-                    Added.  Add(new ComparisonResult.PropertyWithValue (pinfo.Name, getter2));
+                    Added.  Add(new ComparisonResult.PropertyWithValue (pinfo.Name, getter2!));
 
                 else if (getter2 is null)
                     Removed.Add(new ComparisonResult.PropertyWithValue (pinfo.Name, getter1));

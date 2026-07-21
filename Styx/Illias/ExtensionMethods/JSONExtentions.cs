@@ -7131,7 +7131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         {
 
-            JSONObject     = new JObject();
+            JSONObject     = [];
             ErrorResponse  = null;
 
             if (JSON is null)
@@ -7156,7 +7156,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONObject = JSONToken as JObject;
 
                 if (JSONObject is null)
-                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON object!";
+                    ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON object!";
 
                 return true;
 
@@ -7205,7 +7205,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return true;
                 }
 
-                ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
+                ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON array!";
 
             }
 
@@ -7250,7 +7250,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
+                    ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7321,7 +7321,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = $"The given property '{PropertyName}' is not a valid JSON array!";
+                    ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7530,11 +7530,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 // "propertyKey": null -> will be ignored!
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                {
+                    ErrorResponse = $"The given property '{PropertyName}' is null!";
                     return false;
+                }
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7607,7 +7610,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7753,7 +7756,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7833,7 +7836,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7914,7 +7917,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (JSONToken is not JArray JSONArray)
                 {
-                    ErrorResponse = "The given property '" + PropertyName + "' is not a valid JSON array!";
+                    ErrorResponse = $"The given property '{PropertyDescription}' is not a valid JSON array!";
                     return true;
                 }
 
@@ -7966,7 +7969,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalHashSet<T>(this JObject                         JSON,
                                                       String                               PropertyName,
                                                       String                               PropertyDescription,
-                                                      TryJObjectParser2a<T>                 Parser,
+                                                      TryJObjectParser2a<T>                Parser,
                                                       [NotNullWhen(true)]  out HashSet<T>  HashSet,
                                                                            out String?     ErrorResponse)
 
@@ -8008,7 +8011,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (element is not JObject JSONObject)
                     {
-                        ErrorResponse = "The given token is not a valid JSON object!";
+                        ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON object!";
                         return true;
                     }
 
@@ -8081,7 +8084,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (element is not JObject JSONObject)
                     {
-                        ErrorResponse = "The given token is not a valid JSON object!";
+                        ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON object!";
                         return true;
                     }
 
