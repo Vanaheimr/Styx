@@ -1085,7 +1085,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region ListTryGet<TKey>(this IReadOnlyProperties, Key, out List)
 
-        public static Boolean ListTryGet<TKey>(this IProperties<TKey, Object> IReadOnlyProperties, TKey Key, out List<Object> List)
+        public static Boolean ListTryGet<TKey>(this IProperties<TKey, Object> IReadOnlyProperties, TKey Key, out List<Object>? List)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
 
@@ -1151,7 +1151,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Collections
 
         #region SetTryGet<TKey>(this IReadOnlyProperties, Key, out Set)
 
-        public static Boolean SetTryGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key, out HashedSet<Object> Set)
+        public static Boolean SetTryGet<TKey>(this IReadOnlyProperties<TKey, Object> IReadOnlyProperties, TKey Key, out HashedSet<Object>? Set)
 
             where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
         {

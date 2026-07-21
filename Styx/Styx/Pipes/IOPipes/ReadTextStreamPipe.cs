@@ -90,11 +90,11 @@ namespace org.GraphDefined.Vanaheimr.Styx
                 do
                 {
 
+                    String? line;
+
                     try
                     {
-
-                        _CurrentElement = _StreamReader.ReadLine();
-
+                        line = _StreamReader.ReadLine();
                     }
 
                     catch
@@ -102,6 +102,11 @@ namespace org.GraphDefined.Vanaheimr.Styx
                         return false;
                     }
 
+                    // ReadLine() returns null at the end of the stream.
+                    if (line is null)
+                        return false;
+
+                    _CurrentElement = line;
 
                 }
                 while (!_CurrentElement.StartsWith("#"));
