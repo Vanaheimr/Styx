@@ -2129,7 +2129,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             DateTimeOffset timestamp;
             try
             {
-                timestamp = new DateTimeOffset(JSONToken.Value<DateTime>());
+                timestamp = (DateTimeOffset) JSONToken;
             }
             catch
             {
@@ -5981,7 +5981,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 try
                 {
-                    Timestamp = new DateTimeOffset(JSONToken.Value<DateTime>());
+                    Timestamp = (DateTimeOffset) JSONToken;
                 }
                 catch
                 {
@@ -6083,7 +6083,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     if (JSONToken is JArray jArray)
                         foreach (var timestamp in jArray.AsEnumerable())
-                            _timestamps.Add(new DateTimeOffset(JSONToken.Value<DateTime>()));
+                            _timestamps.Add((DateTimeOffset) timestamp);
 
                     Timestamps = _timestamps;
 
