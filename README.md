@@ -1,5 +1,7 @@
 ![Styx logo](/artwork/styx_small.png)
 
+[![CI](https://github.com/Vanaheimr/Styx/actions/workflows/ci.yml/badge.svg)](https://github.com/Vanaheimr/Styx/actions/workflows/ci.yml)
+
 [Styx](http://github.com/Vanaheimr/Styx) is the foundation of a graph-based data flow framework for any kind of data processing.
 It is used heavily within [Balder](http://github.com/Vanaheimr/Balder) a data flow framework for
 [property graph models](http://github.com/tinkerpop/gremlin/wiki/Defining-a-Property-Graph) on .NET/Mono.
