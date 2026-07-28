@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Balder <https://www.github.com/Vanaheimr/Balder>
  *
@@ -21,7 +21,6 @@ using System;
 
 using org.GraphDefined.Vanaheimr.Styx;
 
-using NUnit.Framework;
 using org.GraphDefined.Vanaheimr.Styx.UnitTests;
 
 #endregion

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#region Usings
-
-using NUnit.Framework;
-
-#endregion
 
 namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
 {
@@ -44,7 +38,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
                 Assert.That(list[counter],  Is.EqualTo(pipe.Current));
                 counter++;
             }
-
 
             Assert.That(counter,  Is.EqualTo(6));
             Assert.That(counter,  Is.EqualTo(pipe.SideEffect.Count));
@@ -83,7 +76,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
 
             //ClassicAssert.AreEqual(6, _Counter);
 
-
             //_Pipe1    = new AggregatorPipe<String>(new List<String>());
             //_Pipe2    = new CollectionFilterPipe<String>(_Pipe1.SideEffect, ComparisonFilter.EQUAL);
             //_Pipeline = new Pipeline<String, String>(_Pipe1, _Pipe2);
@@ -114,7 +106,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.SideeffectPipes
 
             Assert.That(counter,                Is.EqualTo(6));
             Assert.That(enumerator.MoveNext(),  Is.False);
-
 
             list        = [ null, null, null, null, null, null ];
             enumerator  = list.GetEnumerator();

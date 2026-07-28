@@ -21,8 +21,6 @@ using System.Text.Json;
 
 using Newtonsoft.Json.Linq;
 
-using NUnit.Framework;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion

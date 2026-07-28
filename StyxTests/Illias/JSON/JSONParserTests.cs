@@ -21,8 +21,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
-using NUnit.Framework;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -49,7 +47,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Illias
         }
 
         #endregion
-
 
         #region ParseMandatoryText_Present_ReturnsTrueAndValue()
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#region Usings
-
-using NUnit.Framework;
-
-#endregion
 
 namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Enumerators
 {

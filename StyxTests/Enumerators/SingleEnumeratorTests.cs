@@ -1,4 +1,4 @@
-﻿///*
+///*
 // * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
 // * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
 // *
@@ -19,8 +19,6 @@
 
 //using System;
 //using System.Collections.Generic;
-
-//using NUnit.Framework;
 
 //#endregion
 

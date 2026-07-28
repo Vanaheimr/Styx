@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2013, Achim 'ahzf' Friedland <achim@graph-database.org>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
@@ -19,8 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-
-using NUnit.Framework;
 
 #endregion
 
