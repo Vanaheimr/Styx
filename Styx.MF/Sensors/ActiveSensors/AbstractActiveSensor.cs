@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2010-2012, Achim 'ahzf' Friedland <achim@graph-database.org>
+/*
+ * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * Autor: Achim 'ahzf' Friedland <achim.friedland@belectric.com>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *

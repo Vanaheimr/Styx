@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2010-2014 Achim 'ahzf' Friedland <achim@graphdefined.org>
+/*
+ * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Illias MicroFramework <http://www.github.com/Vanaheimr/Illias>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
