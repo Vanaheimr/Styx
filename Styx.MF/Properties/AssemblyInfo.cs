@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ahzf.de")]
 [assembly: AssemblyProduct("Styx")]
-[assembly: AssemblyCopyright("Copyright © GraphDefined GmbH 2010-2026")]
+[assembly: AssemblyCopyright("Copyright Â© GraphDefined GmbH 2010-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
