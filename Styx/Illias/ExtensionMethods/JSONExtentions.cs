@@ -6400,7 +6400,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
                 catch
                 {
-                    ErrorResponse = "Invalid " + PropertyDescription + "!";
+                    ErrorResponse = $"Invalid {PropertyDescription}!";
                 }
 
                 return true;
@@ -6506,7 +6506,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
 
                     Value          = default;
-                    ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
+                    ErrorResponse  = $"The value '{JSONToken}' is not valid for JSON property '{PropertyDescription}'!";
 
                 }
 
@@ -6557,7 +6557,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
 
                     Value          = default;
-                    ErrorResponse  = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "': " + ErrorResponse2;
+                    ErrorResponse  = $"The value '{JSONToken}' is not valid for JSON property '{PropertyDescription}': {ErrorResponse2}";
 
                 }
 
