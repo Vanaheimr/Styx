@@ -26,7 +26,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extensions for certificates.
+    /// Extension methods for certificates.
     /// </summary>
     public static class CertificateExtensions
     {
@@ -40,7 +40,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The certificate's Subject Alternative Name extension, decoded, or null when it has
         /// none or the extension cannot be read.
         /// </summary>
-        private static X509SubjectAlternativeNameExtension? SubjectAlternativeNameExtension(this X509Certificate2 Certificate)
+        public static X509SubjectAlternativeNameExtension? SubjectAlternativeNameExtension(this X509Certificate2 Certificate)
         {
 
             var extension = Certificate.Extensions.FirstOrDefault(extension => extension.Oid?.Value == SubjectAlternativeNameOID);
@@ -66,22 +66,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region GetDnsNames    (this Certificate)
+        #region GetDNSNames                   (this Certificate)
 
         /// <summary>
-        /// The dNSName entries of the certificate's Subject Alternative Name extension.
+        /// The DNS Name entries of the certificate's Subject Alternative Name extension.
         /// </summary>
         /// <param name="Certificate">A certificate.</param>
-        public static IEnumerable<String> GetDnsNames(this X509Certificate2 Certificate)
+        public static IEnumerable<String> GetDNSNames(this X509Certificate2 Certificate)
 
             => Certificate.SubjectAlternativeNameExtension()?.EnumerateDnsNames() ?? [];
 
         #endregion
 
-        #region GetIPAddresses (this Certificate)
+        #region GetIPAddresses                (this Certificate)
 
         /// <summary>
-        /// The iPAddress entries of the certificate's Subject Alternative Name extension.
+        /// The IP Address entries of the certificate's Subject Alternative Name extension.
         /// </summary>
         /// <param name="Certificate">A certificate.</param>
         public static IEnumerable<System.Net.IPAddress> GetIPAddresses(this X509Certificate2 Certificate)
@@ -90,13 +90,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region DecodeSubjectAlternativeNames(this Certificate)
+        #region DecodeSubjectAlternativeNames (this Certificate)
 
         /// <summary>
         /// The certificate's subject alternative names, as "DNS-Name=..." and "IP-Address=..."
         /// strings.
         ///
-        /// Prefer <see cref="GetDnsNames"/> or <see cref="GetIPAddresses"/>: they return the
+        /// Prefer <see cref="GetDNSNames"/> or <see cref="GetIPAddresses"/>: they return the
         /// values themselves, and cannot be misread.
         ///
         /// This used to render the extension with AsnEncodedData.Format(), which delegates to
