@@ -19,8 +19,6 @@
 
 using System;
 
-using NUnit.Framework;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
@@ -73,7 +71,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.FilterPipes
     //    #endregion
 	
     //}
-
 
     //public class BasicComparisonFilterPipe : AbstractComparisonFilterPipe<IComparable, IComparable>
     //{

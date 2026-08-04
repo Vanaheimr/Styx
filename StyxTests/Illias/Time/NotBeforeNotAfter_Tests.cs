@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#region Usings
-
-using NUnit.Framework;
-
-#endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias.Tests
 {
@@ -51,7 +45,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         private readonly TimeSpan Tolerance = TimeSpan.FromSeconds(1);
 
         #endregion
-
 
         #region SetupOnce()
 
@@ -93,7 +86,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
         #region Overlap_Equals_Test1()
 
         /// <summary>
@@ -114,7 +106,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         }
 
         #endregion
-
 
         #region Overlap_Overlap_SmallTolerance_Test1()
 
@@ -159,7 +150,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
         #region Overlap_NoGap_Test1()
 
         /// <summary>
@@ -201,7 +191,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         }
 
         #endregion
-
 
         #region Overlap_Gap_Infinite_Test1()
 
@@ -245,7 +234,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
         #region Overlap_Included_Test1()
 
         /// <summary>
@@ -287,7 +275,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         }
 
         #endregion
-
 
         #region Overlap_Overlapping_Test1()
 
@@ -331,11 +318,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
         //ToDo: Check whether time zone setting may affect these tests!
         //ToDo: Zero-Length durations (should be checked by the parent object, but you never know ;) )
         //ToDo: NotAfter < NotBefore (should be checked by the parent object, but you never know ;) )
-
 
     }
 

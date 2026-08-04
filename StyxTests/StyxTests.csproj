@@ -20,6 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Styx\Styx.csproj" />
   </ItemGroup>
 

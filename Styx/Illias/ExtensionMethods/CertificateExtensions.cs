@@ -26,31 +26,100 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// Extensions for certificates.
+    /// Extension methods for certificates.
     /// </summary>
     public static class CertificateExtensions
     {
 
-        #region DecodeSubjectAlternativeNames(this Certificate)
+        #region (private) SubjectAlternativeNameExtension(this Certificate)
 
+        /// <summary>OID 2.5.29.17 — id-ce-subjectAltName.</summary>
+        private const String SubjectAlternativeNameOID = "2.5.29.17";
+
+        /// <summary>
+        /// The certificate's Subject Alternative Name extension, decoded, or null when it has
+        /// none or the extension cannot be read.
+        /// </summary>
+        public static X509SubjectAlternativeNameExtension? SubjectAlternativeNameExtension(this X509Certificate2 Certificate)
+        {
+
+            var extension = Certificate.Extensions.FirstOrDefault(extension => extension.Oid?.Value == SubjectAlternativeNameOID);
+
+            if (extension is null)
+                return null;
+
+            try
+            {
+                return new X509SubjectAlternativeNameExtension(
+                           extension.RawData,
+                           extension.Critical
+                       );
+            }
+            catch (CryptographicException)
+            {
+                // A certificate can carry a malformed extension. Callers asking "which names?"
+                // are better served by "none" than by an exception from a property read.
+                return null;
+            }
+
+        }
+
+        #endregion
+
+        #region GetDNSNames                   (this Certificate)
+
+        /// <summary>
+        /// The DNS Name entries of the certificate's Subject Alternative Name extension.
+        /// </summary>
+        /// <param name="Certificate">A certificate.</param>
+        public static IEnumerable<String> GetDNSNames(this X509Certificate2 Certificate)
+
+            => Certificate.SubjectAlternativeNameExtension()?.EnumerateDnsNames() ?? [];
+
+        #endregion
+
+        #region GetIPAddresses                (this Certificate)
+
+        /// <summary>
+        /// The IP Address entries of the certificate's Subject Alternative Name extension.
+        /// </summary>
+        /// <param name="Certificate">A certificate.</param>
+        public static IEnumerable<System.Net.IPAddress> GetIPAddresses(this X509Certificate2 Certificate)
+
+            => Certificate.SubjectAlternativeNameExtension()?.EnumerateIPAddresses() ?? [];
+
+        #endregion
+
+        #region DecodeSubjectAlternativeNames (this Certificate)
+
+        /// <summary>
+        /// The certificate's subject alternative names, as "DNS-Name=..." and "IP-Address=..."
+        /// strings.
+        ///
+        /// Prefer <see cref="GetDNSNames"/> or <see cref="GetIPAddresses"/>: they return the
+        /// values themselves, and cannot be misread.
+        ///
+        /// This used to render the extension with AsnEncodedData.Format(), which delegates to
+        /// the operating system — CryptFormatObject on Windows — and is localized. The same
+        /// certificate produced "DNS-Name=" on a German installation and "DNS Name=" on an
+        /// English one, so any caller matching on the prefix worked only on the machine it was
+        /// written on. Norn's NTS-KE hostname verification did exactly that and silently found
+        /// no names anywhere else. The prefixes below are now written here, in one language,
+        /// whatever the host is set to.
+        /// </summary>
+        /// <param name="Certificate">A certificate.</param>
         public static IEnumerable<String> DecodeSubjectAlternativeNames(this X509Certificate2 Certificate)
         {
 
-            foreach (var extension in Certificate.Extensions)
-            {
+            var extension = Certificate.SubjectAlternativeNameExtension();
 
-                // OID for Subject Alternative Name
-                if (extension.Oid?.Value == "2.5.29.17")
-                    return new AsnEncodedData(
-                               extension.Oid,
-                               extension.RawData
-                           ).
-                           Format(true).
-                           Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
+            if (extension is null)
+                return [];
 
-            }
-
-            return [];
+            return [
+                       .. extension.EnumerateDnsNames().   Select(dnsName   => $"DNS-Name={dnsName}"),
+                       .. extension.EnumerateIPAddresses().Select(ipAddress => $"IP-Address={ipAddress}")
+                   ];
 
         }
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -15,12 +15,6 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using NUnit.Framework;
-
-#endregion
-
 namespace org.GraphDefined.Vanaheimr.CLI.Tests
 {
 
@@ -30,7 +24,6 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
     [TestFixture]
     public class CLI_Tests
     {
-
 
         #region SetupOnce()
 
@@ -71,7 +64,6 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         }
 
         #endregion
-
 
         #region Suggest_()
 
@@ -206,7 +198,6 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         }
 
         #endregion
-
 
     }
 

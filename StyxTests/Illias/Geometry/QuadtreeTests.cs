@@ -17,8 +17,6 @@
 
 #region Usings
 
-using NUnit.Framework;
-
 using org.GraphDefined.Vanaheimr.Illias.Geometry;
 
 #endregion
@@ -183,7 +181,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Geometry
         }
 
         #endregion
-
 
         #region Quadtree_Add_DuplicatePixel_IsDeduplicated()
 

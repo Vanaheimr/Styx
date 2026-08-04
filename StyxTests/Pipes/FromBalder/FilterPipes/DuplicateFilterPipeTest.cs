@@ -22,8 +22,6 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Styx;
 
-using NUnit.Framework;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Balder.UnitTests.FilterPipes

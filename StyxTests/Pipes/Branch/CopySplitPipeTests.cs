@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -20,7 +20,6 @@
 using System;
 using System.Linq;
 
-using NUnit.Framework;
 using System.Collections.Generic;
 
 #endregion
@@ -42,7 +41,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
         //    Pipe pipe1 = new Pipeline(new OutEdgesPipe(), new InVertexPipe());
         //    Pipe pipe2 = new Pipeline(new OutEdgesPipe(), new InVertexPipe());
         //    Pipe pipe3 = new Pipeline(new OutEdgesPipe(), new InVertexPipe());
-
 
         //    CopySplitPipe<Vertex> copySplitPipe = new CopySplitPipe<Vertex>(Arrays.asList(pipe1, pipe2, pipe3));
         //    FairMergePipe<Vertex> fairMergePipe = new FairMergePipe<Vertex>(copySplitPipe.getPipes());
@@ -96,7 +94,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Pipes
         //    Graph graph = TinkerGraphFactory.createTinkerGraph();
         //    Pipe pipe1 = new Pipeline(new OutEdgesPipe("knows"), new LabelPipe());
         //    Pipe pipe2 = new Pipeline(new OutEdgesPipe("created"), new LabelPipe());
-
 
         //    CopySplitPipe<Vertex> copySplitPipe = new CopySplitPipe<Vertex>(Arrays.asList(pipe1, pipe2));
         //    copySplitPipe.setStarts(graph.getVertices());

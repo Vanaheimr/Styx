@@ -19,8 +19,6 @@
 
 using Newtonsoft.Json.Linq;
 
-using NUnit.Framework;
-
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -128,7 +126,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Entities
         }
 
         #endregion
-
 
         // -------------------------------------------------------------------
         // Updated-section value semantics.

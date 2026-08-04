@@ -287,6 +287,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
+        public static CustomDataNew ParseJObject(Newtonsoft.Json.Linq.JObject JSONObject)
+            => ParseJSON(JSONObject.ToString(Newtonsoft.Json.Formatting.None));
+
+
         public CustomDataNew Clone()
 
             => new (
@@ -311,8 +315,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
 
-        public static implicit operator CustomDataNew(Newtonsoft.Json.Linq.JObject JSONObject)
-            => ParseJSON(JSONObject.ToString(Newtonsoft.Json.Formatting.None));
+        //public static implicit operator CustomDataNew(Newtonsoft.Json.Linq.JObject JSONObject)
+        //    => ParseJSON(JSONObject.ToString(Newtonsoft.Json.Formatting.None));
 
 
         public static implicit operator Newtonsoft.Json.Linq.JObject(CustomDataNew JSONObject)

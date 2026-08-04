@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -14,12 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#region Usings
-
-using NUnit.Framework;
-
-#endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias.Tests
 {
@@ -103,7 +97,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
         #region OpeningTimes_TestX()
 
         /// <summary>
@@ -128,7 +121,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
         #region OpeningTimes_TestY()
 
         /// <summary>
@@ -147,10 +139,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-
-
         //ToDo: Monday - Sunday closed
-
 
     }
 

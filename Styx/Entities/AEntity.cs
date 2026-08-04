@@ -297,12 +297,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           I18NString?              Name           = null,
                           I18NString?              Description    = null,
                           IEnumerable<Signature23>?  Signatures     = default,
-                          JObject?                 CustomData     = null,
+                          CustomDataNew?           CustomData     = null,
                           UserDefinedDictionary?   InternalData   = null,
                           DateTimeOffset?          LastChange     = null,
                           String?                  DataSource     = default)
 
-            : base(CustomDataNew.ParseJSON(CustomData?.ToString() ?? "{}"),
+            : base(CustomData,
                    InternalData,
                    LastChange)
 
@@ -574,11 +574,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            DateTimeOffset?            Created        = null,
                            DateTimeOffset?            LastChange     = null,
                            IEnumerable<Signature23>?  Signatures     = null,
-                           JObject?                   CustomData     = null,
+                           CustomDataNew?             CustomData     = null,
                            UserDefinedDictionary?     InternalData   = null,
                            String?                    DataSource     = default)
 
-                : base(CustomDataNew.ParseJSON(CustomData?.ToString() ?? "{}"),
+                : base(CustomData,
                        InternalData,
                        Created,
                        LastChange)

@@ -17,8 +17,6 @@
 
 #region Usings
 
-using NUnit.Framework;
-
 using org.GraphDefined.Vanaheimr.Illias.Geometry;
 
 #endregion
@@ -176,7 +174,6 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Geometry
         }
 
         #endregion
-
 
         #region Cube_Contains_Voxel()
 

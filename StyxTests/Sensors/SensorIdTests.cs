@@ -1,5 +1,5 @@
-﻿/*
- * Copyright (c) 2010-2013, Achim 'ahzf' Friedland <achim@graph-database.org>
+/*
+ * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <http://www.github.com/Vanaheimr/Styx>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 
-using NUnit.Framework;
 using eu.Vanaheimr.Styx.Sensors;
 
 #endregion
@@ -159,7 +158,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 
         #endregion
 
-
         #region NewSensorIdMethodTest()
 
         /// <summary>
@@ -174,7 +172,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
         }
 
         #endregion
-
 
         #region op_Equality_Null_Test1()
 
@@ -267,7 +264,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
         }
 
         #endregion
-
 
         #region op_Inequality_Null_Test1()
 
@@ -374,7 +370,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
         }
 
         #endregion
-
 
         #region op_Smaller_Null_Test1()
 
@@ -515,7 +510,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 
         #endregion
 
-
         #region op_SmallerOrEqual_Null_Test1()
 
         /// <summary>
@@ -654,7 +648,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
         }
 
         #endregion
-
 
         #region op_Bigger_Null_Test1()
 
@@ -795,7 +788,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 
         #endregion
 
-
         #region op_BiggerOrEqual_Null_Test1()
 
         /// <summary>
@@ -935,7 +927,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 
         #endregion
 
-
         #region CompareToNullTest1()
 
         /// <summary>
@@ -1044,7 +1035,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 
         #endregion
 
-
         #region EqualsNullTest1()
 
         /// <summary>
@@ -1123,7 +1113,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
 
         #endregion
 
-
         #region GetHashCodeEqualTest()
 
         /// <summary>
@@ -1153,7 +1142,6 @@ namespace eu.Vanaheimr.Styx.Sensors.UnitTests
         }
 
         #endregion
-
 
         #region SensorIdsAndNUnitTest()
 
