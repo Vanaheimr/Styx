@@ -6766,7 +6766,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            ErrorResponse = "Invalid JSON property!";
+            // A missing OPTIONAL property is not an error!
+            //ErrorResponse = "Invalid JSON property!";
             return false;
 
         }
