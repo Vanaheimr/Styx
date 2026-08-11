@@ -6145,7 +6145,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            ErrorResponse = $"Invalid value for '{PropertyDescription ?? PropertyName}'!";
+            // A missing OPTIONAL property is not an error!
             return false;
 
         }
