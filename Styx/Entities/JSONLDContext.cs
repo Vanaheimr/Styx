@@ -166,7 +166,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            return false;
+            return InternalContext == Context.InternalContext;
 
         }
 
