@@ -5,6 +5,8 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  # Manual runs from the Actions tab ("Run workflow").
+  workflow_dispatch:
 
 # A newer push supersedes an in-flight run for the same branch.
 concurrency:
@@ -13,12 +15,36 @@ concurrency:
 
 jobs:
   build-and-test:
-    # windows-latest because that is where these tests are known to pass. Nothing
-    # here looks platform-bound, so Linux is very likely fine and would be cheaper
-    # - but it has not been tried, and a green badge should mean something.
-    runs-on: windows-latest
+    # The same two-leg matrix as Hermod's gate: windows-latest, where these
+    # tests have always run, and Debian 13 — where this code actually runs in
+    # production. The old "Linux is very likely fine but has not been tried"
+    # caveat is resolved: the full suite passed 147/147 on Debian 13 before
+    # this leg was enabled. GitHub offers no Debian runner image, so the Linux
+    # leg runs in a bare debian:13 container on an Ubuntu runner — the same
+    # container Hermod uses, so both gates test the same platform pair.
+    #
+    # fail-fast is off on purpose: "red on exactly one platform" is the most
+    # valuable signal this matrix produces, so one leg must not cancel the
+    # other.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+          - os: ubuntu-latest
+            container: debian:13
+    runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
     steps:
       - uses: actions/checkout@v7
+
+      # The bare debian:13 container needs the .NET prerequisites before
+      # setup-dotnet installs the SDK: curl for the dotnet-install script,
+      # ICU and tzdata for globalization, OpenSSL for crypto, ca-certificates
+      # for NuGet over HTTPS. Package names verified on Debian 13 (trixie).
+      - name: Install .NET prerequisites (Debian container)
+        if: runner.os == 'Linux'
+        run: apt-get update && apt-get install -y --no-install-recommends ca-certificates curl libicu76 libssl3t64 libstdc++6 tzdata
 
       - uses: actions/setup-dotnet@v6
         with:
