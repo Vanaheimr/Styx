@@ -31,8 +31,10 @@ jobs:
       matrix:
         include:
           - os: windows-latest
+            leg: windows-latest
           - os: ubuntu-latest
             container: debian:13
+            leg: debian-13-container
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
     steps:
@@ -54,4 +56,26 @@ jobs:
         run: dotnet build StyxTests/StyxTests.csproj --configuration Release
 
       - name: Test
-        run: dotnet test StyxTests/StyxTests.csproj --configuration Release --no-build --logger "console;verbosity=normal"
+        run: dotnet test StyxTests/StyxTests.csproj --configuration Release --no-build --logger "console;verbosity=normal" --logger "trx;LogFileName=${{ matrix.leg }}.trx" --results-directory artifacts
+
+      # The console log says whether the suite passed and very little else: which
+      # test failed takes grepping the step log, a skip reason never reaches the
+      # console at normal verbosity at all, and reading either needs a signed-in
+      # browser session once the run is not the newest. TRX keeps outcome,
+      # duration, error message, stack trace and the Assert.Ignore text per test,
+      # and `gh run download` fetches it without a browser.
+      #
+      # This matters more here than the suite size suggests. Neither Hermod gate
+      # pins Styx — both build against Styx master — so a red Hermod night can
+      # originate in this repository, and the two artifacts are then directly
+      # comparable because both name their files after the same two legs.
+      #
+      # !cancelled() rather than success(): a red run is when these files matter
+      # most, and a build that fails before the test step leaves no .trx, which
+      # upload-artifact reports as a warning rather than a second failure.
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ matrix.leg }}
+          path: artifacts/*.trx
