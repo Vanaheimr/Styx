@@ -8,10 +8,22 @@ on:
   # Manual runs from the Actions tab ("Run workflow").
   workflow_dispatch:
 
-# A newer push supersedes an in-flight run for the same branch.
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Pull requests: one run per branch, newest wins — a run against a head
+  # that has been superseded is answering a question nobody is asking any
+  # more.
+  #
+  # Pushes: one run per commit, and nothing cancels anything. A commit with
+  # no verdict is a hole nobody comes back to fill: the next commit contains
+  # it, so the code does get tested eventually, but once that run is red
+  # there is no longer any way to say which of the two commits did it.
+  #
+  # Keying the group on the SHA, rather than only turning cancel-in-progress
+  # off, is what makes that hold for more than two pushes: a group keeps at
+  # most one run *pending*, so a third push discards the second before it
+  # ever starts.
+  group: ci-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-and-test:
