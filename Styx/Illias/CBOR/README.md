@@ -47,8 +47,8 @@ metrological-value = #6.44252([
    measuring instrument: An integer, or a decimal fraction (tag 4) whose
    decimal scale is preserved — `1.10 kWh` is not `1.1 kWh`.
    Binary floating-point values are **not allowed**.
-2. **`unit`** is either an unsigned integer from the unit registry below,
-   or a text string holding the unit symbol (or one of its aliases).
+2. **`unit`** is either an unsigned integer from the unit registry, or a
+   text string holding the unit symbol (or one of its aliases).
 3. **`prefix`** is the decimal power of the SI prefix the value is scaled
    by. It is deliberately kept separate from the value: `5.00 mA` stays
    `5.00 mA` and does not silently become `0.005 A`. Only the 25 canonical
@@ -83,16 +83,7 @@ In diagnostic notation, `5.0 mA` reads as `44252([4([-1, 50]), 4, -3])`.
 The numeric identifications are **stable** and must never be renumbered.
 `0` is reserved and never valid on the wire; identifications `>= 32768` are
 available for user-registered units via `UnitOfMeasure.Register(...)`.
-
-| Range   | Units                                                                     |
-|---------|---------------------------------------------------------------------------|
-| 1..7    | SI base in SI order: `s`(1), `m`(2), **`g`(3)**, `A`(4), `K`(5), `mol`(6), `cd`(7) |
-| 8..29   | Named derived SI: `Hz`(8), `N`(9), `Pa`(10), `J`(11), `W`(12), `C`(13), `V`(14), `F`(15), `Ω`(16), `S`(17), `Wb`(18), `T`(19), `H`(20), `°C`(21), `lm`(22), `lx`(23), `Bq`(24), `Gy`(25), `Sv`(26), `kat`(27), `rad`(28), `sr`(29) |
-| 30..49  | Accepted non-SI: `min`(30), `h`(31), `d`(32), `°`(33), `l`(34), `t`(35), `%`(36), `‰`(37), `ppm`(38) |
-| 50..69  | Electrotechnical: `Wh`(50), `VA`(51), `var`(52), `varh`(53), `Ah`(54)     |
-| 70..89  | Data: `bit`(70), `B`(71), `bit/s`(72), `B/s`(73)                          |
-| 90..    | Geometric: `m²`(90), `m³`(91)                                             |
-| ≥ 32768 | User-registered units                                                     |
+The complete table lives in the specification, [tag-44252.md](tag-44252.md).
 
 Note the metrological subtlety of mass: The SI base unit is the kilogram,
 but SI prefixes attach to the **gram** — therefore the registry contains
@@ -105,6 +96,10 @@ well-formed tagged array of plain integers and standard tag-4 decimal
 fractions. Deterministic encoding (RFC 8949 §4.2.1) is fully supported,
 which keeps the format ready for COSE signatures over measurement data.
 
+### Specification and registration
+
+The normative wire format specification is [tag-44252.md](tag-44252.md).
+
 *IANA note:* Tag 44252 lies in the First-Come-First-Served range and is,
-as of 2026-08-14, unassigned. This document serves as the semantics
-reference for a future FCFS registration.
+as of 2026-08-14, unassigned. The prepared registration request is
+[IANA-registration.md](IANA-registration.md).
