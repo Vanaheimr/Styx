@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Asn1.Sec;
@@ -64,13 +65,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) SerializePrivateKey (PrivateKey)
 
+        /// <summary>
+        /// Serialize the given private key as an unsigned byte array,
+        /// zero-padded to the width of the group order of its elliptic curve:
+        /// 32 bytes on P-256, 66 bytes on P-521.
+        /// The fixed width is not cosmetic. Leading zero octets MUST be
+        /// preserved (RFC 9053, Section 7.1.1 says so for COSE keys, JWK,
+        /// PKCS#11 and the metering formats of the charging infrastructure
+        /// require the same), and a signed two's complement serialization -
+        /// which is what BigInteger.ToByteArray returns - both strips them and
+        /// prepends a zero byte whenever the leading bit is set.
+        /// </summary>
+        /// <param name="PrivateKey">An elliptic curve private key.</param>
         public static Byte[] SerializePrivateKey(ECPrivateKeyParameters PrivateKey)
-            => PrivateKey.D.ToByteArray();
+
+            => BigIntegers.AsUnsignedByteArray(
+                   (PrivateKey.Parameters.N.BitLength + 7) / 8,
+                   PrivateKey.D
+               );
 
         #endregion
 
         #region (static) SerializePublicKey  (PublicKey)
 
+        /// <summary>
+        /// Serialize the given public key as an uncompressed elliptic curve
+        /// point: The octet 0x04 followed by both coordinates, each of them
+        /// as wide as a field element (SEC 1, Section 2.3.3).
+        /// </summary>
+        /// <param name="PublicKey">An elliptic curve public key.</param>
         public static Byte[] SerializePublicKey(ECPublicKeyParameters PublicKey)
 
             => PublicKey.Q.GetEncoded();
@@ -79,10 +102,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) SerializePublicKeyXY(PublicKey)
 
+        /// <summary>
+        /// Serialize the two affine coordinates of the given public key,
+        /// each as an unsigned byte array of the width of a field element:
+        /// 32 bytes on P-256, 66 bytes on P-521.
+        /// As with the private key, the leading zero octets are part of the
+        /// encoding and must not be stripped.
+        /// </summary>
+        /// <param name="PublicKey">An elliptic curve public key.</param>
         public static Tuple<Byte[], Byte[]> SerializePublicKeyXY(ECPublicKeyParameters PublicKey)
+        {
 
-            => new (PublicKey.Q.XCoord.ToBigInteger().ToByteArray(),
-                    PublicKey.Q.YCoord.ToBigInteger().ToByteArray());
+            // A point that was computed rather than decoded may still be in
+            // projective coordinates, where XCoord is NOT the affine x.
+            var point = PublicKey.Q.Normalize();
+
+            return new (point.AffineXCoord.GetEncoded(),
+                        point.AffineYCoord.GetEncoded());
+
+        }
 
         #endregion
 
@@ -103,10 +141,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) ParsePrivateKeyBytes (EllipticCurveSpec, PrivateKeyBytes)
 
+        /// <summary>
+        /// Parse the given unsigned byte array as an elliptic curve private key.
+        /// The bytes are read as an unsigned magnitude, as every standard
+        /// encoding of a private key is: Reading them as signed two's
+        /// complement - which is what the plain BigInteger(Byte[])
+        /// constructor of Bouncy Castle does - would turn every key whose
+        /// leading bit is set, roughly one in two, into a negative number and
+        /// thus into a different key, silently.
+        /// </summary>
+        /// <param name="EllipticCurveSpec">The elliptic curve domain parameters.</param>
+        /// <param name="PrivateKeyBytes">The private key as an unsigned byte array.</param>
         public static ECPrivateKeyParameters ParsePrivateKeyBytes(ECDomainParameters  EllipticCurveSpec,
                                                                   Byte[]              PrivateKeyBytes)
 
-            => new (new BigInteger(PrivateKeyBytes),
+            => new (new BigInteger(1, PrivateKeyBytes),
                     EllipticCurveSpec);
 
 
@@ -155,10 +204,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) ParsePrivateKeyBase64(EllipticCurveSpec, PrivateKeyBase64)
 
+        /// <summary>
+        /// Parse the given base64 encoded private key.
+        /// The decoded bytes are read as an unsigned magnitude, exactly as
+        /// within ParsePrivateKeyBytes.
+        /// </summary>
+        /// <param name="EllipticCurveSpec">The elliptic curve domain parameters.</param>
+        /// <param name="PrivateKeyBase64">The private key as a base64 encoded unsigned byte array.</param>
         public static ECPrivateKeyParameters ParsePrivateKeyBase64(ECDomainParameters  EllipticCurveSpec,
                                                                    String              PrivateKeyBase64)
 
-            => new (new BigInteger(PrivateKeyBase64.FromBASE64()),
+            => new (new BigInteger(1, PrivateKeyBase64.FromBASE64()),
                     EllipticCurveSpec);
 
         #endregion
