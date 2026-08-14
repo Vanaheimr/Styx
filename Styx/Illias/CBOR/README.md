@@ -30,72 +30,34 @@ dependencies, plus a CBOR extension for **metrological values**.
 ## The metrological value extension (tag 44252, `0xACDC`)
 
 There is no standardized CBOR tag for physical quantities. This library
-defines tag **44252** (`0xACDC`, First-Come-First-Served range) as follows:
+defines tag **44252** (`0xACDC`, First-Come-First-Served range):
 
 ```cddl
 metrological-value = #6.44252([
-    value         : int / decfrac,   ; decfrac = #6.4([exponent: int, mantissa: int / bignum])
-    unit          : uint / tstr,     ; registry id (write default) or unit symbol
-    ? prefix      : int,             ; SI prefix as a power of ten (3 = kilo, -3 = milli), absent = 0
-    ? uncertainty : int / decfrac    ; ± standard uncertainty u (k=1), same unit & prefix, >= 0
+    value         : number,          ; the reading
+    unit          : unit-ref,        ; named unit or product of powers
+    ? prefix      : int,             ; SI prefix as a power of ten
+    ? uncertainty : number / uncertainty-map
 ])
 ```
 
-### Semantics
+In short: readings are integers or scale-preserving decimal fractions and
+**never** binary floats, so `1.10 kWh` stays distinct from `1.1 kWh`. Units
+are compact numeric identifications, either a single named unit or a product
+of powers with rational exponents, so `V·Hz^-1/2` is expressible. The SI
+prefix stays separate from the value, so `5.00 mA` never silently becomes
+`0.005 A`. The uncertainty follows the GUM (JCGM 100:2008) and keeps the
+coverage factor a calibration certificate was issued with.
 
-1. **`value`** is the reading of a physical quantity as displayed by the
-   measuring instrument: An integer, or a decimal fraction (tag 4) whose
-   decimal scale is preserved — `1.10 kWh` is not `1.1 kWh`.
-   Binary floating-point values are **not allowed**.
-2. **`unit`** is either an unsigned integer from the unit registry, or a
-   text string holding the unit symbol (or one of its aliases).
-3. **`prefix`** is the decimal power of the SI prefix the value is scaled
-   by. It is deliberately kept separate from the value: `5.00 mA` stays
-   `5.00 mA` and does not silently become `0.005 A`. Only the 25 canonical
-   SI prefix exponents (0, ±1, ±2, ±3, ±6, …, ±30) are valid. When absent,
-   the prefix is 0 — it must however be written explicitly whenever an
-   `uncertainty` follows.
-4. **`uncertainty`** is the symmetric **standard measurement uncertainty u**
-   with coverage factor k=1, as defined by the *Guide to the Expression of
-   Uncertainty in Measurement* (GUM, JCGM 100:2008, BIPM), expressed in the
-   same unit and prefix as the value and encoded by the same rules.
-   It is never negative. Expanded uncertainties U = k·u must be normalized
-   to k=1 by the producer — the format deliberately carries no coverage
-   factor.
-5. Array lengths other than 2..4, unknown units, non-canonical prefix
-   exponents and negative uncertainties are **errors**. Extensibility means
-   a new tag, not a longer array.
-
-### Examples
-
-| Quantity          | Encoding                                         | Size |
-|-------------------|--------------------------------------------------|------|
-| `5 A`             | `D9 ACDC 82 05 04`                               |  5 B |
-| `230 V`           | `D9 ACDC 82 18E6 0E`                             |  7 B |
-| `5.0 mA`          | `D9 ACDC 83 C48220 1832 04 22`                   | 11 B |
-| `1.10 kWh`        | `D9 ACDC 83 C48221 186E 1832 03`                 | 12 B |
-| `(5.00 ±0.02) mA` | `D9 ACDC 84 C48221 1901F4 04 22 C4822102`        | 16 B |
+| Quantity          | Encoding                                  | Size |
+|-------------------|-------------------------------------------|------|
+| `5 A`             | `D9 ACDC 82 05 04`                        |  5 B |
+| `5.0 mA`          | `D9 ACDC 83 C482201832 04 22`             | 11 B |
 
 In diagnostic notation, `5.0 mA` reads as `44252([4([-1, 50]), 4, -3])`.
 
-### The unit registry
-
-The numeric identifications are **stable** and must never be renumbered.
-`0` is reserved and never valid on the wire; identifications `>= 32768` are
-available for user-registered units via `UnitOfMeasure.Register(...)`.
-The complete table lives in the specification, [tag-44252.md](tag-44252.md).
-
-Note the metrological subtlety of mass: The SI base unit is the kilogram,
-but SI prefixes attach to the **gram** — therefore the registry contains
-the gram (3) and a kilogram is expressed as `(value, Gram, SIPrefix.Kilo)`.
-
-### Interoperability
-
-A generic CBOR decoder without knowledge of tag 44252 still reads a
-well-formed tagged array of plain integers and standard tag-4 decimal
-fractions. Deterministic encoding (RFC 8949 §4.2.1) is fully supported,
-which keeps the format ready for COSE signatures over measurement data.
-
+A generic CBOR decoder without knowledge of the tag still sees a well-formed
+tagged array of plain integers and standard tag-4 decimal fractions.
 ### Specification and registration
 
 The normative wire format specification is [tag-44252.md](tag-44252.md).
