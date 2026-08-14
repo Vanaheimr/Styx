@@ -35,8 +35,9 @@ Tag:                             44252
 
 Data item:                       array
 
-Semantics (short form):          Metrological value (quantity with unit of
-                                 measure, SI prefix and measurement uncertainty)
+Semantics (short form):          Metrological value (quantity value with unit
+                                 of measure, SI prefix and GUM measurement
+                                 uncertainty)
 
 Point of contact:                Achim Friedland <achim.friedland@graphdefined.com>
 

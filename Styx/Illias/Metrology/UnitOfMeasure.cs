@@ -327,6 +327,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>Parts per million (ppm, 38), dimensionless ratio.</summary>
         public static readonly UnitOfMeasure  PartsPerMillion         = Register("PartsPerMillion",        "ppm",   38);
 
+        /// <summary>
+        /// The number one (1, 39), the coherent SI unit of every dimensionless
+        /// quantity: ratios, efficiencies, counts, refractive indices.
+        /// SenML spells it "/".
+        /// </summary>
+        public static readonly UnitOfMeasure  One                     = Register("One",                    "1",     39, "one", "/");
+
 
         // Electrotechnical and e-mobility units (50..69)
 

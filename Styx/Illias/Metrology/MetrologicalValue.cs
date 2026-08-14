@@ -56,27 +56,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Decimal         Value          { get; }
 
         /// <summary>
-        /// The unit of measure of this metrological value.
+        /// The unit of measure of this metrological value: either a single
+        /// named unit, or a product of powers such as "m·s^-2" or "V·Hz^-1/2".
         /// </summary>
-        public UnitOfMeasure   Unit           { get; }
+        public UnitExpression   Unit           { get; }
 
         /// <summary>
         /// The SI prefix of this metrological value.
         /// </summary>
-        public SIPrefix        Prefix         { get; }
+        public SIPrefix         Prefix         { get; }
 
         /// <summary>
-        /// The optional symmetric standard measurement uncertainty u
-        /// (coverage factor k=1, GUM), expressed in the same unit
-        /// and prefix as the value. Never negative.
+        /// The optional symmetric measurement uncertainty (GUM), expressed in
+        /// the same unit and prefix as the value. A plain number is taken as
+        /// the standard uncertainty u (k=1); a calibration certificate stating
+        /// an expanded U keeps its coverage factor.
         /// </summary>
-        public Decimal?        Uncertainty    { get; }
+        public MeasurementUncertainty?  Uncertainty    { get; }
 
         /// <summary>
         /// Whether this is the default instance without a unit of measure.
         /// </summary>
-        public Boolean         IsEmpty
-            => Unit is null;
+        public Boolean          IsEmpty
+            => Unit.Factors.Count == 0;
 
         #endregion
 
@@ -86,21 +88,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Create a new metrological value.
         /// </summary>
         /// <param name="Value">The value, scaled by its SI prefix.</param>
-        /// <param name="Unit">The unit of measure.</param>
+        /// <param name="Unit">The unit of measure. A single named unit converts implicitly.</param>
         /// <param name="Prefix">The optional SI prefix (default: none).</param>
-        /// <param name="Uncertainty">The optional symmetric standard measurement uncertainty u (k=1, GUM), which must not be negative.</param>
-        public MetrologicalValue(Decimal        Value,
-                                 UnitOfMeasure  Unit,
-                                 SIPrefix?      Prefix        = null,
-                                 Decimal?       Uncertainty   = null)
+        /// <param name="Uncertainty">The optional measurement uncertainty (GUM). A plain number converts implicitly into a standard uncertainty u (k=1).</param>
+        public MetrologicalValue(Decimal                  Value,
+                                 UnitExpression           Unit,
+                                 SIPrefix?                Prefix        = null,
+                                 MeasurementUncertainty?  Uncertainty   = null)
         {
 
-            if (Uncertainty < 0)
-                throw new ArgumentException("The measurement uncertainty must not be negative!",
-                                            nameof(Uncertainty));
+            if (Unit.Factors.Count == 0)
+                throw new ArgumentException("A metrological value must have a unit of measure!",
+                                            nameof(Unit));
 
             this.Value        = Value;
-            this.Unit         = Unit ?? throw new ArgumentNullException(nameof(Unit));
+            this.Unit         = Unit;
             this.Prefix       = Prefix ?? SIPrefix.None;
             this.Uncertainty  = Uncertainty;
 
@@ -150,7 +152,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        Unit,
                        Prefix,
                        Uncertainty.HasValue
-                           ? ScaleByPowerOfTen(Uncertainty.Value, exponentDifference)
+                           ? new MeasurementUncertainty(
+                                 ScaleByPowerOfTen(Uncertainty.Value.Value, exponentDifference),
+                                 Uncertainty.Value.CoverageFactor,
+                                 Uncertainty.Value.CoverageProbability,
+                                 Uncertainty.Value.Distribution,
+                                 Uncertainty.Value.DegreesOfFreedom
+                             )
                            : null
                    );
 
@@ -199,8 +207,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean EquivalentTo(MetrologicalValue Other)
         {
 
-            if (Unit is null || Other.Unit is null)
-                return Unit is null && Other.Unit is null;
+            if (IsEmpty || Other.IsEmpty)
+                return IsEmpty && Other.IsEmpty;
 
             if (Unit != Other.Unit)
                 return false;
@@ -211,10 +219,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (!SameQuantity(Value, Prefix.Exponent, Other.Value, Other.Prefix.Exponent))
                 return false;
 
-            if (Uncertainty.HasValue &&
-                !SameQuantity(Uncertainty.Value, Prefix.Exponent, Other.Uncertainty!.Value, Other.Prefix.Exponent))
+            if (Uncertainty.HasValue)
             {
-                return false;
+
+                // Compare the standard uncertainties, so that U = 0.02 with
+                // k = 2 is equivalent to u = 0.01 - they state the same spread.
+                if (!SameQuantity(Uncertainty.Value.StandardUncertainty,
+                                  Prefix.Exponent,
+                                  Other.Uncertainty!.Value.StandardUncertainty,
+                                  Other.Prefix.Exponent))
+                {
+                    return false;
+                }
+
             }
 
             return true;
@@ -239,10 +256,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                          new JProperty("value",         Value),
 
                    Uncertainty.HasValue
-                       ? new JProperty("uncertainty",   Uncertainty.Value)
+                       ? new JProperty("uncertainty",   Uncertainty.Value.Value)
                        : null,
 
-                         new JProperty("unit",          Unit.Symbol),
+                   Uncertainty.HasValue && Uncertainty.Value.CoverageFactor != 1
+                       ? new JProperty("coverageFactor", Uncertainty.Value.CoverageFactor)
+                       : null,
+
+                         new JProperty("unit",          Unit.ToString()),
 
                    !Prefix.IsNone
                        ? new JProperty("prefix",        Prefix.Symbol)
@@ -281,7 +302,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!UnitOfMeasure.TryParse(unitText, out var unit))
+            if (!UnitExpression.TryParse(unitText, out var unit))
             {
                 ErrorResponse = $"Unknown unit of measure '{unitText}'!";
                 return false;
@@ -297,7 +318,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            Decimal? uncertainty = null;
+            MeasurementUncertainty? uncertainty = null;
 
             if (JSON["uncertainty"] is not null)
             {
@@ -316,7 +337,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                uncertainty = uncertaintyValue;
+                var coverageFactor = 1m;
+
+                if (JSON["coverageFactor"] is not null)
+                {
+
+                    if (!TryParseJSONNumber(JSON["coverageFactor"], "coverage factor", out coverageFactor, out ErrorResponse))
+                    {
+                        ErrorResponse ??= "Invalid JSON property 'coverageFactor'!";
+                        return false;
+                    }
+
+                    if (coverageFactor <= 0)
+                    {
+                        ErrorResponse = "The coverage factor must be positive!";
+                        return false;
+                    }
+
+                }
+
+                uncertainty = new MeasurementUncertainty(
+                                  uncertaintyValue,
+                                  coverageFactor
+                              );
 
             }
 
@@ -361,10 +404,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var items = new List<CBORValue>(4) {
 
                             ToCBORNumber(Value),
-
-                            SymbolicUnit
-                                ? CBORValue.FromText  (Unit.Symbol)
-                                : CBORValue.FromUInt64(Unit.Numeric)
+                            ToCBORUnit  (Unit, SymbolicUnit)
 
                         };
 
@@ -372,7 +412,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 items.Add(CBORValue.FromInt64(Prefix.Exponent));
 
             if (Uncertainty.HasValue)
-                items.Add(ToCBORNumber(Uncertainty.Value));
+                items.Add(ToCBORUncertainty(Uncertainty.Value));
 
             var cbor = CBORValue.FromArray(items).WithTag(CBORTag.MetrologicalValue);
 
@@ -408,16 +448,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             WriteCBORNumber(Writer, Value);
 
-            if (SymbolicUnit)
-                Writer.WriteTextString(Unit.Symbol);
-            else
-                Writer.WriteUInt64(Unit.Numeric);
+            ToCBORUnit(Unit, SymbolicUnit).WriteTo(Writer);
 
             if (length >= 3)
                 Writer.WriteInt64(Prefix.Exponent);
 
             if (Uncertainty.HasValue)
-                WriteCBORNumber(Writer, Uncertainty.Value);
+                ToCBORUncertainty(Uncertainty.Value).WriteTo(Writer);
 
             Writer.WriteEndArray();
 
@@ -465,39 +502,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
 
             // 2. The unit of measure...
-            UnitOfMeasure? unit;
-            var unitElement = array[1];
-
-            if (unitElement.Kind == CBORValueKind.UnsignedInteger)
-            {
-
-                var numericUnit = unitElement.AsUInt64();
-
-                if (numericUnit > UInt16.MaxValue ||
-                    !UnitOfMeasure.TryParse((UInt16) numericUnit, out unit))
-                {
-                    ErrorResponse = $"Unknown unit of measure '{numericUnit}'!";
-                    return false;
-                }
-
-            }
-
-            else if (unitElement.Kind == CBORValueKind.TextString)
-            {
-
-                if (!UnitOfMeasure.TryParse(unitElement.AsText(), out unit))
-                {
-                    ErrorResponse = $"Unknown unit of measure '{unitElement.AsText()}'!";
-                    return false;
-                }
-
-            }
-
-            else
-            {
-                ErrorResponse = "The unit of a metrological value must be an unsigned integer or a text string!";
+            if (!TryParseCBORUnit(array[1], out var unit, out ErrorResponse))
                 return false;
-            }
 
             // 3. The optional SI prefix...
             var prefix = SIPrefix.None;
@@ -521,21 +527,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             // 4. The optional measurement uncertainty...
-            Decimal? uncertainty = null;
+            MeasurementUncertainty? uncertainty = null;
 
             if (array.Count == 4)
             {
 
-                if (!TryParseCBORNumber(array[3], "uncertainty", out var uncertaintyValue, out ErrorResponse))
+                if (!TryParseCBORUncertainty(array[3], out var parsedUncertainty, out ErrorResponse))
                     return false;
 
-                if (uncertaintyValue < 0)
-                {
-                    ErrorResponse = "The measurement uncertainty must not be negative!";
-                    return false;
-                }
-
-                uncertainty = uncertaintyValue;
+                uncertainty = parsedUncertainty;
 
             }
 
@@ -548,6 +548,349 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+        #region (private static) TryParseCBORUnit  (Node, out Unit, out ErrorResponse)
+
+        /// <summary>
+        /// Read a unit: a numeric identification, a symbol, or an array of
+        /// [id, exponent] factors describing a product of powers.
+        /// </summary>
+        private static Boolean TryParseCBORUnit(CBORValue                         Node,
+                                                out UnitExpression                Unit,
+                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Unit           = default;
+            ErrorResponse  = null;
+
+            // A product of powers...
+            if (Node.Kind == CBORValueKind.Array)
+            {
+
+                if (Node.Count == 0)
+                {
+                    ErrorResponse = "A compound unit of measure must have at least one factor!";
+                    return false;
+                }
+
+                var factors = new List<UnitFactor>(Node.Count);
+
+                foreach (var factorNode in Node.AsArray())
+                {
+
+                    if (factorNode.Kind != CBORValueKind.Array ||
+                        factorNode.Count != 2)
+                    {
+                        ErrorResponse = "Every factor of a compound unit of measure must be a [unit, exponent] pair!";
+                        return false;
+                    }
+
+                    if (!TryParseCBORNamedUnit(factorNode[0], out var factorUnit, out ErrorResponse))
+                        return false;
+
+                    var exponentNode  = factorNode[1];
+                    var numerator     = 0L;
+                    var denominator   = 1L;
+
+                    if (exponentNode.Kind == CBORValueKind.Array)
+                    {
+
+                        if (exponentNode.Count != 2                                ||
+                            !exponentNode[0].TryGetInt64(out numerator)            ||
+                            !exponentNode[1].TryGetInt64(out denominator))
+                        {
+                            ErrorResponse = "A rational unit exponent must be a [numerator, denominator] pair of integers!";
+                            return false;
+                        }
+
+                    }
+
+                    else if (!exponentNode.TryGetInt64(out numerator))
+                    {
+                        ErrorResponse = $"The exponent of a unit factor must be an integer or a [numerator, denominator] pair, but is '{exponentNode.ToDiagnosticString()}'!";
+                        return false;
+                    }
+
+                    if (numerator   == 0 ||
+                        denominator <= 0 ||
+                        numerator   < Int32.MinValue || numerator   > Int32.MaxValue ||
+                        denominator > Int32.MaxValue)
+                    {
+                        ErrorResponse = $"Invalid unit exponent {numerator}/{denominator}: the numerator must not be zero and the denominator must be positive!";
+                        return false;
+                    }
+
+                    factors.Add(new UnitFactor(factorUnit, (Int32) numerator, (Int32) denominator));
+
+                }
+
+                Unit = new UnitExpression(factors);
+                return true;
+
+            }
+
+            // A single named unit...
+            if (!TryParseCBORNamedUnit(Node, out var namedUnit, out ErrorResponse))
+                return false;
+
+            Unit = namedUnit;
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private static) TryParseCBORNamedUnit(Node, out Unit, out ErrorResponse)
+
+        private static Boolean TryParseCBORNamedUnit(CBORValue                         Node,
+                                                     [NotNullWhen(true)] out UnitOfMeasure?  Unit,
+                                                     [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Unit           = null;
+            ErrorResponse  = null;
+
+            if (Node.Kind == CBORValueKind.UnsignedInteger)
+            {
+
+                var numericUnit = Node.AsUInt64();
+
+                if (numericUnit > UInt16.MaxValue ||
+                    !UnitOfMeasure.TryParse((UInt16) numericUnit, out Unit))
+                {
+                    ErrorResponse = $"Unknown unit of measure '{numericUnit}'!";
+                    return false;
+                }
+
+                return true;
+
+            }
+
+            if (Node.Kind == CBORValueKind.TextString)
+            {
+
+                if (!UnitOfMeasure.TryParse(Node.AsText(), out Unit))
+                {
+                    ErrorResponse = $"Unknown unit of measure '{Node.AsText()}'!";
+                    return false;
+                }
+
+                return true;
+
+            }
+
+            ErrorResponse = "A unit of measure must be an unsigned integer, a text string, or an array of [unit, exponent] factors!";
+            return false;
+
+        }
+
+        #endregion
+
+        #region (private static) TryParseCBORUncertainty(Node, out Uncertainty, out ErrorResponse)
+
+        /// <summary>
+        /// Read an uncertainty: a bare number is the standard uncertainty u
+        /// (k=1); an integer-keyed map may additionally state the coverage
+        /// factor, the coverage probability, the distribution and the
+        /// effective degrees of freedom.
+        /// </summary>
+        private static Boolean TryParseCBORUncertainty(CBORValue                         Node,
+                                                       out MeasurementUncertainty        Uncertainty,
+                                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Uncertainty    = default;
+            ErrorResponse  = null;
+
+            if (Node.Kind != CBORValueKind.Map)
+            {
+
+                if (!TryParseCBORNumber(Node, "uncertainty", out var standardUncertainty, out ErrorResponse))
+                    return false;
+
+                if (standardUncertainty < 0)
+                {
+                    ErrorResponse = "The measurement uncertainty must not be negative!";
+                    return false;
+                }
+
+                Uncertainty = new MeasurementUncertainty(standardUncertainty);
+                return true;
+
+            }
+
+            if (!Node.TryGetValue(CBORValue.FromUInt64(1), out var magnitudeNode))
+            {
+                ErrorResponse = "A measurement uncertainty map must state its magnitude in key 1!";
+                return false;
+            }
+
+            if (!TryParseCBORNumber(magnitudeNode, "uncertainty", out var magnitude, out ErrorResponse))
+                return false;
+
+            if (magnitude < 0)
+            {
+                ErrorResponse = "The measurement uncertainty must not be negative!";
+                return false;
+            }
+
+            var coverageFactor = 1m;
+
+            if (Node.TryGetValue(CBORValue.FromUInt64(2), out var coverageFactorNode))
+            {
+
+                if (!TryParseCBORNumber(coverageFactorNode, "coverage factor", out coverageFactor, out ErrorResponse))
+                    return false;
+
+                if (coverageFactor <= 0)
+                {
+                    ErrorResponse = "The coverage factor must be positive!";
+                    return false;
+                }
+
+            }
+
+            Double? coverageProbability = null;
+
+            if (Node.TryGetValue(CBORValue.FromUInt64(3), out var coverageProbabilityNode))
+            {
+
+                if (!TryParseCBORNumber(coverageProbabilityNode, "coverage probability", out var probability, out ErrorResponse))
+                    return false;
+
+                if (probability <= 0 || probability > 1)
+                {
+                    ErrorResponse = "The coverage probability must be within ]0, 1]!";
+                    return false;
+                }
+
+                coverageProbability = (Double) probability;
+
+            }
+
+            var distribution = UncertaintyDistribution.Unspecified;
+
+            if (Node.TryGetValue(CBORValue.FromUInt64(4), out var distributionNode))
+            {
+
+                if (distributionNode.Kind != CBORValueKind.UnsignedInteger ||
+                    distributionNode.AsUInt64() > (UInt64) UncertaintyDistribution.StudentT)
+                {
+                    ErrorResponse = $"Unknown uncertainty distribution '{distributionNode.ToDiagnosticString()}'!";
+                    return false;
+                }
+
+                distribution = (UncertaintyDistribution) distributionNode.AsUInt64();
+
+            }
+
+            Double? degreesOfFreedom = null;
+
+            if (Node.TryGetValue(CBORValue.FromUInt64(5), out var degreesOfFreedomNode))
+            {
+
+                if (!TryParseCBORNumber(degreesOfFreedomNode, "degrees of freedom", out var freedom, out ErrorResponse))
+                    return false;
+
+                if (freedom <= 0)
+                {
+                    ErrorResponse = "The effective degrees of freedom must be positive!";
+                    return false;
+                }
+
+                degreesOfFreedom = (Double) freedom;
+
+            }
+
+            Uncertainty = new MeasurementUncertainty(
+                              magnitude,
+                              coverageFactor,
+                              coverageProbability,
+                              distribution,
+                              degreesOfFreedom
+                          );
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private static) ToCBORUnit        (Unit, SymbolicUnit)
+
+        /// <summary>
+        /// A single named unit becomes its numeric identification (or its
+        /// symbol); a product of powers becomes an array of [id, exponent]
+        /// pairs, where a rational exponent is itself a [numerator,
+        /// denominator] pair - so V/√Hz is expressible while every whole
+        /// number exponent stays a single integer.
+        /// </summary>
+        private static CBORValue ToCBORUnit(UnitExpression  Unit,
+                                            Boolean         SymbolicUnit)
+        {
+
+            if (Unit.IsSimple)
+                return SymbolicUnit
+                           ? CBORValue.FromText  (Unit.SingleUnit.Symbol)
+                           : CBORValue.FromUInt64(Unit.SingleUnit.Numeric);
+
+            var factors = new List<CBORValue>(Unit.Factors.Count);
+
+            foreach (var factor in Unit.Factors)
+                factors.Add(
+                    CBORValue.FromArray(
+                        SymbolicUnit
+                            ? CBORValue.FromText  (factor.Unit.Symbol)
+                            : CBORValue.FromUInt64(factor.Unit.Numeric),
+                        factor.IsInteger
+                            ? CBORValue.FromInt64(factor.Numerator)
+                            : CBORValue.FromArray(
+                                  CBORValue.FromInt64 (factor.Numerator),
+                                  CBORValue.FromUInt64((UInt64) factor.Denominator)
+                              )
+                    )
+                );
+
+            return CBORValue.FromArray(factors);
+
+        }
+
+        #endregion
+
+        #region (private static) ToCBORUncertainty (Uncertainty)
+
+        /// <summary>
+        /// A plain standard uncertainty stays a bare number; anything that
+        /// says more - a coverage factor, a coverage probability, a
+        /// distribution or degrees of freedom - becomes an integer-keyed map.
+        /// </summary>
+        private static CBORValue ToCBORUncertainty(MeasurementUncertainty Uncertainty)
+        {
+
+            if (Uncertainty.IsPlainStandardUncertainty)
+                return ToCBORNumber(Uncertainty.Value);
+
+            var entries = new List<KeyValuePair<CBORValue, CBORValue>> {
+                              new (CBORValue.FromUInt64(1), ToCBORNumber(Uncertainty.Value))
+                          };
+
+            if (Uncertainty.CoverageFactor != 1)
+                entries.Add(new (CBORValue.FromUInt64(2), ToCBORNumber(Uncertainty.CoverageFactor)));
+
+            if (Uncertainty.CoverageProbability.HasValue)
+                entries.Add(new (CBORValue.FromUInt64(3), ToCBORNumber((Decimal) Uncertainty.CoverageProbability.Value)));
+
+            if (Uncertainty.Distribution != UncertaintyDistribution.Unspecified)
+                entries.Add(new (CBORValue.FromUInt64(4), CBORValue.FromUInt64((UInt64) Uncertainty.Distribution)));
+
+            if (Uncertainty.DegreesOfFreedom.HasValue)
+                entries.Add(new (CBORValue.FromUInt64(5), ToCBORNumber((Decimal) Uncertainty.DegreesOfFreedom.Value)));
+
+            return CBORValue.FromMap(entries);
+
+        }
+
+        #endregion
 
         #region (private static) ToCBORNumber      (Value)
 
@@ -811,12 +1154,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="MetrologicalValue">A metrological value to compare with.</param>
         public Boolean Equals(MetrologicalValue MetrologicalValue)
 
-            => Value             == MetrologicalValue.Value             &&
-               Value.Scale       == MetrologicalValue.Value.Scale       &&
-               Equals(Unit,         MetrologicalValue.Unit)             &&
-               Prefix            == MetrologicalValue.Prefix            &&
-               Uncertainty       == MetrologicalValue.Uncertainty       &&
-               Uncertainty?.Scale == MetrologicalValue.Uncertainty?.Scale;
+            => Value                    == MetrologicalValue.Value                    &&
+               Value.Scale              == MetrologicalValue.Value.Scale              &&
+               Unit                     == MetrologicalValue.Unit                     &&
+               Prefix                   == MetrologicalValue.Prefix                   &&
+               Uncertainty              == MetrologicalValue.Uncertainty              &&
+               Uncertainty?.Value.Scale == MetrologicalValue.Uncertainty?.Value.Scale;
 
         #endregion
 
@@ -835,7 +1178,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    Unit,
                    Prefix,
                    Uncertainty,
-                   Uncertainty?.Scale
+                   Uncertainty?.Value.Scale
                );
 
         #endregion
@@ -849,8 +1192,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public override String ToString()
         {
 
-            var unitText = Unit is not null
-                               ? $" {Prefix.Symbol}{Unit.Symbol}"
+            var unitText = !IsEmpty
+                               ? $" {Prefix.Symbol}{Unit}"
                                : "";
 
             return Uncertainty.HasValue
@@ -858,7 +1201,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        ? String.Concat("(",
                                        Value.            ToString(CultureInfo.InvariantCulture),
                                        " ±",
-                                       Uncertainty.Value.ToString(CultureInfo.InvariantCulture),
+                                       Uncertainty.Value.ToString(),
                                        ")",
                                        unitText)
 

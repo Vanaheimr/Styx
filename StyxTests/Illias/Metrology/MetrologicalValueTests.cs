@@ -282,14 +282,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             var microAmps  = value.ConvertTo(SIPrefix.Micro);
 
-            Assert.That(microAmps.Value,           Is.EqualTo(5000.0m));
-            Assert.That(microAmps.Uncertainty,     Is.EqualTo(500.0m));
-            Assert.That(microAmps.Prefix,          Is.EqualTo(SIPrefix.Micro));
+            Assert.That(microAmps.Value,                 Is.EqualTo(5000.0m));
+            Assert.That(microAmps.Uncertainty!.Value.Value,  Is.EqualTo(500.0m));
+            Assert.That(microAmps.Prefix,                Is.EqualTo(SIPrefix.Micro));
 
             var baseAmps   = value.ConvertTo(SIPrefix.None);
 
-            Assert.That(baseAmps.Value,            Is.EqualTo(0.005m));
-            Assert.That(baseAmps.Uncertainty,      Is.EqualTo(0.0005m));
+            Assert.That(baseAmps.Value,                  Is.EqualTo(0.005m));
+            Assert.That(baseAmps.Uncertainty!.Value.Value,   Is.EqualTo(0.0005m));
 
             Assert.That(value.EquivalentTo(microAmps),  Is.True);
             Assert.That(value.EquivalentTo(baseAmps),   Is.True);

@@ -129,19 +129,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// A metrological value (tag 44252, 0xACDC): The tagged array
         /// [value, unit, ?prefix, ?uncertainty] represents the reading of a
-        /// physical quantity: 'value' is an integer or a decimal fraction
+        /// physical quantity. 'value' is an integer or a decimal fraction
         /// (tag 4, never a binary floating-point number, preserving the decimal
-        /// scale as displayed by the measuring instrument); 'unit' is either an
-        /// unsigned integer identifier from the unit registry of this
-        /// specification or a text string holding the unit symbol; the optional
-        /// 'prefix' is the decimal power of the SI prefix the value is scaled by
-        /// (e.g. 3 for kilo, -3 for milli; absent means 0) and must be one of
-        /// the canonical SI prefix exponents; the optional 'uncertainty' is the
-        /// symmetric standard measurement uncertainty u (coverage factor k=1,
-        /// "Guide to the Expression of Uncertainty in Measurement",
-        /// JCGM 100:2008) expressed in the same unit and prefix as the value,
-        /// encoded like 'value' and never negative.
-        /// See: https://github.com/Vanaheimr/Styx (Styx/Illias/CBOR/README.md)
+        /// scale as displayed by the measuring instrument). 'unit' is either a
+        /// named unit - an unsigned integer identifier from the unit registry
+        /// of this specification, or a text string holding its symbol - or an
+        /// array of [named unit, exponent] factors describing a product of
+        /// powers such as metre per second squared, where an exponent may be a
+        /// [numerator, denominator] pair for rational powers such as the
+        /// reciprocal square root of hertz. The optional 'prefix' is the
+        /// decimal power of the SI prefix the whole reading is scaled by (e.g.
+        /// 3 for kilo, -3 for milli; absent means 0) and must be one of the
+        /// canonical SI prefix exponents. The optional 'uncertainty' is the
+        /// symmetric measurement uncertainty as defined by the "Guide to the
+        /// Expression of Uncertainty in Measurement" (JCGM 100:2008),
+        /// expressed in the same unit and prefix as the value and never
+        /// negative: a bare number is the standard uncertainty u, while a map
+        /// may additionally state the coverage factor the magnitude belongs to,
+        /// the coverage probability, the probability distribution and the
+        /// effective degrees of freedom.
+        /// See: https://github.com/Vanaheimr/Styx/blob/master/Styx/Illias/CBOR/tag-44252.md
         /// </summary>
         public static CBORTag  MetrologicalValue    { get; } = new (44252);
 
