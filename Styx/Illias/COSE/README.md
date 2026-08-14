@@ -31,9 +31,13 @@ always produces the same bytes — and therefore the same signature.
 | `ESB256` / `ESB320` / `ESB384` / `ESB512` | −265 / −266 / −267 / −268 | brainpoolP256r1 / P320r1 / P384r1 / P512r1 | SHA-256 / 384 / 384 / 512 |
 | `ES256K` | −47 | secp256k1 | SHA-256 |
 
-Not implemented: counter signatures (RFC 9338), EdDSA, MAC and encryption.
-The CBOR tags of those structures are defined in `CBORTag`, so they are
-recognized rather than silently misread.
+- **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
+  header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
+
+Not implemented: `COSE_Countersignature0` (the abbreviated form, header
+parameter 12), EdDSA, MAC and encryption. The CBOR tags of those structures
+are defined in `CBORTag`, so they are recognized rather than silently
+misread.
 
 ## Signing and verifying
 
@@ -73,11 +77,42 @@ The signatures are independent: each covers the body, its own header bucket
 and the payload, but never another signature. Adding one therefore leaves the
 existing ones byte-for-byte valid, and the second party never needs the first
 party's key. A signature *over* another signature is a different mechanism —
-the counter signature of RFC 9338, which is not implemented here.
+the countersignature of RFC 9338, see below.
 
 Its `Sig_structure` has **five** elements rather than four, with the protected
 bucket of the individual signature between the body and the external data:
 `["Signature", body_protected, sign_protected, external_aad, payload]`.
+
+## Countersignatures: signing someone else's signature
+
+A countersignature (RFC 9338) is not another signature of the payload — it is
+a signature **of a signature**. It lives in the *unprotected* bucket, so it can
+be added to a finished message without changing a byte of what was signed:
+
+```csharp
+var released = signedByStation.AddCountersignature(operatorKey, COSEAlgorithm.ES384, operatorKeyId);
+
+released.Verify(stationPublicKey, out var bodyError);                    // still valid, same bytes
+released.VerifyCountersignature(released.Countersignatures[0],
+                                operatorPublicKey, out var counterError);
+```
+
+**Which of the two to reach for** is decided by one question: does the party
+have something of its own to say?
+
+| Situation | Mechanism |
+|-----------|-----------|
+| A charging station bundles signed meter readings and adds its own metadata | it signs a **new payload** — nest a `COSE_Sign1` whose payload contains the readings |
+| An operator vouches for the station's signature before the data goes to the customer | it says nothing new — **countersign**, so the station's signature stays independently verifiable |
+| Several parties each assert the same payload | one `COSE_Sign` with several signatures |
+
+The version 2 structure of RFC 9338 is the one implemented here, and the
+difference is not cosmetic: the countersignature of RFC 8152 covered the
+payload but **not** the signature it was countersigning, so it never actually
+attested to having seen it. Version 2 appends that signature as
+`other_fields`, which is why replacing the body signature — even with another
+valid one over the same payload — invalidates the countersignature. There is a
+test that does exactly that.
 
 ## Five things that are easy to get wrong
 
@@ -114,7 +149,12 @@ pinned against the ECDSA examples of RFC 9052 — Appendix C.2.1 for
 `COSE_Sign1`, C.1.1 and C.1.2 for `COSE_Sign`, the latter with one signature
 on P-256 and one on P-521 — and the `sign1-tests` of the
 [COSE working group example repository](https://github.com/cose-wg/Examples),
-taken from their machine-readable form rather than retyped.
+taken from their machine-readable form rather than retyped. The
+countersignature vector is the worked example of RFC 9338 Appendix A.2.1,
+which the RFC prints in diagnostic notation only: the message is assembled
+from the documented parts, and that both its body signature and its
+countersignature then verify against the published keys is what proves the
+assembly and the transcription.
 
 ECDSA is randomized, so published signature bytes cannot be reproduced by
 signing — but they can be *verified*, which is the stronger statement: a single
@@ -138,5 +178,6 @@ quantity should look like.
 - [RFC 9052](https://www.rfc-editor.org/rfc/rfc9052) — COSE: Structures and Process
 - [RFC 9053](https://www.rfc-editor.org/rfc/rfc9053) — COSE: Initial Algorithms
 - [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864) — Fully-Specified Algorithms for JOSE and COSE
+- [RFC 9338](https://www.rfc-editor.org/rfc/rfc9338) — COSE: Countersignatures
 - [RFC 9360](https://www.rfc-editor.org/rfc/rfc9360) — COSE: Header Parameters for X.509 Certificates
 - [IANA COSE registries](https://www.iana.org/assignments/cose/cose.xhtml)

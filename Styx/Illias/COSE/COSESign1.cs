@@ -62,6 +62,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public const String SignatureContext = "Signature1";
 
+        /// <summary>
+        /// The context text string of a countersignature on a COSE_Sign1
+        /// message, in the version 2 form that also covers the signature
+        /// being countersigned [RFC 9338, Section 3.3].
+        /// </summary>
+        public const String CountersignatureContext = "CounterSignatureV2";
+
         #endregion
 
         #region Properties
@@ -524,6 +531,316 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+
+        #region Countersignatures
+
+        /// <summary>
+        /// The countersignatures of this message [RFC 9338], i.e. the
+        /// signatures OF ITS SIGNATURE, taken from the "Countersignature
+        /// version 2" header parameter (label 11) of the unprotected bucket.
+        ///
+        /// A countersignature endorses an existing signature without
+        /// re-wrapping the message: the payload stays the payload, the body
+        /// signature stays byte for byte what it was, and whoever only knows
+        /// the original signer can still verify it. It is therefore what a
+        /// party who vouches for someone else's signature produces, whereas a
+        /// party who asserts a statement of their own signs a payload of
+        /// their own.
+        ///
+        /// A single countersignature is written bare, several are written as
+        /// an array of them. Throws when the header parameter is present but
+        /// not a countersignature, rather than pretending there is none.
+        /// </summary>
+        public IReadOnlyList<COSESignature>  Countersignatures
+        {
+            get
+            {
+
+                if (!UnprotectedHeader.TryGet(COSEHeaderLabel.CounterSignatureV2, out var value))
+                    return [];
+
+                if (value.Kind != CBORValueKind.Array)
+                    throw new COSEException("The countersignature header parameter must be a COSE_Countersignature or an array of them!");
+
+                var items = value.AsArray();
+
+                // The first element tells the two shapes apart: a single
+                // countersignature starts with its protected bucket, a byte
+                // string, whereas an array of them starts with an array.
+                if (items.Count > 0 && items[0].Kind == CBORValueKind.Array)
+                {
+
+                    var countersignatures = new List<COSESignature>();
+
+                    foreach (var item in items)
+                    {
+
+                        if (!COSESignature.TryParse(item, out var countersignature, out var itemError))
+                            throw new COSEException($"A countersignature of this COSE_Sign1 message is invalid: {itemError}");
+
+                        countersignatures.Add(countersignature);
+
+                    }
+
+                    return countersignatures;
+
+                }
+
+                if (!COSESignature.TryParse(value, out var single, out var errorResponse))
+                    throw new COSEException($"The countersignature of this COSE_Sign1 message is invalid: {errorResponse}");
+
+                return [single];
+
+            }
+        }
+
+        #endregion
+
+        #region (static) ToBeCountersigned(BodyProtectedHeaderBytes, CountersignatureProtectedHeaderBytes, Payload, Signature, ExternalAAD = null)
+
+        /// <summary>
+        /// Return the encoded Countersign_structure of a countersignature on
+        /// a COSE_Sign1 message [RFC 9338, Section 3.3]:
+        ///
+        /// <code>
+        /// Countersign_structure = [
+        ///     context        : "CounterSignatureV2",
+        ///     body_protected : empty_or_serialized_map,
+        ///     sign_protected : empty_or_serialized_map,
+        ///     external_aad   : bstr,
+        ///     payload        : bstr,
+        ///     other_fields   : [ signature ]
+        /// ]
+        /// </code>
+        ///
+        /// The last element is what makes this the version 2 of the
+        /// structure, and it is the whole point of RFC 9338: the
+        /// countersignature of RFC 8152 covered the payload but NOT the
+        /// signature it was supposed to countersign, so it did not actually
+        /// attest to having seen it.
+        /// </summary>
+        /// <param name="BodyProtectedHeaderBytes">The serialized protected header bucket of the countersigned message.</param>
+        /// <param name="CountersignatureProtectedHeaderBytes">The serialized protected header bucket of the countersignature itself.</param>
+        /// <param name="Payload">The payload of the countersigned message, also when it is transported detached.</param>
+        /// <param name="Signature">The signature of the countersigned message.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
+        public static Byte[] ToBeCountersigned(Byte[]   BodyProtectedHeaderBytes,
+                                               Byte[]   CountersignatureProtectedHeaderBytes,
+                                               Byte[]   Payload,
+                                               Byte[]   Signature,
+                                               Byte[]?  ExternalAAD   = null)
+        {
+
+            var writer = new CBORWriter();
+
+            writer.WriteStartArray(6);
+            writer.WriteTextString(CountersignatureContext);
+            writer.WriteByteString(BodyProtectedHeaderBytes);
+            writer.WriteByteString(CountersignatureProtectedHeaderBytes);
+            writer.WriteByteString(ExternalAAD ?? []);
+            writer.WriteByteString(Payload);
+            writer.WriteStartArray(1);
+            writer.WriteByteString(Signature);
+            writer.WriteEndArray();
+            writer.WriteEndArray();
+
+            return writer.ToByteArray();
+
+        }
+
+        #endregion
+
+        #region ToBeCountersigned(Countersignature, ExternalAAD = null, DetachedPayload = null)
+
+        /// <summary>
+        /// Return the encoded Countersign_structure of the given
+        /// countersignature on this message [RFC 9338, Section 3.3].
+        /// </summary>
+        /// <param name="Countersignature">A countersignature on this message.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
+        /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
+        public Byte[] ToBeCountersigned(COSESignature  Countersignature,
+                                        Byte[]?        ExternalAAD       = null,
+                                        Byte[]?        DetachedPayload   = null)
+        {
+
+            if (!TryGetPayload(DetachedPayload, out var payload, out var errorResponse))
+                throw new COSEException(errorResponse);
+
+            return ToBeCountersigned(ProtectedHeaderBytes,
+                                     Countersignature.ProtectedHeaderBytes,
+                                     payload,
+                                     Signature,
+                                     ExternalAAD);
+
+        }
+
+        #endregion
+
+        #region AddCountersignature(PrivateKey, Algorithm, KeyIdentifier = null, ...)
+
+        /// <summary>
+        /// Return a copy of this message endorsed by one more countersignature.
+        /// The body signature keeps its bytes and stays valid, because
+        /// countersignatures live within the UNPROTECTED header bucket, which
+        /// no signature covers.
+        /// </summary>
+        /// <param name="PrivateKey">An elliptic curve private key.</param>
+        /// <param name="Algorithm">The signature algorithm.</param>
+        /// <param name="KeyIdentifier">An optional key identifier.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
+        /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
+        /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        public COSESign1 AddCountersignature(ECPrivateKeyParameters  PrivateKey,
+                                             COSEAlgorithm           Algorithm,
+                                             Byte[]?                 KeyIdentifier     = null,
+                                             Byte[]?                 ExternalAAD       = null,
+                                             Byte[]?                 DetachedPayload   = null,
+                                             SecureRandom?           Random            = null)
+
+            => AddCountersignature(PrivateKey,
+                                   COSEHeaders.Create(Algorithm),
+                                   KeyIdentifier is not null
+                                       ? COSEHeaders.Create(null, KeyIdentifier)
+                                       : COSEHeaders.Empty,
+                                   ExternalAAD,
+                                   DetachedPayload,
+                                   Random);
+
+        #endregion
+
+        #region AddCountersignature(PrivateKey, CountersignatureProtectedHeader, ...)
+
+        /// <summary>
+        /// Return a copy of this message endorsed by one more
+        /// countersignature, with full control over its header buckets.
+        /// </summary>
+        /// <param name="PrivateKey">An elliptic curve private key.</param>
+        /// <param name="CountersignatureProtectedHeader">The protected header parameters of the countersignature, which must name the signature algorithm.</param>
+        /// <param name="CountersignatureUnprotectedHeader">The optional unprotected header parameters of the countersignature.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
+        /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
+        /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        public COSESign1 AddCountersignature(ECPrivateKeyParameters  PrivateKey,
+                                             COSEHeaders             CountersignatureProtectedHeader,
+                                             COSEHeaders?            CountersignatureUnprotectedHeader   = null,
+                                             Byte[]?                 ExternalAAD                         = null,
+                                             Byte[]?                 DetachedPayload                     = null,
+                                             SecureRandom?           Random                              = null)
+        {
+
+            var algorithm                     = CountersignatureProtectedHeader.Algorithm
+                                                    ?? throw new COSEException("The protected header bucket of the countersignature must name the signature algorithm!");
+
+            if (!TryGetPayload(DetachedPayload, out var payload, out var errorResponse))
+                throw new COSEException(errorResponse);
+
+            var countersignatureProtectedBytes  = CountersignatureProtectedHeader.ToProtectedByteArray();
+
+            var countersignature                = new COSESignature(
+                                                      countersignatureProtectedBytes,
+                                                      CountersignatureUnprotectedHeader,
+                                                      algorithm.Sign(
+                                                          ToBeCountersigned(ProtectedHeaderBytes,
+                                                                            countersignatureProtectedBytes,
+                                                                            payload,
+                                                                            Signature,
+                                                                            ExternalAAD),
+                                                          PrivateKey,
+                                                          Random
+                                                      )
+                                                  );
+
+            var all                             = new List<COSESignature>(Countersignatures) {
+                                                      countersignature
+                                                  };
+
+            return new COSESign1(
+                       ProtectedHeaderBytes,
+                       UnprotectedHeader.Set(
+                           COSEHeaderLabel.CounterSignatureV2,
+                           all.Count == 1
+                               ? all[0].ToCBOR()
+                               : CBORValue.FromArray(all.Select(static countersignature => countersignature.ToCBOR()))
+                       ),
+                       Payload,
+                       Signature,
+                       IsTagged
+                   );
+
+        }
+
+        #endregion
+
+        #region VerifyCountersignature(Countersignature, PublicKey, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Verify a countersignature on this message [RFC 9338].
+        /// Verifying it says that its signer saw this exact body signature -
+        /// it says nothing about whether the body signature itself is valid,
+        /// which is a separate question answered by Verify(...).
+        /// </summary>
+        /// <param name="Countersignature">A countersignature on this message.</param>
+        /// <param name="PublicKey">An elliptic curve public key.</param>
+        /// <param name="ErrorResponse">The reason why the verification failed.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that was signed along with the payload.</param>
+        /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
+        /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects, required whenever the countersignature states its algorithm within its unprotected header bucket only.</param>
+        public Boolean VerifyCountersignature(COSESignature                     Countersignature,
+                                              ECPublicKeyParameters             PublicKey,
+                                              [NotNullWhen(false)] out String?  ErrorResponse,
+                                              Byte[]?                           ExternalAAD         = null,
+                                              Byte[]?                           DetachedPayload     = null,
+                                              COSEAlgorithm?                    ExpectedAlgorithm   = null)
+        {
+
+            if (!COSEHeaders.VerifyCriticalHeaderParameters(Countersignature.ProtectedHeader,
+                                                            Countersignature.UnprotectedHeader,
+                                                            out ErrorResponse))
+            {
+                return false;
+            }
+
+            var algorithm = ExpectedAlgorithm ?? Countersignature.ProtectedHeader.Algorithm;
+
+            if (!algorithm.HasValue)
+            {
+
+                ErrorResponse = Countersignature.UnprotectedHeader.Algorithm.HasValue
+                                    ? $"This countersignature states its algorithm '{Countersignature.UnprotectedHeader.Algorithm.Value.Name}' within the unprotected header bucket only, where it is not covered by the countersignature: Pass the expected algorithm explicitly in order to accept it!"
+                                    :  "This countersignature does not state its algorithm: Pass the expected algorithm explicitly!";
+
+                return false;
+
+            }
+
+            var statedAlgorithm = Countersignature.Algorithm;
+
+            if (statedAlgorithm.HasValue &&
+                statedAlgorithm.Value != algorithm.Value)
+            {
+                ErrorResponse = $"This countersignature was created with the algorithm '{statedAlgorithm.Value.Name}', but the algorithm '{algorithm.Value.Name}' was expected!";
+                return false;
+            }
+
+            if (!TryGetPayload(DetachedPayload, out var payload, out ErrorResponse))
+                return false;
+
+            return algorithm.Value.Verify(
+                       ToBeCountersigned(ProtectedHeaderBytes,
+                                         Countersignature.ProtectedHeaderBytes,
+                                         payload,
+                                         Signature,
+                                         ExternalAAD),
+                       Countersignature.Signature,
+                       PublicKey,
+                       out ErrorResponse
+                   );
+
+        }
+
+        #endregion
 
 
         #region (static) Parse   (CBOR)

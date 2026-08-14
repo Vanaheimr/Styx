@@ -392,6 +392,50 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region Set     (Label, Value)
+
+        /// <summary>
+        /// Return a copy of this bucket in which the given header parameter
+        /// is set, replacing it in place when it is already present and
+        /// appending it otherwise.
+        /// Header buckets are immutable, because the serialization of a
+        /// protected bucket is part of a signature input and must not change
+        /// after signing. This is what an unprotected bucket needs
+        /// nevertheless: a countersignature is added to a message that is
+        /// already signed.
+        /// </summary>
+        /// <param name="Label">A header parameter label.</param>
+        /// <param name="Value">The value of the header parameter.</param>
+        public COSEHeaders Set(CBORValue Label,
+                               CBORValue Value)
+        {
+
+            var updated = new List<KeyValuePair<CBORValue, CBORValue>>();
+            var replaced = false;
+
+            foreach (var parameter in parameters)
+            {
+
+                if (parameter.Key == Label)
+                {
+                    updated.Add(new (Label, Value));
+                    replaced = true;
+                }
+
+                else
+                    updated.Add(parameter);
+
+            }
+
+            if (!replaced)
+                updated.Add(new (Label, Value));
+
+            return new COSEHeaders(updated);
+
+        }
+
+        #endregion
+
         #region Contains(Label)
 
         /// <summary>

@@ -39,10 +39,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// allows several parties to sign one and the same payload each with
     /// their own algorithm and their own key.
     ///
-    /// It can not be verified on its own: What is signed is the Sig_structure
-    /// ["Signature", body_protected, sign_protected, external_aad, payload],
-    /// so both the body of the message and its payload are needed. Use
-    /// COSESign.Verify(...) for that.
+    /// The very same structure is a COSE_Countersignature [RFC 9338], which
+    /// the specification defines as being a COSE_Signature - what differs is
+    /// not the structure but what is signed.
+    ///
+    /// It can not be verified on its own: What is signed is a Sig_structure
+    /// that also names the body of the message and its payload. Use
+    /// COSESign.Verify(...) or COSESign1.VerifyCountersignature(...) for that.
     /// </summary>
     public sealed class COSESignature
     {
