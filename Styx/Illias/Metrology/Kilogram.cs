@@ -547,7 +547,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 => Create(
                        Decimal.CreateChecked(Number),
-                       Exponent ?? 0
+                       checked((Exponent ?? 0) - 3)
                    );
 
         #endregion
@@ -566,7 +566,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 => Create(
                        Decimal.CreateChecked(Number),
-                       checked((Exponent ?? 0) + 3)
+                       Exponent ?? 0
                    );
 
         #endregion
@@ -637,7 +637,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Kilogram = default;
 
-            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
+            if (!MathHelpers.TryAddExponent(Exponent, -3, out var combinedExponent))
                 return false;
 
             try
@@ -677,7 +677,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Kilogram = default;
 
-            if (!MathHelpers.TryAddExponent(Exponent, 3, out var combinedExponent))
+            if (!MathHelpers.TryAddExponent(Exponent, 0, out var combinedExponent))
                 return false;
 
             try
