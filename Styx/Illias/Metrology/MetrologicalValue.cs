@@ -303,7 +303,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 if (!TryParseJSONNumber(JSON["uncertainty"], "uncertainty", out var uncertaintyValue, out ErrorResponse))
+                {
+                    // The token is not null here, so the helper always reports
+                    // a reason - but the compiler can not see that.
+                    ErrorResponse ??= "Invalid JSON property 'uncertainty'!";
                     return false;
+                }
 
                 if (uncertaintyValue < 0)
                 {
@@ -571,10 +576,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (private static) TryParseCBORNumber(Node, What, out Number, out ErrorResponse)
 
-        private static Boolean TryParseCBORNumber(CBORValue    Node,
-                                                  String       What,
-                                                  out Decimal  Number,
-                                                  out String?  ErrorResponse)
+        private static Boolean TryParseCBORNumber(CBORValue                         Node,
+                                                  String                            What,
+                                                  out Decimal                       Number,
+                                                  [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
             Number = 0;
