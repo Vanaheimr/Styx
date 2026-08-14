@@ -93,7 +93,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator != (PercentageOf<TValue> Left,
                                            PercentageOf<TValue> Right)
 
-            => Left.Equals(Right);
+            => !Left.Equals(Right);
 
         #endregion
 

@@ -204,31 +204,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Text">A text representation of a percentage.</param>
         /// <param name="Percentage">The parsed percentage.</param>
         public static Boolean TryParse(String Text, out PercentageByte Percentage)
-        {
 
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Byte.TryParse(Text, out var value) &&
-                    value <= 100)
-                {
-
-                    Percentage = new PercentageByte(value);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
-            Percentage = default;
-            return false;
-
-        }
+            => TryParse(Text,
+                        CultureInfo.InvariantCulture,
+                        out Percentage);
 
         #endregion
 
@@ -594,15 +573,71 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        public static PercentageByte Parse(String s, IFormatProvider? provider)
+        #region (static) Parse    (Text, FormatProvider)
+
+        /// <summary>
+        /// Parse the given string as a percentage.
+        /// </summary>
+        /// <param name="Text">A text representation of a percentage.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static PercentageByte Parse(String            Text,
+                                           IFormatProvider?  FormatProvider)
         {
-            throw new NotImplementedException();
+
+            if (TryParse(Text, FormatProvider, out var percentage))
+                return percentage;
+
+            throw new ArgumentException($"Invalid text representation of a percentage: '{Text}'!",
+                                        nameof(Text));
+
         }
 
-        public static Boolean TryParse([NotNullWhen(true)] String? s, IFormatProvider? provider, [MaybeNullWhen(false)] out PercentageByte result)
+        #endregion
+
+        #region (static) TryParse (Text, FormatProvider, out Percentage)
+
+        /// <summary>
+        /// Try to parse the given string as a percentage.
+        /// A trailing percent sign is accepted, as ToString() writes one.
+        /// Unlike the other percentage types this one stays within 0..100,
+        /// because it exists to pack a share of a whole into a single byte.
+        /// </summary>
+        /// <param name="Text">A text representation of a percentage.</param>
+        /// <param name="FormatProvider">An optional format provider. Defaults to the invariant culture, which is what ToString() uses.</param>
+        /// <param name="Percentage">The parsed percentage.</param>
+        public static Boolean TryParse([NotNullWhen(true)]     String?             Text,
+                                       IFormatProvider?                            FormatProvider,
+                                       [MaybeNullWhen(false)]  out PercentageByte  Percentage)
         {
-            throw new NotImplementedException();
+
+            Percentage = default;
+
+            if (Text is null)
+                return false;
+
+            var text = Text.Trim();
+
+            if (text.EndsWith('%'))
+                text = text[..^1].TrimEnd();
+
+            if (Byte.TryParse(text,
+                              NumberStyles.Integer,
+                              NumberFormatInfo.GetInstance(FormatProvider ?? CultureInfo.InvariantCulture),
+                              out var value) &&
+                value <= 100)
+            {
+
+                Percentage = new PercentageByte(value);
+
+                return true;
+
+            }
+
+            return false;
+
         }
+
+        #endregion
 
     }
 

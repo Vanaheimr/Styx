@@ -109,7 +109,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean operator != (Triple<T1, T2, T3> Left,
                                            Triple<T1, T2, T3> Right)
 
-            => Left.Equals(Right);
+            => !Left.Equals(Right);
 
         #endregion
 

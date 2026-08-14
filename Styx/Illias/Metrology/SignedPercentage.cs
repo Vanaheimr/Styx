@@ -148,32 +148,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Text">A text representation of a signed percentage.</param>
         /// <param name="SignedPercentage">The parsed signedPercentage.</param>
         public static Boolean TryParse(String Text, out SignedPercentage SignedPercentage)
-        {
 
-            try
-            {
-
-                Text = Text.Trim();
-
-                if (Decimal.TryParse(Text, out var value) &&
-                    value >= -100 &&
-                    value <=  100)
-                {
-
-                    SignedPercentage = new SignedPercentage(value);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
-            SignedPercentage = default;
-            return false;
-
-        }
+            => TryParse(Text,
+                        CultureInfo.InvariantCulture,
+                        out SignedPercentage);
 
         #endregion
 
@@ -187,25 +165,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean TryParse(Decimal Number, out SignedPercentage SignedPercentage)
         {
 
-            try
-            {
+            SignedPercentage = new SignedPercentage(Number);
 
-                if (Number >= -100 &&
-                    Number <=  100)
-                {
-
-                    SignedPercentage = new SignedPercentage(Number);
-
-                    return true;
-
-                }
-
-            }
-            catch
-            { }
-
-            SignedPercentage = default;
-            return false;
+            return true;
 
         }
 
@@ -477,15 +439,68 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        public static SignedPercentage Parse(String s, IFormatProvider? provider)
+        #region (static) Parse    (Text, FormatProvider)
+
+        /// <summary>
+        /// Parse the given string as a signed percentage.
+        /// </summary>
+        /// <param name="Text">A text representation of a signed percentage.</param>
+        /// <param name="FormatProvider">An optional format provider.</param>
+        public static SignedPercentage Parse(String            Text,
+                                             IFormatProvider?  FormatProvider)
         {
-            throw new NotImplementedException();
+
+            if (TryParse(Text, FormatProvider, out var signedPercentage))
+                return signedPercentage;
+
+            throw new ArgumentException($"Invalid text representation of a signed percentage: '{Text}'!",
+                                        nameof(Text));
+
         }
 
-        public static Boolean TryParse([NotNullWhen(true)] String? s, IFormatProvider? provider, [MaybeNullWhen(false)] out SignedPercentage result)
+        #endregion
+
+        #region (static) TryParse (Text, FormatProvider, out SignedPercentage)
+
+        /// <summary>
+        /// Try to parse the given string as a signed percentage.
+        /// A trailing percent sign is accepted, as ToString() writes one.
+        /// </summary>
+        /// <param name="Text">A text representation of a signed percentage.</param>
+        /// <param name="FormatProvider">An optional format provider. Defaults to the invariant culture, which is what ToString() uses.</param>
+        /// <param name="SignedPercentage">The parsed signed percentage.</param>
+        public static Boolean TryParse([NotNullWhen(true)]     String?               Text,
+                                       IFormatProvider?                              FormatProvider,
+                                       [MaybeNullWhen(false)]  out SignedPercentage  SignedPercentage)
         {
-            throw new NotImplementedException();
+
+            SignedPercentage = default;
+
+            if (Text is null)
+                return false;
+
+            var text = Text.Trim();
+
+            if (text.EndsWith('%'))
+                text = text[..^1].TrimEnd();
+
+            if (Decimal.TryParse(text,
+                                 NumberStyles.Number,
+                                 NumberFormatInfo.GetInstance(FormatProvider ?? CultureInfo.InvariantCulture),
+                                 out var value))
+            {
+
+                SignedPercentage = new SignedPercentage(value);
+
+                return true;
+
+            }
+
+            return false;
+
         }
+
+        #endregion
 
     }
 
