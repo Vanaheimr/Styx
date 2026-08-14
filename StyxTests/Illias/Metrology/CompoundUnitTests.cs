@@ -152,7 +152,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // The golden vectors of the specification...
             Assert.That(Convert.ToHexString(acceleration.ToCBOR().ToByteArray()),
-                        Is.EqualTo("D9ACDC82C482211903D582820201820121"));
+                        Is.EqualTo("D9ACDC82C482211903D58282020182182821"));
 
             Assert.That(Convert.ToHexString(noiseDensity.ToCBOR().ToByteArray()),
                         Is.EqualTo("D9ACDC83C48220182D82820E01820882200228"));
@@ -328,8 +328,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // Ratios, efficiencies and counts are dimensionless but still
             // need a unit - the SI calls it "one". SenML spells it "/".
+            // One holds the first identification: it is the neutral element
+            // of unit multiplication, and its symbol is "1".
             Assert.That(UnitOfMeasure.One.Symbol,                        Is.EqualTo("1"));
-            Assert.That(UnitOfMeasure.One.Numeric,                       Is.EqualTo(39));
+            Assert.That(UnitOfMeasure.One.Numeric,                       Is.EqualTo(1));
+
+            // 39 was One in specification version 1.1 and stays reserved...
+            Assert.That(UnitOfMeasure.TryParse(39, out _),               Is.False);
 
             Assert.That(UnitOfMeasure.TryParse("1",   out var byOne),    Is.True);
             Assert.That(byOne,                                           Is.EqualTo(UnitOfMeasure.One));

@@ -41,7 +41,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // (tag 44252) and must therefore NEVER be renumbered!
             var expectedIds = new (UnitOfMeasure Unit, UInt16 Numeric, String Symbol)[] {
 
-                                  (UnitOfMeasure.Second,                   1,  "s"),
+                                  (UnitOfMeasure.One,                      1,  "1"),
+                                  (UnitOfMeasure.Second,                  40,  "s"),
                                   (UnitOfMeasure.Meter,                    2,  "m"),
                                   (UnitOfMeasure.Gram,                     3,  "g"),
                                   (UnitOfMeasure.Ampere,                   4,  "A"),

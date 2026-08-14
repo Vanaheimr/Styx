@@ -200,10 +200,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Static defaults
 
-        // SI base units (1..7, within SI order; the prefixable base of mass is the Gram!)
+        /// <summary>
+        /// The number one (1), the coherent SI unit of every dimensionless
+        /// quantity: ratios, efficiencies, counts, refractive indices.
+        /// It holds the first identification because it is the neutral element
+        /// of unit multiplication - and because its symbol is "1".
+        /// SenML spells it "/".
+        /// </summary>
+        public static readonly UnitOfMeasure  One                     = Register("One",                    "1",      1, "one", "/");
 
-        /// <summary>The second (s, 1), the SI base unit of time.</summary>
-        public static readonly UnitOfMeasure  Second                  = Register("Second",                 "s",      1);
+        // SI base units (2..7 and 40, within SI order; the prefixable base of mass is the Gram!)
+
+        /// <summary>
+        /// The second (s, 40), the SI base unit of time.
+        /// It sits outside the base unit block because identification 1 was
+        /// given to the dimensionless one; see the specification.
+        /// </summary>
+        public static readonly UnitOfMeasure  Second                  = Register("Second",                 "s",     40);
 
         /// <summary>The meter (m, 2), the SI base unit of length.</summary>
         public static readonly UnitOfMeasure  Meter                   = Register("Meter",                  "m",      2, "Metre");
@@ -327,12 +340,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>Parts per million (ppm, 38), dimensionless ratio.</summary>
         public static readonly UnitOfMeasure  PartsPerMillion         = Register("PartsPerMillion",        "ppm",   38);
 
-        /// <summary>
-        /// The number one (1, 39), the coherent SI unit of every dimensionless
-        /// quantity: ratios, efficiencies, counts, refractive indices.
-        /// SenML spells it "/".
-        /// </summary>
-        public static readonly UnitOfMeasure  One                     = Register("One",                    "1",     39, "one", "/");
+        // Identification 39 is permanently reserved: version 1.1 of the
+        // specification assigned it to the dimensionless one, and was
+        // published before that unit moved to identification 1. Leaving 39
+        // unused keeps anything written against 1.1 unambiguous.
 
 
         // Electrotechnical and e-mobility units (50..69)
