@@ -1444,7 +1444,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("m".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("m".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            m,
@@ -1456,7 +1456,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("mm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("mm".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            mm,
                            Destination,
@@ -1466,7 +1466,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " mm".AsSpan()
                        );
 
-            if (Format.Equals("cm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("cm".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            cm,
                            Destination,
@@ -1476,7 +1476,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " cm".AsSpan()
                        );
 
-            if (Format.Equals("dm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("dm".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            dm,
                            Destination,
@@ -1486,7 +1486,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " dm".AsSpan()
                        );
 
-            if (Format.Equals("km".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("km".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            km,
                            Destination,
@@ -1569,21 +1569,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "m",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "m",  StringComparison.Ordinal))
             {
                 return $"{m.ToString("G", FormatProvider)} m";
             }
 
-            if (String.Equals(Format, "mm", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "mm", StringComparison.Ordinal))
                 return $"{mm.ToString("G", FormatProvider)} mm";
 
-            if (String.Equals(Format, "cm", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "cm", StringComparison.Ordinal))
                 return $"{cm.ToString("G", FormatProvider)} cm";
 
-            if (String.Equals(Format, "dm", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "dm", StringComparison.Ordinal))
                 return $"{dm.ToString("G", FormatProvider)} dm";
 
-            if (String.Equals(Format, "km", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "km", StringComparison.Ordinal))
                 return $"{km.ToString("G", FormatProvider)} km";
 
             return $"{m.ToString(Format, FormatProvider)} m";

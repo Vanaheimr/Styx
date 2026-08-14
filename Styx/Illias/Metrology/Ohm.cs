@@ -1436,7 +1436,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("Ω".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("Ω".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1448,7 +1448,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("µΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("µΩ".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            µΩ,
                            Destination,
@@ -1458,7 +1458,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " µΩ".AsSpan()
                        );
 
-            if (Format.Equals("mΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("mΩ".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            mΩ,
                            Destination,
@@ -1468,7 +1468,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " mΩ".AsSpan()
                        );
 
-            if (Format.Equals("kΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kΩ".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kΩ,
                            Destination,
@@ -1478,7 +1478,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kΩ".AsSpan()
                        );
 
-            if (Format.Equals("MΩ".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("MΩ".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MΩ,
                            Destination,
@@ -1561,21 +1561,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G", StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "Ω", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "Ω", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} Ω";
             }
 
-            if (String.Equals(Format, "µΩ", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "µΩ", StringComparison.Ordinal))
                 return $"{µΩ.ToString("G", FormatProvider)} µΩ";
 
-            if (String.Equals(Format, "mΩ", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "mΩ", StringComparison.Ordinal))
                 return $"{mΩ.ToString("G", FormatProvider)} mΩ";
 
-            if (String.Equals(Format, "kΩ", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kΩ", StringComparison.Ordinal))
                 return $"{kΩ.ToString("G", FormatProvider)} kΩ";
 
-            if (String.Equals(Format, "MΩ", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "MΩ", StringComparison.Ordinal))
                 return $"{MΩ.ToString("G", FormatProvider)} MΩ";
 
             return $"{Value.ToString(Format, FormatProvider)} Ohm";

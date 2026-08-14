@@ -1275,7 +1275,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("Wh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("Wh".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1287,7 +1287,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kWh".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kWh,
                            Destination,
@@ -1297,7 +1297,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kWh".AsSpan()
                        );
 
-            if (Format.Equals("MWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("MWh".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MWh,
                            Destination,
@@ -1307,7 +1307,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " MWh".AsSpan()
                        );
 
-            if (Format.Equals("GWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("GWh".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            GWh,
                            Destination,
@@ -1390,18 +1390,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "Wh", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "Wh", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} Wh";
             }
 
-            if (String.Equals(Format, "kWh", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kWh", StringComparison.Ordinal))
                 return $"{kWh.ToString("G", FormatProvider)} kWh";
 
-            if (String.Equals(Format, "MWh", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "MWh", StringComparison.Ordinal))
                 return $"{MWh.ToString("G", FormatProvider)} MWh";
 
-            if (String.Equals(Format, "GWh", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "GWh", StringComparison.Ordinal))
                 return $"{GWh.ToString("G", FormatProvider)} GWh";
 
             return $"{Value.ToString(Format, FormatProvider)} Wh";

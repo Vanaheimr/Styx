@@ -973,7 +973,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("kg".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("kg".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -985,7 +985,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("g".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("g".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            g,
                            Destination,
@@ -1068,12 +1068,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "kg", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "kg", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} kg";
             }
 
-            if (String.Equals(Format, "g", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "g", StringComparison.Ordinal))
                 return $"{g.ToString("G", FormatProvider)} g";
 
             return $"{Value.ToString(Format, FormatProvider)} kg";

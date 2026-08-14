@@ -1278,7 +1278,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("Hz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("Hz".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1290,7 +1290,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kHz".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kHz,
                            Destination,
@@ -1300,7 +1300,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kHz".AsSpan()
                        );
 
-            if (Format.Equals("MHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("MHz".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MHz,
                            Destination,
@@ -1310,7 +1310,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " MHz".AsSpan()
                        );
 
-            if (Format.Equals("GHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("GHz".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            GHz,
                            Destination,
@@ -1393,18 +1393,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "Hz", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "Hz", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} Hz";
             }
 
-            if (String.Equals(Format, "kHz", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kHz", StringComparison.Ordinal))
                 return $"{kHz.ToString("G", FormatProvider)} kHz";
 
-            if (String.Equals(Format, "MHz", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "MHz", StringComparison.Ordinal))
                 return $"{MHz.ToString("G", FormatProvider)} MHz";
 
-            if (String.Equals(Format, "GHz", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "GHz", StringComparison.Ordinal))
                 return $"{GHz.ToString("G", FormatProvider)} GHz";
 
             return $"{Value.ToString(Format, FormatProvider)} Hz";

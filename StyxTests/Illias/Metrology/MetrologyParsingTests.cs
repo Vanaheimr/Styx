@@ -179,6 +179,114 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Format_specifiers_never_substitute_a_different_prefix()
+
+        [Test]
+        public void Format_specifiers_never_substitute_a_different_prefix()
+        {
+
+            var fiveKilowatt = Watt.FromW(5000);
+
+            // The requested unit is the one that gets printed...
+            Assert.That(fiveKilowatt.ToString(),        Is.EqualTo("5000 W"));
+            Assert.That(fiveKilowatt.ToString("W", CultureInfo.InvariantCulture),     Is.EqualTo("5000 W"));
+            Assert.That(fiveKilowatt.ToString("kW", CultureInfo.InvariantCulture),    Is.EqualTo("5 kW"));
+            Assert.That(fiveKilowatt.ToString("MW", CultureInfo.InvariantCulture),    Is.EqualTo("0.005 MW"));
+
+            // ...and asking for milliwatts must never yield megawatts. There is
+            // no milliwatt specifier, so "mW" falls through to the numeric
+            // format fallback - the same fallback that makes ToString("0.00")
+            // work - and is echoed instead of silently switching the prefix.
+            Assert.That(fiveKilowatt.ToString("mW",   CultureInfo.InvariantCulture),
+                        Is.Not.EqualTo(fiveKilowatt.ToString("MW", CultureInfo.InvariantCulture)));
+
+            Assert.That(fiveKilowatt.ToString("0.00", CultureInfo.InvariantCulture),
+                        Is.EqualTo("5000.00 W"));
+
+            Assert.That(WattHour.FromWh(5000).ToString("mWh", CultureInfo.InvariantCulture),
+                        Is.Not.EqualTo(WattHour.FromWh(5000).ToString("MWh", CultureInfo.InvariantCulture)));
+
+            Assert.That(Hertz.FromHz(5000).ToString("mHz", CultureInfo.InvariantCulture),
+                        Is.Not.EqualTo(Hertz.FromHz(5000).ToString("MHz", CultureInfo.InvariantCulture)));
+
+            Assert.That(WattHour.FromWh(5000).ToString("kWh", CultureInfo.InvariantCulture),    Is.EqualTo("5 kWh"));
+            Assert.That(Hertz.   FromHz(5000).ToString("kHz", CultureInfo.InvariantCulture),    Is.EqualTo("5 kHz"));
+
+        }
+
+        #endregion
+
+        #region The_general_format_specifier_stays_case_insensitive()
+
+        [Test]
+        public void The_general_format_specifier_stays_case_insensitive()
+        {
+
+            // "G" is the standard general specifier of .NET, not a giga prefix,
+            // and therefore keeps accepting "g" - unlike the unit symbols.
+            var fiveWatt = Watt.FromW(5);
+
+            Assert.That(fiveWatt.ToString("G", CultureInfo.InvariantCulture),         Is.EqualTo(fiveWatt.ToString()));
+            Assert.That(fiveWatt.ToString("g", CultureInfo.InvariantCulture),         Is.EqualTo(fiveWatt.ToString()));
+
+            // ...while "GW" remains the giga prefix and is case-sensitive!
+            Assert.That(Watt.FromW(5_000_000_000m).ToString("GW", CultureInfo.InvariantCulture),  Is.EqualTo("5 GW"));
+
+            Assert.That(Watt.FromW(5_000_000_000m).ToString("gw", CultureInfo.InvariantCulture),
+                        Is.Not.EqualTo(Watt.FromW(5_000_000_000m).ToString("GW", CultureInfo.InvariantCulture)));
+
+        }
+
+        #endregion
+
+        #region BytePerSecond_labels_bytes_as_bytes()
+
+        [Test]
+        public void BytePerSecond_labels_bytes_as_bytes()
+        {
+
+            // The string formatting path used to accept "kBit/s" and print a
+            // BYTE rate under a BIT label - an eightfold misstatement.
+            var fiveKiloBytesPerSecond = BytePerSecond.FromBPS(5000);
+
+            Assert.That(fiveKiloBytesPerSecond.ToString("kByte/s", CultureInfo.InvariantCulture),   Is.EqualTo("5 kByte/s"));
+            Assert.That(fiveKiloBytesPerSecond.ToString("kB/s", CultureInfo.InvariantCulture),      Is.EqualTo("5 kB/s"));
+            Assert.That(fiveKiloBytesPerSecond.ToString("kBps", CultureInfo.InvariantCulture),      Is.EqualTo("5 kBps"));
+
+            Assert.That(fiveKiloBytesPerSecond.ToString("kBit/s", CultureInfo.InvariantCulture),
+                        Is.Not.EqualTo("5 kBit/s"),
+                        "A byte rate must never be labelled as a bit rate!");
+
+            // The bit rate keeps its own spelling...
+            Assert.That(BitPerSecond.FromBPS(5000).ToString("kbit/s", CultureInfo.InvariantCulture),  Is.EqualTo("5 kbit/s"));
+
+        }
+
+        #endregion
+
+        #region Kilotonne_accepts_both_spellings_and_prints_the_SI_one()
+
+        [Test]
+        public void Kilotonne_accepts_both_spellings_and_prints_the_SI_one()
+        {
+
+            // "kt" is the SI spelling; "kT" is what this library used to emit
+            // and stays acceptable as input.
+            Assert.That(Tonne.Parse("5 kt").Value,       Is.EqualTo(5_000m));
+            Assert.That(Tonne.Parse("5 kT").Value,       Is.EqualTo(5_000m));
+            Assert.That(Tonne.Parse("5 t").Value,        Is.EqualTo(5m));
+
+            Assert.That(Tonne.FromT(5000).ToString("kt", CultureInfo.InvariantCulture),  Is.EqualTo("5 kt"));
+            Assert.That(Tonne.FromT(5000).ToString("kT", CultureInfo.InvariantCulture),  Is.EqualTo("5 kt"));
+
+            // What we print can be read back...
+            Assert.That(Tonne.Parse(Tonne.FromT(5000).ToString("kt", CultureInfo.InvariantCulture)).Value,
+                        Is.EqualTo(5_000m));
+
+        }
+
+        #endregion
+
         #region Both_omega_code_points_resolve_to_the_ohm()
 
         [Test]

@@ -952,7 +952,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("S".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("S".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -964,7 +964,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kS".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kS".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kS,
                            Destination,
@@ -1047,12 +1047,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "S",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "S",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} S";
             }
 
-            if (String.Equals(Format, "kS", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kS", StringComparison.Ordinal))
                 return $"{kS.ToString("G", FormatProvider)} kS";
 
             return $"{Value.ToString(Format, FormatProvider)} S";

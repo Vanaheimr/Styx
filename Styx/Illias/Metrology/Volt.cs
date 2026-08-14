@@ -951,7 +951,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("V".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("V".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -963,7 +963,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kV".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kV".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kV,
                            Destination,
@@ -1046,12 +1046,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "V",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "V",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} V";
             }
 
-            if (String.Equals(Format, "kV", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kV", StringComparison.Ordinal))
                 return $"{kV.ToString("G", FormatProvider)} kV";
 
             return $"{Value.ToString(Format, FormatProvider)} V";

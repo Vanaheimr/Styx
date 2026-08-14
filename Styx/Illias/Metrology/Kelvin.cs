@@ -799,7 +799,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("K".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("K".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -884,7 +884,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "K",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "K",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} K";
             }
