@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -395,13 +395,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kg".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kg".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 0;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("g".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("g".AsSpan(),  StringComparison.Ordinal))
             {
                 exponent  = -3;
                 Span      = Span[..^1].TrimEnd();

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -527,7 +527,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             //Note: "MBps" == MegaBytes per second is not the same as "Mbps" == Megabits per second!
 
-            if      (Span.EndsWith("kbit/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kbit/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^6].TrimEnd();
@@ -541,7 +541,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("Mbit/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Mbit/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^6].TrimEnd();
@@ -555,7 +555,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("Gbit/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Gbit/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^6].TrimEnd();
@@ -569,7 +569,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("Tbit/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Tbit/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 12;
                 Span      = Span[..^6].TrimEnd();
@@ -583,7 +583,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("bit/s". AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("bit/s". AsSpan(), StringComparison.Ordinal))
             {
                 Span      = Span[..^5].TrimEnd();
             }

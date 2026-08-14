@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -483,25 +483,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kHz".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("MHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MHz".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("GHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GHz".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("Hz". AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Hz". AsSpan(), StringComparison.Ordinal))
             {
                 Span      = Span[..^2].TrimEnd();
             }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -348,7 +348,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if (Span.EndsWith("°C".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            if (Span.EndsWith("°C".AsSpan(),  StringComparison.Ordinal))
             {
                 Span = Span[..^2].TrimEnd();
             }

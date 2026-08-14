@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -517,39 +517,39 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("µOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("µOhm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = -6;
                 Span      = Span[..^4].TrimEnd();
             }
 
-            else if (Span.EndsWith("mOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("mOhm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = -3;
                 Span      = Span[..^4].TrimEnd();
             }
 
-            else if (Span.EndsWith("kOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("kOhm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
-                Span      = Span[..^3].TrimEnd();
+                Span      = Span[..^4].TrimEnd();
             }
 
-            else if (Span.EndsWith("MOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MOhm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
-                Span      = Span[..^3].TrimEnd();
+                Span      = Span[..^4].TrimEnd();
             }
 
-            else if (Span.EndsWith("GOhm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GOhm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
-                Span      = Span[..^3].TrimEnd();
+                Span      = Span[..^4].TrimEnd();
             }
 
-            else if (Span.EndsWith("Ohm". AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Ohm". AsSpan(), StringComparison.Ordinal))
             {
-                Span      = Span[..^2].TrimEnd();
+                Span      = Span[..^3].TrimEnd();
             }
 
             if (Decimal.TryParse(Span,

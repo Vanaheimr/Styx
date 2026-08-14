@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -480,25 +480,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kWh".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("MWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MWh".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("GWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GWh".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("Wh". AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Wh". AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^2].TrimEnd();
             }
