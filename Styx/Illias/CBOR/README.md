@@ -60,7 +60,10 @@ A generic CBOR decoder without knowledge of the tag still sees a well-formed
 tagged array of plain integers and standard tag-4 decimal fractions.
 ### Specification and registration
 
-The normative wire format specification is [tag-44252.md](tag-44252.md).
+The normative wire format specification is [tag-44252.md](tag-44252.md), and
+[tag-44252-signed-example.md](tag-44252-signed-example.md) walks a complete
+charging transaction through three signature layers — meter, charging station,
+operator — as a worked example whose every byte is verified by a test.
 
 *IANA note:* Tag 44252 lies in the First-Come-First-Served range and is,
 as of 2026-08-14, unassigned. The prepared registration request is
