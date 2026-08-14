@@ -72,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
                               // 230 V
                               (new MetrologicalValue(230m,   UnitOfMeasure.Volt),
-                               "D9ACDC8218E60E"),
+                               "D9ACDC8218E605"),
 
                               // 5.0 mA - the decimal scale is preserved
                               (new MetrologicalValue(5.0m,   UnitOfMeasure.Ampere,   SIPrefix.Milli),
@@ -80,7 +80,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
                               // 1.10 kWh
                               (new MetrologicalValue(1.10m,  UnitOfMeasure.WattHour, SIPrefix.Kilo),
-                               "D9ACDC83C48221186E183203"),
+                               "D9ACDC83C48221186E0203"),
 
                               // (5.00 ±0.02) mA - with a GUM standard uncertainty
                               (new MetrologicalValue(5.00m,  UnitOfMeasure.Ampere,   SIPrefix.Milli,  0.02m),

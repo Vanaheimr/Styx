@@ -152,10 +152,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // The golden vectors of the specification...
             Assert.That(Convert.ToHexString(acceleration.ToCBOR().ToByteArray()),
-                        Is.EqualTo("D9ACDC82C482211903D58282020182182821"));
+                        Is.EqualTo("D9ACDC82C482211903D582820F01820821"));
 
             Assert.That(Convert.ToHexString(noiseDensity.ToCBOR().ToByteArray()),
-                        Is.EqualTo("D9ACDC83C48220182D82820E01820882200228"));
+                        Is.EqualTo("D9ACDC83C48220182D82820501820982200228"));
 
         }
 
@@ -241,7 +241,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                    );
 
             Assert.That(Convert.ToHexString(plainCertificate.ToCBOR().ToByteArray()),
-                        Is.EqualTo("D9ACDC84C482211959D80E00A201C482210C0202"));
+                        Is.EqualTo("D9ACDC84C482211959D80500A201C482210C0202"));
 
             // U = 0.12 with k=2 states the same spread as u = 0.06...
             var asStandard = new MetrologicalValue(230.00m, UnitOfMeasure.Volt, SIPrefix.None, 0.06m);
@@ -333,8 +333,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(UnitOfMeasure.One.Symbol,                        Is.EqualTo("1"));
             Assert.That(UnitOfMeasure.One.Numeric,                       Is.EqualTo(1));
 
-            // 39 was One in specification version 1.1 and stays reserved...
-            Assert.That(UnitOfMeasure.TryParse(39, out _),               Is.False);
+            // The single-byte range is spent on what e-mobility actually
+            // sends, so the watt-hour - the unit of charging - is the second
+            // identification and costs one byte, not two.
+            Assert.That(UnitOfMeasure.WattHour.Numeric,                  Is.EqualTo(2));
+            Assert.That(UnitOfMeasure.Percent. Numeric,                  Is.LessThan(24));
+            Assert.That(UnitOfMeasure.Celsius. Numeric,                  Is.LessThan(24));
+            Assert.That(UnitOfMeasure.Candela. Numeric,                  Is.GreaterThan(23));
 
             Assert.That(UnitOfMeasure.TryParse("1",   out var byOne),    Is.True);
             Assert.That(byOne,                                           Is.EqualTo(UnitOfMeasure.One));

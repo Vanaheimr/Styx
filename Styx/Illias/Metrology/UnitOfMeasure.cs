@@ -209,183 +209,182 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static readonly UnitOfMeasure  One                     = Register("One",                    "1",      1, "one", "/");
 
-        // SI base units (2..7 and 40, within SI order; the prefixable base of mass is the Gram!)
+        // NOTE: The single-byte identifications 1..23 are allocated by how often a
+        // unit actually occurs in e-mobility traffic, NOT taxonomically - CBOR
+        // encodes 1..23 in one byte and everything above in two. Taxonomy resumes
+        // at 24. See Styx/Illias/CBOR/tag-44252.md, section 4.
+
+        // Single-byte range, by frequency (1..23); the prefixable base of mass is the Gram!
 
         /// <summary>
-        /// The second (s, 40), the SI base unit of time.
+        /// The second (s, 8), the SI base unit of time.
         /// It sits outside the base unit block because identification 1 was
         /// given to the dimensionless one; see the specification.
         /// </summary>
-        public static readonly UnitOfMeasure  Second                  = Register("Second",                 "s",     40);
+        public static readonly UnitOfMeasure  Second                  = Register("Second",                 "s",      8);
 
-        /// <summary>The meter (m, 2), the SI base unit of length.</summary>
-        public static readonly UnitOfMeasure  Meter                   = Register("Meter",                  "m",      2, "Metre");
+        /// <summary>The meter (m, 15), the SI base unit of length.</summary>
+        public static readonly UnitOfMeasure  Meter                   = Register("Meter",                  "m",      15, "Metre");
 
-        /// <summary>The gram (g, 3), the prefixable base unit of mass: A kilogram is (Gram, Kilo).</summary>
-        public static readonly UnitOfMeasure  Gram                    = Register("Gram",                   "g",      3);
+        /// <summary>The gram (g, 16), the prefixable base unit of mass: A kilogram is (Gram, Kilo).</summary>
+        public static readonly UnitOfMeasure  Gram                    = Register("Gram",                   "g",      16);
 
         /// <summary>The ampere (A, 4), the SI base unit of electric current.</summary>
         public static readonly UnitOfMeasure  Ampere                  = Register("Ampere",                 "A",      4);
 
-        /// <summary>The kelvin (K, 5), the SI base unit of thermodynamic temperature.</summary>
-        public static readonly UnitOfMeasure  Kelvin                  = Register("Kelvin",                 "K",      5);
+        /// <summary>The kelvin (K, 17), the SI base unit of thermodynamic temperature.</summary>
+        public static readonly UnitOfMeasure  Kelvin                  = Register("Kelvin",                 "K",      17);
 
-        /// <summary>The mole (mol, 6), the SI base unit of the amount of substance.</summary>
-        public static readonly UnitOfMeasure  Mole                    = Register("Mole",                   "mol",    6);
+        /// <summary>The mole (mol, 24), the SI base unit of the amount of substance.</summary>
+        public static readonly UnitOfMeasure  Mole                    = Register("Mole",                   "mol",    24);
 
-        /// <summary>The candela (cd, 7), the SI base unit of luminous intensity.</summary>
-        public static readonly UnitOfMeasure  Candela                 = Register("Candela",                "cd",     7);
+        /// <summary>The candela (cd, 25), the SI base unit of luminous intensity.</summary>
+        public static readonly UnitOfMeasure  Candela                 = Register("Candela",                "cd",     25);
 
 
-        // Named derived SI units (8..29)
+        // Remaining SI base and named derived units (24..39); 40..59 reserved
 
-        /// <summary>The hertz (Hz, 8), frequency.</summary>
-        public static readonly UnitOfMeasure  Hertz                   = Register("Hertz",                  "Hz",     8);
+        /// <summary>The hertz (Hz, 9), frequency.</summary>
+        public static readonly UnitOfMeasure  Hertz                   = Register("Hertz",                  "Hz",     9);
 
-        /// <summary>The newton (N, 9), force.</summary>
-        public static readonly UnitOfMeasure  Newton                  = Register("Newton",                 "N",      9);
+        /// <summary>The newton (N, 26), force.</summary>
+        public static readonly UnitOfMeasure  Newton                  = Register("Newton",                 "N",      26);
 
-        /// <summary>The pascal (Pa, 10), pressure.</summary>
-        public static readonly UnitOfMeasure  Pascal                  = Register("Pascal",                 "Pa",    10);
+        /// <summary>The pascal (Pa, 21), pressure.</summary>
+        public static readonly UnitOfMeasure  Pascal                  = Register("Pascal",                 "Pa",    21);
 
-        /// <summary>The joule (J, 11), energy.</summary>
-        public static readonly UnitOfMeasure  Joule                   = Register("Joule",                  "J",     11);
+        /// <summary>The joule (J, 20), energy.</summary>
+        public static readonly UnitOfMeasure  Joule                   = Register("Joule",                  "J",     20);
 
-        /// <summary>The watt (W, 12), power.</summary>
-        public static readonly UnitOfMeasure  Watt                    = Register("Watt",                   "W",     12);
+        /// <summary>The watt (W, 3), power.</summary>
+        public static readonly UnitOfMeasure  Watt                    = Register("Watt",                   "W",      3);
 
-        /// <summary>The coulomb (C, 13), electric charge.</summary>
-        public static readonly UnitOfMeasure  Coulomb                 = Register("Coulomb",                "C",     13);
+        /// <summary>The coulomb (C, 27), electric charge.</summary>
+        public static readonly UnitOfMeasure  Coulomb                 = Register("Coulomb",                "C",     27);
 
-        /// <summary>The volt (V, 14), electric potential.</summary>
-        public static readonly UnitOfMeasure  Volt                    = Register("Volt",                   "V",     14);
+        /// <summary>The volt (V, 5), electric potential.</summary>
+        public static readonly UnitOfMeasure  Volt                    = Register("Volt",                   "V",      5);
 
-        /// <summary>The farad (F, 15), capacitance.</summary>
-        public static readonly UnitOfMeasure  Farad                   = Register("Farad",                  "F",     15);
+        /// <summary>The farad (F, 28), capacitance.</summary>
+        public static readonly UnitOfMeasure  Farad                   = Register("Farad",                  "F",     28);
 
         /// <summary>
-        /// The ohm (Ω, 16), electric resistance.
+        /// The ohm (Ω, 14), electric resistance.
         /// Accepts the Greek capital letter omega (U+03A9, canonical) as well as
         /// the visually identical, Unicode-deprecated ohm sign (U+2126), which
         /// older sources - including the Ohm struct of this namespace - still use.
         /// </summary>
-        public static readonly UnitOfMeasure  Ohm                     = Register("Ohm",                    "Ω",     16, "Ohm", "\u2126");   // the Unicode-deprecated OHM SIGN, kept parseable on purpose
+        public static readonly UnitOfMeasure  Ohm                     = Register("Ohm",                    "Ω",     14, "Ohm", "\u2126");   // the Unicode-deprecated OHM SIGN, kept parseable on purpose
 
-        /// <summary>The siemens (S, 17), electric conductance.</summary>
-        public static readonly UnitOfMeasure  Siemens                 = Register("Siemens",                "S",     17);
+        /// <summary>The siemens (S, 23), electric conductance.</summary>
+        public static readonly UnitOfMeasure  Siemens                 = Register("Siemens",                "S",     23);
 
-        /// <summary>The weber (Wb, 18), magnetic flux.</summary>
-        public static readonly UnitOfMeasure  Weber                   = Register("Weber",                  "Wb",    18);
+        /// <summary>The weber (Wb, 29), magnetic flux.</summary>
+        public static readonly UnitOfMeasure  Weber                   = Register("Weber",                  "Wb",    29);
 
-        /// <summary>The tesla (T, 19), magnetic flux density.</summary>
-        public static readonly UnitOfMeasure  Tesla                   = Register("Tesla",                  "T",     19);
+        /// <summary>The tesla (T, 30), magnetic flux density.</summary>
+        public static readonly UnitOfMeasure  Tesla                   = Register("Tesla",                  "T",     30);
 
-        /// <summary>The henry (H, 20), inductance.</summary>
-        public static readonly UnitOfMeasure  Henry                   = Register("Henry",                  "H",     20);
+        /// <summary>The henry (H, 31), inductance.</summary>
+        public static readonly UnitOfMeasure  Henry                   = Register("Henry",                  "H",     31);
 
-        /// <summary>The degree Celsius (°C, 21), temperature. SenML alias: "Cel".</summary>
-        public static readonly UnitOfMeasure  Celsius                 = Register("Celsius",                "°C",    21, "Cel");
+        /// <summary>The degree Celsius (°C, 7), temperature. SenML alias: "Cel".</summary>
+        public static readonly UnitOfMeasure  Celsius                 = Register("Celsius",                "°C",     7, "Cel");
 
-        /// <summary>The lumen (lm, 22), luminous flux.</summary>
-        public static readonly UnitOfMeasure  Lumen                   = Register("Lumen",                  "lm",    22);
+        /// <summary>The lumen (lm, 32), luminous flux.</summary>
+        public static readonly UnitOfMeasure  Lumen                   = Register("Lumen",                  "lm",    32);
 
-        /// <summary>The lux (lx, 23), illuminance.</summary>
-        public static readonly UnitOfMeasure  Lux                     = Register("Lux",                    "lx",    23);
+        /// <summary>The lux (lx, 33), illuminance.</summary>
+        public static readonly UnitOfMeasure  Lux                     = Register("Lux",                    "lx",    33);
 
-        /// <summary>The becquerel (Bq, 24), radioactivity.</summary>
-        public static readonly UnitOfMeasure  Becquerel               = Register("Becquerel",              "Bq",    24);
+        /// <summary>The becquerel (Bq, 34), radioactivity.</summary>
+        public static readonly UnitOfMeasure  Becquerel               = Register("Becquerel",              "Bq",    34);
 
-        /// <summary>The gray (Gy, 25), absorbed dose.</summary>
-        public static readonly UnitOfMeasure  Gray                    = Register("Gray",                   "Gy",    25);
+        /// <summary>The gray (Gy, 35), absorbed dose.</summary>
+        public static readonly UnitOfMeasure  Gray                    = Register("Gray",                   "Gy",    35);
 
-        /// <summary>The sievert (Sv, 26), equivalent dose.</summary>
-        public static readonly UnitOfMeasure  Sievert                 = Register("Sievert",                "Sv",    26);
+        /// <summary>The sievert (Sv, 36), equivalent dose.</summary>
+        public static readonly UnitOfMeasure  Sievert                 = Register("Sievert",                "Sv",    36);
 
-        /// <summary>The katal (kat, 27), catalytic activity.</summary>
-        public static readonly UnitOfMeasure  Katal                   = Register("Katal",                  "kat",   27);
+        /// <summary>The katal (kat, 37), catalytic activity.</summary>
+        public static readonly UnitOfMeasure  Katal                   = Register("Katal",                  "kat",   37);
 
-        /// <summary>The radian (rad, 28), plane angle.</summary>
-        public static readonly UnitOfMeasure  Radian                  = Register("Radian",                 "rad",   28);
+        /// <summary>The radian (rad, 38), plane angle.</summary>
+        public static readonly UnitOfMeasure  Radian                  = Register("Radian",                 "rad",   38);
 
-        /// <summary>The steradian (sr, 29), solid angle.</summary>
-        public static readonly UnitOfMeasure  Steradian               = Register("Steradian",              "sr",    29);
-
-
-        // Accepted non-SI units (30..49)
-
-        /// <summary>The minute (min, 30), time.</summary>
-        public static readonly UnitOfMeasure  Minute                  = Register("Minute",                 "min",   30);
-
-        /// <summary>The hour (h, 31), time.</summary>
-        public static readonly UnitOfMeasure  Hour                    = Register("Hour",                   "h",     31);
-
-        /// <summary>The day (d, 32), time.</summary>
-        public static readonly UnitOfMeasure  Day                     = Register("Day",                    "d",     32);
-
-        /// <summary>The degree (°, 33), plane angle.</summary>
-        public static readonly UnitOfMeasure  Degree                  = Register("Degree",                 "°",     33, "deg");
-
-        /// <summary>The litre (l, 34), volume.</summary>
-        public static readonly UnitOfMeasure  Litre                   = Register("Litre",                  "l",     34, "L", "Liter");
-
-        /// <summary>The tonne (t, 35), mass.</summary>
-        public static readonly UnitOfMeasure  Tonne                   = Register("Tonne",                  "t",     35);
-
-        /// <summary>The percent (%, 36), dimensionless ratio.</summary>
-        public static readonly UnitOfMeasure  Percent                 = Register("Percent",                "%",     36);
-
-        /// <summary>The permille (‰, 37), dimensionless ratio.</summary>
-        public static readonly UnitOfMeasure  Permille                = Register("Permille",               "‰",     37);
-
-        /// <summary>Parts per million (ppm, 38), dimensionless ratio.</summary>
-        public static readonly UnitOfMeasure  PartsPerMillion         = Register("PartsPerMillion",        "ppm",   38);
-
-        // Identification 39 is permanently reserved: version 1.1 of the
-        // specification assigned it to the dimensionless one, and was
-        // published before that unit moved to identification 1. Leaving 39
-        // unused keeps anything written against 1.1 unambiguous.
+        /// <summary>The steradian (sr, 39), solid angle.</summary>
+        public static readonly UnitOfMeasure  Steradian               = Register("Steradian",              "sr",    39);
 
 
-        // Electrotechnical and e-mobility units (50..69)
+        // Remaining accepted non-SI units (60..65); 66..99 reserved
 
-        /// <summary>The watt-hour (Wh, 50), energy.</summary>
-        public static readonly UnitOfMeasure  WattHour                = Register("WattHour",               "Wh",    50);
+        /// <summary>The minute (min, 19), time.</summary>
+        public static readonly UnitOfMeasure  Minute                  = Register("Minute",                 "min",   19);
 
-        /// <summary>The volt-ampere (VA, 51), apparent power.</summary>
-        public static readonly UnitOfMeasure  VoltAmpere              = Register("VoltAmpere",             "VA",    51);
+        /// <summary>The hour (h, 18), time.</summary>
+        public static readonly UnitOfMeasure  Hour                    = Register("Hour",                   "h",     18);
 
-        /// <summary>The volt-ampere reactive (var, 52), reactive power.</summary>
-        public static readonly UnitOfMeasure  VoltAmpereReactive      = Register("VoltAmpereReactive",     "var",   52);
+        /// <summary>The day (d, 60), time.</summary>
+        public static readonly UnitOfMeasure  Day                     = Register("Day",                    "d",     60);
 
-        /// <summary>The volt-ampere-reactive hour (varh, 53), reactive energy.</summary>
-        public static readonly UnitOfMeasure  VoltAmpereReactiveHour  = Register("VoltAmpereReactiveHour", "varh",  53);
+        /// <summary>The degree (°, 61), plane angle.</summary>
+        public static readonly UnitOfMeasure  Degree                  = Register("Degree",                 "°",     61, "deg");
 
-        /// <summary>The ampere-hour (Ah, 54), electric charge.</summary>
-        public static readonly UnitOfMeasure  AmpereHour              = Register("AmpereHour",             "Ah",    54);
+        /// <summary>The litre (l, 62), volume.</summary>
+        public static readonly UnitOfMeasure  Litre                   = Register("Litre",                  "l",     62, "L", "Liter");
+
+        /// <summary>The tonne (t, 63), mass.</summary>
+        public static readonly UnitOfMeasure  Tonne                   = Register("Tonne",                  "t",     63);
+
+        /// <summary>The percent (%, 6), dimensionless ratio.</summary>
+        public static readonly UnitOfMeasure  Percent                 = Register("Percent",                "%",      6);
+
+        /// <summary>The permille (‰, 64), dimensionless ratio.</summary>
+        public static readonly UnitOfMeasure  Permille                = Register("Permille",               "‰",     64);
+
+        /// <summary>Parts per million (ppm, 65), dimensionless ratio.</summary>
+        public static readonly UnitOfMeasure  PartsPerMillion         = Register("PartsPerMillion",        "ppm",   65);
+
+        // Further electrotechnical and energy units: 100..119 reserved
+
+        /// <summary>The watt-hour (Wh, 2), energy.</summary>
+        public static readonly UnitOfMeasure  WattHour                = Register("WattHour",               "Wh",     2);
+
+        /// <summary>The volt-ampere (VA, 11), apparent power.</summary>
+        public static readonly UnitOfMeasure  VoltAmpere              = Register("VoltAmpere",             "VA",    11);
+
+        /// <summary>The volt-ampere reactive (var, 10), reactive power.</summary>
+        public static readonly UnitOfMeasure  VoltAmpereReactive      = Register("VoltAmpereReactive",     "var",   10);
+
+        /// <summary>The volt-ampere-reactive hour (varh, 13), reactive energy.</summary>
+        public static readonly UnitOfMeasure  VoltAmpereReactiveHour  = Register("VoltAmpereReactiveHour", "varh",  13);
+
+        /// <summary>The ampere-hour (Ah, 12), electric charge.</summary>
+        public static readonly UnitOfMeasure  AmpereHour              = Register("AmpereHour",             "Ah",    12);
 
 
-        // Data units (70..89)
+        // Data units (120..122); 123..139 reserved
 
-        /// <summary>The bit (bit, 70), information.</summary>
-        public static readonly UnitOfMeasure  Bit                     = Register("Bit",                    "bit",   70);
+        /// <summary>The bit (bit, 120), information.</summary>
+        public static readonly UnitOfMeasure  Bit                     = Register("Bit",                    "bit",   120);
 
-        /// <summary>The byte (B, 71), information.</summary>
-        public static readonly UnitOfMeasure  Byte                    = Register("Byte",                   "B",     71);
+        /// <summary>The byte (B, 121), information.</summary>
+        public static readonly UnitOfMeasure  Byte                    = Register("Byte",                   "B",     121);
 
-        /// <summary>Bit per second (bit/s, 72), data rate.</summary>
-        public static readonly UnitOfMeasure  BitPerSecond            = Register("BitPerSecond",           "bit/s", 72, "bps");
+        /// <summary>Bit per second (bit/s, 22), data rate.</summary>
+        public static readonly UnitOfMeasure  BitPerSecond            = Register("BitPerSecond",           "bit/s", 22, "bps");
 
-        /// <summary>Byte per second (B/s, 73), data rate.</summary>
-        public static readonly UnitOfMeasure  BytePerSecond           = Register("BytePerSecond",          "B/s",   73);
+        /// <summary>Byte per second (B/s, 122), data rate.</summary>
+        public static readonly UnitOfMeasure  BytePerSecond           = Register("BytePerSecond",          "B/s",   122);
 
 
-        // Geometric units (90..)
+        // Geometric units (140..141)
 
-        /// <summary>The square meter (m², 90), area.</summary>
-        public static readonly UnitOfMeasure  SquareMeter             = Register("SquareMeter",            "m²",    90, "m2");
+        /// <summary>The square meter (m², 140), area.</summary>
+        public static readonly UnitOfMeasure  SquareMeter             = Register("SquareMeter",            "m²",    140, "m2");
 
-        /// <summary>The cubic meter (m³, 91), volume.</summary>
-        public static readonly UnitOfMeasure  CubicMeter              = Register("CubicMeter",             "m³",    91, "m3");
+        /// <summary>The cubic meter (m³, 141), volume.</summary>
+        public static readonly UnitOfMeasure  CubicMeter              = Register("CubicMeter",             "m³",    141, "m3");
 
 
         /// <summary>
