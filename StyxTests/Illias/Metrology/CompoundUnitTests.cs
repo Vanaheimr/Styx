@@ -279,6 +279,47 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Every_metrology_struct_bridges_to_a_metrological_value()
+
+        [Test]
+        public void Every_metrology_struct_bridges_to_a_metrological_value()
+        {
+
+            // Twelve of the eighteen IMetrology structs could be converted
+            // to and from a metrological value, six could not, for no reason
+            // other than that nobody had written them. Their units were in
+            // the registry all along.
+
+            Assert.That(Farad.       FromF  (5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.Farad));
+            Assert.That(Henry.       FromH  (5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.Henry));
+            Assert.That(Siemens.     FromS  (5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.Siemens));
+            Assert.That(BitPerSecond.FromBPS(5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.BitPerSecond));
+            Assert.That(BytePerSecond.FromBPS(5).AsMetrologicalValue().Unit, Is.EqualTo(UnitOfMeasure.BytePerSecond));
+
+            // ...and back again, through a prefix on the way.
+            Assert.That(Henry.FromMH(5).AsMetrologicalValue(SIPrefix.Milli).TryToHenry(out var henry),  Is.True);
+            Assert.That(henry.Value,                                         Is.EqualTo(0.005m));
+
+            Assert.That(Farad.FromPF(5).AsMetrologicalValue().TryToFarad(out var farad),                Is.True);
+            Assert.That(farad.Value,                                         Is.EqualTo(0.000000000005m));
+
+            Assert.That(BitPerSecond.FromMBPS(5).AsMetrologicalValue(SIPrefix.Mega).TryToBitPerSecond(out var bits),  Is.True);
+            Assert.That(bits.Value,                                          Is.EqualTo(5_000_000m));
+
+            // The ohm carries the registry's own unit, whichever omega the
+            // struct happens to spell its factories with...
+            var resistance = new MetrologicalValue(50m, UnitOfMeasure.Ohm);
+            Assert.That(resistance.TryToOhm(out var ohm),                    Is.True);
+            Assert.That(ohm.Value,                                           Is.EqualTo(50m));
+            Assert.That(ohm.AsMetrologicalValue().Unit,                      Is.EqualTo(UnitOfMeasure.Ohm));
+
+            // A mismatched unit must not convert...
+            Assert.That(new MetrologicalValue(5m, UnitOfMeasure.Watt).TryToFarad(out _),  Is.False);
+
+        }
+
+        #endregion
+
         #region Dimensionless_quantities_have_a_unit()
 
         [Test]

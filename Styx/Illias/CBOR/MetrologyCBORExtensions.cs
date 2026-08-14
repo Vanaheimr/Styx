@@ -454,6 +454,186 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+
+        /// <summary>
+        /// Return this farad value as a metrological value, optionally converted into the given SI prefix.
+        /// </summary>
+        /// <param name="Farad">A farad value.</param>
+        /// <param name="Prefix">An optional SI prefix to convert into.</param>
+        public static MetrologicalValue AsMetrologicalValue(this Farad Farad, SIPrefix? Prefix = null)
+            => Convert(new MetrologicalValue(Farad.Value, UnitOfMeasure.Farad), Prefix);
+
+        /// <summary>
+        /// Try to return this metrological value as a farad value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="Farad">The farad value.</param>
+        public static Boolean TryToFarad(this MetrologicalValue MetrologicalValue, out Farad Farad)
+        {
+
+            if (MetrologicalValue.Unit == UnitOfMeasure.Farad &&
+                MetrologicalValue.TryToBaseUnit(out var baseValue))
+            {
+                Farad = Farad.FromF(baseValue.Value);
+                return true;
+            }
+
+            Farad = default;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Return this henry value as a metrological value, optionally converted into the given SI prefix.
+        /// </summary>
+        /// <param name="Henry">A henry value.</param>
+        /// <param name="Prefix">An optional SI prefix to convert into.</param>
+        public static MetrologicalValue AsMetrologicalValue(this Henry Henry, SIPrefix? Prefix = null)
+            => Convert(new MetrologicalValue(Henry.Value, UnitOfMeasure.Henry), Prefix);
+
+        /// <summary>
+        /// Try to return this metrological value as a henry value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="Henry">The henry value.</param>
+        public static Boolean TryToHenry(this MetrologicalValue MetrologicalValue, out Henry Henry)
+        {
+
+            if (MetrologicalValue.Unit == UnitOfMeasure.Henry &&
+                MetrologicalValue.TryToBaseUnit(out var baseValue))
+            {
+                Henry = Henry.FromH(baseValue.Value);
+                return true;
+            }
+
+            Henry = default;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Return this ohm value as a metrological value, optionally converted into the given SI prefix.
+        /// </summary>
+        /// <param name="Ohm">An ohm value.</param>
+        /// <param name="Prefix">An optional SI prefix to convert into.</param>
+        /// <remarks>
+        /// The factory is spelled with the Unicode-deprecated OHM SIGN
+        /// (U+2126), which the Ohm struct uses throughout - written as an
+        /// escape here, because it is indistinguishable from the canonical
+        /// omega (U+03A9) when reading the source.
+        /// </remarks>
+        public static MetrologicalValue AsMetrologicalValue(this Ohm Ohm, SIPrefix? Prefix = null)
+            => Convert(new MetrologicalValue(Ohm.Value, UnitOfMeasure.Ohm), Prefix);
+
+        /// <summary>
+        /// Try to return this metrological value as an ohm value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="Ohm">The ohm value.</param>
+        public static Boolean TryToOhm(this MetrologicalValue MetrologicalValue, out Ohm Ohm)
+        {
+
+            if (MetrologicalValue.Unit == UnitOfMeasure.Ohm &&
+                MetrologicalValue.TryToBaseUnit(out var baseValue))
+            {
+                Ohm = Ohm.From_Ω(baseValue.Value);
+                return true;
+            }
+
+            Ohm = default;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Return this siemens value as a metrological value, optionally converted into the given SI prefix.
+        /// </summary>
+        /// <param name="Siemens">A siemens value.</param>
+        /// <param name="Prefix">An optional SI prefix to convert into.</param>
+        public static MetrologicalValue AsMetrologicalValue(this Siemens Siemens, SIPrefix? Prefix = null)
+            => Convert(new MetrologicalValue(Siemens.Value, UnitOfMeasure.Siemens), Prefix);
+
+        /// <summary>
+        /// Try to return this metrological value as a siemens value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="Siemens">The siemens value.</param>
+        public static Boolean TryToSiemens(this MetrologicalValue MetrologicalValue, out Siemens Siemens)
+        {
+
+            if (MetrologicalValue.Unit == UnitOfMeasure.Siemens &&
+                MetrologicalValue.TryToBaseUnit(out var baseValue))
+            {
+                Siemens = Siemens.FromS(baseValue.Value);
+                return true;
+            }
+
+            Siemens = default;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Return this bit-per-second value as a metrological value, optionally converted into the given SI prefix.
+        /// </summary>
+        /// <param name="BitPerSecond">A bit-per-second value.</param>
+        /// <param name="Prefix">An optional SI prefix to convert into.</param>
+        public static MetrologicalValue AsMetrologicalValue(this BitPerSecond BitPerSecond, SIPrefix? Prefix = null)
+            => Convert(new MetrologicalValue(BitPerSecond.Value, UnitOfMeasure.BitPerSecond), Prefix);
+
+        /// <summary>
+        /// Try to return this metrological value as a bit-per-second value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="BitPerSecond">The bit-per-second value.</param>
+        public static Boolean TryToBitPerSecond(this MetrologicalValue MetrologicalValue, out BitPerSecond BitPerSecond)
+        {
+
+            if (MetrologicalValue.Unit == UnitOfMeasure.BitPerSecond &&
+                MetrologicalValue.TryToBaseUnit(out var baseValue))
+            {
+                BitPerSecond = BitPerSecond.FromBPS(baseValue.Value);
+                return true;
+            }
+
+            BitPerSecond = default;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Return this byte-per-second value as a metrological value, optionally converted into the given SI prefix.
+        /// </summary>
+        /// <param name="BytePerSecond">A byte-per-second value.</param>
+        /// <param name="Prefix">An optional SI prefix to convert into.</param>
+        public static MetrologicalValue AsMetrologicalValue(this BytePerSecond BytePerSecond, SIPrefix? Prefix = null)
+            => Convert(new MetrologicalValue(BytePerSecond.Value, UnitOfMeasure.BytePerSecond), Prefix);
+
+        /// <summary>
+        /// Try to return this metrological value as a byte-per-second value.
+        /// </summary>
+        /// <param name="MetrologicalValue">A metrological value.</param>
+        /// <param name="BytePerSecond">The byte-per-second value.</param>
+        public static Boolean TryToBytePerSecond(this MetrologicalValue MetrologicalValue, out BytePerSecond BytePerSecond)
+        {
+
+            if (MetrologicalValue.Unit == UnitOfMeasure.BytePerSecond &&
+                MetrologicalValue.TryToBaseUnit(out var baseValue))
+            {
+                BytePerSecond = BytePerSecond.FromBPS(baseValue.Value);
+                return true;
+            }
+
+            BytePerSecond = default;
+            return false;
+
+        }
+
         #endregion
 
 
