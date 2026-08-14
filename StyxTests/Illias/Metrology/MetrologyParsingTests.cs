@@ -287,6 +287,116 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Capacitance_and_inductance_keep_their_small_prefixes_apart()
+
+        [Test]
+        public void Capacitance_and_inductance_keep_their_small_prefixes_apart()
+        {
+
+            // Farad and Henry were the only structs that always compared their
+            // suffixes case-sensitively, which is why their milli/micro/nano/
+            // pico prefixes never collided. Pin that.
+
+            Assert.That(Farad.FromF (5).Value,                   Is.EqualTo(5m));
+            Assert.That(Farad.FromµF(5).Value,               Is.EqualTo(0.000005m));
+            Assert.That(Farad.FromNF(5).Value,                   Is.EqualTo(0.000000005m));
+            Assert.That(Farad.FromPF(5).Value,                   Is.EqualTo(0.000000000005m));
+
+            Assert.That(Farad.Parse("5 F").Value,                Is.EqualTo(5m));
+            Assert.That(Farad.Parse("5 nF").Value,               Is.EqualTo(0.000000005m));
+            Assert.That(Farad.Parse("5 pF").Value,               Is.EqualTo(0.000000000005m));
+
+            // 'nF' is nano, 'NF' is nothing at all...
+            Assert.That(Farad.TryParse("5 NF", out var NF),      Is.False,  $"'5 NF' must not be accepted as {NF}!");
+
+            Assert.That(Henry.FromH (5).Value,                   Is.EqualTo(5m));
+            Assert.That(Henry.FromKH(5).Value,                   Is.EqualTo(5_000m));
+            Assert.That(Henry.FromMH(5).Value,                   Is.EqualTo(0.005m));       // milli, not mega!
+            Assert.That(Henry.FromNH(5).Value,                   Is.EqualTo(0.000000005m));
+
+            Assert.That(Henry.Parse("5 kH").Value,               Is.EqualTo(5_000m));
+            Assert.That(Henry.Parse("5 mH").Value,               Is.EqualTo(0.005m));
+            Assert.That(Henry.Parse("5 µH").Value,          Is.EqualTo(0.000005m));
+
+            // 'MH' would be mega, which this struct does not offer - and it
+            // must not silently fall back to millihenry.
+            Assert.That(Henry.TryParse("5 MH", out var MH),      Is.False,  $"'5 MH' must not be accepted as {MH}!");
+
+            // The conversion properties are the inverse of the factories...
+            Assert.That(Henry.FromMH(5).mH,                      Is.EqualTo(5m));
+            Assert.That(Farad.FromPF(5).pF,                      Is.EqualTo(5m));
+
+        }
+
+        #endregion
+
+        #region Absolute_and_relative_temperatures_and_conductance()
+
+        [Test]
+        public void Absolute_and_relative_temperatures_and_conductance()
+        {
+
+            Assert.That(Kelvin.FromK(273.15m).Value,             Is.EqualTo(273.15m));
+            Assert.That(Kelvin.Parse("273.15 K").Value,          Is.EqualTo(273.15m));
+
+            Assert.That(Celsius.FromC(21.5m).Value,              Is.EqualTo(21.5m));
+            Assert.That(Celsius.Parse("21.5 °C").Value,          Is.EqualTo(21.5m));
+
+            Assert.That(Siemens.FromS (5).Value,                 Is.EqualTo(5m));
+            Assert.That(Siemens.FromKS(5).Value,                 Is.EqualTo(5_000m));
+            Assert.That(Siemens.Parse("5 kS").Value,             Is.EqualTo(5_000m));
+            Assert.That(Siemens.FromKS(5).kS,                    Is.EqualTo(5m));
+
+            // Reactive power is measured in var, not in VA...
+            Assert.That(VoltAmpereReactive.FromKVAr(5).Value,    Is.EqualTo(5_000m));
+            Assert.That(VoltAmpereReactive.FromKVAr(5).kVAr,     Is.EqualTo(5m));
+            Assert.That(VoltAmpereReactive.Parse("5 kVAr").Value, Is.EqualTo(5_000m));
+            Assert.That(VoltAmpere.FromKVA(5).kVA,               Is.EqualTo(5m));
+
+        }
+
+        #endregion
+
+        #region Data_rates_never_confuse_bits_with_bytes()
+
+        [Test]
+        public void Data_rates_never_confuse_bits_with_bytes()
+        {
+
+            // A bit rate and a byte rate differ by a factor of eight, and
+            // their symbols differ only in the case of a single letter:
+            // "Mbps" is megabits, "MBps" is megabytes.
+
+            Assert.That(BitPerSecond.FromBPS  (5).Value,         Is.EqualTo(5m));
+            Assert.That(BitPerSecond.FromKBPS (5).Value,         Is.EqualTo(5_000m));
+            Assert.That(BitPerSecond.FromMBPS (5).Value,         Is.EqualTo(5_000_000m));
+            Assert.That(BitPerSecond.FromGBPS (5).Value,         Is.EqualTo(5_000_000_000m));
+            Assert.That(BitPerSecond.FromTBPS (5).Value,         Is.EqualTo(5_000_000_000_000m));
+
+            Assert.That(BytePerSecond.FromKBPS(5).Value,         Is.EqualTo(5_000m));
+            Assert.That(BytePerSecond.FromTBPS(5).Value,         Is.EqualTo(5_000_000_000_000m));
+
+            Assert.That(BitPerSecond. Parse("5 kbit/s").Value,   Is.EqualTo(5_000m));
+            Assert.That(BitPerSecond. Parse("5 Mbps").Value,     Is.EqualTo(5_000_000m));
+            Assert.That(BytePerSecond.Parse("5 kByte/s").Value,  Is.EqualTo(5_000m));
+            Assert.That(BytePerSecond.Parse("5 MBps").Value,     Is.EqualTo(5_000_000m));
+
+            // The lower case byte spelling denotes bits and must not be
+            // accepted by the byte rate...
+            Assert.That(BytePerSecond.TryParse("5 Mbps", out var bits),
+                        Is.False,  $"'5 Mbps' is a bit rate and must not be read as {bits}!");
+
+            // ...and vice versa.
+            Assert.That(BitPerSecond.TryParse("5 MBps", out var bytes),
+                        Is.False,  $"'5 MBps' is a byte rate and must not be read as {bytes}!");
+
+            Assert.That(BitPerSecond. FromMBPS(5).Mbps,          Is.EqualTo(5m));
+            Assert.That(BytePerSecond.FromMBPS(5).MBps,          Is.EqualTo(5m));
+
+        }
+
+        #endregion
+
         #region Both_omega_code_points_resolve_to_the_ohm()
 
         [Test]

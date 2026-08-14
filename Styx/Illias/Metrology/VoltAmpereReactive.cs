@@ -131,9 +131,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 #pragma warning disable IDE1006 // Naming Styles
         /// <summary>
-        /// The value as Kilo-Volt-Ampere.
+        /// The value as Kilo-Volt-Ampere-Reactive.
         /// </summary>
-        public Decimal  kVA
+        public Decimal  kVAr
             => Value / 1000m;
 #pragma warning restore IDE1006 // Naming Styles
 
@@ -968,7 +968,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.Equals("kVAr".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
-                           kVA,
+                           kVAr,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
@@ -1055,7 +1055,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             if (String.Equals(Format, "kVAr", StringComparison.Ordinal))
-                return $"{kVA.ToString("G", FormatProvider)} kVAr";
+                return $"{kVAr.ToString("G", FormatProvider)} kVAr";
 
             return $"{Value.ToString(Format, FormatProvider)} VAr";
 
