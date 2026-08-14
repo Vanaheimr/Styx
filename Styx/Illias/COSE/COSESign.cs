@@ -297,7 +297,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                     Byte[]?                 ExternalAAD     = null,
                                     Boolean                 DetachPayload   = false,
                                     Boolean                 Tagged          = true,
-                                    SecureRandom?           Random          = null)
+                                    SecureRandom?           Random          = null,
+                                    Boolean                 Deterministic   = false)
 
             => Sign(Payload,
                     PrivateKey,
@@ -310,7 +311,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Tagged,
                     null,
                     null,
-                    Random);
+                    Random,
+                    Deterministic);
 
         #endregion
 
@@ -340,7 +342,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                     Boolean                 Tagged                       = true,
                                     COSEHeaders?            BodyProtectedHeader          = null,
                                     COSEHeaders?            BodyUnprotectedHeader        = null,
-                                    SecureRandom?           Random                       = null)
+                                    SecureRandom?           Random                       = null,
+                                    Boolean                 Deterministic                = false)
         {
 
             var algorithm                = SignatureProtectedHeader.Algorithm
@@ -352,7 +355,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var signature                = algorithm.Sign(
                                                ToBeSigned(bodyProtectedBytes, signatureProtectedBytes, Payload, ExternalAAD),
                                                PrivateKey,
-                                               Random
+                                               Random,
+                                               Deterministic
                                            );
 
             return new COSESign(
@@ -391,7 +395,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      Byte[]?                 KeyIdentifier     = null,
                                      Byte[]?                 ExternalAAD       = null,
                                      Byte[]?                 DetachedPayload   = null,
-                                     SecureRandom?           Random            = null)
+                                     SecureRandom?           Random            = null,
+                                     Boolean                 Deterministic     = false)
 
             => AddSignature(PrivateKey,
                             COSEHeaders.Create(Algorithm),
@@ -400,7 +405,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 : COSEHeaders.Empty,
                             ExternalAAD,
                             DetachedPayload,
-                            Random);
+                            Random,
+                            Deterministic);
 
         #endregion
 
@@ -422,7 +428,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      COSEHeaders?            SignatureUnprotectedHeader   = null,
                                      Byte[]?                 ExternalAAD                  = null,
                                      Byte[]?                 DetachedPayload              = null,
-                                     SecureRandom?           Random                       = null)
+                                     SecureRandom?           Random                       = null,
+                                     Boolean                 Deterministic                = false)
         {
 
             var algorithm                = SignatureProtectedHeader.Algorithm
@@ -436,7 +443,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var signature                = algorithm.Sign(
                                                ToBeSigned(ProtectedHeaderBytes, signatureProtectedBytes, payload, ExternalAAD),
                                                PrivateKey,
-                                               Random
+                                               Random,
+                                               Deterministic
                                            );
 
             return new COSESign(

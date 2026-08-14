@@ -17,6 +17,9 @@
 
 #region Usings
 
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Crypto.Parameters;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -35,9 +38,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
     /// example rather than an illustration - and it is why the document may
     /// be regenerated but never retyped.
     ///
-    /// ECDSA is randomized, so these signature bytes cannot be reproduced by
-    /// signing again; they are to be verified, exactly as the examples of
-    /// RFC 9052 and RFC 9338 are.
+    /// Every signature within it is deterministic (RFC 6979), so the record
+    /// is not merely verifiable but recomputable: one of the tests below
+    /// rebuilds it from the private keys and gets the same 713 bytes.
     /// </summary>
     [TestFixture]
     public class SignedMetrologyExampleTests
@@ -50,20 +53,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         /// signed meter readings, countersigned by the operator.
         /// </summary>
         public const String ReleasedRecord =
-            "D28443A10126A204484F4E4267CBA434400B8344A1013822A104486B1F337BA0EC88BB58607B4DBDCF562B33FB55BC349B3D1CB8759" +
-            "5CF5B3C693529447654C798EEE3BCA480AEA0EC9F9CF44FEDF0554C03CB74FA9D953CBA658BA3B9174677101A137A071A37B0A0FD9F" +
-            "0A501B01DDF3921503125C9A77CD3B9DC38A346771EA8B1AFB075901FFA36F6368617267696E6753746174696F6E7244452A4745462A" +
-            "4531323334353637382A316B7472616E73616374696F6E6861346631633965326872656164696E67738258DDD28445A101390108A104" +
-            "48C6738177A6E6D04B5886A5656D657465726E31495341303030303030303034326B7472616E73616374696F6E6861346631633965326" +
-            "7636F6E74657874715472616E73616374696F6E2E426567696E6474696D65C074323032362D30382D31355430383A31343A30305A6665" +
-            "6E65726779D9ACDC84C482221A0012D6870203A401C48220187B020203C48221185F0401584053235DD1FD9502CBD0F5D362CC27E74F8" +
-            "0106638E47CC338471B79E4D923AEDB9A954BDFB7FFF35C23FFBE5F5AD8EBADC60E188771003A92FA12131BF6934B2858DBD28445A101" +
-            "390108A10448C6738177A6E6D04B5884A5656D657465726E31495341303030303030303034326B7472616E73616374696F6E686134663" +
-            "1633965326763"                                                                                              +
-            "6F6E746578746F5472616E73616374696F6E2E456E646474696D65C074323032362D30382D31355430393A30323A30305A66656E65726" +
-            "779D9ACDC84C482221A0013395D0203A401C48220187E020203C48221185F0401584075244FCDEE271896EC275255A227FDACAD3A0EC8" +
-            "F9AD052937CBE2121CA0F3FF6FB924A31C38626E5F8A8E88EBF0F7930F16CAB287D293D1455CE333F18E66A1584080324890A418CE16FB" +
-            "28FA186973D55BE2C2C2A5EDDBDD0E9B6B6A44E707E19639D2A6C6F320676AE62E1A438EE86ED822B174C2BB71BF917D471A1C56DA861A";
+            "D28443A10126A204484F4E4267CBA434400B8344A1013822A104486B1F337BA0EC88BB586056AA831918D6215BFE6ABAA02791C8FB619E" +
+            "0C2661F55E8C1F95967A67A02863E1ACC9EB090F4A2DD5BE6134380A29D65BA71661A2BA7D337C84C4E4C2C2D87F8925618D0CC7EF3E1E" +
+            "BD6D4279B55514A156B4E5315237488B681C20118283175901FFA36F6368617267696E6753746174696F6E7244452A4745462A45313233" +
+            "34353637382A316B7472616E73616374696F6E6861346631633965326872656164696E67738258DDD28445A101390108A10448C6738177" +
+            "A6E6D04B5886A5656D657465726E31495341303030303030303034326B7472616E73616374696F6E68613466316339653267636F6E7465" +
+            "7874715472616E73616374696F6E2E426567696E6474696D65C074323032362D30382D31355430383A31343A30305A66656E65726779D9" +
+            "ACDC84C482221A0012D6870203A401C48220187B020203C48221185F040158406A40B66B6D228217D87F6751D1919BA82CCA959F079EFC" +
+            "98F805BAE4CBC340A3611ABAC58B3AA2E1FB51EA85CACB978C03DCF78F407039DA41A2E653A60E138958DBD28445A101390108A10448C6" +
+            "738177A6E6D04B5884A5656D657465726E31495341303030303030303034326B7472616E73616374696F6E68613466316339653267636F" +
+            "6E746578746F5472616E73616374696F6E2E456E646474696D65C074323032362D30382D31355430393A30323A30305A66656E65726779" +
+            "D9ACDC84C482221A0013395D0203A401C48220187E020203C48221185F040158401D92018570E22306441FDD0E1645124C03F63CDE0D75" +
+            "A154B7ECD784112020F25834508FD5D9A6A016025A85B8BD7F5DF27056B33EDFC7A823E55449061562CC5840C521E083F44F35D056F5B6" +
+            "F75893B7B2AD8E32CFB2F60DFEAA405466083C16267C6E9256110BDBD204D81878E195A9E4BE644FE034BC7A640A42F82CC931AA2E";
 
         // The three published example keys. These exist for this example only
         // and secure nothing.
@@ -269,6 +271,92 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // signature rather than relying on the layers around it.
             Assert.That(forged.Verify(MeterKey(), out var errorResponse),  Is.False);
             Assert.That(errorResponse,  Is.EqualTo("The signature is invalid!"));
+
+        }
+
+        #endregion
+
+        #region The_record_is_reproducible_from_the_keys_alone()
+
+        [Test]
+        public void The_record_is_reproducible_from_the_keys_alone()
+        {
+
+            // The private halves of the three published example keys.
+            var meter    = new ECPrivateKeyParameters(new BigInteger("08F001BB03BEF4FBD1C59F10B50555CD37D2B53421331DBFA98815A581326FB3", 16),
+                                                      COSECurve.BrainpoolP256r1.DomainParameters!);
+
+            var station  = new ECPrivateKeyParameters(new BigInteger("875E51ECF18073E8B970E6DCC5A115433456E13DF966034A5A782945D2B684D3", 16),
+                                                      COSECurve.P256.DomainParameters!);
+
+            var cpo      = new ECPrivateKeyParameters(new BigInteger("6952487A0A16EACE6E9A69EFD062D7671D68D23FF68722326348827C3A94E2A1" +
+                                                                     "743A1DF8901B948412CCA26CA4372CED", 16),
+                                                      COSECurve.P384.DomainParameters!);
+
+            // Every key identifier within the record is the thumbprint of the
+            // key that signed, so the private halves above really are the
+            // halves of the published public ones.
+            Assert.That(COSEKey.From(meter,   null, COSEAlgorithm.ESB256).ThumbprintKeyIdentifier(),  Is.EqualTo(MeterKey().  KeyIdentifier));
+            Assert.That(COSEKey.From(station, null, COSEAlgorithm.ES256). ThumbprintKeyIdentifier(),  Is.EqualTo(StationKey().KeyIdentifier));
+            Assert.That(COSEKey.From(cpo,     null, COSEAlgorithm.ES384). ThumbprintKeyIdentifier(),  Is.EqualTo(OperatorKey().KeyIdentifier));
+
+            var samples  = new (String Context, String Time, Decimal Energy, Decimal Uncertainty)[] {
+                               ("Transaction.Begin", "2026-08-15T08:14:00Z", 1234.567m, 12.3m),
+                               ("Transaction.End",   "2026-08-15T09:02:00Z", 1259.869m, 12.6m)
+                           };
+
+            var readings = new List<COSESign1>();
+
+            foreach (var sample in samples)
+            {
+
+                var energy  = new MetrologicalValue(
+                                  sample.Energy,
+                                  UnitOfMeasure.WattHour,
+                                  SIPrefix.Kilo,
+                                  new MeasurementUncertainty(sample.Uncertainty, 2, 0.95, UncertaintyDistribution.Normal)
+                              );
+
+                var reading = CBORValue.FromMap([
+                                  new (CBORValue.FromText("meter"),        CBORValue.FromText("1ISA0000000042")),
+                                  new (CBORValue.FromText("transaction"),  CBORValue.FromText("a4f1c9e2")),
+                                  new (CBORValue.FromText("context"),      CBORValue.FromText(sample.Context)),
+                                  new (CBORValue.FromText("time"),         CBORValue.Tagged(CBORTag.DateTimeString, CBORValue.FromText(sample.Time))),
+                                  new (CBORValue.FromText("energy"),       energy.ToCBOR())
+                              ]);
+
+                readings.Add(
+                    COSESign1.Sign(reading.ToByteArray(),
+                                   meter,
+                                   COSEAlgorithm.ESB256,
+                                   MeterKey().KeyIdentifier,
+                                   Deterministic: true)
+                );
+
+            }
+
+            var bundle   = CBORValue.FromMap([
+                               new (CBORValue.FromText("chargingStation"),  CBORValue.FromText("DE*GEF*E12345678*1")),
+                               new (CBORValue.FromText("transaction"),      CBORValue.FromText("a4f1c9e2")),
+                               new (CBORValue.FromText("readings"),         CBORValue.FromArray(readings.Select(static reading => CBORValue.FromBytes(reading.ToByteArray()))))
+                           ]);
+
+            var rebuilt  = COSESign1.Sign(bundle.ToByteArray(),
+                                          station,
+                                          COSEAlgorithm.ES256,
+                                          StationKey().KeyIdentifier,
+                                          Deterministic: true).
+                                     AddCountersignature(cpo,
+                                                         COSEAlgorithm.ES384,
+                                                         OperatorKey().KeyIdentifier,
+                                                         Deterministic: true);
+
+            // Because every signature is deterministic, rebuilding the record
+            // reproduces it byte for byte. That is what allows the document to
+            // be recomputed rather than merely believed - and it is what a
+            // reviewer at a metrology institute is entitled to do.
+            Assert.That(Convert.ToHexString(rebuilt.ToByteArray()),
+                        Is.EqualTo(ReleasedRecord));
 
         }
 

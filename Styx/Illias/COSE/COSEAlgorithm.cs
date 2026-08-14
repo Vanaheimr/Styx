@@ -23,6 +23,8 @@ using System.Security.Cryptography;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Digests;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -465,7 +467,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region Sign  (ToBeSigned, PrivateKey, Random = null)
+        #region CreateDigest()
+
+        /// <summary>
+        /// Create the message digest of this algorithm as a Bouncy Castle
+        /// digest, for the HMAC construction of the deterministic nonce.
+        /// </summary>
+        private IDigest CreateDigest()
+        {
+
+            var hashAlgorithm = HashAlgorithm
+                                    ?? throw new COSEException($"The COSE algorithm '{Name}' does not define a separate message digest!");
+
+            if (hashAlgorithm == HashAlgorithmName.SHA256)
+                return new Sha256Digest();
+
+            if (hashAlgorithm == HashAlgorithmName.SHA384)
+                return new Sha384Digest();
+
+            if (hashAlgorithm == HashAlgorithmName.SHA512)
+                return new Sha512Digest();
+
+            throw new COSEException($"The message digest '{hashAlgorithm.Name}' of the COSE algorithm '{Name}' is not implemented!");
+
+        }
+
+        #endregion
+
+        #region Sign  (ToBeSigned, PrivateKey, Random = null, Deterministic = false)
 
         /// <summary>
         /// Sign the given signature input with the given private key.
@@ -473,21 +502,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// s, each zero-padded to the width of the group order of the
         /// elliptic curve [RFC 9053, Section 2.1] - NOT the DER encoding that
         /// the Bouncy Castle and .NET signer utilities produce by default.
+        ///
+        /// An ECDSA signature is ordinarily randomized, so signing the same
+        /// data twice yields two different signatures, both valid. Setting
+        /// Deterministic derives the nonce from the private key and the
+        /// message instead [RFC 6979], which makes the signature a pure
+        /// function of what is signed: the same input yields the same bytes,
+        /// every time and on every implementation.
+        ///
+        /// That is worth having twice over. A device that has no dependable
+        /// source of randomness - a meter, a smart card - can not be made
+        /// unsafe by a poor one, since a repeated nonce reveals the private
+        /// key. And a published example becomes recomputable rather than
+        /// merely verifiable.
         /// </summary>
         /// <param name="ToBeSigned">The signature input, i.e. an encoded Sig_structure.</param>
         /// <param name="PrivateKey">An elliptic curve private key.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="Deterministic">Whether to derive the nonce from the key and the message as defined by RFC 6979, instead of drawing it at random.</param>
         public Byte[] Sign(ReadOnlySpan<Byte>      ToBeSigned,
                            ECPrivateKeyParameters  PrivateKey,
-                           SecureRandom?           Random   = null)
+                           SecureRandom?           Random          = null,
+                           Boolean                 Deterministic   = false)
         {
 
             EnsureUsableWith(PrivateKey.Parameters);
 
+            if (Deterministic && Random is not null)
+                throw new COSEException("A deterministic signature derives its nonce from the private key and the message, so no source of randomness must be supplied!");
+
             var componentSizeInBytes  = (PrivateKey.Parameters.N.BitLength + 7) / 8;
 
-            var signer                = new ECDsaSigner();
-            signer.Init(true, new ParametersWithRandom(PrivateKey, Random ?? new SecureRandom()));
+            var signer                = Deterministic
+                                            ? new ECDsaSigner(new HMacDsaKCalculator(CreateDigest()))
+                                            : new ECDsaSigner();
+
+            if (Deterministic)
+                signer.Init(true, PrivateKey);
+            else
+                signer.Init(true, new ParametersWithRandom(PrivateKey, Random ?? new SecureRandom()));
 
             var components            = signer.GenerateSignature(Hash(ToBeSigned));
 

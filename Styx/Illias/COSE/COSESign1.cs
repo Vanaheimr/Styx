@@ -307,7 +307,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      Byte[]?                 ExternalAAD     = null,
                                      Boolean                 DetachPayload   = false,
                                      Boolean                 Tagged          = true,
-                                     SecureRandom?           Random          = null)
+                                     SecureRandom?           Random          = null,
+                                     Boolean                 Deterministic   = false)
 
             => Sign(Payload,
                     PrivateKey,
@@ -318,7 +319,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ExternalAAD,
                     DetachPayload,
                     Tagged,
-                    Random);
+                    Random,
+                    null,
+                    Deterministic);
 
         #endregion
 
@@ -355,7 +358,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                              Byte[]?                 ExternalAAD     = null,
                                                              Boolean                 DetachPayload   = false,
                                                              Boolean                 Tagged          = true,
-                                                             SecureRandom?           Random          = null)
+                                                             SecureRandom?           Random          = null,
+                                                             Boolean                 Deterministic   = false)
 
             => Sign(Payload,
                     PrivateKey,
@@ -367,7 +371,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     DetachPayload,
                     Tagged,
                     Random,
-                    Algorithm);
+                    Algorithm,
+                    Deterministic);
 
         #endregion
 
@@ -395,7 +400,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      Boolean                 DetachPayload         = false,
                                      Boolean                 Tagged                = true,
                                      SecureRandom?           Random                = null,
-                                     COSEAlgorithm?          ApplicationAlgorithm  = null)
+                                     COSEAlgorithm?          ApplicationAlgorithm  = null,
+                                     Boolean                 Deterministic         = false)
         {
 
             if (ApplicationAlgorithm.HasValue        &&
@@ -414,7 +420,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var signature       = algorithm.Sign(
                                       ToBeSigned(protectedBytes, Payload, ExternalAAD),
                                       PrivateKey,
-                                      Random
+                                      Random,
+                                      Deterministic
                                   );
 
             return new COSESign1(
@@ -446,7 +453,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      Byte[]?         ExternalAAD     = null,
                                      Boolean         DetachPayload   = false,
                                      Boolean         Tagged          = true,
-                                     SecureRandom?   Random          = null)
+                                     SecureRandom?   Random          = null,
+                                     Boolean         Deterministic   = false)
         {
 
             var algorithm = Key.Algorithm
@@ -459,7 +467,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         ExternalAAD,
                         DetachPayload,
                         Tagged,
-                        Random);
+                        Random,
+                        Deterministic);
 
         }
 
@@ -755,7 +764,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              Byte[]?                 KeyIdentifier     = null,
                                              Byte[]?                 ExternalAAD       = null,
                                              Byte[]?                 DetachedPayload   = null,
-                                             SecureRandom?           Random            = null)
+                                             SecureRandom?           Random            = null,
+                                             Boolean                 Deterministic     = false)
 
             => AddCountersignature(PrivateKey,
                                    COSEHeaders.Create(Algorithm),
@@ -764,7 +774,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        : COSEHeaders.Empty,
                                    ExternalAAD,
                                    DetachedPayload,
-                                   Random);
+                                   Random,
+                                   Deterministic);
 
         #endregion
 
@@ -785,7 +796,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                              COSEHeaders?            CountersignatureUnprotectedHeader   = null,
                                              Byte[]?                 ExternalAAD                         = null,
                                              Byte[]?                 DetachedPayload                     = null,
-                                             SecureRandom?           Random                              = null)
+                                             SecureRandom?           Random                              = null,
+                                             Boolean                 Deterministic                       = false)
         {
 
             var algorithm                     = CountersignatureProtectedHeader.Algorithm
@@ -806,7 +818,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                                             Signature,
                                                                             ExternalAAD),
                                                           PrivateKey,
-                                                          Random
+                                                          Random,
+                                                          Deterministic
                                                       )
                                                   );
 

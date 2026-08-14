@@ -58,6 +58,14 @@ var verified  = message.Verify(publicKey, out var errorResponse);
 A failed verification is not an exception — it is the expected outcome of
 checking untrusted data, and `errorResponse` says why.
 
+Passing `Deterministic: true` derives the ECDSA nonce from the private key and
+the message ([RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)) instead of
+drawing it at random. Signing the same data then yields the same bytes every
+time — which makes published examples recomputable, and which matters rather
+more for a device that has no dependable source of randomness, since a
+repeated nonce hands over the private key. The RFC's own P-256 vectors are
+reproduced by a test.
+
 Whenever the signing key does not live in this process — a meter, a smart card,
 a hardware security module — `ToBeSigned()` hands out exactly the byte string
 that has to be signed:
@@ -240,6 +248,7 @@ quantity should look like.
 - [RFC 9052](https://www.rfc-editor.org/rfc/rfc9052) — COSE: Structures and Process
 - [RFC 9053](https://www.rfc-editor.org/rfc/rfc9053) — COSE: Initial Algorithms
 - [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864) — Fully-Specified Algorithms for JOSE and COSE
+- [RFC 6979](https://www.rfc-editor.org/rfc/rfc6979) — Deterministic ECDSA
 - [RFC 9338](https://www.rfc-editor.org/rfc/rfc9338) — COSE: Countersignatures
 - [RFC 9360](https://www.rfc-editor.org/rfc/rfc9360) — COSE: Header Parameters for X.509 Certificates
 - [RFC 9679](https://www.rfc-editor.org/rfc/rfc9679) — COSE Key Thumbprint
