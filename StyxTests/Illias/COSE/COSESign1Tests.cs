@@ -266,7 +266,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // Whoever does not know the external data can not verify...
             Assert.That(sign1.Verify(publicKey, out var withoutAAD),                  Is.False);
-            Assert.That(withoutAAD,                                                   Is.EqualTo("The signature of this COSE_Sign1 message is invalid!"));
+            Assert.That(withoutAAD,                                                   Is.EqualTo("The signature is invalid!"));
 
             // ...and neither can whoever guesses it wrongly.
             Assert.That(sign1.Verify(publicKey, out _, Convert.FromHexString("11AA22BB33CC44DD55006698")),  Is.False);
@@ -322,7 +322,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                       );
 
             Assert.That(tamperedMessage.Verify(publicKey, out var payloadError),  Is.False);
-            Assert.That(payloadError,  Is.EqualTo("The signature of this COSE_Sign1 message is invalid!"));
+            Assert.That(payloadError,  Is.EqualTo("The signature is invalid!"));
 
             // ...and a single flipped bit within the protected header bucket,
             // which changes the algorithm from ES256 (-7) to ES384 (-35).
@@ -335,7 +335,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             Assert.That(tamperedHeader.ProtectedHeader.Algorithm,                Is.EqualTo(COSEAlgorithm.ES384));
             Assert.That(tamperedHeader.Verify(publicKey, out var headerError),   Is.False);
-            Assert.That(headerError,   Is.EqualTo("The signature of this COSE_Sign1 message is invalid!"));
+            Assert.That(headerError,   Is.EqualTo("The signature is invalid!"));
 
         }
 
@@ -352,7 +352,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var (_, otherPublicKey) = GenerateKeyPair("secp256r1");
 
             Assert.That(sign1.Verify(otherPublicKey, out var errorResponse),  Is.False);
-            Assert.That(errorResponse,  Is.EqualTo("The signature of this COSE_Sign1 message is invalid!"));
+            Assert.That(errorResponse,  Is.EqualTo("The signature is invalid!"));
 
         }
 
@@ -525,7 +525,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // and the message then fails on its signature rather than on its
             // headers - which proves the policy was the gate.
             Assert.That(sign1.Verify(publicKey, out var signatureError, null, null, COSEAlgorithm.ES256),  Is.False);
-            Assert.That(signatureError,  Is.EqualTo("The signature of this COSE_Sign1 message is invalid!"));
+            Assert.That(signatureError,  Is.EqualTo("The signature is invalid!"));
 
             // A message that states no algorithm at all is refused as well.
             var withoutAlgorithm = new COSESign1([], COSEHeaders.Empty, payload, new Byte[64]);

@@ -20,6 +20,12 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
+using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Utilities;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Crypto.Signers;
+using Org.BouncyCastle.Crypto.Parameters;
+
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
@@ -425,6 +431,132 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return SHA512.HashData(Data);
 
             throw new COSEException($"The message digest '{hashAlgorithm.Name}' of the COSE algorithm '{Name}' is not implemented!");
+
+        }
+
+        #endregion
+
+        #region EnsureUsableWith(DomainParameters)
+
+        /// <summary>
+        /// Verify that this implementation can sign with this algorithm and
+        /// that the key lies on the curve a fully-specified algorithm
+        /// prescribes.
+        /// </summary>
+        /// <param name="DomainParameters">The elliptic curve domain parameters of the key to be used.</param>
+        public void EnsureUsableWith(ECDomainParameters DomainParameters)
+        {
+
+            if (!IsSupportedForSigning)
+                throw new COSEException($"The COSE algorithm '{Name}' is not supported for signing by this implementation!");
+
+            if (FixedCurve.HasValue)
+            {
+
+                if (!COSECurve.TryGetFor(DomainParameters, out var curve))
+                    throw new COSEException($"The COSE algorithm '{Name}' is defined for the elliptic curve '{FixedCurve.Value.Name}', but the elliptic curve of the given key is not registered at all!");
+
+                if (curve != FixedCurve.Value)
+                    throw new COSEException($"The COSE algorithm '{Name}' is defined for the elliptic curve '{FixedCurve.Value.Name}', but the given key is on the curve '{curve.Name}'!");
+
+            }
+
+        }
+
+        #endregion
+
+        #region Sign  (ToBeSigned, PrivateKey, Random = null)
+
+        /// <summary>
+        /// Sign the given signature input with the given private key.
+        /// The result is the concatenation of the two ECDSA components r and
+        /// s, each zero-padded to the width of the group order of the
+        /// elliptic curve [RFC 9053, Section 2.1] - NOT the DER encoding that
+        /// the Bouncy Castle and .NET signer utilities produce by default.
+        /// </summary>
+        /// <param name="ToBeSigned">The signature input, i.e. an encoded Sig_structure.</param>
+        /// <param name="PrivateKey">An elliptic curve private key.</param>
+        /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        public Byte[] Sign(ReadOnlySpan<Byte>      ToBeSigned,
+                           ECPrivateKeyParameters  PrivateKey,
+                           SecureRandom?           Random   = null)
+        {
+
+            EnsureUsableWith(PrivateKey.Parameters);
+
+            var componentSizeInBytes  = (PrivateKey.Parameters.N.BitLength + 7) / 8;
+
+            var signer                = new ECDsaSigner();
+            signer.Init(true, new ParametersWithRandom(PrivateKey, Random ?? new SecureRandom()));
+
+            var components            = signer.GenerateSignature(Hash(ToBeSigned));
+
+            var signature             = new Byte[2 * componentSizeInBytes];
+            BigIntegers.AsUnsignedByteArray(components[0], signature, 0,                    componentSizeInBytes);
+            BigIntegers.AsUnsignedByteArray(components[1], signature, componentSizeInBytes, componentSizeInBytes);
+
+            return signature;
+
+        }
+
+        #endregion
+
+        #region Verify(ToBeSigned, Signature, PublicKey, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the given signature over the given signature input.
+        /// A failed verification is not an exception: It is the expected
+        /// outcome of checking untrusted data.
+        /// </summary>
+        /// <param name="ToBeSigned">The signature input, i.e. an encoded Sig_structure.</param>
+        /// <param name="Signature">The signature, as the concatenation of r and s.</param>
+        /// <param name="PublicKey">An elliptic curve public key.</param>
+        /// <param name="ErrorResponse">The reason why the verification failed.</param>
+        public Boolean Verify(ReadOnlySpan<Byte>                ToBeSigned,
+                              Byte[]                            Signature,
+                              ECPublicKeyParameters             PublicKey,
+                              [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            if (!IsSupportedForSigning)
+            {
+                ErrorResponse = $"The COSE algorithm '{Name}' is not supported for verification by this implementation!";
+                return false;
+            }
+
+            if (FixedCurve.HasValue)
+            {
+
+                if (!COSECurve.TryGetFor(PublicKey.Parameters, out var curve) ||
+                    curve != FixedCurve.Value)
+                {
+                    ErrorResponse = $"The COSE algorithm '{Name}' is defined for the elliptic curve '{FixedCurve.Value.Name}', which is not the curve of the given key!";
+                    return false;
+                }
+
+            }
+
+            var componentSizeInBytes = (PublicKey.Parameters.N.BitLength + 7) / 8;
+
+            if (Signature.Length != 2 * componentSizeInBytes)
+            {
+                ErrorResponse = $"An ECDSA signature on the given elliptic curve must be {2 * componentSizeInBytes} bytes long, but was {Signature.Length} bytes long! (A DER encoded signature is a common cause: COSE concatenates r and s.)";
+                return false;
+            }
+
+            var verifier = new ECDsaSigner();
+            verifier.Init(false, PublicKey);
+
+            if (!verifier.VerifySignature(Hash(ToBeSigned),
+                                          new BigInteger(1, Signature, 0,                    componentSizeInBytes),
+                                          new BigInteger(1, Signature, componentSizeInBytes, componentSizeInBytes)))
+            {
+                ErrorResponse = "The signature is invalid!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
 
         }
 

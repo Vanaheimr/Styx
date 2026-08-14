@@ -14,6 +14,9 @@ always produces the same bytes — and therefore the same signature.
 - **`COSESign1`** — a payload signed by a single signer (CBOR tag 18):
   sign, verify, detached payloads, external additional authenticated data,
   and the `crit` header parameter.
+- **`COSESign`** / **`COSESignature`** — one payload, several signers
+  (CBOR tag 98). Each signature carries its own header buckets, so every
+  party signs with its own algorithm and its own key.
 - **`COSEKey`** — COSE keys of key type `EC2` (RFC 9052 §7), with conversions
   to and from the Bouncy Castle elliptic curve keys used elsewhere in Styx
   ([`Crypto.cs`](../Crypto/Crypto.cs)).
@@ -28,9 +31,9 @@ always produces the same bytes — and therefore the same signature.
 | `ESB256` / `ESB320` / `ESB384` / `ESB512` | −265 / −266 / −267 / −268 | brainpoolP256r1 / P320r1 / P384r1 / P512r1 | SHA-256 / 384 / 384 / 512 |
 | `ES256K` | −47 | secp256k1 | SHA-256 |
 
-Not implemented: `COSE_Sign` (multiple signers, tag 98), counter signatures
-(RFC 9338), EdDSA, MAC and encryption. The CBOR tags of those structures are
-defined in `CBORTag`, so they are recognized rather than silently misread.
+Not implemented: counter signatures (RFC 9338), EdDSA, MAC and encryption.
+The CBOR tags of those structures are defined in `CBORTag`, so they are
+recognized rather than silently misread.
 
 ## Signing and verifying
 
@@ -52,6 +55,29 @@ that has to be signed:
 ```csharp
 var toBeSigned = COSESign1.ToBeSigned(protectedHeaderBytes, payload);
 ```
+
+## Several signers
+
+`COSE_Sign` is for the case where more than one party signs one and the same
+payload — the meter signs the reading, the backend counter-signs it later:
+
+```csharp
+var signed         = COSESign.Sign(payload, meterKey, COSEAlgorithm.ES256, meterKeyId);
+var counterSigned  = signed.AddSignature(backendKey, COSEAlgorithm.ES384, backendKeyId);
+
+counterSigned.Verify(counterSigned.Signatures[0], meterPublicKey,   out var error);
+counterSigned.TryVerifyAny(backendPublicKey, out var signature,     out var reason);
+```
+
+The signatures are independent: each covers the body, its own header bucket
+and the payload, but never another signature. Adding one therefore leaves the
+existing ones byte-for-byte valid, and the second party never needs the first
+party's key. A signature *over* another signature is a different mechanism —
+the counter signature of RFC 9338, which is not implemented here.
+
+Its `Sig_structure` has **five** elements rather than four, with the protected
+bucket of the individual signature between the body and the external data:
+`["Signature", body_protected, sign_protected, external_aad, payload]`.
 
 ## Five things that are easy to get wrong
 
@@ -84,8 +110,10 @@ width when reading.
 ## Golden vectors
 
 The tests in [`StyxTests/Illias/COSE/`](../../../StyxTests/Illias/COSE) are
-pinned against the ECDSA examples of RFC 9052 Appendix C.2.1 and the
-`sign1-tests` of the [COSE working group example repository](https://github.com/cose-wg/Examples),
+pinned against the ECDSA examples of RFC 9052 — Appendix C.2.1 for
+`COSE_Sign1`, C.1.1 and C.1.2 for `COSE_Sign`, the latter with one signature
+on P-256 and one on P-521 — and the `sign1-tests` of the
+[COSE working group example repository](https://github.com/cose-wg/Examples),
 taken from their machine-readable form rather than retyped.
 
 ECDSA is randomized, so published signature bytes cannot be reproduced by

@@ -19,10 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-using Org.BouncyCastle.Math;
-using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Crypto.Parameters;
 
 #endregion
@@ -344,23 +341,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      SecureRandom?           Random              = null)
         {
 
-            var algorithm             = ProtectedHeader.Algorithm
-                                            ?? throw new COSEException("The protected header bucket must name the signature algorithm!");
+            var algorithm       = ProtectedHeader.Algorithm
+                                      ?? throw new COSEException("The protected header bucket must name the signature algorithm!");
 
-            EnsureUsable(algorithm, PrivateKey.Parameters);
+            var protectedBytes  = ProtectedHeader.ToProtectedByteArray();
 
-            var protectedBytes        = ProtectedHeader.ToProtectedByteArray();
-            var toBeSigned            = ToBeSigned(protectedBytes, Payload, ExternalAAD);
-            var componentSizeInBytes  = (PrivateKey.Parameters.N.BitLength + 7) / 8;
-
-            var signer                = new ECDsaSigner();
-            signer.Init(true, new ParametersWithRandom(PrivateKey, Random ?? new SecureRandom()));
-
-            var components            = signer.GenerateSignature(algorithm.Hash(toBeSigned));
-
-            var signature             = new Byte[2 * componentSizeInBytes];
-            BigIntegers.AsUnsignedByteArray(components[0], signature, 0,                    componentSizeInBytes);
-            BigIntegers.AsUnsignedByteArray(components[1], signature, componentSizeInBytes, componentSizeInBytes);
+            var signature       = algorithm.Sign(
+                                      ToBeSigned(protectedBytes, Payload, ExternalAAD),
+                                      PrivateKey,
+                                      Random
+                                  );
 
             return new COSESign1(
                        protectedBytes,
@@ -410,36 +400,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (private static) EnsureUsable(Algorithm, DomainParameters)
-
-        /// <summary>
-        /// Verify that this implementation can sign with the given algorithm
-        /// and that the key lies on the curve a fully-specified algorithm
-        /// prescribes.
-        /// </summary>
-        private static void EnsureUsable(COSEAlgorithm       Algorithm,
-                                         ECDomainParameters  DomainParameters)
-        {
-
-            if (!Algorithm.IsSupportedForSigning)
-                throw new COSEException($"The COSE algorithm '{Algorithm.Name}' is not supported for signing by this implementation!");
-
-            if (Algorithm.FixedCurve.HasValue)
-            {
-
-                if (!COSECurve.TryGetFor(DomainParameters, out var curve))
-                    throw new COSEException($"The COSE algorithm '{Algorithm.Name}' is defined for the elliptic curve '{Algorithm.FixedCurve.Value.Name}', but the elliptic curve of the given key is not registered at all!");
-
-                if (curve != Algorithm.FixedCurve.Value)
-                    throw new COSEException($"The COSE algorithm '{Algorithm.Name}' is defined for the elliptic curve '{Algorithm.FixedCurve.Value.Name}', but the given key is on the curve '{curve.Name}'!");
-
-            }
-
-        }
-
-        #endregion
-
-
         #region Verify(PublicKey, ExternalAAD = null, DetachedPayload = null, ExpectedAlgorithm = null)
 
         /// <summary>
@@ -483,8 +443,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region The header parameters a recipient must understand
 
-            if (!VerifyCriticalHeaderParameters(out ErrorResponse))
+            if (!COSEHeaders.VerifyCriticalHeaderParameters(ProtectedHeader,
+                                                            UnprotectedHeader,
+                                                            out ErrorResponse))
+            {
                 return false;
+            }
 
             #endregion
 
@@ -512,24 +476,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (!algorithm.Value.IsSupportedForSigning)
-            {
-                ErrorResponse = $"The COSE algorithm '{algorithm.Value.Name}' is not supported for verification by this implementation!";
-                return false;
-            }
-
-            if (algorithm.Value.FixedCurve.HasValue)
-            {
-
-                if (!COSECurve.TryGetFor(PublicKey.Parameters, out var curve) ||
-                    curve != algorithm.Value.FixedCurve.Value)
-                {
-                    ErrorResponse = $"The COSE algorithm '{algorithm.Value.Name}' is defined for the elliptic curve '{algorithm.Value.FixedCurve.Value.Name}', which is not the curve of the given key!";
-                    return false;
-                }
-
-            }
-
             #endregion
 
             #region The signature itself
@@ -537,31 +483,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (!TryGetPayload(DetachedPayload, out var payload, out ErrorResponse))
                 return false;
 
-            var componentSizeInBytes = (PublicKey.Parameters.N.BitLength + 7) / 8;
-
-            if (Signature.Length != 2 * componentSizeInBytes)
-            {
-                ErrorResponse = $"The signature of an ECDSA COSE_Sign1 message on the given elliptic curve must be {2 * componentSizeInBytes} bytes long, but was {Signature.Length} bytes long! (A DER encoded signature is a common cause: COSE concatenates r and s.)";
-                return false;
-            }
-
-            var toBeSigned  = ToBeSigned(ProtectedHeaderBytes, payload, ExternalAAD);
-
-            var verifier    = new ECDsaSigner();
-            verifier.Init(false, PublicKey);
-
-            if (!verifier.VerifySignature(algorithm.Value.Hash(toBeSigned),
-                                          new BigInteger(1, Signature, 0,                    componentSizeInBytes),
-                                          new BigInteger(1, Signature, componentSizeInBytes, componentSizeInBytes)))
-            {
-                ErrorResponse = "The signature of this COSE_Sign1 message is invalid!";
-                return false;
-            }
+            return algorithm.Value.Verify(
+                       ToBeSigned(ProtectedHeaderBytes, payload, ExternalAAD),
+                       Signature,
+                       PublicKey,
+                       out ErrorResponse
+                   );
 
             #endregion
-
-            ErrorResponse = null;
-            return true;
 
         }
 
@@ -595,67 +524,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (private) VerifyCriticalHeaderParameters(out ErrorResponse)
-
-        /// <summary>
-        /// Verify the "crit" header parameter [RFC 9052, Section 3.1]:
-        /// Every label listed there must be understood and processed by this
-        /// implementation, otherwise the whole message must be rejected.
-        /// </summary>
-        private Boolean VerifyCriticalHeaderParameters([NotNullWhen(false)] out String? ErrorResponse)
-        {
-
-            if (UnprotectedHeader.Contains(COSEHeaderLabel.Critical))
-            {
-                ErrorResponse = "The \"crit\" header parameter must be placed within the protected header bucket!";
-                return false;
-            }
-
-            var critical = ProtectedHeader.Critical;
-
-            if (critical is null)
-            {
-
-                if (ProtectedHeader.Contains(COSEHeaderLabel.Critical))
-                {
-                    ErrorResponse = "The \"crit\" header parameter must be an array of header parameter labels!";
-                    return false;
-                }
-
-                ErrorResponse = null;
-                return true;
-
-            }
-
-            if (critical.Count == 0)
-            {
-                ErrorResponse = "The \"crit\" header parameter must list at least one header parameter label!";
-                return false;
-            }
-
-            foreach (var label in critical)
-            {
-
-                if (!ProtectedHeader.Contains(label))
-                {
-                    ErrorResponse = $"The \"crit\" header parameter lists '{COSEHeaderLabel.Name(label)}', which is not present within the protected header bucket!";
-                    return false;
-                }
-
-                if (!COSEHeaderLabel.IsUnderstood(label))
-                {
-                    ErrorResponse = $"The \"crit\" header parameter demands that '{COSEHeaderLabel.Name(label)}' be understood, which this implementation does not!";
-                    return false;
-                }
-
-            }
-
-            ErrorResponse = null;
-            return true;
-
-        }
-
-        #endregion
 
 
         #region (static) Parse   (CBOR)

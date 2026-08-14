@@ -296,6 +296,76 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region (static) VerifyCriticalHeaderParameters(ProtectedHeader, UnprotectedHeader, out ErrorResponse)
+
+        /// <summary>
+        /// Verify the "crit" header parameter of a pair of header buckets
+        /// [RFC 9052, Section 3.1]: Every label listed there must be present
+        /// within the protected bucket and must be understood and processed
+        /// by this implementation, otherwise the whole message has to be
+        /// rejected.
+        /// </summary>
+        /// <param name="ProtectedHeader">The protected header parameters.</param>
+        /// <param name="UnprotectedHeader">The unprotected header parameters.</param>
+        /// <param name="ErrorResponse">The reason why the header parameters were rejected.</param>
+        public static Boolean VerifyCriticalHeaderParameters(COSEHeaders                       ProtectedHeader,
+                                                             COSEHeaders                       UnprotectedHeader,
+                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            if (UnprotectedHeader.Contains(COSEHeaderLabel.Critical))
+            {
+                ErrorResponse = "The \"crit\" header parameter must be placed within the protected header bucket!";
+                return false;
+            }
+
+            var critical = ProtectedHeader.Critical;
+
+            if (critical is null)
+            {
+
+                if (ProtectedHeader.Contains(COSEHeaderLabel.Critical))
+                {
+                    ErrorResponse = "The \"crit\" header parameter must be an array of header parameter labels!";
+                    return false;
+                }
+
+                ErrorResponse = null;
+                return true;
+
+            }
+
+            if (critical.Count == 0)
+            {
+                ErrorResponse = "The \"crit\" header parameter must list at least one header parameter label!";
+                return false;
+            }
+
+            foreach (var label in critical)
+            {
+
+                if (!ProtectedHeader.Contains(label))
+                {
+                    ErrorResponse = $"The \"crit\" header parameter lists '{COSEHeaderLabel.Name(label)}', which is not present within the protected header bucket!";
+                    return false;
+                }
+
+                if (!COSEHeaderLabel.IsUnderstood(label))
+                {
+                    ErrorResponse = $"The \"crit\" header parameter demands that '{COSEHeaderLabel.Name(label)}' be understood, which this implementation does not!";
+                    return false;
+                }
+
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+
         #region TryGet  (Label, out Value)
 
         /// <summary>
