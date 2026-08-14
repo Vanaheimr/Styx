@@ -149,15 +149,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// constructor of Bouncy Castle does - would turn every key whose
         /// leading bit is set, roughly one in two, into a negative number and
         /// thus into a different key, silently.
+        /// The width has to be exactly the width of the group order and the
+        /// value has to lie within it. Key material that arrives without its
+        /// leading zeroes, with a two's complement sign byte in front of it,
+        /// or outside the group is malformed, and saying so is far more
+        /// useful than quietly repairing it into something that signs.
+        /// This is the one implementation all three representations go
+        /// through, so that they can not drift apart again.
         /// </summary>
         /// <param name="EllipticCurveSpec">The elliptic curve domain parameters.</param>
         /// <param name="PrivateKeyBytes">The private key as an unsigned byte array.</param>
         public static ECPrivateKeyParameters ParsePrivateKeyBytes(ECDomainParameters  EllipticCurveSpec,
                                                                   Byte[]              PrivateKeyBytes)
+        {
 
-            => new (new BigInteger(1, PrivateKeyBytes),
-                    EllipticCurveSpec);
+            var orderSizeInBytes = (EllipticCurveSpec.N.BitLength + 7) / 8;
 
+            if (PrivateKeyBytes.Length != orderSizeInBytes)
+                throw new ArgumentException($"An elliptic curve private key on this curve must be {orderSizeInBytes} bytes wide, including leading zeroes, but was {PrivateKeyBytes.Length} bytes wide!",
+                                            nameof(PrivateKeyBytes));
+
+            var d = new BigInteger(1, PrivateKeyBytes);
+
+            if (d.SignValue <= 0 || d.CompareTo(EllipticCurveSpec.N) >= 0)
+                throw new ArgumentException("The given elliptic curve private key is not within the group order of its elliptic curve!",
+                                            nameof(PrivateKeyBytes));
+
+            return new (d, EllipticCurveSpec);
+
+        }
 
         #endregion
 
@@ -177,12 +197,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (static) ParsePrivateKeyHEX   (EllipticCurveSpec, PrivateKeyHEX)
 
+        /// <summary>
+        /// Parse the given hexadecimal private key.
+        /// The digits are decoded and then read exactly as within
+        /// ParsePrivateKeyBytes, which is the point: This used to be its own
+        /// implementation, and it disagreed with the byte representation of
+        /// one and the same key for every key whose leading bit was set.
+        /// </summary>
+        /// <param name="EllipticCurveSpec">The elliptic curve domain parameters.</param>
+        /// <param name="PrivateKeyHEX">The private key as a hexadecimal unsigned byte array.</param>
         public static ECPrivateKeyParameters ParsePrivateKeyHEX(ECDomainParameters  EllipticCurveSpec,
                                                                 String              PrivateKeyHEX)
 
-            => new (new BigInteger(PrivateKeyHEX, 16),
-                    EllipticCurveSpec);
-
+            => ParsePrivateKeyBytes(EllipticCurveSpec,
+                                    PrivateKeyHEX.FromHEX());
 
         #endregion
 
@@ -206,16 +234,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Parse the given base64 encoded private key.
-        /// The decoded bytes are read as an unsigned magnitude, exactly as
-        /// within ParsePrivateKeyBytes.
+        /// The decoded bytes are read exactly as within ParsePrivateKeyBytes.
         /// </summary>
         /// <param name="EllipticCurveSpec">The elliptic curve domain parameters.</param>
         /// <param name="PrivateKeyBase64">The private key as a base64 encoded unsigned byte array.</param>
         public static ECPrivateKeyParameters ParsePrivateKeyBase64(ECDomainParameters  EllipticCurveSpec,
                                                                    String              PrivateKeyBase64)
 
-            => new (new BigInteger(1, PrivateKeyBase64.FromBASE64()),
-                    EllipticCurveSpec);
+            => ParsePrivateKeyBytes(EllipticCurveSpec,
+                                    PrivateKeyBase64.FromBASE64());
 
         #endregion
 

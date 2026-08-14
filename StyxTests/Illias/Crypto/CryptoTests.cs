@@ -18,6 +18,7 @@
 #region Usings
 
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -36,6 +37,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
     /// encoding. A signed two's complement serialization strips them and
     /// prepends a zero byte whenever the leading bit is set, which produces
     /// keys that other implementations reject - or worse, misread.
+    ///
+    /// The parser is strict rather than forgiving: key material of the wrong
+    /// width, or outside the group, is rejected instead of quietly repaired
+    /// into something that signs. All three representations - bytes,
+    /// hexadecimal and base64 - go through that one implementation, so they
+    /// can not drift apart again, which is exactly what they had done.
     /// </summary>
     [TestFixture]
     public class CryptoTests
@@ -179,6 +186,54 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                             Is.EqualTo(d),  d.ToString(16));
 
             }
+
+        }
+
+        #endregion
+
+        #region Malformed_private_keys_are_rejected()
+
+        [Test]
+        public void Malformed_private_keys_are_rejected()
+        {
+
+            var p256        = Curve("secp256r1");
+            var parameters  = ECNamedCurveTable.GetByName("secp256r1");
+
+            // A key with four genuine leading zero bytes, so that stripping
+            // them is a visible difference rather than a hypothetical one.
+            var d           = new BigInteger("00000000664146E876760C9520D054AA93C3AFB04E306705DB6090308507B4D3", 16);
+            var wellFormed  = Crypto.SerializePrivateKey(PrivateKeyOf(p256, d));
+
+            Assert.That(wellFormed.Length,       Is.EqualTo(32));
+            Assert.That(d.ToByteArray().Length,  Is.EqualTo(28),  "The test vector must lose bytes when serialized the naive way!");
+
+            // The leading zeroes stripped...
+            Assert.That(() => Crypto.ParsePrivateKeyBytes(p256, d.ToByteArray()),
+                        Throws.ArgumentException);
+
+            // ...a two's complement sign byte in front of the key...
+            Assert.That(() => Crypto.ParsePrivateKeyBytes(p256, [0x00, .. wellFormed]),
+                        Throws.ArgumentException);
+
+            // ...the value zero, which is not a key at all...
+            Assert.That(() => Crypto.ParsePrivateKeyBytes(p256, new Byte[32]),
+                        Throws.ArgumentException);
+
+            // ...and the group order itself, which is one past the last key.
+            Assert.That(() => Crypto.ParsePrivateKeyBytes(p256, BigIntegers.AsUnsignedByteArray(32, p256.N)),
+                        Throws.ArgumentException);
+
+            // The well-formed key of course still parses.
+            Assert.That(Crypto.ParsePrivateKeyBytes(p256, wellFormed).D,  Is.EqualTo(d));
+
+            // The hexadecimal and the base64 representation are just as
+            // strict, because all three go through one implementation now.
+            Assert.That(() => Crypto.ParsePrivateKeyHEX   (parameters, Convert.ToHexStringLower(d.ToByteArray())),
+                        Throws.ArgumentException);
+
+            Assert.That(() => Crypto.ParsePrivateKeyBase64(parameters, Convert.ToBase64String  (d.ToByteArray())),
+                        Throws.ArgumentException);
 
         }
 
