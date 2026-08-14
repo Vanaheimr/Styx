@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities;
@@ -772,6 +773,154 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Byte[] ToByteArray(CBORWriterOptions? Options = null)
 
             => ToCBOR().ToByteArray(Options);
+
+        #endregion
+
+        #region ThumbprintInput()
+
+        /// <summary>
+        /// Return the byte string a COSE Key Thumbprint is computed over
+        /// [RFC 9679]: A CBOR map holding ONLY the parameters that are
+        /// required for this key type, in the deterministic encoding of
+        /// RFC 8949, Section 4.2.1.
+        ///
+        /// The optional parameters are deliberately left out, so that adding
+        /// a key identifier, an algorithm or the private key to a key does
+        /// not change its thumbprint. The public and the private half of one
+        /// key pair therefore have the very same thumbprint, which is what
+        /// makes it usable as an identity.
+        ///
+        /// This is public for the same reason ToBeSigned is: whoever computes
+        /// the thumbprint elsewhere needs to be able to compare the input,
+        /// not just the result.
+        /// </summary>
+        public Byte[] ThumbprintInput()
+        {
+
+            var parameters = new List<KeyValuePair<CBORValue, CBORValue>> {
+                                 new (KeyTypeLabel, CBORValue.FromInt64((Int64) KeyType))
+                             };
+
+            switch (KeyType)
+            {
+
+                case COSEKeyType.EC2:
+                {
+
+                    if (!Curve.HasValue || X is null || Y is null)
+                        throw new COSEException("The thumbprint of a COSE key of key type EC2 needs its curve and both of its coordinates!");
+
+                    parameters.Add(new (CurveLabel, Curve.Value.ToCBOR()));
+                    parameters.Add(new (XLabel,     CBORValue.FromBytes(X)));
+                    parameters.Add(new (YLabel,     CBORValue.FromBytes(Y)));
+
+                    break;
+
+                }
+
+                case COSEKeyType.OKP:
+                {
+
+                    if (!Curve.HasValue || X is null)
+                        throw new COSEException("The thumbprint of a COSE key of key type OKP needs its curve and its public key!");
+
+                    parameters.Add(new (CurveLabel, Curve.Value.ToCBOR()));
+                    parameters.Add(new (XLabel,     CBORValue.FromBytes(X)));
+
+                    break;
+
+                }
+
+                default:
+                    throw new COSEException($"The thumbprint of a COSE key of key type {KeyType} is not implemented!");
+
+            }
+
+            return CBORValue.FromMap(parameters).ToByteArray(CBORWriterOptions.Canonical);
+
+        }
+
+        #endregion
+
+        #region Thumbprint(HashAlgorithm = null)
+
+        /// <summary>
+        /// Return the COSE Key Thumbprint of this key [RFC 9679]: The hash of
+        /// the required key parameters in their deterministic encoding.
+        /// </summary>
+        /// <param name="HashAlgorithm">The hash algorithm to use, SHA-256 by default, which RFC 9679 requires every implementation to support.</param>
+        public Byte[] Thumbprint(HashAlgorithmName? HashAlgorithm = null)
+        {
+
+            var input          = ThumbprintInput();
+            var hashAlgorithm  = HashAlgorithm ?? HashAlgorithmName.SHA256;
+
+            if (hashAlgorithm == HashAlgorithmName.SHA256)
+                return SHA256.HashData(input);
+
+            if (hashAlgorithm == HashAlgorithmName.SHA384)
+                return SHA384.HashData(input);
+
+            if (hashAlgorithm == HashAlgorithmName.SHA512)
+                return SHA512.HashData(input);
+
+            throw new COSEException($"The hash algorithm '{hashAlgorithm.Name}' is not implemented for COSE key thumbprints!");
+
+        }
+
+        #endregion
+
+        #region ThumbprintKeyIdentifier(LengthInBytes = 8, HashAlgorithm = null)
+
+        /// <summary>
+        /// Return the leading bytes of the COSE Key Thumbprint of this key,
+        /// for use as a key identifier.
+        ///
+        /// Everyone who holds the public key can recompute this identifier,
+        /// so it needs no registry and no agreement beyond its length. And
+        /// because the thumbprint covers the curve, a signer who changes
+        /// their algorithm necessarily has a different key and therefore a
+        /// different identifier: an algorithm downgrade under an unchanged
+        /// identity is not expressible.
+        /// </summary>
+        /// <param name="LengthInBytes">The number of leading bytes to take, 8 by default.</param>
+        /// <param name="HashAlgorithm">The hash algorithm to use, SHA-256 by default.</param>
+        public Byte[] ThumbprintKeyIdentifier(Int32               LengthInBytes   = 8,
+                                              HashAlgorithmName?  HashAlgorithm   = null)
+        {
+
+            var thumbprint = Thumbprint(HashAlgorithm);
+
+            if (LengthInBytes < 1 || LengthInBytes > thumbprint.Length)
+                throw new COSEException($"A key identifier derived from a COSE key thumbprint must be between 1 and {thumbprint.Length} bytes long!");
+
+            return thumbprint[..LengthInBytes];
+
+        }
+
+        #endregion
+
+        #region WithThumbprintKeyIdentifier(LengthInBytes = 8, HashAlgorithm = null)
+
+        /// <summary>
+        /// Return a copy of this key whose key identifier is the leading
+        /// bytes of its own COSE Key Thumbprint - the one line a key needs
+        /// when it is provisioned.
+        /// </summary>
+        /// <param name="LengthInBytes">The number of leading bytes to take, 8 by default.</param>
+        /// <param name="HashAlgorithm">The hash algorithm to use, SHA-256 by default.</param>
+        public COSEKey WithThumbprintKeyIdentifier(Int32               LengthInBytes   = 8,
+                                                   HashAlgorithmName?  HashAlgorithm   = null)
+
+            => new (KeyType,
+                    Curve,
+                    X,
+                    Y,
+                    D,
+                    ThumbprintKeyIdentifier(LengthInBytes, HashAlgorithm),
+                    Algorithm,
+                    KeyOperations,
+                    AdditionalParameters);
 
         #endregion
 

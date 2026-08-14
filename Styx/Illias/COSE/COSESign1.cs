@@ -322,6 +322,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) SignWithApplicationAlgorithm(Payload, PrivateKey, Algorithm, KeyIdentifier = null, ...)
+
+        /// <summary>
+        /// Sign the given payload with the algorithm taken from the
+        /// application context rather than from the message: the protected
+        /// header bucket stays empty and only the key identifier travels.
+        ///
+        /// This is the leanest signed COSE message there is, and for a
+        /// protocol that already agrees on its algorithm it is also the
+        /// safest arrangement: an algorithm that is not in the message can
+        /// not be tampered with on the way, whereas one within the
+        /// unprotected bucket can. The price is that the algorithm becomes a
+        /// property of the profile and of the key rather than of the message,
+        /// so agility means changing the profile.
+        ///
+        /// The verifier has to name the expected algorithm as well - either
+        /// explicitly, or by verifying with a COSE key that carries it.
+        /// </summary>
+        /// <param name="Payload">The payload to sign.</param>
+        /// <param name="PrivateKey">An elliptic curve private key.</param>
+        /// <param name="Algorithm">The signature algorithm, known to both sides out of band.</param>
+        /// <param name="KeyIdentifier">An optional key identifier, e.g. the leading bytes of the COSE Key Thumbprint of the signing key.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
+        /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
+        /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
+        /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        public static COSESign1 SignWithApplicationAlgorithm(Byte[]                  Payload,
+                                                             ECPrivateKeyParameters  PrivateKey,
+                                                             COSEAlgorithm           Algorithm,
+                                                             Byte[]?                 KeyIdentifier   = null,
+                                                             Byte[]?                 ExternalAAD     = null,
+                                                             Boolean                 DetachPayload   = false,
+                                                             Boolean                 Tagged          = true,
+                                                             SecureRandom?           Random          = null)
+
+            => Sign(Payload,
+                    PrivateKey,
+                    COSEHeaders.Empty,
+                    KeyIdentifier is not null
+                        ? COSEHeaders.Create(null, KeyIdentifier)
+                        : COSEHeaders.Empty,
+                    ExternalAAD,
+                    DetachPayload,
+                    Tagged,
+                    Random,
+                    Algorithm);
+
+        #endregion
+
         #region (static) Sign(Payload, PrivateKey, ProtectedHeader, UnprotectedHeader = null, ...)
 
         /// <summary>
@@ -343,13 +392,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      COSEHeaders             ProtectedHeader,
                                      COSEHeaders?            UnprotectedHeader   = null,
                                      Byte[]?                 ExternalAAD         = null,
-                                     Boolean                 DetachPayload       = false,
-                                     Boolean                 Tagged              = true,
-                                     SecureRandom?           Random              = null)
+                                     Boolean                 DetachPayload         = false,
+                                     Boolean                 Tagged                = true,
+                                     SecureRandom?           Random                = null,
+                                     COSEAlgorithm?          ApplicationAlgorithm  = null)
         {
 
+            if (ApplicationAlgorithm.HasValue        &&
+                ProtectedHeader.Algorithm.HasValue   &&
+                ProtectedHeader.Algorithm.Value != ApplicationAlgorithm.Value)
+            {
+                throw new COSEException($"The protected header bucket names the algorithm '{ProtectedHeader.Algorithm.Value.Name}', but the application context names '{ApplicationAlgorithm.Value.Name}'!");
+            }
+
             var algorithm       = ProtectedHeader.Algorithm
-                                      ?? throw new COSEException("The protected header bucket must name the signature algorithm!");
+                                      ?? ApplicationAlgorithm
+                                      ?? throw new COSEException("Neither the protected header bucket nor the application context names the signature algorithm!");
 
             var protectedBytes  = ProtectedHeader.ToProtectedByteArray();
 

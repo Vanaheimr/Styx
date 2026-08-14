@@ -307,6 +307,144 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region The_published_key_thumbprint_is_reproduced()
+
+        [Test]
+        public void The_published_key_thumbprint_is_reproduced()
+        {
+
+            // The worked example of RFC 9679, Section 6.
+            var key = new COSEKey(
+                          COSEKeyType.EC2,
+                          COSECurve.P256,
+                          Convert.FromHexString("65EDA5A12577C2BAE829437FE338701A10AAA375E1BB5B5DE108DE439C08551D"),
+                          Convert.FromHexString("1E52ED75701163F7F9E40DDF9F341B3DC9BA860AF7E0CA7CA7E9EECD0084D19C")
+                      );
+
+            Assert.That(Convert.ToHexStringLower(key.Thumbprint()),
+                        Is.EqualTo("496bd8afadf307e5b08c64b0421bf9dc01528a344a43bda88fadd1669da253ec"));
+
+            // The hashed input is the required parameters only, deterministically
+            // encoded: kty, crv, x, y - whose labels 1, -1, -2 and -3 encode as
+            // 0x01, 0x20, 0x21 and 0x22 and therefore sort in that order.
+            Assert.That(CBORValue.Parse(key.ThumbprintInput()).ToDiagnosticString(),
+                        Is.EqualTo("{1: 2, -1: 1, -2: h'65eda5a12577c2bae829437fe338701a10aaa375e1bb5b5de108de439c08551d', -3: h'1e52ed75701163f7f9e40ddf9f341b3dc9ba860af7e0ca7ca7e9eecd0084d19c'}"));
+
+        }
+
+        #endregion
+
+        #region Optional_key_parameters_do_not_change_the_thumbprint()
+
+        [Test]
+        public void Optional_key_parameters_do_not_change_the_thumbprint()
+        {
+
+            var bare        = new COSEKey(
+                                  COSEKeyType.EC2,
+                                  COSECurve.P256,
+                                  FromBase64URL(exampleKeyX),
+                                  FromBase64URL(exampleKeyY)
+                              );
+
+            // The private key, the key identifier, the algorithm and any
+            // additional parameter are all left out of the computation, so the
+            // public and the private half of one key pair share an identity.
+            var full        = ExampleKey();
+
+            Assert.That(full.D,           Is.Not.Null);
+            Assert.That(full.Thumbprint(),  Is.EqualTo(bare.Thumbprint()));
+
+            Assert.That(full.ToPublicCOSEKey().Thumbprint(),  Is.EqualTo(bare.Thumbprint()));
+
+            var decorated   = new COSEKey(
+                                  COSEKeyType.EC2,
+                                  COSECurve.P256,
+                                  FromBase64URL(exampleKeyX),
+                                  FromBase64URL(exampleKeyY),
+                                  null,
+                                  "whatever".ToUTF8Bytes(),
+                                  COSEAlgorithm.ESP256,
+                                  [CBORValue.FromInt64(2)],
+                                  [new (CBORValue.FromText("vendor"), CBORValue.FromText("GraphDefined"))]
+                              );
+
+            Assert.That(decorated.Thumbprint(),  Is.EqualTo(bare.Thumbprint()));
+
+            // A different key of course has a different thumbprint.
+            var other       = new COSEKey(
+                                  COSEKeyType.EC2,
+                                  COSECurve.P256,
+                                  Convert.FromHexString("65EDA5A12577C2BAE829437FE338701A10AAA375E1BB5B5DE108DE439C08551D"),
+                                  Convert.FromHexString("1E52ED75701163F7F9E40DDF9F341B3DC9BA860AF7E0CA7CA7E9EECD0084D19C")
+                              );
+
+            Assert.That(other.Thumbprint(),  Is.Not.EqualTo(bare.Thumbprint()));
+
+        }
+
+        #endregion
+
+        #region A_compressed_public_point_has_the_same_thumbprint()
+
+        [Test]
+        public void A_compressed_public_point_has_the_same_thumbprint()
+        {
+
+            var x           = FromBase64URL(exampleKeyX);
+            var y           = FromBase64URL(exampleKeyY);
+
+            var compressed  = COSEKey.Parse(
+                                  CBORValue.FromMap([
+                                      new (COSEKey.KeyTypeLabel,  CBORValue.FromInt64((Int64) COSEKeyType.EC2)),
+                                      new (COSEKey.CurveLabel,    COSECurve.P256.ToCBOR()),
+                                      new (COSEKey.XLabel,        CBORValue.FromBytes(x)),
+                                      new (COSEKey.YLabel,        CBORValue.FromBoolean((y[^1] & 1) == 1))
+                                  ])
+                              );
+
+            // The y coordinate is recovered on parsing, so how the point was
+            // written does not change the identity of the key.
+            Assert.That(compressed.Thumbprint(),
+                        Is.EqualTo(new COSEKey(COSEKeyType.EC2, COSECurve.P256, x, y).Thumbprint()));
+
+        }
+
+        #endregion
+
+        #region A_key_identifier_is_the_leading_bytes_of_the_thumbprint()
+
+        [Test]
+        public void A_key_identifier_is_the_leading_bytes_of_the_thumbprint()
+        {
+
+            var key         = ExampleKey();
+            var thumbprint  = key.Thumbprint();
+
+            Assert.That(thumbprint.Length,                        Is.EqualTo(32));
+            Assert.That(key.ThumbprintKeyIdentifier().Length,      Is.EqualTo(8));
+            Assert.That(key.ThumbprintKeyIdentifier(),             Is.EqualTo(thumbprint[..8]));
+            Assert.That(key.ThumbprintKeyIdentifier(16),           Is.EqualTo(thumbprint[..16]));
+
+            // The one line a key needs when it is provisioned...
+            var provisioned = key.WithThumbprintKeyIdentifier();
+
+            Assert.That(provisioned.KeyIdentifier,  Is.EqualTo(thumbprint[..8]));
+            Assert.That(provisioned.X,              Is.EqualTo(key.X));
+            Assert.That(provisioned.D,              Is.EqualTo(key.D));
+
+            // ...and setting it does not change the thumbprint it came from,
+            // so the operation is idempotent.
+            Assert.That(provisioned.Thumbprint(),                     Is.EqualTo(thumbprint));
+            Assert.That(provisioned.WithThumbprintKeyIdentifier().KeyIdentifier,  Is.EqualTo(provisioned.KeyIdentifier));
+
+            Assert.That(() => key.ThumbprintKeyIdentifier(0),   Throws.TypeOf<COSEException>());
+            Assert.That(() => key.ThumbprintKeyIdentifier(33),  Throws.TypeOf<COSEException>());
+
+        }
+
+        #endregion
+
         #region Malformed_keys_are_rejected()
 
         [Test]

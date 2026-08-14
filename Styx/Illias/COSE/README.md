@@ -19,7 +19,7 @@ always produces the same bytes — and therefore the same signature.
   party signs with its own algorithm and its own key.
 - **`COSEKey`** — COSE keys of key type `EC2` (RFC 9052 §7), with conversions
   to and from the Bouncy Castle elliptic curve keys used elsewhere in Styx
-  ([`Crypto.cs`](../Crypto/Crypto.cs)).
+  ([`Crypto.cs`](../Crypto/Crypto.cs)), and COSE Key Thumbprints (RFC 9679).
 - **`COSEAlgorithm` / `COSECurve`** — the IANA registries, including the
   fully-specified algorithms of [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864)
   and the brainpool curves registered by ISO/IEC 18013-5.
@@ -59,6 +59,62 @@ that has to be signed:
 ```csharp
 var toBeSigned = COSESign1.ToBeSigned(protectedHeaderBytes, payload);
 ```
+
+## The compact form: only the sender travels
+
+For a protocol that already agrees on its algorithm — every request and
+response of one profile — the algorithm does not belong in the message. It is
+a property of the key, and the key is found from the key identifier:
+
+```csharp
+var signed    = COSESign1.SignWithApplicationAlgorithm(body, privateKey, COSEAlgorithm.ES256, senderId);
+
+var received  = COSESign1.Parse(bytes);
+var senderKey = keyStore[received.KeyIdentifier];       // carries its own alg
+received.Verify(senderKey, out var errorResponse);
+```
+
+That leaves the protected bucket empty, and the whole framing costs
+**9 bytes plus the key identifier** — 17 bytes with an 8-byte one — on top of
+the payload and the signature:
+
+```
+D2                    tag 18                       1  (droppable when the context says so)
+84                    array(4)                     1
+40                    protected = h''              1
+A1 04 48 <8 bytes>    {4: kid}                    11
+54 <20 bytes>         payload                      1 + payload
+58 40 <64 bytes>      signature                    2 + 64
+```
+
+101 bytes for a 20-byte payload, pinned by a test. Naming the algorithm in the
+protected bucket costs 3 more; dropping the tag saves 1.
+
+Leaving it out is not only shorter but **safer than the obvious alternative**:
+an algorithm in the *unprotected* bucket can be changed by anyone along the
+way, while one that is not in the message at all cannot. The verifier uses the
+algorithm it has configured, and refuses to guess when it has none. The price
+is that agility becomes a property of the profile rather than of the message.
+
+### Key identifiers that anyone can recompute
+
+`kid` is an opaque byte string, so any sender identifier fits. There is a
+standard one: the **COSE Key Thumbprint** ([RFC 9679](https://www.rfc-editor.org/rfc/rfc9679)),
+a hash over exactly the required key parameters in their deterministic
+encoding.
+
+```csharp
+var provisioned = COSEKey.From(publicKey, null, COSEAlgorithm.ES256).
+                          WithThumbprintKeyIdentifier();   // 8 leading bytes
+```
+
+Two properties make it worth preferring over a self-chosen prefix. Everyone
+holding the public key can recompute the identifier, so no registry and no
+agreement beyond its length is needed. And because the thumbprint covers the
+curve, a signer who changes algorithm necessarily has a different key and thus
+a different identifier — an algorithm downgrade under an unchanged identity is
+not expressible. Optional parameters are excluded from the computation, so the
+public and the private half of one key pair share one identity.
 
 ## Several signers
 
@@ -180,4 +236,5 @@ quantity should look like.
 - [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864) — Fully-Specified Algorithms for JOSE and COSE
 - [RFC 9338](https://www.rfc-editor.org/rfc/rfc9338) — COSE: Countersignatures
 - [RFC 9360](https://www.rfc-editor.org/rfc/rfc9360) — COSE: Header Parameters for X.509 Certificates
+- [RFC 9679](https://www.rfc-editor.org/rfc/rfc9679) — COSE Key Thumbprint
 - [IANA COSE registries](https://www.iana.org/assignments/cose/cose.xhtml)

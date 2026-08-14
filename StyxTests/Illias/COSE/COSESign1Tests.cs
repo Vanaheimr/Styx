@@ -651,6 +651,120 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         #endregion
 
 
+        #region The_algorithm_may_come_from_the_application_context()
+
+        [Test]
+        public void The_algorithm_may_come_from_the_application_context()
+        {
+
+            var (privateKey, publicKey)  = GenerateKeyPair("secp256r1");
+
+            var signingKey  = COSEKey.From(privateKey, null, COSEAlgorithm.ES256).
+                                      WithThumbprintKeyIdentifier();
+
+            var signed      = COSESign1.SignWithApplicationAlgorithm(
+                                  payload,
+                                  privateKey,
+                                  COSEAlgorithm.ES256,
+                                  signingKey.KeyIdentifier
+                              );
+
+            // Nothing but the sender travels within the message: the protected
+            // bucket is the zero-length byte string, and the algorithm appears
+            // nowhere at all - not even unprotected, where it could be changed.
+            Assert.That(signed.ProtectedHeaderBytes,       Is.Empty);
+            Assert.That(signed.Algorithm,                  Is.Null);
+            Assert.That(signed.KeyIdentifier!.Length,      Is.EqualTo(8));
+
+            var received    = COSESign1.Parse(signed.ToByteArray());
+
+            // Whoever does not name an algorithm gets no verification...
+            Assert.That(received.Verify(publicKey, out var withoutAlgorithm),  Is.False);
+            Assert.That(withoutAlgorithm,  Does.Contain("does not state its signature algorithm"));
+
+            // ...naming it explicitly works...
+            Assert.That(received.Verify(publicKey, out var explicitError, null, null, COSEAlgorithm.ES256),  Is.True, explicitError);
+
+            // ...and so does verifying with the COSE key the identifier
+            // resolves to, which carries the algorithm along with the key.
+            Assert.That(received.KeyIdentifier,  Is.EqualTo(signingKey.KeyIdentifier));
+
+            Assert.That(received.Verify(signingKey.ToPublicCOSEKey(), out var keyError),  Is.True, keyError);
+
+            // A key without an algorithm can not stand in for the context.
+            Assert.That(received.Verify(COSEKey.From(publicKey), out var withoutKeyAlgorithm),  Is.False);
+            Assert.That(withoutKeyAlgorithm,  Does.Contain("does not state its signature algorithm"));
+
+        }
+
+        #endregion
+
+        #region The_leanest_signed_message_is_measured()
+
+        [Test]
+        public void The_leanest_signed_message_is_measured()
+        {
+
+            var (privateKey, _)  = GenerateKeyPair("secp256r1");
+
+            var lean     = COSESign1.SignWithApplicationAlgorithm(payload, privateKey, COSEAlgorithm.ES256, new Byte[8]).
+                                     ToByteArray();
+
+            var withAlg  = COSESign1.Sign(payload, privateKey, COSEAlgorithm.ES256, new Byte[8]).
+                                     ToByteArray();
+
+            //  1  D2                    tag 18
+            //  1  84                    array(4)
+            //  1  40                    protected = h''
+            // 11  A1 04 48 <8 bytes>    {4: kid}
+            //  1  54                    payload header, 20 bytes of payload
+            //  2  58 40                 signature header, 64 bytes of signature
+            Assert.That(lean.Length,     Is.EqualTo(17 + payload.Length + 64));
+            Assert.That(lean.Length,     Is.EqualTo(101));
+
+            // Naming the algorithm within the protected bucket costs three
+            // bytes more: 43 A1 01 26 instead of 40.
+            Assert.That(withAlg.Length,  Is.EqualTo(lean.Length + 3));
+
+            // ...and dropping the CBOR tag, where the context already says
+            // what this is, saves one more.
+            var untagged = COSESign1.SignWithApplicationAlgorithm(payload, privateKey, COSEAlgorithm.ES256, new Byte[8], Tagged: false).
+                                     ToByteArray();
+
+            Assert.That(untagged.Length,  Is.EqualTo(lean.Length - 1));
+
+        }
+
+        #endregion
+
+        #region An_application_algorithm_that_contradicts_the_headers_is_rejected()
+
+        [Test]
+        public void An_application_algorithm_that_contradicts_the_headers_is_rejected()
+        {
+
+            var (privateKey, _) = GenerateKeyPair("secp256r1");
+
+            Assert.That(() => COSESign1.Sign(payload,
+                                             privateKey,
+                                             COSEHeaders.Create(COSEAlgorithm.ES256),
+                                             null,
+                                             null,
+                                             false,
+                                             true,
+                                             null,
+                                             COSEAlgorithm.ES384),
+                        Throws.TypeOf<COSEException>());
+
+            Assert.That(() => COSESign1.Sign(payload,
+                                             privateKey,
+                                             COSEHeaders.Empty),
+                        Throws.TypeOf<COSEException>());
+
+        }
+
+        #endregion
+
         #region Malformed_messages_are_rejected()
 
         [Test]
