@@ -250,8 +250,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>The farad (F, 15), capacitance.</summary>
         public static readonly UnitOfMeasure  Farad                   = Register("Farad",                  "F",     15);
 
-        /// <summary>The ohm (Ω, 16), electric resistance.</summary>
-        public static readonly UnitOfMeasure  Ohm                     = Register("Ohm",                    "Ω",     16, "Ohm");
+        /// <summary>
+        /// The ohm (Ω, 16), electric resistance.
+        /// Accepts the Greek capital letter omega (U+03A9, canonical) as well as
+        /// the visually identical, Unicode-deprecated ohm sign (U+2126), which
+        /// older sources - including the Ohm struct of this namespace - still use.
+        /// </summary>
+        public static readonly UnitOfMeasure  Ohm                     = Register("Ohm",                    "Ω",     16, "Ohm", "\u2126");   // the Unicode-deprecated OHM SIGN, kept parseable on purpose
 
         /// <summary>The siemens (S, 17), electric conductance.</summary>
         public static readonly UnitOfMeasure  Siemens                 = Register("Siemens",                "S",     17);
