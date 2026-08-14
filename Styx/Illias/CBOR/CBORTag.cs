@@ -91,6 +91,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static CBORTag  BigFloat             { get; } = new (5);
 
         /// <summary>
+        /// COSE Single Recipient Encrypted Data Object, COSE_Encrypt0
+        /// (tag 16) [RFC 9052, Section 2].
+        /// </summary>
+        public static CBORTag  COSEEncrypt0         { get; } = new (16);
+
+        /// <summary>
+        /// COSE MACed Data Object without recipients, COSE_Mac0
+        /// (tag 17) [RFC 9052, Section 2].
+        /// </summary>
+        public static CBORTag  COSEMac0             { get; } = new (17);
+
+        /// <summary>
+        /// COSE Single Signer Data Object, COSE_Sign1 (tag 18)
+        /// [RFC 9052, Section 4.2]: The tagged array
+        /// [protected, unprotected, payload, signature] is a payload signed
+        /// by a single signer. The tag itself is not covered by the
+        /// signature.
+        /// </summary>
+        public static CBORTag  COSESign1            { get; } = new (18);
+
+        /// <summary>
         /// Encoded CBOR data item (tag 24): The tagged byte string
         /// contains a single encoded CBOR data item [RFC 8949, Section 3.4.5.1].
         /// </summary>
@@ -125,6 +146,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Universally Unique Identifier as per RFC 9562.
         /// </summary>
         public static CBORTag  UUID                 { get; } = new (37);
+
+        /// <summary>
+        /// COSE Encrypted Data Object, COSE_Encrypt
+        /// (tag 96) [RFC 9052, Section 2].
+        /// </summary>
+        public static CBORTag  COSEEncrypt          { get; } = new (96);
+
+        /// <summary>
+        /// COSE MACed Data Object, COSE_Mac
+        /// (tag 97) [RFC 9052, Section 2].
+        /// </summary>
+        public static CBORTag  COSEMac              { get; } = new (97);
+
+        /// <summary>
+        /// COSE Signed Data Object, COSE_Sign (tag 98) [RFC 9052, Section 4.1]:
+        /// A payload signed by one or more signers, each with its own header
+        /// buckets and signature.
+        /// </summary>
+        public static CBORTag  COSESign             { get; } = new (98);
 
         /// <summary>
         /// A metrological value (tag 44252, 0xACDC): The tagged array
