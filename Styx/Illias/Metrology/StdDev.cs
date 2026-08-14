@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Numerics;
+using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
@@ -34,31 +35,57 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class StdDevExtensions
     {
 
-        public static JArray ToJSON<T>(this StdDev<T> StdDev,
-                                       String? Unit = null)
+        #region ToJSON(this StdDev,         Unit = null)
 
-         where T : IFloatingPointIeee754<T>,
-                   IEquatable<T>,
+        /// <summary>
+        /// Return a JSON array holding the mean value, its standard deviation
+        /// and - if given - the unit of both.
+        /// </summary>
+        /// <param name="StdDev">A mean value with its standard deviation.</param>
+        /// <param name="Unit">An optional unit of measure.</param>
+        /// <remarks>
+        /// Constrained exactly like StdDev&lt;T&gt; itself. An earlier version
+        /// demanded IFloatingPointIeee754, which excluded System.Decimal and
+        /// with it every metrology struct of this namespace - that is, all the
+        /// types this extension exists for.
+        /// </remarks>
+        public static JArray ToJSON<T>(this StdDev<T>  StdDev,
+                                       String?         Unit = null)
+
+         where T : IParsable  <T>,
+                   IEquatable <T>,
                    IComparable<T>,
-                   IParsable<T>
+                   IComparable
 
             => Unit.IsNotNullOrEmpty()
                    ? new (StdDev.Mean, StdDev.StandardDeviation, Unit)
                    : new (StdDev.Mean, StdDev.StandardDeviation);
 
+        #endregion
 
+        #region ToJSON(this StdDev, Mapper, Unit = null)
+
+        /// <summary>
+        /// Return a JSON array holding the mapped mean value, its mapped
+        /// standard deviation and - if given - the unit of both.
+        /// </summary>
+        /// <param name="StdDev">A mean value with its standard deviation.</param>
+        /// <param name="Mapper">A delegate mapping the values onto a number.</param>
+        /// <param name="Unit">An optional unit of measure.</param>
         public static JArray ToJSON<T>(this StdDev<T>   StdDev,
                                        Func<T, Double>  Mapper,
                                        String?          Unit = null)
 
-         where T : IFloatingPointIeee754<T>,
-                   IEquatable<T>,
+         where T : IParsable  <T>,
+                   IEquatable <T>,
                    IComparable<T>,
-                   IParsable<T>
+                   IComparable
 
             => Unit.IsNotNullOrEmpty()
                    ? new (Mapper(StdDev.Mean), Mapper(StdDev.StandardDeviation), Unit)
                    : new (Mapper(StdDev.Mean), Mapper(StdDev.StandardDeviation));
+
+        #endregion
 
 
     }
@@ -276,38 +303,65 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
-        public static Boolean TryParse(JArray JSON, out StdDev<T>? SSSSS, out String? ErrorResponse) //, Func<JToken, T> Parser)
+        #region (static) TryParse(JSON, out StdDev, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given JSON array as a mean value with its standard deviation,
+        /// as written by ToJSON(): [ mean, standard deviation ] or, when a unit was given,
+        /// [ mean, standard deviation, unit ]. The unit is not part of this data structure
+        /// and is therefore ignored.
+        /// </summary>
+        /// <param name="JSON">A JSON array holding a mean value and its standard deviation.</param>
+        /// <param name="StdDev">The parsed mean value with its standard deviation.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JArray                            JSON,
+                                       out StdDev<T>                     StdDev,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
         {
-            SSSSS = null;
-            ErrorResponse = null;
 
-            if (JSON is not null)
+            StdDev         = default;
+            ErrorResponse  = null;
+
+            if (JSON is null)
             {
-
-                if (JSON.Count == 2)
-                {
-
-                    try
-                    {
-
-                        SSSSS = null;
-
-                        //SSSSS = new StdDev<T>((T)JSON[0],
-                        //                     (T)JSON[1]);
-
-                        return true;
-
-                    }
-                    catch
-                    { }
-
-                }
-
+                ErrorResponse = "The given JSON array must not be null!";
+                return false;
             }
 
-            return false;
+            if (JSON.Count != 2 && JSON.Count != 3)
+            {
+                ErrorResponse = $"A mean value with its standard deviation must be a JSON array of 2 or 3 elements, but {JSON.Count} were given!";
+                return false;
+            }
+
+            if (!T.TryParse(JSON[0].Value<String>(),
+                            CultureInfo.InvariantCulture,
+                            out var mean) ||
+                mean is null)
+            {
+                ErrorResponse = $"Invalid mean value: '{JSON[0]}'!";
+                return false;
+            }
+
+            if (!T.TryParse(JSON[1].Value<String>(),
+                            CultureInfo.InvariantCulture,
+                            out var standardDeviation) ||
+                standardDeviation is null)
+            {
+                ErrorResponse = $"Invalid standard deviation: '{JSON[1]}'!";
+                return false;
+            }
+
+            StdDev = new StdDev<T>(
+                         mean,
+                         standardDeviation
+                     );
+
+            return true;
 
         }
+
+        #endregion
 
 
 
@@ -317,7 +371,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parses a string in the exact format produced by <see cref="ToString"/> (e.g. "42.5 ±3.2").
         /// </summary>
         public static StdDev<T> Parse(String s)
-            => Parse(s, provider: null);
+            => Parse(s, CultureInfo.InvariantCulture);
 
         #endregion
 
@@ -348,7 +402,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        out StdDev<T>                StdDev)
 
             => TryParse(Text,
-                        null,
+                        CultureInfo.InvariantCulture,
                         out StdDev);
 
         #endregion
@@ -590,7 +644,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-            => $"{Mean} ±{StandardDeviation}";
+
+            // Invariant, like every other metrology type: a value written on
+            // one machine has to be readable on the next. String.Format uses
+            // IFormattable when T provides it, which all numeric types do.
+            => String.Format(CultureInfo.InvariantCulture,
+                             "{0} ±{1}",
+                             Mean,
+                             StandardDeviation);
 
 
         #endregion
