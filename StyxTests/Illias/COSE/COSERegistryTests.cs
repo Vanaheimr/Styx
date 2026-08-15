@@ -61,7 +61,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                // Known, but not implemented here.
                                (COSEAlgorithm.EdDSA,     -8, "EdDSA",   false, true,  null),
                                (COSEAlgorithm.Ed25519,  -19, "Ed25519", false, false, COSECurve.Ed25519),
-                               (COSEAlgorithm.Ed448,    -53, "Ed448",   false, false, COSECurve.Ed448)
+                               (COSEAlgorithm.Ed448,    -53, "Ed448",   false, false, COSECurve.Ed448),
+
+                               // Hash algorithms [RFC 9054]: they sign nothing,
+                               // they name the digest of a thumbprint.
+                               (COSEAlgorithm.SHA256,   -16, "SHA-256", false, false, null),
+                               (COSEAlgorithm.SHA384,   -43, "SHA-384", false, false, null),
+                               (COSEAlgorithm.SHA512,   -44, "SHA-512", false, false, null),
+                               (COSEAlgorithm.SHA1,     -14, "SHA-1",   false, true,  null)
 
                            };
 

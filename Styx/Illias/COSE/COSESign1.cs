@@ -19,6 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -515,8 +516,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               COSEAlgorithm?                    ExpectedAlgorithm   = null)
         {
 
-            #region The header parameters a recipient must understand
-
             if (!COSEHeaders.VerifyCriticalHeaderParameters(ProtectedHeader,
                                                             UnprotectedHeader,
                                                             out ErrorResponse))
@@ -524,7 +523,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            #endregion
+            return VerifySignature(PublicKey,
+                                   out ErrorResponse,
+                                   ExternalAAD,
+                                   DetachedPayload,
+                                   ExpectedAlgorithm);
+
+        }
+
+        #endregion
+
+        #region (private) VerifySignature(PublicKey, out ErrorResponse, ExternalAAD, DetachedPayload, ExpectedAlgorithm)
+
+        /// <summary>
+        /// Everything a verification does apart from the "crit" header
+        /// parameter, which the caller checks first because what counts as
+        /// understood depends on what the caller is about to do.
+        /// </summary>
+        private Boolean VerifySignature(ECPublicKeyParameters             PublicKey,
+                                        [NotNullWhen(false)] out String?  ErrorResponse,
+                                        Byte[]?                           ExternalAAD,
+                                        Byte[]?                           DetachedPayload,
+                                        COSEAlgorithm?                    ExpectedAlgorithm)
+        {
 
             #region Which algorithm to verify with
 
@@ -598,6 +619,174 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+
+
+        #region CertificateChain / CertificateThumbprint
+
+        /// <summary>
+        /// The X.509 certificate chain of this message [RFC 9360], taken from
+        /// the "x5chain" header parameter (label 33) of the protected bucket
+        /// and only otherwise from the unprotected one.
+        ///
+        /// This is untrusted input. It says which certificates the sender
+        /// would like the recipient to consider, nothing more, until
+        /// VerifyWithCertificateChain has walked it to an anchor.
+        /// Throws when the parameter is present but is not a COSE_X509.
+        /// </summary>
+        public COSECertificateChain?  CertificateChain
+        {
+            get
+            {
+
+                if (!ProtectedHeader.  TryGet(COSEHeaderLabel.X5Chain, out var value) &&
+                    !UnprotectedHeader.TryGet(COSEHeaderLabel.X5Chain, out value))
+                {
+                    return null;
+                }
+
+                if (!COSECertificateChain.TryParse(value, out var chain, out var errorResponse))
+                    throw new COSEException($"The certificate chain of this COSE_Sign1 message is invalid: {errorResponse}");
+
+                return chain;
+
+            }
+        }
+
+        /// <summary>
+        /// The X.509 certificate thumbprint of this message [RFC 9360],
+        /// taken from the "x5t" header parameter (label 34).
+        /// Throws when the parameter is present but is not a COSE_CertHash.
+        /// </summary>
+        public COSECertificateHash?   CertificateThumbprint
+        {
+            get
+            {
+
+                if (!ProtectedHeader.  TryGet(COSEHeaderLabel.X5T, out var value) &&
+                    !UnprotectedHeader.TryGet(COSEHeaderLabel.X5T, out value))
+                {
+                    return null;
+                }
+
+                if (!COSECertificateHash.TryParse(value, out var thumbprint, out var errorResponse))
+                    throw new COSEException($"The certificate thumbprint of this COSE_Sign1 message is invalid: {errorResponse}");
+
+                return thumbprint;
+
+            }
+        }
+
+        #endregion
+
+        #region VerifyWithCertificateChain(TrustAnchors, out Signer, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Verify this message against a certificate chain rather than
+        /// against a public key someone handed over: the chain travels within
+        /// the message, is walked to one of the given trust anchors, and the
+        /// key of its end-entity certificate is then the key the signature
+        /// has to verify with.
+        ///
+        /// That last step is what turns a chain into an answer. A chain that
+        /// validates beautifully says nothing at all about the message it
+        /// arrived with unless the key it ends in is the key that signed, so
+        /// the two are never checked apart from one another here.
+        ///
+        /// What this does not do: revocation, name constraints, policies. And
+        /// it answers "this key belongs to that subject, attested by someone
+        /// I trust" - whether that subject may state what it states remains
+        /// the caller's question.
+        /// </summary>
+        /// <param name="TrustAnchors">The certificates trusted a priori.</param>
+        /// <param name="Signer">The end-entity certificate whose key verified the signature.</param>
+        /// <param name="ErrorResponse">The reason why the verification failed.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that was signed along with the payload.</param>
+        /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
+        /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects.</param>
+        /// <param name="At">The point in time to validate the certificates at, now by default.</param>
+        public Boolean VerifyWithCertificateChain(IEnumerable<X509Certificate>             TrustAnchors,
+                                                  [NotNullWhen(true)]  out X509Certificate?  Signer,
+                                                  [NotNullWhen(false)] out String?           ErrorResponse,
+                                                  Byte[]?                                    ExternalAAD         = null,
+                                                  Byte[]?                                    DetachedPayload     = null,
+                                                  COSEAlgorithm?                             ExpectedAlgorithm   = null,
+                                                  DateTimeOffset?                            At                  = null)
+        {
+
+            Signer = null;
+
+            #region The header parameters a recipient must understand
+
+            // Now that the chain really is processed, a sender may demand it.
+            if (!COSEHeaders.VerifyCriticalHeaderParameters(ProtectedHeader,
+                                                            UnprotectedHeader,
+                                                            out ErrorResponse,
+                                                            [COSEHeaderLabel.X5Chain, COSEHeaderLabel.X5T]))
+            {
+                return false;
+            }
+
+            #endregion
+
+            #region The chain, and the thumbprint that may name it
+
+            COSECertificateChain? chain;
+            COSECertificateHash?  thumbprint;
+
+            try
+            {
+                chain       = CertificateChain;
+                thumbprint  = CertificateThumbprint;
+            }
+            catch (COSEException e)
+            {
+                ErrorResponse = e.Message;
+                return false;
+            }
+
+            if (chain is null)
+            {
+                ErrorResponse = "This COSE_Sign1 message carries no certificate chain!";
+                return false;
+            }
+
+            if (thumbprint is not null &&
+                !thumbprint.Matches(chain.EndEntity, out ErrorResponse))
+            {
+                return false;
+            }
+
+            if (!chain.Validate(TrustAnchors, out ErrorResponse, At))
+                return false;
+
+            #endregion
+
+            #region ...and the binding: the certified key must be the signing key
+
+            if (chain.PublicKey() is not ECPublicKeyParameters publicKey)
+            {
+                ErrorResponse = $"The end-entity certificate '{chain.EndEntity.SubjectDN}' does not hold an elliptic curve public key!";
+                return false;
+            }
+
+            if (!VerifySignature(publicKey,
+                                 out ErrorResponse,
+                                 ExternalAAD,
+                                 DetachedPayload,
+                                 ExpectedAlgorithm))
+            {
+                return false;
+            }
+
+            #endregion
+
+            Signer         = chain.EndEntity;
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
 
 
         #region Countersignatures

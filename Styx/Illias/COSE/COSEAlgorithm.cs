@@ -103,7 +103,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             {   -8, new ("EdDSA",   "EdDSA",                                         null,                     null,                         false, true ) },
             {  -19, new ("Ed25519", "EdDSA using the Ed25519 parameter set",         null,                     COSECurve.Ed25519,            false, false) },
-            {  -53, new ("Ed448",   "EdDSA using the Ed448 parameter set",           null,                     COSECurve.Ed448,              false, false) }
+            {  -53, new ("Ed448",   "EdDSA using the Ed448 parameter set",           null,                     COSECurve.Ed448,              false, false) },
+
+            // Hash algorithms [RFC 9054]. They sign nothing; they name the
+            // digest of a certificate thumbprint (x5t) and the like.
+            {  -16, new ("SHA-256", "SHA-2 256-bit Hash",                            HashAlgorithmName.SHA256, null,                         false, false) },
+            {  -43, new ("SHA-384", "SHA-2 384-bit Hash",                            HashAlgorithmName.SHA384, null,                         false, false) },
+            {  -44, new ("SHA-512", "SHA-2 512-bit Hash",                            HashAlgorithmName.SHA512, null,                         false, false) },
+            {  -14, new ("SHA-1",   "SHA-1 Hash",                                    null,                     null,                         false, true ) }
 
         };
 
@@ -286,6 +293,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static COSEAlgorithm  Ed448      { get; } = new ( -53);
 
         /// <summary>
+        /// The SHA-2 256-bit hash (algorithm -16) [RFC 9054], the default
+        /// digest of a certificate thumbprint.
+        /// </summary>
+        public static COSEAlgorithm  SHA256     { get; } = new ( -16);
+
+        /// <summary>
+        /// The SHA-2 384-bit hash (algorithm -43) [RFC 9054].
+        /// </summary>
+        public static COSEAlgorithm  SHA384     { get; } = new ( -43);
+
+        /// <summary>
+        /// The SHA-2 512-bit hash (algorithm -44) [RFC 9054].
+        /// </summary>
+        public static COSEAlgorithm  SHA512     { get; } = new ( -44);
+
+        /// <summary>
+        /// The SHA-1 hash (algorithm -14) [RFC 9054].
+        /// Known so that it can be recognized and refused, not used.
+        /// </summary>
+        public static COSEAlgorithm  SHA1       { get; } = new ( -14);
+
+        /// <summary>
         /// An enumeration of all algorithms known to this implementation.
         /// </summary>
         public static IEnumerable<COSEAlgorithm> All
@@ -423,14 +452,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var hashAlgorithm = HashAlgorithm
                                     ?? throw new COSEException($"The COSE algorithm '{Name}' does not define a separate message digest!");
 
+            // Fully qualified: the static algorithm identifiers SHA256, SHA384
+            // and SHA512 of this very class would otherwise shadow the types.
             if (hashAlgorithm == HashAlgorithmName.SHA256)
-                return SHA256.HashData(Data);
+                return System.Security.Cryptography.SHA256.HashData(Data);
 
             if (hashAlgorithm == HashAlgorithmName.SHA384)
-                return SHA384.HashData(Data);
+                return System.Security.Cryptography.SHA384.HashData(Data);
 
             if (hashAlgorithm == HashAlgorithmName.SHA512)
-                return SHA512.HashData(Data);
+                return System.Security.Cryptography.SHA512.HashData(Data);
 
             throw new COSEException($"The message digest '{hashAlgorithm.Name}' of the COSE algorithm '{Name}' is not implemented!");
 

@@ -39,6 +39,8 @@ by a test.
 
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
   header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
+- **X.509 certificate chains** ([RFC 9360](https://www.rfc-editor.org/rfc/rfc9360)) —
+  `x5chain` and `x5t`, validated against configured trust anchors.
 
 Not implemented: `COSE_Countersignature0` (the abbreviated form, header
 parameter 12), EdDSA, MAC and encryption. The CBOR tags of those structures
@@ -152,6 +154,48 @@ the countersignature of RFC 9338, see below.
 Its `Sig_structure` has **five** elements rather than four, with the protected
 bucket of the individual signature between the body and the external data:
 `["Signature", body_protected, sign_protected, external_aad, payload]`.
+
+## Where the key came from
+
+Verifying with a public key answers *“was this signed with that key”*. It does
+not answer *“why should I believe that key belongs to that meter”* — and in a
+regulated setting the second question is the one that matters. A certificate
+chain answers it, if it is checked properly:
+
+```csharp
+message.VerifyWithCertificateChain(trustAnchors, out var signer, out var errorResponse);
+// signer is the end-entity certificate: CN=Meter 1ISA0000000042
+```
+
+**The two halves are never checked apart.** A chain that validates beautifully
+says nothing about the message it arrived with unless the key of its
+end-entity certificate is the key that verified the signature. Presenting
+somebody else's genuine certificate while signing with your own key is the
+obvious attack, and it fails here on the signature, not on the chain — there
+is a test that does exactly that.
+
+What is validated: every certificate signed by the next, the last one anchored
+in a trust anchor the caller supplies, validity periods (at a chosen point in
+time, so an old record can be checked as of when it was made), the CA flag and
+`keyCertSign` on every issuer, `digitalSignature` on the end entity, and the
+`x5t` thumbprint against the certificate that actually travelled.
+
+What is **not**: revocation, name constraints, policies, path length limits.
+And the answer stops at *“this key belongs to that subject, attested by
+someone I trust”* — whether that subject may state what it states is the
+caller's question.
+
+A single certificate travels as a bare byte string, two or more as an array,
+end-entity first; the trust anchor need not be included.
+
+### `crit` and honesty about what was checked
+
+`COSEHeaderLabel.IsUnderstood` deliberately does *not* list `x5chain`, because
+whether it is understood depends on what the caller is doing:
+`Verify(publicKey, …)` has not looked at any certificate and must not claim
+otherwise, so a message whose sender marked `x5chain` critical is **refused**
+there and **accepted** by `VerifyWithCertificateChain`. Same message, different
+answer, and the difference is truthful.
 
 ## Countersignatures: signing someone else's signature
 

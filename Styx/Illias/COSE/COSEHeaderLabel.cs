@@ -108,13 +108,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region IsUnderstood(Label)
 
         /// <summary>
-        /// Whether this implementation actually processes the given header
-        /// parameter, which decides whether a message listing it within its
-        /// "crit" header parameter may be accepted.
-        /// The X.509 parameters are deliberately NOT understood: They are
-        /// surfaced to the caller, but no certificate is validated here, so a
-        /// sender demanding that they be processed must not be answered with
-        /// a successful verification.
+        /// Whether this implementation processes the given header parameter
+        /// under ALL circumstances, which decides whether a message listing
+        /// it within its "crit" header parameter may be accepted.
+        /// The X.509 parameters are deliberately absent here: they are
+        /// processed only by a verification that actually validates the
+        /// chain, so
+        /// COSEHeaders.VerifyCriticalHeaderParameters(..., AlsoUnderstood)
+        /// takes them per call rather than this list taking them for good.
+        /// Whoever verifies with a bare public key has not looked at the
+        /// certificates, and must not be told otherwise.
         /// </summary>
         /// <param name="Label">A header parameter label.</param>
         public static Boolean IsUnderstood(CBORValue Label)

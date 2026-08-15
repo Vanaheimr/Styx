@@ -308,10 +308,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ProtectedHeader">The protected header parameters.</param>
         /// <param name="UnprotectedHeader">The unprotected header parameters.</param>
         /// <param name="ErrorResponse">The reason why the header parameters were rejected.</param>
+        /// <param name="AlsoUnderstood">Header parameters the caller is about to process itself, e.g. the certificate chain when verifying against a trust anchor. What counts as understood is a property of the verification being performed, not of the library.</param>
         public static Boolean VerifyCriticalHeaderParameters(COSEHeaders                       ProtectedHeader,
                                                              COSEHeaders                       UnprotectedHeader,
-                                                             [NotNullWhen(false)] out String?  ErrorResponse)
+                                                             [NotNullWhen(false)] out String?  ErrorResponse,
+                                                             IEnumerable<CBORValue>?           AlsoUnderstood   = null)
         {
+
+            var alsoUnderstood = AlsoUnderstood?.ToArray() ?? [];
 
             if (UnprotectedHeader.Contains(COSEHeaderLabel.Critical))
             {
@@ -350,7 +354,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
-                if (!COSEHeaderLabel.IsUnderstood(label))
+                if (!COSEHeaderLabel.IsUnderstood(label) &&
+                    !alsoUnderstood.Contains(label))
                 {
                     ErrorResponse = $"The \"crit\" header parameter demands that '{COSEHeaderLabel.Name(label)}' be understood, which this implementation does not!";
                     return false;
