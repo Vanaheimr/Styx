@@ -60,7 +60,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse       (Text)
+        #region (static) Parse           (Text)
 
         /// <summary>
         /// Parse the given string as a percentage.
@@ -79,7 +79,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) ParseXXX    (Number)
+        #region (static) ParseDouble     (Number)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -96,6 +96,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region (static) ParseDecimal    (Number)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -112,6 +115,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region (static) Parse           (Number)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -130,7 +136,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse    (Text)
+        #region (static) TryParse        (Text)
 
         /// <summary>
         /// Try to parse the given text as a percentage.
@@ -148,7 +154,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseXXX (Number)
+        #region (static) TryParseDouble  (Number)
 
         /// <summary>
         /// Try to parse the given number as a percentage.
@@ -164,6 +170,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region (static) TryParseDecimal (Number)
 
         /// <summary>
         /// Try to parse the given number as a percentage.
@@ -179,6 +188,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region (static) TryParse        (Number)
 
         /// <summary>
         /// Try to parse the given number as a percentage.
@@ -196,7 +208,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse    (Text,   out Percentage)
+        #region (static) TryParse        (Text,   out Percentage)
 
         /// <summary>
         /// Parse the given string as a percentage.
@@ -211,7 +223,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParseXXX (Number, out Percentage)
+        #region (static) TryParseDouble  (Number, out Percentage)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -243,6 +255,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
+
+        #region (static) TryParseDecimal (Number, out Percentage)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -274,7 +289,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
+        #endregion
 
+        #region (static) TryParse        (Number, out Percentage)
 
         /// <summary>
         /// Parse the given number as a percentage.
@@ -308,7 +325,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Parse       (Number, StdDev)
+        #region (static) Parse           (Number, StdDev)
 
         /// <summary>
         /// Parse the given number as a percentage with standard deviation.
@@ -329,7 +346,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse    (Mean, StdDev, out Percentage, NumberExponent = null, StdDevExponent   = null)
+        #region (static) TryParse        (Mean, StdDev, out Percentage, NumberExponent = null, StdDevExponent   = null)
 
         /// <summary>
         /// Parse the given number as a percentage with standard deviation.
@@ -573,7 +590,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse    (Text, FormatProvider)
+        #region (static) Parse           (Text, FormatProvider)
 
         /// <summary>
         /// Parse the given string as a percentage.
@@ -594,7 +611,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) TryParse (Text, FormatProvider, out Percentage)
+        #region (static) TryParse        (Text, FormatProvider, out Percentage)
 
         /// <summary>
         /// Try to parse the given string as a percentage.
