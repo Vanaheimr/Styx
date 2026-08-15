@@ -246,8 +246,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of hertz (Hz): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of hertz (Hz): '{Text}'!");
 
         }
 
@@ -265,8 +264,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of kHz: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kHz: '{Text}'!");
 
         }
 
@@ -284,8 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseMHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of MHz: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MHz: '{Text}'!");
 
         }
 
@@ -303,8 +300,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseGHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of GHz: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of GHz: '{Text}'!");
 
         }
 

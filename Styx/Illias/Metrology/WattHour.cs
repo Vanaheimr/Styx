@@ -243,8 +243,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of WattHours (Wh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of WattHours (Wh): '{Text}'!");
 
         }
 
@@ -262,8 +261,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of KiloWattHours (kWh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of KiloWattHours (kWh): '{Text}'!");
 
         }
 
@@ -281,8 +279,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseMWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of MegaWattHours (MWh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MegaWattHours (MWh): '{Text}'!");
 
         }
 
@@ -300,8 +297,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseGWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of GigaWattHours (GWh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of GigaWattHours (GWh): '{Text}'!");
 
         }
 

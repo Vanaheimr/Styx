@@ -257,8 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_mm(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of millimeters (mm): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of millimeters (mm): '{Text}'!");
 
         }
 
@@ -276,8 +275,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_cm(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of centimeters (cm): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of centimeters (cm): '{Text}'!");
 
         }
 
@@ -295,8 +293,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_dm(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of decimeters (dm): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of decimeters (dm): '{Text}'!");
 
         }
 
@@ -314,8 +311,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_m(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of meters (m): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of meters (m): '{Text}'!");
 
         }
 
@@ -333,8 +329,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_km(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of kilometers (km): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kilometers (km): '{Text}'!");
 
         }
 

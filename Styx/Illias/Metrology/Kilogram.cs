@@ -223,17 +223,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) ParseG     (Text)
 
         /// <summary>
-        /// Parse the given string as grams (G).
+        /// Parse the given string as grams (g).
         /// </summary>
-        /// <param name="Text">A text representation of grams (G).</param>
-        public static Kilogram ParseGram(String Text)
+        /// <param name="Text">A text representation of grams (g).</param>
+        public static Kilogram ParseG(String Text)
         {
 
             if (TryParseG(Text, out var kilogram))
                 return kilogram;
 
-            throw new ArgumentException($"Invalid text representation of grams (G): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of grams (g): '{Text}'!");
 
         }
 
@@ -251,8 +250,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKG(Text, out var kilogram))
                 return kilogram;
 
-            throw new ArgumentException($"Invalid text representation of kilograms: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kilograms: '{Text}'!");
 
         }
 
@@ -302,9 +300,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseG  (Text)
 
         /// <summary>
-        /// Try to parse the given text as grams (G).
+        /// Try to parse the given text as grams (g).
         /// </summary>
-        /// <param name="Text">A text representation of grams (G).</param>
+        /// <param name="Text">A text representation of grams (g).</param>
         public static Kilogram? TryParseG(String? Text)
         {
 
@@ -424,9 +422,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryParseG  (Text,                 out Kilogram)
 
         /// <summary>
-        /// Parse the given string as a grams (G).
+        /// Parse the given string as a grams (g).
         /// </summary>
-        /// <param name="Text">A text representation of a grams (G).</param>
+        /// <param name="Text">A text representation of a grams (g).</param>
         /// <param name="Kilogram">The parsed Kilogram.</param>
         public static Boolean TryParseG([NotNullWhen(true)] String?   Text,
                                         out                 Kilogram  Kilogram)
@@ -442,7 +440,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-                return TryCreate(value, 0, out Kilogram);
+                // The base of this type is the kilogram, so the gram is the
+                // prefixed unit and has to be scaled down - exactly as FromG does.
+                return TryCreate(value, -3, out Kilogram);
             }
 
             return false;
@@ -472,7 +472,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  CultureInfo.InvariantCulture,
                                  out var value))
             {
-                return TryCreate(value, 3, out Kilogram);
+                // The kilogram is the base unit here and is not scaled at all.
+                return TryCreate(value, 0, out Kilogram);
             }
 
             return false;
@@ -536,9 +537,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) FromG      (Number,               Exponent = null)
 
         /// <summary>
-        /// Convert the given number into grams (G).
+        /// Convert the given number into grams (g).
         /// </summary>
-        /// <param name="Number">A numeric representation of grams (G).</param>
+        /// <param name="Number">A numeric representation of grams (g).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Kilogram FromG<TNumber>(TNumber  Number,
                                               Int32?   Exponent   = null)
@@ -575,9 +576,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromG   (Number,               Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into grams (G).
+        /// Try to convert the given number into grams (g).
         /// </summary>
-        /// <param name="Number">A numeric representation of grams (G).</param>
+        /// <param name="Number">A numeric representation of grams (g).</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Kilogram? TryFromG<TNumber>(TNumber  Number,
                                                   Int32?   Exponent   = null)
@@ -622,9 +623,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TryFromG   (Number, out Kilogram, Exponent = null)
 
         /// <summary>
-        /// Try to convert the given number into grams (G).
+        /// Try to convert the given number into grams (g).
         /// </summary>
-        /// <param name="Number">A numeric representation of grams (G).</param>
+        /// <param name="Number">A numeric representation of grams (g).</param>
         /// <param name="Kilogram">The parsed Kilogram.</param>
         /// <param name="Exponent">An optional 10^exponent.</param>
         public static Boolean TryFromG<TNumber>(TNumber       Number,
@@ -971,6 +972,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                  IFormatProvider?    FormatProvider)
         {
 
+            // The gram has to be tested before the general format, because "G"
+            // is compared case-insensitively below and would swallow it.
+            if (Format.Equals("g".AsSpan(), StringComparison.Ordinal))
+                return TryFormatWithSuffix(
+                           g,
+                           Destination,
+                           out CharsWritten,
+                           "G".AsSpan(),
+                           FormatProvider,
+                           " g".AsSpan()
+                       );
+
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
                 Format.Equals("kg".AsSpan(), StringComparison.Ordinal))
@@ -984,16 +997,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kg".AsSpan()
                        );
             }
-
-            if (Format.Equals("g".AsSpan(), StringComparison.Ordinal))
-                return TryFormatWithSuffix(
-                           g,
-                           Destination,
-                           out CharsWritten,
-                           "G".AsSpan(),
-                           FormatProvider,
-                           " g".AsSpan()
-                       );
 
             return TryFormatWithSuffix(
                        Value,
@@ -1066,15 +1069,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryFormat(buffer, out var charsWritten, Format.AsSpan(), FormatProvider))
                 return new String(buffer[..charsWritten]);
 
+            // The gram has to be tested before the general format, because "G"
+            // is compared case-insensitively below and would swallow it.
+            if (String.Equals(Format, "g", StringComparison.Ordinal))
+                return $"{g.ToString("G", FormatProvider)} g";
+
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
                 String.Equals(Format, "kg", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} kg";
             }
-
-            if (String.Equals(Format, "g", StringComparison.Ordinal))
-                return $"{g.ToString("G", FormatProvider)} g";
 
             return $"{Value.ToString(Format, FormatProvider)} kg";
 

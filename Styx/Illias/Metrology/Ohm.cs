@@ -189,7 +189,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Parse the given string as ohms using invariant culture.
-        /// Supports optional suffixes "µΩ", "mΩ", "Ω", "kΩ" and "MΩ".
+        /// Supports the prefixes "µ", "m", "k", "M" and "G" on the unit symbol,
+        /// which may be spelled "Ω" (OHM SIGN, as written by this type), "Ω"
+        /// (GREEK CAPITAL LETTER OMEGA) or "Ohm".
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         public static Ohm Parse(String Text)
@@ -202,7 +204,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Parse the given string as ohms using the given format provider.
-        /// Supports optional suffixes "µΩ", "mΩ", "Ω", "kΩ" and "MΩ".
+        /// Supports the prefixes "µ", "m", "k", "M" and "G" on the unit symbol,
+        /// which may be spelled "Ω" (OHM SIGN, as written by this type), "Ω"
+        /// (GREEK CAPITAL LETTER OMEGA) or "Ohm".
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -223,7 +227,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Parse the given text span as ohms using the given format provider.
-        /// Supports optional suffixes "µΩ", "mΩ", "Ω", "kΩ" and "MΩ".
+        /// Supports the prefixes "µ", "m", "k", "M" and "G" on the unit symbol,
+        /// which may be spelled "Ω" (OHM SIGN, as written by this type), "Ω"
+        /// (GREEK CAPITAL LETTER OMEGA) or "Ohm".
         /// </summary>
         /// <param name="Span">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -250,8 +256,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             if (TryParse_µΩ(Text, out var ohm))
                 return ohm;
-            throw new ArgumentException($"Invalid text representation of MicroOhms (µΩ): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MicroOhms (µΩ): '{Text}'!");
         }
         #endregion
 
@@ -264,8 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             if (TryParse_mΩ(Text, out var ohm))
                 return ohm;
-            throw new ArgumentException($"Invalid text representation of MilliOhms (mΩ): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MilliOhms (mΩ): '{Text}'!");
         }
         #endregion
 
@@ -281,8 +285,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_Ω(Text, out var ohm))
                 return ohm;
 
-            throw new ArgumentException($"Invalid text representation of Ohms (Ω): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Ohms (Ω): '{Text}'!");
 
         }
 
@@ -300,8 +303,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_KΩ(Text, out var ohm))
                 return ohm;
 
-            throw new ArgumentException($"Invalid text representation of KiloOhms (kΩ): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of KiloOhms (kΩ): '{Text}'!");
 
         }
 
@@ -319,8 +321,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_MΩ(Text, out var ohm))
                 return ohm;
 
-            throw new ArgumentException($"Invalid text representation of MegaOhms (MΩ): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MegaOhms (MΩ): '{Text}'!");
 
         }
 
@@ -462,7 +463,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Try to parse the given string as ohms using invariant culture.
-        /// Supports optional suffixes "Ω", "kΩ" and "MΩ".
+        /// Supports the prefixes "µ", "m", "k", "M" and "G" on the unit symbol,
+        /// which may be spelled "Ω" (OHM SIGN, as written by this type), "Ω"
+        /// (GREEK CAPITAL LETTER OMEGA) or "Ohm".
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         /// <param name="Ohm">The parsed Ohm.</param>
@@ -479,7 +482,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Try to parse the given string as ohms using the given format provider.
-        /// Supports optional suffixes "Ω", "kΩ" and "MΩ".
+        /// Supports the prefixes "µ", "m", "k", "M" and "G" on the unit symbol,
+        /// which may be spelled "Ω" (OHM SIGN, as written by this type), "Ω"
+        /// (GREEK CAPITAL LETTER OMEGA) or "Ohm".
         /// </summary>
         /// <param name="Text">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -498,7 +503,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Try to parse the given text span as ohms using the given format provider.
-        /// Supports optional suffixes "Ω", "kΩ" and "MΩ".
+        /// Supports the prefixes "µ", "m", "k", "M" and "G" on the unit symbol,
+        /// which may be spelled "Ω" (OHM SIGN, as written by this type), "Ω"
+        /// (GREEK CAPITAL LETTER OMEGA) or "Ohm".
         /// </summary>
         /// <param name="Span">A text representation of ohms.</param>
         /// <param name="FormatProvider">An optional format provider.</param>
@@ -515,42 +522,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Span.IsEmpty)
                 return false;
 
-            var exponent  = 0;
+            var exponent   = 0;
+            var hadSymbol  = false;
 
-            if      (Span.EndsWith("µOhm".AsSpan(), StringComparison.Ordinal))
+            // The unit symbol comes off first. This type writes the OHM SIGN
+            // (U+2126), external sources tend to send the canonical GREEK
+            // CAPITAL LETTER OMEGA (U+03A9), and plain text spells it "Ohm".
+            // All three have to come back in - a value that cannot be read in
+            // the notation its own ToString() produces does not round-trip.
+            if      (Span.EndsWith("Ohm".   AsSpan(), StringComparison.Ordinal))
             {
-                exponent  = -6;
-                Span      = Span[..^4].TrimEnd();
+                Span       = Span[..^3];
+                hadSymbol  = true;
             }
 
-            else if (Span.EndsWith("mOhm".AsSpan(), StringComparison.Ordinal))
+            else if (Span.EndsWith("Ω".AsSpan(), StringComparison.Ordinal) ||
+                     Span.EndsWith("Ω".AsSpan(), StringComparison.Ordinal))
             {
-                exponent  = -3;
-                Span      = Span[..^4].TrimEnd();
+                Span       = Span[..^1];
+                hadSymbol  = true;
             }
 
-            else if (Span.EndsWith("kOhm".AsSpan(), StringComparison.Ordinal))
+            // ... and only then the SI prefix in front of it, case-sensitively:
+            // 'm' is milli and 'M' is mega, three orders of magnitude apart.
+            if (hadSymbol && !Span.IsEmpty)
             {
-                exponent  = 3;
-                Span      = Span[..^4].TrimEnd();
+
+                exponent = Span[^1] switch {
+                               'µ'      => -6,   // MICRO SIGN, as written by this type
+                               'μ'      => -6,   // GREEK SMALL LETTER MU, the canonical one
+                               'm'      => -3,
+                               'k'      =>  3,
+                               'M'      =>  6,
+                               'G'      =>  9,
+                               _        =>  0
+                           };
+
+                if (exponent != 0)
+                    Span = Span[..^1];
+
             }
 
-            else if (Span.EndsWith("MOhm".AsSpan(), StringComparison.Ordinal))
-            {
-                exponent  = 6;
-                Span      = Span[..^4].TrimEnd();
-            }
-
-            else if (Span.EndsWith("GOhm".AsSpan(), StringComparison.Ordinal))
-            {
-                exponent  = 9;
-                Span      = Span[..^4].TrimEnd();
-            }
-
-            else if (Span.EndsWith("Ohm". AsSpan(), StringComparison.Ordinal))
-            {
-                Span      = Span[..^3].TrimEnd();
-            }
+            Span = Span.TrimEnd();
 
             if (Decimal.TryParse(Span,
                                  NumberStyles.Number, // e.g. "1.23e3 Ohm"

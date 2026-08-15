@@ -251,8 +251,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseBPS(Text, out var bitPerSecond))
                 return bitPerSecond;
 
-            throw new ArgumentException($"Invalid text representation of bit/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of bit/s: '{Text}'!");
 
         }
 
@@ -270,8 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKBPS(Text, out var bitPerSecond))
                 return bitPerSecond;
 
-            throw new ArgumentException($"Invalid text representation of kbit/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kbit/s: '{Text}'!");
 
         }
 
@@ -289,8 +287,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseMBPS(Text, out var bps))
                 return bps;
 
-            throw new ArgumentException($"Invalid text representation of Mbit/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Mbit/s: '{Text}'!");
 
         }
 
@@ -308,8 +305,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseGBPS(Text, out var bps))
                 return bps;
 
-            throw new ArgumentException($"Invalid text representation of Gbit/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Gbit/s: '{Text}'!");
 
         }
 
@@ -327,8 +323,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseTBPS(Text, out var bps))
                 return bps;
 
-            throw new ArgumentException($"Invalid text representation of Tbit/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Tbit/s: '{Text}'!");
 
         }
 

@@ -234,8 +234,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseVA(Text, out var voltAmpere))
                 return voltAmpere;
 
-            throw new ArgumentException($"Invalid text representation of Volt-Amperes (VA): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Volt-Amperes (VA): '{Text}'!");
 
         }
 
@@ -253,8 +252,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKVA(Text, out var voltAmpere))
                 return voltAmpere;
 
-            throw new ArgumentException($"Invalid text representation of Kilo-Volt-Amperes (kVA): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Kilo-Volt-Amperes (kVA): '{Text}'!");
 
         }
 
