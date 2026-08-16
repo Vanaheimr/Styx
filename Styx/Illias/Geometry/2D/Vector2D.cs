@@ -86,6 +86,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
         #endregion
 
+        #region Zero
+
+        /// <summary>
+        /// The zero vector, which is the additive identity: adding it to any
+        /// vector returns that vector unchanged.
+        /// </summary>
+        public static Vector2D<T> Zero
+
+            => new (T.Zero,
+                    T.Zero);
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -217,6 +230,61 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         #endregion
 
 
+        #region DotProduct(Vector)
+
+        /// <summary>
+        /// The dot product of this vector and the given one - a number, not a
+        /// vector. It is the length of one vector times the length of the other
+        /// times the cosine of the angle between them, so it vanishes exactly
+        /// when the two are perpendicular. Length and NormVector already rest
+        /// on it.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        public T DotProduct(IVector2D<T> Vector)
+        {
+
+            #region Initial Checks
+
+            if (Vector is null)
+                throw new ArgumentNullException(nameof(Vector), "The given vector must not be null!");
+
+            #endregion
+
+            return X * Vector.X +
+                   Y * Vector.Y;
+
+        }
+
+        #endregion
+
+        #region CrossProduct(Vector)
+
+        /// <summary>
+        /// The cross product of this vector and the given one - in two
+        /// dimensions a number rather than a vector, being the z-component
+        /// the three-dimensional cross product would have. It is the signed
+        /// area of the parallelogram the two vectors span, so it vanishes
+        /// exactly when they are parallel and its sign says which way round
+        /// they stand.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        public T CrossProduct(IVector2D<T> Vector)
+        {
+
+            #region Initial Checks
+
+            if (Vector is null)
+                throw new ArgumentNullException(nameof(Vector), "The given vector must not be null!");
+
+            #endregion
+
+            return X * Vector.Y -
+                   Y * Vector.X;
+
+        }
+
+        #endregion
+
         #region IsParallelTo(Vector)
 
         /// <summary>
@@ -227,16 +295,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean IsParallelTo(IVector2D<T> Vector)
         {
 
-            var ThisNormVector = this.NormVector;
-            var ThatNormVector = Vector.NormVector;
+            #region Initial Checks
 
-            if ((ThisNormVector.X.Equals(ThatNormVector.X) &&
-                 ThisNormVector.Y.Equals(ThatNormVector.Y)) ||
-                (ThisNormVector.X.Equals(-ThatNormVector.X) &&
-                 ThisNormVector.Y.Equals(-ThatNormVector.Y)))
-                return true;
+            if (Vector is null)
+                throw new ArgumentNullException(nameof(Vector), "The given vector must not be null!");
 
-            return false;
+            #endregion
+
+            // Two vectors are parallel exactly when they span no area, which is
+            // what the cross product measures. Comparing normalised components
+            // instead - as this did until 2026-08-15 - asks the same question
+            // through two square roots and four divisions, and the rounding
+            // makes it answer wrongly: (1, 1) and (3, 3) were reported as not
+            // parallel, because 1/sqrt(2) and 3/sqrt(18) differ in the last bit.
+            return CrossProduct(Vector) == T.Zero;
 
         }
 
@@ -340,6 +412,91 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             return !(Vector1 == Vector2);
         }
+
+        #endregion
+
+
+        #region Operator +  (Vector1, Vector2)
+
+        /// <summary>
+        /// The sum of two vectors, component by component.
+        /// </summary>
+        /// <param name="Vector1">A vector.</param>
+        /// <param name="Vector2">Another vector.</param>
+        public static Vector2D<T> operator + (Vector2D<T> Vector1, Vector2D<T> Vector2)
+
+            => new (Vector1.X + Vector2.X,
+                    Vector1.Y + Vector2.Y);
+
+        #endregion
+
+        #region Operator -  (Vector1, Vector2)
+
+        /// <summary>
+        /// The difference of two vectors, component by component.
+        /// </summary>
+        /// <param name="Vector1">A vector.</param>
+        /// <param name="Vector2">Another vector.</param>
+        public static Vector2D<T> operator - (Vector2D<T> Vector1, Vector2D<T> Vector2)
+
+            => new (Vector1.X - Vector2.X,
+                    Vector1.Y - Vector2.Y);
+
+        #endregion
+
+        #region Operator -  (Vector)
+
+        /// <summary>
+        /// The additive inverse of a vector: the same length, the opposite direction.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        public static Vector2D<T> operator - (Vector2D<T> Vector)
+
+            => new (-Vector.X,
+                    -Vector.Y);
+
+        #endregion
+
+        #region Operator *  (Vector, Scalar)
+
+        /// <summary>
+        /// A vector scaled by a number. This is the scalar multiplication of the
+        /// vector space, not a product of two vectors - for those see DotProduct
+        /// and CrossProduct, both of which return a number rather than a vector.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        /// <param name="Scalar">A number.</param>
+        public static Vector2D<T> operator * (Vector2D<T> Vector, T Scalar)
+
+            => new (Vector.X * Scalar,
+                    Vector.Y * Scalar);
+
+        #endregion
+
+        #region Operator *  (Scalar, Vector)
+
+        /// <summary>
+        /// A vector scaled by a number, written the other way round.
+        /// </summary>
+        /// <param name="Scalar">A number.</param>
+        /// <param name="Vector">A vector.</param>
+        public static Vector2D<T> operator * (T Scalar, Vector2D<T> Vector)
+
+            => Vector * Scalar;
+
+        #endregion
+
+        #region Operator /  (Vector, Scalar)
+
+        /// <summary>
+        /// A vector divided by a number.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        /// <param name="Scalar">A number.</param>
+        public static Vector2D<T> operator / (Vector2D<T> Vector, T Scalar)
+
+            => new (Vector.X / Scalar,
+                    Vector.Y / Scalar);
 
         #endregion
 

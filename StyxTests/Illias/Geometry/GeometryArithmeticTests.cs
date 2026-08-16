@@ -168,6 +168,100 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.Geometry
 
         #endregion
 
+        #region A_vector_obeys_the_axioms_of_a_vector_space()
+
+        /// <summary>
+        /// What a two-dimensional vector can do is not a matter of taste: the
+        /// vector space axioms settle it. These are the operations the type
+        /// carries because it is a vector, and the laws are what makes them
+        /// checkable without an oracle.
+        /// </summary>
+        [Test]
+        public void A_vector_obeys_the_axioms_of_a_vector_space()
+        {
+
+            var u = new Vector2D<Double>(3.0,  4.0);
+            var v = new Vector2D<Double>(1.0, -2.0);
+            var w = new Vector2D<Double>(5.0,  7.0);
+
+            // Addition is commutative and associative...
+            Assert.That(u + v,             Is.EqualTo(v + u),             "Addition must be commutative!");
+            Assert.That((u + v) + w,       Is.EqualTo(u + (v + w)),       "Addition must be associative!");
+
+            // ... the zero vector changes nothing, and every vector has an opposite
+            Assert.That(u + Vector2D<Double>.Zero, Is.EqualTo(u),         "The zero vector must be the additive identity!");
+            Assert.That(u + (-u),          Is.EqualTo(Vector2D<Double>.Zero), "A vector plus its opposite must vanish!");
+            Assert.That(u - v,             Is.EqualTo(u + (-v)),          "Subtraction must be addition of the opposite!");
+
+            // Scaling distributes over addition and is the same from either side
+            Assert.That(2.0 * (u + v),     Is.EqualTo(2.0 * u + 2.0 * v), "Scaling must distribute over addition!");
+            Assert.That(u * 3.0,           Is.EqualTo(3.0 * u),           "Scaling must not care which side the number stands on!");
+            Assert.That(u * 1.0,           Is.EqualTo(u),                 "Scaling by one must change nothing!");
+            Assert.That((u * 6.0) / 2.0,   Is.EqualTo(u * 3.0),           "Dividing must undo scaling!");
+            Assert.That((u * 2.0).Length,  Is.EqualTo(u.Length * 2.0),    "Scaling must scale the length!");
+
+            // The dot product measures alignment: zero exactly when perpendicular
+            Assert.That(u.DotProduct(v),   Is.EqualTo(3.0 * 1.0 + 4.0 * -2.0), "The dot product is the sum of the products of the components!");
+            Assert.That(u.DotProduct(v),   Is.EqualTo(v.DotProduct(u)),   "The dot product must be symmetric!");
+            Assert.That(u.DotProduct(u),   Is.EqualTo(u.Length * u.Length).Within(1e-12),
+                                                                          "A vector dotted with itself is its length squared!");
+            Assert.That(new Vector2D<Double>(1.0, 0.0).DotProduct(new Vector2D<Double>(0.0, 1.0)), Is.Zero,
+                        "Perpendicular vectors have a dot product of zero!");
+
+            // The cross product measures the spanned area: zero exactly when parallel
+            Assert.That(u.CrossProduct(v), Is.EqualTo(3.0 * -2.0 - 4.0 * 1.0), "The cross product is the determinant of the two!");
+            Assert.That(u.CrossProduct(v), Is.EqualTo(-v.CrossProduct(u)), "Swapping the operands must flip the sign!");
+            Assert.That(u.CrossProduct(u), Is.Zero,                        "A vector is parallel to itself, so the area is zero!");
+            Assert.That(u.CrossProduct(u * 2.0), Is.Zero,                  "... and to any multiple of itself!");
+            Assert.That(new Vector2D<Double>(1.0, 0.0).CrossProduct(new Vector2D<Double>(0.0, 1.0)), Is.EqualTo(1.0),
+                        "The unit square has an area of one!");
+
+        }
+
+        #endregion
+
+        #region Parallel_vectors_are_recognised_however_they_are_scaled()
+
+        /// <summary>
+        /// IsParallelTo used to normalise both vectors and compare their
+        /// components, which asks the question through two square roots and
+        /// four divisions - and the rounding of those made it answer wrongly
+        /// for pairs as plain as (1, 1) and (3, 3), where 1/sqrt(2) and
+        /// 3/sqrt(18) differ in their last bit. The cross product decides it
+        /// exactly instead.
+        /// </summary>
+        [Test]
+        public void Parallel_vectors_are_recognised_however_they_are_scaled()
+        {
+
+            // Every one of these pairs is a vector and a multiple of itself
+            foreach (var (x, y, factor) in new[] { (1.0, 1.0, 3.0),  (1.0, 3.0, 2.0),  (2.0, 7.0,  2.0),
+                                                   (3.0, 4.0, 2.0),  (5.0, 12.0, 2.0), (1.0, 1.0, 7.0),
+                                                   (2.0, 3.0, 5.0),  (7.0, 11.0, 13.0) })
+            {
+
+                var vector   = new Vector2D<Double>(x, y);
+                var multiple = new Vector2D<Double>(x * factor, y * factor);
+
+                Assert.That(vector.IsParallelTo(multiple), Is.True,
+                            $"({x}, {y}) must be parallel to itself scaled by {factor}!");
+
+                // ... and to itself scaled the other way, which is antiparallel
+                Assert.That(vector.IsParallelTo(-multiple), Is.True,
+                            $"({x}, {y}) must be parallel to its opposite scaled by {factor}!");
+
+            }
+
+            // Vectors that genuinely point elsewhere are not parallel
+            Assert.That(new Vector2D<Double>(1.0, 1.0).IsParallelTo(new Vector2D<Double>(1.0, 2.0)), Is.False,
+                        "(1,1) and (1,2) point in different directions!");
+            Assert.That(new Vector2D<Double>(1.0, 0.0).IsParallelTo(new Vector2D<Double>(0.0, 1.0)), Is.False,
+                        "Perpendicular vectors are not parallel!");
+
+        }
+
+        #endregion
+
         #region A_circle_and_a_sphere_span_twice_their_radius()
 
         /// <summary>
