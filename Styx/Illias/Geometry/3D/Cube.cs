@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -31,17 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the cube.</typeparam>
     public class Cube<T> : ICube<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -109,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return Math.Distance(Left, Right);
+                return T.Abs(Left - Right);
             }
         }
 
@@ -124,7 +115,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return Math.Distance(Top, Bottom);
+                return T.Abs(Top - Bottom);
             }
         }
 
@@ -139,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return Math.Distance(Front, Behind);
+                return T.Abs(Front - Behind);
             }
         }
 
@@ -185,27 +176,26 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             #region Math Checks
 
-            if (Math.Distance(Left, Right).Equals(Math.Zero))
+            if (T.Abs(Left - Right).Equals(T.Zero))
                 throw new ArgumentException("The resulting width must not be zero!");
 
-            if (Math.Distance(Top, Bottom).Equals(Math.Zero))
+            if (T.Abs(Top - Bottom).Equals(T.Zero))
                 throw new ArgumentException("The resulting height must not be zero!");
 
-            if (Math.Distance(Front, Behind).Equals(Math.Zero))
+            if (T.Abs(Front - Behind).Equals(T.Zero))
                 throw new ArgumentException("The resulting depth must not be zero!");
 
             #endregion
 
-            this.Left   = Math.Min(Left,  Right);
-            this.Top    = Math.Min(Top,   Bottom);
-            this.Front  = Math.Min(Front, Behind);
-            this.Right  = Math.Max(Left,  Right);
-            this.Bottom = Math.Max(Top,   Bottom);
-            this.Behind = Math.Max(Front, Behind);
+            this.Left   = T.Min(Left,  Right);
+            this.Top    = T.Min(Top,   Bottom);
+            this.Front  = T.Min(Front, Behind);
+            this.Right  = T.Max(Left,  Right);
+            this.Bottom = T.Max(Top,   Bottom);
+            this.Behind = T.Max(Front, Behind);
 
         }
 
@@ -231,30 +221,29 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             #region Math Checks
 
             // Note: check the actual coordinate spans of the two voxels -
             // the previous version read the still-unassigned Left/Right/...
             // properties (default(T)), so it always threw.
-            if (Math.Distance(Voxel1.X, Voxel2.X).Equals(Math.Zero))
+            if (T.Abs(Voxel1.X - Voxel2.X).Equals(T.Zero))
                 throw new ArgumentException("The resulting width must not be zero!");
 
-            if (Math.Distance(Voxel1.Y, Voxel2.Y).Equals(Math.Zero))
+            if (T.Abs(Voxel1.Y - Voxel2.Y).Equals(T.Zero))
                 throw new ArgumentException("The resulting height must not be zero!");
 
-            if (Math.Distance(Voxel1.Z, Voxel2.Z).Equals(Math.Zero))
+            if (T.Abs(Voxel1.Z - Voxel2.Z).Equals(T.Zero))
                 throw new ArgumentException("The resulting depth must not be zero!");
 
             #endregion
 
-            this.Left   = Math.Min(Voxel1.X, Voxel2.X);
-            this.Top    = Math.Min(Voxel1.Y, Voxel2.Y);
-            this.Front  = Math.Min(Voxel1.Z, Voxel2.Z);
-            this.Right  = Math.Max(Voxel1.X, Voxel2.X);
-            this.Bottom = Math.Max(Voxel1.Y, Voxel2.Y);
-            this.Behind = Math.Max(Voxel1.Z, Voxel2.Z);
+            this.Left   = T.Min(Voxel1.X, Voxel2.X);
+            this.Top    = T.Min(Voxel1.Y, Voxel2.Y);
+            this.Front  = T.Min(Voxel1.Z, Voxel2.Z);
+            this.Right  = T.Max(Voxel1.X, Voxel2.X);
+            this.Bottom = T.Max(Voxel1.Y, Voxel2.Y);
+            this.Behind = T.Max(Voxel1.Z, Voxel2.Z);
 
         }
 
@@ -288,20 +277,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             #region Math Checks
 
             // Note: check the given dimensions directly - the previous
             // version read the still-unassigned Left/Right/... properties
             // (default(T)), so it always threw.
-            if (Width.Equals(Math.Zero))
+            if (Width.Equals(T.Zero))
                 throw new ArgumentException("The given width must not be zero!");
 
-            if (Height.Equals(Math.Zero))
+            if (Height.Equals(T.Zero))
                 throw new ArgumentException("The given height must not be zero!");
 
-            if (Depth.Equals(Math.Zero))
+            if (Depth.Equals(T.Zero))
                 throw new ArgumentException("The given depth must not be zero!");
 
             #endregion
@@ -309,9 +297,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             this.Left   = Voxel.X;
             this.Top    = Voxel.Y;
             this.Front  = Voxel.Z;
-            this.Right  = Math.Add(Voxel.X, Width);
-            this.Bottom = Math.Add(Voxel.Y, Height);
-            this.Behind = Math.Add(Voxel.Z, Depth);
+            this.Right  = Voxel.X + Width;
+            this.Bottom = Voxel.Y + Height;
+            this.Behind = Voxel.Z + Depth;
 
         }
 

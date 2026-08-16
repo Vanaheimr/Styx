@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 #endregion
@@ -34,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                                                      IComparable<ITriangleValuePair<T, TValue>>,
                                                      IComparable
 
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>

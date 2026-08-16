@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -30,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal type of the voxel.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     public class VoxelValuePair<T, TValue> : Voxel<T>, IVoxelValuePair<T, TValue>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Properties

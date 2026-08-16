@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -31,17 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the pixel.</typeparam>
     public class Pixel<T> : IPixel<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -87,7 +78,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math = MathsFactory<T>.Instance;
             this.X    = X;
             this.Y    = Y;
 
@@ -137,10 +127,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, x);
-            var dY = Math.Distance(Y, y);
+            var dX = T.Abs(X - x);
+            var dY = T.Abs(Y - y);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY)));
+            return T.Sqrt(dX * dX + dY * dY);
 
         }
 
@@ -164,10 +154,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, Pixel.X);
-            var dY = Math.Distance(Y, Pixel.Y);
+            var dX = T.Abs(X - Pixel.X);
+            var dY = T.Abs(Y - Pixel.Y);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY)));
+            return T.Sqrt(dX * dX + dY * dY);
 
         }
 

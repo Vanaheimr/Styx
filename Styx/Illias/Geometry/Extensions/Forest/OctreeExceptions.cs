@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -31,7 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the octree.</typeparam>
     public class OctreeException<T> : Exception
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the octree.</typeparam>
     public class OT_ZeroDimensionException<T> : OctreeException<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -97,7 +98,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the octree.</typeparam>
     public class OT_OutOfBoundsException<T> : OctreeException<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>

@@ -19,6 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias.Collections;
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 #endregion
@@ -36,8 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Octree">The sending octree.</param>
     /// <param name="Voxel">The voxel causing the split.</param>
     public delegate void OctreeSplitEventHandler<T>(Octree<T> Octree, IVoxel<T> Voxel)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
     #endregion
 
     #region Octree<T>
@@ -50,7 +50,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the octree.</typeparam>
     public class Octree<T> : Cube<T>, IOctree<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Data
@@ -312,21 +312,21 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                         Subtree1 = new Octree<T>(Left,
                                                  Top,
                                                  Front,
-                                                 Math.Add(Left,  Math.Div2(Width)),
-                                                 Math.Add(Top,   Math.Div2(Height)),
-                                                 Math.Add(Front, Math.Div2(Depth)),
+                                                 Left + Width / T.CreateChecked(2),
+                                                 Top + Height / T.CreateChecked(2),
+                                                 Front + Depth / T.CreateChecked(2),
                                                  MaxNumberOfEmbeddedVoxels);
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
                     if (Subtree2 is null)
                     {
-                        Subtree2 = new Octree<T>(Math.Add(Left,  Math.Div2(Width)),
+                        Subtree2 = new Octree<T>(Left + Width / T.CreateChecked(2),
                                                  Top,
                                                  Front,
                                                  Right,
-                                                 Math.Add(Top,   Math.Div2(Height)),
-                                                 Math.Add(Front, Math.Div2(Depth)),
+                                                 Top + Height / T.CreateChecked(2),
+                                                 Front + Depth / T.CreateChecked(2),
                                                  MaxNumberOfEmbeddedVoxels);
                         Subtree2.OnTreeSplit += OnTreeSplit;
                     }
@@ -334,23 +334,23 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     if (Subtree3 is null)
                     {
                         Subtree3 = new Octree<T>(Left,
-                                                 Math.Add(Top,   Math.Div2(Height)),
+                                                 Top + Height / T.CreateChecked(2),
                                                  Front,
-                                                 Math.Add(Left,  Math.Div2(Width)),
+                                                 Left + Width / T.CreateChecked(2),
                                                  Bottom,
-                                                 Math.Add(Front, Math.Div2(Depth)),
+                                                 Front + Depth / T.CreateChecked(2),
                                                  MaxNumberOfEmbeddedVoxels);
                         Subtree3.OnTreeSplit += OnTreeSplit;
                     }
 
                     if (Subtree4 is null)
                     {
-                        Subtree4 = new Octree<T>(Math.Add(Left,  Math.Div2(Width)),
-                                                 Math.Add(Top,   Math.Div2(Height)),
+                        Subtree4 = new Octree<T>(Left + Width / T.CreateChecked(2),
+                                                 Top + Height / T.CreateChecked(2),
                                                  Front,
                                                  Right,
                                                  Bottom,
-                                                 Math.Add(Front, Math.Div2(Depth)),
+                                                 Front + Depth / T.CreateChecked(2),
                                                  MaxNumberOfEmbeddedVoxels);
                         Subtree4.OnTreeSplit += OnTreeSplit;
                     }
@@ -359,9 +359,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     {
                         Subtree5 = new Octree<T>(Left,
                                                  Top,
-                                                 Math.Add(Front, Math.Div2(Depth)),
-                                                 Math.Add(Left,  Math.Div2(Width)),
-                                                 Math.Add(Top,   Math.Div2(Height)),
+                                                 Front + Depth / T.CreateChecked(2),
+                                                 Left + Width / T.CreateChecked(2),
+                                                 Top + Height / T.CreateChecked(2),
                                                  Behind,
                                                  MaxNumberOfEmbeddedVoxels);
                         Subtree5.OnTreeSplit += OnTreeSplit;
@@ -369,11 +369,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     if (Subtree6 is null)
                     {
-                        Subtree6 = new Octree<T>(Math.Add(Left,  Math.Div2(Width)),
+                        Subtree6 = new Octree<T>(Left + Width / T.CreateChecked(2),
                                                  Top,
-                                                 Math.Add(Front, Math.Div2(Depth)),
+                                                 Front + Depth / T.CreateChecked(2),
                                                  Right,
-                                                 Math.Add(Top,   Math.Div2(Height)),
+                                                 Top + Height / T.CreateChecked(2),
                                                  Behind,
                                                  MaxNumberOfEmbeddedVoxels);
                         Subtree6.OnTreeSplit += OnTreeSplit;
@@ -382,9 +382,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     if (Subtree7 is null)
                     {
                         Subtree7 = new Octree<T>(Left,
-                                                 Math.Add(Top, Math.Div2(Height)),
-                                                 Math.Add(Front, Math.Div2(Depth)),
-                                                 Math.Add(Left, Math.Div2(Width)),
+                                                 Top + Height / T.CreateChecked(2),
+                                                 Front + Depth / T.CreateChecked(2),
+                                                 Left + Width / T.CreateChecked(2),
                                                  Bottom,
                                                  Behind,
                                                  MaxNumberOfEmbeddedVoxels);
@@ -393,9 +393,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     if (Subtree8 is null)
                     {
-                        Subtree8 = new Octree<T>(Math.Add(Left, Math.Div2(Width)),
-                                                 Math.Add(Top, Math.Div2(Height)),
-                                                 Math.Add(Front, Math.Div2(Depth)),
+                        Subtree8 = new Octree<T>(Left + Width / T.CreateChecked(2),
+                                                 Top + Height / T.CreateChecked(2),
+                                                 Front + Depth / T.CreateChecked(2),
                                                  Right,
                                                  Bottom,
                                                  Behind,

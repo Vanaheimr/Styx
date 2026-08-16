@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -31,6 +32,5 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Voxel">A voxel of type T.</param>
     /// <returns>True if the voxel is selected; False otherwise.</returns>
     public delegate Boolean VoxelSelector<T>(IVoxel<T> Voxel)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
 }

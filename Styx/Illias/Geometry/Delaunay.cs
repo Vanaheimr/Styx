@@ -21,11 +21,11 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -34,7 +34,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
 
     public struct SensorInfo<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         public readonly String             Name;
@@ -98,12 +98,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixels">An enumeration of pixels of type T.</param>
         /// <returns>An enumeration of triangles of type T.</returns>
         public static IEnumerable<ITriangle<T>> DelaunayTriangulation<T>(this IEnumerable<IPixelValuePair<T, SensorInfo<T>>> Pixels)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             #region Initial Checks
 
-            var Math            = MathsFactory<T>.Instance;
             var Points          = Pixels.ToList();
             var _NumberOfPixels = Pixels.Count();
             var _TriMax         = 4 * _NumberOfPixels;
@@ -132,12 +131,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                 if (Points[i].Y.IsLargerThan(ymax)) ymax = Points[i].Y;
             }
 
-            var dx   = Math.Sub(xmax, xmin);
-            var dy   = Math.Sub(ymax, ymin);
+            var dx   = xmax - xmin;
+            var dy   = ymax - ymin;
             var dmax = (dx.IsLargerThan(dy)) ? dx : dy;
 
-            var xmid = Math.Div2(Math.Add(xmax, xmin));
-            var ymid = Math.Div2(Math.Add(ymax, ymin));
+            var xmid = (xmax + xmin) / T.CreateChecked(2);
+            var ymid = (ymax + ymin) / T.CreateChecked(2);
 
             #endregion
 
@@ -146,9 +145,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             // This is a triangle which encompasses all the sample points.
             // The supertriangle coordinates are added to the end of the
             // vertex list.
-            var st1 = new PixelValuePair<T, SensorInfo<T>>(Math.Sub(xmid, Math.Mul2(dmax)), Math.Sub(ymid, dmax), new SensorInfo<T>("supertriangle1"));
-            var st2 = new PixelValuePair<T, SensorInfo<T>>(xmid,          Math.Add(ymid,    Math.Mul2(dmax)),     new SensorInfo<T>("supertriangle2"));
-            var st3 = new PixelValuePair<T, SensorInfo<T>>(Math.Add(xmid, Math.Mul2(dmax)), Math.Sub(ymid, dmax), new SensorInfo<T>("supertriangle3"));
+            var st1 = new PixelValuePair<T, SensorInfo<T>>(xmid - (dmax + dmax), ymid - dmax,         new SensorInfo<T>("supertriangle1"));
+            var st2 = new PixelValuePair<T, SensorInfo<T>>(xmid,                 ymid + (dmax + dmax), new SensorInfo<T>("supertriangle2"));
+            var st3 = new PixelValuePair<T, SensorInfo<T>>(xmid + (dmax + dmax), ymid - dmax,         new SensorInfo<T>("supertriangle3"));
 
             Points.Add(st1);
             Points.Add(st2);

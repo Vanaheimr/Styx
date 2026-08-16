@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="IVoxel">A voxel of type T.</param>
         /// <returns>True if the voxel is located within the given cube; False otherwise.</returns>
         public static Boolean Contains<T>(this ICube<T> ICube, IVoxel<T> IVoxel)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
             return ICube.Contains(IVoxel.X, IVoxel.Y, IVoxel.Z);
         }

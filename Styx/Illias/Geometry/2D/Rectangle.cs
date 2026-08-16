@@ -18,9 +18,9 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -32,17 +32,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the rectangle.</typeparam>
     public class Rectangle<T> : IRectangle<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -139,8 +130,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Pixel<T>(Math.Add(Left, Math.Div2(Width)),
-                                    Math.Add(Top,  Math.Div2(Height)));
+                return new Pixel<T>(Left + Width  / T.CreateChecked(2),
+                                    Top  + Height / T.CreateChecked(2));
             }
         }
 
@@ -229,18 +220,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math     = MathsFactory<T>.Instance;
 
-            this.Left     = Math.Min(Left, Right);
-            this.Top      = Math.Min(Top,  Bottom);
-            this.Right    = Math.Max(Left, Right);
-            this.Bottom   = Math.Max(Top,  Bottom);
+            this.Left     = T.Min(Left, Right);
+            this.Top      = T.Min(Top,  Bottom);
+            this.Right    = T.Max(Left, Right);
+            this.Bottom   = T.Max(Top,  Bottom);
 
             this.Pixel1   = new Pixel<T>(Left,  Top);
             this.Pixel2   = new Pixel<T>(Right, Bottom);
 
-            this.Width    = Math.Distance(Left, Right);
-            this.Height   = Math.Distance(Top, Bottom);
+            this.Width    = T.Abs(Left - Right);
+            this.Height   = T.Abs(Top - Bottom);
             this.Diameter = Pixel1.DistanceTo(Pixel2);
 
         }
@@ -273,18 +263,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math     = MathsFactory<T>.Instance;
 
-            this.Left     = Math.Min(Pixel1.X, Pixel2.X);
-            this.Top      = Math.Min(Pixel1.Y, Pixel2.Y);
-            this.Right    = Math.Max(Pixel1.X, Pixel2.X);
-            this.Bottom   = Math.Max(Pixel1.Y, Pixel2.Y);
+            this.Left     = T.Min(Pixel1.X, Pixel2.X);
+            this.Top      = T.Min(Pixel1.Y, Pixel2.Y);
+            this.Right    = T.Max(Pixel1.X, Pixel2.X);
+            this.Bottom   = T.Max(Pixel1.Y, Pixel2.Y);
 
             this.Pixel1   = new Pixel<T>(Left, Top);
             this.Pixel2   = new Pixel<T>(Right, Bottom);
 
-            this.Width    = Math.Distance(Left, Right);
-            this.Height   = Math.Distance(Top, Bottom);
+            this.Width    = T.Abs(Left - Right);
+            this.Height   = T.Abs(Top - Bottom);
             this.Diameter = Pixel1.DistanceTo(Pixel2);
 
         }
@@ -302,31 +291,30 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Rectangle(IPixel<T> Pixel, T Width, T Height)
         {
 
-            this.Math     = MathsFactory<T>.Instance;
 
             #region Initial Checks
 
             if (Pixel  is null)
                 throw new ArgumentNullException("The given pixel must not be null!");
 
-            if (Width  is null || Width.Equals(Math.Zero))
+            if (Width  is null || Width.Equals(T.Zero))
                 throw new ArgumentNullException("The given width must not be null or zero!");
 
-            if (Height is null || Height.Equals(Math.Zero))
+            if (Height is null || Height.Equals(T.Zero))
                 throw new ArgumentNullException("The given height must not be null or zero!");
 
             #endregion
 
             this.Left     = Pixel.X;
             this.Top      = Pixel.Y;            
-            this.Right    = Math.Add(Pixel.X, Width);
-            this.Bottom   = Math.Add(Pixel.Y, Height);
+            this.Right    = Pixel.X + Width;
+            this.Bottom   = Pixel.Y + Height;
 
             this.Pixel1   = new Pixel<T>(Left,  Top);
             this.Pixel2   = new Pixel<T>(Right, Bottom);
 
-            this.Width    = Math.Distance(Left, Right);
-            this.Height   = Math.Distance(Top, Bottom);
+            this.Width    = T.Abs(Left - Right);
+            this.Height   = T.Abs(Top - Bottom);
             this.Diameter = Pixel1.DistanceTo(Pixel2);
 
         }

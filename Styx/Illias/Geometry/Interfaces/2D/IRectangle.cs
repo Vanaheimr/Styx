@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 #endregion
@@ -30,7 +31,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the rectangle.</typeparam>
     public interface IRectangle<T> : IEquatable<IRectangle<T>>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Properties

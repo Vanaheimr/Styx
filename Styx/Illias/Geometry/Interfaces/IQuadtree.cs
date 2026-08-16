@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 #endregion
@@ -68,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     public interface IQuadtree<T> : IQuadtree, IEnumerable<IPixel<T>>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Events
@@ -136,7 +137,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     /// <typeparam name="TValue">The type of the stored values.</typeparam>
     public interface IQuadtree<T, TValue> : IQuadtree, IEnumerable<IPixelValuePair<T, TValue>>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Events

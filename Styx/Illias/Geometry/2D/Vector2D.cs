@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -31,17 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the vector.</typeparam>
     public class Vector2D<T> : IVector2D<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -82,10 +73,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Vector2D<T>(Math.Zero,
-                                       Math.Zero,
-                                       Math.Div(X, Length),
-                                       Math.Div(Y, Length));
+                return new Vector2D<T>(T.Zero,
+                                       T.Zero,
+                                       X / Length,
+                                       Y / Length);
             }
         }
 
@@ -115,11 +106,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             this.X      = X;
             this.Y      = Y;
-            this.Length = new Pixel<T>(Math.Zero, Math.Zero).DistanceTo(X, Y);
+            this.Length = new Pixel<T>(T.Zero, T.Zero).DistanceTo(X, Y);
 
         }
 
@@ -153,10 +143,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
             
-            this.X      = Math.Sub(X1, X2);
-            this.Y      = Math.Sub(Y1, Y2);
+            this.X      = X1 - X2;
+            this.Y      = Y1 - Y2;
             this.Length = new Pixel<T>(X1, Y1).DistanceTo(X2, Y2);
 
         }
@@ -183,10 +172,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
-            this.X      = Math.Sub(Pixel1.X, Pixel2.X);
-            this.Y      = Math.Sub(Pixel1.Y, Pixel2.Y);
+            this.X      = Pixel1.X - Pixel2.X;
+            this.Y      = Pixel1.Y - Pixel2.Y;
             this.Length = Pixel1.DistanceTo(Pixel2);
 
         }
@@ -213,10 +201,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
-            this.X      = Math.Sub(Vector1.X, Vector2.X);
-            this.Y      = Math.Sub(Vector1.Y, Vector2.Y);
+            this.X      = Vector1.X - Vector2.X;
+            this.Y      = Vector1.Y - Vector2.Y;
             this.Length = Vector1.DistanceTo(Vector2);
 
         }
@@ -237,7 +224,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Vector2D<T>(Math.Zero, Math.Zero);
+                return new Vector2D<T>(T.Zero, T.Zero);
             }
         }
 
@@ -252,7 +239,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Vector2D<T>(Math.NegativeInfinity, Math.NegativeInfinity);
+                return new Vector2D<T>(T.NegativeInfinity, T.NegativeInfinity);
             }
         }
 
@@ -267,7 +254,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Vector2D<T>(Math.PositiveInfinity, Math.PositiveInfinity);
+                return new Vector2D<T>(T.PositiveInfinity, T.PositiveInfinity);
             }
         }
 
@@ -295,11 +282,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             for (var i = Values.Length - 1; i >= 1; i--)
             {
-                _X = Math.Min(_X, Values[i].X);
-                _Y = Math.Min(_Y, Values[i].Y);
+                _X = T.Min(_X, Values[i].X);
+                _Y = T.Min(_Y, Values[i].Y);
             }
 
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
+            return new Vector2D<T>(T.Zero, T.Zero, _X, _Y);
 
         }
 
@@ -326,11 +313,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             for (var i = Values.Length - 1; i >= 1; i--)
             {
-                _X = Math.Max(_X, Values[i].X);
-                _Y = Math.Max(_Y, Values[i].Y);
+                _X = T.Max(_X, Values[i].X);
+                _Y = T.Max(_Y, Values[i].Y);
             }
 
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
+            return new Vector2D<T>(T.Zero, T.Zero, _X, _Y);
 
         }
 
@@ -358,11 +345,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             for (var i = Summands.Length - 1; i >= 1; i--)
             {
-                _X = Math.Add(_X, Summands[i].X);
-                _Y = Math.Add(_Y, Summands[i].Y);
+                _X = _X + Summands[i].X;
+                _Y = _Y + Summands[i].Y;
             }
 
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
+            return new Vector2D<T>(T.Zero, T.Zero, _X, _Y);
 
         }
 
@@ -378,8 +365,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The subtraction of v2 from v1: v1 - v2</returns>
         public IVector2D<T> Sub(IVector2D<T> v1, IVector2D<T> v2)
         {
-            return new Vector2D<T>(Math.Sub(v1.X,   v2.X),
-                                   Math.Sub(v1.Y, v2.Y));
+            return new Vector2D<T>(v1.X - v2.X,
+                                   v1.Y - v2.Y);
         }
 
         #endregion
@@ -405,11 +392,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             for (var i = Multiplicators.Length - 1; i >= 1; i--)
             {
-                _X = Math.Mul(_X, Multiplicators[i].X);
-                _Y = Math.Mul(_Y, Multiplicators[i].Y);
+                _X = _X * Multiplicators[i].X;
+                _Y = _Y * Multiplicators[i].Y;
             }
 
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
+            return new Vector2D<T>(T.Zero, T.Zero, _X, _Y);
 
         }
 
@@ -424,8 +411,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The multiplication of v by 2: (2*x, 2*y)</returns>
         public IVector2D<T> Mul2(IVector2D<T> v)
         {
-            return new Vector2D<T>(Math.Mul2(v.X),
-                                   Math.Mul2(v.Y));
+            return new Vector2D<T>(v.X + v.X,
+                                   v.Y + v.Y);
         }
 
         #endregion
@@ -440,8 +427,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The division of v1 by v2: v1 / v2</returns>
         public IVector2D<T> Div(IVector2D<T> v1, IVector2D<T> v2)
         {
-            return new Vector2D<T>(Math.Div(v1.X,   v2.X),
-                                   Math.Div(v1.Y, v2.Y));
+            return new Vector2D<T>(v1.X / v2.X,
+                                   v1.Y / v2.Y);
         }
 
         #endregion
@@ -455,8 +442,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The division of v by 2: v / 2</returns>
         public IVector2D<T> Div2(IVector2D<T> v)
         {
-            return new Vector2D<T>(Math.Div2(v.X),
-                                   Math.Div2(v.Y));
+            return new Vector2D<T>(v.X / T.CreateChecked(2),
+                                   v.Y / T.CreateChecked(2));
         }
 
         #endregion
@@ -471,8 +458,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The values of v1 raised to the specified power of v2: v1^v2</returns>
         public IVector2D<T> Pow(IVector2D<T> v1, IVector2D<T> v2)
         {
-            return new Vector2D<T>(Math.Pow(v1.X,   v2.X),
-                                   Math.Pow(v1.Y, v2.Y));
+            return new Vector2D<T>(T.Pow(v1.X,   v2.X),
+                                   T.Pow(v1.Y, v2.Y));
         }
 
         #endregion
@@ -487,8 +474,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The inverse value of v: -v</returns>
         public IVector2D<T> Inv(IVector2D<T> v)
         {
-            return new Vector2D<T>(Math.Inv(v.X),
-                                   Math.Inv(v.Y));
+            return new Vector2D<T>(-v.X,
+                                   -v.Y);
         }
 
         #endregion
@@ -502,8 +489,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The absolute value of v: (|a| |b|)</returns>
         public IVector2D<T> Abs(IVector2D<T> v)
         {
-            return new Vector2D<T>(Math.Abs(v.X),
-                                   Math.Abs(v.Y));
+            return new Vector2D<T>(T.Abs(v.X),
+                                   T.Abs(v.Y));
         }
 
         #endregion
@@ -517,8 +504,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The square root of v: Sqrt(v)</returns>
         public IVector2D<T> Sqrt(IVector2D<T> v)
         {
-            return new Vector2D<T>(Math.Sqrt(v.X),
-                                   Math.Sqrt(v.Y));
+            return new Vector2D<T>(T.Sqrt(v.X),
+                                   T.Sqrt(v.Y));
         }
 
         #endregion
@@ -534,8 +521,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <returns>The distance between v1 and v2.</returns>
         public IVector2D<T> Distance(IVector2D<T> v1, IVector2D<T> v2)
         {
-            return new Vector2D<T>(Math.Abs(Math.Sub(v1.X,   v2.X)),
-                                   Math.Abs(Math.Sub(v1.Y, v2.Y)));
+            return new Vector2D<T>(T.Abs(v1.X - v2.X),
+                                   T.Abs(v1.Y - v2.Y));
         }
 
         #endregion
@@ -558,8 +545,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             if ((ThisNormVector.X.Equals(ThatNormVector.X) &&
                  ThisNormVector.Y.Equals(ThatNormVector.Y)) ||
-                (ThisNormVector.X.Equals(Math.Inv(ThatNormVector.X)) &&
-                 ThisNormVector.Y.Equals(Math.Inv(ThatNormVector.Y))))
+                (ThisNormVector.X.Equals(-ThatNormVector.X) &&
+                 ThisNormVector.Y.Equals(-ThatNormVector.Y)))
                 return true;
 
             return false;
@@ -590,10 +577,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, x);
-            var dY = Math.Distance(Y, y);
+            var dX = T.Abs(X - x);
+            var dY = T.Abs(Y - y);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY)));
+            return T.Sqrt(dX * dX + dY * dY);
 
         }
 
@@ -617,10 +604,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, Vector.X);
-            var dY = Math.Distance(Y, Vector.Y);
+            var dX = T.Abs(X - Vector.X);
+            var dY = T.Abs(Y - Vector.Y);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY)));
+            return T.Sqrt(dX * dX + dY * dY);
 
         }
 

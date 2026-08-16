@@ -18,10 +18,10 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -35,7 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     {
 
         public struct AdjacencyInfo<T>
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             public ITriangle<T> Neighbor1;
@@ -61,7 +61,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
 
         public static IEnumerable<ITriangleValuePair<T, AdjacencyInfo<T>>> CalcAdjacentTriangles<T>(this IEnumerable<ITriangle<T>> Triangles)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             foreach (var _Triangle in Triangles)
