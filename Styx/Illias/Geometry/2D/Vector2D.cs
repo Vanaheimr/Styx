@@ -73,10 +73,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Vector2D<T>(T.Zero,
-                                       T.Zero,
-                                       X / Length,
+
+                // Not the four-argument constructor: that one builds a vector
+                // from one point to another as X1 - X2, so passing the origin
+                // first returned the negated unit vector - a normalised vector
+                // pointing the opposite way to the one it normalises.
+                return new Vector2D<T>(X / Length,
                                        Y / Length);
+
             }
         }
 
