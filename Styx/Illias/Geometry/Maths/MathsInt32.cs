@@ -227,7 +227,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
                 throw new ArgumentException("The given multiplicators must not be null!");
 
             if (Multiplicators.Length == 0)
-                return 0;
+                return 1;   // the empty product is one, not zero
 
             if (Multiplicators.Length == 1)
                 return Multiplicators[0];

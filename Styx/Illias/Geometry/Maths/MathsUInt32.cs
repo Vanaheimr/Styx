@@ -219,7 +219,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
                 throw new ArgumentException("The given multiplicators must not be null!");
 
             if (Multiplicators.Length == 0)
-                return 0;
+                return 1;   // the empty product is one, not zero
 
             if (Multiplicators.Length == 1)
                 return Multiplicators[0];
@@ -304,7 +304,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
         /// <returns>The inverse value of a: a</returns>
         public UInt32 Inv(UInt32 a)
         {
-            return a;
+
+            // This method is documented as returning -a, and an unsigned type
+            // has no such value. Returning a unchanged - as this did until
+            // 2026-08-15 - makes Vector2D<UInt32> take a vector for its own
+            // opposite, so the honest answer is to have none.
+            throw new NotSupportedException("An UInt32 cannot be negated, so there is no inverse value of it!");
+
         }
 
         #endregion
@@ -348,7 +354,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry.Maths
         /// <returns>The distance between a and b.</returns>
         public UInt32 Distance(UInt32 a, UInt32 b)
         {
-            return Abs(Sub(a, b));
+
+            // Not Abs(Sub(a, b)) as in the signed implementations: an unsigned
+            // subtraction wraps around when b is the larger one, and Abs is the
+            // identity here and cannot undo it - Distance(3, 5) came back as
+            // 4294967294 until 2026-08-15. Ordering the operands first keeps
+            // the result inside the type and the distance symmetric.
+            return a > b
+                       ? a - b
+                       : b - a;
+
         }
 
         #endregion
