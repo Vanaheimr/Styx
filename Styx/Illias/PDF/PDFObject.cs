@@ -29,17 +29,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public abstract record PDFObject
     {
 
-        /// <summary>The PDF "null" object.</summary>
+        /// <summary>
+        /// The PDF "null" object.
+        /// </summary>
         public static readonly PDFObject Null = new PDFNull();
 
     }
 
 
-    /// <summary>The PDF "null" object.</summary>
+    /// <summary>
+    /// The PDF "null" object.
+    /// </summary>
     public sealed record PDFNull : PDFObject;
 
 
-    /// <summary>A PDF boolean.</summary>
+    /// <summary>
+    /// A PDF boolean.
+    /// </summary>
     /// <param name="Value">The value.</param>
     public sealed record PDFBoolean(Boolean Value) : PDFObject;
 
@@ -54,11 +60,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public sealed record PDFNumber(Double Value) : PDFObject
     {
 
-        /// <summary>This number as a 32 bit integer.</summary>
+        /// <summary>
+        /// This number as a 32 bit integer.
+        /// </summary>
         public Int32 AsInt32
             => (Int32) Value;
 
-        /// <summary>This number as a 64 bit integer.</summary>
+        /// <summary>
+        /// This number as a 64 bit integer.
+        /// </summary>
         public Int64 AsInt64
             => (Int64) Value;
 
@@ -94,21 +104,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
     }
 
 
-    /// <summary>A PDF name, e.g. "/EmbeddedFiles".</summary>
+    /// <summary>
+    /// A PDF name, e.g. "/EmbeddedFiles".
+    /// </summary>
     /// <param name="Value">The name, without its leading slash.</param>
     public sealed record PDFName(String Value) : PDFObject;
 
 
-    /// <summary>A PDF array.</summary>
+    /// <summary>
+    /// A PDF array.
+    /// </summary>
     /// <param name="Items">The elements of the array.</param>
     public sealed record PDFArray(IReadOnlyList<PDFObject> Items) : PDFObject
     {
 
-        /// <summary>The number of elements.</summary>
+        /// <summary>
+        /// The number of elements.
+        /// </summary>
         public Int32 Count
             => Items.Count;
 
-        /// <summary>The element at the given position, or null when out of range.</summary>
+        /// <summary>
+        /// The element at the given position, or null when out of range.
+        /// </summary>
         /// <param name="Index">The position of an element.</param>
         public PDFObject? this[Int32 Index]
             => Index >= 0 && Index < Items.Count
@@ -118,19 +136,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
     }
 
 
-    /// <summary>A PDF dictionary.</summary>
+    /// <summary>
+    /// A PDF dictionary.
+    /// </summary>
     /// <param name="Entries">The entries of the dictionary, keyed by name without its leading slash.</param>
     public sealed record PDFDictionary(IReadOnlyDictionary<String, PDFObject> Entries) : PDFObject
     {
 
-        /// <summary>The value of the given key, or null when absent.</summary>
+        /// <summary>
+        /// The value of the given key, or null when absent.
+        /// </summary>
         /// <param name="Key">A key, without its leading slash.</param>
         public PDFObject? this[String Key]
             => Entries.TryGetValue(Key, out var value)
                    ? value
                    : null;
 
-        /// <summary>Whether this dictionary has the given key.</summary>
+        /// <summary>
+        /// Whether this dictionary has the given key.
+        /// </summary>
         /// <param name="Key">A key, without its leading slash.</param>
         public Boolean Contains(String Key)
             => Entries.ContainsKey(Key);

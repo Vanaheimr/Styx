@@ -34,7 +34,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                   String?               Subtype = null)
     {
 
-        /// <summary>Return a text representation of this embedded file.</summary>
+        /// <summary>
+        /// Return a text representation of this embedded file.
+        /// </summary>
         public override String ToString()
 
             => $"{Name} ({Data.Length} byte(s))";

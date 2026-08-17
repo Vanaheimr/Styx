@@ -148,79 +148,129 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Static defaults
 
-        /// <summary>The neutral prefix (10^0).</summary>
+        /// <summary>
+        /// The neutral prefix (10^0).
+        /// </summary>
         public static SIPrefix  None      { get; } = new (  0);
 
-        /// <summary>Quecto (10^-30, "q").</summary>
+        /// <summary>
+        /// Quecto (10^-30, "q").
+        /// </summary>
         public static SIPrefix  Quecto    { get; } = new (-30);
 
-        /// <summary>Ronto (10^-27, "r").</summary>
+        /// <summary>
+        /// Ronto (10^-27, "r").
+        /// </summary>
         public static SIPrefix  Ronto     { get; } = new (-27);
 
-        /// <summary>Yocto (10^-24, "y").</summary>
+        /// <summary>
+        /// Yocto (10^-24, "y").
+        /// </summary>
         public static SIPrefix  Yocto     { get; } = new (-24);
 
-        /// <summary>Zepto (10^-21, "z").</summary>
+        /// <summary>
+        /// Zepto (10^-21, "z").
+        /// </summary>
         public static SIPrefix  Zepto     { get; } = new (-21);
 
-        /// <summary>Atto (10^-18, "a").</summary>
+        /// <summary>
+        /// Atto (10^-18, "a").
+        /// </summary>
         public static SIPrefix  Atto      { get; } = new (-18);
 
-        /// <summary>Femto (10^-15, "f").</summary>
+        /// <summary>
+        /// Femto (10^-15, "f").
+        /// </summary>
         public static SIPrefix  Femto     { get; } = new (-15);
 
-        /// <summary>Pico (10^-12, "p").</summary>
+        /// <summary>
+        /// Pico (10^-12, "p").
+        /// </summary>
         public static SIPrefix  Pico      { get; } = new (-12);
 
-        /// <summary>Nano (10^-9, "n").</summary>
+        /// <summary>
+        /// Nano (10^-9, "n").
+        /// </summary>
         public static SIPrefix  Nano      { get; } = new ( -9);
 
-        /// <summary>Micro (10^-6, "µ").</summary>
+        /// <summary>
+        /// Micro (10^-6, "µ").
+        /// </summary>
         public static SIPrefix  Micro     { get; } = new ( -6);
 
-        /// <summary>Milli (10^-3, "m").</summary>
+        /// <summary>
+        /// Milli (10^-3, "m").
+        /// </summary>
         public static SIPrefix  Milli     { get; } = new ( -3);
 
-        /// <summary>Centi (10^-2, "c").</summary>
+        /// <summary>
+        /// Centi (10^-2, "c").
+        /// </summary>
         public static SIPrefix  Centi     { get; } = new ( -2);
 
-        /// <summary>Deci (10^-1, "d").</summary>
+        /// <summary>
+        /// Deci (10^-1, "d").
+        /// </summary>
         public static SIPrefix  Deci      { get; } = new ( -1);
 
-        /// <summary>Deca (10^1, "da").</summary>
+        /// <summary>
+        /// Deca (10^1, "da").
+        /// </summary>
         public static SIPrefix  Deca      { get; } = new (  1);
 
-        /// <summary>Hecto (10^2, "h").</summary>
+        /// <summary>
+        /// Hecto (10^2, "h").
+        /// </summary>
         public static SIPrefix  Hecto     { get; } = new (  2);
 
-        /// <summary>Kilo (10^3, "k").</summary>
+        /// <summary>
+        /// Kilo (10^3, "k").
+        /// </summary>
         public static SIPrefix  Kilo      { get; } = new (  3);
 
-        /// <summary>Mega (10^6, "M").</summary>
+        /// <summary>
+        /// Mega (10^6, "M").
+        /// </summary>
         public static SIPrefix  Mega      { get; } = new (  6);
 
-        /// <summary>Giga (10^9, "G").</summary>
+        /// <summary>
+        /// Giga (10^9, "G").
+        /// </summary>
         public static SIPrefix  Giga      { get; } = new (  9);
 
-        /// <summary>Tera (10^12, "T").</summary>
+        /// <summary>
+        /// Tera (10^12, "T").
+        /// </summary>
         public static SIPrefix  Tera      { get; } = new ( 12);
 
-        /// <summary>Peta (10^15, "P").</summary>
+        /// <summary>
+        /// Peta (10^15, "P").
+        /// </summary>
         public static SIPrefix  Peta      { get; } = new ( 15);
 
-        /// <summary>Exa (10^18, "E").</summary>
+        /// <summary>
+        /// Exa (10^18, "E").
+        /// </summary>
         public static SIPrefix  Exa       { get; } = new ( 18);
 
-        /// <summary>Zetta (10^21, "Z").</summary>
+        /// <summary>
+        /// Zetta (10^21, "Z").
+        /// </summary>
         public static SIPrefix  Zetta     { get; } = new ( 21);
 
-        /// <summary>Yotta (10^24, "Y").</summary>
+        /// <summary>
+        /// Yotta (10^24, "Y").
+        /// </summary>
         public static SIPrefix  Yotta     { get; } = new ( 24);
 
-        /// <summary>Ronna (10^27, "R").</summary>
+        /// <summary>
+        /// Ronna (10^27, "R").
+        /// </summary>
         public static SIPrefix  Ronna     { get; } = new ( 27);
 
-        /// <summary>Quetta (10^30, "Q").</summary>
+        /// <summary>
+        /// Quetta (10^30, "Q").
+        /// </summary>
         public static SIPrefix  Quetta    { get; } = new ( 30);
 
 

@@ -55,7 +55,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Properties
 
-        /// <summary>The current reading position.</summary>
+        /// <summary>
+        /// The current reading position.
+        /// </summary>
         public Int32 Position
         {
             get => position;
