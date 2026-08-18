@@ -64,6 +64,20 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # The specification's machine-readable conformance annex, executed by
+      # SpecificationVectorTests. It lives with the specification rather than
+      # here, so that a specification change and its vectors travel in one
+      # commit; without it the suite reports itself ignored, and an ignored
+      # conformance suite on CI would be a hole nobody comes back to fill.
+      - name: Fetch the specification test vectors
+        shell: bash
+        run: |
+          mkdir -p spec/test-vectors
+          for f in values values-invalid documents json-to-cbor; do
+            curl -fsSL -o "spec/test-vectors/$f.json" \
+              "https://raw.githubusercontent.com/OpenChargingTechnology/Whitepapers/master/MetrologicalCBOR/test-vectors/$f.json"
+          done
+
       - name: Build
         run: dotnet build StyxTests/StyxTests.csproj --configuration Release
 
