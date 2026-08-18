@@ -223,7 +223,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(certified.Uncertainty!.Value.Value,               Is.EqualTo(0.12m));
             Assert.That(certified.Uncertainty!.Value.CoverageFactor,      Is.EqualTo(2m));
             Assert.That(certified.Uncertainty!.Value.StandardUncertainty, Is.EqualTo(0.06m));
-            Assert.That(certified.ToString(),                             Is.EqualTo("(230.00 ±0.12 (k=2)) V"));
+            Assert.That(certified.ToString(),                             Is.EqualTo("(230.00 ±0.12) V, k=2, p=0.95, dist=normal"));
 
             Assert.That(MetrologicalValue.TryParse(certified.ToCBOR(), out var parsed, out var errorResponse),  Is.True);
             Assert.That(errorResponse,                                    Is.Null);

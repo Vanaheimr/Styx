@@ -68,3 +68,26 @@ operator — as a worked example whose every byte is verified by a test.
 *IANA note:* Tag 44252 lies in the First-Come-First-Served range and is,
 as of 2026-08-14, unassigned. The prepared registration request is
 [IANA-registration.md](IANA-registration.md).
+
+### Text format and JSON documents
+
+A metrological value also has a **one-string text form** — `1.10 kWh`,
+`9.81 m·s^-2`, `(230.00 ±0.12) V, k=2` — which `ToString()` writes and
+`MetrologicalValue.TryParse(String, …)` reads back losslessly.
+
+**`CBORJSON`** converts whole documents between CBOR and JSON on that basis,
+so that a measurement stays *one* JSON value instead of falling apart into an
+object of four properties:
+
+```csharp
+var json = CBORJSON.ToJSONText(cborBytes);
+// {"meter":"EVSE-42","readings":["1.10 kWh","(230.00 ±0.12) V, k=2","5.0 mA"]}
+
+var cbor = CBORJSON.ToCBOR(json);          // ...and back into the same bytes
+```
+
+Both JSON worlds are served: a Newtonsoft `JToken` tree (`ToJSON` / `ToCBOR`)
+and UTF-8 text written and read directly, without a tree in between
+(`ToJSONUTF8` / `WriteJSONTo` / `ToCBOR(ReadOnlySpan<Byte>)`). The grammar,
+the mapping table and what does and does not round-trip are specified in
+[metrological-text.md](metrological-text.md).

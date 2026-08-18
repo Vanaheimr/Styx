@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Text;
 using System.Numerics;
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
@@ -364,6 +365,257 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             MetrologicalValue  = new MetrologicalValue(value, unit, prefix, uncertainty);
+            ErrorResponse      = null;
+
+            return true;
+
+        }
+
+        #endregion
+
+
+
+        #region (static) Parse   (Text)
+
+        /// <summary>
+        /// Parse the given text as a metrological value, in the one-string text
+        /// format written by ToString(), e.g. "5.0 mA" or "(230.00 ±0.12) V, k=2".
+        /// </summary>
+        /// <param name="Text">A text representation of a metrological value.</param>
+        public static MetrologicalValue Parse(String Text)
+        {
+
+            if (TryParse(Text, out var metrologicalValue, out var errorResponse))
+                return metrologicalValue;
+
+            throw new FormatException($"Invalid text representation of a metrological value '{Text}': {errorResponse}");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(Text, out MetrologicalValue)
+
+        /// <summary>
+        /// Try to parse the given text as a metrological value, in the
+        /// one-string text format written by ToString().
+        /// </summary>
+        /// <param name="Text">A text representation of a metrological value.</param>
+        /// <param name="MetrologicalValue">The parsed metrological value.</param>
+        public static Boolean TryParse(String?                Text,
+                                       out MetrologicalValue  MetrologicalValue)
+
+            => TryParse(Text, out MetrologicalValue, out _);
+
+        #endregion
+
+        #region (static) TryParse(Text, out MetrologicalValue, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given text as a metrological value, in the one-string
+        /// text format written by ToString(): the value, optionally together with
+        /// its uncertainty in parentheses, then the unit of measure carrying the
+        /// SI prefix, then whatever else was stated about the uncertainty, e.g.
+        /// "5.0 mA", "9.81 m·s^-2" or "(230.00 ±0.12) V, k=2".
+        ///
+        /// The decimal scale of every number is data and is preserved as written.
+        /// Accepted beyond the canonical spelling are the ASCII alternatives
+        /// "+-" for "±", "*" for "·" and "nu" for "ν", scientific notation for
+        /// the numbers, and both code points of the micro sign and of the ohm
+        /// sign. What is written back is always the canonical form.
+        /// </summary>
+        /// <param name="Text">A text representation of a metrological value.</param>
+        /// <param name="MetrologicalValue">The parsed metrological value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(String?                           Text,
+                                       out MetrologicalValue             MetrologicalValue,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            MetrologicalValue = default;
+
+            if (Text is null)
+            {
+                ErrorResponse = "The given text representation of a metrological value must not be null!";
+                return false;
+            }
+
+            var text = Text.Trim();
+
+            if (text.Length == 0)
+            {
+                ErrorResponse = "The given text representation of a metrological value must not be empty!";
+                return false;
+            }
+
+            #region Split off what is stated about the uncertainty
+
+            var statements  = "";
+            var comma       = text.IndexOf(',');
+
+            if (comma >= 0)
+            {
+                statements  = text[(comma + 1)..];
+                text        = text[..comma].TrimEnd();
+            }
+
+            #endregion
+
+            #region The value and its optional uncertainty
+
+            Decimal   value;
+            Decimal?  uncertaintyValue  = null;
+            var       index             = 0;
+
+            if (text[0] == '(')
+            {
+
+                var close = text.IndexOf(')');
+
+                if (close < 0)
+                {
+                    ErrorResponse = "The parenthesis around the value and its uncertainty is never closed!";
+                    return false;
+                }
+
+                var inner      = text[1..close];
+                var plusMinus  = inner.IndexOf('±');
+                var width      = 1;
+
+                if (plusMinus < 0)
+                {
+                    plusMinus  = inner.IndexOf("+-", StringComparison.Ordinal);
+                    width      = 2;
+                }
+
+                if (plusMinus < 0)
+                {
+                    ErrorResponse = "The parenthesis must hold a value and its uncertainty, separated by '±'!";
+                    return false;
+                }
+
+                if (!TryParseTextNumber(inner[..plusMinus],           "value",                   out value,            out ErrorResponse) ||
+                    !TryParseTextNumber(inner[(plusMinus + width)..], "measurement uncertainty", out var uncertainty,  out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (uncertainty < 0)
+                {
+                    ErrorResponse = "The measurement uncertainty must not be negative!";
+                    return false;
+                }
+
+                uncertaintyValue  = uncertainty;
+                index             = close + 1;
+
+            }
+
+            else
+            {
+
+                while (index < text.Length            &&
+                      !Char.IsWhiteSpace(text[index]) &&
+                       text[index] != '×'             &&
+                       text[index] != '*')
+                {
+                    index++;
+                }
+
+                if (!TryParseTextNumber(text[..index], "value", out value, out ErrorResponse))
+                    return false;
+
+            }
+
+            #endregion
+
+            #region The optional power-of-ten scale
+
+            var prefix         = SIPrefix.None;
+            var scaleWasGiven  = false;
+
+            if (index < text.Length &&
+               (text[index] == '×' || text[index] == '*'))
+            {
+
+                var caret = text.IndexOf('^', index);
+
+                if (caret < 0 || text[(index + 1)..caret] != "10")
+                {
+                    ErrorResponse = "A power-of-ten scale must be written as '×10^3'!";
+                    return false;
+                }
+
+                var end = caret + 1;
+
+                while (end < text.Length && !Char.IsWhiteSpace(text[end]))
+                    end++;
+
+                var exponentText = text[(caret + 1)..end];
+
+                if (!Int32.TryParse(exponentText, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var exponent) ||
+                    !SIPrefix.TryFrom(exponent, out prefix))
+                {
+                    ErrorResponse = $"'10^{exponentText}' is not one of the 25 canonical SI prefixes!";
+                    return false;
+                }
+
+                scaleWasGiven  = true;
+                index          = end;
+
+            }
+
+            #endregion
+
+            #region The unit of measure
+
+            var unitText = text[index..].Trim();
+
+            if (unitText.Length == 0)
+            {
+                ErrorResponse = "A metrological value must state its unit of measure!";
+                return false;
+            }
+
+            UnitExpression unit;
+
+            if (scaleWasGiven)
+            {
+                if (!UnitExpression.TryParse(unitText, out unit))
+                {
+                    ErrorResponse = $"Unknown unit of measure '{unitText}'!";
+                    return false;
+                }
+            }
+
+            else if (!TryParseTextUnit(unitText, out unit, out prefix, out ErrorResponse))
+                return false;
+
+            #endregion
+
+            #region What else was stated about the uncertainty
+
+            MeasurementUncertainty? measurementUncertainty = null;
+
+            if (uncertaintyValue.HasValue)
+            {
+
+                if (!TryParseTextStatements(statements, uncertaintyValue.Value, out var uncertainty, out ErrorResponse))
+                    return false;
+
+                measurementUncertainty = uncertainty;
+
+            }
+
+            else if (statements.Trim().Length > 0)
+            {
+                ErrorResponse = $"'{statements.Trim()}' states something about a measurement uncertainty, but none is given!";
+                return false;
+            }
+
+            #endregion
+
+            MetrologicalValue  = new MetrologicalValue(value, unit, prefix, measurementUncertainty);
             ErrorResponse      = null;
 
             return true;
@@ -999,6 +1251,338 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (private static) TryParseTextNumber    (Text, What, out Number, out ErrorResponse)
+
+        private static Boolean TryParseTextNumber(String                            Text,
+                                                  String                            What,
+                                                  out Decimal                       Number,
+                                                  [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            // The decimal scale is data: Decimal.TryParse keeps the trailing
+            // zero of "1.10", and 5.0 mA must not come back as 5 mA.
+            if (Decimal.TryParse(Text.Trim(),
+                                 NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                                 CultureInfo.InvariantCulture,
+                                 out Number))
+            {
+                ErrorResponse = null;
+                return true;
+            }
+
+            Number         = 0;
+            ErrorResponse  = $"'{Text.Trim()}' is not a valid {What}!";
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (private static) TryParseTextUnit      (Text, out Unit, out Prefix, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse a unit of measure that may carry an SI prefix folded
+        /// onto the symbol of its leading factor.
+        /// </summary>
+        private static Boolean TryParseTextUnit(String                            Text,
+                                                out UnitExpression                Unit,
+                                                out SIPrefix                      Prefix,
+                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Prefix = SIPrefix.None;
+
+            // The whole symbol wins over a prefix: "cd" is the candela and
+            // never centi-day, "min" the minute and never milli-inch.
+            if (UnitExpression.TryParse(Text, out Unit))
+            {
+                ErrorResponse = null;
+                return true;
+            }
+
+            var separator  = Text.IndexOfAny(['·', '*']);
+            var head       = separator < 0 ? Text : Text[..separator];
+            var tail       = separator < 0 ? ""   : Text[separator..];
+
+            // Only the leading factor may carry the prefix, and only when it
+            // stands for the first power of itself: "ks^-2" would read as
+            // (ks)^-2, a millionth of what a prefixed s^-2 means.
+            if (!head.Contains('^'))
+            {
+
+                // Longest first: "da" is deca and not deci-are.
+                for (var length = Math.Min(2, head.Length - 1); length >= 1; length--)
+                {
+
+                    if (!SIPrefix.TryParse(head[..length], out var siPrefix) || siPrefix.IsNone)
+                        continue;
+
+                    var symbol = head[length..];
+
+                    // A prefix binds tighter than a power: "km²" reads as square
+                    // kilometre, a million square metres, and not the thousand a
+                    // prefixed "m²" would mean.
+                    if (SymbolIsAPower(symbol))
+                        continue;
+
+                    if (UnitExpression.TryParse(symbol + tail, out var unitExpression))
+                    {
+                        Unit           = unitExpression;
+                        Prefix         = siPrefix;
+                        ErrorResponse  = null;
+                        return true;
+                    }
+
+                }
+
+            }
+
+            ErrorResponse = $"Unknown unit of measure '{Text}'!";
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region (private static) TryParseTextStatements(Text, Magnitude, out Uncertainty, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse what a text states about a measurement uncertainty
+        /// beyond its magnitude: "k=2, p=0.95, dist=normal, ν=45".
+        /// </summary>
+        private static Boolean TryParseTextStatements(String                            Text,
+                                                      Decimal                           Magnitude,
+                                                      out MeasurementUncertainty        Uncertainty,
+                                                      [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Uncertainty = default;
+
+            Decimal?                  coverageFactor       = null;
+            Double?                   coverageProbability  = null;
+            UncertaintyDistribution?  distribution         = null;
+            Double?                   degreesOfFreedom     = null;
+
+            foreach (var statement in Text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            {
+
+                var equals = statement.IndexOf('=');
+
+                if (equals < 0)
+                {
+                    ErrorResponse = $"'{statement}' must be written as 'key=value'!";
+                    return false;
+                }
+
+                var key    = statement[..equals].       TrimEnd();
+                var value  = statement[(equals + 1)..]. TrimStart();
+
+                switch (key)
+                {
+
+                    #region k=  the coverage factor
+
+                    case "k":
+
+                        if (coverageFactor.HasValue)
+                        {
+                            ErrorResponse = "The coverage factor is stated twice!";
+                            return false;
+                        }
+
+                        if (!Decimal.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var k) ||
+                            k <= 0)
+                        {
+                            ErrorResponse = $"'{value}' is not a valid coverage factor!";
+                            return false;
+                        }
+
+                        coverageFactor = k;
+                        break;
+
+                    #endregion
+
+                    #region p=  the coverage probability
+
+                    case "p":
+
+                        if (coverageProbability.HasValue)
+                        {
+                            ErrorResponse = "The coverage probability is stated twice!";
+                            return false;
+                        }
+
+                        if (!Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var p) ||
+                            p <= 0 || p > 1)
+                        {
+                            ErrorResponse = $"'{value}' is not a valid coverage probability!";
+                            return false;
+                        }
+
+                        coverageProbability = p;
+                        break;
+
+                    #endregion
+
+                    #region dist=  the probability distribution
+
+                    case "dist":
+
+                        if (distribution.HasValue)
+                        {
+                            ErrorResponse = "The probability distribution is stated twice!";
+                            return false;
+                        }
+
+                        if (!TryParseDistribution(value, out var uncertaintyDistribution))
+                        {
+                            ErrorResponse = $"'{value}' is not a known probability distribution!";
+                            return false;
+                        }
+
+                        distribution = uncertaintyDistribution;
+                        break;
+
+                    #endregion
+
+                    #region ν=  the effective degrees of freedom
+
+                    case "ν":
+                    case "nu":
+
+                        if (degreesOfFreedom.HasValue)
+                        {
+                            ErrorResponse = "The effective degrees of freedom are stated twice!";
+                            return false;
+                        }
+
+                        if (!Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var nu) ||
+                            nu <= 0)
+                        {
+                            ErrorResponse = $"'{value}' is not a valid number of effective degrees of freedom!";
+                            return false;
+                        }
+
+                        degreesOfFreedom = nu;
+                        break;
+
+                    #endregion
+
+                    default:
+                        ErrorResponse = $"'{key}' states nothing this format knows about a measurement uncertainty!";
+                        return false;
+
+                }
+
+            }
+
+            Uncertainty = new MeasurementUncertainty(
+                              Magnitude,
+                              coverageFactor,
+                              coverageProbability,
+                              distribution,
+                              degreesOfFreedom
+                          );
+
+            ErrorResponse = null;
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private static) TryParseDistribution  (Text, out Distribution)
+
+        private static Boolean TryParseDistribution(String                       Text,
+                                                    out UncertaintyDistribution  Distribution)
+        {
+
+            Distribution = Text.ToLowerInvariant() switch {
+                               "normal"       => UncertaintyDistribution.Normal,
+                               "rectangular"  => UncertaintyDistribution.Rectangular,
+                               "triangular"   => UncertaintyDistribution.Triangular,
+                               "u-shaped"     => UncertaintyDistribution.UShaped,
+                               "u-shape"      => UncertaintyDistribution.UShaped,
+                               "t"            => UncertaintyDistribution.StudentT,
+                               "student-t"    => UncertaintyDistribution.StudentT,
+                               _              => UncertaintyDistribution.Unspecified
+                           };
+
+            return Distribution != UncertaintyDistribution.Unspecified;
+
+        }
+
+        #endregion
+
+        #region (private static) DistributionText      (Distribution)
+
+        private static String DistributionText(UncertaintyDistribution Distribution)
+
+            => Distribution switch {
+                   UncertaintyDistribution.Normal       => "normal",
+                   UncertaintyDistribution.Rectangular  => "rectangular",
+                   UncertaintyDistribution.Triangular   => "triangular",
+                   UncertaintyDistribution.UShaped      => "u-shaped",
+                   UncertaintyDistribution.StudentT     => "t",
+                   _                                    => ""
+               };
+
+        #endregion
+
+        #region (private static) SymbolIsAPower        (Symbol)
+
+        /// <summary>
+        /// Whether the given unit symbol already denotes a power of itself,
+        /// such as "m²" or "m³", and therefore takes no folded SI prefix.
+        /// </summary>
+        private static Boolean SymbolIsAPower(String Symbol)
+
+            => Symbol.Length > 0 &&
+               Symbol[^1] is '⁰' or '¹' or '²' or '³' or '⁴' or
+                             '⁵' or '⁶' or '⁷' or '⁸' or '⁹';
+
+        #endregion
+
+        #region (private static) RenderUnit            (Unit, Prefix)
+
+        /// <summary>
+        /// Render the unit of measure together with its SI prefix, and whatever
+        /// power-of-ten scale the prefix could not be folded into.
+        /// </summary>
+        private static (String Unit, String Scale) RenderUnit(UnitExpression  Unit,
+                                                              SIPrefix        Prefix)
+        {
+
+            var unitText = Unit.ToString();
+
+            if (Prefix.IsNone)
+                return (unitText, "");
+
+            // Fold the prefix onto the leading symbol only where reading that
+            // back yields the very same unit and prefix again. "mA" does, but
+            // "km²" would read as square kilometre - a million square metres,
+            // where this value means a thousand - and "cd" is the candela and
+            // never a centi-day. Whatever does not survive its own parser is
+            // written with an explicit power-of-ten scale instead.
+            var folded = Prefix.Symbol + unitText;
+
+            if (TryParseTextUnit(folded, out var unit, out var prefix, out _) &&
+                unit   == Unit &&
+                prefix == Prefix)
+            {
+                return (folded, "");
+            }
+
+            return (unitText, $"×10^{Prefix.Exponent.ToString(CultureInfo.InvariantCulture)}");
+
+        }
+
+        #endregion
+
+
         #region (private static) SameQuantity      (Value1, PrefixExponent1, Value2, PrefixExponent2)
 
         private static Boolean SameQuantity(Decimal  Value1,
@@ -1186,27 +1770,56 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (override) ToString()
 
         /// <summary>
-        /// Return a text representation of this object, e.g. "5.0 mA",
-        /// or "(5.00 ±0.02) mA" with a measurement uncertainty.
+        /// Return the one-string text representation of this metrological value,
+        /// e.g. "5.0 mA", "9.81 m·s^-2" or "(230.00 ±0.12) V, k=2".
+        /// This is the format TryParse(String, ...) reads back, and it is
+        /// lossless: the value, its decimal scale, the unit of measure, the SI
+        /// prefix and everything stated about the uncertainty survive the round
+        /// trip unchanged.
         /// </summary>
         public override String ToString()
         {
 
-            var unitText = !IsEmpty
-                               ? $" {Prefix.Symbol}{Unit}"
-                               : "";
+            if (IsEmpty)
+                return Value.ToString(CultureInfo.InvariantCulture);
 
-            return Uncertainty.HasValue
+            var (unitText, scaleText)  = RenderUnit(Unit, Prefix);
+            var stringBuilder          = new StringBuilder();
 
-                       ? String.Concat("(",
-                                       Value.            ToString(CultureInfo.InvariantCulture),
-                                       " ±",
-                                       Uncertainty.Value.ToString(),
-                                       ")",
-                                       unitText)
+            if (Uncertainty.HasValue)
+                stringBuilder.Append('(').
+                              Append(Value.                   ToString(CultureInfo.InvariantCulture)).
+                              Append(" ±").
+                              Append(Uncertainty.Value.Value. ToString(CultureInfo.InvariantCulture)).
+                              Append(')');
 
-                       : String.Concat(Value.ToString(CultureInfo.InvariantCulture),
-                                       unitText);
+            else
+                stringBuilder.Append(Value.ToString(CultureInfo.InvariantCulture));
+
+            stringBuilder.Append(scaleText).
+                          Append(' ').
+                          Append(unitText);
+
+            if (Uncertainty.HasValue)
+            {
+
+                var uncertainty = Uncertainty.Value;
+
+                if (uncertainty.CoverageFactor != 1)
+                    stringBuilder.Append(", k=").    Append(uncertainty.CoverageFactor.            ToString(CultureInfo.InvariantCulture));
+
+                if (uncertainty.CoverageProbability.HasValue)
+                    stringBuilder.Append(", p=").    Append(uncertainty.CoverageProbability.Value. ToString(CultureInfo.InvariantCulture));
+
+                if (uncertainty.Distribution != UncertaintyDistribution.Unspecified)
+                    stringBuilder.Append(", dist="). Append(DistributionText(uncertainty.Distribution));
+
+                if (uncertainty.DegreesOfFreedom.HasValue)
+                    stringBuilder.Append(", ν=").    Append(uncertainty.DegreesOfFreedom.Value.    ToString(CultureInfo.InvariantCulture));
+
+            }
+
+            return stringBuilder.ToString();
 
         }
 
