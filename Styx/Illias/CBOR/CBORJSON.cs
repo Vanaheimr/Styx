@@ -1102,8 +1102,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (exponent < -65536 || exponent > 65536)
                 throw new CBORException($"The decimal exponent of '{Text}' is out of range!");
 
-            if (exponent == 0)
-                return CBORValue.FromBigInteger(mantissa);
+            // A decimal fraction states decimal places and its exponent is
+            // negative on the wire; an exponent that leaves none denotes the
+            // integer it equals (metrological-text.md, Section 3.2).
+            if (exponent >= 0)
+                return CBORValue.FromBigInteger(mantissa * BigInteger.Pow(10, exponent));
 
             return CBORValue.Tagged(
                        CBORTag.DecimalFraction,

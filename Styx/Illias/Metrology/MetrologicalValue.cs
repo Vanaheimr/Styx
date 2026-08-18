@@ -420,9 +420,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         ///
         /// The decimal scale of every number is data and is preserved as written.
         /// Accepted beyond the canonical spelling are the ASCII alternatives
-        /// "+-" for "±", "*" for "·" and "nu" for "ν", scientific notation for
-        /// the numbers, and both code points of the micro sign and of the ohm
-        /// sign. What is written back is always the canonical form.
+        /// "+-" and "+/-" for "±", "*" for "·", "x" for "×" and "nu" for "ν",
+        /// "t" for "student-t", superscript digits for unit exponents and for
+        /// the scale, scientific notation for the numbers, and both code points
+        /// of the micro sign and of the ohm sign. What is written back is
+        /// always the canonical form.
         /// </summary>
         /// <param name="Text">A text representation of a metrological value.</param>
         /// <param name="MetrologicalValue">The parsed metrological value.</param>
@@ -440,7 +442,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            var text = Text.Trim();
+            // "+/-" is an accepted spelling of "±"; normalised up front so
+            // that the splitting below only has the two forms to deal with.
+            var text = Text.Trim().Replace("+/-", "±");
 
             if (text.Length == 0)
             {
@@ -517,6 +521,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 while (index < text.Length            &&
                       !Char.IsWhiteSpace(text[index]) &&
                        text[index] != '×'             &&
+                       text[index] != 'x'             &&
                        text[index] != '*')
                 {
                     index++;
@@ -535,23 +540,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var scaleWasGiven  = false;
 
             if (index < text.Length &&
-               (text[index] == '×' || text[index] == '*'))
+               (text[index] == '×' || text[index] == '*' || text[index] == 'x'))
             {
 
-                var caret = text.IndexOf('^', index);
-
-                if (caret < 0 || text[(index + 1)..caret] != "10")
+                if (index + 2 >= text.Length ||
+                    text[index + 1] != '1'  ||
+                    text[index + 2] != '0')
                 {
                     ErrorResponse = "A power-of-ten scale must be written as '×10^3'!";
                     return false;
                 }
 
-                var end = caret + 1;
+                var exponentStart = index + 3;
+                String exponentText;
+                Int32  end;
 
-                while (end < text.Length && !Char.IsWhiteSpace(text[end]))
-                    end++;
+                if (exponentStart < text.Length && text[exponentStart] == '^')
+                {
 
-                var exponentText = text[(caret + 1)..end];
+                    end = exponentStart + 1;
+
+                    while (end < text.Length && !Char.IsWhiteSpace(text[end]))
+                        end++;
+
+                    exponentText = text[(exponentStart + 1)..end];
+
+                }
+
+                else
+                {
+
+                    // Superscript digits: "×10³" is "×10^3".
+                    end = exponentStart;
+
+                    while (end < text.Length && UnitExpression.IsSuperscript(text[end]))
+                        end++;
+
+                    if (end == exponentStart)
+                    {
+                        ErrorResponse = "A power-of-ten scale must be written as '×10^3'!";
+                        return false;
+                    }
+
+                    exponentText = UnitExpression.FromSuperscript(text[exponentStart..end]) ?? "";
+
+                }
 
                 if (!Int32.TryParse(exponentText, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var exponent) ||
                     !SIPrefix.TryFrom(exponent, out prefix))
@@ -778,6 +811,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
+            // A prefix of 0 is written only because an uncertainty follows;
+            // without one it would give the same reading two encodings
+            // (specification section 3.3).
+            if (array.Count == 3 && prefix.IsNone)
+            {
+                ErrorResponse = "A prefix of 0 must be omitted when no uncertainty follows!";
+                return false;
+            }
+
             // 4. The optional measurement uncertainty...
             MeasurementUncertainty? uncertainty = null;
 
@@ -872,8 +914,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return false;
                     }
 
+                    // A rational exponent has one spelling: lowest terms, and
+                    // never the rational form of an integer (specification
+                    // section 3.2).
+                    if (exponentNode.Kind == CBORValueKind.Array)
+                    {
+
+                        if (denominator == 1)
+                        {
+                            ErrorResponse = $"The unit exponent [{numerator}, 1] is the rational spelling of the integer {numerator}, which is written as an integer!";
+                            return false;
+                        }
+
+                        if (System.Numerics.BigInteger.GreatestCommonDivisor(numerator, denominator) > 1)
+                        {
+                            ErrorResponse = $"The unit exponent {numerator}/{denominator} is not in lowest terms!";
+                            return false;
+                        }
+
+                    }
+
                     factors.Add(new UnitFactor(factorUnit, (Int32) numerator, (Int32) denominator));
 
+                }
+
+                // A single named unit is written in the named form, never as
+                // a one-element product (specification section 3.2).
+                if (factors.Count == 1           &&
+                    factors[0].Numerator   == 1  &&
+                    factors[0].Denominator == 1)
+                {
+                    ErrorResponse = "A single named unit must be written in the named form, never as a one-element product!";
+                    return false;
                 }
 
                 Unit = new UnitExpression(factors);
@@ -921,7 +993,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Node.Kind == CBORValueKind.TextString)
             {
 
-                if (!UnitOfMeasure.TryParse(Node.AsText(), out Unit))
+                // The wire carries symbols and aliases, never names
+                // (specification section 3.2).
+                if (!UnitOfMeasure.TryParseSymbol(Node.AsText(), out Unit))
                 {
                     ErrorResponse = $"Unknown unit of measure '{Node.AsText()}'!";
                     return false;
@@ -968,6 +1042,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 Uncertainty = new MeasurementUncertainty(standardUncertainty);
                 return true;
+
+            }
+
+            // An unknown key could state anything - an asymmetry, a
+            // correlation, a second magnitude - and dropping it would
+            // silently change what the uncertainty says (specification
+            // section 3.4).
+            foreach (var entry in Node.AsMap())
+            {
+
+                if (entry.Key.Kind != CBORValueKind.UnsignedInteger ||
+                    entry.Key.AsUInt64() < 1                        ||
+                    entry.Key.AsUInt64() > 5)
+                {
+                    ErrorResponse = $"An uncertainty map must not hold the unknown key '{entry.Key.ToDiagnosticString()}'!";
+                    return false;
+                }
 
             }
 
@@ -1192,6 +1283,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 Node.Kind == CBORValueKind.DoubleFloat)
             {
                 ErrorResponse = $"The {What} of a metrological value must never be a binary floating-point number!";
+                return false;
+            }
+
+            // A decimal fraction states decimal places, so its exponent is
+            // negative on the wire; an integral reading is written as an
+            // integer (specification section 3.1).
+            if (Node.Kind == CBORValueKind.Tagged        &&
+                Node.Tag  == CBORTag.DecimalFraction     &&
+                Node.UntaggedValue.Kind  == CBORValueKind.Array &&
+                Node.UntaggedValue.Count == 2            &&
+                Node.UntaggedValue[0].TryGetInt64(out var decimalExponent) &&
+                decimalExponent >= 0)
+            {
+                ErrorResponse = $"The {What} of a metrological value must not be a decimal fraction with a non-negative exponent: an integral reading is written as an integer!";
                 return false;
             }
 
@@ -1614,7 +1719,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    UncertaintyDistribution.Rectangular  => "rectangular",
                    UncertaintyDistribution.Triangular   => "triangular",
                    UncertaintyDistribution.UShaped      => "u-shaped",
-                   UncertaintyDistribution.StudentT     => "t",
+                   UncertaintyDistribution.StudentT     => "student-t",
                    _                                    => ""
                };
 

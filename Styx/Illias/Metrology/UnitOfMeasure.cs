@@ -544,6 +544,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) TryParseSymbol(Text, out UnitOfMeasure)
+
+        /// <summary>
+        /// Try to parse the given text as a unit symbol or one of its aliases,
+        /// case-sensitive. Unit names are not accepted: this is the lookup of
+        /// the metrological text format and of the wire format, where names
+        /// are English words and words must not read as measurements.
+        /// </summary>
+        /// <param name="Text">A unit symbol or alias.</param>
+        /// <param name="UnitOfMeasure">The parsed unit of measure.</param>
+        public static Boolean TryParseSymbol([NotNullWhen(true)] String?             Text,
+                                             [NotNullWhen(true)] out UnitOfMeasure?  UnitOfMeasure)
+        {
+
+            UnitOfMeasure = null;
+
+            if (Text is null)
+                return false;
+
+            Text = Text.Trim();
+
+            if (Text.Length == 0)
+                return false;
+
+            return bySymbol.TryGetValue(Text, out UnitOfMeasure);
+
+        }
+
+        #endregion
+
         #region (static) TryParse(Numeric, out UnitOfMeasure)
 
         /// <summary>

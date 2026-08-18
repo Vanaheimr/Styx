@@ -371,6 +371,48 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                                    out _, out var error8),  Is.False);
             Assert.That(error8,  Does.Contain("omitted"));
 
+            // One spelling per reading, per exponent, per unit, per prefix
+            // (specification sections 3.1..3.4):
+
+            // A decimal fraction with a non-negative exponent: 4([0, 500]), 4([1, 50])
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC82C482001901F405")),
+                                                   out _, out var error9),  Is.False);
+            Assert.That(error9,  Does.Contain("non-negative"));
+
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC82C48201183205")),
+                                                   out _, out _),  Is.False);
+
+            // A rational exponent that is not in lowest terms: [[8, [-2, 4]]]
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC8205818208822104")),
+                                                   out _, out var error10),  Is.False);
+            Assert.That(error10,  Does.Contain("lowest terms"));
+
+            // The rational spelling of an integer exponent: [[8, [2, 1]]]
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC8205818208820201")),
+                                                   out _, out var error11),  Is.False);
+            Assert.That(error11,  Does.Contain("integer"));
+
+            // A single named unit as a one-element product: [[4, 1]]
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC820581820401")),
+                                                   out _, out var error12),  Is.False);
+            Assert.That(error12,  Does.Contain("named form"));
+
+            // A redundant prefix 0 without a trailing uncertainty: [5, 4, 0]
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC83050400")),
+                                                   out _, out var error13),  Is.False);
+            Assert.That(error13,  Does.Contain("omitted"));
+
+            // An unknown uncertainty map key: {1: 1, 6: 1}
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC84050400A201010601")),
+                                                   out _, out var error14),  Is.False);
+            Assert.That(error14,  Does.Contain("unknown key"));
+
+            // A unit *name* on the wire - symbols and aliases only: 44252([5, "Ampere"])
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Tagged(CBORTag.MetrologicalValue,
+                                                                    CBORValue.FromArray(5, "Ampere")),
+                                                   out _, out var error15),  Is.False);
+            Assert.That(error15,  Does.Contain("Unknown unit"));
+
         }
 
         #endregion

@@ -410,6 +410,63 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Accepted_alternate_spellings_parse_to_the_canonical_bytes()
+
+        [Test]
+        public void Accepted_alternate_spellings_parse_to_the_canonical_bytes()
+        {
+
+            // Superscript exponents, the superscript scale, "x" for "×",
+            // "+/-" for "±" and "student-t" next to "t" - all accepted on
+            // input, none of them written.
+            var vectors = new (String Text, String Hex) [] {
+                ("9.81 m·s⁻²",               "D9ACDC82C482211903D582820F01820821"),
+                ("9.81 m*s⁻²",               "D9ACDC82C482211903D582820F01820821"),
+                ("5×10³ m²",                  "D9ACDC8305188C03"),
+                ("5x10^3 m²",                 "D9ACDC8305188C03"),
+                ("(5.00 +/-0.02) mA",         "D9ACDC84C482211901F40422C4822102"),
+                ("(5 ±1) A, dist=student-t",  "D9ACDC84050400A201010405"),
+                ("(5 ±1) A, dist=t",          "D9ACDC84050400A201010405"),
+                ("5 m²",                      "D9ACDC8205188C")
+            };
+
+            foreach (var vector in vectors)
+            {
+
+                Assert.That(MetrologicalValue.TryParse(vector.Text, out var metrologicalValue, out var errorResponse),
+                            Is.True,
+                            $"'{vector.Text}': {errorResponse}");
+
+                Assert.That(Convert.ToHexString(metrologicalValue.ToCBOR().ToByteArray()),
+                            Is.EqualTo(vector.Hex),
+                            $"'{vector.Text}'");
+
+            }
+
+            // The canonical spelling of Student's t is the self-describing one.
+            Assert.That(MetrologicalValue.Parse("(5 ±1) A, dist=t").ToString(),
+                        Is.EqualTo("(5 ±1) A, dist=student-t"));
+
+        }
+
+        #endregion
+
+        #region Unit_names_are_not_symbols()
+
+        [Test]
+        public void Unit_names_are_not_symbols()
+        {
+
+            // "1 hour" is prose, "1 h" is a reading: names are English words,
+            // and words must not read as measurements.
+            Assert.That(MetrologicalValue.TryParse("1 hour",   out _, out _),  Is.False);
+            Assert.That(MetrologicalValue.TryParse("5 Ampere", out _, out _),  Is.False);
+            Assert.That(MetrologicalValue.TryParse("1 h",      out _, out _),  Is.True);
+
+        }
+
+        #endregion
+
         #region A_number_needs_digits_on_both_sides_of_the_point()
 
         [Test]

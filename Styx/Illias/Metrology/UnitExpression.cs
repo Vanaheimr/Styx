@@ -342,7 +342,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (numerator == 0 || denominator == 0)
                     return false;
 
-                if (!UnitOfMeasure.TryParse(symbol, out var unitOfMeasure))
+                UnitOfMeasure? unitOfMeasure;
+
+                if (caret < 0)
+                {
+
+                    // The whole token wins over an exponent split: "m²" is the
+                    // registered square metre, never the metre to the second
+                    // power. Only when the token is no symbol is a trailing
+                    // superscript exponent peeled off: "s⁻²" is "s^-2".
+                    if (!UnitOfMeasure.TryParseSymbol(symbol, out unitOfMeasure))
+                    {
+
+                        var split = SplitSuperscriptExponent(symbol);
+
+                        if (split is null ||
+                            !UnitOfMeasure.TryParseSymbol(split.Value.Symbol, out unitOfMeasure))
+                        {
+                            return false;
+                        }
+
+                        numerator = split.Value.Exponent;
+
+                        if (numerator == 0)
+                            return false;
+
+                    }
+
+                }
+
+                else if (!UnitOfMeasure.TryParseSymbol(symbol, out unitOfMeasure))
                     return false;
 
                 unitFactors.Add(new UnitFactor(unitOfMeasure, numerator, denominator));
@@ -354,6 +383,87 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             UnitExpression = new UnitExpression(unitFactors);
             return true;
+
+        }
+
+        #endregion
+
+
+        #region (internal static) IsSuperscript / FromSuperscript / SplitSuperscriptExponent
+
+        /// <summary>
+        /// Whether the given character is a superscript digit or sign.
+        /// </summary>
+        internal static Boolean IsSuperscript(Char Character)
+
+            => Character is '⁰' or '¹' or '²' or '³' or
+                            '⁴' or '⁵' or '⁶' or '⁷' or
+                            '⁸' or '⁹' or '⁺' or '⁻';
+
+
+        /// <summary>
+        /// The superscript characters as their ASCII counterparts, or null
+        /// where a character is no superscript.
+        /// </summary>
+        internal static String? FromSuperscript(ReadOnlySpan<Char> Text)
+        {
+
+            Span<Char> ascii = stackalloc Char[Text.Length];
+
+            for (var i = 0; i < Text.Length; i++)
+            {
+
+                ascii[i] = Text[i] switch {
+                               '⁰' => '0',
+                               '¹' => '1',
+                               '²' => '2',
+                               '³' => '3',
+                               '⁴' => '4',
+                               '⁵' => '5',
+                               '⁶' => '6',
+                               '⁷' => '7',
+                               '⁸' => '8',
+                               '⁹' => '9',
+                               '⁺' => '+',
+                               '⁻' => '-',
+                               _        => '\0'
+                           };
+
+                if (ascii[i] == '\0')
+                    return null;
+
+            }
+
+            return new String(ascii);
+
+        }
+
+
+        /// <summary>
+        /// Split a trailing superscript exponent off a unit token: "s⁻²"
+        /// becomes ("s", -2). Null where the token carries none, or where
+        /// the superscripts are not a number.
+        /// </summary>
+        private static (String Symbol, Int32 Exponent)? SplitSuperscriptExponent(String Token)
+        {
+
+            var start = Token.Length;
+
+            while (start > 0 && IsSuperscript(Token[start - 1]))
+                start--;
+
+            if (start == Token.Length || start == 0)
+                return null;
+
+            var digits = FromSuperscript(Token.AsSpan(start));
+
+            if (digits is null ||
+                !Int32.TryParse(digits, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out var exponent))
+            {
+                return null;
+            }
+
+            return (Token[..start], exponent);
 
         }
 
