@@ -60,14 +60,16 @@ A generic CBOR decoder without knowledge of the tag still sees a well-formed
 tagged array of plain integers and standard tag-4 decimal fractions.
 ### Specification and registration
 
-The normative wire format specification is [tag-44252.md](tag-44252.md), and
-[tag-44252-signed-example.md](tag-44252-signed-example.md) walks a complete
-charging transaction through three signature layers — meter, charging station,
-operator — as a worked example whose every byte is verified by a test.
+The normative wire format specification lives in the
+[OpenChargingTechnology Whitepapers](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/README.md)
+repository, and its
+[worked example](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/tag-44252-signed-example.md)
+walks a complete charging transaction through three signature layers — meter,
+charging station, operator — whose every byte is verified by a test here.
 
 *IANA note:* Tag 44252 lies in the First-Come-First-Served range and is,
-as of 2026-08-14, unassigned. The prepared registration request is
-[IANA-registration.md](IANA-registration.md).
+as of 2026-08-18, unassigned. The prepared registration request is
+[IANA-registration.md](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/IANA-registration.md).
 
 ### Text format and JSON documents
 
@@ -90,4 +92,4 @@ Both JSON worlds are served: a Newtonsoft `JToken` tree (`ToJSON` / `ToCBOR`)
 and UTF-8 text written and read directly, without a tree in between
 (`ToJSONUTF8` / `WriteJSONTo` / `ToCBOR(ReadOnlySpan<Byte>)`). The grammar,
 the mapping table and what does and does not round-trip are specified in
-[metrological-text.md](metrological-text.md).
+[metrological-text.md](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/metrological-text.md).

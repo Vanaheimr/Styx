@@ -68,7 +68,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         public void The_examples_of_the_specification_render_as_one_string()
         {
 
-            // Section 5 of tag-44252.md, the "Reading" column - with the
+            // Section 5 of the tag 44252 specification, the "Reading" column - with the
             // caret spelling of the unit exponents Styx writes everywhere.
             var vectors = new (String Hex, String Text) [] {
                 ("D9ACDC8205 04",                              "5 A"),

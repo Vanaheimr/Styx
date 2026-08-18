@@ -188,7 +188,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// may additionally state the coverage factor the magnitude belongs to,
         /// the coverage probability, the probability distribution and the
         /// effective degrees of freedom.
-        /// See: https://github.com/Vanaheimr/Styx/blob/master/Styx/Illias/CBOR/tag-44252.md
+        /// See: https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/README.md
         /// </summary>
         public static CBORTag  MetrologicalValue    { get; } = new (44252);
 

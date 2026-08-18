@@ -212,7 +212,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         // NOTE: The single-byte identifications 1..23 are allocated by how often a
         // unit actually occurs in e-mobility traffic, NOT taxonomically - CBOR
         // encodes 1..23 in one byte and everything above in two. Taxonomy resumes
-        // at 24. See Styx/Illias/CBOR/tag-44252.md, section 4.
+        // at 24. See section 4 of the specification:
+        // https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/README.md
 
         // Single-byte range, by frequency (1..23); the prefixable base of mass is the Gram!
 

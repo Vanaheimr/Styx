@@ -215,7 +215,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
     ///
     /// A flat list of named units can not express derived quantities, which is
     /// why the metrological CBOR tag 44252 accepts both forms; see
-    /// Styx/Illias/CBOR/tag-44252.md.
+    /// https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/README.md.
     /// </summary>
     public readonly struct UnitExpression : IEquatable<UnitExpression>
     {

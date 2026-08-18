@@ -28,7 +28,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 {
 
     /// <summary>
-    /// The worked example of Styx/Illias/CBOR/tag-44252-signed-example.md:
+    /// The worked example of the tag 44252 specification
+    /// (MetrologicalCBOR/tag-44252-signed-example.md in the
+    /// OpenChargingTechnology Whitepapers repository):
     /// a charging transaction as a signed metrological record, from the meter
     /// through the charging station to the customer.
     ///
@@ -374,7 +376,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // Whenever a document and the code it describes disagree, it is
             // the document that is wrong and nobody notices. So every number
-            // printed in tag-44252-signed-example.md is asserted here.
+            // printed in the specification's tag-44252-signed-example.md is
+            // asserted here.
             Assert.That(readings[0].Payload!.Length,        Is.EqualTo(134),  "one meter reading, unsigned");
             Assert.That(readings[0].ToByteArray().Length,   Is.EqualTo(221),  "one meter reading, signed");
             Assert.That(readings[1].ToByteArray().Length,   Is.EqualTo(219),  "the second reading");

@@ -4,12 +4,12 @@
 on top of the [Styx CBOR implementation](../CBOR/README.md), for signing
 measurement data, metering records and any other CBOR payload.
 
-Signing is what turns the [metrological value extension](../CBOR/tag-44252.md)
+Signing is what turns the [metrological value extension](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/README.md)
 into something a third party can check: the encoding of a reading is a pure
 function of its value, scale, unit, prefix and uncertainty, so the same reading
 always produces the same bytes — and therefore the same signature.
 
-[**A signed metrological record, end to end**](../CBOR/tag-44252-signed-example.md)
+[**A signed metrological record, end to end**](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/tag-44252-signed-example.md)
 puts all of the below to work on one charging transaction: two meter readings
 with their GUM uncertainties, signed by the meter, bundled by the charging
 station, countersigned by the operator — 713 bytes, every one of them verified

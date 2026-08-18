@@ -135,7 +135,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         public void Every_example_of_the_specification_survives_the_JSON_document()
         {
 
-            // Section 5 of tag-44252.md - without the symbolic-unit row,
+            // Section 5 of the tag 44252 specification - without the symbolic-unit row,
             // which converts back into the numeric identification the
             // canonical encoding asks for.
             var vectors = new [] {
