@@ -410,6 +410,37 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region A_number_needs_digits_on_both_sides_of_the_point()
+
+        [Test]
+        public void A_number_needs_digits_on_both_sides_of_the_point()
+        {
+
+            // Decimal.TryParse would read every one of these - the grammar
+            // does not: digits are required on both sides of the decimal
+            // point and after the exponent marker, for the value, the
+            // uncertainty and the statements alike.
+            foreach (var text in new [] {
+                         "5. A",
+                         ".5 A",
+                         "5.e1 A",
+                         "5.0e A",
+                         "(5. ±0.5) A",
+                         "(5 ±.5) A",
+                         "(5 ±0.5) A, k=.5",
+                         "(5 ±0.5) A, p=.9",
+                         "(5 ±0.5) A, nu=1."
+                     })
+            {
+                Assert.That(MetrologicalValue.TryParse(text, out _, out _),
+                            Is.False,
+                            $"'{text}' was accepted as a metrological value!");
+            }
+
+        }
+
+        #endregion
+
         #region An_invalid_text_names_what_is_wrong_with_it()
 
         [Test]

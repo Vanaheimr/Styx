@@ -365,6 +365,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                                    out _, out var error7),  Is.False);
             Assert.That(error7,  Does.Contain("44252"));
 
+            // A written distribution 0, which means "not stated" and must be
+            // omitted rather than written: 44252([5, 4, 0, {1: 1, 4: 0}])
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC84050400A201010400")),
+                                                   out _, out var error8),  Is.False);
+            Assert.That(error8,  Does.Contain("omitted"));
+
         }
 
         #endregion

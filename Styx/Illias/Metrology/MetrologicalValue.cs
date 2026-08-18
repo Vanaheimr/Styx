@@ -1032,6 +1032,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     return false;
                 }
 
+                // Distribution 0 means "not stated" and MUST be omitted rather
+                // than written (specification section 3.4).
+                if (distributionNode.AsUInt64() == 0)
+                {
+                    ErrorResponse = "The uncertainty distribution 0 means 'not stated' and must be omitted rather than written!";
+                    return false;
+                }
+
                 distribution = (UncertaintyDistribution) distributionNode.AsUInt64();
 
             }
@@ -1259,9 +1267,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                   [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
+            var trimmed = Text.Trim();
+
             // The decimal scale is data: Decimal.TryParse keeps the trailing
-            // zero of "1.10", and 5.0 mA must not come back as 5 mA.
-            if (Decimal.TryParse(Text.Trim(),
+            // zero of "1.10", and 5.0 mA must not come back as 5 mA. The
+            // grammar gate in front of it requires digits on both sides of the
+            // decimal point, which Decimal.TryParse alone would not: '5.' and
+            // '.5' are not numbers of this format.
+            if (IsGrammarNumber(trimmed) &&
+                Decimal.TryParse(trimmed,
                                  NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
                                  CultureInfo.InvariantCulture,
                                  out Number))
@@ -1271,9 +1285,80 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             Number         = 0;
-            ErrorResponse  = $"'{Text.Trim()}' is not a valid {What}!";
+            ErrorResponse  = $"'{trimmed}' is not a valid {What}!";
 
             return false;
+
+        }
+
+        #endregion
+
+        #region (private static) IsGrammarNumber       (Text)
+
+        /// <summary>
+        /// Whether the text matches the number production of the metrological
+        /// text grammar: [sign] digits [. digits] [e [sign] digits]. Digits
+        /// are required on both sides of the decimal point and after the
+        /// exponent marker, so '5.', '.5' and '5e' are not numbers here,
+        /// whatever a lenient numeric parser would accept.
+        /// </summary>
+        private static Boolean IsGrammarNumber(ReadOnlySpan<Char> Text)
+        {
+
+            var i = 0;
+
+            if (i < Text.Length && (Text[i] == '+' || Text[i] == '-'))
+                i++;
+
+            var digits = 0;
+            while (i < Text.Length && Text[i] >= '0' && Text[i] <= '9')
+            {
+                i++;
+                digits++;
+            }
+
+            if (digits == 0)
+                return false;
+
+            if (i < Text.Length && Text[i] == '.')
+            {
+
+                i++;
+                digits = 0;
+
+                while (i < Text.Length && Text[i] >= '0' && Text[i] <= '9')
+                {
+                    i++;
+                    digits++;
+                }
+
+                if (digits == 0)
+                    return false;
+
+            }
+
+            if (i < Text.Length && (Text[i] == 'e' || Text[i] == 'E'))
+            {
+
+                i++;
+
+                if (i < Text.Length && (Text[i] == '+' || Text[i] == '-'))
+                    i++;
+
+                digits = 0;
+
+                while (i < Text.Length && Text[i] >= '0' && Text[i] <= '9')
+                {
+                    i++;
+                    digits++;
+                }
+
+                if (digits == 0)
+                    return false;
+
+            }
+
+            return i == Text.Length;
 
         }
 
@@ -1392,7 +1477,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             return false;
                         }
 
-                        if (!Decimal.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var k) ||
+                        if (!IsGrammarNumber(value) ||
+                            !Decimal.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out var k) ||
                             k <= 0)
                         {
                             ErrorResponse = $"'{value}' is not a valid coverage factor!";
@@ -1414,7 +1500,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             return false;
                         }
 
-                        if (!Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var p) ||
+                        if (!IsGrammarNumber(value) ||
+                            !Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var p) ||
                             p <= 0 || p > 1)
                         {
                             ErrorResponse = $"'{value}' is not a valid coverage probability!";
@@ -1458,7 +1545,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             return false;
                         }
 
-                        if (!Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var nu) ||
+                        if (!IsGrammarNumber(value) ||
+                            !Double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var nu) ||
                             nu <= 0)
                         {
                             ErrorResponse = $"'{value}' is not a valid number of effective degrees of freedom!";
