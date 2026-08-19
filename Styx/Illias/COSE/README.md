@@ -23,9 +23,10 @@ by a test.
 - **`COSESign`** / **`COSESignature`** — one payload, several signers
   (CBOR tag 98). Each signature carries its own header buckets, so every
   party signs with its own algorithm and its own key.
-- **`COSEKey`** — COSE keys of key type `EC2` (RFC 9052 §7), with conversions
-  to and from the Bouncy Castle elliptic curve keys used elsewhere in Styx
-  ([`Crypto.cs`](../Crypto/Crypto.cs)), and COSE Key Thumbprints (RFC 9679).
+- **`COSEKey`** — COSE keys of key type `EC2` (RFC 9052 §7), `OKP` and `AKP`
+  (RFC 9964), with conversions to and from the Bouncy Castle keys used
+  elsewhere in Styx ([`Crypto.cs`](../Crypto/Crypto.cs)), and COSE Key
+  Thumbprints (RFC 9679).
 - **`COSEAlgorithm` / `COSECurve`** — the IANA registries, including the
   fully-specified algorithms of [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864)
   and the brainpool curves registered by ISO/IEC 18013-5.
@@ -36,14 +37,43 @@ by a test.
 | `ESP256` / `ESP384` / `ESP512` | −9 / −51 / −52 | P-256 / P-384 / P-521 | SHA-256 / 384 / 512 |
 | `ESB256` / `ESB320` / `ESB384` / `ESB512` | −265 / −266 / −267 / −268 | brainpoolP256r1 / P320r1 / P384r1 / P512r1 | SHA-256 / 384 / 384 / 512 |
 | `ES256K` | −47 | secp256k1 | SHA-256 |
+| `Ed25519` / `Ed448` | −19 / −53 | Ed25519 / Ed448 | *(none — pure)* |
+| `ML-DSA-44` / `-65` / `-87` | −48 / −49 / −50 | *(none — an algorithm key pair)* | *(none — pure)* |
 
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
   header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
 - **X.509 certificate chains** ([RFC 9360](https://www.rfc-editor.org/rfc/rfc9360)) —
   `x5chain` and `x5t`, validated against configured trust anchors.
 
+### The two pure families
+
+EdDSA ([RFC 8032](https://www.rfc-editor.org/rfc/rfc8032)) and ML-DSA
+([FIPS 204](https://doi.org/10.6028/NIST.FIPS.204), registered for COSE by
+[RFC 9964](https://www.rfc-editor.org/rfc/rfc9964)) sign the `Sig_structure`
+**itself** rather than a digest of it. Handing a pure signer a hash yields a
+signature that is valid for that hash and that nobody else will ever accept, so
+the family is a property of the algorithm here rather than an afterthought.
+
+Their key types are not merely two more shapes either. An EdDSA public key is
+the whole of `x` and has no `y`; an ML-DSA key belongs to an algorithm rather
+than to a curve, and there the labels shift underfoot — `−1` is the public key
+and `−2` the private one, where an EC2 or OKP key has the curve and the x
+coordinate. `COSEKey` therefore establishes the key type before it reads
+anything else, because a parser that switched on the label alone would read a
+1312-byte ML-DSA public key as a curve identifier and report nothing wrong at
+all. Its `priv` is the **32-byte seed** rather than the expanded secret key —
+which keeps a private ML-DSA-87 key at 32 bytes instead of 4896 — and its
+thumbprint covers `alg`, unlike every other key type, because an ML-DSA public
+key does not say which parameter set produced it.
+
+And the size is the point rather than the drawback. An ML-DSA-87 signature is
+4627 bytes over a metrological reading of about thirty, which is precisely the
+case where carrying it in CBOR stops being a nicety: a byte string costs its
+bytes and a three-byte head, while base64 within JSON would add a further third
+to the largest field in the message.
+
 Not implemented: `COSE_Countersignature0` (the abbreviated form, header
-parameter 12), EdDSA, MAC and encryption. The CBOR tags of those structures
+parameter 12), MAC and encryption. The CBOR tags of those structures
 are defined in `CBORTag`, so they are recognized rather than silently
 misread.
 
@@ -67,6 +97,15 @@ time — which makes published examples recomputable, and which matters rather
 more for a device that has no dependable source of randomness, since a
 repeated nonce hands over the private key. The RFC's own P-256 vectors are
 reproduced by a test.
+
+The same flag means the corresponding thing to the other two families.
+**EdDSA ignores it, because it has nothing to draw**: RFC 8032 derives the
+nonce from the key and the message and offers no alternative, which is why its
+published vectors are reproduced rather than merely verified. **ML-DSA takes
+the deterministic variant of FIPS 204**, where the per-signature randomness is
+32 zero bytes instead of drawn; RFC 9964 declines to choose between the two,
+and the choice is what decides whether two implementations can be compared byte
+for byte or only asked whether each accepts the other's signature.
 
 Whenever the signing key does not live in this process — a meter, a smart card,
 a hardware security module — `ToBeSigned()` hands out exactly the byte string
@@ -270,10 +309,25 @@ from the documented parts, and that both its body signature and its
 countersignature then verify against the published keys is what proves the
 assembly and the transcription.
 
-ECDSA is randomized, so published signature bytes cannot be reproduced by
-signing — but they can be *verified*, which is the stronger statement: a single
-wrong byte anywhere in the `Sig_structure`, the header buckets or the key would
-make the verification fail.
+**EdDSA** is pinned against RFC 8032 — Section 7.1 for Ed25519, Section 7.4 for
+Ed448 — and those are checked harder than any ECDSA vector allows: EdDSA has no
+nonce to draw, so its published signatures are not merely verifiable but
+*recomputable*, and the tests reproduce them byte for byte.
+
+ECDSA is randomized, so published signature bytes generally cannot be
+reproduced by signing — but they can be *verified*, which is the stronger
+statement: a single wrong byte anywhere in the `Sig_structure`, the header
+buckets or the key would make the verification fail. Where the signer used
+RFC 6979, reproduction is available too, and the tests take it.
+
+**ML-DSA** has no small published vector to paste in, so it is pinned by the
+properties RFC 9964 fixes — the key and signature sizes, the seed-derived key
+pair, the label-shifting AKP parameters — and then, decisively, by the
+[conformance suite](https://github.com/Vanaheimr/MCBORConformanceTests), which
+signs every case with this implementation *and* with the TypeScript one and
+compares the bytes. That is also where the open question of RFC 9964 was
+settled by measurement: Bouncy Castle's deterministic ML-DSA and
+`@noble/post-quantum`'s `extraEntropy: false` produce identical signatures.
 
 ## A note on German calibration law
 
@@ -293,6 +347,9 @@ quantity should look like.
 - [RFC 9053](https://www.rfc-editor.org/rfc/rfc9053) — COSE: Initial Algorithms
 - [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864) — Fully-Specified Algorithms for JOSE and COSE
 - [RFC 6979](https://www.rfc-editor.org/rfc/rfc6979) — Deterministic ECDSA
+- [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) — EdDSA: Ed25519 and Ed448
+- [RFC 9964](https://www.rfc-editor.org/rfc/rfc9964) — ML-DSA for JOSE and COSE
+- [FIPS 204](https://doi.org/10.6028/NIST.FIPS.204) — Module-Lattice-Based Digital Signature Standard
 - [RFC 9338](https://www.rfc-editor.org/rfc/rfc9338) — COSE: Countersignatures
 - [RFC 9360](https://www.rfc-editor.org/rfc/rfc9360) — COSE: Header Parameters for X.509 Certificates
 - [RFC 9679](https://www.rfc-editor.org/rfc/rfc9679) — COSE Key Thumbprint
