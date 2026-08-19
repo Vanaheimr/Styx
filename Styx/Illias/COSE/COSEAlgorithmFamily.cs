@@ -55,7 +55,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// message. Its key is a key pair of an algorithm rather than a point
         /// on a curve, which is why it needs a key type of its own.
         /// </summary>
-        MLDSA
+        MLDSA,
+
+        /// <summary>
+        /// HMAC [RFC 2104, RFC 9053 Section 3.1], which is not a signature
+        /// machinery at all but a message authentication one - and the
+        /// difference is the reason it is listed here rather than folded in
+        /// beside the others.
+        ///
+        /// A MAC is SYMMETRIC: whoever can verify one can produce one. It
+        /// therefore answers "did this come from someone holding the key",
+        /// which is a question only a key holder can ask, and it never
+        /// answers "did this come from THAT party" to anybody else. A
+        /// signature does. That is why a metrological record is signed and
+        /// never MACed - the customer, the operator and the regulator all
+        /// have to be able to check a reading, and none of them may be able
+        /// to manufacture one.
+        ///
+        /// Sign and Verify refuse an algorithm of this family outright, so
+        /// that a MAC can never be mistaken for a signature by an API that
+        /// accepts both.
+        /// </summary>
+        HMAC
 
     }
 

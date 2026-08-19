@@ -72,6 +72,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSEAlgorithm.MLDsa65,  -49, "ML-DSA-65", true, false, null),
                                (COSEAlgorithm.MLDsa87,  -50, "ML-DSA-87", true, false, null),
 
+                               // HMAC [RFC 9053, Section 3.1]: message
+                               // authentication and NOT signature, so
+                               // IsSupportedForSigning is false for all four —
+                               // whoever can verify a MAC can produce one, and
+                               // this library refuses to let the two be
+                               // confused.
+                               (COSEAlgorithm.HMAC256_64,    4, "HMAC 256/64",  false, false, null),
+                               (COSEAlgorithm.HMAC256_256,   5, "HMAC 256/256", false, false, null),
+                               (COSEAlgorithm.HMAC384_384,   6, "HMAC 384/384", false, false, null),
+                               (COSEAlgorithm.HMAC512_512,   7, "HMAC 512/512", false, false, null),
+
                                // Hash algorithms [RFC 9054]: they sign nothing,
                                // they name the digest of a thumbprint.
                                (COSEAlgorithm.SHA256,   -16, "SHA-256", false, false, null),

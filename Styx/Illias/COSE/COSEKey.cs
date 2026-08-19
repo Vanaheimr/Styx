@@ -98,6 +98,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static CBORValue  PrivLabel            { get; } = CBORValue.FromInt64(-2);
 
+        /// <summary>
+        /// The value of a symmetric key (label -1) [RFC 9053, Section 7.3].
+        /// The same label a THIRD time: the curve on an EC2 or OKP key, the
+        /// public key on an algorithm key pair, and the shared secret here.
+        /// </summary>
+        public static CBORValue  KLabel               { get; } = CBORValue.FromInt64(-1);
+
         #endregion
 
         #region Properties
@@ -165,6 +172,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Byte[]?                                            Priv                    { get; }
 
         /// <summary>
+        /// The value of a symmetric key (label -1) [RFC 9053, Section 7.3].
+        ///
+        /// And that is label -1 meaning a THIRD thing: the curve on a key of
+        /// key type EC2 or OKP, the public key on an algorithm key pair, and
+        /// here the shared secret itself. A parser switching on the label
+        /// alone reads a shared secret as a curve identifier and reports
+        /// nothing wrong, which is why the key type is established first.
+        /// </summary>
+        public Byte[]?                                            K                       { get; }
+
+        /// <summary>
         /// All key parameters that are not part of the fixed shape above,
         /// preserved so that unknown parameters survive a roundtrip.
         /// </summary>
@@ -172,10 +190,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Whether this key holds private key material.
+        ///
+        /// A symmetric key is ALWAYS secret - it has nothing else - which is
+        /// why K counts here beside the two private halves.
         /// </summary>
         public Boolean                                            IsPrivate
 
-            => D is not null || Priv is not null;
+            => D is not null || Priv is not null || K is not null;
 
         #endregion
 
@@ -195,6 +216,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="AdditionalParameters">Optional additional key parameters.</param>
         /// <param name="Pub">The optional public key of an algorithm key pair.</param>
         /// <param name="Priv">The optional private key seed of an algorithm key pair.</param>
+        /// <param name="K">The optional value of a symmetric key.</param>
         public COSEKey(COSEKeyType                                      KeyType,
                        COSECurve?                                       Curve                  = null,
                        Byte[]?                                          X                      = null,
@@ -205,7 +227,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        IEnumerable<CBORValue>?                          KeyOperations          = null,
                        IEnumerable<KeyValuePair<CBORValue, CBORValue>>? AdditionalParameters   = null,
                        Byte[]?                                          Pub                    = null,
-                       Byte[]?                                          Priv                   = null)
+                       Byte[]?                                          Priv                   = null,
+                       Byte[]?                                          K                      = null)
         {
 
             this.KeyType               = KeyType;
@@ -215,6 +238,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.D                     = D;
             this.Pub                   = Pub;
             this.Priv                  = Priv;
+            this.K                     = K;
             this.KeyIdentifier         = KeyIdentifier;
             this.Algorithm             = Algorithm;
             this.KeyOperations         = KeyOperations?.       ToArray();
@@ -479,6 +503,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             var isAlgorithmKeyPair = keyType == COSEKeyType.AKP;
+            var isSymmetric        = keyType == COSEKeyType.Symmetric;
+
+            Byte[]? k              = null;
 
             #endregion
 
@@ -541,6 +568,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         if (!parameter.Value.TryGetBytes(out pub))
                         {
                             ErrorResponse = "The public key of an algorithm key pair must be a byte string!";
+                            return false;
+                        }
+
+                    }
+
+                    else if (isSymmetric)
+                    {
+
+                        if (!parameter.Value.TryGetBytes(out k))
+                        {
+                            ErrorResponse = "The key value of a symmetric COSE key must be a byte string!";
                             return false;
                         }
 
@@ -610,6 +648,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
+            // "For symmetric keys, it is REQUIRED that 'k' be present in the
+            // structure" [RFC 9053, Section 7.3] - and unlike a missing public
+            // key there is nothing to recompute it from.
+            if (isSymmetric && k is null)
+            {
+                ErrorResponse = "A COSE key of key type Symmetric must carry its key value [RFC 9053, Section 7.3]!";
+                return false;
+            }
+
             Byte[]? yBytes = null;
 
             if (y.HasValue)
@@ -645,7 +692,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                       keyOperations,
                       additionalParameters,
                       pub,
-                      priv
+                      priv,
+                      k
                   );
 
             ErrorResponse = null;
@@ -1179,6 +1227,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
+            // Encoding a symmetric key writes the secret out, always: there is
+            // no half of it that can be published. RFC 9053 says as much -
+            // "care must be taken that it is never transmitted accidentally or
+            // insecurely".
+            else if (KeyType == COSEKeyType.Symmetric)
+            {
+
+                if (K is not null)
+                    parameters.Add(new (KLabel,         CBORValue.FromBytes(K)));
+
+            }
+
             else
             {
 
@@ -1289,6 +1349,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
+                case COSEKeyType.Symmetric:
+                {
+
+                    if (K is null)
+                        throw new COSEException("The thumbprint of a COSE key of key type Symmetric needs its key value!");
+
+                    // RFC 9679 Section 4.4 defines this and Section 7
+                    // immediately warns about it: the thumbprint of a
+                    // symmetric key is a hash OF THE SECRET, so a low-entropy
+                    // one can simply be looked up in a precomputed table. It
+                    // is a usable identifier for a randomly chosen key of at
+                    // least 128 bits and MUST NOT be used for passwords or
+                    // anything resembling one. Note also what is NOT covered:
+                    // the algorithm, unlike an algorithm key pair.
+                    parameters.Add(new (KLabel, CBORValue.FromBytes(K)));
+
+                    break;
+
+                }
+
                 default:
                     throw new COSEException($"The thumbprint of a COSE key of key type {KeyType} is not implemented!");
 
@@ -1387,10 +1467,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Return a copy of this COSE key without its private key material,
         /// e.g. in order to publish it.
+        ///
+        /// A symmetric key has no such form, and saying so is the point rather
+        /// than a limitation: RFC 9053 Section 7.3 states outright that the
+        /// structure "does not have a form that contains only public members".
+        /// Dropping D and Priv from one would return it unchanged, handing the
+        /// caller the shared secret under a name promising the opposite.
         /// </summary>
         public COSEKey ToPublicCOSEKey()
 
-            => new (KeyType,
+            => KeyType == COSEKeyType.Symmetric
+
+                   ? throw new COSEException("A COSE key of key type Symmetric has no public half [RFC 9053, Section 7.3]!")
+
+                   : new (KeyType,
                     Curve,
                     X,
                     Y,
@@ -1401,6 +1491,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     AdditionalParameters,
                     Pub,
                     null);
+
+        #endregion
+
+        #region (static) FromSymmetricKey(K, KeyIdentifier = null, Algorithm = null)
+
+        /// <summary>
+        /// Create a symmetric COSE key from a shared secret
+        /// [RFC 9053, Section 7.3].
+        ///
+        /// No length is enforced. RFC 9053 says an HMAC key SHOULD be as wide
+        /// as the hash output, which is advice about key management rather
+        /// than a rule about the primitive - RFC 2104 accepts any width, and
+        /// the published vectors of RFC 4231 include a four-byte key. What a
+        /// caller must not do is derive one from a password, and no length
+        /// check would catch that.
+        /// </summary>
+        /// <param name="K">The shared secret.</param>
+        /// <param name="KeyIdentifier">An optional key identifier.</param>
+        /// <param name="Algorithm">An optional algorithm this key is restricted to.</param>
+        public static COSEKey FromSymmetricKey(Byte[]          K,
+                                               Byte[]?         KeyIdentifier   = null,
+                                               COSEAlgorithm?  Algorithm       = null)
+        {
+
+            if (K.Length == 0)
+                throw new COSEException("A symmetric COSE key must carry a key value!");
+
+            return new (COSEKeyType.Symmetric,
+                        null, null, null, null,
+                        KeyIdentifier,
+                        Algorithm,
+                        null,
+                        null,
+                        null,
+                        null,
+                        K);
+
+        }
 
         #endregion
 

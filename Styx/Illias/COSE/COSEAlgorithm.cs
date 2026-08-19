@@ -66,7 +66,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            COSECurve?           FixedCurve,
                                            Boolean              IsSupportedForSigning,
                                            Boolean              IsDeprecated,
-                                           MLDsaParameters?     MLDsaParameterSet = null)
+                                           MLDsaParameters?     MLDsaParameterSet = null,
+                                           Int32?               TagSizeInBytes    = null)
         {
 
             public String               Name                     { get; } = Name;
@@ -77,6 +78,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public Boolean              IsSupportedForSigning    { get; } = IsSupportedForSigning;
             public Boolean              IsDeprecated             { get; } = IsDeprecated;
             public MLDsaParameters?     MLDsaParameterSet        { get; } = MLDsaParameterSet;
+            public Int32?               TagSizeInBytes           { get; } = TagSizeInBytes;
 
         }
 
@@ -118,6 +120,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {  -48, new ("ML-DSA-44", "CBOR Object Signing Algorithm for ML-DSA-44", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_44) },
             {  -49, new ("ML-DSA-65", "CBOR Object Signing Algorithm for ML-DSA-65", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_65) },
             {  -50, new ("ML-DSA-87", "CBOR Object Signing Algorithm for ML-DSA-87", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_87) },
+
+            // HMAC [RFC 9053, Section 3.1]. Message authentication rather
+            // than signature: symmetric, so IsSupportedForSigning is false for
+            // all four and Sign refuses them by family. The name reads "hash
+            // size / tag size", and the tag is the LEFTMOST bits of the full
+            // HMAC - truncation applies to the output, never to the key.
+            {    4, new ("HMAC 256/64",  "HMAC w/ SHA-256 truncated to 64 bits",   COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA256, null,                      false, false, null, 8 ) },
+            {    5, new ("HMAC 256/256", "HMAC w/ SHA-256",                        COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA256, null,                      false, false, null, 32) },
+            {    6, new ("HMAC 384/384", "HMAC w/ SHA-384",                        COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA384, null,                      false, false, null, 48) },
+            {    7, new ("HMAC 512/512", "HMAC w/ SHA-512",                        COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA512, null,                      false, false, null, 64) },
 
             // Hash algorithms [RFC 9054]. They sign nothing; they name the
             // digest of a certificate thumbprint (x5t) and the like.
@@ -206,6 +218,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => registry.TryGetValue(Value, out var info)
                    ? info.MLDsaParameterSet
+                   : null;
+
+        /// <summary>
+        /// The width of the authentication tag in bytes, for a MAC algorithm,
+        /// and null for everything else.
+        ///
+        /// It is part of the identifier rather than a parameter: HMAC 256/64
+        /// and HMAC 256/256 are two registered algorithms over the same hash,
+        /// and a verifier learns which width to expect from the message.
+        /// </summary>
+        public Int32?              TagSizeInBytes
+
+            => registry.TryGetValue(Value, out var info)
+                   ? info.TagSizeInBytes
                    : null;
 
         /// <summary>
@@ -368,6 +394,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return null;
 
         }
+
+        /// <summary>
+        /// HMAC with SHA-256, truncated to 64 bits (algorithm 4)
+        /// [RFC 9053, Section 3.1]. The smallest authentication tag COSE
+        /// registers: eight bytes, where the smallest signature is sixty-four.
+        /// </summary>
+        public static COSEAlgorithm  HMAC256_64  { get; } = new (   4);
+
+        /// <summary>
+        /// HMAC with SHA-256 (algorithm 5) [RFC 9053, Section 3.1].
+        /// </summary>
+        public static COSEAlgorithm  HMAC256_256 { get; } = new (   5);
+
+        /// <summary>
+        /// HMAC with SHA-384 (algorithm 6) [RFC 9053, Section 3.1].
+        /// </summary>
+        public static COSEAlgorithm  HMAC384_384 { get; } = new (   6);
+
+        /// <summary>
+        /// HMAC with SHA-512 (algorithm 7) [RFC 9053, Section 3.1].
+        /// </summary>
+        public static COSEAlgorithm  HMAC512_512 { get; } = new (   7);
+
 
         /// <summary>
         /// The SHA-2 256-bit hash (algorithm -16) [RFC 9054], the default
@@ -541,6 +590,94 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return System.Security.Cryptography.SHA512.HashData(Data);
 
             throw new COSEException($"The message digest '{hashAlgorithm.Name}' of the COSE algorithm '{Name}' is not implemented!");
+
+        }
+
+        #endregion
+
+        #region ComputeMAC(ToBeMaced, Key)
+
+        /// <summary>
+        /// Compute the authentication tag of the given data with the given
+        /// shared key, as defined by this HMAC algorithm.
+        ///
+        /// This is deliberately NOT reachable through Sign(...). A MAC is not
+        /// a signature with a shorter key: it is symmetric, so whoever can
+        /// verify one can produce one, and an API letting one stand in for the
+        /// other would let a caller believe a message was signed when it was
+        /// merely authenticated between two parties sharing a secret.
+        ///
+        /// The truncation of HMAC 256/64 applies to the OUTPUT and never to
+        /// the key: RFC 9053 keeps "the leftmost tag-length bits" of the full
+        /// HMAC.
+        /// </summary>
+        /// <param name="ToBeMaced">The data to authenticate, i.e. the encoded MAC_structure.</param>
+        /// <param name="Key">The shared secret.</param>
+        public Byte[] ComputeMAC(ReadOnlySpan<Byte>  ToBeMaced,
+                                 Byte[]              Key)
+        {
+
+            if (Family != COSEAlgorithmFamily.HMAC)
+                throw new COSEException($"The COSE algorithm '{Name}' is not a message authentication algorithm supported by this implementation!");
+
+            var hashAlgorithm  = HashAlgorithm
+                                     ?? throw new COSEException($"The COSE algorithm '{Name}' does not define a message digest!");
+
+            var tagSize        = TagSizeInBytes
+                                     ?? throw new COSEException($"The COSE algorithm '{Name}' does not define an authentication tag width!");
+
+            // The key is passed through as it is. RFC 9053 says an HMAC key
+            // SHOULD be as wide as the hash output, which is advice about key
+            // management rather than a rule about the primitive - RFC 2104
+            // accepts any width, and the published vectors of RFC 4231 include
+            // a four-byte key.
+            Byte[] full;
+
+            if      (hashAlgorithm == HashAlgorithmName.SHA256)  full = HMACSHA256.HashData(Key, ToBeMaced);
+            else if (hashAlgorithm == HashAlgorithmName.SHA384)  full = HMACSHA384.HashData(Key, ToBeMaced);
+            else if (hashAlgorithm == HashAlgorithmName.SHA512)  full = HMACSHA512.HashData(Key, ToBeMaced);
+            else
+                throw new COSEException($"The message digest '{hashAlgorithm.Name}' of the COSE algorithm '{Name}' is not implemented!");
+
+            if (tagSize > full.Length)
+                throw new COSEException($"An HMAC over {hashAlgorithm.Name} is {full.Length} bytes long and can not be truncated to {tagSize}!");
+
+            return tagSize == full.Length
+                       ? full
+                       : full[..tagSize];
+
+        }
+
+        #endregion
+
+        #region VerifyMAC(ToBeMaced, Tag, Key)
+
+        /// <summary>
+        /// Whether the given authentication tag is the right one for the given
+        /// data and shared key.
+        ///
+        /// The comparison is CONSTANT TIME, which matters here in a way it
+        /// does not for a signature: a compare returning early would tell
+        /// whoever is guessing a tag how many of their leading bytes were
+        /// right, turning the forgery of a 32-byte tag from 2^256 work into
+        /// 32 x 256. Everything a signature verification compares is public,
+        /// so it has no equivalent exposure.
+        ///
+        /// The length check in front leaks nothing: the width of a tag follows
+        /// from the algorithm, which travels in the message.
+        /// </summary>
+        /// <param name="ToBeMaced">The authenticated data, i.e. the encoded MAC_structure.</param>
+        /// <param name="Tag">The authentication tag that arrived.</param>
+        /// <param name="Key">The shared secret.</param>
+        public Boolean VerifyMAC(ReadOnlySpan<Byte>  ToBeMaced,
+                                 Byte[]              Tag,
+                                 Byte[]              Key)
+        {
+
+            var computed = ComputeMAC(ToBeMaced, Key);
+
+            return computed.Length == Tag.Length &&
+                   CryptographicOperations.FixedTimeEquals(computed, Tag);
 
         }
 

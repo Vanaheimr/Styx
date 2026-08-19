@@ -39,11 +39,79 @@ by a test.
 | `ES256K` | −47 | secp256k1 | SHA-256 |
 | `Ed25519` / `Ed448` | −19 / −53 | Ed25519 / Ed448 | *(none — pure)* |
 | `ML-DSA-44` / `-65` / `-87` | −48 / −49 / −50 | *(none — an algorithm key pair)* | *(none — pure)* |
+| `HMAC 256/64` / `256/256` / `384/384` / `512/512` | 4 / 5 / 6 / 7 | *(none — a shared secret)* | SHA-256 / 256 / 384 / 512 |
 
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
   header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
 - **X.509 certificate chains** ([RFC 9360](https://www.rfc-editor.org/rfc/rfc9360)) —
   `x5chain` and `x5t`, validated against configured trust anchors.
+- **`COSEMac0`** — a payload authenticated with a shared key (CBOR tag 17),
+  with the HMAC algorithms of [RFC 9053 §3.1](https://www.rfc-editor.org/rfc/rfc9053#section-3.1).
+  Not a small signature — see below.
+
+### Message authentication is not signing
+
+`COSEMac0` is the structural twin of `COSESign1`: four elements in the same
+order, CBOR tag 17 against 18, and a `MAC_structure` differing from the
+`Sig_structure` in one string — `"MAC0"` where the other says `"Signature1"`.
+Everything the signature code learned applies unchanged: the protected bucket
+kept verbatim, the CBOR tag not covered, detached payloads, external additional
+authenticated data.
+
+**What is not the same is what a verified message means.** A signature says
+*"the holder of that private key produced this"*, to anybody who cares to check.
+A tag says *"someone holding the shared key produced this"* — and only to
+someone who holds that key too, because verifying one requires the very key
+that creates one. Between two parties that is still useful: each knows the
+other made it, having not made it themselves. Towards a third party it is worth
+nothing, and a party who later denies having produced a message cannot be
+contradicted with a tag.
+
+That is why a metrological record is **signed**. The customer, the operator and
+the regulator all have to be able to check a reading, and none of them may be
+able to manufacture one. What a MAC buys instead is size and speed: eight bytes
+and one pass of a hash, against sixty-four bytes and a curve multiplication for
+the smallest signature here — or 4627 bytes post-quantum. It belongs where the
+two ends of a link already share a secret and want cheap tamper detection, with
+the durable evidence carried by a signature underneath.
+
+`COSEAlgorithm.Sign(...)` refuses an HMAC algorithm by family, and
+`ComputeMAC(...)` refuses a signature one, so neither can stand in for the
+other by accident.
+
+**Only HMAC.** [RFC 9053 §3.2](https://www.rfc-editor.org/rfc/rfc9053#section-3.2)
+also registers AES-CBC-MAC, which is deliberately absent. Raw CBC-MAC is secure
+only for messages of a *fixed* length: given the tag `T` of a one-block message
+`M`, the two-block message `M ‖ (T ⊕ M)` has the very same tag — a forgery
+constructed without the key. §3.2.1 says so itself and names what saves it
+inside COSE, *"a specific encoding structure that includes lengths"*: its safety
+there rests on the `MAC_structure`, not on the primitive. HMAC needs no such
+argument. (If you read the two RFCs side by side: RFC 9052 Appendix C.6.1
+describes algorithm 15 as *"AES-CMAC"*, while RFC 9053 §3.2 states outright that
+AES-CBC-MAC **is not** AES-CMAC. The identifier is CBC-MAC; the prose of the
+other RFC is wrong.)
+
+**Three details that are easy to get backwards.** Truncation applies to the
+*output* and never to the key — `HMAC 256/64` is the leftmost eight bytes of the
+full HMAC-SHA-256, and an implementation shortening the key instead would verify
+its own tags perfectly and nobody else's. The comparison is *constant time*
+(`CryptographicOperations.FixedTimeEquals`), which is a requirement a MAC has
+and a signature does not: an early-returning compare tells an attacker how many
+leading bytes of a guessed tag were right. And a key issued for `HMAC 256/256`
+is not talked into producing a 64-bit tag, which would be a downgrade its holder
+never agreed to.
+
+**The symmetric key** is key type 4 [[RFC 9053 §7.3](https://www.rfc-editor.org/rfc/rfc9053#section-7.3)],
+carrying its value under label `−1` — that label now meaning a *third* thing:
+the curve on an EC2 or OKP key, the public key on an algorithm key pair, the
+shared secret here. `ToPublicCOSEKey()` throws on one rather than returning it
+unchanged, because RFC 9053 states outright that the structure *"does not have a
+form that contains only public members"* and dropping the private fields would
+hand the caller the secret under a name promising the opposite. Its thumbprint
+[[RFC 9679 §4.4](https://www.rfc-editor.org/rfc/rfc9679#section-4.4)] covers
+`kty` and `k` and is a hash *of the secret*: §7 of that RFC warns that a
+low-entropy key can be looked up in a precomputed table, so thumbprints MUST NOT
+be used with passwords.
 
 ### The two pure families
 
@@ -309,6 +377,15 @@ from the documented parts, and that both its body signature and its
 countersignature then verify against the published keys is what proves the
 assembly and the transcription.
 
+**HMAC** is pinned against [RFC 4231](https://www.rfc-editor.org/rfc/rfc4231),
+the canonical HMAC-SHA-2 vectors — including the four-byte key of Test Case 2,
+which the implementation must *not* refuse, and the 131-byte key of Test Case 7,
+which it has to hash down before use. RFC 9052's only `COSE_Mac0` example uses
+AES-CBC-MAC rather than HMAC, so no published message pins the structure and the
+primitive at once; the structure is pinned against that example all the same —
+its 37 bytes are parsed, checked field by field, re-encoded identically and its
+`MAC_structure` asserted — and the primitive against RFC 4231.
+
 **EdDSA** is pinned against RFC 8032 — Section 7.1 for Ed25519, Section 7.4 for
 Ed448 — and those are checked harder than any ECDSA vector allows: EdDSA has no
 nonce to draw, so its published signatures are not merely verifiable but
@@ -345,6 +422,8 @@ quantity should look like.
 
 - [RFC 9052](https://www.rfc-editor.org/rfc/rfc9052) — COSE: Structures and Process
 - [RFC 9053](https://www.rfc-editor.org/rfc/rfc9053) — COSE: Initial Algorithms
+- [RFC 2104](https://www.rfc-editor.org/rfc/rfc2104) — HMAC: Keyed-Hashing for Message Authentication
+- [RFC 4231](https://www.rfc-editor.org/rfc/rfc4231) — HMAC-SHA-2 test vectors
 - [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864) — Fully-Specified Algorithms for JOSE and COSE
 - [RFC 6979](https://www.rfc-editor.org/rfc/rfc6979) — Deterministic ECDSA
 - [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) — EdDSA: Ed25519 and Ed448
