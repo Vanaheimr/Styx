@@ -45,23 +45,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// The registered curves: numeric identification =&gt; (name, key type,
-        /// name within the Bouncy Castle named curve table).
-        /// Curves of key type OKP are used with EdDSA and ECDH only and
-        /// therefore have no named elliptic curve parameters here.
+        /// name within the Bouncy Castle named curve table, key size).
+        ///
+        /// A curve of key type OKP has no named elliptic curve parameters
+        /// here, because it is not used through the elliptic curve machinery:
+        /// an EdDSA key is a fixed-width octet string, and the width is what
+        /// this registry has to state instead. Ed448 is 57 bytes and not 56 —
+        /// RFC 8032 appends a sign bit to the 456-bit encoding, which costs a
+        /// whole further octet.
+        ///
+        /// X25519 and X448 carry no size, because they sign nothing: they are
+        /// key agreement curves, and this library has no use for them beyond
+        /// recognizing them.
         /// </summary>
-        private static readonly Dictionary<Int32, (String Name, COSEKeyType KeyType, String? BouncyCastleName)> registry = new () {
-            {   1, ("P-256",           COSEKeyType.EC2, "secp256r1")       },
-            {   2, ("P-384",           COSEKeyType.EC2, "secp384r1")       },
-            {   3, ("P-521",           COSEKeyType.EC2, "secp521r1")       },
-            {   4, ("X25519",          COSEKeyType.OKP, null)              },
-            {   5, ("X448",            COSEKeyType.OKP, null)              },
-            {   6, ("Ed25519",         COSEKeyType.OKP, null)              },
-            {   7, ("Ed448",           COSEKeyType.OKP, null)              },
-            {   8, ("secp256k1",       COSEKeyType.EC2, "secp256k1")       },
-            { 256, ("brainpoolP256r1", COSEKeyType.EC2, "brainpoolP256r1") },
-            { 257, ("brainpoolP320r1", COSEKeyType.EC2, "brainpoolP320r1") },
-            { 258, ("brainpoolP384r1", COSEKeyType.EC2, "brainpoolP384r1") },
-            { 259, ("brainpoolP512r1", COSEKeyType.EC2, "brainpoolP512r1") }
+        private static readonly Dictionary<Int32, (String Name, COSEKeyType KeyType, String? BouncyCastleName, Int32? OctetKeySize)> registry = new () {
+            {   1, ("P-256",           COSEKeyType.EC2, "secp256r1",       null) },
+            {   2, ("P-384",           COSEKeyType.EC2, "secp384r1",       null) },
+            {   3, ("P-521",           COSEKeyType.EC2, "secp521r1",       null) },
+            {   4, ("X25519",          COSEKeyType.OKP, null,              null) },
+            {   5, ("X448",            COSEKeyType.OKP, null,              null) },
+            {   6, ("Ed25519",         COSEKeyType.OKP, null,              32  ) },
+            {   7, ("Ed448",           COSEKeyType.OKP, null,              57  ) },
+            {   8, ("secp256k1",       COSEKeyType.EC2, "secp256k1",       null) },
+            { 256, ("brainpoolP256r1", COSEKeyType.EC2, "brainpoolP256r1", null) },
+            { 257, ("brainpoolP320r1", COSEKeyType.EC2, "brainpoolP320r1", null) },
+            { 258, ("brainpoolP384r1", COSEKeyType.EC2, "brainpoolP384r1", null) },
+            { 259, ("brainpoolP512r1", COSEKeyType.EC2, "brainpoolP512r1", null) }
         };
 
         /// <summary>
@@ -148,9 +157,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 var domainParameters = DomainParameters;
 
+                // An OKP curve has no field element to measure: its public key
+                // is one fixed-width octet string, and the registry states it.
                 return domainParameters is not null
                            ? (domainParameters.Curve.FieldSize + 7) / 8
-                           : null;
+                           : OctetKeySizeInBytes;
 
             }
         }
@@ -169,10 +180,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 return domainParameters is not null
                            ? (domainParameters.N.BitLength + 7) / 8
-                           : null;
+                           : OctetKeySizeInBytes;
 
             }
         }
+
+        /// <summary>
+        /// The fixed width of an EdDSA key on this curve, or null when the
+        /// curve is not one this library signs with [RFC 8032].
+        /// </summary>
+        public Int32?      OctetKeySizeInBytes
+
+            => registry.TryGetValue(Value, out var entry)
+                   ? entry.OctetKeySize
+                   : null;
 
         #endregion
 

@@ -58,10 +58,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSEAlgorithm.ESB384,  -267, "ESB384",  true,  false, COSECurve.BrainpoolP384r1),
                                (COSEAlgorithm.ESB512,  -268, "ESB512",  true,  false, COSECurve.BrainpoolP512r1),
 
-                               // Known, but not implemented here.
-                               (COSEAlgorithm.EdDSA,     -8, "EdDSA",   false, true,  null),
-                               (COSEAlgorithm.Ed25519,  -19, "Ed25519", false, false, COSECurve.Ed25519),
-                               (COSEAlgorithm.Ed448,    -53, "Ed448",   false, false, COSECurve.Ed448),
+                               // EdDSA [RFC 8032]: pure, and deterministic
+                               // without being asked. The un-suffixed
+                               // identifier leaves the curve to the key.
+                               (COSEAlgorithm.EdDSA,     -8, "EdDSA",   true,  true,  null),
+                               (COSEAlgorithm.Ed25519,  -19, "Ed25519", true,  false, COSECurve.Ed25519),
+                               (COSEAlgorithm.Ed448,    -53, "Ed448",   true,  false, COSECurve.Ed448),
+
+                               // ML-DSA [FIPS 204, RFC 9964]: pure as well,
+                               // and on no curve at all — its keys are
+                               // algorithm key pairs.
+                               (COSEAlgorithm.MLDsa44,  -48, "ML-DSA-44", true, false, null),
+                               (COSEAlgorithm.MLDsa65,  -49, "ML-DSA-65", true, false, null),
+                               (COSEAlgorithm.MLDsa87,  -50, "ML-DSA-87", true, false, null),
 
                                // Hash algorithms [RFC 9054]: they sign nothing,
                                // they name the digest of a thumbprint.
@@ -110,8 +119,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSECurve.P521,               3, "P-521",             COSEKeyType.EC2,   66,   66),
                                (COSECurve.X25519,             4, "X25519",            COSEKeyType.OKP, null, null),
                                (COSECurve.X448,               5, "X448",              COSEKeyType.OKP, null, null),
-                               (COSECurve.Ed25519,            6, "Ed25519",           COSEKeyType.OKP, null, null),
-                               (COSECurve.Ed448,              7, "Ed448",             COSEKeyType.OKP, null, null),
+                               // An EdDSA key is a fixed-width octet string
+                               // rather than a point, and Ed448 is 57 bytes
+                               // and not 56: RFC 8032 appends a sign bit.
+                               (COSECurve.Ed25519,            6, "Ed25519",           COSEKeyType.OKP,   32,   32),
+                               (COSECurve.Ed448,              7, "Ed448",             COSEKeyType.OKP,   57,   57),
                                (COSECurve.Secp256k1,          8, "secp256k1",         COSEKeyType.EC2,   32,   32),
                                (COSECurve.BrainpoolP256r1,  256, "brainpoolP256r1",   COSEKeyType.EC2,   32,   32),
                                (COSECurve.BrainpoolP320r1,  257, "brainpoolP320r1",   COSEKeyType.EC2,   40,   40),

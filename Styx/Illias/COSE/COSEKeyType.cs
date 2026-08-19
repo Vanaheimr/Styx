@@ -61,7 +61,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// A WalnutDSA public key.
         /// </summary>
-        WalnutDSA    = 6
+        WalnutDSA    = 6,
+
+        /// <summary>
+        /// Algorithm Key Pair [RFC 9964]: a key pair belonging to an algorithm
+        /// rather than to a curve, which is what the post-quantum schemes need
+        /// — an ML-DSA key is not a point on anything.
+        ///
+        /// Its parameters are "pub" and "priv", and they collide numerically
+        /// with the curve and the x coordinate of an EC2 or OKP key: label -1
+        /// is the curve there and the public key here. Whoever reads a COSE
+        /// key must therefore establish the key type before reading anything
+        /// else.
+        /// </summary>
+        AKP          = 7
 
     }
 

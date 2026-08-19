@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -102,7 +103,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         /// <summary>
         /// The public part of the ECDSA P-256 example key of RFC 9052.
         /// </summary>
-        private static ECPublicKeyParameters ExamplePublicKey()
+        private static AsymmetricKeyParameter ExamplePublicKey()
 
             => new COSEKey(
                    COSEKeyType.EC2,
@@ -121,7 +122,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         /// <summary>
         /// The private part of the ECDSA P-256 example key of RFC 9052.
         /// </summary>
-        private static ECPrivateKeyParameters ExamplePrivateKey()
+        private static AsymmetricKeyParameter ExamplePrivateKey()
 
             => new COSEKey(
                    COSEKeyType.EC2,

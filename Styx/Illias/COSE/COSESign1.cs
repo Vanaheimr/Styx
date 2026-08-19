@@ -19,6 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.X509;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -302,7 +303,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
         public static COSESign1 Sign(Byte[]                  Payload,
-                                     ECPrivateKeyParameters  PrivateKey,
+                                     AsymmetricKeyParameter  PrivateKey,
                                      COSEAlgorithm           Algorithm,
                                      Byte[]?                 KeyIdentifier   = null,
                                      Byte[]?                 ExternalAAD     = null,
@@ -353,7 +354,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
         public static COSESign1 SignWithApplicationAlgorithm(Byte[]                  Payload,
-                                                             ECPrivateKeyParameters  PrivateKey,
+                                                             AsymmetricKeyParameter  PrivateKey,
                                                              COSEAlgorithm           Algorithm,
                                                              Byte[]?                 KeyIdentifier   = null,
                                                              Byte[]?                 ExternalAAD     = null,
@@ -394,7 +395,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
         public static COSESign1 Sign(Byte[]                  Payload,
-                                     ECPrivateKeyParameters  PrivateKey,
+                                     AsymmetricKeyParameter  PrivateKey,
                                      COSEHeaders             ProtectedHeader,
                                      COSEHeaders?            UnprotectedHeader   = null,
                                      Byte[]?                 ExternalAAD         = null,
@@ -484,7 +485,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data that was signed along with the payload.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects, required whenever the message states its algorithm within the unprotected header bucket only.</param>
-        public Boolean Verify(ECPublicKeyParameters  PublicKey,
+        public Boolean Verify(AsymmetricKeyParameter  PublicKey,
                               Byte[]?                ExternalAAD         = null,
                               Byte[]?                DetachedPayload     = null,
                               COSEAlgorithm?         ExpectedAlgorithm   = null)
@@ -509,7 +510,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data that was signed along with the payload.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects, required whenever the message states its algorithm within the unprotected header bucket only.</param>
-        public Boolean Verify(ECPublicKeyParameters             PublicKey,
+        public Boolean Verify(AsymmetricKeyParameter            PublicKey,
                               [NotNullWhen(false)] out String?  ErrorResponse,
                               Byte[]?                           ExternalAAD         = null,
                               Byte[]?                           DetachedPayload     = null,
@@ -540,7 +541,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// parameter, which the caller checks first because what counts as
         /// understood depends on what the caller is about to do.
         /// </summary>
-        private Boolean VerifySignature(ECPublicKeyParameters             PublicKey,
+        private Boolean VerifySignature(AsymmetricKeyParameter            PublicKey,
                                         [NotNullWhen(false)] out String?  ErrorResponse,
                                         Byte[]?                           ExternalAAD,
                                         Byte[]?                           DetachedPayload,
@@ -763,11 +764,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region ...and the binding: the certified key must be the signing key
 
-            if (chain.PublicKey() is not ECPublicKeyParameters publicKey)
-            {
-                ErrorResponse = $"The end-entity certificate '{chain.EndEntity.SubjectDN}' does not hold an elliptic curve public key!";
-                return false;
-            }
+            // Whether the certified key is one this algorithm can verify with
+            // is the algorithm's question, not this one's: an EdDSA or ML-DSA
+            // certificate is as good a binding as an elliptic curve one.
+            var publicKey = chain.PublicKey()
+                                ?? throw new COSEException($"The end-entity certificate '{chain.EndEntity.SubjectDN}' holds no public key!");
 
             if (!VerifySignature(publicKey,
                                  out ErrorResponse,
@@ -948,7 +949,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
-        public COSESign1 AddCountersignature(ECPrivateKeyParameters  PrivateKey,
+        public COSESign1 AddCountersignature(AsymmetricKeyParameter  PrivateKey,
                                              COSEAlgorithm           Algorithm,
                                              Byte[]?                 KeyIdentifier     = null,
                                              Byte[]?                 ExternalAAD       = null,
@@ -980,7 +981,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
-        public COSESign1 AddCountersignature(ECPrivateKeyParameters  PrivateKey,
+        public COSESign1 AddCountersignature(AsymmetricKeyParameter  PrivateKey,
                                              COSEHeaders             CountersignatureProtectedHeader,
                                              COSEHeaders?            CountersignatureUnprotectedHeader   = null,
                                              Byte[]?                 ExternalAAD                         = null,
@@ -1048,7 +1049,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects, required whenever the countersignature states its algorithm within its unprotected header bucket only.</param>
         public Boolean VerifyCountersignature(COSESignature                     Countersignature,
-                                              ECPublicKeyParameters             PublicKey,
+                                              AsymmetricKeyParameter            PublicKey,
                                               [NotNullWhen(false)] out String?  ErrorResponse,
                                               Byte[]?                           ExternalAAD         = null,
                                               Byte[]?                           DetachedPayload     = null,

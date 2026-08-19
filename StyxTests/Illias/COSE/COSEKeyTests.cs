@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -89,8 +90,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(key.Y!.Length,   Is.EqualTo(32));
             Assert.That(key.D!.Length,   Is.EqualTo(32));
 
-            var publicKey   = key.ToPublicKey();
-            var privateKey  = key.ToPrivateKey();
+            var publicKey   = (ECPublicKeyParameters)  key.ToPublicKey();
+            var privateKey  = (ECPrivateKeyParameters) key.ToPrivateKey();
 
             // The public point of the published private key is the published
             // public point - which only holds when every one of those 96 key
@@ -264,7 +265,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(key.Y,  Is.EqualTo(y));
 
             Assert.That(key.TryToPublicKey(out var publicKey, out var errorResponse),  Is.True, errorResponse);
-            Assert.That(publicKey!.Q.Normalize(),  Is.EqualTo(ExampleKey().ToPublicKey().Q.Normalize()));
+            Assert.That(((ECPublicKeyParameters) publicKey!).Q.Normalize(),
+                        Is.EqualTo(((ECPublicKeyParameters) ExampleKey().ToPublicKey()).Q.Normalize()));
 
             // The wrong sign bit yields the other point of the curve,
             // which is a valid point but a different key.
@@ -284,22 +286,45 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-        #region Only_elliptic_curve_keys_of_key_type_EC2_are_supported()
+        #region Every_key_type_is_read_in_its_own_light()
 
         [Test]
-        public void Only_elliptic_curve_keys_of_key_type_EC2_are_supported()
+        public void Every_key_type_is_read_in_its_own_light()
         {
 
-            var okp = new COSEKey(
-                          COSEKeyType.OKP,
-                          COSECurve.Ed25519,
-                          new Byte[32]
-                      );
+            // A key agreement curve signs nothing, whatever key type it is
+            // wrapped in.
+            var x25519 = new COSEKey(
+                             COSEKeyType.OKP,
+                             COSECurve.X25519,
+                             new Byte[32]
+                         );
 
-            Assert.That(okp.TryToPublicKey(out _, out var errorResponse),  Is.False);
-            Assert.That(errorResponse,  Does.Contain("key type EC2"));
+            Assert.That(x25519.TryToPublicKey(out _, out var notASigningCurve),  Is.False);
+            Assert.That(notASigningCurve,  Does.Contain("not an EdDSA signature curve"));
 
-            // ...and a key that names no curve at all can not be used either.
+            // An EdDSA key of the wrong width is refused before it reaches the
+            // curve arithmetic: Ed448 is 57 bytes, not 56.
+            var tooShort = new COSEKey(
+                               COSEKeyType.OKP,
+                               COSECurve.Ed448,
+                               new Byte[56]
+                           );
+
+            Assert.That(tooShort.TryToPublicKey(out _, out var wrongWidth),  Is.False);
+            Assert.That(wrongWidth,  Does.Contain("57 bytes long"));
+
+            // An algorithm key pair without an algorithm can not be used at
+            // all: its public key does not say which parameter set made it.
+            var withoutAlgorithm = new COSEKey(
+                                       COSEKeyType.AKP,
+                                       Pub: new Byte[1312]
+                                   );
+
+            Assert.That(withoutAlgorithm.TryToPublicKey(out _, out var noAlgorithm),  Is.False);
+            Assert.That(noAlgorithm,  Does.Contain("must name its algorithm"));
+
+            // ...and an elliptic curve key that names no curve either.
             Assert.That(new COSEKey(COSEKeyType.EC2).TryToPublicKey(out _, out var withoutCurve),  Is.False);
             Assert.That(withoutCurve,  Does.Contain("must name an elliptic curve"));
 

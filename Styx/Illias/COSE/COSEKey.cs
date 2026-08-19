@@ -20,6 +20,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -84,6 +85,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static CBORValue  DLabel               { get; } = CBORValue.FromInt64(-4);
 
+        /// <summary>
+        /// The public key of an algorithm key pair (label -1) [RFC 9964].
+        /// The same label as the curve, and a different parameter: which of
+        /// the two it is depends on the key type.
+        /// </summary>
+        public static CBORValue  PubLabel             { get; } = CBORValue.FromInt64(-1);
+
+        /// <summary>
+        /// The private key of an algorithm key pair (label -2) [RFC 9964].
+        /// The same label as the x coordinate.
+        /// </summary>
+        public static CBORValue  PrivLabel            { get; } = CBORValue.FromInt64(-2);
+
         #endregion
 
         #region Properties
@@ -128,8 +142,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// The private key, zero-padded to the width of the group order.
+        /// On a key of key type OKP this is the EdDSA private key, which is
+        /// a fixed-width octet string rather than a scalar.
         /// </summary>
         public Byte[]?                                            D                       { get; }
+
+        /// <summary>
+        /// The public key of an algorithm key pair (label -1) [RFC 9964].
+        ///
+        /// Note the numeric collision: on a key of key type EC2 or OKP, label
+        /// -1 is the CURVE and -2 the x coordinate. Which of the two readings
+        /// applies is decided by the key type alone, which is why parsing
+        /// establishes that first.
+        /// </summary>
+        public Byte[]?                                            Pub                     { get; }
+
+        /// <summary>
+        /// The private key of an algorithm key pair (label -2) [RFC 9964],
+        /// which is the 32-byte SEED and not the expanded secret key: the
+        /// expanded ML-DSA-87 key is 4896 bytes and derivable from it.
+        /// </summary>
+        public Byte[]?                                            Priv                    { get; }
 
         /// <summary>
         /// All key parameters that are not part of the fixed shape above,
@@ -142,7 +175,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Boolean                                            IsPrivate
 
-            => D is not null;
+            => D is not null || Priv is not null;
 
         #endregion
 
@@ -160,6 +193,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Algorithm">An optional algorithm this key is restricted to.</param>
         /// <param name="KeyOperations">The optional operations this key may be used for.</param>
         /// <param name="AdditionalParameters">Optional additional key parameters.</param>
+        /// <param name="Pub">The optional public key of an algorithm key pair.</param>
+        /// <param name="Priv">The optional private key seed of an algorithm key pair.</param>
         public COSEKey(COSEKeyType                                      KeyType,
                        COSECurve?                                       Curve                  = null,
                        Byte[]?                                          X                      = null,
@@ -168,7 +203,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        Byte[]?                                          KeyIdentifier          = null,
                        COSEAlgorithm?                                   Algorithm              = null,
                        IEnumerable<CBORValue>?                          KeyOperations          = null,
-                       IEnumerable<KeyValuePair<CBORValue, CBORValue>>? AdditionalParameters   = null)
+                       IEnumerable<KeyValuePair<CBORValue, CBORValue>>? AdditionalParameters   = null,
+                       Byte[]?                                          Pub                    = null,
+                       Byte[]?                                          Priv                   = null)
         {
 
             this.KeyType               = KeyType;
@@ -176,6 +213,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.X                     = X;
             this.Y                     = Y;
             this.D                     = D;
+            this.Pub                   = Pub;
+            this.Priv                  = Priv;
             this.KeyIdentifier         = KeyIdentifier;
             this.Algorithm             = Algorithm;
             this.KeyOperations         = KeyOperations?.       ToArray();
@@ -254,6 +293,75 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    );
 
         }
+
+        #endregion
+
+        #region (static) From    (Key, KeyIdentifier = null, Algorithm = null)
+
+        /// <summary>
+        /// Create a COSE key from any key this library can sign or verify
+        /// with: an elliptic curve key (key type EC2), an EdDSA key (OKP) or
+        /// an ML-DSA key (AKP).
+        ///
+        /// A private key always yields the complete key pair, as the private
+        /// key examples of RFC 9052 do: the public half is derived rather than
+        /// asked for, so the two cannot disagree.
+        /// </summary>
+        /// <param name="Key">A public or private key.</param>
+        /// <param name="KeyIdentifier">An optional key identifier.</param>
+        /// <param name="Algorithm">An optional algorithm this key is restricted to. Not optional for an ML-DSA key, where the algorithm is part of the key's identity - it is then derived from the key's own parameter set.</param>
+        public static COSEKey From(AsymmetricKeyParameter  Key,
+                                   Byte[]?                 KeyIdentifier   = null,
+                                   COSEAlgorithm?          Algorithm       = null)
+
+            => Key switch {
+
+                   ECPrivateKeyParameters  ecPrivate
+                       => From(ecPrivate,  KeyIdentifier, Algorithm),
+
+                   ECPublicKeyParameters   ecPublic
+                       => From(ecPublic,   KeyIdentifier, Algorithm),
+
+                   // EdDSA: the public key is the whole of x, and there is no
+                   // y to go with it.
+                   Ed25519PrivateKeyParameters  ed25519Private
+                       => new (COSEKeyType.OKP, COSECurve.Ed25519,
+                               ed25519Private.GeneratePublicKey().GetEncoded(), null,
+                               ed25519Private.GetEncoded(), KeyIdentifier, Algorithm),
+
+                   Ed25519PublicKeyParameters   ed25519Public
+                       => new (COSEKeyType.OKP, COSECurve.Ed25519,
+                               ed25519Public.GetEncoded(), null, null, KeyIdentifier, Algorithm),
+
+                   Ed448PrivateKeyParameters    ed448Private
+                       => new (COSEKeyType.OKP, COSECurve.Ed448,
+                               ed448Private.GeneratePublicKey().GetEncoded(), null,
+                               ed448Private.GetEncoded(), KeyIdentifier, Algorithm),
+
+                   Ed448PublicKeyParameters     ed448Public
+                       => new (COSEKeyType.OKP, COSECurve.Ed448,
+                               ed448Public.GetEncoded(), null, null, KeyIdentifier, Algorithm),
+
+                   // ML-DSA: no curve, and the private key is the seed.
+                   MLDsaPrivateKeyParameters    mlDsaPrivate
+                       => new (COSEKeyType.AKP,
+                               KeyIdentifier:  KeyIdentifier,
+                               Algorithm:      Algorithm ?? COSEAlgorithm.TryGetFor(mlDsaPrivate.Parameters)
+                                                   ?? throw new COSEException("The ML-DSA parameter set of the given private key is not registered within the IANA \"COSE Algorithms\" registry!"),
+                               Pub:            mlDsaPrivate.GetPublicKeyEncoded(),
+                               Priv:           mlDsaPrivate.GetSeed()
+                                                   ?? throw new COSEException("The given ML-DSA private key was imported from an encoding and no longer holds its seed, which RFC 9964 requires a COSE key to carry!")),
+
+                   MLDsaPublicKeyParameters     mlDsaPublic
+                       => new (COSEKeyType.AKP,
+                               KeyIdentifier:  KeyIdentifier,
+                               Algorithm:      Algorithm ?? COSEAlgorithm.TryGetFor(mlDsaPublic.Parameters)
+                                                   ?? throw new COSEException("The ML-DSA parameter set of the given public key is not registered within the IANA \"COSE Algorithms\" registry!"),
+                               Pub:            mlDsaPublic.GetEncoded()),
+
+                   _   => throw new COSEException($"A COSE key can not be created from a {Key.GetType().Name}!")
+
+               };
 
         #endregion
 
@@ -347,8 +455,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Byte[]?                  x               = null;
             CBORValue?               y               = null;
             Byte[]?                  d               = null;
+            Byte[]?                  pub             = null;
+            Byte[]?                  priv            = null;
 
             var additionalParameters = new List<KeyValuePair<CBORValue, CBORValue>>();
+
+            #region The key type first, because it decides what -1 and -2 mean
+
+            // On an EC2 or OKP key, label -1 is the curve and -2 the x
+            // coordinate; on an AKP key [RFC 9964] they are the public and the
+            // private key. Reading the key type in a pass of its own rather
+            // than relying on it arriving first costs one loop and survives a
+            // map in any order - and a parser that switched on the label alone
+            // would read a 1312-byte ML-DSA public key as a curve identifier
+            // and report nothing wrong at all.
+            foreach (var parameter in CBOR.AsMap())
+            {
+                if (parameter.Key == KeyTypeLabel &&
+                    parameter.Value.TryGetInt64(out var keyTypeValue))
+                {
+                    keyType = (COSEKeyType) keyTypeValue;
+                }
+            }
+
+            var isAlgorithmKeyPair = keyType == COSEKeyType.AKP;
+
+            #endregion
 
             foreach (var parameter in CBOR.AsMap())
             {
@@ -400,23 +532,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 }
 
-                else if (parameter.Key == CurveLabel)
+                else if (parameter.Key == PubLabel)
                 {
 
-                    if (!COSECurve.TryParse(parameter.Value, out var parsedCurve, out ErrorResponse))
-                        return false;
+                    if (isAlgorithmKeyPair)
+                    {
 
-                    curve = parsedCurve;
+                        if (!parameter.Value.TryGetBytes(out pub))
+                        {
+                            ErrorResponse = "The public key of an algorithm key pair must be a byte string!";
+                            return false;
+                        }
+
+                    }
+
+                    else
+                    {
+
+                        if (!COSECurve.TryParse(parameter.Value, out var parsedCurve, out ErrorResponse))
+                            return false;
+
+                        curve = parsedCurve;
+
+                    }
 
                 }
 
-                else if (parameter.Key == XLabel)
+                else if (parameter.Key == PrivLabel)
                 {
 
-                    if (!parameter.Value.TryGetBytes(out x))
+                    if (isAlgorithmKeyPair)
                     {
-                        ErrorResponse = "The x coordinate of a COSE key must be a byte string!";
-                        return false;
+
+                        if (!parameter.Value.TryGetBytes(out priv))
+                        {
+                            ErrorResponse = "The private key of an algorithm key pair must be a byte string!";
+                            return false;
+                        }
+
+                    }
+
+                    else
+                    {
+
+                        if (!parameter.Value.TryGetBytes(out x))
+                        {
+                            ErrorResponse = "The x coordinate of a COSE key must be a byte string!";
+                            return false;
+                        }
+
                     }
 
                 }
@@ -479,7 +643,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                       keyIdentifier,
                       algorithm,
                       keyOperations,
-                      additionalParameters
+                      additionalParameters,
+                      pub,
+                      priv
                   );
 
             ErrorResponse = null;
@@ -543,9 +709,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToPublicKey ()
 
         /// <summary>
-        /// Convert this COSE key into an elliptic curve public key.
+        /// Convert this COSE key into a public key of its key type.
         /// </summary>
-        public ECPublicKeyParameters ToPublicKey()
+        public AsymmetricKeyParameter ToPublicKey()
         {
 
             if (TryToPublicKey(out var publicKey, out var errorResponse))
@@ -560,13 +726,156 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region TryToPublicKey (out PublicKey,  out ErrorResponse)
 
         /// <summary>
+        /// Try to convert this COSE key into a public key of its key type:
+        /// an elliptic curve point (EC2), an EdDSA key (OKP) or an ML-DSA key
+        /// (AKP).
+        /// </summary>
+        /// <param name="PublicKey">The public key.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public Boolean TryToPublicKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PublicKey,
+                                      [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            switch (KeyType)
+            {
+
+                case COSEKeyType.OKP:
+                    return TryToOkpPublicKey(out PublicKey, out ErrorResponse);
+
+                case COSEKeyType.AKP:
+                    return TryToAkpPublicKey(out PublicKey, out ErrorResponse);
+
+            }
+
+            var result = TryToECPublicKey(out var ecPublicKey, out ErrorResponse);
+            PublicKey  = ecPublicKey;
+            return result;
+
+        }
+
+        #endregion
+
+        #region (private) TryToOkpPublicKey / TryToAkpPublicKey
+
+        /// <summary>
+        /// An EdDSA public key, which is the whole of x: an octet key pair has
+        /// no second coordinate.
+        /// </summary>
+        private Boolean TryToOkpPublicKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PublicKey,
+                                          [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            PublicKey = null;
+
+            if (!Curve.HasValue)
+            {
+                ErrorResponse = "A COSE key of key type OKP must name its curve!";
+                return false;
+            }
+
+            var expected = Curve.Value.OctetKeySizeInBytes;
+
+            if (expected is null)
+            {
+                ErrorResponse = $"The curve '{Curve.Value.Name}' is not an EdDSA signature curve!";
+                return false;
+            }
+
+            if (X is null || X.Length != expected)
+            {
+                ErrorResponse = $"The public key of a COSE key on the curve '{Curve.Value.Name}' must be {expected} bytes long, but was {X?.Length ?? 0} bytes long!";
+                return false;
+            }
+
+            try
+            {
+
+                PublicKey      = Curve.Value == COSECurve.Ed448
+                                     ? new Ed448PublicKeyParameters  (X, 0)
+                                     : new Ed25519PublicKeyParameters(X, 0);
+
+                ErrorResponse  = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The public key of the COSE key is invalid: {e.Message}";
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// An ML-DSA public key, whose parameter set comes from the algorithm
+        /// rather than from a curve.
+        /// </summary>
+        private Boolean TryToAkpPublicKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PublicKey,
+                                          [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            PublicKey = null;
+
+            if (!TryGetMLDsaParameters(out var parameterSet, out ErrorResponse))
+                return false;
+
+            if (Pub is null)
+            {
+                ErrorResponse = "A COSE key of key type AKP must carry its public key!";
+                return false;
+            }
+
+            try
+            {
+
+                PublicKey      = MLDsaPublicKeyParameters.FromEncoding(parameterSet, Pub);
+                ErrorResponse  = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The public key of the COSE key is invalid: {e.Message}";
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// The ML-DSA parameter set this key belongs to, which is a property
+        /// of its algorithm: an algorithm key pair has no curve to ask.
+        /// </summary>
+        private Boolean TryGetMLDsaParameters([NotNullWhen(true)]  out MLDsaParameters?  ParameterSet,
+                                              [NotNullWhen(false)] out String?           ErrorResponse)
+        {
+
+            ParameterSet = Algorithm?.MLDsaParameterSet;
+
+            if (ParameterSet is null)
+            {
+                ErrorResponse = Algorithm.HasValue
+                                    ? $"The algorithm '{Algorithm.Value.Name}' of this COSE key is not an ML-DSA algorithm!"
+                                    :  "A COSE key of key type AKP must name its algorithm, as its public key does not say which parameter set produced it!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private) TryToECPublicKey(out PublicKey, out ErrorResponse)
+
+        /// <summary>
         /// Try to convert this COSE key into an elliptic curve public key.
         /// The resulting point is validated to actually lie on the curve.
         /// </summary>
         /// <param name="PublicKey">The elliptic curve public key.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public Boolean TryToPublicKey([NotNullWhen(true)]  out ECPublicKeyParameters?  PublicKey,
-                                      [NotNullWhen(false)] out String?                 ErrorResponse)
+        private Boolean TryToECPublicKey([NotNullWhen(true)]  out ECPublicKeyParameters?  PublicKey,
+                                         [NotNullWhen(false)] out String?                 ErrorResponse)
         {
 
             PublicKey = null;
@@ -619,9 +928,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToPrivateKey()
 
         /// <summary>
-        /// Convert this COSE key into an elliptic curve private key.
+        /// Convert this COSE key into a private key of its key type.
         /// </summary>
-        public ECPrivateKeyParameters ToPrivateKey()
+        public AsymmetricKeyParameter ToPrivateKey()
         {
 
             if (TryToPrivateKey(out var privateKey, out var errorResponse))
@@ -636,12 +945,123 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region TryToPrivateKey(out PrivateKey, out ErrorResponse)
 
         /// <summary>
-        /// Try to convert this COSE key into an elliptic curve private key.
+        /// Try to convert this COSE key into a private key of its key type.
         /// </summary>
-        /// <param name="PrivateKey">The elliptic curve private key.</param>
+        /// <param name="PrivateKey">The private key.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public Boolean TryToPrivateKey([NotNullWhen(true)]  out ECPrivateKeyParameters?  PrivateKey,
+        public Boolean TryToPrivateKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PrivateKey,
                                        [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            switch (KeyType)
+            {
+
+                case COSEKeyType.OKP:
+                    return TryToOkpPrivateKey(out PrivateKey, out ErrorResponse);
+
+                case COSEKeyType.AKP:
+                    return TryToAkpPrivateKey(out PrivateKey, out ErrorResponse);
+
+            }
+
+            var result  = TryToECPrivateKey(out var ecPrivateKey, out ErrorResponse);
+            PrivateKey  = ecPrivateKey;
+            return result;
+
+        }
+
+        #endregion
+
+        #region (private) TryToOkpPrivateKey / TryToAkpPrivateKey
+
+        private Boolean TryToOkpPrivateKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PrivateKey,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            PrivateKey = null;
+
+            if (!Curve.HasValue)
+            {
+                ErrorResponse = "A COSE key of key type OKP must name its curve!";
+                return false;
+            }
+
+            var expected = Curve.Value.OctetKeySizeInBytes;
+
+            if (expected is null)
+            {
+                ErrorResponse = $"The curve '{Curve.Value.Name}' is not an EdDSA signature curve!";
+                return false;
+            }
+
+            if (D is null)
+            {
+                ErrorResponse = "The COSE key holds no private key material!";
+                return false;
+            }
+
+            if (D.Length != expected)
+            {
+                ErrorResponse = $"The private key of a COSE key on the curve '{Curve.Value.Name}' must be {expected} bytes long, but was {D.Length} bytes long!";
+                return false;
+            }
+
+            PrivateKey     = Curve.Value == COSECurve.Ed448
+                                 ? new Ed448PrivateKeyParameters  (D, 0)
+                                 : new Ed25519PrivateKeyParameters(D, 0);
+
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        /// <summary>
+        /// An ML-DSA private key, expanded from the seed the COSE key carries
+        /// [RFC 9964]: the wire form is 32 bytes, the working form up to 4896.
+        /// </summary>
+        private Boolean TryToAkpPrivateKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PrivateKey,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            PrivateKey = null;
+
+            if (!TryGetMLDsaParameters(out var parameterSet, out ErrorResponse))
+                return false;
+
+            if (Priv is null)
+            {
+                ErrorResponse = "The COSE key holds no private key material!";
+                return false;
+            }
+
+            if (Priv.Length != 32)
+            {
+                ErrorResponse = $"The private key of an algorithm key pair is the seed and must be 32 bytes long [RFC 9964], but was {Priv.Length} bytes long!";
+                return false;
+            }
+
+            try
+            {
+
+                PrivateKey     = MLDsaPrivateKeyParameters.FromSeed(parameterSet, Priv);
+                ErrorResponse  = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The private key of the COSE key is invalid: {e.Message}";
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (private) TryToECPrivateKey(out PrivateKey, out ErrorResponse)
+
+        private Boolean TryToECPrivateKey([NotNullWhen(true)]  out ECPrivateKeyParameters?  PrivateKey,
+                                          [NotNullWhen(false)] out String?                  ErrorResponse)
         {
 
             PrivateKey = null;
@@ -744,17 +1164,37 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (KeyOperations is not null)
                 parameters.Add(new (KeyOperationsLabel, CBORValue.FromArray(KeyOperations)));
 
-            if (Curve.HasValue)
-                parameters.Add(new (CurveLabel,         Curve.Value.ToCBOR()));
+            // An algorithm key pair carries its two parameters under the very
+            // labels an elliptic curve key uses for the curve and the x
+            // coordinate, so the two shapes are written apart rather than
+            // together [RFC 9964].
+            if (KeyType == COSEKeyType.AKP)
+            {
 
-            if (X is not null)
-                parameters.Add(new (XLabel,             CBORValue.FromBytes(X)));
+                if (Pub is not null)
+                    parameters.Add(new (PubLabel,       CBORValue.FromBytes(Pub)));
 
-            if (Y is not null)
-                parameters.Add(new (YLabel,             CBORValue.FromBytes(Y)));
+                if (Priv is not null)
+                    parameters.Add(new (PrivLabel,      CBORValue.FromBytes(Priv)));
 
-            if (D is not null)
-                parameters.Add(new (DLabel,             CBORValue.FromBytes(D)));
+            }
+
+            else
+            {
+
+                if (Curve.HasValue)
+                    parameters.Add(new (CurveLabel,     Curve.Value.ToCBOR()));
+
+                if (X is not null)
+                    parameters.Add(new (XLabel,         CBORValue.FromBytes(X)));
+
+                if (Y is not null)
+                    parameters.Add(new (YLabel,         CBORValue.FromBytes(Y)));
+
+                if (D is not null)
+                    parameters.Add(new (DLabel,         CBORValue.FromBytes(D)));
+
+            }
 
             parameters.AddRange(AdditionalParameters);
 
@@ -826,6 +1266,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     parameters.Add(new (CurveLabel, Curve.Value.ToCBOR()));
                     parameters.Add(new (XLabel,     CBORValue.FromBytes(X)));
+
+                    break;
+
+                }
+
+                case COSEKeyType.AKP:
+                {
+
+                    // The one key type whose ALGORITHM is a required parameter
+                    // of its thumbprint [RFC 9964], and necessarily so: an
+                    // ML-DSA public key does not say which parameter set
+                    // produced it, so two keys of different strengths would
+                    // otherwise be able to share an identity.
+                    if (!Algorithm.HasValue || Pub is null)
+                        throw new COSEException("The thumbprint of a COSE key of key type AKP needs its algorithm and its public key!");
+
+                    parameters.Add(new (AlgorithmLabel, Algorithm.Value.ToCBOR()));
+                    parameters.Add(new (PubLabel,       CBORValue.FromBytes(Pub)));
 
                     break;
 
@@ -940,7 +1398,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     KeyIdentifier,
                     Algorithm,
                     KeyOperations,
-                    AdditionalParameters);
+                    AdditionalParameters,
+                    Pub,
+                    null);
 
         #endregion
 

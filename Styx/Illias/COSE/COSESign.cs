@@ -19,6 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -291,7 +292,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 98.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
         public static COSESign Sign(Byte[]                  Payload,
-                                    ECPrivateKeyParameters  PrivateKey,
+                                    AsymmetricKeyParameter  PrivateKey,
                                     COSEAlgorithm           Algorithm,
                                     Byte[]?                 KeyIdentifier   = null,
                                     Byte[]?                 ExternalAAD     = null,
@@ -334,7 +335,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="BodyUnprotectedHeader">The optional unprotected header parameters of the message body.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
         public static COSESign Sign(Byte[]                  Payload,
-                                    ECPrivateKeyParameters  PrivateKey,
+                                    AsymmetricKeyParameter  PrivateKey,
                                     COSEHeaders             SignatureProtectedHeader,
                                     COSEHeaders?            SignatureUnprotectedHeader   = null,
                                     Byte[]?                 ExternalAAD                  = null,
@@ -390,7 +391,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
-        public COSESign AddSignature(ECPrivateKeyParameters  PrivateKey,
+        public COSESign AddSignature(AsymmetricKeyParameter  PrivateKey,
                                      COSEAlgorithm           Algorithm,
                                      Byte[]?                 KeyIdentifier     = null,
                                      Byte[]?                 ExternalAAD       = null,
@@ -423,7 +424,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
-        public COSESign AddSignature(ECPrivateKeyParameters  PrivateKey,
+        public COSESign AddSignature(AsymmetricKeyParameter  PrivateKey,
                                      COSEHeaders             SignatureProtectedHeader,
                                      COSEHeaders?            SignatureUnprotectedHeader   = null,
                                      Byte[]?                 ExternalAAD                  = null,
@@ -481,7 +482,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects, required whenever the signature states its algorithm within its unprotected header bucket only.</param>
         public Boolean Verify(COSESignature                     Signature,
-                              ECPublicKeyParameters             PublicKey,
+                              AsymmetricKeyParameter            PublicKey,
                               [NotNullWhen(false)] out String?  ErrorResponse,
                               Byte[]?                           ExternalAAD         = null,
                               Byte[]?                           DetachedPayload     = null,
@@ -572,7 +573,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ErrorResponse">The reason why none of the signatures verified.</param>
         /// <param name="ExternalAAD">Optional externally supplied data that was signed along with the payload.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
-        public Boolean TryVerifyAny(ECPublicKeyParameters                  PublicKey,
+        public Boolean TryVerifyAny(AsymmetricKeyParameter                 PublicKey,
                                     [NotNullWhen(true)]  out COSESignature?  Signature,
                                     [NotNullWhen(false)] out String?         ErrorResponse,
                                     Byte[]?                                  ExternalAAD       = null,

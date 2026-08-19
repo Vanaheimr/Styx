@@ -17,6 +17,7 @@
 
 #region Usings
 
+using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Asn1.X9;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -86,7 +87,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #region (private static) PublicKey11() / PublicKeyBilbo()
 
-        private static ECPublicKeyParameters PublicKey11()
+        private static AsymmetricKeyParameter PublicKey11()
 
             => new COSEKey(COSEKeyType.EC2,
                            COSECurve.P256,
@@ -94,7 +95,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                            FromBase64URL(key11Y),
                            FromBase64URL(key11D)).ToPublicKey();
 
-        private static ECPublicKeyParameters PublicKeyBilbo()
+        private static AsymmetricKeyParameter PublicKeyBilbo()
 
             => new COSEKey(COSEKeyType.EC2,
                            COSECurve.P521,

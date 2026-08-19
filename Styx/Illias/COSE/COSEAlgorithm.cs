@@ -57,20 +57,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="FixedCurve">The elliptic curve this algorithm is defined for, or null when the algorithm leaves the curve to the key.</param>
         /// <param name="IsSupportedForSigning">Whether this implementation can create and verify signatures of this algorithm.</param>
         /// <param name="IsDeprecated">Whether this algorithm was deprecated in favour of a fully-specified one [RFC 9864].</param>
-        private sealed class AlgorithmInfo(String              Name,
-                                           String              Description,
-                                           HashAlgorithmName?  HashAlgorithm,
-                                           COSECurve?          FixedCurve,
-                                           Boolean             IsSupportedForSigning,
-                                           Boolean             IsDeprecated)
+        /// <param name="Family">Which signature machinery this algorithm needs.</param>
+        /// <param name="MLDsaParameterSet">The ML-DSA parameter set, or null for everything else.</param>
+        private sealed class AlgorithmInfo(String               Name,
+                                           String               Description,
+                                           COSEAlgorithmFamily  Family,
+                                           HashAlgorithmName?   HashAlgorithm,
+                                           COSECurve?           FixedCurve,
+                                           Boolean              IsSupportedForSigning,
+                                           Boolean              IsDeprecated,
+                                           MLDsaParameters?     MLDsaParameterSet = null)
         {
 
-            public String              Name                     { get; } = Name;
-            public String              Description              { get; } = Description;
-            public HashAlgorithmName?  HashAlgorithm            { get; } = HashAlgorithm;
-            public COSECurve?          FixedCurve               { get; } = FixedCurve;
-            public Boolean             IsSupportedForSigning    { get; } = IsSupportedForSigning;
-            public Boolean             IsDeprecated             { get; } = IsDeprecated;
+            public String               Name                     { get; } = Name;
+            public String               Description              { get; } = Description;
+            public COSEAlgorithmFamily  Family                   { get; } = Family;
+            public HashAlgorithmName?   HashAlgorithm            { get; } = HashAlgorithm;
+            public COSECurve?           FixedCurve               { get; } = FixedCurve;
+            public Boolean              IsSupportedForSigning    { get; } = IsSupportedForSigning;
+            public Boolean              IsDeprecated             { get; } = IsDeprecated;
+            public MLDsaParameters?     MLDsaParameterSet        { get; } = MLDsaParameterSet;
 
         }
 
@@ -87,30 +93,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         private static readonly Dictionary<Int32, AlgorithmInfo> registry = new () {
 
-            {   -7, new ("ES256",   "ECDSA w/ SHA-256",                              HashAlgorithmName.SHA256, null,                         true,  true ) },
-            {  -35, new ("ES384",   "ECDSA w/ SHA-384",                              HashAlgorithmName.SHA384, null,                         true,  true ) },
-            {  -36, new ("ES512",   "ECDSA w/ SHA-512",                              HashAlgorithmName.SHA512, null,                         true,  true ) },
-            {  -47, new ("ES256K",  "ECDSA using secp256k1 curve and SHA-256",       HashAlgorithmName.SHA256, COSECurve.Secp256k1,          true,  false) },
+            {   -7, new ("ES256",   "ECDSA w/ SHA-256",                              COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA256, null,                      true,  true ) },
+            {  -35, new ("ES384",   "ECDSA w/ SHA-384",                              COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA384, null,                      true,  true ) },
+            {  -36, new ("ES512",   "ECDSA w/ SHA-512",                              COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA512, null,                      true,  true ) },
+            {  -47, new ("ES256K",  "ECDSA using secp256k1 curve and SHA-256",       COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA256, COSECurve.Secp256k1,       true,  false) },
 
-            {   -9, new ("ESP256",  "ECDSA using P-256 curve and SHA-256",           HashAlgorithmName.SHA256, COSECurve.P256,               true,  false) },
-            {  -51, new ("ESP384",  "ECDSA using P-384 curve and SHA-384",           HashAlgorithmName.SHA384, COSECurve.P384,               true,  false) },
-            {  -52, new ("ESP512",  "ECDSA using P-521 curve and SHA-512",           HashAlgorithmName.SHA512, COSECurve.P521,               true,  false) },
+            {   -9, new ("ESP256",  "ECDSA using P-256 curve and SHA-256",           COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA256, COSECurve.P256,            true,  false) },
+            {  -51, new ("ESP384",  "ECDSA using P-384 curve and SHA-384",           COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA384, COSECurve.P384,            true,  false) },
+            {  -52, new ("ESP512",  "ECDSA using P-521 curve and SHA-512",           COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA512, COSECurve.P521,            true,  false) },
 
-            { -265, new ("ESB256",  "ECDSA using BrainpoolP256r1 curve and SHA-256", HashAlgorithmName.SHA256, COSECurve.BrainpoolP256r1,    true,  false) },
-            { -266, new ("ESB320",  "ECDSA using BrainpoolP320r1 curve and SHA-384", HashAlgorithmName.SHA384, COSECurve.BrainpoolP320r1,    true,  false) },
-            { -267, new ("ESB384",  "ECDSA using BrainpoolP384r1 curve and SHA-384", HashAlgorithmName.SHA384, COSECurve.BrainpoolP384r1,    true,  false) },
-            { -268, new ("ESB512",  "ECDSA using BrainpoolP512r1 curve and SHA-512", HashAlgorithmName.SHA512, COSECurve.BrainpoolP512r1,    true,  false) },
+            { -265, new ("ESB256",  "ECDSA using BrainpoolP256r1 curve and SHA-256", COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA256, COSECurve.BrainpoolP256r1, true,  false) },
+            { -266, new ("ESB320",  "ECDSA using BrainpoolP320r1 curve and SHA-384", COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA384, COSECurve.BrainpoolP320r1, true,  false) },
+            { -267, new ("ESB384",  "ECDSA using BrainpoolP384r1 curve and SHA-384", COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA384, COSECurve.BrainpoolP384r1, true,  false) },
+            { -268, new ("ESB512",  "ECDSA using BrainpoolP512r1 curve and SHA-512", COSEAlgorithmFamily.ECDSA, HashAlgorithmName.SHA512, COSECurve.BrainpoolP512r1, true,  false) },
 
-            {   -8, new ("EdDSA",   "EdDSA",                                         null,                     null,                         false, true ) },
-            {  -19, new ("Ed25519", "EdDSA using the Ed25519 parameter set",         null,                     COSECurve.Ed25519,            false, false) },
-            {  -53, new ("Ed448",   "EdDSA using the Ed448 parameter set",           null,                     COSECurve.Ed448,              false, false) },
+            // EdDSA [RFC 8032]. No digest of its own: the message is signed
+            // whole, and the nonce comes from the key and the message.
+            {   -8, new ("EdDSA",   "EdDSA",                                         COSEAlgorithmFamily.EdDSA, null,                     null,                      true,  true ) },
+            {  -19, new ("Ed25519", "EdDSA using the Ed25519 parameter set",         COSEAlgorithmFamily.EdDSA, null,                     COSECurve.Ed25519,         true,  false) },
+            {  -53, new ("Ed448",   "EdDSA using the Ed448 parameter set",           COSEAlgorithmFamily.EdDSA, null,                     COSECurve.Ed448,           true,  false) },
+
+            // ML-DSA [FIPS 204, RFC 9964]. Also pure, and also without a
+            // curve: its keys are algorithm key pairs (key type AKP).
+            {  -48, new ("ML-DSA-44", "CBOR Object Signing Algorithm for ML-DSA-44", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_44) },
+            {  -49, new ("ML-DSA-65", "CBOR Object Signing Algorithm for ML-DSA-65", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_65) },
+            {  -50, new ("ML-DSA-87", "CBOR Object Signing Algorithm for ML-DSA-87", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_87) },
 
             // Hash algorithms [RFC 9054]. They sign nothing; they name the
             // digest of a certificate thumbprint (x5t) and the like.
-            {  -16, new ("SHA-256", "SHA-2 256-bit Hash",                            HashAlgorithmName.SHA256, null,                         false, false) },
-            {  -43, new ("SHA-384", "SHA-2 384-bit Hash",                            HashAlgorithmName.SHA384, null,                         false, false) },
-            {  -44, new ("SHA-512", "SHA-2 512-bit Hash",                            HashAlgorithmName.SHA512, null,                         false, false) },
-            {  -14, new ("SHA-1",   "SHA-1 Hash",                                    null,                     null,                         false, true ) }
+            {  -16, new ("SHA-256", "SHA-2 256-bit Hash",                            COSEAlgorithmFamily.None,  HashAlgorithmName.SHA256, null,                      false, false) },
+            {  -43, new ("SHA-384", "SHA-2 384-bit Hash",                            COSEAlgorithmFamily.None,  HashAlgorithmName.SHA384, null,                      false, false) },
+            {  -44, new ("SHA-512", "SHA-2 512-bit Hash",                            COSEAlgorithmFamily.None,  HashAlgorithmName.SHA512, null,                      false, false) },
+            {  -14, new ("SHA-1",   "SHA-1 Hash",                                    COSEAlgorithmFamily.None,  null,                     null,                      false, true ) }
 
         };
 
@@ -171,6 +185,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => registry.TryGetValue(Value, out var info)
                    ? info.FixedCurve
+                   : null;
+
+        /// <summary>
+        /// Which signature machinery this algorithm needs. The one that
+        /// matters is ECDSA against the rest: ECDSA signs a digest of the
+        /// message, EdDSA and ML-DSA sign the message.
+        /// </summary>
+        public COSEAlgorithmFamily Family
+
+            => registry.TryGetValue(Value, out var info)
+                   ? info.Family
+                   : COSEAlgorithmFamily.None;
+
+        /// <summary>
+        /// The ML-DSA parameter set of this algorithm [FIPS 204],
+        /// or null for every algorithm that is not ML-DSA.
+        /// </summary>
+        public MLDsaParameters?    MLDsaParameterSet
+
+            => registry.TryGetValue(Value, out var info)
+                   ? info.MLDsaParameterSet
                    : null;
 
         /// <summary>
@@ -275,22 +310,64 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static COSEAlgorithm  ESB512     { get; } = new (-268);
 
         /// <summary>
-        /// EdDSA (algorithm -8), without naming the parameter set.
-        /// Known, but not implemented here.
+        /// EdDSA (algorithm -8), without naming the parameter set, which is
+        /// what RFC 9864 deprecated it for: the curve comes from the key.
         /// </summary>
         public static COSEAlgorithm  EdDSA      { get; } = new (  -8);
 
         /// <summary>
         /// EdDSA using the Ed25519 parameter set (algorithm -19) [RFC 9864].
-        /// Known, but not implemented here.
         /// </summary>
         public static COSEAlgorithm  Ed25519    { get; } = new ( -19);
 
         /// <summary>
         /// EdDSA using the Ed448 parameter set (algorithm -53) [RFC 9864].
-        /// Known, but not implemented here.
         /// </summary>
         public static COSEAlgorithm  Ed448      { get; } = new ( -53);
+
+        /// <summary>
+        /// ML-DSA-44 (algorithm -48) [FIPS 204, RFC 9964]: the post-quantum
+        /// signature scheme, whose keys are algorithm key pairs rather than
+        /// points on a curve. Its signature is 2420 bytes.
+        /// </summary>
+        public static COSEAlgorithm  MLDsa44    { get; } = new ( -48);
+
+        /// <summary>
+        /// ML-DSA-65 (algorithm -49) [FIPS 204, RFC 9964].
+        /// Its signature is 3309 bytes.
+        /// </summary>
+        public static COSEAlgorithm  MLDsa65    { get; } = new ( -49);
+
+        /// <summary>
+        /// ML-DSA-87 (algorithm -50) [FIPS 204, RFC 9964].
+        /// Its signature is 4627 bytes - which is the argument for carrying
+        /// it in CBOR rather than as base64 within JSON.
+        /// </summary>
+        public static COSEAlgorithm  MLDsa87    { get; } = new ( -50);
+
+
+        /// <summary>
+        /// The COSE algorithm of the given ML-DSA parameter set, or null when
+        /// that parameter set is not one COSE registers. The HashML-DSA
+        /// variants are deliberately among those: RFC 9964 registers the pure
+        /// ones only.
+        /// </summary>
+        /// <param name="ParameterSet">An ML-DSA parameter set.</param>
+        public static COSEAlgorithm? TryGetFor(MLDsaParameters ParameterSet)
+        {
+
+            foreach (var entry in registry)
+            {
+                if (entry.Value.MLDsaParameterSet is not null &&
+                    entry.Value.MLDsaParameterSet.Equals(ParameterSet))
+                {
+                    return new COSEAlgorithm(entry.Key);
+                }
+            }
+
+            return null;
+
+        }
 
         /// <summary>
         /// The SHA-2 256-bit hash (algorithm -16) [RFC 9054], the default
@@ -552,26 +629,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
         /// <param name="Deterministic">Whether to derive the nonce from the key and the message as defined by RFC 6979, instead of drawing it at random.</param>
         public Byte[] Sign(ReadOnlySpan<Byte>      ToBeSigned,
-                           ECPrivateKeyParameters  PrivateKey,
+                           AsymmetricKeyParameter  PrivateKey,
                            SecureRandom?           Random          = null,
                            Boolean                 Deterministic   = false)
         {
 
-            EnsureUsableWith(PrivateKey.Parameters);
-
             if (Deterministic && Random is not null)
                 throw new COSEException("A deterministic signature derives its nonce from the private key and the message, so no source of randomness must be supplied!");
 
-            var componentSizeInBytes  = (PrivateKey.Parameters.N.BitLength + 7) / 8;
+            return Family switch {
+                COSEAlgorithmFamily.ECDSA  => SignECDSA(ToBeSigned, PrivateKey, Random, Deterministic),
+                COSEAlgorithmFamily.EdDSA  => SignPure (ToBeSigned, PrivateKey, CreateEdDSASigner(PrivateKey, true)),
+                COSEAlgorithmFamily.MLDSA  => SignPure (ToBeSigned, PrivateKey, CreateMLDsaSigner(Deterministic), Random),
+                _                          => throw new COSEException($"The COSE algorithm '{Name}' is not supported for signing by this implementation!")
+            };
+
+        }
+
+        #endregion
+
+        #region (private) SignECDSA(ToBeSigned, PrivateKey, Random, Deterministic)
+
+        /// <summary>
+        /// ECDSA, which signs the DIGEST of the signature input and produces
+        /// the concatenation of r and s.
+        /// </summary>
+        private Byte[] SignECDSA(ReadOnlySpan<Byte>      ToBeSigned,
+                                 AsymmetricKeyParameter  PrivateKey,
+                                 SecureRandom?           Random,
+                                 Boolean                 Deterministic)
+        {
+
+            if (PrivateKey is not ECPrivateKeyParameters ecPrivateKey)
+                throw new COSEException($"The COSE algorithm '{Name}' needs an elliptic curve private key, but was given a {PrivateKey.GetType().Name}!");
+
+            EnsureUsableWith(ecPrivateKey.Parameters);
+
+            var componentSizeInBytes  = (ecPrivateKey.Parameters.N.BitLength + 7) / 8;
 
             var signer                = Deterministic
                                             ? new ECDsaSigner(new HMacDsaKCalculator(CreateDigest()))
                                             : new ECDsaSigner();
 
             if (Deterministic)
-                signer.Init(true, PrivateKey);
+                signer.Init(true, ecPrivateKey);
             else
-                signer.Init(true, new ParametersWithRandom(PrivateKey, Random ?? new SecureRandom()));
+                signer.Init(true, new ParametersWithRandom(ecPrivateKey, Random ?? new SecureRandom()));
 
             var components            = signer.GenerateSignature(Hash(ToBeSigned));
 
@@ -582,6 +685,74 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return signature;
 
         }
+
+        #endregion
+
+        #region (private) SignPure(ToBeSigned, PrivateKey, Signer, Random = null)
+
+        /// <summary>
+        /// EdDSA and ML-DSA, which sign the signature input ITSELF. There is
+        /// no digest step: handing either of them a hash would produce a
+        /// signature that is valid for the hash and that nobody else accepts.
+        /// </summary>
+        private Byte[] SignPure(ReadOnlySpan<Byte>      ToBeSigned,
+                                AsymmetricKeyParameter  PrivateKey,
+                                ISigner                 Signer,
+                                SecureRandom?           Random   = null)
+        {
+
+            Signer.Init(true,
+                        Random is not null
+                            ? new ParametersWithRandom(PrivateKey, Random)
+                            : PrivateKey);
+
+            Signer.BlockUpdate(ToBeSigned);
+
+            return Signer.GenerateSignature();
+
+        }
+
+        #endregion
+
+        #region (private) CreateEdDSASigner(Key, ForSigning) / CreateMLDsaSigner(Deterministic)
+
+        /// <summary>
+        /// The EdDSA signer belonging to a key, in the pure variant of
+        /// RFC 8032 with an empty context - which is what COSE uses
+        /// [RFC 9053, Section 2.2].
+        /// </summary>
+        private ISigner CreateEdDSASigner(AsymmetricKeyParameter Key, Boolean ForSigning)
+        {
+
+            var isEd448 = Key is Ed448PrivateKeyParameters or Ed448PublicKeyParameters;
+
+            if (!isEd448 && Key is not (Ed25519PrivateKeyParameters or Ed25519PublicKeyParameters))
+                throw new COSEException($"The COSE algorithm '{Name}' needs an Ed25519 or Ed448 key, but was given a {Key.GetType().Name}!");
+
+            if (FixedCurve.HasValue &&
+                FixedCurve.Value != (isEd448 ? COSECurve.Ed448 : COSECurve.Ed25519))
+            {
+                throw new COSEException($"The COSE algorithm '{Name}' is defined for the curve '{FixedCurve.Value.Name}', which is not the curve of the given key!");
+            }
+
+            return isEd448
+                       ? new Ed448Signer([])
+                       : new Ed25519Signer();
+
+        }
+
+        /// <summary>
+        /// The ML-DSA signer of this algorithm's parameter set.
+        /// FIPS 204 defines a deterministic variant, in which the
+        /// per-signature randomness is 32 zero bytes rather than drawn, and
+        /// RFC 9964 leaves the choice open. It is the choice that decides
+        /// whether two implementations can be compared byte for byte.
+        /// </summary>
+        private MLDsaSigner CreateMLDsaSigner(Boolean Deterministic)
+
+            => new (MLDsaParameterSet
+                        ?? throw new COSEException($"The COSE algorithm '{Name}' does not name an ML-DSA parameter set!"),
+                    Deterministic);
 
         #endregion
 
@@ -598,7 +769,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ErrorResponse">The reason why the verification failed.</param>
         public Boolean Verify(ReadOnlySpan<Byte>                ToBeSigned,
                               Byte[]                            Signature,
-                              ECPublicKeyParameters             PublicKey,
+                              AsymmetricKeyParameter            PublicKey,
                               [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
@@ -608,10 +779,61 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
+            try
+            {
+
+                switch (Family)
+                {
+
+                    case COSEAlgorithmFamily.ECDSA:
+                        return VerifyECDSA(ToBeSigned, Signature, PublicKey, out ErrorResponse);
+
+                    case COSEAlgorithmFamily.EdDSA:
+                        return VerifyPure(ToBeSigned, Signature, PublicKey,
+                                          CreateEdDSASigner(PublicKey, false), out ErrorResponse);
+
+                    case COSEAlgorithmFamily.MLDSA:
+                        return VerifyPure(ToBeSigned, Signature, PublicKey,
+                                          CreateMLDsaSigner(false), out ErrorResponse);
+
+                    default:
+                        ErrorResponse = $"The COSE algorithm '{Name}' is not a signature algorithm!";
+                        return false;
+
+                }
+
+            }
+            catch (Exception e)
+            {
+                // Untrusted input is allowed to be nonsense - a key that is not
+                // a key, a signature of the wrong shape. That is a failed
+                // verification and not an exception for the caller to handle.
+                ErrorResponse = e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (private) VerifyECDSA(ToBeSigned, Signature, PublicKey, out ErrorResponse)
+
+        private Boolean VerifyECDSA(ReadOnlySpan<Byte>                ToBeSigned,
+                                    Byte[]                            Signature,
+                                    AsymmetricKeyParameter            PublicKey,
+                                    [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            if (PublicKey is not ECPublicKeyParameters ecPublicKey)
+            {
+                ErrorResponse = $"The COSE algorithm '{Name}' needs an elliptic curve public key, but was given a {PublicKey.GetType().Name}!";
+                return false;
+            }
+
             if (FixedCurve.HasValue)
             {
 
-                if (!COSECurve.TryGetFor(PublicKey.Parameters, out var curve) ||
+                if (!COSECurve.TryGetFor(ecPublicKey.Parameters, out var curve) ||
                     curve != FixedCurve.Value)
                 {
                     ErrorResponse = $"The COSE algorithm '{Name}' is defined for the elliptic curve '{FixedCurve.Value.Name}', which is not the curve of the given key!";
@@ -620,7 +842,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            var componentSizeInBytes = (PublicKey.Parameters.N.BitLength + 7) / 8;
+            var componentSizeInBytes = (ecPublicKey.Parameters.N.BitLength + 7) / 8;
 
             if (Signature.Length != 2 * componentSizeInBytes)
             {
@@ -629,11 +851,41 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             var verifier = new ECDsaSigner();
-            verifier.Init(false, PublicKey);
+            verifier.Init(false, ecPublicKey);
 
             if (!verifier.VerifySignature(Hash(ToBeSigned),
                                           new BigInteger(1, Signature, 0,                    componentSizeInBytes),
                                           new BigInteger(1, Signature, componentSizeInBytes, componentSizeInBytes)))
+            {
+                ErrorResponse = "The signature is invalid!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private) VerifyPure(ToBeSigned, Signature, PublicKey, Verifier, out ErrorResponse)
+
+        /// <summary>
+        /// EdDSA and ML-DSA verify the signature input itself, so there is no
+        /// digest here either - and no component width to check, because
+        /// neither signature is a pair of numbers.
+        /// </summary>
+        private static Boolean VerifyPure(ReadOnlySpan<Byte>                ToBeSigned,
+                                          Byte[]                            Signature,
+                                          AsymmetricKeyParameter            PublicKey,
+                                          ISigner                           Verifier,
+                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Verifier.Init(false, PublicKey);
+            Verifier.BlockUpdate(ToBeSigned);
+
+            if (!Verifier.VerifySignature(Signature))
             {
                 ErrorResponse = "The signature is invalid!";
                 return false;
