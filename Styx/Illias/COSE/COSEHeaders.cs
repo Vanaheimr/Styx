@@ -91,6 +91,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    : null;
 
         /// <summary>
+        /// The initialization vector (label 5), or null when absent or not a
+        /// byte string.
+        ///
+        /// It travels in the clear and that is by design - a nonce is public.
+        /// What is not permissible is repeating one under the same key, which
+        /// is a property of how a caller manages nonces rather than of this
+        /// structure.
+        /// </summary>
+        public Byte[]?                                            IV
+
+            => TryGet(COSEHeaderLabel.IV, out var value) &&
+               value.TryGetBytes(out var iv)
+                   ? iv
+                   : null;
+
+        /// <summary>
         /// The content type (label 3), either a CoAP Content-Format integer
         /// or a media type text string, or null when absent.
         /// </summary>

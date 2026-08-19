@@ -40,14 +40,22 @@ by a test.
 | `Ed25519` / `Ed448` | −19 / −53 | Ed25519 / Ed448 | *(none — pure)* |
 | `ML-DSA-44` / `-65` / `-87` | −48 / −49 / −50 | *(none — an algorithm key pair)* | *(none — pure)* |
 | `HMAC 256/64` / `256/256` / `384/384` / `512/512` | 4 / 5 / 6 / 7 | *(none — a shared secret)* | SHA-256 / 256 / 384 / 512 |
+| `A128GCM` / `A192GCM` / `A256GCM` | 1 / 2 / 3 | *(none — a shared secret)* | *(none — an AEAD)* |
+| `A128KW` / `A192KW` / `A256KW` / `direct` | −3 / −4 / −5 / −6 | *(none — recipient algorithms)* | *(none)* |
 
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
   header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
 - **X.509 certificate chains** ([RFC 9360](https://www.rfc-editor.org/rfc/rfc9360)) —
   `x5chain` and `x5t`, validated against configured trust anchors.
-- **`COSEMac0`** — a payload authenticated with a shared key (CBOR tag 17),
-  with the HMAC algorithms of [RFC 9053 §3.1](https://www.rfc-editor.org/rfc/rfc9053#section-3.1).
-  Not a small signature — see below.
+- **`COSEMac0` / `COSEMac`** — a payload authenticated with a shared key
+  (CBOR tags 17 and 97), with the HMAC algorithms of
+  [RFC 9053 §3.1](https://www.rfc-editor.org/rfc/rfc9053#section-3.1). Not a
+  small signature — see below.
+- **`COSEEncrypt0` / `COSEEncrypt`** — content encrypted with AES-GCM (CBOR
+  tags 16 and 96).
+- **`COSERecipient`** — how a content key reaches a party: `direct` and AES key
+  wrap ([RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)). This is what the
+  enveloped forms have and the bare ones do not.
 
 ### Message authentication is not signing
 
@@ -112,6 +120,64 @@ hand the caller the secret under a name promising the opposite. Its thumbprint
 `kty` and `k` and is a hash *of the secret*: §7 of that RFC warns that a
 low-entropy key can be looked up in a precomputed table, so thumbprints MUST NOT
 be used with passwords.
+
+### Recipient structures, and what they cost
+
+`COSEMac` (tag 97) and `COSEEncrypt` (tag 96) differ from their bare
+counterparts in one element: a list of **recipient structures**, each
+delivering the one content key to one party by a route only that party can
+walk. The bare forms assume both sides already hold the key; these solve the
+distribution problem inside the message.
+
+Two routes are implemented, and they are the two reachable from a pre-shared
+secret. **`direct`** transports nothing — the recipient's key *is* the content
+key, and the structure carries an empty protected bucket, an empty ciphertext
+and a key identifier. That makes a one-`direct`-recipient `COSEMac` a
+`COSEMac0` with ceremony, which is why the bare forms exist at all. **AES key
+wrap** carries the content key encrypted under a key-encryption key; the
+algorithm follows the width of the *key-encryption* key, so `A256KW` wraps a
+128-bit content key perfectly well. Key wrap is deterministic — no nonce, no
+salt — which is safe only because what it wraps is a uniformly random key
+rather than a message.
+
+**A recipient list costs more than bytes.** Every recipient holds the same
+content key afterwards, so with more than one of them the tag stops
+distinguishing them: any recipient can produce a message the others will accept
+as coming from the sender. RFC 9052 §8.2 is blunt about it — a MAC *"cannot be
+used to prove the identity of the sender to a third party"*.
+
+Not implemented: ECDH key agreement and the HKDF-based key derivations. Both
+need `COSE_KDF_Context` ([RFC 9053 §5.2](https://www.rfc-editor.org/rfc/rfc9053#section-5.2)),
+a structure of its own carrying PartyU and PartyV information and the
+supplementary public info — and one whose fields, got subtly wrong, derive a
+key that agrees only with an implementation making the same mistake.
+
+### Encryption
+
+AES-GCM in all three key widths. Three things differ from everything else in
+this namespace, and all three catch people out.
+
+**The `Enc_structure` has three elements, not four** — `[context, protected,
+external_aad]`, no payload. The payload is what is being *encrypted*; the
+`Enc_structure` is what is merely *authenticated* alongside it, as the AEAD's
+additional data.
+
+**The authentication tag is not a field.** AES-GCM's 16-byte tag is appended to
+the ciphertext and travels inside the same byte string.
+
+**The nonce is public and must never repeat.** It travels in the `iv` header
+parameter in the clear, which is fine; using one twice with the same key is
+not. GCM fails catastrophically on nonce reuse — two messages under one nonce
+leak the XOR of their plaintexts *and* the authentication subkey, which lets an
+attacker forge afterwards. There is no default and there will not be one: only
+the caller knows which nonces it has spent.
+
+And an encrypted message says nothing about *who* sent it. AEAD integrity means
+"whoever holds this key wrote this"; RFC 9052 §8.3 calls it *"either no or very
+limited data origination"*. A signed payload inside an encrypted envelope is
+how one gets both, and COSE nests, so both can travel at once.
+
+Not implemented: AES-CCM and ChaCha20/Poly1305.
 
 ### The two pure families
 
@@ -386,6 +452,17 @@ primitive at once; the structure is pinned against that example all the same —
 its 37 bytes are parsed, checked field by field, re-encoded identically and its
 `MAC_structure` asserted — and the primitive against RFC 4231.
 
+**The encrypted and enveloped structures** are pinned against RFC 9052
+Appendix C.5.4 and the COSE working group examples. C.5.4 is a `COSE_Mac` whose
+recipient wraps the content key under a published 256-bit key: unwrapping it
+and recomputing the tag reproduces the RFC's published value byte for byte,
+which pins the key wrap, the recipient structure, the `"MAC"` context and HMAC
+in one chain. The working group's AES-GCM examples carry whole messages
+*together with their intermediates* — the `Enc_structure` as hex, the content
+key, the nonce — and every one of those is checked rather than only the final
+bytes: a message that comes out right by way of a wrong additional-data
+structure stops coming out right the moment anything changes.
+
 **EdDSA** is pinned against RFC 8032 — Section 7.1 for Ed25519, Section 7.4 for
 Ed448 — and those are checked harder than any ECDSA vector allows: EdDSA has no
 nonce to draw, so its published signatures are not merely verifiable but
@@ -424,6 +501,7 @@ quantity should look like.
 - [RFC 9053](https://www.rfc-editor.org/rfc/rfc9053) — COSE: Initial Algorithms
 - [RFC 2104](https://www.rfc-editor.org/rfc/rfc2104) — HMAC: Keyed-Hashing for Message Authentication
 - [RFC 4231](https://www.rfc-editor.org/rfc/rfc4231) — HMAC-SHA-2 test vectors
+- [RFC 3394](https://www.rfc-editor.org/rfc/rfc3394) — AES Key Wrap Algorithm
 - [RFC 9864](https://www.rfc-editor.org/rfc/rfc9864) — Fully-Specified Algorithms for JOSE and COSE
 - [RFC 6979](https://www.rfc-editor.org/rfc/rfc6979) — Deterministic ECDSA
 - [RFC 8032](https://www.rfc-editor.org/rfc/rfc8032) — EdDSA: Ed25519 and Ed448

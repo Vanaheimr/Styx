@@ -25,6 +25,7 @@ using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Digests;
+using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Crypto.Parameters;
 
@@ -67,7 +68,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                            Boolean              IsSupportedForSigning,
                                            Boolean              IsDeprecated,
                                            MLDsaParameters?     MLDsaParameterSet = null,
-                                           Int32?               TagSizeInBytes    = null)
+                                           Int32?               TagSizeInBytes    = null,
+                                           Int32?               KeySizeInBytes    = null)
         {
 
             public String               Name                     { get; } = Name;
@@ -79,12 +81,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
             public Boolean              IsDeprecated             { get; } = IsDeprecated;
             public MLDsaParameters?     MLDsaParameterSet        { get; } = MLDsaParameterSet;
             public Int32?               TagSizeInBytes           { get; } = TagSizeInBytes;
+            public Int32?               KeySizeInBytes           { get; } = KeySizeInBytes;
 
         }
 
         #endregion
 
         #region Data
+
+        /// <summary>
+        /// The nonce width AES-GCM is fixed to in COSE: 96 bits
+        /// [RFC 9053, Section 4.1].
+        /// </summary>
+        public const Int32 AESGCMNonceSize = 12;
+
+        /// <summary>
+        /// The authentication tag width AES-GCM is fixed to in COSE: 128 bits.
+        /// </summary>
+        public const Int32 AESGCMTagSize   = 16;
 
         /// <summary>
         /// The registered algorithms this implementation knows about.
@@ -130,6 +144,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {    5, new ("HMAC 256/256", "HMAC w/ SHA-256",                        COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA256, null,                      false, false, null, 32) },
             {    6, new ("HMAC 384/384", "HMAC w/ SHA-384",                        COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA384, null,                      false, false, null, 48) },
             {    7, new ("HMAC 512/512", "HMAC w/ SHA-512",                        COSEAlgorithmFamily.HMAC,  HashAlgorithmName.SHA512, null,                      false, false, null, 64) },
+
+            // AES-GCM [RFC 9053, Section 4.1], the content encryption
+            // algorithms. COSE fixes the nonce at 96 bits and the tag at 128,
+            // so the key width is all the identifier has left to name.
+            {    1, new ("A128GCM", "AES-GCM mode w/ 128-bit key, 128-bit tag",   COSEAlgorithmFamily.AESGCM,  null,                     null,                      false, false, null, 16,   16) },
+            {    2, new ("A192GCM", "AES-GCM mode w/ 192-bit key, 128-bit tag",   COSEAlgorithmFamily.AESGCM,  null,                     null,                      false, false, null, 16,   24) },
+            {    3, new ("A256GCM", "AES-GCM mode w/ 256-bit key, 128-bit tag",   COSEAlgorithmFamily.AESGCM,  null,                     null,                      false, false, null, 16,   32) },
+
+            // AES key wrap [RFC 9053 Section 6.2.1, RFC 3394]. The width named
+            // is that of the KEY-ENCRYPTION key, not of the key being wrapped.
+            {   -3, new ("A128KW",  "AES Key Wrap w/ 128-bit key",                COSEAlgorithmFamily.KeyWrap, null,                     null,                      false, false, null, null, 16) },
+            {   -4, new ("A192KW",  "AES Key Wrap w/ 192-bit key",                COSEAlgorithmFamily.KeyWrap, null,                     null,                      false, false, null, null, 24) },
+            {   -5, new ("A256KW",  "AES Key Wrap w/ 256-bit key",                COSEAlgorithmFamily.KeyWrap, null,                     null,                      false, false, null, null, 32) },
+
+            {   -6, new ("direct",  "Direct use of content encryption key (CEK)", COSEAlgorithmFamily.Direct,  null,                     null,                      false, false) },
 
             // Hash algorithms [RFC 9054]. They sign nothing; they name the
             // digest of a certificate thumbprint (x5t) and the like.
@@ -232,6 +261,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             => registry.TryGetValue(Value, out var info)
                    ? info.TagSizeInBytes
+                   : null;
+
+        /// <summary>
+        /// The width of the key in bytes, for an algorithm that fixes one, and
+        /// null for everything else.
+        ///
+        /// The AES algorithms do: A128GCM and A256GCM are two registered
+        /// identifiers over one cipher, and the width is what tells them
+        /// apart. The signature algorithms leave it to the curve or to the
+        /// parameter set.
+        /// </summary>
+        public Int32?              KeySizeInBytes
+
+            => registry.TryGetValue(Value, out var info)
+                   ? info.KeySizeInBytes
                    : null;
 
         /// <summary>
@@ -416,6 +460,46 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// HMAC with SHA-512 (algorithm 7) [RFC 9053, Section 3.1].
         /// </summary>
         public static COSEAlgorithm  HMAC512_512 { get; } = new (   7);
+
+
+        /// <summary>
+        /// AES-GCM with a 128-bit key and a 128-bit tag (algorithm 1)
+        /// [RFC 9053, Section 4.1].
+        /// </summary>
+        public static COSEAlgorithm  A128GCM     { get; } = new (   1);
+
+        /// <summary>
+        /// AES-GCM with a 192-bit key (algorithm 2) [RFC 9053, Section 4.1].
+        /// </summary>
+        public static COSEAlgorithm  A192GCM     { get; } = new (   2);
+
+        /// <summary>
+        /// AES-GCM with a 256-bit key (algorithm 3) [RFC 9053, Section 4.1].
+        /// </summary>
+        public static COSEAlgorithm  A256GCM     { get; } = new (   3);
+
+        /// <summary>
+        /// AES key wrap with a 128-bit key-encryption key (algorithm -3)
+        /// [RFC 9053, Section 6.2.1].
+        /// </summary>
+        public static COSEAlgorithm  A128KW      { get; } = new (  -3);
+
+        /// <summary>
+        /// AES key wrap with a 192-bit key-encryption key (algorithm -4).
+        /// </summary>
+        public static COSEAlgorithm  A192KW      { get; } = new (  -4);
+
+        /// <summary>
+        /// AES key wrap with a 256-bit key-encryption key (algorithm -5).
+        /// </summary>
+        public static COSEAlgorithm  A256KW      { get; } = new (  -5);
+
+        /// <summary>
+        /// Direct use of the content encryption key (algorithm -6)
+        /// [RFC 9053, Section 6.1.1]: the recipient key IS the content key,
+        /// and nothing is transported.
+        /// </summary>
+        public static COSEAlgorithm  Direct      { get; } = new (  -6);
 
 
         /// <summary>
@@ -680,6 +764,221 @@ namespace org.GraphDefined.Vanaheimr.Illias
                    CryptographicOperations.FixedTimeEquals(computed, Tag);
 
         }
+
+        #endregion
+
+        #region Encrypt(Plaintext, Key, Nonce, AdditionalData)
+
+        /// <summary>
+        /// Encrypt with AES-GCM, returning ciphertext with the 16-byte
+        /// authentication tag APPENDED.
+        ///
+        /// That the tag is appended rather than carried in a field of its own
+        /// is how COSE transports it, and an implementation that kept them
+        /// apart would interoperate with nothing.
+        ///
+        /// The nonce is the caller's and there is no default, deliberately: a
+        /// nonce reused with the same key breaks AES-GCM outright - two
+        /// messages under one nonce leak the XOR of their plaintexts AND the
+        /// authentication subkey, which lets an adversary forge afterwards -
+        /// and this library cannot know which nonces a caller has spent.
+        /// </summary>
+        /// <param name="Plaintext">The content to encrypt.</param>
+        /// <param name="Key">The content encryption key.</param>
+        /// <param name="Nonce">The 12-byte nonce, which must never repeat under one key.</param>
+        /// <param name="AdditionalData">The encoded Enc_structure, authenticated but not encrypted.</param>
+        public Byte[] Encrypt(ReadOnlySpan<Byte>  Plaintext,
+                              Byte[]              Key,
+                              Byte[]              Nonce,
+                              ReadOnlySpan<Byte>  AdditionalData)
+        {
+
+            EnsureAESGCM(Key, Nonce);
+
+            var ciphertext = new Byte[Plaintext.Length + AESGCMTagSize];
+
+            using var aes = new AesGcm(Key, AESGCMTagSize);
+
+            aes.Encrypt(Nonce,
+                        Plaintext,
+                        ciphertext.AsSpan(0, Plaintext.Length),
+                        ciphertext.AsSpan(Plaintext.Length),
+                        AdditionalData);
+
+            return ciphertext;
+
+        }
+
+        #endregion
+
+        #region Decrypt(Ciphertext, Key, Nonce, AdditionalData)
+
+        /// <summary>
+        /// Decrypt with AES-GCM, or return null when the message does not
+        /// authenticate.
+        ///
+        /// Null rather than an exception, and null rather than a partial
+        /// plaintext: an AEAD failure means the WHOLE message is
+        /// unauthenticated, and handing back what was decrypted before the tag
+        /// was checked is the classic way to build an oracle out of a
+        /// decryptor.
+        /// </summary>
+        /// <param name="Ciphertext">The ciphertext with the authentication tag appended.</param>
+        /// <param name="Key">The content encryption key.</param>
+        /// <param name="Nonce">The 12-byte nonce.</param>
+        /// <param name="AdditionalData">The encoded Enc_structure.</param>
+        public Byte[]? Decrypt(Byte[]              Ciphertext,
+                               Byte[]              Key,
+                               Byte[]              Nonce,
+                               ReadOnlySpan<Byte>  AdditionalData)
+        {
+
+            EnsureAESGCM(Key, Nonce);
+
+            if (Ciphertext.Length < AESGCMTagSize)
+                return null;
+
+            var plaintext = new Byte[Ciphertext.Length - AESGCMTagSize];
+
+            try
+            {
+
+                using var aes = new AesGcm(Key, AESGCMTagSize);
+
+                aes.Decrypt(Nonce,
+                            Ciphertext.AsSpan(0, plaintext.Length),
+                            Ciphertext.AsSpan(plaintext.Length),
+                            plaintext,
+                            AdditionalData);
+
+                return plaintext;
+
+            }
+            catch (CryptographicException)
+            {
+                return null;
+            }
+
+        }
+
+        #endregion
+
+        #region (private) EnsureAESGCM(Key, Nonce)
+
+        private void EnsureAESGCM(Byte[] Key, Byte[] Nonce)
+        {
+
+            if (Family != COSEAlgorithmFamily.AESGCM)
+                throw new COSEException($"The COSE algorithm '{Name}' is not a content encryption algorithm supported by this implementation!");
+
+            var keySize = KeySizeInBytes
+                              ?? throw new COSEException($"The COSE algorithm '{Name}' does not define a key width!");
+
+            if (Key.Length != keySize)
+                throw new COSEException($"The COSE algorithm '{Name}' needs a {keySize}-byte key, but a {Key.Length}-byte key was given!");
+
+            if (Nonce.Length != AESGCMNonceSize)
+                throw new COSEException($"AES-GCM within COSE uses a {AESGCMNonceSize}-byte nonce [RFC 9053, Section 4.1], but a {Nonce.Length}-byte one was given!");
+
+        }
+
+        #endregion
+
+        #region WrapKey(ContentKey, KeyEncryptionKey) / UnwrapKey(Wrapped, KeyEncryptionKey)
+
+        /// <summary>
+        /// Wrap a content key under a key-encryption key [RFC 3394].
+        ///
+        /// The result is eight bytes longer than the key: RFC 3394's integrity
+        /// check value travels with it, which is what lets an unwrap FAIL
+        /// rather than silently return rubbish.
+        /// </summary>
+        /// <param name="ContentKey">The key to wrap.</param>
+        /// <param name="KeyEncryptionKey">The key to wrap it under.</param>
+        public Byte[] WrapKey(Byte[] ContentKey, Byte[] KeyEncryptionKey)
+        {
+
+            EnsureKeyWrap(KeyEncryptionKey);
+
+            if (ContentKey.Length % 8 != 0 || ContentKey.Length < 16)
+                throw new COSEException($"AES key wrap needs a key of at least 16 bytes and a multiple of 8 [RFC 3394], but a {ContentKey.Length}-byte key was given!");
+
+            var engine = new AesWrapEngine();
+            engine.Init(true, new KeyParameter(KeyEncryptionKey));
+
+            return engine.Wrap(ContentKey, 0, ContentKey.Length);
+
+        }
+
+        /// <summary>
+        /// Unwrap a content key, or return null when the integrity check
+        /// fails.
+        ///
+        /// Failing is the useful behaviour: the check value is what tells a
+        /// recipient that this wrapped key was not meant for them, rather than
+        /// handing them a plausible-looking key that decrypts nothing.
+        /// </summary>
+        /// <param name="Wrapped">The wrapped key.</param>
+        /// <param name="KeyEncryptionKey">The key it was wrapped under.</param>
+        public Byte[]? UnwrapKey(Byte[] Wrapped, Byte[] KeyEncryptionKey)
+        {
+
+            EnsureKeyWrap(KeyEncryptionKey);
+
+            if (Wrapped.Length % 8 != 0 || Wrapped.Length < 24)
+                return null;
+
+            try
+            {
+
+                var engine = new AesWrapEngine();
+                engine.Init(false, new KeyParameter(KeyEncryptionKey));
+
+                return engine.Unwrap(Wrapped, 0, Wrapped.Length);
+
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+        }
+
+        private void EnsureKeyWrap(Byte[] KeyEncryptionKey)
+        {
+
+            if (Family != COSEAlgorithmFamily.KeyWrap)
+                throw new COSEException($"The COSE algorithm '{Name}' is not a key wrap algorithm supported by this implementation!");
+
+            var keySize = KeySizeInBytes
+                              ?? throw new COSEException($"The COSE algorithm '{Name}' does not define a key width!");
+
+            if (KeyEncryptionKey.Length != keySize)
+                throw new COSEException($"The COSE algorithm '{Name}' needs a {keySize}-byte key-encryption key, but a {KeyEncryptionKey.Length}-byte key was given!");
+
+        }
+
+        #endregion
+
+        #region (static) ForKeyWrap(KeySizeInBytes)
+
+        /// <summary>
+        /// The key wrap algorithm a key-encryption key of the given width
+        /// belongs to.
+        ///
+        /// The width is that of the KEY-ENCRYPTION key rather than of the key
+        /// being wrapped, which is the direction people get wrong: A256KW
+        /// wraps a 128-bit content key perfectly well.
+        /// </summary>
+        /// <param name="KeySizeInBytes">The width of the key-encryption key.</param>
+        public static COSEAlgorithm ForKeyWrap(Int32 KeySizeInBytes)
+
+            => KeySizeInBytes switch {
+                   16 => A128KW,
+                   24 => A192KW,
+                   32 => A256KW,
+                   _  => throw new COSEException($"AES key wrap needs a key-encryption key of 16, 24 or 32 bytes, but a {KeySizeInBytes}-byte key was given!")
+               };
 
         #endregion
 

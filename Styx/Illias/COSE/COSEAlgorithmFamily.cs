@@ -76,7 +76,40 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// that a MAC can never be mistaken for a signature by an API that
         /// accepts both.
         /// </summary>
-        HMAC
+        HMAC,
+
+        /// <summary>
+        /// AES-GCM [RFC 9053, Section 4.1], a content ENCRYPTION algorithm.
+        /// An AEAD: it produces ciphertext plus an authentication tag, and
+        /// authenticates the Enc_structure alongside without encrypting it.
+        ///
+        /// Note what it does NOT give: an encrypted message says nothing about
+        /// who sent it. AEAD integrity means "whoever holds this key wrote
+        /// this", which with several recipients means any of them. RFC 9052
+        /// Section 8.3 puts it as "either no or very limited data
+        /// origination". A signed payload inside an encrypted envelope is how
+        /// one gets both.
+        /// </summary>
+        AESGCM,
+
+        /// <summary>
+        /// AES key wrap [RFC 9053 Section 6.2.1, RFC 3394], a RECIPIENT
+        /// algorithm: it carries a content key rather than content.
+        ///
+        /// Deterministic, and deliberately so - the same key wrapped under the
+        /// same key-encryption key is always the same bytes. That is safe only
+        /// because what it wraps is a uniformly random key rather than a
+        /// message, which RFC 3394 relies on squarely.
+        /// </summary>
+        KeyWrap,
+
+        /// <summary>
+        /// The recipient algorithm that transports nothing [RFC 9053, Section
+        /// 6.1.1]: the recipient key IS the content key. Its protected bucket
+        /// and its ciphertext must both be empty, which is what makes a
+        /// COSE_Mac with one direct recipient a COSE_Mac0 with ceremony.
+        /// </summary>
+        Direct
 
     }
 

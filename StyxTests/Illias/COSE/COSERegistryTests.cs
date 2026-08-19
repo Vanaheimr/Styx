@@ -83,6 +83,24 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSEAlgorithm.HMAC384_384,   6, "HMAC 384/384", false, false, null),
                                (COSEAlgorithm.HMAC512_512,   7, "HMAC 512/512", false, false, null),
 
+                               // AES-GCM [RFC 9053, Section 4.1]: content
+                               // ENCRYPTION, so they sign nothing either — and
+                               // an encrypted message says nothing about who
+                               // sent it, which is why a record is signed and
+                               // then encrypted rather than merely encrypted.
+                               (COSEAlgorithm.A128GCM,    1, "A128GCM", false, false, null),
+                               (COSEAlgorithm.A192GCM,    2, "A192GCM", false, false, null),
+                               (COSEAlgorithm.A256GCM,    3, "A256GCM", false, false, null),
+
+                               // The recipient algorithms: they carry a content
+                               // key rather than content. The width named by a
+                               // key wrap identifier is that of the KEY-ENCRYPTION
+                               // key, not of the key being wrapped.
+                               (COSEAlgorithm.A128KW,    -3, "A128KW",  false, false, null),
+                               (COSEAlgorithm.A192KW,    -4, "A192KW",  false, false, null),
+                               (COSEAlgorithm.A256KW,    -5, "A256KW",  false, false, null),
+                               (COSEAlgorithm.Direct,    -6, "direct",  false, false, null),
+
                                // Hash algorithms [RFC 9054]: they sign nothing,
                                // they name the digest of a thumbprint.
                                (COSEAlgorithm.SHA256,   -16, "SHA-256", false, false, null),
