@@ -67,8 +67,10 @@ repository, and its
 walks a complete charging transaction through three signature layers — meter,
 charging station, operator — whose every byte is verified by a test here.
 
-*IANA note:* Tag 44252 lies in the First-Come-First-Served range and is,
-as of 2026-08-18, unassigned. The prepared registration request is
+*IANA note:* Tag 44252 is **registered** — IANA assigned it on 2026-08-19
+under the registry's First-Come-First-Served policy, with the specification
+above as its "Description of semantics". The request as sent, and what the
+registry made of it, are in
 [IANA-registration.md](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/IANA-registration.md).
 
 ### Text format and JSON documents
