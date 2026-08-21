@@ -1077,6 +1077,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
+            // A map holding nothing but the magnitude says exactly what the
+            // bare number says, because the coverage factor defaults to 1 -
+            // which would give one uncertainty two encodings (specification
+            // section 3.4). Checked after the magnitude itself, so that a
+            // negative one still reports the deeper fault.
+            if (Node.AsMap().Count == 1)
+            {
+                ErrorResponse = "An uncertainty map stating only its magnitude says what a bare number says, which would give the same uncertainty two encodings!";
+                return false;
+            }
+
             var coverageFactor = 1m;
 
             if (Node.TryGetValue(CBORValue.FromUInt64(2), out var coverageFactorNode))

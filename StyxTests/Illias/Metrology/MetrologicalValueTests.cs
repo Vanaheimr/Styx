@@ -407,11 +407,18 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                                    out _, out var error14),  Is.False);
             Assert.That(error14,  Does.Contain("unknown key"));
 
+            // An uncertainty map stating nothing but its magnitude: {1: 2}.
+            // The coverage factor defaults to 1, so it says what the bare
+            // number says and the reading would have two encodings.
+            Assert.That(MetrologicalValue.TryParse(CBORValue.Parse(Convert.FromHexString("D9ACDC84050400A10102")),
+                                                   out _, out var error15),  Is.False);
+            Assert.That(error15,  Does.Contain("two encodings"));
+
             // A unit *name* on the wire - symbols and aliases only: 44252([5, "Ampere"])
             Assert.That(MetrologicalValue.TryParse(CBORValue.Tagged(CBORTag.MetrologicalValue,
                                                                     CBORValue.FromArray(5, "Ampere")),
-                                                   out _, out var error15),  Is.False);
-            Assert.That(error15,  Does.Contain("Unknown unit"));
+                                                   out _, out var error16),  Is.False);
+            Assert.That(error16,  Does.Contain("Unknown unit"));
 
         }
 
