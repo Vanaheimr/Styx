@@ -326,13 +326,18 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var smallArea  = SquareMeter.ParseSM("100");
             var largeArea  = SquareMeter.ParseSM("250");
 
-            Assert.That(smallArea == smallArea,  Is.True,     "SquareMeter: 'a == a' must hold!");
-            Assert.That(smallArea != smallArea,  Is.False,    "SquareMeter: 'operator !=' must negate 'operator =='!");
+            // 'a == a' is exactly what the operator has to answer, but spelled
+            // with one variable twice the compiler reads it as a typo (CS1718),
+            // so the value gets a second name - as in the generic helper above.
+            var sameArea   = smallArea;
+
+            Assert.That(smallArea == sameArea,   Is.True,     "SquareMeter: 'a == a' must hold!");
+            Assert.That(smallArea != sameArea,   Is.False,    "SquareMeter: 'operator !=' must negate 'operator =='!");
             Assert.That(smallArea != largeArea,  Is.True,     "SquareMeter: two different areas must be unequal!");
             Assert.That(smallArea <  largeArea,  Is.True,     "SquareMeter: 'operator <' must compare upwards!");
             Assert.That(largeArea >  smallArea,  Is.True,     "SquareMeter: 'operator >' must compare downwards!");
-            Assert.That(smallArea <= smallArea,  Is.True,     "SquareMeter: 'operator <=' must include equality!");
-            Assert.That(smallArea >= smallArea,  Is.True,     "SquareMeter: 'operator >=' must include equality!");
+            Assert.That(smallArea <= sameArea,   Is.True,     "SquareMeter: 'operator <=' must include equality!");
+            Assert.That(smallArea >= sameArea,   Is.True,     "SquareMeter: 'operator >=' must include equality!");
             Assert.That(smallArea.CompareTo(largeArea), Is.Negative, "SquareMeter: CompareTo must agree with the operators!");
             Assert.That((smallArea + largeArea).Value,  Is.EqualTo(350m), "SquareMeter: 'operator +' must add the values!");
             Assert.That((largeArea - smallArea).Value,  Is.EqualTo(150m), "SquareMeter: 'operator -' must subtract the values!");
@@ -341,14 +346,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             var smallVolume  = QubicMeter.ParseQM("100");
             var largeVolume  = QubicMeter.ParseQM("250");
+            var sameVolume   = smallVolume;
 
-            Assert.That(smallVolume == smallVolume, Is.True,  "QubicMeter: 'a == a' must hold!");
-            Assert.That(smallVolume != smallVolume, Is.False, "QubicMeter: 'operator !=' must negate 'operator =='!");
+            Assert.That(smallVolume == sameVolume,  Is.True,  "QubicMeter: 'a == a' must hold!");
+            Assert.That(smallVolume != sameVolume,  Is.False, "QubicMeter: 'operator !=' must negate 'operator =='!");
             Assert.That(smallVolume != largeVolume, Is.True,  "QubicMeter: two different volumes must be unequal!");
             Assert.That(smallVolume <  largeVolume, Is.True,  "QubicMeter: 'operator <' must compare upwards!");
             Assert.That(largeVolume >  smallVolume, Is.True,  "QubicMeter: 'operator >' must compare downwards!");
-            Assert.That(smallVolume <= smallVolume, Is.True,  "QubicMeter: 'operator <=' must include equality!");
-            Assert.That(smallVolume >= smallVolume, Is.True,  "QubicMeter: 'operator >=' must include equality!");
+            Assert.That(smallVolume <= sameVolume,  Is.True,  "QubicMeter: 'operator <=' must include equality!");
+            Assert.That(smallVolume >= sameVolume,  Is.True,  "QubicMeter: 'operator >=' must include equality!");
             Assert.That(smallVolume.CompareTo(largeVolume), Is.Negative, "QubicMeter: CompareTo must agree with the operators!");
             Assert.That((smallVolume + largeVolume).Value,  Is.EqualTo(350m), "QubicMeter: 'operator +' must add the values!");
             Assert.That((largeVolume - smallVolume).Value,  Is.EqualTo(150m), "QubicMeter: 'operator -' must subtract the values!");
