@@ -1129,8 +1129,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 case CBORReaderState.Tag:
 
-                    var tag    = Reader.ReadTag();
-                    var inner  = ReadFrom(ref Reader);
+                    var tagStart  = Reader.Position;
+                    var tag       = Reader.ReadTag();
+                    var inner     = ReadFrom(ref Reader);
+
+                    // The document model keeps a bignum as the tag and the
+                    // byte string it is, so the preferred-serialization check
+                    // has to happen here rather than in the reader: down
+                    // there the two are read by separate calls, and neither
+                    // of them alone knows it is looking at a bignum.
+                    if (Reader.Options.RequirePreferredBignums &&
+                        (tag == CBORTag.UnsignedBignum || tag == CBORTag.NegativeBignum) &&
+                        inner.Kind == CBORValueKind.ByteString)
+                    {
+
+                        var content = inner.AsBytes();
+
+                        CBORReader.VerifyPreferredBignum(
+                            content,
+                            tag == CBORTag.NegativeBignum
+                                ? -new BigInteger(content, isUnsigned: true, isBigEndian: true) - 1
+                                :  new BigInteger(content, isUnsigned: true, isBigEndian: true),
+                            tagStart
+                        );
+
+                    }
 
                     return Tagged(tag, inner);
 

@@ -1745,12 +1745,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
         private BigInteger ReadBignumContent(CBORTag Tag)
         {
 
+            var start  = position;
             var bytes  = ReadByteString();
             var value  = new BigInteger(bytes, isUnsigned: true, isBigEndian: true);
 
-            return Tag == CBORTag.NegativeBignum
-                       ? -value - 1
-                       : value;
+            var result = Tag == CBORTag.NegativeBignum
+                             ? -value - 1
+                             : value;
+
+            if (options.RequirePreferredBignums)
+                VerifyPreferredBignum(bytes, result, start);
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region (internal static) VerifyPreferredBignum(Content, Value, Position)
+
+        /// <summary>
+        /// Verify the preferred serialization of a bignum (RFC 8949,
+        /// Section 4.2.2): No leading zero bytes, and no value that a basic
+        /// integer could have carried.
+        ///
+        /// Eight content bytes are what major types 0 and 1 reach, so a
+        /// shorter byte string is always a second spelling of an integer that
+        /// was already expressible - which is exactly what a deterministic
+        /// encoding must not have two of.
+        /// </summary>
+        /// <param name="Content">The byte string a bignum tag wrapped.</param>
+        /// <param name="Value">The integer it denotes.</param>
+        /// <param name="Position">The input position of the byte string.</param>
+        internal static void VerifyPreferredBignum(ReadOnlySpan<Byte>  Content,
+                                                   BigInteger          Value,
+                                                   Int32               Position)
+        {
+
+            if (Content.Length > 0 && Content[0] == 0)
+                throw new CBORException($"A bignum must be written without leading zero bytes (position {Position})!");
+
+            if (Content.Length <= 8)
+                throw new CBORException($"The bignum {Value} fits into a basic integer and must be written as one (position {Position})!");
 
         }
 

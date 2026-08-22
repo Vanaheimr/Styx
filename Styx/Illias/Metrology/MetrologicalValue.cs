@@ -747,6 +747,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region ToByteArray(Options = null)
+
+        /// <summary>
+        /// Return the CBOR encoding of this metrological value:
+        /// Tag 44252 (0xACDC) wrapping [value, unit, ?prefix, ?uncertainty].
+        ///
+        /// Deterministic by default, unlike the generic CBOR writer: Section 6
+        /// of the tag specification makes the encoding a function of the value
+        /// alone, so there is exactly one right answer here and the writer
+        /// options do not get a vote. Pass CBORWriterOptions.Default only where
+        /// producing a non-deterministic encoding is the point of the exercise,
+        /// e.g. when generating test data for a decoder.
+        /// </summary>
+        /// <param name="Options">Optional CBOR writer options; deterministic encoding by default.</param>
+        public Byte[] ToByteArray(CBORWriterOptions? Options = null)
+
+            => ToCBOR().ToByteArray(Options ?? CBORWriterOptions.Canonical);
+
+        #endregion
+
         #region (static) TryParse(CBOR, out MetrologicalValue, out ErrorResponse)
 
         /// <summary>
@@ -837,6 +857,80 @@ namespace org.GraphDefined.Vanaheimr.Illias
             ErrorResponse      = null;
 
             return true;
+
+        }
+
+        #endregion
+
+
+        #region (static) Parse   (CBORBytes,                          Options = null)
+
+        /// <summary>
+        /// Parse the given CBOR data as a metrological value:
+        /// Tag 44252 (0xACDC) wrapping [value, unit, ?prefix, ?uncertainty].
+        /// </summary>
+        /// <param name="CBORBytes">The encoded CBOR data.</param>
+        /// <param name="Options">Optional CBOR reader options; the strict profile of Section 6 by default.</param>
+        public static MetrologicalValue Parse(ReadOnlySpan<Byte>  CBORBytes,
+                                              CBORReaderOptions?  Options   = null)
+        {
+
+            if (TryParse(CBORBytes, out var metrologicalValue, out var errorResponse, Options))
+                return metrologicalValue;
+
+            throw new CBORException($"Invalid CBOR representation of a metrological value: {errorResponse}");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(CBORBytes, out MetrologicalValue, out ErrorResponse, Options = null)
+
+        /// <summary>
+        /// Try to parse the given CBOR data as a metrological value:
+        /// Tag 44252 (0xACDC) wrapping [value, unit, ?prefix, ?uncertainty].
+        ///
+        /// This overload reads the STRICT decoder profile of Section 6 of the
+        /// tag specification by default, which the generic CBOR reader does
+        /// not: non-shortest heads, indefinite lengths, unsorted map keys and
+        /// non-canonical NaNs are refused rather than normalized away.
+        ///
+        /// Two reasons the profile lives here rather than in the reader's own
+        /// default. It is a rule of this tag, not of CBOR: the generic reader
+        /// also serves COSE, where RFC 9052 does not require the sender to
+        /// have encoded deterministically and a verifier must hash the bytes
+        /// as they arrived. And it is a rule about BYTES, which a caller who
+        /// already holds a CBORValue can no longer check - by then the
+        /// evidence has been read away. That is why there is no options
+        /// parameter on the CBORValue overload: it would be a promise this
+        /// layer cannot keep.
+        ///
+        /// Pass CBORReaderOptions.Default for the lenient profile, which MAY
+        /// accept a non-deterministic encoding - and note what Section 6 then
+        /// requires of the caller: what was read leniently MUST NOT be
+        /// re-encoded as it arrived. ToByteArray() sees to that.
+        /// </summary>
+        /// <param name="CBORBytes">The encoded CBOR data.</param>
+        /// <param name="MetrologicalValue">The parsed metrological value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        /// <param name="Options">Optional CBOR reader options; the strict profile of Section 6 by default.</param>
+        public static Boolean TryParse(ReadOnlySpan<Byte>                CBORBytes,
+                                       out MetrologicalValue             MetrologicalValue,
+                                       [NotNullWhen(false)] out String?  ErrorResponse,
+                                       CBORReaderOptions?                Options   = null)
+        {
+
+            MetrologicalValue = default;
+
+            if (!CBORValue.TryParse(CBORBytes,
+                                    out var cbor,
+                                    out ErrorResponse,
+                                    Options ?? CBORReaderOptions.Canonical))
+            {
+                return false;
+            }
+
+            return TryParse(cbor, out MetrologicalValue, out ErrorResponse);
 
         }
 

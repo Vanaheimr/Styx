@@ -537,6 +537,65 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Reading_from_bytes_is_strict_by_default()
+
+        [Test]
+        public void Reading_from_bytes_is_strict_by_default()
+        {
+
+            // Section 6 of the tag specification RECOMMENDS the strict decoder
+            // profile and names the byte level it covers: shortest integer
+            // heads, definite lengths, sorted map keys, preferred bignums.
+            // Every second spelling below says exactly what the canonical
+            // bytes beside it say - which is what a format whose encoding is
+            // a function of its value must not have two of.
+            var spellings = new (String Canonical, String Second, String What)[] {
+                                 ("D9ACDC820504",              "D9ACDC82180504",            "a non-shortest integer head"),
+                                 ("D9ACDC820504",              "D9ACDC9F0504FF",            "an indefinite-length array"),
+                                 ("D9ACDC820504",              "D9ACDC82C2410504",          "a bignum a basic integer could carry"),
+                                 ("D9ACDC84050400A201020202",  "D9ACDC84050400A202020102",  "an unsorted uncertainty map")
+                             };
+
+            foreach (var (canonical, second, what) in spellings)
+            {
+
+                Assert.That(MetrologicalValue.TryParse(Convert.FromHexString(canonical),
+                                                       out var expected,
+                                                       out var canonicalError),
+                            Is.True,
+                            $"the canonical spelling beside {what}: {canonicalError}");
+
+                // Strict is the default, and this is what it is for.
+                Assert.That(MetrologicalValue.TryParse(Convert.FromHexString(second),
+                                                       out _,
+                                                       out _),
+                            Is.False,
+                            $"strict accepted {what}");
+
+                // Lenient on request: read, and read as the SAME reading -
+                // which is what makes it a second spelling rather than a
+                // different document.
+                Assert.That(MetrologicalValue.TryParse(Convert.FromHexString(second),
+                                                       out var lenient,
+                                                       out var lenientError,
+                                                       CBORReaderOptions.Default),
+                            Is.True,
+                            $"lenient refused {what}: {lenientError}");
+
+                Assert.That(lenient,  Is.EqualTo(expected),  what);
+
+                // And the other half of Section 6: what a lenient decoder
+                // read MUST NOT be written back as it arrived.
+                Assert.That(Convert.ToHexString(lenient.ToByteArray()),
+                            Is.EqualTo(canonical),
+                            what);
+
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

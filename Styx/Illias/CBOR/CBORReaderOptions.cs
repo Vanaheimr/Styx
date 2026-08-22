@@ -76,6 +76,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Boolean                  RequireDeterministic   { get; init; } = false;
 
+        /// <summary>
+        /// Whether to additionally verify the preferred serialization of
+        /// bignums (RFC 8949, Section 4.2.2): The byte string of a bignum
+        /// carries no leading zeroes, and a value a basic integer of major
+        /// type 0 or 1 could carry is written as that integer rather than
+        /// as a bignum.
+        ///
+        /// Kept apart from RequireDeterministic because RFC 8949 keeps them
+        /// apart: Section 4.2.1 is the core requirement of every
+        /// deterministic encoder, Section 4.2.2 is an additional
+        /// consideration for protocols that use tags 2 and 3 - which a
+        /// protocol carrying exact decimal measurements does.
+        /// Default: false.
+        /// </summary>
+        public Boolean                  RequirePreferredBignums   { get; init; } = false;
+
         #endregion
 
 
@@ -88,10 +104,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// CBOR reader options verifying the Core Deterministic Encoding
-        /// Requirements of RFC 8949, Section 4.2.1.
+        /// Requirements of RFC 8949, Section 4.2.1, together with the
+        /// preferred serialization of bignums of its Section 4.2.2.
         /// </summary>
         public static CBORReaderOptions  Canonical    { get; } = new () {
-                                                                     RequireDeterministic = true
+                                                                     RequireDeterministic     = true,
+                                                                     RequirePreferredBignums  = true
                                                                  };
 
         #endregion
