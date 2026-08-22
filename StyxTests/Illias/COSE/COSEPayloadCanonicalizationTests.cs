@@ -242,6 +242,53 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region A_MAC_carries_the_same_hazard_and_the_same_default()
+
+        [Test]
+        public void A_MAC_carries_the_same_hazard_and_the_same_default()
+        {
+
+            // A MAC covers bytes exactly as a signature does, so a forwarder
+            // that re-encodes the payload destroys the tag in the same way -
+            // and the party who loses is, again, never the party who chose.
+            var key      = COSEKey.FromSymmetricKey(new Byte[32], null, COSEAlgorithm.HMAC256_256);
+            var reading  = ReadingInReadingOrder();
+
+            var created  = COSEMac0.Create(reading, key);
+
+            Assert.That(created.Payload,                            Is.Not.EqualTo(reading));
+            Assert.That(COSEPayload.IsCanonical(created.Payload!),  Is.True);
+
+            var forwarded = new COSEMac0(
+                                created.ProtectedHeaderBytes,
+                                created.UnprotectedHeader,
+                                CBORValue.Parse(created.Payload!).ToByteArray(CBORWriterOptions.Canonical),
+                                created.Tag,
+                                created.IsTagged
+                            );
+
+            Assert.That(forwarded.Verify(key, out var errorResponse),  Is.True,  errorResponse);
+
+            // And without the default, the same forwarding breaks it.
+            var asItIs    = COSEMac0.Create(reading, key, null, false, true, CanonicalizePayload: false);
+
+            Assert.That(asItIs.Payload,       Is.EqualTo(reading));
+            Assert.That(asItIs.Verify(key),   Is.True);
+
+            var broken    = new COSEMac0(
+                                asItIs.ProtectedHeaderBytes,
+                                asItIs.UnprotectedHeader,
+                                COSEPayload.Canonicalize(asItIs.Payload!),
+                                asItIs.Tag,
+                                asItIs.IsTagged
+                            );
+
+            Assert.That(broken.Verify(key),  Is.False);
+
+        }
+
+        #endregion
+
         #region A_metrological_value_is_canonical_by_construction()
 
         [Test]

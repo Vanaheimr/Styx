@@ -243,12 +243,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data.</param>
         /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 97.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before authenticating it, so that a receiver who parses and re-serializes it arrives at the very bytes this tag covers. A payload that is not CBOR is authenticated as it is.</param>
         public static COSEMac Create(Byte[]                      Payload,
                                      COSEKey                     ContentKey,
                                      IEnumerable<COSERecipient>  Recipients,
-                                     Byte[]?                     ExternalAAD     = null,
-                                     Boolean                     DetachPayload   = false,
-                                     Boolean                     Tagged          = true)
+                                     Byte[]?                     ExternalAAD           = null,
+                                     Boolean                     DetachPayload         = false,
+                                     Boolean                     Tagged                = true,
+                                     Boolean                     CanonicalizePayload   = true)
         {
 
             var algorithm = ContentKey.Algorithm
@@ -262,15 +264,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var protectedHeaderBytes = COSEHeaders.Create(algorithm).ToProtectedByteArray();
 
+            var payload = CanonicalizePayload
+                              ? COSEPayload.Canonicalize(Payload)
+                              : Payload;
+
+            // As in COSESign1 and COSEMac0: a detached payload is the
+            // caller's to transmit, so rewriting it here would authenticate
+            // a spelling nobody else has.
+            if (DetachPayload && !payload.AsSpan().SequenceEqual(Payload))
+                throw new COSEException("The payload of this COSE_Mac message is detached, so canonicalizing it here would authenticate bytes that nobody holds: Canonicalize the payload yourself (COSEPayload.Canonicalize), authenticate and transmit those, or pass CanonicalizePayload: false to authenticate the payload exactly as it is!");
+
             var tag = algorithm.ComputeMAC(
-                          ToBeMACed(protectedHeaderBytes, Payload, ExternalAAD),
+                          ToBeMACed(protectedHeaderBytes, payload, ExternalAAD),
                           ContentKey.K
                       );
 
             return new COSEMac(
                        protectedHeaderBytes,
                        null,
-                       DetachPayload ? null : Payload,
+                       DetachPayload ? null : payload,
                        tag,
                        Recipients,
                        Tagged
