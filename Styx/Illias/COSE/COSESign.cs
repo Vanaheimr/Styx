@@ -291,15 +291,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 98.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before signing it, so that a receiver who parses and re-serializes it arrives at the very bytes this signature covers. A payload that is not CBOR is signed as it is. Not to be confused with Deterministic, which is about the ECDSA nonce rather than about the bytes.</param>
         public static COSESign Sign(Byte[]                  Payload,
                                     AsymmetricKeyParameter  PrivateKey,
                                     COSEAlgorithm           Algorithm,
-                                    Byte[]?                 KeyIdentifier   = null,
-                                    Byte[]?                 ExternalAAD     = null,
-                                    Boolean                 DetachPayload   = false,
-                                    Boolean                 Tagged          = true,
-                                    SecureRandom?           Random          = null,
-                                    Boolean                 Deterministic   = false)
+                                    Byte[]?                 KeyIdentifier         = null,
+                                    Byte[]?                 ExternalAAD           = null,
+                                    Boolean                 DetachPayload         = false,
+                                    Boolean                 Tagged                = true,
+                                    SecureRandom?           Random                = null,
+                                    Boolean                 Deterministic         = false,
+                                    Boolean                 CanonicalizePayload   = true)
 
             => Sign(Payload,
                     PrivateKey,
@@ -313,7 +315,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     null,
                     null,
                     Random,
-                    Deterministic);
+                    Deterministic,
+                    CanonicalizePayload);
 
         #endregion
 
@@ -334,6 +337,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="BodyProtectedHeader">The optional protected header parameters of the message body.</param>
         /// <param name="BodyUnprotectedHeader">The optional unprotected header parameters of the message body.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before signing it, so that a receiver who parses and re-serializes it arrives at the very bytes this signature covers. A payload that is not CBOR is signed as it is. Not to be confused with Deterministic, which is about the ECDSA nonce rather than about the bytes.</param>
         public static COSESign Sign(Byte[]                  Payload,
                                     AsymmetricKeyParameter  PrivateKey,
                                     COSEHeaders             SignatureProtectedHeader,
@@ -344,7 +348,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                     COSEHeaders?            BodyProtectedHeader          = null,
                                     COSEHeaders?            BodyUnprotectedHeader        = null,
                                     SecureRandom?           Random                       = null,
-                                    Boolean                 Deterministic                = false)
+                                    Boolean                 Deterministic                = false,
+                                    Boolean                 CanonicalizePayload          = true)
         {
 
             var algorithm                = SignatureProtectedHeader.Algorithm
@@ -353,8 +358,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var bodyProtectedBytes       = (BodyProtectedHeader ?? COSEHeaders.Empty).ToProtectedByteArray();
             var signatureProtectedBytes  = SignatureProtectedHeader.ToProtectedByteArray();
 
+            var payload                  = CanonicalizePayload
+                                               ? COSEPayload.Canonicalize(Payload)
+                                               : Payload;
+
+            // A detached payload is the caller's to transmit, and every
+            // further signer added later signs the very same bytes. Rewriting
+            // them here would sign a spelling nobody else has.
+            if (DetachPayload && !payload.AsSpan().SequenceEqual(Payload))
+                throw new COSEException("The payload of this COSE_Sign message is detached, so canonicalizing it here would sign bytes that nobody holds: Canonicalize the payload yourself (COSEPayload.Canonicalize), sign and transmit those, or pass CanonicalizePayload: false to sign the payload exactly as it is!");
+
             var signature                = algorithm.Sign(
-                                               ToBeSigned(bodyProtectedBytes, signatureProtectedBytes, Payload, ExternalAAD),
+                                               ToBeSigned(bodyProtectedBytes, signatureProtectedBytes, payload, ExternalAAD),
                                                PrivateKey,
                                                Random,
                                                Deterministic
@@ -363,7 +378,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return new COSESign(
                        bodyProtectedBytes,
                        BodyUnprotectedHeader,
-                       DetachPayload ? null : Payload,
+                       DetachPayload ? null : payload,
                        [
                            new COSESignature(
                                signatureProtectedBytes,

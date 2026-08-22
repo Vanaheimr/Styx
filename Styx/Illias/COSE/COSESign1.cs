@@ -302,15 +302,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before signing it, so that a receiver who parses and re-serializes it arrives at the very bytes this signature covers. A payload that is not CBOR is signed as it is. Not to be confused with Deterministic, which is about the ECDSA nonce rather than about the bytes.</param>
         public static COSESign1 Sign(Byte[]                  Payload,
                                      AsymmetricKeyParameter  PrivateKey,
                                      COSEAlgorithm           Algorithm,
-                                     Byte[]?                 KeyIdentifier   = null,
-                                     Byte[]?                 ExternalAAD     = null,
-                                     Boolean                 DetachPayload   = false,
-                                     Boolean                 Tagged          = true,
-                                     SecureRandom?           Random          = null,
-                                     Boolean                 Deterministic   = false)
+                                     Byte[]?                 KeyIdentifier         = null,
+                                     Byte[]?                 ExternalAAD           = null,
+                                     Boolean                 DetachPayload         = false,
+                                     Boolean                 Tagged                = true,
+                                     SecureRandom?           Random                = null,
+                                     Boolean                 Deterministic         = false,
+                                     Boolean                 CanonicalizePayload   = true)
 
             => Sign(Payload,
                     PrivateKey,
@@ -323,7 +325,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Tagged,
                     Random,
                     null,
-                    Deterministic);
+                    Deterministic,
+                    CanonicalizePayload);
 
         #endregion
 
@@ -353,15 +356,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before signing it, so that a receiver who parses and re-serializes it arrives at the very bytes this signature covers. A payload that is not CBOR is signed as it is. Not to be confused with Deterministic, which is about the ECDSA nonce rather than about the bytes.</param>
         public static COSESign1 SignWithApplicationAlgorithm(Byte[]                  Payload,
                                                              AsymmetricKeyParameter  PrivateKey,
                                                              COSEAlgorithm           Algorithm,
-                                                             Byte[]?                 KeyIdentifier   = null,
-                                                             Byte[]?                 ExternalAAD     = null,
-                                                             Boolean                 DetachPayload   = false,
-                                                             Boolean                 Tagged          = true,
-                                                             SecureRandom?           Random          = null,
-                                                             Boolean                 Deterministic   = false)
+                                                             Byte[]?                 KeyIdentifier         = null,
+                                                             Byte[]?                 ExternalAAD           = null,
+                                                             Boolean                 DetachPayload         = false,
+                                                             Boolean                 Tagged                = true,
+                                                             SecureRandom?           Random                = null,
+                                                             Boolean                 Deterministic         = false,
+                                                             Boolean                 CanonicalizePayload   = true)
 
             => Sign(Payload,
                     PrivateKey,
@@ -374,7 +379,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Tagged,
                     Random,
                     Algorithm,
-                    Deterministic);
+                    Deterministic,
+                    CanonicalizePayload);
 
         #endregion
 
@@ -394,16 +400,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before signing it, so that a receiver who parses and re-serializes it arrives at the very bytes this signature covers. A payload that is not CBOR is signed as it is. Not to be confused with Deterministic, which is about the ECDSA nonce rather than about the bytes.</param>
         public static COSESign1 Sign(Byte[]                  Payload,
                                      AsymmetricKeyParameter  PrivateKey,
                                      COSEHeaders             ProtectedHeader,
-                                     COSEHeaders?            UnprotectedHeader   = null,
-                                     Byte[]?                 ExternalAAD         = null,
+                                     COSEHeaders?            UnprotectedHeader     = null,
+                                     Byte[]?                 ExternalAAD           = null,
                                      Boolean                 DetachPayload         = false,
                                      Boolean                 Tagged                = true,
                                      SecureRandom?           Random                = null,
                                      COSEAlgorithm?          ApplicationAlgorithm  = null,
-                                     Boolean                 Deterministic         = false)
+                                     Boolean                 Deterministic         = false,
+                                     Boolean                 CanonicalizePayload   = true)
         {
 
             if (ApplicationAlgorithm.HasValue        &&
@@ -419,8 +427,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var protectedBytes  = ProtectedHeader.ToProtectedByteArray();
 
+            var payload         = CanonicalizePayload
+                                      ? COSEPayload.Canonicalize(Payload)
+                                      : Payload;
+
+            // A detached payload is the caller's to transmit, so it is the
+            // caller's bytes a verifier will be handed. Quietly signing a
+            // different spelling of them here would produce a message that
+            // can never verify, and the only hint would be a failed check
+            // somewhere else entirely.
+            if (DetachPayload && !payload.AsSpan().SequenceEqual(Payload))
+                throw new COSEException("The payload of this COSE_Sign1 message is detached, so canonicalizing it here would sign bytes that nobody holds: Canonicalize the payload yourself (COSEPayload.Canonicalize), sign and transmit those, or pass CanonicalizePayload: false to sign the payload exactly as it is!");
+
             var signature       = algorithm.Sign(
-                                      ToBeSigned(protectedBytes, Payload, ExternalAAD),
+                                      ToBeSigned(protectedBytes, payload, ExternalAAD),
                                       PrivateKey,
                                       Random,
                                       Deterministic
@@ -429,7 +449,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return new COSESign1(
                        protectedBytes,
                        UnprotectedHeader,
-                       DetachPayload ? null : Payload,
+                       DetachPayload ? null : payload,
                        signature,
                        Tagged
                    );
@@ -450,13 +470,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="DetachPayload">Whether to omit the payload from the message.</param>
         /// <param name="Tagged">Whether to wrap the message within CBOR tag 18.</param>
         /// <param name="Random">An optional source of randomness for the ECDSA nonce.</param>
+        /// <param name="CanonicalizePayload">Whether to rewrite a CBOR payload in the deterministic encoding of RFC 8949, Section 4.2.1 before signing it, so that a receiver who parses and re-serializes it arrives at the very bytes this signature covers. A payload that is not CBOR is signed as it is. Not to be confused with Deterministic, which is about the ECDSA nonce rather than about the bytes.</param>
         public static COSESign1 Sign(Byte[]          Payload,
                                      COSEKey         Key,
-                                     Byte[]?         ExternalAAD     = null,
-                                     Boolean         DetachPayload   = false,
-                                     Boolean         Tagged          = true,
-                                     SecureRandom?   Random          = null,
-                                     Boolean         Deterministic   = false)
+                                     Byte[]?         ExternalAAD           = null,
+                                     Boolean         DetachPayload         = false,
+                                     Boolean         Tagged                = true,
+                                     SecureRandom?   Random                = null,
+                                     Boolean         Deterministic         = false,
+                                     Boolean         CanonicalizePayload   = true)
         {
 
             var algorithm = Key.Algorithm
@@ -470,7 +492,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         DetachPayload,
                         Tagged,
                         Random,
-                        Deterministic);
+                        Deterministic,
+                        CanonicalizePayload);
 
         }
 

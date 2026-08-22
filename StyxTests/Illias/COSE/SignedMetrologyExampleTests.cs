@@ -309,6 +309,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             var readings = new List<COSESign1>();
 
+            // Both signing calls below pass CanonicalizePayload: false,
+            // because the published document predates that default: its maps
+            // are in reading order rather than sorted by encoded key, so
+            // canonicalizing them would rebuild a DIFFERENT record - same
+            // size, same values, different bytes and different signatures.
+            // What that costs is measured by
+            // The_published_record_does_not_survive_being_forwarded() below.
             foreach (var sample in samples)
             {
 
@@ -332,7 +339,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                    meter,
                                    COSEAlgorithm.ESB256,
                                    MeterKey().KeyIdentifier,
-                                   Deterministic: true)
+                                   Deterministic:        true,
+                                   CanonicalizePayload:  false)
                 );
 
             }
@@ -347,7 +355,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                           station,
                                           COSEAlgorithm.ES256,
                                           StationKey().KeyIdentifier,
-                                          Deterministic: true).
+                                          Deterministic:        true,
+                                          CanonicalizePayload:  false).
                                      AddCountersignature(cpo,
                                                          COSEAlgorithm.ES384,
                                                          OperatorKey().KeyIdentifier,
@@ -359,6 +368,51 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // reviewer at a metrology institute is entitled to do.
             Assert.That(Convert.ToHexString(rebuilt.ToByteArray()),
                         Is.EqualTo(ReleasedRecord));
+
+        }
+
+        #endregion
+
+        #region The_published_record_does_not_survive_being_forwarded()
+
+        [Test]
+        public void The_published_record_does_not_survive_being_forwarded()
+        {
+
+            var released   = Released();
+
+            // Every map within the document is in reading order -
+            // chargingStation, transaction, readings - which is what a person
+            // wants and not what RFC 8949, Section 4.2.1 asks for: sorted by
+            // the encoded key, which puts the shortest name first.
+            Assert.That(COSEPayload.IsCanonical(released.Payload!),  Is.False);
+
+            foreach (var reading in Readings(CBORValue.Parse(released.Payload!)))
+                Assert.That(COSEPayload.IsCanonical(reading.Payload!),  Is.False);
+
+            // So a receiver that decodes the bundle and encodes it again -
+            // a backend, a roaming hub, anything that keeps a record as a
+            // model rather than as bytes - passes on a record whose signature
+            // no longer holds, having altered nothing about it. The bytes are
+            // even the same length: sorting a map moves them without adding
+            // any.
+            var forwarded  = new COSESign1(
+                                 released.ProtectedHeaderBytes,
+                                 released.UnprotectedHeader,
+                                 COSEPayload.Canonicalize(released.Payload!),
+                                 released.Signature,
+                                 released.IsTagged
+                             );
+
+            Assert.That(forwarded.Payload!.Length,  Is.EqualTo(released.Payload!.Length));
+
+            Assert.That(forwarded.Verify(StationKey(), out var errorResponse),  Is.False);
+            Assert.That(errorResponse,  Is.EqualTo("The signature is invalid!"));
+
+            // This is why COSESign1.Sign canonicalizes by default now, and
+            // why the rebuild above must opt out of it: the published bytes
+            // are what they are. Regenerating the document would make this
+            // test fail, and that would be the good news.
 
         }
 
