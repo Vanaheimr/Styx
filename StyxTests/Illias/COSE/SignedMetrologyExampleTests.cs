@@ -55,19 +55,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         /// signed meter readings, countersigned by the operator.
         /// </summary>
         public const String ReleasedRecord =
-            "D28443A10126A204484F4E4267CBA434400B8344A1013822A104486B1F337BA0EC88BB586056AA831918D6215BFE6ABAA02791C8FB619E" +
-            "0C2661F55E8C1F95967A67A02863E1ACC9EB090F4A2DD5BE6134380A29D65BA71661A2BA7D337C84C4E4C2C2D87F8925618D0CC7EF3E1E" +
-            "BD6D4279B55514A156B4E5315237488B681C20118283175901FFA36F6368617267696E6753746174696F6E7244452A4745462A45313233" +
-            "34353637382A316B7472616E73616374696F6E6861346631633965326872656164696E67738258DDD28445A101390108A10448C6738177" +
-            "A6E6D04B5886A5656D657465726E31495341303030303030303034326B7472616E73616374696F6E68613466316339653267636F6E7465" +
-            "7874715472616E73616374696F6E2E426567696E6474696D65C074323032362D30382D31355430383A31343A30305A66656E65726779D9" +
-            "ACDC84C482221A0012D6870203A401C48220187B020203C48221185F040158406A40B66B6D228217D87F6751D1919BA82CCA959F079EFC" +
-            "98F805BAE4CBC340A3611ABAC58B3AA2E1FB51EA85CACB978C03DCF78F407039DA41A2E653A60E138958DBD28445A101390108A10448C6" +
-            "738177A6E6D04B5884A5656D657465726E31495341303030303030303034326B7472616E73616374696F6E68613466316339653267636F" +
-            "6E746578746F5472616E73616374696F6E2E456E646474696D65C074323032362D30382D31355430393A30323A30305A66656E65726779" +
-            "D9ACDC84C482221A0013395D0203A401C48220187E020203C48221185F040158401D92018570E22306441FDD0E1645124C03F63CDE0D75" +
-            "A154B7ECD784112020F25834508FD5D9A6A016025A85B8BD7F5DF27056B33EDFC7A823E55449061562CC5840C521E083F44F35D056F5B6" +
-            "F75893B7B2AD8E32CFB2F60DFEAA405466083C16267C6E9256110BDBD204D81878E195A9E4BE644FE034BC7A640A42F82CC931AA2E";
+            "D28443A10126A204484F4E4267CBA434400B8344A1013822A104486B1F337BA0EC88BB586061C12A64FC1DB9E8943FCB43F8D9786D2FF7" +
+            "F8FF4EB6BD11AA175068F6DCA81EDC7EF938E169461927DF33CC63E2DD90A9247CB85B5D5D95FAC1B24C5E775482E817D331E84878416C" +
+            "8A43F7C7486692A3CA5F6D8FF8A182D6008BC72B092C595901FFA36872656164696E67738258DDD28445A101390108A10448C6738177A6" +
+            "E6D04B5886A56474696D65C074323032362D30382D31355430383A31343A30305A656D657465726E314953413030303030303030343266" +
+            "656E65726779D9ACDC84C482221A0012D6870203A401C48220187B020203C48221185F040167636F6E74657874715472616E7361637469" +
+            "6F6E2E426567696E6B7472616E73616374696F6E6861346631633965325840A8C6B9738D3A312248D78467C688147EA583170D25E8F2D1" +
+            "4475BA2404C8DE62369749AE5425975F50886C3C7C957A154DA788EF46C45276B1BEC4FCE2A00FA558DBD28445A101390108A10448C673" +
+            "8177A6E6D04B5884A56474696D65C074323032362D30382D31355430393A30323A30305A656D657465726E314953413030303030303030" +
+            "343266656E65726779D9ACDC84C482221A0013395D0203A401C48220187E020203C48221185F040167636F6E746578746F5472616E7361" +
+            "6374696F6E2E456E646B7472616E73616374696F6E6861346631633965325840008A537E8890CEF6D909BC832494718173315CC01E48FD" +
+            "779D6897FCC081E83270FCBE16A5E6939D5F8B1D5B80C1C4EC569335D5B175B3B49EB0DEFD994C0A6C6B7472616E73616374696F6E6861" +
+            "346631633965326F6368617267696E6753746174696F6E7244452A4745462A4531323334353637382A315840EE16FB2B5B12407D00DFDC" +
+            "582601AE543AFE062D797CE222A1411A00C92EEEB6D68E3EB9F259C02531AB438D6CC65BC7CC888C4DC5DE27DE106AF82AD13E89A7";
 
         // The three published example keys. These exist for this example only
         // and secure nothing.
@@ -309,13 +309,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             var readings = new List<COSESign1>();
 
-            // Both signing calls below pass CanonicalizePayload: false,
-            // because the published document predates that default: its maps
-            // are in reading order rather than sorted by encoded key, so
-            // canonicalizing them would rebuild a DIFFERENT record - same
-            // size, same values, different bytes and different signatures.
-            // What that costs is measured by
-            // The_published_record_does_not_survive_being_forwarded() below.
+            // Nothing below opts out of CanonicalizePayload: the document
+            // was regenerated on 2026-08-22 so that its payloads ARE the
+            // deterministic encoding of themselves. The maps therefore come
+            // out sorted by encoded key rather than in reading order, and
+            // The_published_record_survives_being_forwarded() below is what
+            // that buys.
             foreach (var sample in samples)
             {
 
@@ -339,8 +338,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                    meter,
                                    COSEAlgorithm.ESB256,
                                    MeterKey().KeyIdentifier,
-                                   Deterministic:        true,
-                                   CanonicalizePayload:  false)
+                                   Deterministic: true)
                 );
 
             }
@@ -355,8 +353,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                           station,
                                           COSEAlgorithm.ES256,
                                           StationKey().KeyIdentifier,
-                                          Deterministic:        true,
-                                          CanonicalizePayload:  false).
+                                          Deterministic: true).
                                      AddCountersignature(cpo,
                                                          COSEAlgorithm.ES384,
                                                          OperatorKey().KeyIdentifier,
@@ -373,29 +370,28 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-        #region The_published_record_does_not_survive_being_forwarded()
+        #region The_published_record_survives_being_forwarded()
 
         [Test]
-        public void The_published_record_does_not_survive_being_forwarded()
+        public void The_published_record_survives_being_forwarded()
         {
 
             var released   = Released();
 
-            // Every map within the document is in reading order -
-            // chargingStation, transaction, readings - which is what a person
-            // wants and not what RFC 8949, Section 4.2.1 asks for: sorted by
-            // the encoded key, which puts the shortest name first.
-            Assert.That(COSEPayload.IsCanonical(released.Payload!),  Is.False);
+            // Every map within the document is the deterministic encoding of
+            // itself: sorted by encoded key, shortest name first. Until
+            // 2026-08-22 they were in reading order instead - which reads
+            // better and cost the document the property below.
+            Assert.That(COSEPayload.IsCanonical(released.Payload!),  Is.True);
 
             foreach (var reading in Readings(CBORValue.Parse(released.Payload!)))
-                Assert.That(COSEPayload.IsCanonical(reading.Payload!),  Is.False);
+                Assert.That(COSEPayload.IsCanonical(reading.Payload!),  Is.True);
 
             // So a receiver that decodes the bundle and encodes it again -
             // a backend, a roaming hub, anything that keeps a record as a
-            // model rather than as bytes - passes on a record whose signature
-            // no longer holds, having altered nothing about it. The bytes are
-            // even the same length: sorting a map moves them without adding
-            // any.
+            // model rather than as bytes - passes on the very bytes the
+            // signature covers, and the record stays verifiable through
+            // however many hands it goes.
             var forwarded  = new COSESign1(
                                  released.ProtectedHeaderBytes,
                                  released.UnprotectedHeader,
@@ -404,15 +400,26 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                  released.IsTagged
                              );
 
-            Assert.That(forwarded.Payload!.Length,  Is.EqualTo(released.Payload!.Length));
+            Assert.That(Convert.ToHexString(forwarded.Payload!),
+                        Is.EqualTo(Convert.ToHexString(released.Payload!)));
 
-            Assert.That(forwarded.Verify(StationKey(), out var errorResponse),  Is.False);
-            Assert.That(errorResponse,  Is.EqualTo("The signature is invalid!"));
+            Assert.That(forwarded.Verify(StationKey(), out var errorResponse),  Is.True,  errorResponse);
 
-            // This is why COSESign1.Sign canonicalizes by default now, and
-            // why the rebuild above must opt out of it: the published bytes
-            // are what they are. Regenerating the document would make this
-            // test fail, and that would be the good news.
+            // And the same one layer down, where the meter signed.
+            foreach (var reading in Readings(CBORValue.Parse(forwarded.Payload!)))
+            {
+
+                var forwardedReading = new COSESign1(
+                                           reading.ProtectedHeaderBytes,
+                                           reading.UnprotectedHeader,
+                                           COSEPayload.Canonicalize(reading.Payload!),
+                                           reading.Signature,
+                                           reading.IsTagged
+                                       );
+
+                Assert.That(forwardedReading.Verify(MeterKey(), out var readingError),  Is.True,  readingError);
+
+            }
 
         }
 
