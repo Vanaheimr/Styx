@@ -72,6 +72,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
     /// <summary>
+    /// Which JSON strings are examined for the metrological text format on
+    /// the way back into CBOR.
+    ///
+    /// This is a decision about somebody else's document, so it is the
+    /// caller's to make. Turning a string of prose into a measurement is the
+    /// kind of mistake nothing downstream can notice: what comes out is a
+    /// perfectly well-formed reading of something nobody measured.
+    /// </summary>
+    public enum CBORJSONReadings
+    {
+
+        /// <summary>
+        /// None. A string stays a string. The default: a caller who says
+        /// nothing about a document gets no guesses about it.
+        /// </summary>
+        None,
+
+        /// <summary>
+        /// Every string is tried against the grammar, which is what recovers
+        /// a document that nothing described - and what the round trip of
+        /// metrological-text.md Section 3 asks for. The grammar is anchored
+        /// and strict, so the hazard is narrow and real: a prose field
+        /// holding "1 h" becomes one hour.
+        /// </summary>
+        Auto
+
+    }
+
+
+    /// <summary>
     /// What to do with a CBOR data item that this JSON profile does not
     /// cover: an unknown tag, a simple value, undefined.
     /// </summary>
@@ -132,10 +162,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Which JSON strings are examined for the metrological text format
-        /// on the way back into CBOR. When none is given, every string is -
-        /// the grammar is anchored and strict, but a string of prose that
-        /// reads exactly like a measurement ("1 h") would still be taken
-        /// for one, and this is how a caller rules that out.
+        /// on the way back into CBOR.
+        /// Default: None - nothing is guessed.
+        /// Ignored where DetectMetrologicalValues names a predicate, which is
+        /// the more precise way of saying the same thing.
+        /// </summary>
+        public CBORJSONReadings             Readings                   { get; init; } = CBORJSONReadings.None;
+
+        /// <summary>
+        /// Which JSON strings are examined for the metrological text format
+        /// on the way back into CBOR, decided per path - which is what an
+        /// application with a schema should use, and what the hazard of
+        /// Readings.Auto calls for. Overrides Readings where it is given.
         /// </summary>
         public MetrologicalValueDetector?   DetectMetrologicalValues   { get; init; }
 

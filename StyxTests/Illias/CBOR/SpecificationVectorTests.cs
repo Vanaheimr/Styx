@@ -303,12 +303,26 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region (private static) AsSpecified
+
+        /// <summary>
+        /// The conversion metrological-text.md Section 3 describes: a string
+        /// that reads as a reading becomes one. It is not the default - the
+        /// default guesses nothing about somebody else's document - so a
+        /// vector that asserts the specified conversion asks for it.
+        /// </summary>
+        private static readonly CBORJSONOptions AsSpecified = new () {
+                                                                  Readings = CBORJSONReadings.Auto
+                                                              };
+
+        #endregion
+
         #region (private static) JSONToHex (JSONText)
 
         private static String JSONToHex(String JSONText)
 
             => Convert.ToHexString(
-                   CBORJSON.ToCBOR(JSONText).ToByteArray(CBORWriterOptions.Canonical)
+                   CBORJSON.ToCBOR(JSONText, AsSpecified).ToByteArray(CBORWriterOptions.Canonical)
                );
 
         #endregion

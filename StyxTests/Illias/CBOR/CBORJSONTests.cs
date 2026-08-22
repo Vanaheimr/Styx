@@ -64,6 +64,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region (private static) AsSpecified
+
+        /// <summary>
+        /// The conversion metrological-text.md Section 3 describes: a string
+        /// that reads as a reading becomes one. It is not the default - the
+        /// default guesses nothing about somebody else's document - so every
+        /// test that means the specified conversion says so.
+        /// </summary>
+        private static readonly CBORJSONOptions AsSpecified = new () {
+                                                                  Readings = CBORJSONReadings.Auto
+                                                              };
+
+        #endregion
+
         #region (private static) BothPathsAgree(CBOR, Options = null)
 
         /// <summary>
@@ -116,14 +130,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var expected  = Convert.ToHexString(cbor.ToByteArray());
 
             // ...through the Newtonsoft tree...
-            Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(CBORJSON.ToJSON(cbor)).ToByteArray()),
+            Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(CBORJSON.ToJSON(cbor), AsSpecified).ToByteArray()),
                         Is.EqualTo(expected),
                         "The Newtonsoft round trip changed the bytes!");
 
             // ...and through UTF-8 text.
-            Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(CBORJSON.ToJSONUTF8(cbor).AsSpan()).ToByteArray()),
+            Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(CBORJSON.ToJSONUTF8(cbor).AsSpan(), AsSpecified).ToByteArray()),
                         Is.EqualTo(expected),
                         "The UTF-8 round trip changed the bytes!");
+
+            // And without asking, the reading comes back as the string it was
+            // written as - which is the default, and the whole difference.
+            Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(CBORJSON.ToJSON(cbor)).ToByteArray()),
+                        Is.Not.EqualTo(expected));
 
         }
 
@@ -156,7 +175,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                 var cbor  = CBORValue.Parse(Convert.FromHexString(hex));
                 var json  = BothPathsAgree(cbor);
 
-                Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(json).ToByteArray()),
+                Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(json, AsSpecified).ToByteArray()),
                             Is.EqualTo(hex),
                             $"{hex} came back as {json}");
 
@@ -289,10 +308,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         {
 
             // "1 h" is a perfectly good measurement and a perfectly good
-            // piece of prose, so the caller gets to say.
+            // piece of prose, so the caller gets to say - and says nothing by
+            // default, which leaves both of them prose.
             var json = "{\"duration\":\"1 h\",\"comment\":\"1 h\"}";
 
-            var everything = CBORJSON.ToCBOR(json);
+            var nothing = CBORJSON.ToCBOR(json);
+
+            Assert.That(nothing["duration"].HasTag(CBORTag.MetrologicalValue),  Is.False);
+            Assert.That(nothing["comment"]. HasTag(CBORTag.MetrologicalValue),  Is.False);
+
+            var everything = CBORJSON.ToCBOR(json, AsSpecified);
 
             Assert.That(everything["duration"].HasTag(CBORTag.MetrologicalValue),  Is.True);
             Assert.That(everything["comment"]. HasTag(CBORTag.MetrologicalValue),  Is.True);

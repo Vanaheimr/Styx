@@ -1133,9 +1133,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                 String           Path)
         {
 
+            // The predicate decides where there is one; otherwise Readings
+            // does, and it says None unless the caller said otherwise. A
+            // caller who passes nothing gets no guesses: what a wrong guess
+            // produces here is a well-formed reading of something nobody
+            // measured, and nothing downstream can tell.
+            var examine = Options.DetectMetrologicalValues is not null
+                              ? Options.DetectMetrologicalValues(Path, Text)
+                              : Options.Readings == CBORJSONReadings.Auto;
+
             if (Options.Metrology == CBORJSONMetrology.Text &&
-               (Options.DetectMetrologicalValues is null ||
-                Options.DetectMetrologicalValues(Path, Text)) &&
+                examine &&
                 MetrologicalValue.TryParse(Text, out var metrologicalValue, out _))
             {
                 return metrologicalValue.ToCBOR();
