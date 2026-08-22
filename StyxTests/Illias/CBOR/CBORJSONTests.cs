@@ -301,6 +301,44 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Both_paths_agree_about_a_character_above_the_BMP()
+
+        [Test]
+        public void Both_paths_agree_about_a_character_above_the_BMP()
+        {
+
+            // The blind spot that let the two paths disagree: nothing in this
+            // file carried a character above U+FFFF, and that is exactly the
+            // range Utf8JsonWriter escaped into a UTF-16 surrogate pair
+            // whatever encoder it was given, while the Newtonsoft tree wrote
+            // the character. Every built-in encoder does it, because
+            // JavaScriptEncoder.Create takes UnicodeRanges and a UnicodeRange
+            // stops at U+FFFF.
+            var grinning = CBORValue.FromText("😀");
+
+            Assert.That(BothPathsAgree(grinning),  Is.EqualTo("\"😀\""));
+
+            // In a member name as well as in a value, and nested rather than
+            // at the root: the escaping was never about position.
+            var document = CBORValue.FromMap([
+                               new (CBORValue.FromText("😀"), CBORValue.FromText("a😀b"))
+                           ]);
+
+            Assert.That(BothPathsAgree(document),  Is.EqualTo("{\"😀\":\"a😀b\"}"));
+
+            // What RFC 8259 Section 7 does require is still escaped, and the
+            // two-character forms are still preferred where they exist.
+            Assert.That(BothPathsAgree(CBORValue.FromText("a\"b\\c\nd\u0001e")),
+                        Is.EqualTo("\"a\\\"b\\\\c\\nd\\u0001e\""));
+
+            // And the round trip is what makes it more than cosmetic.
+            Assert.That(Convert.ToHexString(CBORJSON.ToCBOR(BothPathsAgree(grinning)).ToByteArray()),
+                        Is.EqualTo("64F09F9880"));
+
+        }
+
+        #endregion
+
         #region A_detector_decides_which_strings_are_measurements()
 
         [Test]

@@ -318,7 +318,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Output,
                                        new JsonWriterOptions {
                                            Indented  = options.Indent,
-                                           Encoder   = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                                           Encoder   = CBORJSONTextEncoder.Instance
                                        }
                                    );
 
