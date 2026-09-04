@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -32,7 +33,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal type of the pixel.</typeparam>
     /// <typeparam name="TValue">The type of the value.</typeparam>
     public class PixelValuePair<T, TValue> : Pixel<T>, IPixelValuePair<T, TValue>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Properties

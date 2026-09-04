@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -246,8 +246,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of hertz (Hz): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of hertz (Hz): '{Text}'!");
 
         }
 
@@ -265,8 +264,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of kHz: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kHz: '{Text}'!");
 
         }
 
@@ -284,8 +282,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseMHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of MHz: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MHz: '{Text}'!");
 
         }
 
@@ -303,8 +300,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseGHz(Text, out var hertz))
                 return hertz;
 
-            throw new ArgumentException($"Invalid text representation of GHz: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of GHz: '{Text}'!");
 
         }
 
@@ -483,25 +479,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kHz".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("MHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MHz".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("GHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GHz".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("Hz". AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Hz". AsSpan(), StringComparison.Ordinal))
             {
                 Span      = Span[..^2].TrimEnd();
             }
@@ -1278,7 +1274,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("Hz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("Hz".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1290,7 +1286,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kHz".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kHz,
                            Destination,
@@ -1300,7 +1296,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kHz".AsSpan()
                        );
 
-            if (Format.Equals("MHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("MHz".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MHz,
                            Destination,
@@ -1310,7 +1306,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " MHz".AsSpan()
                        );
 
-            if (Format.Equals("GHz".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("GHz".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            GHz,
                            Destination,
@@ -1393,18 +1389,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "Hz", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "Hz", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} Hz";
             }
 
-            if (String.Equals(Format, "kHz", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kHz", StringComparison.Ordinal))
                 return $"{kHz.ToString("G", FormatProvider)} kHz";
 
-            if (String.Equals(Format, "MHz", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "MHz", StringComparison.Ordinal))
                 return $"{MHz.ToString("G", FormatProvider)} MHz";
 
-            if (String.Equals(Format, "GHz", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "GHz", StringComparison.Ordinal))
                 return $"{GHz.ToString("G", FormatProvider)} GHz";
 
             return $"{Value.ToString(Format, FormatProvider)} Hz";

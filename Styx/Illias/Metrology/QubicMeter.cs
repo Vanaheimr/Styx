@@ -122,8 +122,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, out var qubicMeter))
                 return qubicMeter;
 
-            throw new ArgumentException($"Invalid text representation of a m³: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a m³: '{Text}'!");
 
         }
 
@@ -141,8 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseQM(Text, out var qubicMeter))
                 return qubicMeter;
 
-            throw new ArgumentException($"Invalid text representation of a m³: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a m³: '{Text}'!");
 
         }
 
@@ -160,8 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseQKM(Text, out var qubicMeter))
                 return qubicMeter;
 
-            throw new ArgumentException($"Invalid text representation of a km³: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a km³: '{Text}'!");
 
         }
 

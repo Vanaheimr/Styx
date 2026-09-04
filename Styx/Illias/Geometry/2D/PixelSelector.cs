@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -31,6 +32,5 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Pixel">A pixel of type T.</param>
     /// <returns>True if the pixel is selected; False otherwise.</returns>
     public delegate Boolean PixelSelector<T>(IPixel<T> Pixel)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
 }

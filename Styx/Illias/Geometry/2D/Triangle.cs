@@ -18,10 +18,10 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -33,17 +33,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the triangle.</typeparam>
     public class Triangle<T> : ITriangle<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -170,7 +161,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math = MathsFactory<T>.Instance;
 
             #region Math Checks
 

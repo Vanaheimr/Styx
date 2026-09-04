@@ -122,8 +122,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse(Text, out var squareMeter))
                 return squareMeter;
 
-            throw new ArgumentException($"Invalid text representation of a m²: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a m²: '{Text}'!");
 
         }
 
@@ -141,8 +140,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseSM(Text, out var squareMeter))
                 return squareMeter;
 
-            throw new ArgumentException($"Invalid text representation of a m²: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a m²: '{Text}'!");
 
         }
 
@@ -160,8 +158,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseSKM(Text, out var squareMeter))
                 return squareMeter;
 
-            throw new ArgumentException($"Invalid text representation of a km²: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of a km²: '{Text}'!");
 
         }
 

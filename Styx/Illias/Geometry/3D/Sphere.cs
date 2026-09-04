@@ -18,9 +18,9 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -32,17 +32,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the sphere.</typeparam>
     public class Sphere<T> : ISphere<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -101,7 +92,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return Math.Add(Radius, Radius);
+                return Radius + Radius;
             }
         }
 
@@ -139,11 +130,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             #region Math Checks
 
-            if (Radius.Equals(Math.Zero))
+            if (Radius.Equals(T.Zero))
                 throw new ArgumentException("The given radius must not be zero!");
 
             #endregion
@@ -241,7 +231,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            if (Center.DistanceTo(Sphere.Center).IsLessThanOrEquals(Math.Sub(Radius, Sphere.Radius)))
+            if (Center.DistanceTo(Sphere.Center).IsLessThanOrEquals(Radius - Sphere.Radius))
                 return true;
 
             return true;
@@ -268,7 +258,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            if (Center.DistanceTo(Sphere.Center).IsLessThanOrEquals(Math.Add(Radius, Sphere.Radius)))
+            if (Center.DistanceTo(Sphere.Center).IsLessThanOrEquals(Radius + Sphere.Radius))
                 return true;
 
             return true;

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -396,13 +396,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kT".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            // "kt" is the SI spelling of a kilotonne; "kT" is accepted as well,
+            // because this library used to emit it.
+            if      (Span.EndsWith("kt".AsSpan(), StringComparison.Ordinal) ||
+                     Span.EndsWith("kT".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("t".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("t".AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^1].TrimEnd();
             }
@@ -974,7 +977,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("t".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("t".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -986,14 +989,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kT".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kt".AsSpan(), StringComparison.Ordinal) ||
+                Format.Equals("kT".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kT,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
                            FormatProvider,
-                           " kT".AsSpan()
+                           " kt".AsSpan()
                        );
 
             return TryFormatWithSuffix(
@@ -1069,13 +1073,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "t",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "t",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} t";
             }
 
-            if (String.Equals(Format, "kT", StringComparison.OrdinalIgnoreCase))
-                return $"{kT.ToString("G", FormatProvider)} kT";
+            if (String.Equals(Format, "kt", StringComparison.Ordinal) ||
+                String.Equals(Format, "kT", StringComparison.Ordinal))
+                return $"{kT.ToString("G", FormatProvider)} kt";
 
             return $"{Value.ToString(Format, FormatProvider)} t";
 

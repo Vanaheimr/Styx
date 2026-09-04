@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixel">A pixel of type T.</param>
         /// <returns>True if the pixel is located within the given rectangle; False otherwise.</returns>
         public static Boolean Contains<T>(this IRectangle<T> Rectangle, IPixel<T> Pixel)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
             return Rectangle.Contains(Pixel.X, Pixel.Y);
         }

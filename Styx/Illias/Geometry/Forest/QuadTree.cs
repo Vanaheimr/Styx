@@ -19,6 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias.Collections;
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 #endregion
@@ -36,8 +37,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Quadtree">The sending quadtree.</param>
     /// <param name="Pixel">The pixel causing the split.</param>
     public delegate void QuadtreeSplitEventHandler<T>(Quadtree<T> Quadtree, IPixel<T> Pixel)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
     #endregion
 
     #region QuadtreeSplitEventHandler<T, TValue>(Quadtree, Pixel)
@@ -51,8 +51,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Quadtree">The sending quadtree.</param>
     /// <param name="Pixel">The pixel causing the split.</param>
     public delegate void QuadtreeSplitEventHandler<T, TValue>(Quadtree<T, TValue> Quadtree, IPixel<T> Pixel)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
     #endregion
 
 
@@ -66,7 +65,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     public class Quadtree<T> : Rectangle<T>, IQuadtree<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Data
@@ -301,18 +300,18 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     {
                         Subtree1 = new Quadtree<T>(Left,
                                                    Top,
-                                                   Math.Add(Left, Math.Div2(Width)),
-                                                   Math.Add(Top,  Math.Div2(Height)),
+                                                   Left + Width / T.CreateChecked(2),
+                                                   Top + Height / T.CreateChecked(2),
                                                    MaxNumberOfEmbeddedPixels);
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
                     if (Subtree2 is null)
                     {
-                        Subtree2 = new Quadtree<T>(Math.Add(Left, Math.Div2(Width)),
+                        Subtree2 = new Quadtree<T>(Left + Width / T.CreateChecked(2),
                                                    Top,
                                                    Right,
-                                                   Math.Add(Top, Math.Div2(Height)),
+                                                   Top + Height / T.CreateChecked(2),
                                                    MaxNumberOfEmbeddedPixels);
                         Subtree2.OnTreeSplit += OnTreeSplit;
                     }
@@ -320,8 +319,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     if (Subtree3 is null)
                     {
                         Subtree3 = new Quadtree<T>(Left,
-                                                   Math.Add(Top,  Math.Div2(Height)),
-                                                   Math.Add(Left, Math.Div2(Width)),
+                                                   Top + Height / T.CreateChecked(2),
+                                                   Left + Width / T.CreateChecked(2),
                                                    Bottom,
                                                    MaxNumberOfEmbeddedPixels);
                         Subtree3.OnTreeSplit += OnTreeSplit;
@@ -329,8 +328,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     if (Subtree4 is null)
                     {
-                        Subtree4 = new Quadtree<T>(Math.Add(Left, Math.Div2(Width)),
-                                                   Math.Add(Top,  Math.Div2(Height)),
+                        Subtree4 = new Quadtree<T>(Left + Width / T.CreateChecked(2),
+                                                   Top + Height / T.CreateChecked(2),
                                                    Right,
                                                    Bottom,
                                                    MaxNumberOfEmbeddedPixels);
@@ -683,7 +682,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     /// <typeparam name="TValue">The type of the stored values.</typeparam>
     public class Quadtree<T, TValue> : Rectangle<T>, IQuadtree<T, TValue>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Data
@@ -933,18 +932,18 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     {
                         Subtree1 = new Quadtree<T, TValue>(Left,
                                                    Top,
-                                                   Math.Add(Left, Math.Div2(Width)),
-                                                   Math.Add(Top,  Math.Div2(Height)),
+                                                   Left + Width / T.CreateChecked(2),
+                                                   Top + Height / T.CreateChecked(2),
                                                    MaxNumberOfEmbeddedPixels);
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
                     if (Subtree2 is null)
                     {
-                        Subtree2 = new Quadtree<T, TValue>(Math.Add(Left, Math.Div2(Width)),
+                        Subtree2 = new Quadtree<T, TValue>(Left + Width / T.CreateChecked(2),
                                                    Top,
                                                    Right,
-                                                   Math.Add(Top, Math.Div2(Height)),
+                                                   Top + Height / T.CreateChecked(2),
                                                    MaxNumberOfEmbeddedPixels);
                         Subtree2.OnTreeSplit += OnTreeSplit;
                     }
@@ -952,8 +951,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     if (Subtree3 is null)
                     {
                         Subtree3 = new Quadtree<T, TValue>(Left,
-                                                   Math.Add(Top,  Math.Div2(Height)),
-                                                   Math.Add(Left, Math.Div2(Width)),
+                                                   Top + Height / T.CreateChecked(2),
+                                                   Left + Width / T.CreateChecked(2),
                                                    Bottom,
                                                    MaxNumberOfEmbeddedPixels);
                         Subtree3.OnTreeSplit += OnTreeSplit;
@@ -961,8 +960,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
                     if (Subtree4 is null)
                     {
-                        Subtree4 = new Quadtree<T, TValue>(Math.Add(Left, Math.Div2(Width)),
-                                                   Math.Add(Top,  Math.Div2(Height)),
+                        Subtree4 = new Quadtree<T, TValue>(Left + Width / T.CreateChecked(2),
+                                                   Top + Height / T.CreateChecked(2),
                                                    Right,
                                                    Bottom,
                                                    MaxNumberOfEmbeddedPixels);

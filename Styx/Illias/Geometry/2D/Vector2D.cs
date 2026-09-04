@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -31,17 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the vector.</typeparam>
     public class Vector2D<T> : IVector2D<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -82,12 +73,29 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Vector2D<T>(Math.Zero,
-                                       Math.Zero,
-                                       Math.Div(X, Length),
-                                       Math.Div(Y, Length));
+
+                // Not the four-argument constructor: that one builds a vector
+                // from one point to another as X1 - X2, so passing the origin
+                // first returned the negated unit vector - a normalised vector
+                // pointing the opposite way to the one it normalises.
+                return new Vector2D<T>(X / Length,
+                                       Y / Length);
+
             }
         }
+
+        #endregion
+
+        #region Zero
+
+        /// <summary>
+        /// The zero vector, which is the additive identity: adding it to any
+        /// vector returns that vector unchanged.
+        /// </summary>
+        public static Vector2D<T> Zero
+
+            => new (T.Zero,
+                    T.Zero);
 
         #endregion
 
@@ -115,11 +123,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             this.X      = X;
             this.Y      = Y;
-            this.Length = new Pixel<T>(Math.Zero, Math.Zero).DistanceTo(X, Y);
+            this.Length = new Pixel<T>(T.Zero, T.Zero).DistanceTo(X, Y);
 
         }
 
@@ -153,10 +160,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
             
-            this.X      = Math.Sub(X1, X2);
-            this.Y      = Math.Sub(Y1, Y2);
+            this.X      = X1 - X2;
+            this.Y      = Y1 - Y2;
             this.Length = new Pixel<T>(X1, Y1).DistanceTo(X2, Y2);
 
         }
@@ -183,10 +189,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
-            this.X      = Math.Sub(Pixel1.X, Pixel2.X);
-            this.Y      = Math.Sub(Pixel1.Y, Pixel2.Y);
+            this.X      = Pixel1.X - Pixel2.X;
+            this.Y      = Pixel1.Y - Pixel2.Y;
             this.Length = Pixel1.DistanceTo(Pixel2);
 
         }
@@ -213,10 +218,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
-            this.X      = Math.Sub(Vector1.X, Vector2.X);
-            this.Y      = Math.Sub(Vector1.Y, Vector2.Y);
+            this.X      = Vector1.X - Vector2.X;
+            this.Y      = Vector1.Y - Vector2.Y;
             this.Length = Vector1.DistanceTo(Vector2);
 
         }
@@ -226,322 +230,60 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         #endregion
 
 
-        #region IMaths Members
-
-        #region Zero
+        #region DotProduct(Vector)
 
         /// <summary>
-        /// Return the zero value of this datatype.
+        /// The dot product of this vector and the given one - a number, not a
+        /// vector. It is the length of one vector times the length of the other
+        /// times the cosine of the angle between them, so it vanishes exactly
+        /// when the two are perpendicular. Length and NormVector already rest
+        /// on it.
         /// </summary>
-        public IVector2D<T> Zero
-        {
-            get
-            {
-                return new Vector2D<T>(Math.Zero, Math.Zero);
-            }
-        }
-
-        #endregion
-
-        #region NegativeInfinity
-
-        /// <summary>
-        /// Return the negative infinity of this datatype.
-        /// </summary>
-        public IVector2D<T> NegativeInfinity
-        {
-            get
-            {
-                return new Vector2D<T>(Math.NegativeInfinity, Math.NegativeInfinity);
-            }
-        }
-
-        #endregion
-
-        #region PositiveInfinity
-
-        /// <summary>
-        /// Return the positive infinity of this datatype.
-        /// </summary>
-        public IVector2D<T> PositiveInfinity
-        {
-            get
-            {
-                return new Vector2D<T>(Math.PositiveInfinity, Math.PositiveInfinity);
-            }
-        }
-
-        #endregion
-
-
-        #region Min(params Values)
-
-        /// <summary>
-        /// A method to get the minimum of an array of Doubles.
-        /// </summary>
-        /// <param name="Values">An array of Doubles.</param>
-        /// <returns>The minimum of all values: Min(a, b, ...)</returns>
-        public IVector2D<T> Min(params IVector2D<T>[] Values)
+        /// <param name="Vector">A vector.</param>
+        public T DotProduct(IVector2D<T> Vector)
         {
 
-            if (Values is null || Values.Length == 0)
-                throw new ArgumentException("The given values must not be null or zero!");
+            #region Initial Checks
 
-            if (Values.Length == 1)
-                return Values[0];
+            if (Vector is null)
+                throw new ArgumentNullException(nameof(Vector), "The given vector must not be null!");
 
-            var _X = Values[0].X;
-            var _Y = Values[0].Y;
+            #endregion
 
-            for (var i = Values.Length - 1; i >= 1; i--)
-            {
-                _X = Math.Min(_X, Values[i].X);
-                _Y = Math.Min(_Y, Values[i].Y);
-            }
-
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
+            return X * Vector.X +
+                   Y * Vector.Y;
 
         }
 
         #endregion
 
-        #region Max(params Values)
+        #region CrossProduct(Vector)
 
         /// <summary>
-        /// A method to get the maximum of an array of Doubles.
+        /// The cross product of this vector and the given one - in two
+        /// dimensions a number rather than a vector, being the z-component
+        /// the three-dimensional cross product would have. It is the signed
+        /// area of the parallelogram the two vectors span, so it vanishes
+        /// exactly when they are parallel and its sign says which way round
+        /// they stand.
         /// </summary>
-        /// <param name="Values">An array of Doubles.</param>
-        /// <returns>The maximum of all values: Min(a, b, ...)</returns>
-        public IVector2D<T> Max(params IVector2D<T>[] Values)
+        /// <param name="Vector">A vector.</param>
+        public T CrossProduct(IVector2D<T> Vector)
         {
 
-            if (Values is null || Values.Length == 0)
-                throw new ArgumentException("The given values must not be null or zero!");
+            #region Initial Checks
 
-            if (Values.Length == 1)
-                return Values[0];
+            if (Vector is null)
+                throw new ArgumentNullException(nameof(Vector), "The given vector must not be null!");
 
-            var _X = Values[0].X;
-            var _Y = Values[0].Y;
+            #endregion
 
-            for (var i = Values.Length - 1; i >= 1; i--)
-            {
-                _X = Math.Max(_X, Values[i].X);
-                _Y = Math.Max(_Y, Values[i].Y);
-            }
-
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
+            return X * Vector.Y -
+                   Y * Vector.X;
 
         }
 
         #endregion
-
-
-        #region Add(params Summands)
-
-        /// <summary>
-        /// A method to add vectors.
-        /// </summary>
-        /// <param name="Summands">An array of vectors.</param>
-        /// <returns>The addition of all summands: v1 + v2 + ...</returns>
-        public IVector2D<T> Add(params IVector2D<T>[] Summands)
-        {
-
-            if (Summands is null || Summands.Length == 0)
-                throw new ArgumentException("The given summands must not be null!");
-
-            if (Summands.Length == 1)
-                return Summands[0];
-
-            var _X = Summands[0].X;
-            var _Y = Summands[0].Y;
-
-            for (var i = Summands.Length - 1; i >= 1; i--)
-            {
-                _X = Math.Add(_X, Summands[i].X);
-                _Y = Math.Add(_Y, Summands[i].Y);
-            }
-
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
-
-        }
-
-        #endregion
-
-        #region Sub(v1, v2)
-
-        /// <summary>
-        /// A method to sub two vectors.
-        /// </summary>
-        /// <param name="v1">A vector.</param>
-        /// <param name="v2">A vector.</param>
-        /// <returns>The subtraction of v2 from v1: v1 - v2</returns>
-        public IVector2D<T> Sub(IVector2D<T> v1, IVector2D<T> v2)
-        {
-            return new Vector2D<T>(Math.Sub(v1.X,   v2.X),
-                                   Math.Sub(v1.Y, v2.Y));
-        }
-
-        #endregion
-
-        #region Mul(params Multiplicators)
-
-        /// <summary>
-        /// A method to multiply vectors.
-        /// </summary>
-        /// <param name="Multiplicators">An array of vectors.</param>
-        /// <returns>The multiplication of all multiplicators: v1 * v2 * ...</returns>
-        public IVector2D<T> Mul(params IVector2D<T>[] Multiplicators)
-        {
-
-            if (Multiplicators is null || Multiplicators.Length == 0)
-                throw new ArgumentException("The given multiplicators must not be null!");
-
-            if (Multiplicators.Length == 1)
-                return Multiplicators[0];
-
-            var _X = Multiplicators[0].X;
-            var _Y = Multiplicators[0].Y;
-
-            for (var i = Multiplicators.Length - 1; i >= 1; i--)
-            {
-                _X = Math.Mul(_X, Multiplicators[i].X);
-                _Y = Math.Mul(_Y, Multiplicators[i].Y);
-            }
-
-            return new Vector2D<T>(Math.Zero, Math.Zero, _X, _Y);
-
-        }
-
-        #endregion
-
-        #region Mul2(a)
-
-        /// <summary>
-        /// A method to multiply a vector by 2.
-        /// </summary>
-        /// <param name="v">A vector.</param>
-        /// <returns>The multiplication of v by 2: (2*x, 2*y)</returns>
-        public IVector2D<T> Mul2(IVector2D<T> v)
-        {
-            return new Vector2D<T>(Math.Mul2(v.X),
-                                   Math.Mul2(v.Y));
-        }
-
-        #endregion
-
-        #region Div(v1, v2)
-
-        /// <summary>
-        /// A method to divide two vectors.
-        /// </summary>
-        /// <param name="v1">A vector.</param>
-        /// <param name="v2">A vector.</param>
-        /// <returns>The division of v1 by v2: v1 / v2</returns>
-        public IVector2D<T> Div(IVector2D<T> v1, IVector2D<T> v2)
-        {
-            return new Vector2D<T>(Math.Div(v1.X,   v2.X),
-                                   Math.Div(v1.Y, v2.Y));
-        }
-
-        #endregion
-
-        #region Div2(v)
-
-        /// <summary>
-        /// A method to divide a vector by 2.
-        /// </summary>
-        /// <param name="v">A vector.</param>
-        /// <returns>The division of v by 2: v / 2</returns>
-        public IVector2D<T> Div2(IVector2D<T> v)
-        {
-            return new Vector2D<T>(Math.Div2(v.X),
-                                   Math.Div2(v.Y));
-        }
-
-        #endregion
-
-        #region Pow(a, b)
-
-        /// <summary>
-        /// A method to calculate a Double raised to the specified power.
-        /// </summary>
-        /// <param name="v1">A vector.</param>
-        /// <param name="v2">A vector.</param>
-        /// <returns>The values of v1 raised to the specified power of v2: v1^v2</returns>
-        public IVector2D<T> Pow(IVector2D<T> v1, IVector2D<T> v2)
-        {
-            return new Vector2D<T>(Math.Pow(v1.X,   v2.X),
-                                   Math.Pow(v1.Y, v2.Y));
-        }
-
-        #endregion
-
-
-        #region Inv(v)
-
-        /// <summary>
-        /// A method to calculate the inverse value of the given vector.
-        /// </summary>
-        /// <param name="v">A vector.</param>
-        /// <returns>The inverse value of v: -v</returns>
-        public IVector2D<T> Inv(IVector2D<T> v)
-        {
-            return new Vector2D<T>(Math.Inv(v.X),
-                                   Math.Inv(v.Y));
-        }
-
-        #endregion
-
-        #region Abs(v)
-
-        /// <summary>
-        /// A method to calculate the absolute value of the given vector.
-        /// </summary>
-        /// <param name="v">A vector.</param>
-        /// <returns>The absolute value of v: (|a| |b|)</returns>
-        public IVector2D<T> Abs(IVector2D<T> v)
-        {
-            return new Vector2D<T>(Math.Abs(v.X),
-                                   Math.Abs(v.Y));
-        }
-
-        #endregion
-
-        #region Sqrt(v)
-
-        /// <summary>
-        /// A method to calculate the square root of the vector.
-        /// </summary>
-        /// <param name="v">A vector.</param>
-        /// <returns>The square root of v: Sqrt(v)</returns>
-        public IVector2D<T> Sqrt(IVector2D<T> v)
-        {
-            return new Vector2D<T>(Math.Sqrt(v.X),
-                                   Math.Sqrt(v.Y));
-        }
-
-        #endregion
-
-
-        #region Distance(a, b)
-
-        /// <summary>
-        /// A method to calculate the distance between two vectors.
-        /// </summary>
-        /// <param name="v1">A vector.</param>
-        /// <param name="v2">A vector.</param>
-        /// <returns>The distance between v1 and v2.</returns>
-        public IVector2D<T> Distance(IVector2D<T> v1, IVector2D<T> v2)
-        {
-            return new Vector2D<T>(Math.Abs(Math.Sub(v1.X,   v2.X)),
-                                   Math.Abs(Math.Sub(v1.Y, v2.Y)));
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region IsParallelTo(Vector)
 
@@ -553,16 +295,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         public Boolean IsParallelTo(IVector2D<T> Vector)
         {
 
-            var ThisNormVector = this.NormVector;
-            var ThatNormVector = Vector.NormVector;
+            #region Initial Checks
 
-            if ((ThisNormVector.X.Equals(ThatNormVector.X) &&
-                 ThisNormVector.Y.Equals(ThatNormVector.Y)) ||
-                (ThisNormVector.X.Equals(Math.Inv(ThatNormVector.X)) &&
-                 ThisNormVector.Y.Equals(Math.Inv(ThatNormVector.Y))))
-                return true;
+            if (Vector is null)
+                throw new ArgumentNullException(nameof(Vector), "The given vector must not be null!");
 
-            return false;
+            #endregion
+
+            // Two vectors are parallel exactly when they span no area, which is
+            // what the cross product measures. Comparing normalised components
+            // instead - as this did until 2026-08-15 - asks the same question
+            // through two square roots and four divisions, and the rounding
+            // makes it answer wrongly: (1, 1) and (3, 3) were reported as not
+            // parallel, because 1/sqrt(2) and 3/sqrt(18) differ in the last bit.
+            return CrossProduct(Vector) == T.Zero;
 
         }
 
@@ -590,10 +336,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, x);
-            var dY = Math.Distance(Y, y);
+            var dX = T.Abs(X - x);
+            var dY = T.Abs(Y - y);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY)));
+            return T.Sqrt(dX * dX + dY * dY);
 
         }
 
@@ -617,10 +363,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, Vector.X);
-            var dY = Math.Distance(Y, Vector.Y);
+            var dX = T.Abs(X - Vector.X);
+            var dY = T.Abs(Y - Vector.Y);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY)));
+            return T.Sqrt(dX * dX + dY * dY);
 
         }
 
@@ -666,6 +412,91 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             return !(Vector1 == Vector2);
         }
+
+        #endregion
+
+
+        #region Operator +  (Vector1, Vector2)
+
+        /// <summary>
+        /// The sum of two vectors, component by component.
+        /// </summary>
+        /// <param name="Vector1">A vector.</param>
+        /// <param name="Vector2">Another vector.</param>
+        public static Vector2D<T> operator + (Vector2D<T> Vector1, Vector2D<T> Vector2)
+
+            => new (Vector1.X + Vector2.X,
+                    Vector1.Y + Vector2.Y);
+
+        #endregion
+
+        #region Operator -  (Vector1, Vector2)
+
+        /// <summary>
+        /// The difference of two vectors, component by component.
+        /// </summary>
+        /// <param name="Vector1">A vector.</param>
+        /// <param name="Vector2">Another vector.</param>
+        public static Vector2D<T> operator - (Vector2D<T> Vector1, Vector2D<T> Vector2)
+
+            => new (Vector1.X - Vector2.X,
+                    Vector1.Y - Vector2.Y);
+
+        #endregion
+
+        #region Operator -  (Vector)
+
+        /// <summary>
+        /// The additive inverse of a vector: the same length, the opposite direction.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        public static Vector2D<T> operator - (Vector2D<T> Vector)
+
+            => new (-Vector.X,
+                    -Vector.Y);
+
+        #endregion
+
+        #region Operator *  (Vector, Scalar)
+
+        /// <summary>
+        /// A vector scaled by a number. This is the scalar multiplication of the
+        /// vector space, not a product of two vectors - for those see DotProduct
+        /// and CrossProduct, both of which return a number rather than a vector.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        /// <param name="Scalar">A number.</param>
+        public static Vector2D<T> operator * (Vector2D<T> Vector, T Scalar)
+
+            => new (Vector.X * Scalar,
+                    Vector.Y * Scalar);
+
+        #endregion
+
+        #region Operator *  (Scalar, Vector)
+
+        /// <summary>
+        /// A vector scaled by a number, written the other way round.
+        /// </summary>
+        /// <param name="Scalar">A number.</param>
+        /// <param name="Vector">A vector.</param>
+        public static Vector2D<T> operator * (T Scalar, Vector2D<T> Vector)
+
+            => Vector * Scalar;
+
+        #endregion
+
+        #region Operator /  (Vector, Scalar)
+
+        /// <summary>
+        /// A vector divided by a number.
+        /// </summary>
+        /// <param name="Vector">A vector.</param>
+        /// <param name="Scalar">A number.</param>
+        public static Vector2D<T> operator / (Vector2D<T> Vector, T Scalar)
+
+            => new (Vector.X / Scalar,
+                    Vector.Y / Scalar);
 
         #endregion
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -477,25 +477,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kW".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kW".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("MW".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MW".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("GW".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GW".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("W". AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("W". AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^1].TrimEnd();
             }
@@ -1283,7 +1283,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("W".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("W".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1295,7 +1295,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kW".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kW".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kW,
                            Destination,
@@ -1305,7 +1305,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kW".AsSpan()
                        );
 
-            if (Format.Equals("MW".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("MW".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MW,
                            Destination,
@@ -1315,7 +1315,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " MW".AsSpan()
                        );
 
-            if (Format.Equals("GW".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("GW".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            GW,
                            Destination,
@@ -1397,18 +1397,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "W",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "W",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} W";
             }
 
-            if (String.Equals(Format, "kW", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kW", StringComparison.Ordinal))
                 return $"{kW.ToString("G", FormatProvider)} kW";
 
-            if (String.Equals(Format, "MW", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "MW", StringComparison.Ordinal))
                 return $"{MW.ToString("G", FormatProvider)} MW";
 
-            if (String.Equals(Format, "GW", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "GW", StringComparison.Ordinal))
                 return $"{GW.ToString("G", FormatProvider)} GW";
 
             return $"{Value.ToString(Format, FormatProvider)} W";

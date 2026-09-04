@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -105,7 +105,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     }
 
-    //Note: MBit/s == MegaBytes per second is not the same as Mbit/s == Megabits per second!
+    //Note: MByte/s == MBps == MegaBytes per second is not the same as Mbit/s == Mbps == Megabits per second!
 
     /// <summary>
     /// A BytePerSecond value.
@@ -251,8 +251,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseBPS(Text, out var bitPerSecond))
                 return bitPerSecond;
 
-            throw new ArgumentException($"Invalid text representation of Byte/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Byte/s: '{Text}'!");
 
         }
 
@@ -270,8 +269,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKBPS(Text, out var bitPerSecond))
                 return bitPerSecond;
 
-            throw new ArgumentException($"Invalid text representation of kByte/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kByte/s: '{Text}'!");
 
         }
 
@@ -289,8 +287,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseMBPS(Text, out var bps))
                 return bps;
 
-            throw new ArgumentException($"Invalid text representation of MByte/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MByte/s: '{Text}'!");
 
         }
 
@@ -308,8 +305,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseGBPS(Text, out var bps))
                 return bps;
 
-            throw new ArgumentException($"Invalid text representation of GByte/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of GByte/s: '{Text}'!");
 
         }
 
@@ -327,8 +323,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseTBPS(Text, out var bps))
                 return bps;
 
-            throw new ArgumentException($"Invalid text representation of TByte/s: '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of TByte/s: '{Text}'!");
 
         }
 
@@ -527,7 +522,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             //Note: "MBps" == MegaBytes per second is not the same as "Mbps" == Megabits per second!
 
-            if      (Span.EndsWith("kByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kByte/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^7].TrimEnd();
@@ -541,7 +536,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("MByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MByte/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^7].TrimEnd();
@@ -555,7 +550,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("GByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GByte/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^7].TrimEnd();
@@ -569,7 +564,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("TByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("TByte/s".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 12;
                 Span      = Span[..^7].TrimEnd();
@@ -583,7 +578,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
 
-            else if (Span.EndsWith("Byte/s". AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Byte/s". AsSpan(), StringComparison.Ordinal))
             {
                 Span      = Span[..^6].TrimEnd();
             }
@@ -1474,7 +1469,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".     AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("Byte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("Byte/s".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1507,7 +1502,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
 
 
-            else if (Format.Equals("kByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Format.Equals("kByte/s".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kBps,
                            Destination,
@@ -1538,7 +1533,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
 
 
-            else if (Format.Equals("MByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Format.Equals("MByte/s".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MBps,
                            Destination,
@@ -1569,7 +1564,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
 
 
-            else if (Format.Equals("GByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Format.Equals("GByte/s".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            GBps,
                            Destination,
@@ -1600,7 +1595,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
 
 
-            else if (Format.Equals("TByte/s".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Format.Equals("TByte/s".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            TBps,
                            Destination,
@@ -1706,7 +1701,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",     StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "Byte/s", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "Byte/s", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} Byte/s";
             }
@@ -1718,8 +1713,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return $"{Value.ToString("G", FormatProvider)} Bps";
 
 
-            else if (String.Equals(Format, "kBit/s", StringComparison.OrdinalIgnoreCase))
-                return $"{kBps.ToString("G", FormatProvider)} kBit/s";
+            else if (String.Equals(Format, "kByte/s", StringComparison.Ordinal))
+                return $"{kBps.ToString("G", FormatProvider)} kByte/s";
 
             else if (String.Equals(Format, "kB/s",   StringComparison.Ordinal))
                 return $"{kBps.ToString("G", FormatProvider)} kB/s";
@@ -1728,8 +1723,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return $"{kBps.ToString("G", FormatProvider)} kBps";
 
 
-            else if (String.Equals(Format, "MBit/s", StringComparison.OrdinalIgnoreCase))
-                return $"{MBps.ToString("G", FormatProvider)} MBit/s";
+            else if (String.Equals(Format, "MByte/s", StringComparison.Ordinal))
+                return $"{MBps.ToString("G", FormatProvider)} MByte/s";
 
             else if (String.Equals(Format, "MB/s",   StringComparison.Ordinal))
                 return $"{MBps.ToString("G", FormatProvider)} MB/s";
@@ -1738,8 +1733,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return $"{MBps.ToString("G", FormatProvider)} MBps";
 
 
-            else if (String.Equals(Format, "GBit/s", StringComparison.OrdinalIgnoreCase))
-                return $"{GBps.ToString("G", FormatProvider)} GBit/s";
+            else if (String.Equals(Format, "GByte/s", StringComparison.Ordinal))
+                return $"{GBps.ToString("G", FormatProvider)} GByte/s";
 
             else if (String.Equals(Format, "GB/s",   StringComparison.Ordinal))
                 return $"{GBps.ToString("G", FormatProvider)} GB/s";
@@ -1748,8 +1743,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return $"{GBps.ToString("G", FormatProvider)} GBps";
 
 
-            else if (String.Equals(Format, "TBit/s", StringComparison.OrdinalIgnoreCase))
-                return $"{TBps.ToString("G", FormatProvider)} TBit/s";
+            else if (String.Equals(Format, "TByte/s", StringComparison.Ordinal))
+                return $"{TBps.ToString("G", FormatProvider)} TByte/s";
 
             else if (String.Equals(Format, "TB/s",   StringComparison.Ordinal))
                 return $"{TBps.ToString("G", FormatProvider)} TB/s";

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -243,8 +243,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of WattHours (Wh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of WattHours (Wh): '{Text}'!");
 
         }
 
@@ -262,8 +261,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of KiloWattHours (kWh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of KiloWattHours (kWh): '{Text}'!");
 
         }
 
@@ -281,8 +279,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseMWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of MegaWattHours (MWh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of MegaWattHours (MWh): '{Text}'!");
 
         }
 
@@ -300,8 +297,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseGWh(Text, out var wattHour))
                 return wattHour;
 
-            throw new ArgumentException($"Invalid text representation of GigaWattHours (GWh): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of GigaWattHours (GWh): '{Text}'!");
 
         }
 
@@ -480,25 +476,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kWh".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("MWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("MWh".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 6;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("GWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("GWh".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 9;
                 Span      = Span[..^3].TrimEnd();
             }
 
-            else if (Span.EndsWith("Wh". AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("Wh". AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^2].TrimEnd();
             }
@@ -1275,7 +1271,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("Wh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("Wh".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -1287,7 +1283,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kWh".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kWh,
                            Destination,
@@ -1297,7 +1293,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " kWh".AsSpan()
                        );
 
-            if (Format.Equals("MWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("MWh".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            MWh,
                            Destination,
@@ -1307,7 +1303,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " MWh".AsSpan()
                        );
 
-            if (Format.Equals("GWh".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("GWh".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            GWh,
                            Destination,
@@ -1390,18 +1386,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "Wh", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "Wh", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} Wh";
             }
 
-            if (String.Equals(Format, "kWh", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kWh", StringComparison.Ordinal))
                 return $"{kWh.ToString("G", FormatProvider)} kWh";
 
-            if (String.Equals(Format, "MWh", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "MWh", StringComparison.Ordinal))
                 return $"{MWh.ToString("G", FormatProvider)} MWh";
 
-            if (String.Equals(Format, "GWh", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "GWh", StringComparison.Ordinal))
                 return $"{GWh.ToString("G", FormatProvider)} GWh";
 
             return $"{Value.ToString(Format, FormatProvider)} Wh";

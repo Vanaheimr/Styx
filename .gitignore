@@ -13,3 +13,7 @@ NET6/*/obj
 NET6/*/bin
 Vanaheimr
 artifacts/
+.claude/worktrees/
+# The specification and its test-vectors annex, fetched rather than committed
+# (see StyxTests/Illias/CBOR/SpecificationVectorTests.cs).
+spec/

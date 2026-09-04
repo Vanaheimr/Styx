@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -31,17 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the voxel.</typeparam>
     public class Voxel<T> : IVoxel<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -100,7 +91,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math = MathsFactory<T>.Instance;
             this.X    = X;
             this.Y    = Y;
             this.Z    = Z;
@@ -138,11 +128,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            var dX = Math.Distance(X, x);
-            var dY = Math.Distance(Y, y);
-            var dZ = Math.Distance(Z, z);
+            var dX = T.Abs(X - x);
+            var dY = T.Abs(Y - y);
+            var dZ = T.Abs(Z - z);
 
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY), Math.Mul(dZ, dZ)));
+            return T.Sqrt(dX * dX + dY * dY + dZ * dZ);
 
         }
 
@@ -166,11 +156,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
             
-            var dX = Math.Distance(X, IVoxel.X);
-            var dY = Math.Distance(Y, IVoxel.Y);
-            var dZ = Math.Distance(Z, IVoxel.Z);
+            var dX = T.Abs(X - IVoxel.X);
+            var dY = T.Abs(Y - IVoxel.Y);
+            var dZ = T.Abs(Z - IVoxel.Z);
             
-            return Math.Sqrt(Math.Add(Math.Mul(dX, dX), Math.Mul(dY, dY), Math.Mul(dZ, dZ)));
+            return T.Sqrt(dX * dX + dY * dY + dZ * dZ);
 
         }
 

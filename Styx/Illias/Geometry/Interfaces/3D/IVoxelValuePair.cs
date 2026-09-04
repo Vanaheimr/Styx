@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -34,8 +35,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                                                      IComparable<IVoxelValuePair<TKey, TValue>>,
                                                      IComparable
 
-        where TKey : IEquatable<TKey>, IComparable<TKey>, IComparable
-
+        where TKey : IFloatingPointIeee754<TKey>
     {
 
         /// <summary>

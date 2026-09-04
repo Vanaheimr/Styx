@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -131,9 +131,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 #pragma warning disable IDE1006 // Naming Styles
         /// <summary>
-        /// The value as Kilo-Volt-Ampere.
+        /// The value as Kilo-Volt-Ampere-Reactive.
         /// </summary>
-        public Decimal  kVA
+        public Decimal  kVAr
             => Value / 1000m;
 #pragma warning restore IDE1006 // Naming Styles
 
@@ -232,8 +232,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseVAr(Text, out var voltAmpereReactive))
                 return voltAmpereReactive;
 
-            throw new ArgumentException($"Invalid text representation of Volt-Ampere-Reactives (VAr): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Volt-Ampere-Reactives (VAr): '{Text}'!");
 
         }
 
@@ -251,8 +250,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParseKVAr(Text, out var voltAmpereReactive))
                 return voltAmpereReactive;
 
-            throw new ArgumentException($"Invalid text representation of Kilo-Volt-Ampere-Reactives (kVAr): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of Kilo-Volt-Ampere-Reactives (kVAr): '{Text}'!");
 
         }
 
@@ -395,13 +393,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kVAr".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kVAr".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^4].TrimEnd();
             }
 
-            else if (Span.EndsWith("VAr".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("VAr".AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^3].TrimEnd();
             }
@@ -954,7 +952,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".  AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("VAr".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("VAr".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -966,9 +964,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kVAr".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kVAr".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
-                           kVA,
+                           kVAr,
                            Destination,
                            out CharsWritten,
                            "G".AsSpan(),
@@ -1049,13 +1047,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",   StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "VAr", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "VAr", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} VAr";
             }
 
-            if (String.Equals(Format, "kVAr", StringComparison.OrdinalIgnoreCase))
-                return $"{kVA.ToString("G", FormatProvider)} kVAr";
+            if (String.Equals(Format, "kVAr", StringComparison.Ordinal))
+                return $"{kVAr.ToString("G", FormatProvider)} kVAr";
 
             return $"{Value.ToString(Format, FormatProvider)} VAr";
 

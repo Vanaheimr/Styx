@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -392,13 +392,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kV".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kV".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("V".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("V".AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^1].TrimEnd();
             }
@@ -951,7 +951,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("V".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("V".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -963,7 +963,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kV".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kV".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kV,
                            Destination,
@@ -1046,12 +1046,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "V",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "V",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} V";
             }
 
-            if (String.Equals(Format, "kV", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kV", StringComparison.Ordinal))
                 return $"{kV.ToString("G", FormatProvider)} kV";
 
             return $"{Value.ToString(Format, FormatProvider)} V";

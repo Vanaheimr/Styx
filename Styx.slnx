@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Styx/Styx.csproj" />
+  <Project Path="StyxTests/StyxTests.csproj" />
+</Solution>

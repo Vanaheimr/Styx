@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -393,13 +393,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("kS".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("kS".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("S".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("S".AsSpan(),  StringComparison.Ordinal))
             {
                 Span      = Span[..^1].TrimEnd();
             }
@@ -952,7 +952,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("S".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("S".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -964,7 +964,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("kS".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("kS".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            kS,
                            Destination,
@@ -1047,12 +1047,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "S",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "S",  StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} S";
             }
 
-            if (String.Equals(Format, "kS", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "kS", StringComparison.Ordinal))
                 return $"{kS.ToString("G", FormatProvider)} kS";
 
             return $"{Value.ToString(Format, FormatProvider)} S";

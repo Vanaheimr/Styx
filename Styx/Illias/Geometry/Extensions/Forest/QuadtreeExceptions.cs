@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
 #endregion
 
@@ -31,7 +32,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     public class QuadtreeException<T> : Exception
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     /// <typeparam name="TValue">The type of the stored values.</typeparam>
     public class QuadtreeException<T, TValue> : Exception
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -111,7 +112,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     public class QT_ZeroDimensionException<T> : QuadtreeException<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     /// <typeparam name="TValue">The type of the stored values.</typeparam>
     public class QT_ZeroDimensionException<T, TValue> : QuadtreeException<T, TValue>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -165,7 +166,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     public class QT_OutOfBoundsException<T> : QuadtreeException<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>
@@ -193,7 +194,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <typeparam name="T">The internal datatype of the quadtree.</typeparam>
     /// <typeparam name="TValue">The type of the stored values.</typeparam>
     public class QT_OutOfBoundsException<T, TValue> : QuadtreeException<T, TValue>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         /// <summary>

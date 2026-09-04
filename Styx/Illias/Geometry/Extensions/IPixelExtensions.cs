@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Y2"></param>        
         /// <returns>True if the pixel is located within the given rectangle; False otherwise.</returns>
         public static Boolean IsInRectangle<T>(this IPixel<T> Pixel, T X1, T Y1, T X2, T Y2)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             #region Initial Checks
@@ -73,7 +74,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Pixel2">The right/bottom pixel of the rectangle.</param>
         /// <returns>True if the pixel is located within the given rectangle; False otherwise.</returns>
         public static Boolean IsInRectangle<T>(this IPixel<T> Pixel, IPixel<T> Pixel1, IPixel<T> Pixel2)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             #region Initial Checks
@@ -99,7 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Rectangle">A rectangle of type T.</param>
         /// <returns>True if the pixel is located within the given rectangle; False otherwise.</returns>
         public static Boolean IsInRectangle<T>(this IPixel<T> Pixel, IRectangle<T> Rectangle)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             #region Initial Checks
@@ -129,7 +130,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Circle">A circle of type T.</param>
         /// <returns>True if the pixel is located within the given circle; False otherwise.</returns>
         public static Boolean IsInCircle<T>(this IPixel<T> Pixel, ICircle<T> Circle)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
 
             #region Initial Checks

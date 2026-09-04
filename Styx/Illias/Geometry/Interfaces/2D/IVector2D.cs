@@ -18,7 +18,7 @@
 #region Usings
 
 using System;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
+using System.Numerics;
 
 #endregion
 
@@ -29,8 +29,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// The interface of a 2-dimensional vector of type T.
     /// </summary>
     /// <typeparam name="T">The internal type of the vector.</typeparam>
-    public interface IVector2D<T> : IMaths<IVector2D<T>>, IEquatable<IVector2D<T>>, IComparable<IVector2D<T>>, IComparable
-        where T : IEquatable<T>, IComparable<T>, IComparable
+    public interface IVector2D<T> : IEquatable<IVector2D<T>>, IComparable<IVector2D<T>>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Properties

@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
@@ -43,7 +44,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="InfiniteLines">Whether the lines should be treated as infinite or not.</param>
         /// <returns>True if the lines intersect; False otherwise.</returns>
         public static Boolean IntersectsWith<T>(this ILine2D<T> Line1, ILine2D<T> Line2, Boolean InfiniteLines = false)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
             IPixel<T>? Intersection;
             return Line1.IntersectsWith(Line2, out Intersection, InfiniteLines);
@@ -60,7 +61,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// <param name="Line2">A line.</param>
         /// <param name="InfiniteLines">Whether the lines should be treated as infinite or not.</param>
         public static IPixel<T>? Intersection<T>(this ILine2D<T> Line1, ILine2D<T> Line2, Boolean InfiniteLines = false)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
             IPixel<T>? Intersection;
             Line1.IntersectsWith(Line2, out Intersection, InfiniteLines);
@@ -76,7 +77,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         /// </summary>
         /// <param name="Line">A line.</param>
         public static Boolean IsJustAPixel<T>(this ILine2D<T> Line)
-            where T : IEquatable<T>, IComparable<T>, IComparable
+            where T : IFloatingPointIeee754<T>
         {
             return (Line.X1.Equals(Line.X2) &&
                     Line.Y1.Equals(Line.Y2));

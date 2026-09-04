@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -257,8 +257,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_mm(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of millimeters (mm): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of millimeters (mm): '{Text}'!");
 
         }
 
@@ -276,8 +275,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_cm(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of centimeters (cm): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of centimeters (cm): '{Text}'!");
 
         }
 
@@ -295,8 +293,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_dm(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of decimeters (dm): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of decimeters (dm): '{Text}'!");
 
         }
 
@@ -314,8 +311,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_m(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of meters (m): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of meters (m): '{Text}'!");
 
         }
 
@@ -333,8 +329,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (TryParse_km(Text, out var meter))
                 return meter;
 
-            throw new ArgumentException($"Invalid text representation of kilometers (km): '{Text}'!",
-                                        nameof(Text));
+            throw new FormatException($"Invalid text representation of kilometers (km): '{Text}'!");
 
         }
 
@@ -531,31 +526,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if      (Span.EndsWith("mm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if      (Span.EndsWith("mm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = -3;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("cm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("cm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = -2;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("dm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("dm".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = -1;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("km".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("km".AsSpan(), StringComparison.Ordinal))
             {
                 exponent  = 3;
                 Span      = Span[..^2].TrimEnd();
             }
 
-            else if (Span.EndsWith("m". AsSpan(), StringComparison.OrdinalIgnoreCase))
+            else if (Span.EndsWith("m". AsSpan(), StringComparison.Ordinal))
             {
                 Span      = Span[..^1].TrimEnd();
             }
@@ -1444,7 +1439,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G".AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("m".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("m".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            m,
@@ -1456,7 +1451,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
             }
 
-            if (Format.Equals("mm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("mm".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            mm,
                            Destination,
@@ -1466,7 +1461,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " mm".AsSpan()
                        );
 
-            if (Format.Equals("cm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("cm".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            cm,
                            Destination,
@@ -1476,7 +1471,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " cm".AsSpan()
                        );
 
-            if (Format.Equals("dm".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("dm".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            dm,
                            Destination,
@@ -1486,7 +1481,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            " dm".AsSpan()
                        );
 
-            if (Format.Equals("km".AsSpan(), StringComparison.OrdinalIgnoreCase))
+            if (Format.Equals("km".AsSpan(), StringComparison.Ordinal))
                 return TryFormatWithSuffix(
                            km,
                            Destination,
@@ -1569,21 +1564,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "m",  StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "m",  StringComparison.Ordinal))
             {
                 return $"{m.ToString("G", FormatProvider)} m";
             }
 
-            if (String.Equals(Format, "mm", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "mm", StringComparison.Ordinal))
                 return $"{mm.ToString("G", FormatProvider)} mm";
 
-            if (String.Equals(Format, "cm", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "cm", StringComparison.Ordinal))
                 return $"{cm.ToString("G", FormatProvider)} cm";
 
-            if (String.Equals(Format, "dm", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "dm", StringComparison.Ordinal))
                 return $"{dm.ToString("G", FormatProvider)} dm";
 
-            if (String.Equals(Format, "km", StringComparison.OrdinalIgnoreCase))
+            if (String.Equals(Format, "km", StringComparison.Ordinal))
                 return $"{km.ToString("G", FormatProvider)} km";
 
             return $"{m.ToString(Format, FormatProvider)} m";

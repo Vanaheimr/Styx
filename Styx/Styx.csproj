@@ -4,6 +4,11 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <!-- For CBORJSONTextEncoder alone: the two members a JavaScriptEncoder
+         has to override are abstract AND unsafe, so a subclass cannot be
+         written without this. Nothing else in Styx uses pointers. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +20,10 @@
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+<<<<<<< HEAD
     <PackageReference Include="System.Formats.Cbor" Version="10.0.11" />
+=======
+>>>>>>> 0f40d614a9b3f7562193f2ed6ae94fb4685fa6fe
   </ItemGroup>
 
   <ItemGroup>

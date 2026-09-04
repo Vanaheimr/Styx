@@ -18,10 +18,10 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 using System.Text;
 
 #endregion
@@ -34,15 +34,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the polygon.</typeparam>
     public class Polygon<T> : IPolygon<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Data
 
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
 
 
         protected readonly List<IPixel<T>> _Pixels;
@@ -113,7 +109,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math = MathsFactory<T>.Instance;
 
             #region Math Checks
 

@@ -33,7 +33,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (private) SubjectAlternativeNameExtension(this Certificate)
 
-        /// <summary>OID 2.5.29.17 — id-ce-subjectAltName.</summary>
+        /// <summary>
+        /// OID 2.5.29.17 — id-ce-subjectAltName.
+        /// </summary>
         private const String SubjectAlternativeNameOID = "2.5.29.17";
 
         /// <summary>

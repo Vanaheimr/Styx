@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2010-2026 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of Styx <https://www.github.com/Vanaheimr/Styx>
  *
@@ -348,7 +348,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var exponent  = 0;
 
-            if (Span.EndsWith("°C".AsSpan(),  StringComparison.OrdinalIgnoreCase))
+            if (Span.EndsWith("°C".AsSpan(),  StringComparison.Ordinal))
             {
                 Span = Span[..^2].TrimEnd();
             }
@@ -799,7 +799,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Format.IsEmpty ||
                 Format.Equals("G". AsSpan(), StringComparison.OrdinalIgnoreCase) ||
-                Format.Equals("°C".AsSpan(), StringComparison.OrdinalIgnoreCase))
+                Format.Equals("°C".AsSpan(), StringComparison.Ordinal))
             {
                 return TryFormatWithSuffix(
                            Value,
@@ -884,7 +884,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (String.IsNullOrEmpty(Format) ||
                 String.Equals(Format, "G",  StringComparison.OrdinalIgnoreCase) ||
-                String.Equals(Format, "°C", StringComparison.OrdinalIgnoreCase))
+                String.Equals(Format, "°C", StringComparison.Ordinal))
             {
                 return $"{Value.ToString("G", FormatProvider)} °C";
             }

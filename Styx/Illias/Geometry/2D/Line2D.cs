@@ -18,10 +18,10 @@
 #region Usings
 
 using System;
+using System.Numerics;
 using System.Diagnostics.CodeAnalysis;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -33,17 +33,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the line.</typeparam>
     public class Line2D<T> : ILine2D<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -122,7 +113,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             get
             {
                 var _Vector = this.Vector;
-                return Math.Div(_Vector.Y, _Vector.X);
+                return _Vector.Y / _Vector.X;
             }
         }
 
@@ -137,7 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return Math.Sub(Pixel1.Y, Math.Mul(Gradient, Pixel1.X));
+                return Pixel1.Y - Gradient * Pixel1.X;
             }
         }
 
@@ -152,8 +143,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return new Pixel<T>(Math.Add(X1, Math.Div2(Math.Sub(X2, X1))),
-                                    Math.Add(Y1, Math.Div2(Math.Sub(Y2, Y1))));
+                return new Pixel<T>(X1 + (X2 - X1) / T.CreateChecked(2),
+                                    Y1 + (Y2 - Y1) / T.CreateChecked(2));
             }
         }
 
@@ -185,7 +176,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             {
                 // Normale := (-b, a)
                 var _Vector = this.Vector;
-                return new Vector2D<T>(Math.Inv(_Vector.Y), _Vector.X);
+                return new Vector2D<T>(-_Vector.Y, _Vector.X);
             }
         }
 
@@ -223,7 +214,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
             
             this.X1     = X1;
             this.Y1     = Y1;
@@ -263,12 +253,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             this.X1     = Pixel.X;
             this.Y1     = Pixel.Y;
-            this.X2     = Math.Add(Pixel.X, X);
-            this.Y2     = Math.Add(Pixel.Y, Y);
+            this.X2     = Pixel.X + X;
+            this.Y2     = Pixel.Y + Y;
 
             this.Pixel1 = new Pixel<T>(X1, Y1);
             this.Pixel2 = new Pixel<T>(X2, Y2);
@@ -299,7 +288,6 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math   = MathsFactory<T>.Instance;
 
             this.X1     = Pixel1.X;
             this.Y1     = Pixel1.Y;
@@ -352,7 +340,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             #endregion
 
             // Check equation: Pixel.Y = m*Pixel.X + t
-            return Pixel.Y.Equals(Math.Add(Math.Mul(Gradient, Pixel.X), YIntercept));
+            return Pixel.Y.Equals(Gradient * Pixel.X + YIntercept);
 
         }
 
@@ -434,20 +422,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #region This line is parallel to the y-axis
 
-            else if (this.Normale.Y.Equals(Math.Zero))
+            else if (this.Normale.Y.Equals(T.Zero))
             {
                 Pixel = new Pixel<T>(this.Pixel1.X,
-                                     Math.Add(Math.Mul(Line.Gradient, this.Pixel1.X), Line.YIntercept));
+                                     Line.Gradient * this.Pixel1.X + Line.YIntercept);
             }
 
             #endregion
 
             #region The given line is parallel to the y-axis
 
-            else if (Line.Normale.Y.Equals(Math.Zero))
+            else if (Line.Normale.Y.Equals(T.Zero))
             {
                 Pixel = new Pixel<T>(Line.X1,
-                                     Math.Add(Math.Mul(this.Gradient, Line.X1), this.YIntercept));
+                                     this.Gradient * Line.X1 + this.YIntercept);
             }
 
             #endregion
@@ -457,12 +445,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
             else
             {
 
-                Pixel = new Pixel<T>(Math.Div(Math.Sub(Line.YIntercept, this.YIntercept),
-                                     Math.Sub(this.Gradient,   Line.Gradient)),
+                Pixel = new Pixel<T>((Line.YIntercept - this.YIntercept) /
+                                     (this.Gradient   - Line.Gradient),
 
-                                     Math.Div(Math.Sub(Math.Mul(this.YIntercept, Line.Gradient),
-                                                       Math.Mul(Line.YIntercept, this.Gradient)),
-                                              Math.Sub(Line.Gradient, this.Gradient)));
+                                     (this.YIntercept * Line.Gradient -
+                                      Line.YIntercept * this.Gradient) /
+                                     (Line.Gradient   - this.Gradient));
 
             }
 

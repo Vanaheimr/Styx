@@ -18,8 +18,8 @@
 #region Usings
 
 using System;
+using System.Numerics;
 
-using org.GraphDefined.Vanaheimr.Illias.Geometry.Maths;
 
 #endregion
 
@@ -31,17 +31,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal type of the line.</typeparam>
     public class Line1D<T> : ILine1D<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
-
-        #region Data
-
-        /// <summary>
-        /// Mathoperation helpers.
-        /// </summary>
-        protected readonly IMaths<T> Math;
-
-        #endregion
 
         #region Properties
 
@@ -73,7 +64,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
         {
             get
             {
-                return Math.Distance(Left, Right);
+                return T.Abs(Left - Right);
             }
         }
 
@@ -103,17 +94,16 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
 
             #endregion
 
-            this.Math  = MathsFactory<T>.Instance;
 
             #region Math Checks
 
-            if (Math.Distance(Left, Right).Equals(Math.Zero))
+            if (T.Abs(Left - Right).Equals(T.Zero))
                 throw new ArgumentException("The resulting size must not be zero!");
 
             #endregion
 
-            this.Left  = Math.Min(Left, Right);
-            this.Right = Math.Max(Left, Right);
+            this.Left  = T.Min(Left, Right);
+            this.Right = T.Max(Left, Right);
 
         }
 

@@ -19,6 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias.Collections;
 using System;
+using System.Numerics;
 using System.Collections.Generic;
 
 #endregion
@@ -35,8 +36,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Element">An element of type T.</param>
     /// <returns>True if the element is selected; False otherwise.</returns>
     public delegate Boolean ElementSelector<T>(T Element)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
     #endregion
 
     #region BintreeSplitEventHandler<T>(Bintree, Element)
@@ -49,8 +49,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// <param name="Bintree">The sending bintree.</param>
     /// <param name="Element">The element causing the split.</param>
     public delegate void BintreeSplitEventHandler<T>(Bintree<T> Bintree, T Element)
-        where T : IEquatable<T>, IComparable<T>, IComparable;
-
+        where T : IFloatingPointIeee754<T>;
     #endregion
 
     #region Bintree<T>
@@ -63,7 +62,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
     /// </summary>
     /// <typeparam name="T">The internal datatype of the Bintree.</typeparam>
     public class Bintree<T> : Line1D<T>, IBintree<T>
-        where T : IEquatable<T>, IComparable<T>, IComparable
+        where T : IFloatingPointIeee754<T>
     {
 
         #region Data
@@ -205,14 +204,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Geometry
                     if (Subtree1 is null)
                     {
                         Subtree1 = new Bintree<T>(Left,
-                                                  Math.Add(Left, Math.Div2(Length)),
+                                                  Left + Length / T.CreateChecked(2),
                                                   MaxNumberOfEmbeddedElements);
                         Subtree1.OnTreeSplit += OnTreeSplit;
                     }
 
                     if (Subtree2 is null)
                     {
-                        Subtree2 = new Bintree<T>(Math.Add(Left, Math.Div2(Length)),
+                        Subtree2 = new Bintree<T>(Left + Length / T.CreateChecked(2),
                                                   Right,
                                                   MaxNumberOfEmbeddedElements);
                         Subtree2.OnTreeSplit += OnTreeSplit;
