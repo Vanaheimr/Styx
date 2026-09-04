@@ -20,10 +20,6 @@
   <ItemGroup>
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-<<<<<<< HEAD
-    <PackageReference Include="System.Formats.Cbor" Version="10.0.11" />
-=======
->>>>>>> 0f40d614a9b3f7562193f2ed6ae94fb4685fa6fe
   </ItemGroup>
 
   <ItemGroup>
