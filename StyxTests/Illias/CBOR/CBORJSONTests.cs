@@ -352,13 +352,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             var nothing = CBORJSON.ToCBOR(json);
 
-            Assert.That(nothing["duration"].HasTag(CBORTag.MetrologicalValue),  Is.False);
-            Assert.That(nothing["comment"]. HasTag(CBORTag.MetrologicalValue),  Is.False);
+            Assert.That(nothing.GetValue("duration").HasTag(CBORTag.MetrologicalValue),  Is.False);
+            Assert.That(nothing.GetValue("comment"). HasTag(CBORTag.MetrologicalValue),  Is.False);
 
             var everything = CBORJSON.ToCBOR(json, AsSpecified);
 
-            Assert.That(everything["duration"].HasTag(CBORTag.MetrologicalValue),  Is.True);
-            Assert.That(everything["comment"]. HasTag(CBORTag.MetrologicalValue),  Is.True);
+            Assert.That(everything.GetValue("duration").HasTag(CBORTag.MetrologicalValue),  Is.True);
+            Assert.That(everything.GetValue("comment"). HasTag(CBORTag.MetrologicalValue),  Is.True);
 
             var onlyDuration = CBORJSON.ToCBOR(
                                    json,
@@ -367,8 +367,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                    }
                                );
 
-            Assert.That(onlyDuration["duration"].HasTag(CBORTag.MetrologicalValue),  Is.True);
-            Assert.That(onlyDuration["comment"]. Kind,                               Is.EqualTo(CBORValueKind.TextString));
+            Assert.That(onlyDuration.GetValue("duration").HasTag(CBORTag.MetrologicalValue),  Is.True);
+            Assert.That(onlyDuration.GetValue("comment"). Kind,                               Is.EqualTo(CBORValueKind.TextString));
 
             // The path is a JSON Pointer, so it reaches into arrays as well.
             var nested = CBORJSON.ToCBOR(
@@ -378,8 +378,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                              }
                          );
 
-            Assert.That(nested["readings"][0].HasTag(CBORTag.MetrologicalValue),  Is.True);
-            Assert.That(nested["readings"][1].Kind,                               Is.EqualTo(CBORValueKind.TextString));
+            Assert.That(nested.GetValue("readings").ItemAt(0).HasTag(CBORTag.MetrologicalValue),  Is.True);
+            Assert.That(nested.GetValue("readings").ItemAt(1).Kind,                               Is.EqualTo(CBORValueKind.TextString));
 
         }
 
@@ -482,7 +482,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             Assert.That(CBORJSON.TryToCBOR("{\"a\":1}"u8, out var cbor, out errorResponse),  Is.True);
             Assert.That(errorResponse,                                                       Is.Null);
-            Assert.That(cbor["a"].AsInt64(),                                                 Is.EqualTo(1));
+            Assert.That(cbor.GetValue("a").AsInt64(),                                        Is.EqualTo(1));
 
             // Trailing data is not silently ignored - the JSON reader says
             // so in its own words, and a JSON error stays a JSON error.

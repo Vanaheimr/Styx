@@ -803,11 +803,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             // 1. The value...
-            if (!TryParseCBORNumber(array[0], "value", out var value, out ErrorResponse))
+            if (!TryParseCBORNumber(array.ItemAt(0), "value", out var value, out ErrorResponse))
                 return false;
 
             // 2. The unit of measure...
-            if (!TryParseCBORUnit(array[1], out var unit, out ErrorResponse))
+            if (!TryParseCBORUnit(array.ItemAt(1), out var unit, out ErrorResponse))
                 return false;
 
             // 3. The optional SI prefix...
@@ -816,7 +816,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (array.Count >= 3)
             {
 
-                var prefixElement = array[2];
+                var prefixElement = array.ItemAt(2);
 
                 if ((prefixElement.Kind != CBORValueKind.UnsignedInteger &&
                      prefixElement.Kind != CBORValueKind.NegativeInteger)  ||
@@ -846,7 +846,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (array.Count == 4)
             {
 
-                if (!TryParseCBORUncertainty(array[3], out var parsedUncertainty, out ErrorResponse))
+                if (!TryParseCBORUncertainty(array.ItemAt(3), out var parsedUncertainty, out ErrorResponse))
                     return false;
 
                 uncertainty = parsedUncertainty;
@@ -973,10 +973,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return false;
                     }
 
-                    if (!TryParseCBORNamedUnit(factorNode[0], out var factorUnit, out ErrorResponse))
+                    if (!TryParseCBORNamedUnit(factorNode.ItemAt(0), out var factorUnit, out ErrorResponse))
                         return false;
 
-                    var exponentNode  = factorNode[1];
+                    var exponentNode  = factorNode.ItemAt(1);
                     var numerator     = 0L;
                     var denominator   = 1L;
 
@@ -984,8 +984,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     {
 
                         if (exponentNode.Count != 2                                ||
-                            !exponentNode[0].TryGetInt64(out numerator)            ||
-                            !exponentNode[1].TryGetInt64(out denominator))
+                            !exponentNode.ItemAt(0).TryGetInt64(out numerator)    ||
+                            !exponentNode.ItemAt(1).TryGetInt64(out denominator))
                         {
                             ErrorResponse = "A rational unit exponent must be a [numerator, denominator] pair of integers!";
                             return false;
@@ -1398,7 +1398,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 Node.Tag  == CBORTag.DecimalFraction     &&
                 Node.UntaggedValue.Kind  == CBORValueKind.Array &&
                 Node.UntaggedValue.Count == 2            &&
-                Node.UntaggedValue[0].TryGetInt64(out var decimalExponent) &&
+                Node.UntaggedValue.ItemAt(0).TryGetInt64(out var decimalExponent) &&
                 decimalExponent >= 0)
             {
                 ErrorResponse = $"The {What} of a metrological value must not be a decimal fraction with a non-negative exponent: an integral reading is written as an integer!";

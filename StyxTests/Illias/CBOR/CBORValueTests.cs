@@ -52,28 +52,30 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                           { CBORValue.FromUInt64(4), "found" }
                       }.ToValue();
 
-            Assert.That(map[4L].AsText(),                          Is.EqualTo("found"));
+            Assert.That(map.GetValue(4).AsText(),                  Is.EqualTo("found"));
 
         }
 
         #endregion
 
-        #region Indexers_find_text_and_integer_keys()
+        #region GetValue_finds_text_and_integer_keys()
 
         [Test]
-        public void Indexers_find_text_and_integer_keys()
+        public void GetValue_finds_text_and_integer_keys()
         {
 
             // {"a": 1, 2: "two", -3: [1, 2]}
             var map = CBORValue.Parse(Convert.FromHexString("A3616101026374776F228201 02".Replace(" ", "")));
 
-            Assert.That(map.Count,                Is.EqualTo(3));
-            Assert.That(map["a"].AsUInt64(),      Is.EqualTo(1));
-            Assert.That(map[2L].AsText(),         Is.EqualTo("two"));
-            Assert.That(map[-3L][1].AsUInt64(),   Is.EqualTo(2));
+            Assert.That(map.Count,                                Is.EqualTo(3));
+            Assert.That(map.GetValue("a").AsUInt64(),             Is.EqualTo(1));
+            Assert.That(map.GetValue(2L).AsText(),                Is.EqualTo("two"));
+            Assert.That(map.GetValue(2).AsText(),                 Is.EqualTo("two"), "An Int32 literal converts to a map key!");
+            Assert.That(map.GetValue(-3).ItemAt(1).AsUInt64(),    Is.EqualTo(2));
 
-            Assert.That(() => map["missing"],     Throws.TypeOf<CBORException>());
-            Assert.That(() => map[0],             Throws.TypeOf<CBORException>());
+            Assert.That(() => map.GetValue("missing"),            Throws.TypeOf<CBORException>());
+            Assert.That(() => map.GetValue(0),                    Throws.TypeOf<CBORException>());
+            Assert.That(() => map.ItemAt(0),                      Throws.TypeOf<CBORException>(), "A map has no positions!");
 
         }
 
@@ -196,11 +198,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             CBORValue array = new CBORArray { 1, "text", true, CBORValue.Null };
 
-            Assert.That(array.Count,                 Is.EqualTo(4));
-            Assert.That(array[0].AsUInt64(),         Is.EqualTo(1));
-            Assert.That(array[1].AsText(),           Is.EqualTo("text"));
-            Assert.That(array[2].AsBoolean(),        Is.True);
-            Assert.That(array[3].Kind,               Is.EqualTo(CBORValueKind.Null));
+            Assert.That(array.Count,                   Is.EqualTo(4));
+            Assert.That(array.ItemAt(0).AsUInt64(),    Is.EqualTo(1));
+            Assert.That(array.ItemAt(1).AsText(),      Is.EqualTo("text"));
+            Assert.That(array.ItemAt(2).AsBoolean(),   Is.True);
+            Assert.That(array.ItemAt(3).Kind,          Is.EqualTo(CBORValueKind.Null));
 
             CBORValue map = new CBORMap {
                                 { "key",  1        },
@@ -208,10 +210,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                 { -3,     new CBORArray { 1, 2 } }
                             };
 
-            Assert.That(map.Count,                   Is.EqualTo(3));
-            Assert.That(map["key"].AsUInt64(),       Is.EqualTo(1));
-            Assert.That(map[2L].AsText(),            Is.EqualTo("value"));
-            Assert.That(map[-3L].Count,              Is.EqualTo(2));
+            Assert.That(map.Count,                         Is.EqualTo(3));
+            Assert.That(map.GetValue("key").AsUInt64(),    Is.EqualTo(1));
+            Assert.That(map.GetValue(2).AsText(),          Is.EqualTo("value"));
+            Assert.That(map.GetValue(-3).Count,            Is.EqualTo(2));
 
         }
 
@@ -230,11 +232,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                         Throws.TypeOf<CBORException>());
 
             Assert.That(CBORValue.Parse(duplicateKeys,
-                                        new CBORReaderOptions { DuplicateKeyPolicy = CBORDuplicateKeyPolicy.TakeFirst })["a"].AsUInt64(),
+                                        new CBORReaderOptions { DuplicateKeyPolicy = CBORDuplicateKeyPolicy.TakeFirst }).GetValue("a").AsUInt64(),
                         Is.EqualTo(1));
 
             Assert.That(CBORValue.Parse(duplicateKeys,
-                                        new CBORReaderOptions { DuplicateKeyPolicy = CBORDuplicateKeyPolicy.TakeLast })["a"].AsUInt64(),
+                                        new CBORReaderOptions { DuplicateKeyPolicy = CBORDuplicateKeyPolicy.TakeLast }).GetValue("a").AsUInt64(),
                         Is.EqualTo(2));
 
         }
@@ -276,7 +278,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             var innerMap = CBORValue.ReadFrom(ref reader);
 
-            Assert.That(innerMap["a"].AsBoolean(), Is.True);
+            Assert.That(innerMap.GetValue("a").AsBoolean(), Is.True);
 
             Assert.That(reader.ReadByteString(),   Is.EqualTo(new Byte[] { 0xFF }));
 

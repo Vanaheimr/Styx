@@ -184,10 +184,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // Note: The reparsed map is NOT representationally equal to the
             // original, as its entries are now in canonical order. The values
             // are still all there...
-            Assert.That(reparsed["zz"].Count,           Is.EqualTo(3));
-            Assert.That(reparsed["a"].AsDecimal(),      Is.EqualTo(1.10m));
-            Assert.That(reparsed[100L].AsText(),        Is.EqualTo("hundred"));
-            Assert.That(reparsed[-1L].AsBoolean(),      Is.True);
+            Assert.That(reparsed.GetValue("zz").Count,           Is.EqualTo(3));
+            Assert.That(reparsed.GetValue("a").AsDecimal(),      Is.EqualTo(1.10m));
+            Assert.That(reparsed.GetValue(100).AsText(),         Is.EqualTo("hundred"));
+            Assert.That(reparsed.GetValue(-1).AsBoolean(),       Is.True);
 
         }
 

@@ -214,10 +214,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // an array holding the countersigned signature.
             var structure = CBORValue.Parse(message.ToBeCountersigned(message.Countersignatures[0]));
 
-            Assert.That(structure.Count,                Is.EqualTo(6));
-            Assert.That(structure[0].AsText(),          Is.EqualTo("CounterSignatureV2"));
-            Assert.That(structure[5].Count,             Is.EqualTo(1));
-            Assert.That(structure[5][0].AsBytes(),      Is.EqualTo(message.Signature));
+            Assert.That(structure.Count,                           Is.EqualTo(6));
+            Assert.That(structure.ItemAt(0).AsText(),              Is.EqualTo("CounterSignatureV2"));
+            Assert.That(structure.ItemAt(5).Count,                 Is.EqualTo(1));
+            Assert.That(structure.ItemAt(5).ItemAt(0).AsBytes(),   Is.EqualTo(message.Signature));
 
         }
 
@@ -325,14 +325,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             Assert.That(once.Countersignatures.Count,  Is.EqualTo(1));
             Assert.That(once.UnprotectedHeader.TryGet(COSEHeaderLabel.CounterSignatureV2, out var bare),  Is.True);
-            Assert.That(bare[0].Kind,  Is.EqualTo(CBORValueKind.ByteString), "A single countersignature must not be wrapped within an array!");
+            Assert.That(bare.ItemAt(0).Kind,  Is.EqualTo(CBORValueKind.ByteString), "A single countersignature must not be wrapped within an array!");
 
             // ...and several as an array of them.
             var twice   = once.AddCountersignature(secondKey, COSEAlgorithm.ES512);
 
             Assert.That(twice.Countersignatures.Count,  Is.EqualTo(2));
             Assert.That(twice.UnprotectedHeader.TryGet(COSEHeaderLabel.CounterSignatureV2, out var array),  Is.True);
-            Assert.That(array[0].Kind,  Is.EqualTo(CBORValueKind.Array));
+            Assert.That(array.ItemAt(0).Kind,  Is.EqualTo(CBORValueKind.Array));
 
             var reparsed = COSESign1.Parse(twice.ToByteArray());
 
@@ -427,7 +427,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // ...and every reading within it still carries the signature of
             // the meter that measured it.
             var receivedBundle    = CBORValue.Parse(received.Payload!);
-            var receivedReadings  = receivedBundle["readings"].AsArray();
+            var receivedReadings  = receivedBundle.GetValue("readings").AsArray();
 
             Assert.That(receivedReadings.Count,  Is.EqualTo(3));
 
@@ -441,7 +441,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
                 var values = CBORValue.Parse(reading.Payload!);
 
-                Assert.That(values["index"].AsInt64(),  Is.EqualTo(i + 1));
+                Assert.That(values.GetValue("index").AsInt64(),  Is.EqualTo(i + 1));
 
             }
 

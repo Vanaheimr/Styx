@@ -439,9 +439,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var array = cbor.UntaggedValue;
 
             Assert.That(array.Count,                        Is.EqualTo(3));
-            Assert.That(array[0].AsDecimal(),               Is.EqualTo(5.0m));
-            Assert.That(array[1].AsUInt64(),                Is.EqualTo(4));
-            Assert.That(array[2].AsInt64(),                 Is.EqualTo(-3));
+            Assert.That(array.ItemAt(0).AsDecimal(),        Is.EqualTo(5.0m));
+            Assert.That(array.ItemAt(1).AsUInt64(),         Is.EqualTo(4));
+            Assert.That(array.ItemAt(2).AsInt64(),          Is.EqualTo(-3));
 
             Assert.That(cbor.ToDiagnosticString(),          Is.EqualTo("44252([4([-1, 50]), 4, -3])"));
 

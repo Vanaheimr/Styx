@@ -119,10 +119,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // Sorting a map moves bytes around without adding or removing
             // any: same length, same entries, same values. That is precisely
             // what makes the breakage below impossible to see by eye.
-            Assert.That(canonical.Length,                          Is.EqualTo(reading.Length));
-            Assert.That(COSEPayload.IsCanonical(canonical),        Is.True);
-            Assert.That(CBORValue.Parse(canonical)["energy"],      Is.EqualTo(CBORValue.Parse(reading)["energy"]));
-            Assert.That(CBORValue.Parse(canonical).AsMap().Count,  Is.EqualTo(3));
+            Assert.That(canonical.Length,                               Is.EqualTo(reading.Length));
+            Assert.That(COSEPayload.IsCanonical(canonical),             Is.True);
+            Assert.That(CBORValue.Parse(canonical).GetValue("energy"),  Is.EqualTo(CBORValue.Parse(reading).GetValue("energy")));
+            Assert.That(CBORValue.Parse(canonical).AsMap().Count,       Is.EqualTo(3));
 
         }
 

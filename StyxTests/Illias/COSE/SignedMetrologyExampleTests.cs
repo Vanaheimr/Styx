@@ -111,8 +111,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         private static IEnumerable<COSESign1> Readings(CBORValue Bundle)
 
-            => Bundle["readings"].AsArray().
-                                  Select(static reading => COSESign1.Parse(reading.AsBytes()));
+            => Bundle.GetValue("readings").AsArray().
+                                           Select(static reading => COSESign1.Parse(reading.AsBytes()));
 
         #endregion
 
@@ -151,8 +151,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                 Assert.That(reading.Verify(MeterKey(), out var meterError),  Is.True, meterError);
             }
 
-            Assert.That(bundle["chargingStation"].AsText(),  Is.EqualTo("DE*GEF*E12345678*1"));
-            Assert.That(bundle["transaction"].    AsText(),  Is.EqualTo("a4f1c9e2"));
+            Assert.That(bundle.GetValue("chargingStation").AsText(),  Is.EqualTo("DE*GEF*E12345678*1"));
+            Assert.That(bundle.GetValue("transaction").    AsText(),  Is.EqualTo("a4f1c9e2"));
 
         }
 
@@ -175,11 +175,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             for (var i = 0; i < expected.Length; i++)
             {
 
-                Assert.That(readings[i]["meter"].      AsText(),  Is.EqualTo("1ISA0000000042"));
-                Assert.That(readings[i]["context"].    AsText(),  Is.EqualTo(expected[i].Context));
-                Assert.That(readings[i]["time"].UntaggedValue.AsText(),  Is.EqualTo(expected[i].Time));
+                Assert.That(readings[i].GetValue("meter").      AsText(),  Is.EqualTo("1ISA0000000042"));
+                Assert.That(readings[i].GetValue("context").    AsText(),  Is.EqualTo(expected[i].Context));
+                Assert.That(readings[i].GetValue("time").UntaggedValue.AsText(),  Is.EqualTo(expected[i].Time));
 
-                Assert.That(MetrologicalValue.TryParse(readings[i]["energy"], out var energy, out var errorResponse),
+                Assert.That(MetrologicalValue.TryParse(readings[i].GetValue("energy"), out var energy, out var errorResponse),
                             Is.True, errorResponse);
 
                 Assert.That(energy.Value,                       Is.EqualTo(expected[i].Energy),         expected[i].Context);
@@ -205,10 +205,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // What the customer is billed for is the difference of two
             // readings that each carry the signature of the meter.
-            Assert.That(readings[1]["energy"], Is.Not.EqualTo(readings[0]["energy"]));
+            Assert.That(readings[1].GetValue("energy"), Is.Not.EqualTo(readings[0].GetValue("energy")));
 
-            MetrologicalValue.TryParse(readings[0]["energy"], out var begin, out _);
-            MetrologicalValue.TryParse(readings[1]["energy"], out var end,   out _);
+            MetrologicalValue.TryParse(readings[0].GetValue("energy"), out var begin, out _);
+            MetrologicalValue.TryParse(readings[1].GetValue("energy"), out var end,   out _);
 
             Assert.That(end.Value - begin.Value,  Is.EqualTo(25.302m));
 
@@ -242,7 +242,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var reading   = Readings(bundle).First();
             var values    = CBORValue.Parse(reading.Payload!);
 
-            MetrologicalValue.TryParse(values["energy"], out var energy, out _);
+            MetrologicalValue.TryParse(values.GetValue("energy"), out var energy, out _);
 
             // One thousandth of a kilowatt hour more...
             var tampered  = CBORValue.FromMap(
@@ -447,7 +447,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
             // The metrological value itself: value, scale, unit, prefix and a
             // complete GUM uncertainty.
-            var energy = CBORValue.Parse(readings[0].Payload!)["energy"];
+            var energy = CBORValue.Parse(readings[0].Payload!).GetValue("energy");
 
             Assert.That(energy.ToByteArray().Length,        Is.EqualTo(31),   "the metrological value");
 

@@ -525,70 +525,49 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region this[Index]
+        #region ItemAt(Index)
 
         /// <summary>
         /// Return the CBOR value at the given position within this CBOR array.
+        /// A method rather than an indexer on purpose: integer literals are
+        /// Int32, so an Int32 indexer would win over the Int64 map key indexer
+        /// and turn map[1] into an array access.
         /// </summary>
         /// <param name="Index">The position within this CBOR array.</param>
-        public CBORValue this[Int32 Index]
+        public CBORValue ItemAt(Int32 Index)
         {
-            get
-            {
 
-                if (kind != CBORValueKind.Array)
-                    throw new CBORException($"A CBOR {kind} has no indexed items!");
+            if (kind != CBORValueKind.Array)
+                throw new CBORException($"A CBOR {kind} has no indexed items!");
 
-                var items = (CBORValue[]) reference!;
+            var items = (CBORValue[]) reference!;
 
-                if (Index < 0 || Index >= items.Length)
-                    throw new CBORException($"The CBOR array has {items.Length} data item(s), but item {Index} was requested!");
+            if (Index < 0 || Index >= items.Length)
+                throw new CBORException($"The CBOR array has {items.Length} data item(s), but item {Index} was requested!");
 
-                return items[Index];
+            return items[Index];
 
-            }
         }
 
         #endregion
 
-        #region this[Key: Text]
+        #region GetValue(Key)
 
         /// <summary>
         /// Return the CBOR value of the given key within this CBOR map.
+        /// Integer and text keys convert implicitly, so GetValue(1),
+        /// GetValue(-3) and GetValue("fmt") all work; any other CBOR value
+        /// may be a key as well. A missing key is an error, see TryGetValue.
         /// </summary>
-        /// <param name="Key">A map key.</param>
-        public CBORValue this[String Key]
+        /// <param name="Key">A map key of any CBOR kind.</param>
+        public CBORValue GetValue(CBORValue Key)
         {
-            get
-            {
 
-                if (TryGetValue(FromText(Key), out var value))
-                    return value;
+            if (TryGetValue(Key, out var value))
+                return value;
 
-                throw new CBORException($"The CBOR map has no key '{Key}'!");
+            throw new CBORException($"The CBOR map has no key {Key}!");
 
-            }
-        }
-
-        #endregion
-
-        #region this[Key: Integer]
-
-        /// <summary>
-        /// Return the CBOR value of the given key within this CBOR map.
-        /// </summary>
-        /// <param name="Key">A map key.</param>
-        public CBORValue this[Int64 Key]
-        {
-            get
-            {
-
-                if (TryGetValue(FromInt64(Key), out var value))
-                    return value;
-
-                throw new CBORException($"The CBOR map has no key '{Key}'!");
-
-            }
         }
 
         #endregion
@@ -750,8 +729,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     if (inner.Kind != CBORValueKind.Array || inner.Count != 2)
                         throw new CBORException("A decimal fraction (tag 4) must be an array of two data items!");
 
-                    var exponent  = inner[0].AsInt128();
-                    var mantissa  = inner[1].AsBigInteger();
+                    var exponent  = inner.ItemAt(0).AsInt128();
+                    var mantissa  = inner.ItemAt(1).AsBigInteger();
 
                     return CBORReader.DecimalFromParts(mantissa, exponent);
 
