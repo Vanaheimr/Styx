@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -219,9 +221,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="JSON">The JSON to parse.</param>
         /// <param name="Address">The parsed address.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(JObject       JSON,
-                                       out Address?  Address,
-                                       out String?   ErrorResponse)
+        public static Boolean TryParse(JObject                            JSON,
+                                       [NotNullWhen(true)]  out Address?  Address,
+                                       [NotNullWhen(false)] out String?   ErrorResponse)
 
             => TryParse(JSON,
                         out Address,
@@ -237,8 +239,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ErrorResponse">An optional error response.</param>
         /// <param name="CustomAddressParser">An optional delegate to parse custom addresss JSON objects.</param>
         public static Boolean TryParse(JObject                                JSON,
-                                       out Address?                           Address,
-                                       out String?                            ErrorResponse,
+                                       [NotNullWhen(true)]  out Address?      Address,
+                                       [NotNullWhen(false)] out String?       ErrorResponse,
                                        CustomJObjectParserDelegate<Address>?  CustomAddressParser)
         {
 
