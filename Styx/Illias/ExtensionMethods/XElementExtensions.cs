@@ -1078,11 +1078,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region TryParseOptionalText                (ParentXElement, XName,                                           out Text,       out ErrorResponse)
+
+        public static Boolean TryParseOptionalText(this XElement                      ParentXElement,
+                                                   XName                              XName,
+                                                   [MaybeNullWhen(true)] out String?  Text,
+                                                   [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Text           = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var xml = ParentXElement.Element(XName);
+            if (xml is not null)
+            {
+
+                Text = xml.Value.Trim();
+
+                return Text.IsNotNullOrEmpty();
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
         #region TryParseOptionalText                (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
 
         public static Boolean TryParseOptionalText(this XElement                      ParentXElement,
                                                    XName                              XName,
-                                                   //String                             Description,
+                                                   String                             Description,
                                                    [MaybeNullWhen(true)] out String?  Text,
                                                    [NotNullWhen(false)]  out String?  ErrorResponse)
         {
@@ -1226,11 +1259,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParseOptionalTextAttribute       (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
+        #region TryParseOptionalTextAttribute       (ParentXElement, XName,                                           out Text,       out ErrorResponse)
 
         public static Boolean TryParseOptionalTextAttribute(this XElement                      ParentXElement,
                                                             XName                              XName,
                                                             //String                             Description,
+                                                            [MaybeNullWhen(true)] out String?  Text,
+                                                            [NotNullWhen(false)]  out String?  ErrorResponse)
+        {
+
+            Text           = default;
+            ErrorResponse  = null;
+
+            if (ParentXElement is null)
+            {
+                ErrorResponse = "The parent XML element must not be null!";
+                return false;
+            }
+
+            var attribute = ParentXElement.Attribute(XName);
+            if (attribute is not null)
+            {
+
+                Text = attribute.Value.Trim();
+
+                return Text.IsNotNullOrEmpty();
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region TryParseOptionalTextAttribute       (ParentXElement, XName, Description,                              out Text,       out ErrorResponse)
+
+        public static Boolean TryParseOptionalTextAttribute(this XElement                      ParentXElement,
+                                                            XName                              XName,
+                                                            String                             Description,
                                                             [MaybeNullWhen(true)] out String?  Text,
                                                             [NotNullWhen(false)]  out String?  ErrorResponse)
         {
