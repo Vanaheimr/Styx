@@ -272,68 +272,42 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String ToBase32(this ReadOnlySpan<Byte> ByteArray)
         {
 
-            try
+            if (ByteArray.Length == 0)
+                return String.Empty;
+
+            // Five bits at a time out of a running buffer, which is the whole
+            // of RFC 4648 and the exact inverse of TryParseBASE32 below. The
+            // version before this one walked the input two and three bytes at a
+            // time and lost track of where it was: twenty-five bytes through
+            // the pair came back as thirty-eight, and nothing in this
+            // repository noticed because nothing called it.
+            var result    = new StringBuilder((ByteArray.Length + 4) / 5 * 8);
+            var buffer    = 0;
+            var bitsLeft  = 0;
+
+            foreach (var value in ByteArray)
             {
 
-                if (ByteArray.Length == 0)
-                    return String.Empty;
+                buffer    = (buffer << 8) | value;
+                bitsLeft += 8;
 
-                var result          = new StringBuilder((ByteArray.Length + 7) * 8 / 5);
-
-                var currentByte     = 0;
-                var digit           = 0;
-                var index           = 0;
-                var bytesRemaining  = ByteArray.Length;
-
-                while (bytesRemaining > 0)
+                while (bitsLeft >= 5)
                 {
-                    currentByte = ByteArray[index++];
-                    bytesRemaining--;
-
-                    result.Append(Base32Chars[(currentByte >> 3) & 31]); // First 5 bits
-
-                    digit = (currentByte & 7) << 2; // Last 3 bits
-
-                    if (bytesRemaining > 0)
-                    {
-                        currentByte = ByteArray[index];
-                        digit |= (currentByte >> 6) & 3; // Next 2 bits
-
-                        result.Append(Base32Chars[digit]); // Append the result
-                        result.Append(Base32Chars[(currentByte >> 1) & 31]); // Next 5 bits
-
-                        digit = (currentByte & 1) << 4; // Last bit
-                    }
-
-                    if (bytesRemaining > 0)
-                    {
-                        currentByte = ByteArray[index++];
-                        bytesRemaining--;
-
-                        digit |= (currentByte >> 4) & 15; // Next 4 bits
-
-                        result.Append(Base32Chars[digit]); // Append the result
-                        result.Append(Base32Chars[(currentByte & 15) << 1]); // Remaining bits
-
-                        digit = (currentByte >> 7) & 1; // Last bit
-                    }
-
-                    if (bytesRemaining == 0)
-                    {
-                        result.Append(Base32Chars[digit]); // Final part of the encoding
-                        break;
-                    }
+                    bitsLeft -= 5;
+                    result.Append(Base32Chars[(buffer >> bitsLeft) & 0x1F]);
                 }
 
-                // Add padding to make it a multiple of 8 characters
-                int padding = (result.Length % 8 == 0) ? 0 : (8 - result.Length % 8);
-                return result.ToString().PadRight(result.Length + padding, '=');
+            }
 
-            }
-            catch (Exception e)
-            {
-                throw new Exception("Error in ToBase32" + e.Message);
-            }
+            // Whatever is left of the last byte, padded on the right with
+            // zeroes - the decoder throws those bits away again.
+            if (bitsLeft > 0)
+                result.Append(Base32Chars[(buffer << (5 - bitsLeft)) & 0x1F]);
+
+            while (result.Length % 8 != 0)
+                result.Append('=');
+
+            return result.ToString();
 
         }
 
