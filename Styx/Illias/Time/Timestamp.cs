@@ -66,6 +66,34 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region (static) Provider
+
+        /// <summary>
+        /// This timestamp as a TimeProvider, for everything that would rather
+        /// be handed a clock than reach for a global one.
+        /// </summary>
+        /// <remarks>
+        /// Meant as the default for anything that accepts a TimeProvider and
+        /// was not given one, so that "nobody passed a clock" keeps meaning
+        /// exactly what it meant before this property existed: Timestamp.Now,
+        /// time travel included.
+        ///
+        /// TimeProvider.System would be the obvious default and is the wrong
+        /// one: it reads the system clock directly and so quietly opts out of
+        /// TravelBackInTime. That is a change of behaviour hiding inside a
+        /// default value, which is the kind that is found late.
+        /// </remarks>
+        public static TimeProvider Provider { get; } = new TimeTravellingTimeProvider();
+
+        private sealed class TimeTravellingTimeProvider : TimeProvider
+        {
+            public override DateTimeOffset GetUtcNow()
+                => Now;
+        }
+
+        #endregion
+
+
         #region (static) TravelBackInTime   (TimeTravel)
 
         /// <summary>
