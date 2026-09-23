@@ -129,6 +129,20 @@ namespace org.GraphDefined.Vanaheimr.CLI
         #endregion
 
 
+        #region WriteBlock(Write)
+
+        /// <summary>
+        /// Write to the console without breaking the command line somebody is
+        /// typing at that moment: the line is taken off the screen, the block is
+        /// written as one piece, and the line is put back with the cursor where
+        /// it was.
+        /// </summary>
+        /// <param name="Write">Whatever writes the block. It is called with the console to itself.</param>
+        void WriteBlock(Action Write);
+
+        #endregion
+
+
     }
 
 }

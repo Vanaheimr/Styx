@@ -199,6 +199,112 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
         #endregion
 
+
+        #region A_block_arrives_in_one_piece()
+
+        /// <summary>
+        /// Several threads writing several lines each, and no line of one ending
+        /// up between two lines of another.
+        /// </summary>
+        /// <remarks>
+        /// This is the half of WriteBlock that can be checked without a screen.
+        /// A program with a command line on the same console as its log writes
+        /// from whichever thread did the thing being logged, and Console.Out
+        /// makes each single WriteLine atomic and promises nothing at all about
+        /// three of them in a row - which is exactly what one log entry, or one
+        /// command's answer, consists of.
+        ///
+        /// Without the lock this fails immediately and by a lot: with 32 threads
+        /// the first interleaved trio usually appears within the first hundred
+        /// lines.
+        /// </remarks>
+        [Test]
+        public void A_block_arrives_in_one_piece()
+        {
+
+            const Int32 writers  = 32;
+            const Int32 rounds   = 8;
+
+            var cli       = new CLI();
+            var captured  = new StringWriter();
+            var previous  = Console.Out;
+
+            try
+            {
+
+                Console.SetOut(captured);
+
+                Parallel.For(0, writers, writer => {
+                    for (var round = 0; round < rounds; round++)
+                        cli.WriteBlock(() => {
+                            Console.WriteLine($"{writer} one");
+                            Console.WriteLine($"{writer} two");
+                            Console.WriteLine($"{writer} three");
+                        });
+                });
+
+            }
+            finally
+            {
+                Console.SetOut(previous);
+            }
+
+            var lines = captured.ToString().Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+
+            Assert.That(lines.Length, Is.EqualTo(writers * rounds * 3));
+
+            for (var i = 0; i < lines.Length; i += 3)
+            {
+
+                var who = lines[i].Split(' ')[0];
+
+                Assert.Multiple(() => {
+                    Assert.That(lines[i],      Is.EqualTo($"{who} one"));
+                    Assert.That(lines[i + 1],  Is.EqualTo($"{who} two"));
+                    Assert.That(lines[i + 2],  Is.EqualTo($"{who} three"));
+                });
+
+            }
+
+        }
+
+        #endregion
+
+        #region A_block_needs_no_command_line_to_be_written()
+
+        /// <summary>
+        /// Nothing is being typed, so there is nothing to take off the screen
+        /// and nothing to put back - and the block is simply written.
+        /// </summary>
+        /// <remarks>
+        /// Worth its own test because the restoring half of WriteBlock moves the
+        /// cursor, and a process with no console at all - a service, a test host,
+        /// a CI runner - would throw if that ran when it had no reason to.
+        /// </remarks>
+        [Test]
+        public void A_block_needs_no_command_line_to_be_written()
+        {
+
+            var cli       = new CLI();
+            var captured  = new StringWriter();
+            var previous  = Console.Out;
+
+            try
+            {
+                Console.SetOut(captured);
+                cli.WriteBlock(() => Console.WriteLine("nobody is typing"));
+            }
+            finally
+            {
+                Console.SetOut(previous);
+            }
+
+            Assert.That(captured.ToString().Trim(), Is.EqualTo("nobody is typing"));
+
+        }
+
+        #endregion
+
     }
 
 }

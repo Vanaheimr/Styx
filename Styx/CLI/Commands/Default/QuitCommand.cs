@@ -54,7 +54,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public override String Help()
         {
-            return "help - Displays this help message.";
+            return $"{CommandName} - Leave the command line.";
         }
 
     }

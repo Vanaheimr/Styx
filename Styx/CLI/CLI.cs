@@ -290,6 +290,22 @@ namespace org.GraphDefined.Vanaheimr.CLI
         private readonly  List<String>             commandHistory   = [];
         private readonly  CancellationTokenSource  cts              = new();
 
+        /// <summary>
+        /// The console is one device, and in a program that does anything besides
+        /// reading commands it is written to from several threads at once. Every
+        /// write below goes through this, so that two of them cannot end up on
+        /// the same line.
+        /// </summary>
+        private readonly  Lock                     consoleLock      = new();
+
+        /// <summary>
+        /// The command line as it currently stands on the screen, while one is
+        /// being typed, and null while none is. WriteBlock needs both: what to
+        /// take away before it writes, and what to put back afterwards.
+        /// </summary>
+        private           List<Char>?              liveInput;
+        private           Int32                    liveCursor;
+
         #endregion
 
         #region Properties
@@ -450,8 +466,6 @@ namespace org.GraphDefined.Vanaheimr.CLI
             do
             {
 
-                Prompt();
-
                 var inputArgs = await ReadLineWithAutoCompletion(commands);
 
                 if (inputArgs.Item1?.Length > 0 && !inputArgs.Item2)
@@ -459,8 +473,11 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                     var responseLines = await Execute(inputArgs.Item1);
 
-                    foreach (var responseLine in responseLines)
-                        Console.WriteLine(responseLine);
+                    if (responseLines.Length > 0)
+                        WriteBlock(() => {
+                            foreach (var responseLine in responseLines)
+                                Console.WriteLine(responseLine);
+                        });
 
                 }
 
@@ -469,7 +486,58 @@ namespace org.GraphDefined.Vanaheimr.CLI
         }
 
 
-        private String GetPrompt()
+        #region WriteBlock(Write)
+
+        /// <summary>
+        /// Write to the console without breaking the command line somebody is
+        /// typing at that moment.
+        /// </summary>
+        /// <remarks>
+        /// A program that only reads commands does not need this. One that also
+        /// logs what it is doing does: the log is written from whichever thread
+        /// did the thing, and half a log entry landing in the middle of a
+        /// half-typed command costs both of them - the entry is unreadable and
+        /// the command has to be typed again.
+        ///
+        /// So the input line is taken off the screen, the block is written as
+        /// one piece, and the line is put back with the cursor where it was.
+        /// The person typing sees their command stay put while the log scrolls
+        /// past above it, which is what the line was supposed to do all along.
+        ///
+        /// Everything this class writes goes through here too, which is the
+        /// other half of the promise: the lock is what makes "as one piece"
+        /// true, and a block that went around it would still interleave.
+        /// </remarks>
+        /// <param name="Write">Whatever writes the block. It is called with the console to itself.</param>
+        public void WriteBlock(Action Write)
+        {
+
+            lock (consoleLock)
+            {
+
+                var input = liveInput;
+
+                if (input is not null)
+                    ClearCurrentConsoleLine();
+
+                Write();
+
+                if (input is not null)
+                    RedrawLocked(input, liveCursor);
+
+            }
+
+        }
+
+        #endregion
+
+        #region (protected virtual) GetPrompt()
+
+        /// <summary>
+        /// What to put in front of the command being typed. Overridden by a CLI
+        /// that has something more useful to say than "Enter command".
+        /// </summary>
+        protected virtual String GetPrompt()
         {
 
             if (Environment.TryGetValue(EnvironmentKey.RemoteSystemId, out var remoteSystemId))
@@ -479,15 +547,35 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         }
 
+        #endregion
 
-        private void Prompt(String? Text = "")
+
+        /// <summary>
+        /// Put the prompt and the given input back on the current line, and the
+        /// cursor where it was within it. Only ever called with the console lock
+        /// held - see WriteBlock.
+        /// </summary>
+        private void RedrawLocked(List<Char> Input, Int32 CursorPosition)
         {
-            Console.Write(GetPrompt() + Text);
+
+            liveInput   = Input;
+            liveCursor  = CursorPosition;
+
+            ClearCurrentConsoleLine();
+            Console.Write(GetPrompt() + new String(Input.ToArray()));
+            Console.SetCursorPosition(GetPrompt().Length + CursorPosition, Console.CursorTop);
+
         }
 
-        private void CommandPrompt(List<Char> Text)
+        /// <summary>
+        /// The same, for a caller that does not already hold the lock.
+        /// </summary>
+        private void Redraw(List<Char> Input, Int32 CursorPosition)
         {
-            Prompt(new String(Text.ToArray()));
+            lock (consoleLock)
+            {
+                RedrawLocked(Input, CursorPosition);
+            }
         }
 
 
@@ -627,6 +715,16 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #region (private) ReadLineWithAutoCompletion(Commands)
 
+        /// <summary>
+        /// Read one command line, completing it on Tab.
+        /// </summary>
+        /// <remarks>
+        /// Every write in here goes through Redraw or WriteBlock rather than
+        /// straight to the console, and the line being typed is published in
+        /// liveInput while it is being typed. That is what lets another thread
+        /// log something in the middle of it without the two ending up on the
+        /// same line - see WriteBlock.
+        /// </remarks>
         private async Task<Tuple<String[], Boolean>> ReadLineWithAutoCompletion(List<ICLICommand> Commands)
         {
 
@@ -635,186 +733,214 @@ namespace org.GraphDefined.Vanaheimr.CLI
             var historyIndex    = -1;
             var currentInput    = String.Empty;
 
-            while (true)
+            // Finish the line: it is a line of history now rather than something
+            // to be put back, so liveInput goes first and the newline second.
+            void FinishLine()
+            {
+                lock (consoleLock)
+                {
+                    liveInput = null;
+                    Console.WriteLine();
+                }
+            }
+
+            // Leave the line that was typed standing where it is, write
+            // something underneath it, and come back to a fresh prompt. Used by
+            // Tab, which answers with more than fits on one line.
+            void WriteUnder(Action Write)
+            {
+                WriteBlock(() => {
+                    Console.WriteLine(GetPrompt() + new String(input.ToArray()));
+                    Write();
+                });
+            }
+
+            Redraw(input, cursorPosition);
+
+            try
             {
 
-                var key = Console.ReadKey(intercept: true);
-
-                if (key.Key == ConsoleKey.Tab)
+                while (true)
                 {
 
-                    var suggestions = await Suggest(ParseCommandLine(new String(input.ToArray())));
+                    var key = Console.ReadKey(intercept: true);
 
-                    if (suggestions.Length == 0)
-                    {
-                    }
-                    if (suggestions.Length == 1)
+                    if (key.Key == ConsoleKey.Tab)
                     {
 
-                        if (suggestions[0].Info == SuggestionInfo.CommandHelp)
-                        {
-                            ClearCurrentConsoleLine();
-                            CommandPrompt(input);
-                            Console.WriteLine();
-                            Console.WriteLine($"Usage: {suggestions[0].Suggestion}");
-                            Console.WriteLine();
-                            CommandPrompt(input);
-                        }
-                        else
+                        var suggestions = await Suggest(ParseCommandLine(new String(input.ToArray())));
+
+                        if (suggestions.Length == 1)
                         {
 
-                            input.Clear();
+                            if (suggestions[0].Info == SuggestionInfo.CommandHelp)
+                                WriteUnder(() => {
+                                    Console.WriteLine();
+                                    Console.WriteLine($"Usage: {suggestions[0].Suggestion}");
+                                    Console.WriteLine();
+                                });
 
-                            input.AddRange(suggestions[0].Suggestion ?? "");
-
-                            if (suggestions[0].Info == SuggestionInfo.CommandCompleted ||
-                                suggestions[0].Info == SuggestionInfo.ParameterCompleted)
+                            else
                             {
-                                input.Add(' ');
+
+                                input.Clear();
+
+                                input.AddRange(suggestions[0].Suggestion ?? "");
+
+                                if (suggestions[0].Info == SuggestionInfo.CommandCompleted ||
+                                    suggestions[0].Info == SuggestionInfo.ParameterCompleted)
+                                {
+                                    input.Add(' ');
+                                }
+
+                                cursorPosition = input.Count;
+                                Redraw(input, cursorPosition);
+
                             }
 
-                            cursorPosition = input.Count;
-                            ClearCurrentConsoleLine();
-                            CommandPrompt(input);
-
                         }
 
-                    }
-                    else if (suggestions.Length > 1)
-                    {
-
-                        var commonPrefix = new String(suggestions.First().Suggestion[..suggestions.Min(s => s.Suggestion.Length)].
-                                                                    TakeWhile((c, i) => suggestions.All(s => s?.Suggestion.Length > i && s.Suggestion[i] == c)).ToArray());
-
-                        input.Clear();
-                        input.AddRange(commonPrefix);
-                        cursorPosition = input.Count;
-
-                        ClearCurrentConsoleLine();
-                        CommandPrompt(input);
-                        Console.WriteLine();
-                        Console.WriteLine("Suggestions:");
-                        foreach (var suggestion in suggestions)
-                            Console.WriteLine($"   {suggestion.Suggestion}");
-                        Console.WriteLine();
-                        CommandPrompt(input);
-
-                    }
-                }
-
-                else if (key.Key == ConsoleKey.Home)
-                {
-                    cursorPosition = 0;
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
-                }
-
-                else if (key.Key == ConsoleKey.End)
-                {
-                    cursorPosition = input.Count;
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
-                }
-
-                else if (key.Key == ConsoleKey.Enter)
-                {
-                    Console.WriteLine();
-                    return new Tuple<String[], Boolean>(ParseCommandLine(new String(input.ToArray())), false);
-                }
-
-                else if (key.Key == ConsoleKey.Backspace && cursorPosition > 0)
-                {
-                    input.RemoveAt(cursorPosition - 1);
-                    cursorPosition--;
-                    ClearCurrentConsoleLine();
-                    CommandPrompt(input);
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
-                }
-
-                else if (key.Key == ConsoleKey.Delete && cursorPosition < input.Count)
-                {
-                    input.RemoveAt(cursorPosition);
-                    ClearCurrentConsoleLine();
-                    CommandPrompt(input);
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
-                }
-
-                else if (key.Key == ConsoleKey.LeftArrow && cursorPosition > 0)
-                {
-                    cursorPosition--;
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
-                }
-
-                else if (key.Key == ConsoleKey.RightArrow && cursorPosition < input.Count)
-                {
-                    cursorPosition++;
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
-                }
-
-                else if (key.Key == ConsoleKey.UpArrow)
-                {
-
-                    if (historyIndex == -1 && commandHistory.Count > 0)
-                    {
-                        currentInput = new String(input.ToArray());
-                        historyIndex = commandHistory.Count - 1;
-                    }
-                    else if (historyIndex > 0)
-                    {
-                        historyIndex--;
-                    }
-
-                    if (historyIndex >= 0)
-                    {
-                        input.Clear();
-                        input.AddRange(commandHistory[historyIndex]);
-                        cursorPosition = input.Count;
-                        ClearCurrentConsoleLine();
-                        CommandPrompt(input);
-                    }
-
-                }
-
-                else if (key.Key == ConsoleKey.DownArrow)
-                {
-                    if (historyIndex != -1)
-                    {
-
-                        historyIndex++;
-
-                        if (historyIndex >= commandHistory.Count)
+                        else if (suggestions.Length > 1)
                         {
-                            historyIndex = -1;
+
+                            var commonPrefix = new String(suggestions.First().Suggestion[..suggestions.Min(s => s.Suggestion.Length)].
+                                                                        TakeWhile((c, i) => suggestions.All(s => s?.Suggestion.Length > i && s.Suggestion[i] == c)).ToArray());
+
+                            WriteUnder(() => {
+                                Console.WriteLine();
+                                Console.WriteLine("Suggestions:");
+                                foreach (var suggestion in suggestions)
+                                    Console.WriteLine($"   {suggestion.Suggestion}");
+                                Console.WriteLine();
+                            });
+
                             input.Clear();
-                            input.AddRange(currentInput);
+                            input.AddRange(commonPrefix);
+                            cursorPosition = input.Count;
+
+                            Redraw(input, cursorPosition);
+
                         }
-                        else
+
+                    }
+
+                    else if (key.Key == ConsoleKey.Home)
+                    {
+                        cursorPosition = 0;
+                        Redraw(input, cursorPosition);
+                    }
+
+                    else if (key.Key == ConsoleKey.End)
+                    {
+                        cursorPosition = input.Count;
+                        Redraw(input, cursorPosition);
+                    }
+
+                    else if (key.Key == ConsoleKey.Enter)
+                    {
+                        FinishLine();
+                        return new Tuple<String[], Boolean>(ParseCommandLine(new String(input.ToArray())), false);
+                    }
+
+                    else if (key.Key == ConsoleKey.Backspace && cursorPosition > 0)
+                    {
+                        input.RemoveAt(cursorPosition - 1);
+                        cursorPosition--;
+                        Redraw(input, cursorPosition);
+                    }
+
+                    else if (key.Key == ConsoleKey.Delete && cursorPosition < input.Count)
+                    {
+                        input.RemoveAt(cursorPosition);
+                        Redraw(input, cursorPosition);
+                    }
+
+                    else if (key.Key == ConsoleKey.LeftArrow && cursorPosition > 0)
+                    {
+                        cursorPosition--;
+                        Redraw(input, cursorPosition);
+                    }
+
+                    else if (key.Key == ConsoleKey.RightArrow && cursorPosition < input.Count)
+                    {
+                        cursorPosition++;
+                        Redraw(input, cursorPosition);
+                    }
+
+                    else if (key.Key == ConsoleKey.UpArrow)
+                    {
+
+                        if (historyIndex == -1 && commandHistory.Count > 0)
+                        {
+                            currentInput = new String(input.ToArray());
+                            historyIndex = commandHistory.Count - 1;
+                        }
+                        else if (historyIndex > 0)
+                        {
+                            historyIndex--;
+                        }
+
+                        if (historyIndex >= 0)
                         {
                             input.Clear();
                             input.AddRange(commandHistory[historyIndex]);
+                            cursorPosition = input.Count;
+                            Redraw(input, cursorPosition);
                         }
 
-                        cursorPosition = input.Count;
-                        ClearCurrentConsoleLine();
-                        CommandPrompt(input);
-
                     }
-                }
 
-                else if (key.Key == ConsoleKey.Escape)
-                {
-                    Console.WriteLine();
-                    return new Tuple<String[], Boolean>([], true);
-                }
+                    else if (key.Key == ConsoleKey.DownArrow)
+                    {
+                        if (historyIndex != -1)
+                        {
 
-                else if (!char.IsControl(key.KeyChar))
-                {
-                    input.Insert(cursorPosition, key.KeyChar);
-                    cursorPosition++;
-                    ClearCurrentConsoleLine();
-                    CommandPrompt(input);
-                    Console.SetCursorPosition(GetPrompt().Length + cursorPosition, Console.CursorTop);
+                            historyIndex++;
+
+                            if (historyIndex >= commandHistory.Count)
+                            {
+                                historyIndex = -1;
+                                input.Clear();
+                                input.AddRange(currentInput);
+                            }
+                            else
+                            {
+                                input.Clear();
+                                input.AddRange(commandHistory[historyIndex]);
+                            }
+
+                            cursorPosition = input.Count;
+                            Redraw(input, cursorPosition);
+
+                        }
+                    }
+
+                    else if (key.Key == ConsoleKey.Escape)
+                    {
+                        FinishLine();
+                        return new Tuple<String[], Boolean>([], true);
+                    }
+
+                    else if (!char.IsControl(key.KeyChar))
+                    {
+                        input.Insert(cursorPosition, key.KeyChar);
+                        cursorPosition++;
+                        Redraw(input, cursorPosition);
+                    }
+
                 }
 
             }
+            finally
+            {
+                // However this line ended - returned, or thrown out of - there
+                // is no longer a command line on the screen to be put back.
+                lock (consoleLock)
+                {
+                    liveInput = null;
+                }
+            }
+
         }
 
         #endregion
