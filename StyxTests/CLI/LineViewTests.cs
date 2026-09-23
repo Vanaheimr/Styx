@@ -280,6 +280,102 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
         #endregion
 
+
+        #region A_row_is_cleared_and_drawn_with_plain_characters()
+
+        /// <summary>
+        /// What goes to the console, spelt out once: carriage returns, blanks,
+        /// the text, and backspaces back to the cursor's column.
+        /// </summary>
+        [Test]
+        public void A_row_is_cleared_and_drawn_with_plain_characters()
+        {
+
+            var view = LineView.Of(Prompt, [.. "discover"], 3, 20);
+
+            Assert.Multiple(() => {
+                Assert.That(LineView.Clearing(20),  Is.EqualTo("\r" + new String(' ', 19) + "\r"));
+                Assert.That(view.Drawing,           Is.EqualTo("EV> discover" + new String('\b', 5)));
+            });
+
+        }
+
+        #endregion
+
+        #region A_row_is_drawn_by_walking_the_cursor_along_it()
+
+        /// <summary>
+        /// Whatever stood on the row and wherever the cursor was in it: after
+        /// Clearing and Drawing the row shows the view and nothing else, and
+        /// the cursor is in the view's column.
+        /// </summary>
+        /// <remarks>
+        /// And it got there by walking - a carriage return, characters and
+        /// backspaces, nothing a terminal has to be asked about. The editor used
+        /// to send the cursor to its column, which took Console.CursorTop; on
+        /// Linux that is a question to the terminal which waits for whoever is
+        /// in Console.ReadKey, and a log entry from another thread hung until
+        /// the next key.
+        ///
+        /// Played out on a model of one row of a terminal: a character goes
+        /// where the cursor is and moves it on, '\r' takes it to the start and
+        /// '\b' one back. Anything else fails, and so do a character in the
+        /// last column and a backspace from the first.
+        /// </remarks>
+        [Test]
+        public void A_row_is_drawn_by_walking_the_cursor_along_it()
+        {
+
+            foreach (var (width, input, cursor, offset) in EveryCase())
+            {
+
+                var view    = LineView.Of(Prompt, input, cursor, width, offset);
+                var usable  = Math.Max(1, width - 1);
+
+                // What was there before: something in every column the editor
+                // writes to, and the cursor anywhere among them.
+                var row     = Enumerable.Repeat('#', usable).ToArray();
+                var column  = (cursor + offset) % usable;
+
+                String Where() => $"width {width}, {input.Count} character(s), cursor at {cursor}, window from {offset}";
+
+                foreach (var character in LineView.Clearing(width) + view.Drawing)
+                {
+
+                    if (character == '\r')
+                        column = 0;
+
+                    else if (character == '\b')
+                    {
+                        if (column == 0)
+                            Assert.Fail($"{Where()} - a backspace from the first column");
+                        column--;
+                    }
+
+                    else if (Char.IsControl(character))
+                        Assert.Fail($"{Where()} - 0x{(Int32) character:X2} is neither a character, a carriage return nor a backspace");
+
+                    else
+                    {
+                        if (column >= usable)
+                            Assert.Fail($"{Where()} - '{character}' written into column {column}, and only {usable} are the editor's");
+                        row[column++] = character;
+                    }
+
+                }
+
+                var shown = new String(row);
+
+                if (shown != view.Text.PadRight(usable) || column != view.CursorColumn)
+                    Assert.Fail($"{Where()} - the row reads '{shown}' with the cursor in column {column}, " +
+                                $"and the view is '{view.Text}' with the cursor in column {view.CursorColumn}");
+
+            }
+
+        }
+
+        #endregion
+
     }
 
 }

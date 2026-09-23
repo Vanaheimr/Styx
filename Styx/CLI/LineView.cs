@@ -48,6 +48,13 @@ namespace org.GraphDefined.Vanaheimr.CLI
     /// the row the editor keeps track of would not be the one it is on.
     /// </para>
     /// <para>
+    /// The cursor is only ever moved along the row - back to its start, and
+    /// back from the end of what was written - and never sent to a column of
+    /// the screen. Sending it there would need the row it is on, and on Linux
+    /// asking the console for that waits for the thread sitting in ReadKey;
+    /// see Clearing.
+    /// </para>
+    /// <para>
     /// One character is one column, as everywhere in this editor.
     /// </para>
     /// </remarks>
@@ -94,8 +101,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
             var count   = Input.Count;
             var cursor  = Math.Clamp(Cursor, 0, count);
 
-            // Every column but the last - see the remarks.
-            var usable  = Math.Max(1, Width - 1);
+            var usable  = UsableColumns(Width);
 
             // The prompt, unless it would leave the line no room to speak of:
             // in a console that narrow, what is being typed matters more than
@@ -165,6 +171,60 @@ namespace org.GraphDefined.Vanaheimr.CLI
                                 false);
 
         }
+
+        #endregion
+
+        #region (static) UsableColumns(Width)
+
+        /// <summary>
+        /// The columns a view may be written to: every one but the last - see
+        /// the remarks - and at least one.
+        /// </summary>
+        /// <param name="Width">How many columns the console has.</param>
+        public static Int32 UsableColumns(Int32 Width)
+
+            => Math.Max(1, Width - 1);
+
+        #endregion
+
+        #region (static) Clearing(Width)
+
+        /// <summary>
+        /// What takes a view off its row, from wherever the cursor is in that
+        /// row: back to the first column, a blank over every column a view is
+        /// written to, and back to the first column again.
+        /// </summary>
+        /// <remarks>
+        /// Nothing in it asks the console where its cursor is, and that is the
+        /// point of it. The line editor used to find its row with
+        /// Console.CursorTop, and on Linux that is a question to the terminal,
+        /// asked by writing to it and reading the answer from the input - under
+        /// the same lock Console.ReadKey holds while it waits. The editor waits
+        /// in ReadKey whenever nobody is typing, so an entry logged from another
+        /// thread was written, and then that thread stood still until the next
+        /// key before it could put the command line back. The web request that
+        /// had logged it hung until somebody pressed Enter at the console, and
+        /// every thread logging after it queued up behind the console lock.
+        ///
+        /// Windows answers the same question without touching the input, which
+        /// is why the editor worked there.
+        /// </remarks>
+        /// <param name="Width">How many columns the console has.</param>
+        public static String Clearing(Int32 Width)
+
+            => "\r" + new String(' ', UsableColumns(Width)) + "\r";
+
+        #endregion
+
+        #region Drawing
+
+        /// <summary>
+        /// What puts this view on a row that has just been cleared: the text,
+        /// and then the cursor walked back from its end to its own column.
+        /// </summary>
+        public String Drawing
+
+            => Text + new String('\b', Text.Length - CursorColumn);
 
         #endregion
 

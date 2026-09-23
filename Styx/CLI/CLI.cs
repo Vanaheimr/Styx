@@ -568,6 +568,10 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// the console wrapped onto a second row, and the cursor was then sent
         /// to a column past the edge of the buffer - which threw, and took the
         /// command line with it.
+        ///
+        /// The cursor is walked back along the row instead of being sent to its
+        /// column, because sending it there took Console.CursorTop - which on
+        /// Linux waits for whoever is in Console.ReadKey. See LineView.Clearing.
         /// </remarks>
         private void RedrawLocked(List<Char> Input, Int32 CursorPosition)
         {
@@ -575,13 +579,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
             liveInput   = Input;
             liveCursor  = CursorPosition;
 
-            var view    = LineView.Of(GetPrompt(), Input, CursorPosition, LineWidth(), liveOffset);
+            var width   = LineWidth();
+            var view    = LineView.Of(GetPrompt(), Input, CursorPosition, width, liveOffset);
 
             liveOffset  = view.Offset;
 
-            ClearCurrentConsoleLine();
-            Console.Write(view.Text);
-            Console.SetCursorPosition(view.CursorColumn, Console.CursorTop);
+            Console.Write(LineView.Clearing(width) + view.Drawing);
 
         }
 
@@ -729,13 +732,14 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #region (private static) ClearCurrentConsoleLine()
 
+        /// <summary>
+        /// Take the command line off the row the cursor is on, and leave the
+        /// cursor at the start of that row - without asking the console where
+        /// that is. See LineView.Clearing.
+        /// </summary>
         private static void ClearCurrentConsoleLine()
-        {
-            var currentLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, currentLineCursor);
-            Console.Write(new String(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, currentLineCursor);
-        }
+
+            => Console.Write(LineView.Clearing(LineWidth()));
 
         #endregion
 
