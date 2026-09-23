@@ -306,6 +306,13 @@ namespace org.GraphDefined.Vanaheimr.CLI
         private           List<Char>?              liveInput;
         private           Int32                    liveCursor;
 
+        /// <summary>
+        /// Where the window onto a line too long for the screen starts - see
+        /// LineView. Kept from one redraw to the next, so that the text does not
+        /// slide about under somebody editing the middle of it.
+        /// </summary>
+        private           Int32                    liveOffset;
+
         #endregion
 
         #region Properties
@@ -555,17 +562,36 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// cursor where it was within it. Only ever called with the console lock
         /// held - see WriteBlock.
         /// </summary>
+        /// <remarks>
+        /// Through LineView, which keeps it to the one row this editor can take
+        /// off the screen and put back. Written straight out, a line wider than
+        /// the console wrapped onto a second row, and the cursor was then sent
+        /// to a column past the edge of the buffer - which threw, and took the
+        /// command line with it.
+        /// </remarks>
         private void RedrawLocked(List<Char> Input, Int32 CursorPosition)
         {
 
             liveInput   = Input;
             liveCursor  = CursorPosition;
 
+            var view    = LineView.Of(GetPrompt(), Input, CursorPosition, LineWidth(), liveOffset);
+
+            liveOffset  = view.Offset;
+
             ClearCurrentConsoleLine();
-            Console.Write(GetPrompt() + new String(Input.ToArray()));
-            Console.SetCursorPosition(GetPrompt().Length + CursorPosition, Console.CursorTop);
+            Console.Write(view.Text);
+            Console.SetCursorPosition(view.CursorColumn, Console.CursorTop);
 
         }
+
+        /// <summary>
+        /// How many columns a line may use: the narrower of the window and the
+        /// buffer, because the cursor can only be put where both are.
+        /// </summary>
+        private static Int32 LineWidth()
+
+            => Math.Max(1, Math.Min(Console.WindowWidth, Console.BufferWidth));
 
         /// <summary>
         /// The same, for a caller that does not already hold the lock.
@@ -735,12 +761,26 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
             // Finish the line: it is a line of history now rather than something
             // to be put back, so liveInput goes first and the newline second.
+            //
+            // A line too long for the screen was shown through a window onto
+            // it. What stays behind in the scrollback is the whole of it,
+            // wrapped like any other text, because that is what was run - and
+            // it is never going to be taken off the screen again.
             void FinishLine()
             {
                 lock (consoleLock)
                 {
+
                     liveInput = null;
+
+                    if (!LineView.Of(GetPrompt(), input, input.Count, LineWidth()).ShowsAll)
+                    {
+                        ClearCurrentConsoleLine();
+                        Console.Write(GetPrompt() + new String(input.ToArray()));
+                    }
+
                     Console.WriteLine();
+
                 }
             }
 
@@ -755,7 +795,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 });
             }
 
-            Redraw(input, cursorPosition);
+            // A new line starts with its window at its start.
+            lock (consoleLock)
+            {
+                liveOffset = 0;
+                RedrawLocked(input, cursorPosition);
+            }
 
             try
             {
