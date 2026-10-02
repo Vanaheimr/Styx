@@ -4518,9 +4518,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
                 }
 
-                if (!BooleanValue.HasValue)
-                    return false;
-
+                // There, valid or not: as every ParseOptional does.
                 return true;
 
             }
@@ -5755,7 +5753,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 {
                     ErrorResponse  = $"Unknown '{PropertyDescription}'!";
                     EnumValue      = null;
-                    return false;
+                    return true;
                 }
 
                 if (Enum.TryParse(JSONValue, true, out TEnum enumValue))
@@ -5807,16 +5805,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return true;
             }
 
-            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken))
+            // Not there, or null: no error - it is optional.
+            if (!JSON.TryGetValue(PropertyName, out JToken? JSONToken) ||
+                JSONToken is null ||
+                JSONToken.Type == JTokenType.Null)
             {
-                ErrorResponse = $"Missing property '{PropertyName}'!";
                 return false;
             }
 
             if (JSONToken is not JArray JSONArray)
             {
                 ErrorResponse  = $"Invalid '{PropertyDescription}'!";
-                return false;
+                return true;
             }
 
             foreach (var JSONItem in JSONArray)
@@ -5828,7 +5828,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 else
                 {
                     ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
-                    return false;
+                    return true;
                 }
 
             }
@@ -5875,7 +5875,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (JSONToken.Type != JTokenType.Array)
                 {
                     ErrorResponse  = $"Invalid '{PropertyDescription}'!";
-                    return false;
+                    return true;
                 }
 
                 var JSONList = (JArray) JSONToken;
@@ -5890,16 +5890,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     else
                     {
                         ErrorResponse = $"Invalid value for '{PropertyDescription}'!";
-                        return false;
+                        return true;
                     }
 
                 }
 
                 Values = List;
+                return true;
 
             }
 
-            return true;
+            // A missing OPTIONAL property is not an error - and not there.
+            return false;
 
         }
 
@@ -6190,7 +6192,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            ErrorResponse = $"Invalid value for '{PropertyDescription ?? PropertyName}'!";
+            // A missing OPTIONAL property is not an error!
             return false;
 
         }
@@ -6396,6 +6398,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     Value = JSONToken.Type == JTokenType.String
                                          ? Mapper(JSONToken?.Value<String>() ?? "")
                                          : Mapper(JSONToken.ToString());
+
+                    // A value there that the mapper maps to none is not valid:
+                    // a mapper such as URL.TryParse(String) or Watt.TryParse(String)
+                    // says so by null, and a parser asking for an optional value
+                    // passed over it as if it were not there.
+                    if (Value is null)
+                        ErrorResponse = $"Invalid {PropertyDescription}!";
 
                 }
                 catch
@@ -6680,13 +6689,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
-                return false;
+                return true;
             }
 
             if (PropertyName.IsNullOrEmpty())
             {
                 ErrorResponse = "Invalid JSON property name provided!";
-                return false;
+                return true;
             }
 
             if (JSON.TryGetValue(PropertyName, out var JSONToken))
@@ -6694,22 +6703,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 // "propertyKey": null -> will be ignored!
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
-                {
-                    ErrorResponse = $"JSON property '{PropertyName}' must not be null!";
                     return false;
-                }
 
+                // There, valid or not: true, as every ParseOptional does.
                 if (JSONToken is not JObject JSON2)
-                {
                     ErrorResponse  = $"JSON property '{PropertyName}' is not an object!";
-                    return false;
-                }
 
-                if (JObjectParser(JSON2, out Value, out var errorResponse2))
-                    return true;
+                else if (!JObjectParser(JSON2, out Value, out var errorResponse2))
+                    ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
 
-                ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
-                return false;
+                return true;
 
             }
 
@@ -6722,9 +6725,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static Boolean ParseOptionalJSON<T>(this JObject                      JSON,
                                                    String                            PropertyName,
                                                    String                            PropertyDescription,
-                                                   TryJObjectParser2a<T>              JObjectParser,
-                                                   [NotNullWhen(true)]  out T?       Value,
-                                                   [NotNullWhen(false)] out String?  ErrorResponse)
+                                                   TryJObjectParser2a<T>             JObjectParser,
+                                                   out T?                            Value,
+                                                   out String?                       ErrorResponse)
         {
 
             Value          = default;
@@ -6733,13 +6736,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (JSON is null)
             {
                 ErrorResponse = "The given JSON object must not be null!";
-                return false;
+                return true;
             }
 
             if (PropertyName.IsNullOrEmpty())
             {
                 ErrorResponse = "Invalid JSON property name provided!";
-                return false;
+                return true;
             }
 
             if (JSON.TryGetValue(PropertyName, out var JSONToken))
@@ -6747,22 +6750,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 // "propertyKey": null -> will be ignored!
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
-                {
-                    ErrorResponse = $"JSON property '{PropertyName}' must not be null!";
                     return false;
-                }
 
+                // There, valid or not: true, as every ParseOptional does.
                 if (JSONToken is not JObject JSON2)
-                {
                     ErrorResponse  = $"JSON property '{PropertyName}' is not an object!";
-                    return false;
-                }
 
-                if (JObjectParser(JSON2, out Value, out var errorResponse2))
-                    return true;
+                else if (!JObjectParser(JSON2, out Value, out var errorResponse2))
+                    ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
 
-                ErrorResponse  = $"JSON property '{PropertyName}' ({PropertyDescription}) could not be parsed: {errorResponse2}";
-                return false;
+                return true;
 
             }
 
@@ -7193,15 +7190,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
                 // "propertyKey": null -> will be ignored!
-                if (JSONToken is not null &&
-                    JSONToken.Type == JTokenType.Null &&
-                    JSONToken is JArray jsonArray)
-                {
-                    JSONArray = jsonArray;
-                    return true;
-                }
+                if (JSONToken is null || JSONToken.Type == JTokenType.Null)
+                    return false;
 
-                ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON array!";
+                // An array was taken only while it was null as well - that is,
+                // never: every array there was refused.
+                if (JSONToken is JArray jsonArray)
+                    JSONArray = jsonArray;
+
+                else
+                    ErrorResponse = $"The given '{PropertyDescription}' is not a valid JSON array!";
+
+                return true;
 
             }
 
@@ -7501,8 +7501,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    String                                   PropertyName,
                                                    String                                   PropertyDescription,
                                                    TryJObjectParser2a<T>                    Parser,
-                                                   [NotNullWhen(true)]  out IEnumerable<T>  EnumerableT,
-                                                   [NotNullWhen(false)] out String?         ErrorResponse)
+                                                   out IEnumerable<T>                       EnumerableT,
+                                                   out String?                              ErrorResponse)
 
         {
 
@@ -7526,10 +7526,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 // "propertyKey": null -> will be ignored!
                 if (JSONToken is null || JSONToken.Type == JTokenType.Null)
-                {
-                    ErrorResponse = $"The given property '{PropertyName}' is null!";
                     return false;
-                }
 
                 if (JSONToken is not JArray JSONArray)
                 {
@@ -7569,7 +7566,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
-            ErrorResponse = $"The given property '{PropertyName}' is missing!";
+            // A missing OPTIONAL property is not an error!
             return false;
 
         }
