@@ -75,7 +75,7 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
             var s1  = await cli.Suggest("");
 
-            Assert.That(s1.Length, Is.EqualTo(8));
+            Assert.That(s1.Length, Is.EqualTo(9));
 
         }
 

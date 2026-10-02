@@ -67,6 +67,11 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         ConcurrentDictionary<EnvironmentKey, ConcurrentList<String>>  Environment       { get; }
 
+        /// <summary>
+        /// What this command line is typed at and written on.
+        /// </summary>
+        ICLITerminal                                                  Terminal          { get; }
+
         #endregion
 
 
@@ -116,15 +121,19 @@ namespace org.GraphDefined.Vanaheimr.CLI
         #endregion
 
 
-        #region Execute(Command)
+        #region Execute(Command, CancellationToken = default)
 
         Task<String[]> Execute(String Command);
 
+        Task<String[]> Execute(String Command, CancellationToken CancellationToken);
+
         #endregion
 
-        #region Execute(InputArguments)
+        #region Execute(InputArguments, CancellationToken = default)
 
         Task<String[]> Execute(String[] InputArguments);
+
+        Task<String[]> Execute(String[] InputArguments, CancellationToken CancellationToken);
 
         #endregion
 
@@ -139,6 +148,13 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// </summary>
         /// <param name="Write">Whatever writes the block. It is called with the console to itself.</param>
         void WriteBlock(Action Write);
+
+        /// <summary>
+        /// Write to this command line's terminal without breaking the command
+        /// line somebody is typing at that moment.
+        /// </summary>
+        /// <param name="Write">Whatever writes the block, on the terminal it is handed, which it has to itself.</param>
+        void WriteBlock(Action<ICLITerminal> Write);
 
         #endregion
 

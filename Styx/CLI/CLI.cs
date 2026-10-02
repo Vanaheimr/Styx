@@ -268,8 +268,36 @@ namespace org.GraphDefined.Vanaheimr.CLI
     /// <summary>
     /// A Command Line Interface for executing commands.
     /// </summary>
-    public class CLI : ICLI
+    /// <remarks>
+    /// <para>
+    /// Typed at on a terminal: the console of this process unless it was given
+    /// another one, such as a <see cref="VT100Terminal"/> at the far end of an
+    /// SSH session. Every key is read from it and everything is written to it,
+    /// so the same editor - Tab, the history, a line too long for its row,
+    /// a log written in the middle of it - is the same wherever it is typed at.
+    /// </para>
+    /// <para>
+    /// Ctrl+C stops the command that is running, and only that one: every
+    /// command gets a cancellation of its own. There used to be one for the
+    /// whole life of the command line, cancelled by the first Ctrl+C and never
+    /// made again, after which every command was cancelled before it started.
+    /// </para>
+    /// </remarks>
+    public class CLI : ICLI,
+                      IDisposable
     {
+
+        #region (record struct) TypedLine
+
+        /// <summary>
+        /// What one line of typing came to: a command, nothing because it was
+        /// abandoned, or nothing because no key will ever come again.
+        /// </summary>
+        private readonly record struct TypedLine(String[]  Arguments,
+                                                 Boolean   Abandoned,
+                                                 Boolean   EndOfInput);
+
+        #endregion
 
         #region (static class) DefaultStrings
 
@@ -286,9 +314,51 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #region Data
 
+        /// <summary>
+        /// The control characters the editor knows by their character, which is
+        /// what every terminal agrees on: a console reports Ctrl+A with
+        /// ConsoleKey.A, a byte stream knows nothing of ConsoleKey at all.
+        /// </summary>
+        private const     Char                     CtrlA            = '\x01';
+        private const     Char                     CtrlC            = '\x03';
+        private const     Char                     CtrlD            = '\x04';
+        private const     Char                     CtrlE            = '\x05';
+
         private readonly  List<ICLICommand>        commands         = [];
         private readonly  List<String>             commandHistory   = [];
-        private readonly  CancellationTokenSource  cts              = new();
+
+        /// <summary>
+        /// What this is typed at and written on, and whether it was made here -
+        /// the console's is, and is let go of with this.
+        /// </summary>
+        private readonly  ICLITerminal             terminal;
+        private readonly  Boolean                  ownsTerminal;
+
+        /// <summary>
+        /// The cancellation of the command running now, for Ctrl+C to cancel;
+        /// null while none is.
+        /// </summary>
+        private           CancellationTokenSource? runningCommand;
+
+        /// <summary>
+        /// A key asked for and not yet taken. Kept rather than dropped where
+        /// whoever asked stopped waiting - a prompt that was told to end, a
+        /// command that finished - because the key it will bring is still
+        /// somebody's next key, and belongs to the next prompt.
+        /// </summary>
+        private           Task<ConsoleKeyInfo?>?   pendingKey;
+
+        /// <summary>
+        /// Keys typed while a command ran, read to see whether one of them was
+        /// Ctrl+C, and kept for the line after it - as a shell keeps what is
+        /// typed ahead.
+        /// </summary>
+        private readonly  Queue<ConsoleKeyInfo>    typedAhead       = new();
+
+        /// <summary>
+        /// Whether the terminal said that no key will ever come again.
+        /// </summary>
+        private           Boolean                  inputEnded;
 
         /// <summary>
         /// The console is one device, and in a program that does anything besides
@@ -334,21 +404,52 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public ConcurrentDictionary<EnvironmentKey, ConcurrentList<String>>  Environment    { get; }      = [];
 
+        /// <summary>
+        /// What this command line is typed at and written on.
+        /// </summary>
+        public ICLITerminal                                                  Terminal
+            => terminal;
+
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new command line interface.
+        /// Create a new command line interface on the console of this process.
         /// </summary>
         /// <param name="AssembliesWithCLICommands">The assemblies to search for commands.</param>
         public CLI(params Assembly[] AssembliesWithCLICommands)
+
+            : this(new SystemConsoleTerminal(),
+                   true,
+                   AssembliesWithCLICommands)
+
+        { }
+
+        /// <summary>
+        /// Create a new command line interface on the given terminal.
+        /// </summary>
+        /// <param name="Terminal">What the command line is typed at and written on. Whoever made it lets go of it.</param>
+        /// <param name="AssembliesWithCLICommands">The assemblies to search for commands.</param>
+        public CLI(ICLITerminal       Terminal,
+                   params Assembly[]  AssembliesWithCLICommands)
+
+            : this(Terminal,
+                   false,
+                   AssembliesWithCLICommands)
+
+        { }
+
+        private CLI(ICLITerminal  Terminal,
+                    Boolean       OwnsTerminal,
+                    Assembly[]    AssembliesWithCLICommands)
         {
 
-            Console.CancelKeyPress += (sender, eventArgs) => {
-                eventArgs.Cancel = true;
-                cts.Cancel();
-            };
+            this.terminal      = Terminal;
+            this.ownsTerminal  = OwnsTerminal;
+
+            terminal.Interrupted  += OnInterrupted;
+            terminal.Resized      += OnResized;
 
             RegisterAssemblies([ typeof(CLI).Assembly, .. AssembliesWithCLICommands ]);
 
@@ -468,29 +569,51 @@ namespace org.GraphDefined.Vanaheimr.CLI
         #endregion
 
 
-        public async Task Run()
+        #region Run(CancellationToken = default)
+
+        /// <summary>
+        /// Read a command, run it and write what it answered, until 'quit',
+        /// Ctrl+D on an empty line, the end of the terminal's input or the
+        /// given token.
+        /// </summary>
+        public Task Run()
+
+            => Run(CancellationToken.None);
+
+        /// <summary>
+        /// Read a command, run it and write what it answered, until 'quit',
+        /// Ctrl+D on an empty line, the end of the terminal's input or the
+        /// given token.
+        /// </summary>
+        /// <param name="CancellationToken">Ends the command line, and whatever command is running in it.</param>
+        public async Task Run(CancellationToken CancellationToken)
         {
             do
             {
 
-                var inputArgs = await ReadLineWithAutoCompletion(commands);
+                var line = await ReadLineWithAutoCompletion(CancellationToken);
 
-                if (inputArgs.Item1?.Length > 0 && !inputArgs.Item2)
+                if (line.EndOfInput)
+                    return;
+
+                if (line.Arguments.Length > 0 && !line.Abandoned)
                 {
 
-                    var responseLines = await Execute(inputArgs.Item1);
+                    var responseLines = await ExecuteTyped(line.Arguments, CancellationToken);
 
                     if (responseLines.Length > 0)
-                        WriteBlock(() => {
+                        WriteBlock(terminal => {
                             foreach (var responseLine in responseLines)
-                                Console.WriteLine(responseLine);
+                                terminal.WriteLine(responseLine);
                         });
 
                 }
 
             }
-            while (!QuitCLI);
+            while (!QuitCLI && !CancellationToken.IsCancellationRequested);
         }
+
+        #endregion
 
 
         #region WriteBlock(Write)
@@ -514,6 +637,11 @@ namespace org.GraphDefined.Vanaheimr.CLI
         /// Everything this class writes goes through here too, which is the
         /// other half of the promise: the lock is what makes "as one piece"
         /// true, and a block that went around it would still interleave.
+        ///
+        /// The block writes where it likes - System.Console, for the log of a
+        /// program at its own console. On any other terminal it would write
+        /// beside the command line rather than on it: that is what the overload
+        /// handing the block the terminal is for.
         /// </remarks>
         /// <param name="Write">Whatever writes the block. It is called with the console to itself.</param>
         public void WriteBlock(Action Write)
@@ -535,6 +663,19 @@ namespace org.GraphDefined.Vanaheimr.CLI
             }
 
         }
+
+        #endregion
+
+        #region WriteBlock(Write)
+
+        /// <summary>
+        /// Write to this command line's terminal without breaking the command
+        /// line somebody is typing at that moment - see <see cref="WriteBlock(Action)"/>.
+        /// </summary>
+        /// <param name="Write">Whatever writes the block, on the terminal it is handed, which it has to itself.</param>
+        public void WriteBlock(Action<ICLITerminal> Write)
+
+            => WriteBlock(() => Write(terminal));
 
         #endregion
 
@@ -584,17 +725,16 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
             liveOffset  = view.Offset;
 
-            Console.Write(LineView.Clearing(width) + view.Drawing);
+            terminal.Write(LineView.Clearing(width) + view.Drawing);
 
         }
 
         /// <summary>
-        /// How many columns a line may use: the narrower of the window and the
-        /// buffer, because the cursor can only be put where both are.
+        /// How many columns a line may use: as many as the terminal says a row has.
         /// </summary>
-        private static Int32 LineWidth()
+        private Int32 LineWidth()
 
-            => Math.Max(1, Math.Min(Console.WindowWidth, Console.BufferWidth));
+            => Math.Max(1, terminal.Width);
 
         /// <summary>
         /// The same, for a caller that does not already hold the lock.
@@ -668,19 +808,39 @@ namespace org.GraphDefined.Vanaheimr.CLI
         #endregion
 
 
-        #region Execute(Command)
+        #region Execute(Command, CancellationToken = default)
 
         public Task<String[]> Execute(String Command)
 
-            => //Execute(Command.Split(' ', StringSplitOptions.RemoveEmptyEntries));
-               Execute(ParseCommandLine(Command));
+            => Execute(ParseCommandLine(Command), CancellationToken.None);
+
+        public Task<String[]> Execute(String             Command,
+                                      CancellationToken  CancellationToken)
+
+            => Execute(ParseCommandLine(Command), CancellationToken);
 
         #endregion
 
-        #region Execute(InputArguments)
+        #region Execute(InputArguments, CancellationToken = default)
 
-        public async Task<String[]> Execute(String[] InputArguments)
+        public Task<String[]> Execute(String[] InputArguments)
+
+            => Execute(InputArguments, CancellationToken.None);
+
+        /// <summary>
+        /// Run the given command line, until it is done, the given token says
+        /// stop, or somebody interrupts it at the terminal.
+        /// </summary>
+        /// <param name="InputArguments">The command line, split into its words.</param>
+        /// <param name="CancellationToken">An optional token to cancel the command.</param>
+        public async Task<String[]> Execute(String[]           InputArguments,
+                                            CancellationToken  CancellationToken)
         {
+
+            // A cancellation of its own, for an interrupt to cancel: this one
+            // command, and not whatever runs after it.
+            using var thisCommand  = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken);
+            var outerCommand       = Interlocked.Exchange(ref runningCommand, thisCommand);
 
             try
             {
@@ -707,7 +867,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                     }
 
-                    return await matchingCommands.First().Execute(InputArguments, cts.Token);
+                    return await matchingCommands.First().Execute(InputArguments, thisCommand.Token);
 
                 }
                 else
@@ -724,38 +884,184 @@ namespace org.GraphDefined.Vanaheimr.CLI
             {
                 return [ e.Message ];
             }
+            finally
+            {
+                Interlocked.CompareExchange(ref runningCommand, outerCommand, thisCommand);
+            }
+
+        }
+
+        #endregion
+
+        #region (private) ExecuteTyped(Arguments, CancellationToken)
+
+        /// <summary>
+        /// Run a command that was typed - and, on a terminal whose Ctrl+C is a
+        /// key, go on reading keys while it runs, so that Ctrl+C can stop it.
+        /// </summary>
+        /// <remarks>
+        /// Every other key read meanwhile is kept for the next line, as a shell
+        /// keeps what is typed ahead. A terminal that ends while the command runs
+        /// cancels it: there is nobody left to read its answer.
+        /// </remarks>
+        private async Task<String[]> ExecuteTyped(String[]           Arguments,
+                                                  CancellationToken  CancellationToken)
+        {
+
+            if (!terminal.InterruptsArriveAsKeys)
+                return await Execute(Arguments, CancellationToken);
+
+            using var watched  = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken);
+            var running        = Execute(Arguments, watched.Token);
+
+            while (!running.IsCompleted && !inputEnded)
+            {
+
+                var key = PendingKey();
+
+                if (await Task.WhenAny(running, key) != key)
+                    break;
+
+                pendingKey = null;
+
+                ConsoleKeyInfo? typed;
+
+                try
+                {
+                    typed = await key;
+                }
+                catch
+                {
+                    typed = null;
+                }
+
+                if (typed is not ConsoleKeyInfo next)
+                {
+                    inputEnded = true;
+                    await watched.CancelAsync();
+                }
+
+                else if (next.KeyChar == CtrlC)
+                    await watched.CancelAsync();
+
+                else
+                    typedAhead.Enqueue(next);
+
+            }
+
+            return await running;
 
         }
 
         #endregion
 
 
-        #region (private static) ClearCurrentConsoleLine()
+        #region (private) PendingKey() / NextKey(CancellationToken)
 
         /// <summary>
-        /// Take the command line off the row the cursor is on, and leave the
-        /// cursor at the start of that row - without asking the console where
-        /// that is. See LineView.Clearing.
+        /// The key asked of the terminal and not yet taken, asked for now where
+        /// there is none.
         /// </summary>
-        private static void ClearCurrentConsoleLine()
+        private Task<ConsoleKeyInfo?> PendingKey()
 
-            => Console.Write(LineView.Clearing(LineWidth()));
+            => pendingKey ??= terminal.ReadKeyAsync().AsTask();
+
+        /// <summary>
+        /// The next key: one typed ahead while a command ran, or the terminal's
+        /// next; null once no key will ever come again.
+        /// </summary>
+        private async Task<ConsoleKeyInfo?> NextKey(CancellationToken CancellationToken)
+        {
+
+            if (typedAhead.TryDequeue(out var typed))
+                return typed;
+
+            if (inputEnded)
+                return null;
+
+            var key = await PendingKey().WaitAsync(CancellationToken);
+
+            pendingKey = null;
+
+            if (key is null)
+                inputEnded = true;
+
+            return key;
+
+        }
 
         #endregion
 
-        #region (private) ReadLineWithAutoCompletion(Commands)
+        #region (private) OnInterrupted() / OnResized()
+
+        /// <summary>
+        /// Stop the command that is running, if one is - Ctrl+C at a console, a
+        /// signal from the far end of a connection.
+        /// </summary>
+        private void OnInterrupted()
+        {
+            try
+            {
+                Volatile.Read(ref runningCommand)?.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+                // It ended just now.
+            }
+        }
+
+        /// <summary>
+        /// Draw the line being typed again for the new width: a line that fitted
+        /// the old one may not fit this one, and a line that did not may now.
+        /// </summary>
+        private void OnResized()
+        {
+            lock (consoleLock)
+            {
+                if (liveInput is List<Char> input)
+                    RedrawLocked(input, liveCursor);
+            }
+        }
+
+        #endregion
+
+
+        #region (private) ClearCurrentConsoleLine()
+
+        /// <summary>
+        /// Take the command line off the row the cursor is on, and leave the
+        /// cursor at the start of that row - without asking the terminal where
+        /// that is. See LineView.Clearing.
+        /// </summary>
+        private void ClearCurrentConsoleLine()
+
+            => terminal.Write(LineView.Clearing(LineWidth()));
+
+        #endregion
+
+        #region (private) ReadLineWithAutoCompletion(CancellationToken)
 
         /// <summary>
         /// Read one command line, completing it on Tab.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Every write in here goes through Redraw or WriteBlock rather than
-        /// straight to the console, and the line being typed is published in
+        /// straight to the terminal, and the line being typed is published in
         /// liveInput while it is being typed. That is what lets another thread
         /// log something in the middle of it without the two ending up on the
         /// same line - see WriteBlock.
+        /// </para>
+        /// <para>
+        /// Ctrl+C abandons the line, as a shell does, where Ctrl+C is a key at
+        /// all - a console takes it as a signal instead. Ctrl+D leaves on an
+        /// empty line and deletes the character under the cursor on any other,
+        /// and Ctrl+A and Ctrl+E go to the start and the end, all as readline
+        /// has it, because that is what the hands of somebody at a terminal do.
+        /// </para>
         /// </remarks>
-        private async Task<Tuple<String[], Boolean>> ReadLineWithAutoCompletion(List<ICLICommand> Commands)
+        /// <param name="CancellationToken">Ends the reading: the line is then given up, and nothing more is read.</param>
+        private async Task<TypedLine> ReadLineWithAutoCompletion(CancellationToken CancellationToken)
         {
 
             var input           = new List<Char>();
@@ -769,21 +1075,22 @@ namespace org.GraphDefined.Vanaheimr.CLI
             // A line too long for the screen was shown through a window onto
             // it. What stays behind in the scrollback is the whole of it,
             // wrapped like any other text, because that is what was run - and
-            // it is never going to be taken off the screen again.
-            void FinishLine()
+            // it is never going to be taken off the screen again. So is an
+            // abandoned line, with what abandoned it after it.
+            void FinishLine(String After = "")
             {
                 lock (consoleLock)
                 {
 
                     liveInput = null;
 
-                    if (!LineView.Of(GetPrompt(), input, input.Count, LineWidth()).ShowsAll)
+                    if (After.Length > 0 || !LineView.Of(GetPrompt(), input, input.Count, LineWidth()).ShowsAll)
                     {
                         ClearCurrentConsoleLine();
-                        Console.Write(GetPrompt() + new String(input.ToArray()));
+                        terminal.Write(GetPrompt() + new String(input.ToArray()) + After);
                     }
 
-                    Console.WriteLine();
+                    terminal.WriteLine();
 
                 }
             }
@@ -791,11 +1098,11 @@ namespace org.GraphDefined.Vanaheimr.CLI
             // Leave the line that was typed standing where it is, write
             // something underneath it, and come back to a fresh prompt. Used by
             // Tab, which answers with more than fits on one line.
-            void WriteUnder(Action Write)
+            void WriteUnder(Action<ICLITerminal> Write)
             {
-                WriteBlock(() => {
-                    Console.WriteLine(GetPrompt() + new String(input.ToArray()));
-                    Write();
+                WriteBlock(terminal => {
+                    terminal.WriteLine(GetPrompt() + new String(input.ToArray()));
+                    Write(terminal);
                 });
             }
 
@@ -812,7 +1119,64 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 while (true)
                 {
 
-                    var key = Console.ReadKey(intercept: true);
+                    ConsoleKeyInfo? next;
+
+                    try
+                    {
+                        next = await NextKey(CancellationToken);
+                    }
+                    catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
+                    {
+                        FinishLine();
+                        return new TypedLine([], false, true);
+                    }
+
+                    // No key will ever come again: what was typed so far is not
+                    // run - nobody pressed Enter - and the command line ends.
+                    if (next is not ConsoleKeyInfo key)
+                    {
+                        FinishLine();
+                        return new TypedLine([], false, true);
+                    }
+
+                    if (key.KeyChar == CtrlC)
+                    {
+                        FinishLine("^C");
+                        return new TypedLine([], true, false);
+                    }
+
+                    if (key.KeyChar == CtrlD)
+                    {
+
+                        if (input.Count == 0)
+                        {
+                            FinishLine();
+                            return new TypedLine([], false, true);
+                        }
+
+                        if (cursorPosition < input.Count)
+                        {
+                            input.RemoveAt(cursorPosition);
+                            Redraw(input, cursorPosition);
+                        }
+
+                        continue;
+
+                    }
+
+                    if (key.KeyChar == CtrlA)
+                    {
+                        cursorPosition = 0;
+                        Redraw(input, cursorPosition);
+                        continue;
+                    }
+
+                    if (key.KeyChar == CtrlE)
+                    {
+                        cursorPosition = input.Count;
+                        Redraw(input, cursorPosition);
+                        continue;
+                    }
 
                     if (key.Key == ConsoleKey.Tab)
                     {
@@ -823,10 +1187,10 @@ namespace org.GraphDefined.Vanaheimr.CLI
                         {
 
                             if (suggestions[0].Info == SuggestionInfo.CommandHelp)
-                                WriteUnder(() => {
-                                    Console.WriteLine();
-                                    Console.WriteLine($"Usage: {suggestions[0].Suggestion}");
-                                    Console.WriteLine();
+                                WriteUnder(terminal => {
+                                    terminal.WriteLine();
+                                    terminal.WriteLine($"Usage: {suggestions[0].Suggestion}");
+                                    terminal.WriteLine();
                                 });
 
                             else
@@ -855,12 +1219,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
                             var commonPrefix = new String(suggestions.First().Suggestion[..suggestions.Min(s => s.Suggestion.Length)].
                                                                         TakeWhile((c, i) => suggestions.All(s => s?.Suggestion.Length > i && s.Suggestion[i] == c)).ToArray());
 
-                            WriteUnder(() => {
-                                Console.WriteLine();
-                                Console.WriteLine("Suggestions:");
+                            WriteUnder(terminal => {
+                                terminal.WriteLine();
+                                terminal.WriteLine("Suggestions:");
                                 foreach (var suggestion in suggestions)
-                                    Console.WriteLine($"   {suggestion.Suggestion}");
-                                Console.WriteLine();
+                                    terminal.WriteLine($"   {suggestion.Suggestion}");
+                                terminal.WriteLine();
                             });
 
                             input.Clear();
@@ -888,7 +1252,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                     else if (key.Key == ConsoleKey.Enter)
                     {
                         FinishLine();
-                        return new Tuple<String[], Boolean>(ParseCommandLine(new String(input.ToArray())), false);
+                        return new TypedLine(ParseCommandLine(new String(input.ToArray())), false, false);
                     }
 
                     else if (key.Key == ConsoleKey.Backspace && cursorPosition > 0)
@@ -967,10 +1331,10 @@ namespace org.GraphDefined.Vanaheimr.CLI
                     else if (key.Key == ConsoleKey.Escape)
                     {
                         FinishLine();
-                        return new Tuple<String[], Boolean>([], true);
+                        return new TypedLine([], true, false);
                     }
 
-                    else if (!char.IsControl(key.KeyChar))
+                    else if (!Char.IsControl(key.KeyChar) && key.KeyChar != '\0')
                     {
                         input.Insert(cursorPosition, key.KeyChar);
                         cursorPosition++;
@@ -989,6 +1353,28 @@ namespace org.GraphDefined.Vanaheimr.CLI
                     liveInput = null;
                 }
             }
+
+        }
+
+        #endregion
+
+
+        #region Dispose()
+
+        /// <summary>
+        /// Let go of the terminal: of its events, and of the terminal itself
+        /// where it was made here - the console's, which lets go of Ctrl+C.
+        /// </summary>
+        public void Dispose()
+        {
+
+            terminal.Interrupted  -= OnInterrupted;
+            terminal.Resized      -= OnResized;
+
+            if (ownsTerminal && terminal is IDisposable disposable)
+                disposable.Dispose();
+
+            GC.SuppressFinalize(this);
 
         }
 
