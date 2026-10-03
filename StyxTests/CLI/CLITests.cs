@@ -305,6 +305,38 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
         #endregion
 
+        #region EveryHelpBeginsWithItsCommand()
+
+        /// <summary>
+        /// The help of every command begins with the name it is typed as, and
+        /// no two commands say the same of themselves - 'help' is how somebody
+        /// learns the names, and a help that named another word, as listEnv's
+        /// once said "list", sent them typing a command that is not there.
+        /// </summary>
+        [Test]
+        public void EveryHelpBeginsWithItsCommand()
+        {
+
+            using var cli = new CLI();
+
+            foreach (var command in cli.Commands)
+            {
+
+                var name = command.GetType().GetField("CommandName")?.GetValue(null) as String;
+
+                Assert.That(name,            Is.Not.Null,                 $"{command.GetType().Name} has no CommandName");
+                Assert.That(command.Help(),  Does.StartWith(name + " "),  $"the help of '{name}'");
+
+            }
+
+            var descriptions = cli.Commands.Select(command => command.Help().Split(" - ", 2).Last()).ToArray();
+
+            Assert.That(descriptions, Is.Unique, "two commands that describe themselves alike");
+
+        }
+
+        #endregion
+
     }
 
 }

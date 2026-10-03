@@ -135,7 +135,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public override String Help()
         {
-            return $"{CommandName} <name> <value> [value2] ... [valueX] - Adds an environment key with the specified name and value(s).";
+            return $"{CommandName} <name> <value> [value2] ... [valueX] - Sets an environment key to the specified value(s), replacing the ones it had.";
         }
 
     }

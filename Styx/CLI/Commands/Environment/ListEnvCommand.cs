@@ -78,7 +78,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public override String Help()
         {
-            return "list - Lists all environment keys and their values";
+            return $"{CommandName} - Lists all environment keys and their values.";
         }
 
     }
