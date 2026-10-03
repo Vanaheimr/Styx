@@ -165,6 +165,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         public void Equality_is_representational()
         {
 
+            // Both sides are built separately on purpose: what is compared
+            // is two constructions of the same value, not a value with itself.
+            #pragma warning disable NUnit2009
+
             // A half-precision 1.0 is not a double-precision 1.0...
             Assert.That(CBORValue.FromHalf((Half) 1.0),      Is.Not.EqualTo(CBORValue.FromDouble(1.0)));
 
@@ -185,6 +189,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // ...and equal values have equal hash codes!
             Assert.That(CBORValue.FromArray(1, "a").GetHashCode(),
                         Is.EqualTo(CBORValue.FromArray(1, "a").GetHashCode()));
+
+            #pragma warning restore NUnit2009
 
         }
 
