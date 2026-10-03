@@ -490,7 +490,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // Kilogram bridges to (Gram, Kilo)...
             var mass = Kilogram.FromKG(5m).AsMetrologicalValue();
 
-            Assert.That(mass.Unit,                            Is.EqualTo(UnitOfMeasure.Gram));
+            Assert.That(mass.Unit,                            Is.EqualTo((UnitExpression) UnitOfMeasure.Gram));
             Assert.That(mass.Prefix,                          Is.EqualTo(SIPrefix.Kilo));
             Assert.That(mass.ToString(),                      Is.EqualTo("5 kg"));
 

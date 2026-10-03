@@ -290,11 +290,11 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             // other than that nobody had written them. Their units were in
             // the registry all along.
 
-            Assert.That(Farad.       FromF  (5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.Farad));
-            Assert.That(Henry.       FromH  (5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.Henry));
-            Assert.That(Siemens.     FromS  (5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.Siemens));
-            Assert.That(BitPerSecond.FromBPS(5).AsMetrologicalValue().Unit,  Is.EqualTo(UnitOfMeasure.BitPerSecond));
-            Assert.That(BytePerSecond.FromBPS(5).AsMetrologicalValue().Unit, Is.EqualTo(UnitOfMeasure.BytePerSecond));
+            Assert.That(Farad.       FromF  (5).AsMetrologicalValue().Unit,  Is.EqualTo((UnitExpression) UnitOfMeasure.Farad));
+            Assert.That(Henry.       FromH  (5).AsMetrologicalValue().Unit,  Is.EqualTo((UnitExpression) UnitOfMeasure.Henry));
+            Assert.That(Siemens.     FromS  (5).AsMetrologicalValue().Unit,  Is.EqualTo((UnitExpression) UnitOfMeasure.Siemens));
+            Assert.That(BitPerSecond.FromBPS(5).AsMetrologicalValue().Unit,  Is.EqualTo((UnitExpression) UnitOfMeasure.BitPerSecond));
+            Assert.That(BytePerSecond.FromBPS(5).AsMetrologicalValue().Unit, Is.EqualTo((UnitExpression) UnitOfMeasure.BytePerSecond));
 
             // ...and back again, through a prefix on the way.
             Assert.That(Henry.FromMH(5).AsMetrologicalValue(SIPrefix.Milli).TryToHenry(out var henry),  Is.True);
@@ -311,7 +311,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var resistance = new MetrologicalValue(50m, UnitOfMeasure.Ohm);
             Assert.That(resistance.TryToOhm(out var ohm),                    Is.True);
             Assert.That(ohm.Value,                                           Is.EqualTo(50m));
-            Assert.That(ohm.AsMetrologicalValue().Unit,                      Is.EqualTo(UnitOfMeasure.Ohm));
+            Assert.That(ohm.AsMetrologicalValue().Unit,                      Is.EqualTo((UnitExpression) UnitOfMeasure.Ohm));
 
             // A mismatched unit must not convert...
             Assert.That(new MetrologicalValue(5m, UnitOfMeasure.Watt).TryToFarad(out _),  Is.False);

@@ -162,9 +162,12 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                    );
 
             // Every signing path has to honour it, or a record that mixes
-            // them is reproducible only in part.
+            // them is reproducible only in part. Signing twice and comparing
+            // is the test, so the same call on both sides is no copy-paste slip.
+            #pragma warning disable NUnit2009
             Assert.That(CountersignedSign1(),   Is.EqualTo(CountersignedSign1()),   "COSE_Sign1 with a countersignature");
             Assert.That(SignWithTwoSigners(),   Is.EqualTo(SignWithTwoSigners()),   "COSE_Sign with two signatures");
+            #pragma warning restore NUnit2009
 
         }
 
