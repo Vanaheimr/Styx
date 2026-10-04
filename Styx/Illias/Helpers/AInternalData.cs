@@ -351,8 +351,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                 DateTimeOffset?         LastChange   = null)
         {
 
-            this.created       = Created      ?? LastChange ?? Timestamp.Now;
-            this.lastChange    = LastChange   ?? Created    ?? Timestamp.Now;
+            // One reading of the clock for both: read twice, an object made
+            // without either was changed after it was made, by the ticks
+            // between the two readings.
+            var now            = Timestamp.Now;
+
+            this.created       = Created      ?? LastChange ?? now;
+            this.lastChange    = LastChange   ?? Created    ?? now;
 
             this.CustomData    = CustomData   ?? [];
             this.InternalData  = InternalData ?? new UserDefinedDictionary();
@@ -607,8 +612,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               DateTimeOffset?         LastChange   = null)
             {
 
-                this.Created         = Created      ?? LastChange ?? Timestamp.Now;
-                this.LastChangeDate  = LastChange   ?? Created    ?? Timestamp.Now;
+                // One reading of the clock for both - see AInternalData.
+                var now              = Timestamp.Now;
+
+                this.Created         = Created      ?? LastChange ?? now;
+                this.LastChangeDate  = LastChange   ?? Created    ?? now;
 
                 this.CustomData      = CustomData   ?? [];
                 this.InternalData    = InternalData ?? new UserDefinedDictionary();
