@@ -463,6 +463,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        /// <summary>
+        /// Restore persisted timestamps without recording a new change or raising events.
+        /// Intended for deserialization into a newly constructed entity.
+        /// </summary>
+        protected void RestoreTimestamps(DateTimeOffset  Created,
+                                         DateTimeOffset  LastChange)
+        {
+
+            this.created     = Created;
+            this.lastChange  = LastChange;
+
+        }
+
+
         protected void CloneFrom(AInternalData InternalData)
         {
 

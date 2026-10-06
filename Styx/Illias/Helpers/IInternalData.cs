@@ -37,8 +37,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         CustomDataNew          CustomData        { get; }
         UserDefinedDictionary  InternalData      { get; }
 
-
-
         event OnPropertyChangedDelegate? OnPropertyChanged;
 
         void DeleteProperty<T>(ref T? FieldToChange, [CallerMemberName] String PropertyName = "");
