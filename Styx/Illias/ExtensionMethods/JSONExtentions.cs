@@ -80,6 +80,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class JSONExtensions
     {
 
+        #region (private) TextOf(JSONToken)
+
+        /// <summary>
+        /// The text of a JSON value that is not a string, for a parser of text.
+        /// A number is written as JSON writes it, whatever the culture: JValue.ToString()
+        /// writes it in the current one, so 2.5 became "2,5" on a German machine, and an
+        /// invariant parser read that as 25.
+        /// </summary>
+        /// <param name="JSONToken">A JSON value that is not a string.</param>
+        private static String TextOf(JToken JSONToken)
+
+            => JSONToken is JValue value && (JSONToken.Type == JTokenType.Float || JSONToken.Type == JTokenType.Integer)
+                   ? value.ToString(CultureInfo.InvariantCulture)
+                   : JSONToken.ToString();
+
+        #endregion
+
+
         #region Contains             (this JSON, PropertyName)
 
         public static Boolean Contains(this JObject  JSON,
@@ -5593,7 +5611,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!Parser(JSONToken.Type == JTokenType.String
                                 ? JSONToken?.Value<String>() ?? ""
-                                : JSONToken.ToString(),
+                                : TextOf(JSONToken),
                             out var value))
                 {
                     ErrorResponse = "The value '" + JSONToken + "' is not valid for JSON property '" + PropertyDescription + "'!";
@@ -5644,7 +5662,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!Parser(JSONToken.Type == JTokenType.String
                                 ? JSONToken.Value<String>()!
-                                : JSONToken.ToString(),
+                                : TextOf(JSONToken),
                             out TStruct value,
                             out         ErrorResponse))
                 {
@@ -5698,7 +5716,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!Parser(JSONToken.Type == JTokenType.String
                                 ? JSONToken?.Value<String>() ?? ""
-                                : JSONToken.ToString(),
+                                : TextOf(JSONToken),
                             out TStruct value,
                             OnException))
                 {
@@ -6397,7 +6415,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     Value = JSONToken.Type == JTokenType.String
                                          ? Mapper(JSONToken?.Value<String>() ?? "")
-                                         : Mapper(JSONToken.ToString());
+                                         : Mapper(TextOf(JSONToken));
 
                     // A value there that the mapper maps to none is not valid:
                     // a mapper such as URL.TryParse(String) or Watt.TryParse(String)
@@ -6510,7 +6528,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!Parser(JSONToken.Type == JTokenType.String
                                 ? JSONToken.Value<String>()!
-                                : JSONToken.ToString(),
+                                : TextOf(JSONToken),
                             out Value))
                 {
 
@@ -6560,7 +6578,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 if (!Parser(JSONToken.Type == JTokenType.String
                                 ? JSONToken.Value<String>()!
-                                : JSONToken.ToString(),
+                                : TextOf(JSONToken),
                             out Value,
                             out var ErrorResponse2))
                 {
