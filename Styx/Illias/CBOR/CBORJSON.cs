@@ -628,6 +628,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             return;
                         }
 
+                        // Epoch seconds with a fraction are a float (RFC 8949 §3.4.2):
+                        // read to the microsecond, which is what a double of epoch
+                        // seconds holds exactly, so that 0.123 is not 0.1229999.
+                        if (tag == CBORTag.EpochDateTime &&
+                            CBOR.UntaggedValue.Kind is CBORValueKind.HalfFloat or CBORValueKind.SingleFloat or CBORValueKind.DoubleFloat)
+                        {
+
+                            var seconds = CBOR.UntaggedValue.AsDouble();
+
+                            if (!Double.IsFinite(seconds))
+                                throw new CBORException($"Invalid epoch-based date/time '{seconds}'!");
+
+                            var microseconds = Math.Round(seconds * 1_000_000, MidpointRounding.AwayFromZero);
+
+                            if (microseconds < (DateTimeOffset.MinValue - DateTimeOffset.UnixEpoch).Ticks / 10 ||
+                                microseconds > (DateTimeOffset.MaxValue - DateTimeOffset.UnixEpoch).Ticks / 10)
+                            {
+                                throw new CBORException($"The epoch-based date/time '{seconds}' is out of range!");
+                            }
+
+                            Sink.WriteString(DateTimeOffset.UnixEpoch.AddTicks((Int64) microseconds * 10).UtcDateTime.ToISO8601());
+                            return;
+
+                        }
+
                         #endregion
 
                         #region Tags 2, 3 and 4: exact numbers

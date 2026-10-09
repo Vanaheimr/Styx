@@ -423,6 +423,17 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromInt64(1_787_048_100))),
                         Is.EqualTo("\"2026-08-18T10:15:00.000Z\""));
 
+            // Epoch seconds with a fraction are a float (RFC 8949 §3.4.2), and
+            // 0.123 is not to come out as 0.122.
+            Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromDouble(1_787_048_100.5))),
+                        Is.EqualTo("\"2026-08-18T10:15:00.500Z\""));
+
+            Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromDouble(1_787_048_100.123))),
+                        Is.EqualTo("\"2026-08-18T10:15:00.123Z\""));
+
+            Assert.That(() => CBORJSON.ToJSON(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromDouble(Double.NaN))),
+                        Throws.TypeOf<CBORException>());
+
             var uuid = Guid.Parse("f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
 
             Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.UUID, CBORValue.FromBytes(uuid.ToByteArray(true)))),
