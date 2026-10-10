@@ -110,7 +110,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Exceptional Closings
         /// </summary>
         public IEnumerable<ExceptionalPeriod> ExceptionalClosings
-            => exceptionalOpenings;
+            => exceptionalClosings;
 
         /// <summary>
         /// 24/7 open...
@@ -136,6 +136,29 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.exceptionalOpenings  = [];
             this.exceptionalClosings  = [];
             this.FreeText             = FreeText;
+
+        }
+
+        #endregion
+
+        #region (internal) OpeningTimes(RegularOpenings, ExceptionalOpenings, ExceptionalClosings, FreeText)
+
+        /// <summary>
+        /// Create opening times holding exactly the given periods in their order.
+        /// </summary>
+        internal OpeningTimes(IEnumerable<KeyValuePair<DayOfWeek, IEnumerable<RegularHours>>>  RegularOpenings,
+                              IEnumerable<ExceptionalPeriod>                                    ExceptionalOpenings,
+                              IEnumerable<ExceptionalPeriod>                                    ExceptionalClosings,
+                              String?                                                           FreeText)
+        {
+
+            this.regularOpenings      = [];
+            this.exceptionalOpenings  = [.. ExceptionalOpenings];
+            this.exceptionalClosings  = [.. ExceptionalClosings];
+            this.FreeText             = FreeText;
+
+            foreach (var regularOpening in RegularOpenings)
+                regularOpenings.Add(regularOpening.Key, [.. regularOpening.Value]);
 
         }
 
