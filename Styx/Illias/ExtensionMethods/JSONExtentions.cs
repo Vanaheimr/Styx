@@ -4708,7 +4708,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Byte value))
+                if (Byte.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out Byte value))
                     ByteValue = value;
 
                 else
@@ -4750,7 +4750,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (SByte.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out SByte value))
+                if (SByte.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out SByte value))
                     SByteValue = value;
 
                 else
@@ -4795,7 +4795,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (Int16.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Int16 value))
+                if (Int16.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out Int16 value))
                     Int16Value = value;
 
                 else
@@ -4837,7 +4837,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (UInt16.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out UInt16 value))
+                if (UInt16.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt16 value))
                     UInt16Value = value;
 
                 else
@@ -4879,7 +4879,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (Int32.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Int32 value))
+                if (Int32.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out Int32 value))
                     Int32Value = value;
 
                 else
@@ -4921,7 +4921,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (UInt32.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out UInt32 value))
+                if (UInt32.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt32 value))
                     UInt32Value = value;
 
                 else
@@ -4963,7 +4963,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (Int64.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out Int64 value))
+                if (Int64.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out Int64 value))
                     Int64Value = value;
 
                 else
@@ -5005,7 +5005,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 JSONToken.Type != JTokenType.Null)
             {
 
-                if (UInt64.TryParse(JSONToken.Value<String>(), NumberStyles.Any, CultureInfo.InvariantCulture, out UInt64 value))
+                if (UInt64.TryParse(JSONToken.Value<String>(), NumberStyles.Integer, CultureInfo.InvariantCulture, out UInt64 value))
                     UInt64Value = value;
 
                 else
