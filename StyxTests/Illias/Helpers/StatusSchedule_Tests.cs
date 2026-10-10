@@ -201,6 +201,51 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Insert_KeepsFutureValueEqualToCurrentValue()
+
+        /// <summary>
+        /// A scheduled return to the current value must not be dropped.
+        /// </summary>
+        [Test]
+        public void Insert_KeepsFutureValueEqualToCurrentValue()
+        {
+
+            var now       = Timestamp.Now;
+            var schedule  = new StatusSchedule<String>();
+
+            schedule.Insert("available",     now - TimeSpan.FromDays(1));
+            schedule.Insert("outOfService",  now + TimeSpan.FromDays(1));
+            schedule.Insert("available",     now + TimeSpan.FromDays(2));
+
+            Assert.That(schedule.Select(status => status.Value), Is.EqualTo(new[] { "available", "outOfService", "available" }));
+            Assert.That(schedule.CurrentValue,                   Is.EqualTo("available"));
+
+        }
+
+        #endregion
+
+        #region Insert_IgnoresValueRepeatingThePreviousEntry()
+
+        /// <summary>
+        /// A value repeating the one in effect right before it changes nothing.
+        /// </summary>
+        [Test]
+        public void Insert_IgnoresValueRepeatingThePreviousEntry()
+        {
+
+            var now       = Timestamp.Now;
+            var schedule  = new StatusSchedule<String>();
+
+            schedule.Insert("available",  now - TimeSpan.FromDays(1));
+            schedule.Insert("available",  now);
+            schedule.Insert("available",  now + TimeSpan.FromDays(1));
+
+            Assert.That(schedule.Select(status => status.Value), Is.EqualTo(new[] { "available" }));
+
+        }
+
+        #endregion
+
     }
 
 }

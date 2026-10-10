@@ -300,9 +300,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 CheckCurrentStatus();
 
-                // Ignore 'insert' if the values are the same
-                if (statusSchedule.Count == 0 ||
-                    !EqualityComparer<T>.Default.Equals(Value, currentStatus.Value))
+                // Ignore 'insert' if it repeats the value in effect right before it,
+                // unless it replaces an entry having the same timestamp
+                Timestamped<T>? previousStatus  = null;
+                var             replacesStatus  = false;
+
+                foreach (var status in statusSchedule)
+                {
+                    if (status.Timestamp.ToISO8601() == Timestamp.ToISO8601())
+                        replacesStatus = true;
+                    else if (status.Timestamp < Timestamp &&
+                             (previousStatus is null || status.Timestamp > previousStatus.Value.Timestamp))
+                        previousStatus = status;
+                }
+
+                if (replacesStatus         ||
+                    previousStatus is null ||
+                    !EqualityComparer<T>.Default.Equals(Value, previousStatus.Value.Value))
                 {
 
                     var oldStatus          = currentStatus;
