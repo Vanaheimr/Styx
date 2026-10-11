@@ -124,7 +124,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Parse the given JSON object as a JSON representation of a multi-language string.
         /// </summary>
         /// <param name="JSON">A JSON representation of a multi-language string.</param>
-        public static ImmutableI18NString? Parse(JObject JSON)
+        public static ImmutableI18NString Parse(JObject JSON)
         {
 
             if (TryParse(JSON, out var i18NText, out _))
