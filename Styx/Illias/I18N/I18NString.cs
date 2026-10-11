@@ -571,25 +571,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region Parse(Text)
-
-        /// <summary>
-        /// Parse the given text as a JSON representation of a multi-language string.
-        /// </summary>
-        /// <param name="Text">A string of a JSON representation of a multi-language string.</param>
-        public static I18NString? Parse(String Text)
-        {
-
-            if (TryParse(Text, out I18NString? i18NText, out _))
-                return i18NText;
-
-            return Empty;
-
-        }
-
-        #endregion
-
-        #region Parse(JSON)
+        #region Parse    (JSON)
 
         /// <summary>
         /// Parse the given JSON object as a JSON representation of a multi-language string.
@@ -626,7 +608,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(Text, out I18NText, out ErrorResponse)
+        #region TryParse (Text, out I18NText, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given text as a JSON representation of a multi-language string.
@@ -670,7 +652,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse(JSON, out I18NText, out ErrorResponse)
+        #region TryParse (JSON, out I18NText, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON object as a JSON representation of a multi-language string.
@@ -728,6 +710,84 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
+            return true;
+
+        }
+
+        #endregion
+
+
+        #region Parse    (CBOR)
+
+        /// <summary>
+        /// Parse the given CBOR object as a CBOR representation of a multi-language string.
+        /// </summary>
+        /// <param name="CBOR">A CBOR representation of a multi-language string.</param>
+        public static I18NString? Parse(CBORValue CBOR)
+        {
+
+            if (TryParse(CBOR, out var i18NText, out _))
+                return i18NText;
+
+            return Empty;
+
+        }
+
+        #endregion
+
+        #region TryParse (CBOR, out I18NText, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given CBOR map from language codes to texts as a multi-language string.
+        /// Unlike its JSON counterpart, an unknown language, a text that is not a text
+        /// or a language given twice is an error instead of being skipped.
+        /// </summary>
+        /// <param name="CBOR">A CBOR representation of a multi-language string.</param>
+        /// <param name="I18NText">The parsed multi-language string.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CBORValue                             CBOR,
+                                       [NotNullWhen(true)]  out I18NString?  I18NText,
+                                       [NotNullWhen(false)] out String?      ErrorResponse)
+        {
+
+            I18NText       = null;
+            ErrorResponse  = null;
+
+            if (CBOR.Kind != CBORValueKind.Map)
+            {
+                ErrorResponse = "A multi-language string must be a CBOR map!";
+                return false;
+            }
+
+            var pairs = ImmutableArray.CreateBuilder<I18NPair>();
+
+            foreach (var (key, value) in CBOR.AsMap())
+            {
+
+                if (!key.TryGetText(out var languageCode) ||
+                    !LanguagesExtensions.TryParse(languageCode, out var language))
+                {
+                    ErrorResponse = $"Unknown language '{key.ToDiagnosticString()}'!";
+                    return false;
+                }
+
+                if (!value.TryGetText(out var text))
+                {
+                    ErrorResponse = $"The text of the language '{languageCode}' must be a CBOR text!";
+                    return false;
+                }
+
+                if (pairs.Any(pair => pair.Language == language))
+                {
+                    ErrorResponse = $"The language '{languageCode}' must not be given twice!";
+                    return false;
+                }
+
+                pairs.Add(new I18NPair(language, text));
+
+            }
+
+            I18NText = new I18NString(pairs.ToImmutable());
             return true;
 
         }

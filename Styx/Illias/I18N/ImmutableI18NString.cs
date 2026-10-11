@@ -118,15 +118,84 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Parse(JSON)
+        #region Parse    (JSON)
 
         /// <summary>
-        /// Parse the given JSON representation of a multi-language text.
+        /// Parse the given JSON object as a JSON representation of a multi-language string.
         /// </summary>
-        /// <param name="JSON">The JSON to parse.</param>
-        public static ImmutableI18NString Parse(JObject JSON)
+        /// <param name="JSON">A JSON representation of a multi-language string.</param>
+        public static ImmutableI18NString? Parse(JObject JSON)
+        {
 
-            => new (I18NString.Parse(JSON) ?? I18NString.Empty);
+            if (TryParse(JSON, out var i18NText, out _))
+                return i18NText;
+
+            return Empty;
+
+        }
+
+        #endregion
+
+        #region TryParse (JSON, out I18NText, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given JSON object as a JSON representation of a multi-language string.
+        /// </summary>
+        /// <param name="JSON">A JSON representation of a multi-language string.</param>
+        /// <param name="I18NText">The parsed multi-language string.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                        JSON,
+                                       [NotNullWhen(true)]  out ImmutableI18NString?  I18NText,
+                                       [NotNullWhen(false)] out String?               ErrorResponse)
+        {
+
+            if (JSON is null)
+            {
+                I18NText       = null;
+                ErrorResponse  = "Empty input!";
+                return false;
+            }
+
+            var i18NText   = new I18NString();
+            ErrorResponse  = null;
+
+            foreach (var JSONProperty in JSON)
+            {
+
+                try
+                {
+
+                    if (JSONProperty.Key is not null             &&
+                        JSONProperty.Key.IsNeitherNullNorEmpty() &&
+                        JSONProperty.Value is not null           &&
+                        JSONProperty.Value.Type == JTokenType.String)
+                    {
+
+                        var value = JSONProperty.Value.Value<String>();
+
+                        if (value is not null &&
+                            LanguagesExtensions.TryParse(JSONProperty.Key, out var language))
+                        {
+                            i18NText.Set(language, value);
+                        }
+
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    I18NText      = null;
+                    ErrorResponse = e.Message;
+                    return false;
+                }
+
+            }
+
+            I18NText = new ImmutableI18NString(i18NText);
+
+            return true;
+
+        }
 
         #endregion
 

@@ -26,10 +26,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
     /// <summary>
     /// Tests for the ParseMandatory/ParseOptional extension methods over
-    /// CBOR maps, replicating the exact three-way contract of the JSON
-    /// parsing extension methods: A missing OPTIONAL property returns
-    /// false WITHOUT an error response; present but null or invalid
-    /// properties return false WITH an error response.
+    /// CBOR maps, replicating the exact contract of the JSON
+    /// parsing extension methods: A missing or null OPTIONAL property
+    /// returns false WITHOUT an error response; a present but invalid
+    /// one returns true WITH an error response.
     /// </summary>
     [TestFixture]
     public class CBORPropertyExtensionsTests
@@ -95,10 +95,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-        #region ParseOptional_returns_false_with_an_error_when_the_property_is_null()
+        #region ParseOptional_returns_false_without_an_error_when_the_property_is_null()
 
         [Test]
-        public void ParseOptional_returns_false_with_an_error_when_the_property_is_null()
+        public void ParseOptional_returns_false_without_an_error_when_the_property_is_null()
         {
 
             var success = TestMap().ParseOptionalText("nothing",
@@ -106,18 +106,19 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                                       out var text,
                                                       out var errorResponse);
 
+            // Like JSON: an explicit null is ignored!
             Assert.That(success,        Is.False);
             Assert.That(text,           Is.Null);
-            Assert.That(errorResponse,  Is.EqualTo("CBOR property 'nothing' must not be null!"));
+            Assert.That(errorResponse,  Is.Null);
 
         }
 
         #endregion
 
-        #region ParseOptional_returns_false_with_an_error_when_the_property_is_invalid()
+        #region ParseOptional_returns_true_with_an_error_when_the_property_is_invalid()
 
         [Test]
-        public void ParseOptional_returns_false_with_an_error_when_the_property_is_invalid()
+        public void ParseOptional_returns_true_with_an_error_when_the_property_is_invalid()
         {
 
             // "number" is an integer, not a text...
@@ -126,7 +127,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                                       out var text,
                                                       out var errorResponse);
 
-            Assert.That(success,        Is.False);
+            // Like JSON: present, but invalid!
+            Assert.That(success,        Is.True);
             Assert.That(text,           Is.Null);
             Assert.That(errorResponse,  Does.StartWith("CBOR property 'number' (some text) could not be parsed:"));
 
@@ -178,7 +180,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(errorResponse4,  Is.Null);
 
             // Invalid...
-            Assert.That(map.ParseOptionalText(-1, "something", out _, out var errorResponse5),        Is.False);
+            Assert.That(map.ParseOptionalText(-1, "something", out _, out var errorResponse5),        Is.True);
             Assert.That(errorResponse5,  Does.Contain("could not be parsed"));
 
         }
@@ -256,11 +258,56 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(map.ParseMandatory<String>("text", "some text", TryParseUpperCase, out var upper, out _),  Is.True);
             Assert.That(upper,  Is.EqualTo("HELLO"));
 
-            Assert.That(map.ParseOptional<String>("number", "some text", TryParseUpperCase, out _, out var errorResponse),  Is.False);
+            Assert.That(map.ParseOptional<String>("number", "some text", TryParseUpperCase, out _, out var errorResponse),  Is.True);
             Assert.That(errorResponse,  Does.Contain("not a text string"));
 
             Assert.That(map.ParseOptional<String>("missing", "some text", TryParseUpperCase, out _, out var errorResponse2),  Is.False);
             Assert.That(errorResponse2,  Is.Null);
+
+        }
+
+        #endregion
+
+        #region Text_parsers_like_an_identifications_TryParse_compose()
+
+        [Test]
+        public void Text_parsers_like_an_identifications_TryParse_compose()
+        {
+
+            var map = new CBORMap {
+                          { "id",      "8c5d5e2c-4b1f-4f43-9d3e-0e6a1c2b3d4e" },
+                          { "badId",   "not-a-guid" },
+                          { "number",  42 },
+                          { 5,         "0e6a1c2b-3d4e-4f43-9d3e-8c5d5e2c4b1f" }
+                      }.ToValue();
+
+            using (Assert.EnterMultipleScope())
+            {
+
+                // Valid...
+                Assert.That(map.ParseMandatory("id", "an identification", Guid.TryParse, out Guid id, out var errorResponse1),  Is.True);
+                Assert.That(id,              Is.EqualTo(Guid.Parse("8c5d5e2c-4b1f-4f43-9d3e-0e6a1c2b3d4e")));
+                Assert.That(errorResponse1,  Is.Null);
+
+                Assert.That(map.ParseMandatory(5, "an identification", Guid.TryParse, out Guid five, out _),  Is.True);
+                Assert.That(five,            Is.EqualTo(Guid.Parse("0e6a1c2b-3d4e-4f43-9d3e-8c5d5e2c4b1f")));
+
+                // Invalid text...
+                Assert.That(map.ParseMandatory("badId", "an identification", Guid.TryParse, out Guid _, out var errorResponse2),  Is.False);
+                Assert.That(errorResponse2,  Does.Contain("'not-a-guid' is not valid"));
+
+                // Not a text...
+                Assert.That(map.ParseOptional("number", "an identification", Guid.TryParse, out Guid _, out var errorResponse3),  Is.True);
+                Assert.That(errorResponse3,  Does.Contain("not a text string"));
+
+                // Missing...
+                Assert.That(map.ParseMandatory("missing", "an identification", Guid.TryParse, out Guid _, out var errorResponse4),  Is.False);
+                Assert.That(errorResponse4,  Is.EqualTo("Missing CBOR property 'missing'!"));
+
+                Assert.That(map.ParseOptional("missing", "an identification", Guid.TryParse, out Guid _, out var errorResponse5),  Is.False);
+                Assert.That(errorResponse5,  Is.Null);
+
+            }
 
         }
 
@@ -277,7 +324,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(array.ParseMandatoryText("x", "some text", out _, out var errorResponse),  Is.False);
             Assert.That(errorResponse,  Is.EqualTo("The given CBOR value is not a map!"));
 
-            Assert.That(array.ParseOptionalText("x", "some text", out _, out var errorResponse2),  Is.False);
+            Assert.That(array.ParseOptionalText("x", "some text", out _, out var errorResponse2),  Is.True);
             Assert.That(errorResponse2,  Is.EqualTo("The given CBOR value is not a map!"));
 
         }

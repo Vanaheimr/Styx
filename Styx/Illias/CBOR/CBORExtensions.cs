@@ -58,11 +58,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     /// <summary>
     /// Extension methods for parsing mandatory and optional properties
-    /// of CBOR maps, following the exact three-way contract of the
-    /// JSON parsing extension methods: A missing OPTIONAL property
-    /// returns false WITHOUT an error response, a property which is
-    /// present but invalid (or explicitly null) returns false WITH
-    /// an error response.
+    /// of CBOR maps, following the exact contract of the JSON parsing
+    /// extension methods.
+    /// A MANDATORY property returns true when valid, else false WITH an
+    /// error response.
+    /// An OPTIONAL property returns true when present, WITH an error
+    /// response when invalid; it returns false WITHOUT an error response
+    /// when missing or explicitly null. Callers therefore call it and then
+    /// check the error response, never branch on its result alone.
     /// CBOR maps within e.g. COSE structures often use integer keys,
     /// therefore all methods are also available with Int64 keys.
     /// </summary>
@@ -133,35 +136,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Value          = default;
             ErrorResponse  = null;
 
+            // Like JSON: an unusable input is reported as "present, but invalid"!
             if (CBOR.Kind != CBORValueKind.Map)
             {
                 ErrorResponse = "The given CBOR value is not a map!";
-                return false;
+                return true;
             }
 
             // A missing OPTIONAL property is not an error!
             if (!CBOR.TryGetValue(Key, out var property))
                 return false;
 
+            // Like JSON: "propertyKey": null -> will be ignored!
             if (property.Kind == CBORValueKind.Null)
-            {
-                ErrorResponse = $"CBOR property '{KeyText}' must not be null!";
                 return false;
-            }
 
             try
             {
-
                 Value = Converter(property);
-
-                return true;
-
             }
             catch (Exception e) when (e is CBORException || e is OverflowException)
             {
                 ErrorResponse = $"CBOR property '{KeyText}' ({PropertyDescription}) could not be parsed: {e.Message}";
-                return false;
             }
+
+            return true;
 
         }
 
@@ -386,6 +385,136 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                      property => CBORParser(property, out var parsedValue, out var errorResponse)
                                                      ? parsedValue!
                                                      : throw new CBORException(errorResponse),
+                                     out Value,
+                                     out ErrorResponse);
+
+        #endregion
+
+
+        #region (private static) ConvertText<T>(Property, TextParser)
+
+        /// <summary>
+        /// Convert the given CBOR text property via the given text parser,
+        /// e.g. an identification's TryParse(String, out Id).
+        /// </summary>
+        private static T ConvertText<T>(CBORValue     Property,
+                                        TryParser<T>  TextParser)
+
+            => Property.TryGetText(out var text)
+                   ? TextParser(text, out var value)
+                         ? value!
+                         : throw new CBORException($"The value '{text}' is not valid!")
+                   : throw new CBORException("The value is not a text string!");
+
+        #endregion
+
+        #region ParseMandatory<T>      (this CBOR, PropertyName/Key, PropertyDescription, TextParser, out Value, out ErrorResponse)
+
+        /// <summary>
+        /// Parse the given mandatory CBOR text property via the given text parser,
+        /// e.g. an identification's TryParse(String, out Id).
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyName">The name of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TextParser">A delegate to parse the text of the property.</param>
+        /// <param name="Value">The parsed value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean ParseMandatory<T>(this CBORValue                    CBOR,
+                                                String                            PropertyName,
+                                                String                            PropertyDescription,
+                                                TryParser<T>                      TextParser,
+                                                [NotNullWhen(true)]  out T?       Value,
+                                                [NotNullWhen(false)] out String?  ErrorResponse)
+
+            => ParseMandatoryInternal(CBOR,
+                                      CBORValue.FromText(PropertyName),
+                                      PropertyName,
+                                      PropertyDescription,
+                                      property => ConvertText(property, TextParser),
+                                      out Value,
+                                      out ErrorResponse);
+
+
+        /// <summary>
+        /// Parse the given mandatory CBOR text property via the given text parser,
+        /// e.g. an identification's TryParse(String, out Id).
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyKey">The integer key of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TextParser">A delegate to parse the text of the property.</param>
+        /// <param name="Value">The parsed value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean ParseMandatory<T>(this CBORValue                    CBOR,
+                                                Int64                             PropertyKey,
+                                                String                            PropertyDescription,
+                                                TryParser<T>                      TextParser,
+                                                [NotNullWhen(true)]  out T?       Value,
+                                                [NotNullWhen(false)] out String?  ErrorResponse)
+
+            => ParseMandatoryInternal(CBOR,
+                                      CBORValue.FromInt64(PropertyKey),
+                                      PropertyKey.ToString(CultureInfo.InvariantCulture),
+                                      PropertyDescription,
+                                      property => ConvertText(property, TextParser),
+                                      out Value,
+                                      out ErrorResponse);
+
+        #endregion
+
+        #region ParseOptional<T>       (this CBOR, PropertyName/Key, PropertyDescription, TextParser, out Value, out ErrorResponse)
+
+        /// <summary>
+        /// Parse the given optional CBOR text property via the given text parser,
+        /// e.g. an identification's TryParse(String, out Id).
+        /// A missing optional property is not an error!
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyName">The name of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TextParser">A delegate to parse the text of the property.</param>
+        /// <param name="Value">The parsed value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean ParseOptional<T>(this CBORValue  CBOR,
+                                               String          PropertyName,
+                                               String          PropertyDescription,
+                                               TryParser<T>    TextParser,
+                                               out T?          Value,
+                                               out String?     ErrorResponse)
+
+            => ParseOptionalInternal(CBOR,
+                                     CBORValue.FromText(PropertyName),
+                                     PropertyName,
+                                     PropertyDescription,
+                                     property => ConvertText(property, TextParser),
+                                     out Value,
+                                     out ErrorResponse);
+
+
+        /// <summary>
+        /// Parse the given optional CBOR text property via the given text parser,
+        /// e.g. an identification's TryParse(String, out Id).
+        /// A missing optional property is not an error!
+        /// </summary>
+        /// <param name="CBOR">A CBOR map.</param>
+        /// <param name="PropertyKey">The integer key of the property.</param>
+        /// <param name="PropertyDescription">A description of the property.</param>
+        /// <param name="TextParser">A delegate to parse the text of the property.</param>
+        /// <param name="Value">The parsed value.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean ParseOptional<T>(this CBORValue  CBOR,
+                                               Int64           PropertyKey,
+                                               String          PropertyDescription,
+                                               TryParser<T>    TextParser,
+                                               out T?          Value,
+                                               out String?     ErrorResponse)
+
+            => ParseOptionalInternal(CBOR,
+                                     CBORValue.FromInt64(PropertyKey),
+                                     PropertyKey.ToString(CultureInfo.InvariantCulture),
+                                     PropertyDescription,
+                                     property => ConvertText(property, TextParser),
                                      out Value,
                                      out ErrorResponse);
 

@@ -39,6 +39,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    ))
                      );
 
+        /// <summary>
+        /// Return a CBOR representation of the given multi-language string:
+        /// a map from each language code to its text, like its JSON representation.
+        /// </summary>
+        /// <param name="I18NString">A multi-language string.</param>
+        public static CBORValue ToCBOR(this II18NString? I18NString)
+
+            => CBORValue.FromMap(
+                   I18NString is null
+                       ? []
+                       : I18NString.Select(text => new KeyValuePair<CBORValue, CBORValue>(
+                                                       CBORValue.FromText(text.Language.ToString()),
+                                                       CBORValue.FromText(text.Text)
+                                                   ))
+               );
+
 
         #region FirstText        (this I18NString)
 
