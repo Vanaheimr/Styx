@@ -66,6 +66,67 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Mutable_texts_keep_their_order_and_one_text_per_language()
+
+        [Test]
+        public void Mutable_texts_keep_their_order_and_one_text_per_language()
+        {
+
+            var text = new I18NString(Languages.de, "Hallo").Set(Languages.en, "Hello").Set(Languages.fr, "Salut");
+
+            text.Set(Languages.en, "Hi");
+            Assert.That(text.Select(pair => pair.Text),     Is.EqualTo(new[] { "Hallo", "Hi", "Salut" }));
+
+            text.Remove(Languages.de).Set(Languages.de, "Servus");
+            Assert.That(text.Select(pair => pair.Language), Is.EqualTo(new[] { Languages.en, Languages.fr, Languages.de }));
+
+            text[Languages.it] = "Ciao";
+            Assert.That(text[Languages.it],                 Is.EqualTo("Ciao"));
+            Assert.That(text.Count,                         Is.EqualTo(4));
+
+            var copy = text.Clone();
+            text.Set(Languages.en, "Hello");
+            Assert.That(copy[Languages.en],                 Is.EqualTo("Hi"));
+
+            Assert.That(() => new I18NString(new I18NPair(Languages.de, "a"), new I18NPair(Languages.de, "b")),
+                        Throws.ArgumentException);
+
+            Assert.That(new I18NString(Languages.de, "Hallo").Set(Languages.en, "Hello"),
+                        Is.EqualTo(new I18NString(Languages.en, "Hello").Set(Languages.de, "Hallo")));
+            Assert.That(new I18NString(Languages.de, "Hallo").Set(Languages.en, "Hello").GetHashCode(),
+                        Is.EqualTo(new I18NString(Languages.en, "Hello").Set(Languages.de, "Hallo").GetHashCode()));
+            Assert.That(new I18NString(Languages.de, ""),   Is.Not.EqualTo(new I18NString(Languages.en, "")));
+
+        }
+
+        #endregion
+
+        #region Implicit_conversions_keep_null_and_the_order_of_languages()
+
+        [Test]
+        public void Implicit_conversions_keep_null_and_the_order_of_languages()
+        {
+
+            I18NString?          nullMutable    = null;
+            ImmutableI18NString? nullImmutable  = null;
+
+            ImmutableI18NString? immutable      = nullMutable;
+            I18NString?          mutable        = nullImmutable;
+
+            Assert.That(immutable,  Is.Null);
+            Assert.That(mutable,    Is.Null);
+
+            ImmutableI18NString  copy           = new I18NString(Languages.en, "Hello").Set(Languages.de, "Hallo");
+            I18NString           back           = copy;
+
+            Assert.That(copy.Select(text => text.Language),  Is.EqualTo(new[] { Languages.en, Languages.de }));
+            Assert.That(back.Select(text => text.Language),  Is.EqualTo(new[] { Languages.en, Languages.de }));
+            Assert.That(back[Languages.de],                  Is.EqualTo("Hallo"));
+
+        }
+
+        #endregion
+
         #region With_replaces_a_text_at_its_place_or_appends_it()
 
         [Test]

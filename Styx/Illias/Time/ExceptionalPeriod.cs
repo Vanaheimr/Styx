@@ -29,12 +29,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// Begin of the opening or access hours exception.
         /// </summary>
-        public DateTime Begin   { get; }
+        public DateTimeOffset Begin   { get; }
 
         /// <summary>
         /// End of the opening or access hours exception.
         /// </summary>
-        public DateTime End     { get; }
+        public DateTimeOffset End     { get; }
 
         #endregion
 
@@ -45,8 +45,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         /// <param name="Begin">Begin of the opening or access hours exception.</param>
         /// <param name="End">End of the opening or access hours exception.</param>
-        public ExceptionalPeriod(DateTime  Begin,
-                                 DateTime  End)
+        public ExceptionalPeriod(DateTimeOffset Begin,
+                                 DateTimeOffset End)
         {
 
             this.Begin  = Begin;

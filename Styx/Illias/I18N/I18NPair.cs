@@ -21,7 +21,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// <summary>
     /// An internationalized (I18N) language text pair.
     /// </summary>
-    public readonly struct I18NPair : IEquatable<I18NPair>
+    /// <param name="Language">The internationalized (I18N) language.</param>
+    /// <param name="Text">The internationalized (I18N) text.</param>
+    public readonly struct I18NPair(Languages  Language,
+                                    String     Text)
+
+        : IEquatable<I18NPair>
+
     {
 
         #region Properties
@@ -29,35 +35,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The internationalized (I18N) language.
         /// </summary>
-        public Languages  Language   { get; }
+        public Languages  Language    { get; } = Language;
 
         /// <summary>
         /// The internationalized (I18N) text.
         /// </summary>
-        public String     Text       { get; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new internationalized (I18N) language text pair.
-        /// </summary>
-        /// <param name="Language">The internationalized (I18N) language.</param>
-        /// <param name="Text">The internationalized (I18N) text.</param>
-        public I18NPair(Languages Language,
-                        String    Text)
-        {
-            this.Language  = Language;
-            this.Text      = Text;
-        }
+        public String     Text        { get; } = Text;
 
         #endregion
 
 
         #region Deconstruct(out Language, out Text)
 
-        public void Deconstruct(out Languages Language, out String Text)
+        /// <summary>
+        /// Deconstruct this I18NPair into its components.
+        /// </summary>
+        /// <param name="Language">The internationalized (I18N) language.</param>
+        /// <param name="Text">The internationalized (I18N) text.</param>
+        public void Deconstruct(out Languages  Language,
+                                out String     Text)
         {
             Language = this.Language;
             Text     = this.Text;
@@ -105,10 +101,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(Object)
 
         /// <summary>
-        /// Compares two instances of this object.
+        /// Compares two I18NPairs for equality.
         /// </summary>
-        /// <param name="Object">An object to compare with.</param>
-        /// <returns>true|false</returns>
+        /// <param name="Object">An I18NPair to compare with.</param>
         public override Boolean Equals(Object? Object)
 
             => Object is I18NPair i18NPair &&
@@ -119,10 +114,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Equals(I8NString)
 
         /// <summary>
-        /// Compares two I18NPair for equality.
+        /// Compares two I18NPairs for equality.
         /// </summary>
         /// <param name="I18NPair">An I18NPair to compare with.</param>
-        /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(I18NPair I18NPair)
 
             => Language.Equals(I18NPair.Language) &&
@@ -141,7 +135,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override Int32 GetHashCode()
 
-            => Language.GetHashCode() ^
+            => Language.GetHashCode() * 3 ^
                Text.    GetHashCode();
 
         #endregion
@@ -153,7 +147,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => String.Concat("[", Language, "] ", Text);
+            => $"[{Language}] {Text}";
 
         #endregion
 

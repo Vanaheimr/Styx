@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
@@ -31,43 +32,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     public static class I18NStringExtensions
     {
-
-        #region IsNullOrEmpty    (this I18NText)
-
-        /// <summary>
-        /// The multi-language string is null or empty.
-        /// </summary>
-        public static Boolean IsNullOrEmpty([NotNullWhen(false)] this I18NString? I18NText)
-
-            => I18NText is null ||
-               I18NText.Count == 0;
-
-        #endregion
-
-        #region IsNotNullOrEmpty (this I18NText)
-
-        /// <summary>
-        /// The multi-language string is NOT null nor empty.
-        /// </summary>
-        public static Boolean IsNotNullOrEmpty([NotNullWhen(true)] this I18NString? I18NText)
-
-            => I18NText is not null &&
-               I18NText.Count != 0;
-
-        #endregion
-
-        #region FirstText        (this I18NText)
-
-        /// <summary>
-        /// Return the first string of a multi-language string.
-        /// </summary>
-        public static String FirstText(this I18NString? I18NText)
-
-            => I18NText.IsNotNullOrEmpty()
-                   ? I18NText.First().Text
-                   : String.Empty;
-
-        #endregion
 
         #region ToI18NString     (this Text,     Language = Languages.en)
 
@@ -183,12 +147,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// An internationalized (I18N) multi-language text/string.
     /// </summary>
     public class I18NString : IEquatable<I18NString>,
-                              IEnumerable<I18NPair>
+                              II18NString
     {
 
         #region Data
 
-        private readonly Dictionary<Languages, String> i18NStrings;
+        /// <summary>
+        /// The texts in their order; at most one per language.
+        /// Never changed, only replaced, so that immutable copies can share it.
+        /// </summary>
+        private ImmutableArray<I18NPair> i18NStrings;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The number of language/value pairs.
+        /// </summary>
+        public UInt32 Count
+            => (UInt32) i18NStrings.Length;
 
         #endregion
 
@@ -227,7 +205,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             : this()
         {
 
-            i18NStrings.Add(Language, Text);
+            Append(Language, Text);
 
             GenerateHashCode();
 
@@ -247,7 +225,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (Texts is not null)
                 foreach (var Text in Texts)
-                    i18NStrings.Add(Text.Key, Text.Value);
+                    Append(Text.Key, Text.Value);
 
             GenerateHashCode();
 
@@ -265,9 +243,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
             : this()
         {
 
-            if (I18NPairs is not null)
-                foreach (var Text in I18NPairs)
-                    i18NStrings.Add(Text.Language, Text.Text);
+            foreach (var i18NPair in I18NPairs ?? [])
+                Append(i18NPair.Language, i18NPair.Text);
+
+            GenerateHashCode();
+
+        }
+
+        /// <summary>
+        /// Create a new internationalized (I18N) multi-language string
+        /// based on the given I18N-pairs.
+        /// </summary>
+        public I18NString(IEnumerable<KeyValuePair<Languages, String>> I18NPairs)
+            : this()
+        {
+
+            foreach (var kvp in I18NPairs ?? [])
+                Append(kvp.Key, kvp.Value);
 
             GenerateHashCode();
 
@@ -287,7 +279,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (I18NPairs is not null)
                 foreach (var Text in I18NPairs)
-                    i18NStrings.Add(Text.Language, Text.Text);
+                    Append(Text.Language, Text.Text);
+
+            GenerateHashCode();
+
+        }
+
+        #endregion
+
+        #region (internal) I18NString(I18NPairs)
+
+        /// <summary>
+        /// Create a new internationalized (I18N) multi-language string
+        /// sharing the given, already validated texts without copying them.
+        /// </summary>
+        internal I18NString(ImmutableArray<I18NPair> I18NPairs)
+        {
+
+            this.i18NStrings = I18NPairs;
 
             GenerateHashCode();
 
@@ -351,7 +360,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
 
 
-                if (i18NStrings.TryGetValue(Language, out var text))
+                if (TryGetText(Language, out var text))
                     return text;
 
                 return String.Empty;
@@ -360,24 +369,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             set
             {
-
-                var oldText = i18NStrings[Language];
-                if (oldText != value)
-                {
-
-                    i18NStrings[Language] = value;
-
-                    OnPropertyChanged?.Invoke(
-                        Timestamp.Now,
-                        EventTracking_Id.New,
-                        this,
-                        "",
-                        new Tuple<Languages, String>(Language, value),
-                        new Tuple<Languages, String>(Language, oldText)
-                    );
-
-                }
-
+                Set(Language, value);
             }
 
         }
@@ -396,10 +388,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               String     Text)
         {
 
-            if (!i18NStrings.TryGetValue(Language, out var value))
+            if (!TryGetText(Language, out var value))
             {
 
-                i18NStrings.Add(Language, Text);
+                i18NStrings = i18NStrings.Add(new I18NPair(Language, Text));
 
                 OnPropertyChanged?.Invoke(
                     Timestamp.Now,
@@ -419,7 +411,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 if (!String.Equals(oldText, Text))
                 {
 
-                    i18NStrings[Language] = Text;
+                    i18NStrings = i18NStrings.SetItem(IndexOf(Language), new I18NPair(Language, Text));
 
                     OnPropertyChanged?.Invoke(
                         Timestamp.Now,
@@ -485,7 +477,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Language">The internationalized (I18N) language.</param>
         public Boolean Has(Languages Language)
 
-            => i18NStrings.ContainsKey(Language);
+            => IndexOf(Language) >= 0;
 
         #endregion
 
@@ -495,7 +487,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                           String     Value)
         {
 
-            if (!i18NStrings.TryGetValue(Language, out var value))
+            if (!TryGetText(Language, out var value))
                 return false;
 
             return String.Equals(value, Value);
@@ -510,7 +502,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                              String     Value)
         {
 
-            if (!i18NStrings.TryGetValue(Language, out var value))
+            if (!TryGetText(Language, out var value))
                 return true;
 
             return !String.Equals(value, Value);
@@ -524,7 +516,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public Boolean Matches(String            Match,
                                StringComparison  ComparisonType  = StringComparison.OrdinalIgnoreCase)
 
-            => i18NStrings.Any(kvp => kvp.Value.Contains(Match, ComparisonType));
+            => i18NStrings.Any(i18NPair => i18NPair.Text.Contains(Match, ComparisonType));
 
         #endregion
 
@@ -538,8 +530,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public I18NString Remove(Languages Language)
         {
 
-            if (i18NStrings.Remove(Language))
+            var index = IndexOf(Language);
+
+            if (index >= 0)
+            {
+                i18NStrings = i18NStrings.RemoveAt(index);
                 GenerateHashCode();
+            }
 
             return this;
 
@@ -553,24 +550,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Enumerate all internationalized (I18N) texts.
         /// </summary>
         public IEnumerator<I18NPair> GetEnumerator()
-            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
+            => ((IEnumerable<I18NPair>) i18NStrings).GetEnumerator();
 
         /// <summary>
         /// Enumerate all internationalized (I18N) texts.
         /// </summary>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => i18NStrings.Select(kvp => new I18NPair(kvp.Key, kvp.Value)).GetEnumerator();
+            => GetEnumerator();
 
         #endregion
 
-        #region Count
+        #region (internal) Pairs
 
         /// <summary>
-        /// The number of language/value pairs.
+        /// The texts in their order, shared without copying with immutable copies.
         /// </summary>
-        public UInt32 Count
-
-            => (UInt32) i18NStrings.Count;
+        internal ImmutableArray<I18NPair> Pairs
+            => i18NStrings;
 
         #endregion
 
@@ -738,19 +734,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ToJSON()
-
-        /// <summary>
-        /// Return a JSON representation of the given internationalized string.
-        /// </summary>
-        public JObject ToJSON()
-
-            => i18NStrings.Count != 0
-                   ? new JObject(i18NStrings.Select(i18n => new JProperty(i18n.Key.ToString(), i18n.Value)))
-                   : [];
-
-        #endregion
-
         #region Clone()
 
         /// <summary>
@@ -758,7 +741,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public I18NString Clone()
 
-            => new (i18NStrings.SafeSelect(i18n => new I18NPair(i18n.Key, new String(i18n.Value.ToCharArray()))));
+            => new (i18NStrings);
 
         #endregion
 
@@ -835,12 +818,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (OtherI18NString is null)
                 return false;
 
-            if (i18NStrings.Count != OtherI18NString.Count)
+            if (i18NStrings.Length != OtherI18NString.i18NStrings.Length)
                 return false;
 
-            foreach (var kvp in i18NStrings)
+            foreach (var i18NPair in i18NStrings)
             {
-                if (kvp.Value != OtherI18NString[kvp.Key])
+                if (!OtherI18NString.TryGetText(i18NPair.Language, out var otherText) ||
+                    !String.Equals(i18NPair.Text, otherText))
                     return false;
             }
 
@@ -852,6 +836,53 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (private) IndexOf(Language), TryGetText(Language, out Text), Append(Language, Text)
+
+        /// <summary>
+        /// The position of the text in the given language, or -1.
+        /// A linear search is faster than hashing for a handful of languages.
+        /// </summary>
+        private Int32 IndexOf(Languages Language)
+        {
+
+            for (var i = 0; i < i18NStrings.Length; i++)
+                if (i18NStrings[i].Language == Language)
+                    return i;
+
+            return -1;
+
+        }
+
+        private Boolean TryGetText(Languages                         Language,
+                                   [NotNullWhen(true)] out String?   Text)
+        {
+
+            var index = IndexOf(Language);
+
+            Text = index >= 0
+                       ? i18NStrings[index].Text
+                       : null;
+
+            return index >= 0;
+
+        }
+
+        /// <summary>
+        /// Append a text in a new language; a language must not be given twice.
+        /// </summary>
+        private void Append(Languages  Language,
+                            String     Text)
+        {
+
+            if (IndexOf(Language) >= 0)
+                throw new ArgumentException($"The language '{Language}' must not be given twice!", nameof(Language));
+
+            i18NStrings = i18NStrings.Add(new I18NPair(Language, Text));
+
+        }
+
+        #endregion
+
         #region GenerateHashCode()
 
         /// <summary>
@@ -860,12 +891,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public void GenerateHashCode()
         {
 
+            // Independent of the order of the languages, as equality is.
             hashCode = 0;
 
-            foreach (var subHashCode in i18NStrings.Select(I18N => I18N.Key.GetHashCode() ^ I18N.Value.GetHashCode()))
-            {
-                hashCode ^= subHashCode;
-            }
+            foreach (var i18NPair in i18NStrings)
+                hashCode ^= HashCode.Combine(i18NPair.Language, i18NPair.Text);
 
         }
 
@@ -890,10 +920,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => i18NStrings.Count > 0
+            => i18NStrings.Length > 0
 
                    ? i18NStrings.
-                         Select(I18N => $"{I18N.Key}: {I18N.Value}").
+                         Select(i18NPair => $"{i18NPair.Language}: {i18NPair.Text}").
                          AggregateWith("; ")
 
                    : String.Empty;

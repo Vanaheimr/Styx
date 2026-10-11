@@ -404,8 +404,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region AddExceptionalClosing(StartTimestamp, EndTimestamp)
 
-        public OpeningTimes AddExceptionalOpening(DateTime  StartTimestamp,
-                                                  DateTime  EndTimestamp)
+        public OpeningTimes AddExceptionalOpening(DateTimeOffset StartTimestamp,
+                                                  DateTimeOffset EndTimestamp)
         {
 
             exceptionalOpenings.Add(
@@ -423,8 +423,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region AddExceptionalClosing(StartTimestamp, EndTimestamp)
 
-        public OpeningTimes AddExceptionalClosing(DateTime  StartTimestamp,
-                                                  DateTime  EndTimestamp)
+        public OpeningTimes AddExceptionalClosing(DateTimeOffset StartTimestamp,
+                                                  DateTimeOffset EndTimestamp)
         {
 
             exceptionalClosings.Add(

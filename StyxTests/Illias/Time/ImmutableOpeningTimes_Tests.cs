@@ -25,8 +25,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
     public class ImmutableOpeningTimes_Tests
     {
 
-        private static readonly DateTime Christmas  = new (2026, 12, 24, 12, 0, 0, DateTimeKind.Utc);
-        private static readonly DateTime NewYear    = new (2026, 12, 31, 18, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTimeOffset Christmas  = new (2026, 12, 24,  12, 0, 0, 0,  TimeSpan.Zero);
+        private static readonly DateTimeOffset NewYear    = new (2026, 12, 31,  18, 0, 0, 0,  TimeSpan.Zero);
 
 
         #region ExceptionalClosings_are_the_closings()
