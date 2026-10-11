@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Globalization;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -91,7 +97,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Boolean        Fractions   = true)
 
             => DateTime.ToUniversalTime().
-                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty)) + "Z";
+                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty), CultureInfo.InvariantCulture) + "Z";
 
         #endregion
 
@@ -111,7 +117,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ? DateTime.ToLocalTime()
                     : DateTime).
 
-                ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty) + "zzz");
+                ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty) + "zzz", CultureInfo.InvariantCulture);
 
         #endregion
 

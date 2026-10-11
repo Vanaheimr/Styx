@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Globalization;
+
+#endregion
+
 namespace org.GraphDefined.Vanaheimr.Illias
 {
 
@@ -80,7 +86,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        Boolean              Fractions   = true)
 
             => DateTimeOffset.ToUniversalTime().
-                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty)) + "Z";
+                        ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty), CultureInfo.InvariantCulture) + "Z";
 
         #endregion
 
@@ -96,7 +102,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static String ToISO8601WithOffset(this DateTimeOffset  DateTimeOffset,
                                                  Boolean              Fractions   = true)
 
-            => DateTimeOffset.ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty) + "zzz");
+            => DateTimeOffset.ToString("yyyy-MM-ddTHH:mm:ss" + (Fractions ? ".fff" : String.Empty) + "zzz", CultureInfo.InvariantCulture);
 
         #endregion
 
