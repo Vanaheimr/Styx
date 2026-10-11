@@ -19,38 +19,59 @@
 
 using System.Runtime.CompilerServices;
 
-using Newtonsoft.Json.Linq;
-
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
 {
-    public interface IInternalData
+
+    public interface IInternalData : IImmutableInternalData
+    {
+
+        new DateTimeOffset     Created           { get; set; }
+
+        new DateTimeOffset     LastChangeDate    { get; set; }
+
+
+        event OnPropertyChangedDelegate? OnPropertyChanged;
+
+        void DeleteProperty<T>(ref T? FieldToChange, [CallerMemberName] String PropertyName = "");
+
+        void PropertyChanged<T>(String PropertyName, T OldValue, T NewValue, Context? DataSource = null, EventTracking_Id ? EventTrackingId = null);
+        SetPropertyResult SetInternalData(String Key, Object? NewValue, Object? OldValue = null, Context? DataSource = null, EventTracking_Id? EventTrackingId = null);
+        void SetProperty<T>(ref T FieldToChange, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] String PropertyName = "");
+
+
+    }
+
+
+    public interface IImmutableInternalData
     {
 
         Boolean                IsEmpty           { get; }
         Boolean                IsNotEmpty        { get; }
 
-        DateTimeOffset         Created           { get; set; }
-        DateTimeOffset         LastChangeDate    { get; set; }
+        DateTimeOffset         Created           { get; }
+        DateTimeOffset         LastChangeDate    { get; }
 
         CustomDataNew          CustomData        { get; }
         UserDefinedDictionary  InternalData      { get; }
 
-        event OnPropertyChangedDelegate? OnPropertyChanged;
 
-        void DeleteProperty<T>(ref T? FieldToChange, [CallerMemberName] String PropertyName = "");
-        Object? GetInternalData(String Key);
-        T? GetInternalDataAs<T>(String Key);
-        void IfDefined(String Key, Action<Object> ValueDelegate);
-        void IfDefinedAs<T>(String Key, Action<T> ValueDelegate);
+
         Boolean IsDefined(String Key);
         Boolean IsDefined(String Key, Object? Value);
-        void PropertyChanged<T>(String PropertyName, T OldValue, T NewValue, Context? DataSource = null, EventTracking_Id ? EventTrackingId = null);
-        SetPropertyResult SetInternalData(String Key, Object? NewValue, Object? OldValue = null, Context? DataSource = null, EventTracking_Id? EventTrackingId = null);
-        void SetProperty<T>(ref T FieldToChange, T NewValue, Context? DataSource = null, EventTracking_Id? EventTrackingId = null, [CallerMemberName] String PropertyName = "");
+
+        void IfDefined(String Key, Action<Object> ValueDelegate);
+        void IfDefinedAs<T>(String Key, Action<T> ValueDelegate);
+
+
+
+        Object? GetInternalData(String Key);
+        T?      GetInternalDataAs<T>(String Key);
+
         Boolean TryGetInternalData(String Key, out Object? Value);
         Boolean TryGetInternalDataAs<T>(String Key, out T? Value);
+
 
     }
 

@@ -63,6 +63,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
     }
 
+    /// <summary>
+    /// The interface of an entity.
+    /// </summary>
+    public interface IImmutableEntity : IImmutableInternalData,
+                                        IComparable
+    {
+
+        ImmutableI18NString  Name               { get; }
+
+        ImmutableI18NString  Description        { get; }
+
+        String?              DataSource         { get; }
+
+
+        //event OnPropertyChangedDelegate? OnPropertyChanged;
+
+    }
+
+
+
+    /// <summary>
+    /// The common generic interface of an entity having one or multiple unique identification(s).
+    /// </summary>
+    /// <typeparam name="TId">THe type of the unique identifier.</typeparam>
+    public interface IImmutableEntity<TId> : IImmutableEntity, IHasId<TId>
+
+        where TId : IId
+
+    {
+
+    }
+
 
     /// <summary>
     /// The common generic interface of an entity having one or multiple unique identification(s).
@@ -82,8 +114,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// </summary>
     /// <typeparam name="TId">The type of the entity identification.</typeparam>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <typeparam name="TCustomData">The type of the custom data.</typeparam>
-    /// <typeparam name="TDataSource">The type of the data source.</typeparam>
     public interface IEntity<TId, TEntity> : IEntity,
                                              IHasId<TId>,
                                              IEquatable<TEntity>,
