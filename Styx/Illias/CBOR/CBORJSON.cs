@@ -896,9 +896,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         var value = ((JValue) JSON).Value;
 
                         // A decimal keeps its scale and becomes an exact decimal
-                        // fraction; only an actual binary float stays one.
+                        // fraction; only an actual binary float stays one. Without
+                        // decimal places it is the integer it equals, as its JSON
+                        // text says and as the UTF-8 path converts it
+                        // (metrological-text.md, Section 3.2).
                         return value switch {
-                                   Decimal number  => CBORValue.FromDecimal(number),
+                                   Decimal number  => number.Scale == 0
+                                                          ? CBORValue.FromBigInteger(new BigInteger(number))
+                                                          : CBORValue.FromDecimal(number),
                                    Single single   => CBORValue.FromDouble(single),
                                    _               => CBORValue.FromDouble(JSON.Value<Double>())
                                };

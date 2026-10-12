@@ -95,3 +95,9 @@ and UTF-8 text written and read directly, without a tree in between
 (`ToJSONUTF8` / `WriteJSONTo` / `ToCBOR(ReadOnlySpan<Byte>)`). The grammar,
 the mapping table and what does and does not round-trip are specified in
 [metrological-text.md](https://github.com/OpenChargingTechnology/Whitepapers/blob/master/MetrologicalCBOR/metrological-text.md).
+
+### Deterministic CBOR of JSON documents
+
+Which bytes a JSON document becomes for hashing and signing, as canonical
+JSON and as deterministic CBOR, is specified with test vectors in
+[../JSON/README.md](../JSON/README.md).
