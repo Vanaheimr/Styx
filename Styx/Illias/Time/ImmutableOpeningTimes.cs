@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -101,6 +102,57 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public JObject ToJSON()
             => ToMutable().ToJSON();
+
+        #endregion
+
+        #region (static) TryParse(JSON, out ImmutableOpeningTimes, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of opening times, as ToJSON() writes it.
+        /// </summary>
+        public static Boolean TryParse(JObject                                          JSON,
+                                       [NotNullWhen(true)]  out ImmutableOpeningTimes?  ImmutableOpeningTimes,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
+        {
+
+            ImmutableOpeningTimes = OpeningTimes.TryParse(JSON, out var openingTimes, out ErrorResponse)
+                                        ? new ImmutableOpeningTimes(openingTimes)
+                                        : null;
+
+            return ImmutableOpeningTimes is not null;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(CBOR, out ImmutableOpeningTimes, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given CBOR representation of opening times: the keys and values of its JSON representation.
+        /// </summary>
+        public static Boolean TryParse(CBORValue                                        CBOR,
+                                       [NotNullWhen(true)]  out ImmutableOpeningTimes?  ImmutableOpeningTimes,
+                                       [NotNullWhen(false)] out String?                 ErrorResponse)
+        {
+
+            ImmutableOpeningTimes = OpeningTimes.TryParse(CBOR, out var openingTimes, out ErrorResponse)
+                                        ? new ImmutableOpeningTimes(openingTimes)
+                                        : null;
+
+            return ImmutableOpeningTimes is not null;
+
+        }
+
+        #endregion
+
+        #region ToCBOR()
+
+        /// <summary>
+        /// Return the CBOR representation of these opening times: the keys and values of its JSON representation.
+        /// </summary>
+        public CBORValue ToCBOR()
+
+            => ToMutable().ToCBOR();
 
         #endregion
 

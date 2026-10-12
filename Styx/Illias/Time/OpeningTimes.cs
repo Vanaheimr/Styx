@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -752,6 +753,247 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        );
 
             return JSON;
+
+        }
+
+        #endregion
+
+
+        #region (static) TryParse(JSON, out OpeningTimes, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given JSON representation of opening times, as ToJSON() writes it:
+        /// "24/7", "regularOpenings" as [{ "monday": [{ "begin": "08:00", "end": "20:00" }] }],
+        /// "exceptionalOpenings" and "exceptionalClosings" as ["begin -> end"], "freeText".
+        /// The periods keep their given order.
+        /// </summary>
+        /// <param name="JSON">The JSON to parse.</param>
+        /// <param name="OpeningTimes">The parsed opening times.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(JObject                                 JSON,
+                                       [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
+        {
+
+            OpeningTimes = null;
+
+            try
+            {
+
+                foreach (var property in JSON.Properties())
+                    if (property.Name is not (_24_7 or "regularOpenings" or "exceptionalOpenings" or "exceptionalClosings" or "freeText"))
+                    {
+                        ErrorResponse = $"Unknown property '{property.Name}' of opening times!";
+                        return false;
+                    }
+
+                #region Regular openings
+
+                var regularOpenings = new List<KeyValuePair<DayOfWeek, IEnumerable<RegularHours>>>();
+
+                if (JSON["regularOpenings"] is JToken regularOpeningsJSON)
+                {
+
+                    if (regularOpeningsJSON is not JArray regularOpeningsArray)
+                    {
+                        ErrorResponse = "The regular openings must be a JSON array!";
+                        return false;
+                    }
+
+                    foreach (var regularOpening in regularOpeningsArray)
+                    {
+
+                        if (regularOpening is not JObject regularOpeningObject ||
+                            regularOpeningObject.Count != 1)
+                        {
+                            ErrorResponse = "A regular opening must be a JSON object with one weekday!";
+                            return false;
+                        }
+
+                        var weekday = regularOpeningObject.Properties().Single();
+
+                        if (!Enum.GetValues<DayOfWeek>().Any(day => day.AsString() == weekday.Name) ||
+                            weekday.Value is not JArray periodsJSON)
+                        {
+                            ErrorResponse = $"Invalid regular opening '{weekday.Name}'!";
+                            return false;
+                        }
+
+                        var dayOfWeek = Enum.GetValues<DayOfWeek>().First(day => day.AsString() == weekday.Name);
+
+                        if (regularOpenings.Any(opening => opening.Key == dayOfWeek))
+                        {
+                            ErrorResponse = $"The weekday '{weekday.Name}' must not be given twice!";
+                            return false;
+                        }
+
+                        var periods = new List<RegularHours>();
+
+                        foreach (var periodJSON in periodsJSON)
+                        {
+
+                            if (periodJSON is not JObject period ||
+                                period["begin"]?.Type != JTokenType.String ||
+                                period["end"]?.  Type != JTokenType.String ||
+                                !HourMin.TryParse(period["begin"]!.Value<String>()!, out var begin) ||
+                                !HourMin.TryParse(period["end"]!.  Value<String>()!, out var end))
+                            {
+                                ErrorResponse = $"Invalid regular hours '{periodJSON}' on {weekday.Name}!";
+                                return false;
+                            }
+
+                            periods.Add(new RegularHours(dayOfWeek, begin, end));
+
+                        }
+
+                        regularOpenings.Add(KeyValuePair.Create(dayOfWeek, (IEnumerable<RegularHours>) periods));
+
+                    }
+
+                }
+
+                #endregion
+
+                #region 24/7, as it follows from the regular openings
+
+                if (JSON[_24_7] is JToken open24HoursJSON &&
+                   (open24HoursJSON.Type != JTokenType.Boolean ||
+                    open24HoursJSON.Value<Boolean>() != (regularOpenings.Count == 0)))
+                {
+                    ErrorResponse = $"'{_24_7}' must be {(regularOpenings.Count == 0 ? "true without" : "false with")} regular openings!";
+                    return false;
+                }
+
+                #endregion
+
+                #region Exceptional openings and closings, FreeText
+
+                if (!TryParseExceptionalPeriods(JSON, "exceptionalOpenings", out var exceptionalOpenings, out ErrorResponse) ||
+                    !TryParseExceptionalPeriods(JSON, "exceptionalClosings", out var exceptionalClosings, out ErrorResponse))
+                {
+                    return false;
+                }
+
+                if (JSON["freeText"] is JToken freeTextJSON && freeTextJSON.Type != JTokenType.String)
+                {
+                    ErrorResponse = "The free text of opening times must be a text!";
+                    return false;
+                }
+
+                #endregion
+
+                OpeningTimes   = new OpeningTimes(regularOpenings,
+                                                  exceptionalOpenings,
+                                                  exceptionalClosings,
+                                                  JSON["freeText"]?.Value<String>());
+
+                ErrorResponse  = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                OpeningTimes   = null;
+                ErrorResponse  = "Invalid opening times: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (static) TryParse(CBOR, out OpeningTimes, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given CBOR representation of opening times: the keys and values of its JSON representation.
+        /// </summary>
+        /// <param name="CBOR">The CBOR to parse.</param>
+        /// <param name="OpeningTimes">The parsed opening times.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CBORValue                               CBOR,
+                                       [NotNullWhen(true)]  out OpeningTimes?  OpeningTimes,
+                                       [NotNullWhen(false)] out String?        ErrorResponse)
+        {
+
+            OpeningTimes = null;
+
+            try
+            {
+
+                if (CBORJSON.ToJSON(CBOR) is not JObject json)
+                {
+                    ErrorResponse = "Opening times must be a CBOR map!";
+                    return false;
+                }
+
+                return TryParse(json, out OpeningTimes, out ErrorResponse);
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = "Invalid opening times: " + e.Message;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region ToCBOR()
+
+        /// <summary>
+        /// Return the CBOR representation of these opening times: the keys and values of its JSON representation.
+        /// </summary>
+        public CBORValue ToCBOR()
+
+            => CBORJSON.ToCBOR(ToJSON());
+
+        #endregion
+
+        #region (private static) TryParseExceptionalPeriods(JSON, PropertyName, out Periods, out ErrorResponse)
+
+        private static Boolean TryParseExceptionalPeriods(JObject                           JSON,
+                                                          String                            PropertyName,
+                                                          out List<ExceptionalPeriod>       Periods,
+                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Periods = [];
+
+            if (JSON[PropertyName] is not JToken periodsJSON)
+            {
+                ErrorResponse = null;
+                return true;
+            }
+
+            if (periodsJSON is not JArray periodsArray)
+            {
+                ErrorResponse = $"The {PropertyName} must be a JSON array!";
+                return false;
+            }
+
+            foreach (var periodJSON in periodsArray)
+            {
+
+                var parts = periodJSON.Type == JTokenType.String
+                                ? periodJSON.Value<String>()!.Split(" -> ")
+                                : [];
+
+                if (parts.Length != 2 ||
+                    !DateTimeOffset.TryParse(parts[0], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var begin) ||
+                    !DateTimeOffset.TryParse(parts[1], CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var end)   ||
+                    end < begin)
+                {
+                    ErrorResponse = $"Invalid period '{periodJSON}' of the {PropertyName}, expected 'begin -> end'!";
+                    return false;
+                }
+
+                Periods.Add(new ExceptionalPeriod(begin, end));
+
+            }
+
+            ErrorResponse = null;
+            return true;
 
         }
 

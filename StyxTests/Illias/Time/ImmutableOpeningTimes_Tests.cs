@@ -118,6 +118,69 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region JSON_and_CBOR_read_back_what_they_wrote()
+
+        /// <summary>
+        /// The JSON and CBOR representations read back into the same opening times, also as JSON text.
+        /// </summary>
+        [Test]
+        public void JSON_and_CBOR_read_back_what_they_wrote()
+        {
+
+            var source = new ImmutableOpeningTimes(new OpeningTimes("Ring the bell").
+                                                       AddRegularOpening    (DayOfWeek.Saturday, HourMin.Parse("22:00"), HourMin.Parse("02:00")).
+                                                       AddRegularOpening    (DayOfWeek.Monday,   HourMin.Parse("07:00"), HourMin.Parse("21:00")).
+                                                       AddExceptionalOpening(Christmas, Christmas.AddHours(2)).
+                                                       AddExceptionalClosing(NewYear,   NewYear.  AddHours(6)));
+
+            var json   = source.ToJSON();
+
+            using (Assert.EnterMultipleScope())
+            {
+
+                Assert.That(ImmutableOpeningTimes.TryParse(json,                                out var fromJSON, out var errorJSON),  Is.True, errorJSON);
+                Assert.That(ImmutableOpeningTimes.TryParse(Newtonsoft.Json.Linq.JObject.Parse(json.ToString()),      out var fromText, out var errorText),  Is.True, errorText);
+                Assert.That(ImmutableOpeningTimes.TryParse(source.ToCBOR(),                     out var fromCBOR, out var errorCBOR),  Is.True, errorCBOR);
+                Assert.That(ImmutableOpeningTimes.TryParse(OpeningTimes.Open24Hours.ToJSON(),  out var open247,  out var error247),   Is.True, error247);
+
+                Assert.That(fromJSON!.ToJSON().ToString(),                   Is.EqualTo(json.ToString()));
+                Assert.That(fromText!.ToJSON().ToString(),                   Is.EqualTo(json.ToString()));
+                Assert.That(fromCBOR!.ToJSON().ToString(),                   Is.EqualTo(json.ToString()));
+                Assert.That(fromCBOR.ExceptionalClosings.Single().Begin,     Is.EqualTo(NewYear));
+                Assert.That(open247!.IsOpen24Hours,                          Is.True);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Invalid_JSON_is_refused()
+
+        [Test]
+        public void Invalid_JSON_is_refused()
+        {
+
+            var invalid = new[] {
+                              "{ \"24/7\": true, \"regularOpenings\": [ { \"monday\": [ { \"begin\": \"07:00\", \"end\": \"21:00\" } ] } ] }",
+                              "{ \"regularOpenings\": [ { \"Monday\": [ { \"begin\": \"07:00\", \"end\": \"21:00\" } ] } ] }",
+                              "{ \"regularOpenings\": [ { \"monday\": [ { \"begin\": \"7 am\", \"end\": \"21:00\" } ] } ] }",
+                              "{ \"regularOpenings\": [ { \"monday\": [] }, { \"monday\": [] } ] }",
+                              "{ \"exceptionalOpenings\": [ \"2026-12-24T12:00:00.000Z\" ] }",
+                              "{ \"exceptionalClosings\": [ \"2026-12-24T12:00:00.000Z -> 2026-12-24T10:00:00.000Z\" ] }",
+                              "{ \"opening\": true }"
+                          };
+
+            using (Assert.EnterMultipleScope())
+            {
+                foreach (var text in invalid)
+                    Assert.That(OpeningTimes.TryParse(Newtonsoft.Json.Linq.JObject.Parse(text), out _, out _),  Is.False, text);
+            }
+
+        }
+
+        #endregion
+
     }
 
 }
