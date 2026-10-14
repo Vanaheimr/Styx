@@ -359,7 +359,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 #region Parse TimeZone              [optional]
 
-                if (JSON.ParseOptional("TimeZone",
+                if (JSON.ParseOptional("timeZone",
                                        "time zone",
                                        Time_Zone.TryParse,
                                        out Time_Zone? timeZone,
