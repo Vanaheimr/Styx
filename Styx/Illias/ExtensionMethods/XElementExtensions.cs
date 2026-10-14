@@ -859,9 +859,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var xml = ParentXElement.Element(XName);
             if (xml is not null)
             {
-                Result         = Parser(xml.Value.Trim());
-                ErrorResponse  = $"Invalid optional '{Description}' value '{xml.Value}'!";
-                return false;
+
+                Result = Parser(xml.Value.Trim());
+
+                if (Result is null)
+                {
+                    ErrorResponse  = $"Invalid optional '{Description}' value '{xml.Value}'!";
+                    return false;
+                }
+
             }
 
             return true;
