@@ -1,6 +1,21 @@
 <Project>
 
   <!--
+    MSBuild stops at the first Directory.Build.props it finds walking up, so
+    without this line the existence of this file hides any other above it. A
+    repository that checks this one out as a submodule loses its own settings
+    for every project in here, and nothing says so: XMPPConformanceTests gives
+    Windows and WSL separate build output, and Hermod and Styx went back to
+    sharing bin/ and obj/ across that border the day this file arrived.
+
+    The condition makes the import a no-op in a clone of its own, where there
+    is nothing above. Imported first, so that whatever is set here still has
+    the last word.
+  -->
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"
+          Condition="Exists($([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../')))" />
+
+  <!--
     Where this assembly came from, recorded while it is being built.
 
     A launcher that reads git at startup describes the working tree as it is at
