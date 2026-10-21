@@ -910,8 +910,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     }
 
+                // A text token without a text is written as null in JSON, so it is null in CBOR as well, as the UTF-8
+                // path converts it: not the empty text, which would read back as "".
                 case JTokenType.String:
-                    return FromJSONString(JSON.Value<String>() ?? "", Options, Path);
+                    return JSON.Value<String>() is String text
+                               ? FromJSONString(text, Options, Path)
+                               : CBORValue.Null;
 
                 case JTokenType.Date:
                     return CBORValue.Tagged(
@@ -927,7 +931,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 case JTokenType.Guid:
                 case JTokenType.Uri:
                 case JTokenType.TimeSpan:
-                    return CBORValue.FromText(JSON.Value<String>() ?? "");
+                    return JSON.Value<String>() is String other
+                               ? CBORValue.FromText(other)
+                               : CBORValue.Null;
 
                 #endregion
 

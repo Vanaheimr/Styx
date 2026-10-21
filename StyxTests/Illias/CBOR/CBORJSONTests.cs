@@ -120,6 +120,31 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region A_text_token_without_a_text_is_null()
+
+        /// <summary>
+        /// A text token holding no text, as JValue.CreateString(null) makes it, is written as null in JSON: so it is
+        /// null in CBOR as well, on the Newtonsoft path as on the UTF-8 path, and reads back as null, not as "".
+        /// </summary>
+        [Test]
+        public void A_text_token_without_a_text_is_null()
+        {
+
+            var json      = new Newtonsoft.Json.Linq.JObject(new Newtonsoft.Json.Linq.JProperty("oldValue", Newtonsoft.Json.Linq.JValue.CreateString(null)));
+            var viaTree   = CBORJSON.ToCBOR(json);
+            var viaText   = CBORJSON.ToCBOR(System.Text.Encoding.UTF8.GetBytes(json.ToString(Newtonsoft.Json.Formatting.None)).AsSpan());
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(json.ToString(Newtonsoft.Json.Formatting.None),                 Is.EqualTo("{\"oldValue\":null}"));
+                Assert.That(Convert.ToHexString(viaTree.ToByteArray()),                      Is.EqualTo(Convert.ToHexString(viaText.ToByteArray())));
+                Assert.That(CBORJSON.ToJSON(viaTree)["oldValue"]!.Type,                      Is.EqualTo(Newtonsoft.Json.Linq.JTokenType.Null));
+            }
+
+        }
+
+        #endregion
+
         #region The_document_converts_back_into_the_very_same_bytes()
 
         [Test]
