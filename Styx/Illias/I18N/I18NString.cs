@@ -168,6 +168,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UInt32 Count
             => (UInt32) i18NStrings.Length;
 
+
+        /// <summary>
+        /// Create an empty internationalized (I18N) multi-language string.
+        /// </summary>
+        public static I18NString Empty
+            => new ();
+
         #endregion
 
         #region Events
@@ -307,7 +314,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Create(Language, Text)
+        #region (static) Create (Language, Text)
 
         /// <summary>
         /// Create a new internationalized (I18N) multi-language string
@@ -322,7 +329,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (static) Create(          Text)
+        #region (static) Create (          Text)
 
         /// <summary>
         /// Create a new internationalized (I18N) multi-language string
@@ -332,17 +339,6 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static I18NString Create(String Text)
 
             => new (Languages.en, Text);
-
-        #endregion
-
-        #region (static) Empty
-
-        /// <summary>
-        /// Create an empty internationalized (I18N) multi-language string.
-        /// </summary>
-        public static I18NString Empty
-
-            => new ();
 
         #endregion
 

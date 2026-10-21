@@ -50,6 +50,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public UInt32   Count
             => (UInt32) i18NStrings.Length;
 
+
+        /// <summary>
+        /// The empty multi-language text.
+        /// </summary>
+        public static ImmutableI18NString  Empty    { get; }
+            = new (ImmutableArray<I18NPair>.Empty);
+
         #endregion
 
         #region Constructor(s)
@@ -108,17 +115,35 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
-        #region (static) Empty
+        #region (static) Create   (Language, Text)
 
         /// <summary>
-        /// The empty multi-language text.
+        /// Create a new internationalized (I18N) multi-language string
+        /// based on the given language and string.
         /// </summary>
-        public static ImmutableI18NString Empty { get; }
-            = new(ImmutableArray<I18NPair>.Empty);
+        /// <param name="Language">The internationalized (I18N) language.</param>
+        /// <param name="Text">The internationalized (I18N) text.</param>
+        public static I18NString Create(Languages  Language,
+                                        String     Text)
+
+            => new (Language, Text);
 
         #endregion
 
-        #region Parse    (JSON)
+        #region (static) Create   (          Text)
+
+        /// <summary>
+        /// Create a new internationalized (I18N) multi-language string
+        /// based on english and the given string.
+        /// </summary>
+        /// <param name="Text">The internationalized (I18N) text.</param>
+        public static I18NString Create(String Text)
+
+            => new (Languages.en, Text);
+
+        #endregion
+
+        #region (static) Parse    (JSON)
 
         /// <summary>
         /// Parse the given JSON object as a JSON representation of a multi-language string.
@@ -136,7 +161,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region TryParse (JSON, out I18NText, out ErrorResponse)
+        #region (static) TryParse (JSON, out I18NText, out ErrorResponse)
 
         /// <summary>
         /// Try to parse the given JSON object as a JSON representation of a multi-language string.
