@@ -38,29 +38,29 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         // RSA keys of 2048 bits, the smallest allowed, as they take the longest.
         private static readonly Func<COSEKeyPair>[] factories = [
-            () => COSEKeyPair.ES256(),
-            () => COSEKeyPair.ES384(),
-            () => COSEKeyPair.ES512(),
-            () => COSEKeyPair.ES256K(),
-            () => COSEKeyPair.ESP256(),
-            () => COSEKeyPair.ESP384(),
-            () => COSEKeyPair.ESP512(),
-            () => COSEKeyPair.ESB256(),
-            () => COSEKeyPair.ESB320(),
-            () => COSEKeyPair.ESB384(),
-            () => COSEKeyPair.ESB512(),
-            () => COSEKeyPair.EdDSA(),
-            () => COSEKeyPair.Ed25519(),
-            () => COSEKeyPair.Ed448(),
-            () => COSEKeyPair.MLDsa44(),
-            () => COSEKeyPair.MLDsa65(),
-            () => COSEKeyPair.MLDsa87(),
-            () => COSEKeyPair.PS256(KeySizeInBits: 2048),
-            () => COSEKeyPair.PS384(KeySizeInBits: 2048),
-            () => COSEKeyPair.PS512(KeySizeInBits: 2048),
-            () => COSEKeyPair.RS256(KeySizeInBits: 2048),
-            () => COSEKeyPair.RS384(KeySizeInBits: 2048),
-            () => COSEKeyPair.RS512(KeySizeInBits: 2048)
+            () => COSEKeyPair.NewES256(),
+            () => COSEKeyPair.NewES384(),
+            () => COSEKeyPair.NewES512(),
+            () => COSEKeyPair.NewES256K(),
+            () => COSEKeyPair.NewESP256(),
+            () => COSEKeyPair.NewESP384(),
+            () => COSEKeyPair.NewESP512(),
+            () => COSEKeyPair.NewESB256(),
+            () => COSEKeyPair.NewESB320(),
+            () => COSEKeyPair.NewESB384(),
+            () => COSEKeyPair.NewESB512(),
+            () => COSEKeyPair.NewEdDSA(),
+            () => COSEKeyPair.NewEd25519(),
+            () => COSEKeyPair.NewEd448(),
+            () => COSEKeyPair.NewMLDsa44(),
+            () => COSEKeyPair.NewMLDsa65(),
+            () => COSEKeyPair.NewMLDsa87(),
+            () => COSEKeyPair.NewPS256(KeySizeInBits: 2048),
+            () => COSEKeyPair.NewPS384(KeySizeInBits: 2048),
+            () => COSEKeyPair.NewPS512(KeySizeInBits: 2048),
+            () => COSEKeyPair.NewRS256(KeySizeInBits: 2048),
+            () => COSEKeyPair.NewRS384(KeySizeInBits: 2048),
+            () => COSEKeyPair.NewRS512(KeySizeInBits: 2048)
         ];
 
 
@@ -112,7 +112,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         public void RSA_keys_below_2048_bits_are_not_made()
         {
 
-            Assert.That(() => COSEKeyPair.PS256(KeySizeInBits: 1024),
+            Assert.That(() => COSEKeyPair.NewPS256(KeySizeInBits: 1024),
                         Throws.TypeOf<COSEException>().With.Message.Contains("at least 2048 bits"));
 
         }
