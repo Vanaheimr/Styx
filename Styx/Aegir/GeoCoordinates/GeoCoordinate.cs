@@ -257,27 +257,27 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// <summary>
         /// The planet.
         /// </summary>
-        public Planets Planet { get; } = Planet;
+        public Planets             Planet        { get; } = Planet;
 
         /// <summary>
         /// The Latitude (south to nord).
         /// </summary>
-        public Latitude Latitude { get; } = Latitude;
+        public Latitude            Latitude      { get; } = Latitude;
 
         /// <summary>
         /// The Longitude (parallel to equator).
         /// </summary>
-        public Longitude Longitude { get; } = Longitude;
+        public Longitude           Longitude     { get; } = Longitude;
 
         /// <summary>
         /// The Altitude.
         /// </summary>
-        public Altitude? Altitude { get; } = Altitude;
+        public Altitude?           Altitude      { get; } = Altitude;
 
         /// <summary>
         /// The gravitational model.
         /// </summary>
-        public GravitationalModel Projection { get; } = Projection;
+        public GravitationalModel  Projection    { get; } = Projection;
 
         #endregion
 
@@ -289,8 +289,8 @@ namespace org.GraphDefined.Vanaheimr.Aegir
         /// </summary>
         public static GeoCoordinate Zero
 
-            => new GeoCoordinate(Latitude.Parse(0),
-                                 Longitude.Parse(0));
+            => new (Latitude. Parse(0),
+                    Longitude.Parse(0));
 
         #endregion
 
