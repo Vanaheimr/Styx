@@ -72,6 +72,15 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSEAlgorithm.MLDsa65,  -49, "ML-DSA-65", true, false, null),
                                (COSEAlgorithm.MLDsa87,  -50, "ML-DSA-87", true, false, null),
 
+                               // RSA [RFC 8230, RFC 8812]: on no curve
+                               // either, its keys are of key type RSA.
+                               (COSEAlgorithm.PS256,    -37, "PS256",   true,  false, null),
+                               (COSEAlgorithm.PS384,    -38, "PS384",   true,  false, null),
+                               (COSEAlgorithm.PS512,    -39, "PS512",   true,  false, null),
+                               (COSEAlgorithm.RS256,   -257, "RS256",   true,  false, null),
+                               (COSEAlgorithm.RS384,   -258, "RS384",   true,  false, null),
+                               (COSEAlgorithm.RS512,   -259, "RS512",   true,  false, null),
+
                                // HMAC [RFC 9053, Section 3.1]: message
                                // authentication and NOT signature, so
                                // IsSupportedForSigning is false for all four —

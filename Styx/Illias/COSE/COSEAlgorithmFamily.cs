@@ -58,6 +58,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         MLDSA,
 
         /// <summary>
+        /// RSASSA-PSS [RFC 8017, RFC 8230]: MGF1 with the hash of the
+        /// algorithm, and a salt as long as that hash. Signs the digest; the
+        /// signature is as wide as the modulus.
+        /// </summary>
+        RSAPSS,
+
+        /// <summary>
+        /// RSASSA-PKCS1-v1_5 [RFC 8017, RFC 8812]: registered for the keys of
+        /// WebAuthn and of the TPMs that know nothing else, and not
+        /// recommended beyond them. Deterministic by construction.
+        /// </summary>
+        RSAPKCS1,
+
+        /// <summary>
         /// HMAC [RFC 2104, RFC 9053 Section 3.1], which is not a signature
         /// machinery at all but a message authentication one - and the
         /// difference is the reason it is listed here rather than folded in

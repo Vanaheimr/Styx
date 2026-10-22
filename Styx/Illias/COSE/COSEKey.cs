@@ -31,8 +31,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 {
 
     /// <summary>
-    /// A COSE key [RFC 9052, Section 7], currently for elliptic curve keys
-    /// with both coordinates (key type EC2) as used by ECDSA.
+    /// A COSE key [RFC 9052, Section 7]: an elliptic curve key with both
+    /// coordinates (key type EC2) as used by ECDSA, an EdDSA key (OKP), an
+    /// ML-DSA key (AKP), an RSA key (RSA) or a symmetric key.
     ///
     /// The coordinates are fixed-width, zero-padded byte strings: Leading zero
     /// octets MUST be preserved [RFC 9053, Section 7.1.1]. Stripping them - as
@@ -105,6 +106,55 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static CBORValue  KLabel               { get; } = CBORValue.FromInt64(-1);
 
+        /// <summary>
+        /// The modulus n of an RSA key (label -1) [RFC 8230, Section 4].
+        /// Label -1 a FOURTH time, and -2 to -8 follow suit: on an RSA key
+        /// -3 is the private exponent where an EC2 key has its y coordinate,
+        /// and -4 the first prime where an EC2 key has its private key.
+        /// </summary>
+        public static CBORValue  NLabel               { get; } = CBORValue.FromInt64(-1);
+
+        /// <summary>
+        /// The public exponent e of an RSA key (label -2).
+        /// </summary>
+        public static CBORValue  ELabel               { get; } = CBORValue.FromInt64(-2);
+
+        /// <summary>
+        /// The private exponent d of an RSA key (label -3).
+        /// </summary>
+        public static CBORValue  RSADLabel            { get; } = CBORValue.FromInt64(-3);
+
+        /// <summary>
+        /// The first prime factor p of an RSA key (label -4).
+        /// </summary>
+        public static CBORValue  PLabel               { get; } = CBORValue.FromInt64(-4);
+
+        /// <summary>
+        /// The second prime factor q of an RSA key (label -5).
+        /// </summary>
+        public static CBORValue  QLabel               { get; } = CBORValue.FromInt64(-5);
+
+        /// <summary>
+        /// The first CRT exponent dP = d mod (p - 1) of an RSA key (label -6).
+        /// </summary>
+        public static CBORValue  DPLabel              { get; } = CBORValue.FromInt64(-6);
+
+        /// <summary>
+        /// The second CRT exponent dQ = d mod (q - 1) of an RSA key (label -7).
+        /// </summary>
+        public static CBORValue  DQLabel              { get; } = CBORValue.FromInt64(-7);
+
+        /// <summary>
+        /// The CRT coefficient qInv = q^-1 mod p of an RSA key (label -8).
+        /// </summary>
+        public static CBORValue  QInvLabel            { get; } = CBORValue.FromInt64(-8);
+
+        /// <summary>
+        /// The further primes of a multi-prime RSA key (label -9), which this
+        /// implementation keeps but can not compute with.
+        /// </summary>
+        public static CBORValue  OtherPrimesLabel     { get; } = CBORValue.FromInt64(-9);
+
         #endregion
 
         #region Properties
@@ -150,9 +200,49 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The private key, zero-padded to the width of the group order.
         /// On a key of key type OKP this is the EdDSA private key, which is
-        /// a fixed-width octet string rather than a scalar.
+        /// a fixed-width octet string rather than a scalar. On a key of key
+        /// type RSA it is the private exponent d (label -3), without leading
+        /// zeroes like every RSA parameter.
         /// </summary>
         public Byte[]?                                            D                       { get; }
+
+        /// <summary>
+        /// The modulus n of an RSA key (label -1) [RFC 8230]. Every RSA
+        /// parameter is an unsigned big-endian integer of the fewest octets
+        /// that hold it: no leading zeroes, unlike the coordinates of an
+        /// elliptic curve key, and the thumbprint depends on it.
+        /// </summary>
+        public Byte[]?                                            N                       { get; }
+
+        /// <summary>
+        /// The public exponent e of an RSA key (label -2).
+        /// </summary>
+        public Byte[]?                                            E                       { get; }
+
+        /// <summary>
+        /// The first prime factor p of an RSA private key (label -4).
+        /// </summary>
+        public Byte[]?                                            P                       { get; }
+
+        /// <summary>
+        /// The second prime factor q of an RSA private key (label -5).
+        /// </summary>
+        public Byte[]?                                            Q                       { get; }
+
+        /// <summary>
+        /// The first CRT exponent dP of an RSA private key (label -6).
+        /// </summary>
+        public Byte[]?                                            DP                      { get; }
+
+        /// <summary>
+        /// The second CRT exponent dQ of an RSA private key (label -7).
+        /// </summary>
+        public Byte[]?                                            DQ                      { get; }
+
+        /// <summary>
+        /// The CRT coefficient qInv of an RSA private key (label -8).
+        /// </summary>
+        public Byte[]?                                            QInv                    { get; }
 
         /// <summary>
         /// The public key of an algorithm key pair (label -1) [RFC 9964].
@@ -196,7 +286,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public Boolean                                            IsPrivate
 
-            => D is not null || Priv is not null || K is not null;
+            => D is not null || Priv is not null || K is not null ||
+               P is not null || Q    is not null || DP is not null || DQ is not null || QInv is not null;
 
         #endregion
 
@@ -217,6 +308,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="Pub">The optional public key of an algorithm key pair.</param>
         /// <param name="Priv">The optional private key seed of an algorithm key pair.</param>
         /// <param name="K">The optional value of a symmetric key.</param>
+        /// <param name="N">The optional modulus of an RSA key.</param>
+        /// <param name="E">The optional public exponent of an RSA key.</param>
+        /// <param name="P">The optional first prime factor of an RSA private key.</param>
+        /// <param name="Q">The optional second prime factor of an RSA private key.</param>
+        /// <param name="DP">The optional first CRT exponent of an RSA private key.</param>
+        /// <param name="DQ">The optional second CRT exponent of an RSA private key.</param>
+        /// <param name="QInv">The optional CRT coefficient of an RSA private key.</param>
         public COSEKey(COSEKeyType                                      KeyType,
                        COSECurve?                                       Curve                  = null,
                        Byte[]?                                          X                      = null,
@@ -228,7 +326,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        IEnumerable<KeyValuePair<CBORValue, CBORValue>>? AdditionalParameters   = null,
                        Byte[]?                                          Pub                    = null,
                        Byte[]?                                          Priv                   = null,
-                       Byte[]?                                          K                      = null)
+                       Byte[]?                                          K                      = null,
+                       Byte[]?                                          N                      = null,
+                       Byte[]?                                          E                      = null,
+                       Byte[]?                                          P                      = null,
+                       Byte[]?                                          Q                      = null,
+                       Byte[]?                                          DP                     = null,
+                       Byte[]?                                          DQ                     = null,
+                       Byte[]?                                          QInv                   = null)
         {
 
             this.KeyType               = KeyType;
@@ -239,6 +344,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             this.Pub                   = Pub;
             this.Priv                  = Priv;
             this.K                     = K;
+            this.N                     = N;
+            this.E                     = E;
+            this.P                     = P;
+            this.Q                     = Q;
+            this.DP                    = DP;
+            this.DQ                    = DQ;
+            this.QInv                  = QInv;
             this.KeyIdentifier         = KeyIdentifier;
             this.Algorithm             = Algorithm;
             this.KeyOperations         = KeyOperations?.       ToArray();
@@ -383,6 +495,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                                    ?? throw new COSEException("The ML-DSA parameter set of the given public key is not registered within the IANA \"COSE Algorithms\" registry!"),
                                Pub:            mlDsaPublic.GetEncoded()),
 
+                   // RSA: every parameter an integer of the fewest octets
+                   // [RFC 8230, Section 4]. A private key without its CRT
+                   // parameters does not even know its public exponent.
+                   RsaPrivateCrtKeyParameters   rsaPrivate
+                       => new (COSEKeyType.RSA,
+                               D:              BigIntegers.AsUnsignedByteArray(rsaPrivate.Exponent),
+                               KeyIdentifier:  KeyIdentifier,
+                               Algorithm:      Algorithm,
+                               N:              BigIntegers.AsUnsignedByteArray(rsaPrivate.Modulus),
+                               E:              BigIntegers.AsUnsignedByteArray(rsaPrivate.PublicExponent),
+                               P:              BigIntegers.AsUnsignedByteArray(rsaPrivate.P),
+                               Q:              BigIntegers.AsUnsignedByteArray(rsaPrivate.Q),
+                               DP:             BigIntegers.AsUnsignedByteArray(rsaPrivate.DP),
+                               DQ:             BigIntegers.AsUnsignedByteArray(rsaPrivate.DQ),
+                               QInv:           BigIntegers.AsUnsignedByteArray(rsaPrivate.QInv)),
+
+                   RsaKeyParameters             rsaPrivate when rsaPrivate.IsPrivate
+                       => throw new COSEException("An RSA private key without its CRT parameters can not become a COSE key, which carries all of them [RFC 8230, Section 4]!"),
+
+                   RsaKeyParameters             rsaPublic
+                       => new (COSEKeyType.RSA,
+                               KeyIdentifier:  KeyIdentifier,
+                               Algorithm:      Algorithm,
+                               N:              BigIntegers.AsUnsignedByteArray(rsaPublic.Modulus),
+                               E:              BigIntegers.AsUnsignedByteArray(rsaPublic.Exponent)),
+
                    _   => throw new COSEException($"A COSE key can not be created from a {Key.GetType().Name}!")
 
                };
@@ -481,6 +619,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
             Byte[]?                  d               = null;
             Byte[]?                  pub             = null;
             Byte[]?                  priv            = null;
+            Byte[]?                  n               = null;
+            Byte[]?                  e               = null;
+            Byte[]?                  p               = null;
+            Byte[]?                  q               = null;
+            Byte[]?                  dp              = null;
+            Byte[]?                  dq              = null;
+            Byte[]?                  qInv            = null;
 
             var additionalParameters = new List<KeyValuePair<CBORValue, CBORValue>>();
 
@@ -504,6 +649,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var isAlgorithmKeyPair = keyType == COSEKeyType.AKP;
             var isSymmetric        = keyType == COSEKeyType.Symmetric;
+            var isRSA              = keyType == COSEKeyType.RSA;
 
             Byte[]? k              = null;
 
@@ -584,6 +730,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     }
 
+                    else if (isRSA)
+                    {
+                        if (!TryReadRSAInteger(parameter.Value, "modulus n", out n, out ErrorResponse))
+                            return false;
+                    }
+
                     else
                     {
 
@@ -610,6 +762,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     }
 
+                    else if (isRSA)
+                    {
+                        if (!TryReadRSAInteger(parameter.Value, "public exponent e", out e, out ErrorResponse))
+                            return false;
+                    }
+
                     else
                     {
 
@@ -624,17 +782,58 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 }
 
                 else if (parameter.Key == YLabel)
-                    y = parameter.Value;
+                {
+
+                    if (isRSA)
+                    {
+                        if (!TryReadRSAInteger(parameter.Value, "private exponent d", out d, out ErrorResponse))
+                            return false;
+                    }
+
+                    else
+                        y = parameter.Value;
+
+                }
 
                 else if (parameter.Key == DLabel)
                 {
 
-                    if (!parameter.Value.TryGetBytes(out d))
+                    if (isRSA)
+                    {
+                        if (!TryReadRSAInteger(parameter.Value, "prime factor p", out p, out ErrorResponse))
+                            return false;
+                    }
+
+                    else if (!parameter.Value.TryGetBytes(out d))
                     {
                         ErrorResponse = "The private key of a COSE key must be a byte string!";
                         return false;
                     }
 
+                }
+
+                else if (isRSA && parameter.Key == QLabel)
+                {
+                    if (!TryReadRSAInteger(parameter.Value, "prime factor q",          out q,    out ErrorResponse))
+                        return false;
+                }
+
+                else if (isRSA && parameter.Key == DPLabel)
+                {
+                    if (!TryReadRSAInteger(parameter.Value, "CRT exponent dP",         out dp,   out ErrorResponse))
+                        return false;
+                }
+
+                else if (isRSA && parameter.Key == DQLabel)
+                {
+                    if (!TryReadRSAInteger(parameter.Value, "CRT exponent dQ",         out dq,   out ErrorResponse))
+                        return false;
+                }
+
+                else if (isRSA && parameter.Key == QInvLabel)
+                {
+                    if (!TryReadRSAInteger(parameter.Value, "CRT coefficient qInv",    out qInv, out ErrorResponse))
+                        return false;
                 }
 
                 else
@@ -654,6 +853,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (isSymmetric && k is null)
             {
                 ErrorResponse = "A COSE key of key type Symmetric must carry its key value [RFC 9053, Section 7.3]!";
+                return false;
+            }
+
+            // The public half is required of a private RSA key as well
+            // [RFC 8230, Section 4].
+            if (isRSA && (n is null || e is null))
+            {
+                ErrorResponse = "A COSE key of key type RSA must carry its modulus n and its public exponent e [RFC 8230, Section 4]!";
                 return false;
             }
 
@@ -693,8 +900,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
                       additionalParameters,
                       pub,
                       priv,
-                      k
+                      k,
+                      n,
+                      e,
+                      p,
+                      q,
+                      dp,
+                      dq,
+                      qInv
                   );
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region (private static) TryReadRSAInteger(Value, Name, out Integer, out ErrorResponse)
+
+        /// <summary>
+        /// Read an RSA key parameter: a byte string holding an unsigned
+        /// big-endian integer in "the minimum number of octets needed to
+        /// represent the value" [RFC 8230, Section 4]. A leading zero is
+        /// refused rather than stripped, as the thumbprint is computed over
+        /// the bytes as they are: the same key written twice would otherwise
+        /// have two identities.
+        /// </summary>
+        private static Boolean TryReadRSAInteger(CBORValue                         Value,
+                                                 String                            Name,
+                                                 [NotNullWhen(true)]  out Byte[]?  Integer,
+                                                 [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            if (!Value.TryGetBytes(out Integer))
+            {
+                ErrorResponse = $"The {Name} of an RSA key must be a byte string!";
+                return false;
+            }
+
+            if (Integer.Length == 0 || Integer[0] == 0x00)
+            {
+                Integer       = null;
+                ErrorResponse = $"The {Name} of an RSA key must be encoded in the minimum number of octets, without leading zeroes [RFC 8230, Section 4]!";
+                return false;
+            }
 
             ErrorResponse = null;
             return true;
@@ -775,8 +1025,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// Try to convert this COSE key into a public key of its key type:
-        /// an elliptic curve point (EC2), an EdDSA key (OKP) or an ML-DSA key
-        /// (AKP).
+        /// an elliptic curve point (EC2), an EdDSA key (OKP), an ML-DSA key
+        /// (AKP) or an RSA key (RSA).
         /// </summary>
         /// <param name="PublicKey">The public key.</param>
         /// <param name="ErrorResponse">An optional error response.</param>
@@ -792,6 +1042,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 case COSEKeyType.AKP:
                     return TryToAkpPublicKey(out PublicKey, out ErrorResponse);
+
+                case COSEKeyType.RSA:
+                    return TryToRSAPublicKey(out PublicKey, out ErrorResponse);
 
             }
 
@@ -1010,6 +1263,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 case COSEKeyType.AKP:
                     return TryToAkpPrivateKey(out PrivateKey, out ErrorResponse);
 
+                case COSEKeyType.RSA:
+                    return TryToRSAPrivateKey(out PrivateKey, out ErrorResponse);
+
             }
 
             var result  = TryToECPrivateKey(out var ecPrivateKey, out ErrorResponse);
@@ -1099,6 +1355,133 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
                 ErrorResponse = $"The private key of the COSE key is invalid: {e.Message}";
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region (private) TryToRSAPublicKey / TryToRSAPrivateKey
+
+        /// <summary>
+        /// An RSA public key: the modulus and the public exponent.
+        /// </summary>
+        private Boolean TryToRSAPublicKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PublicKey,
+                                          [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            PublicKey = null;
+
+            if (N is null || E is null)
+            {
+                ErrorResponse = "A COSE key of key type RSA must carry its modulus n and its public exponent e [RFC 8230, Section 4]!";
+                return false;
+            }
+
+            try
+            {
+
+                PublicKey      = new RsaKeyParameters(false, new BigInteger(1, N), new BigInteger(1, E));
+                ErrorResponse  = null;
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                ErrorResponse = $"The public key of the COSE key is invalid: {e.Message}";
+                return false;
+            }
+
+        }
+
+        /// <summary>
+        /// An RSA private key with all of its CRT parameters, which RFC 8230
+        /// requires of a two-prime key, and which must agree with each other.
+        ///
+        /// The check is not pedantry. A CRT signer computes the signature
+        /// modulo p and modulo q and joins the halves; if one half is wrong,
+        /// the faulty signature and the message give away a factor of n
+        /// [Boneh, DeMillo, Lipton 1997]. A key whose dP does not belong to
+        /// its d is exactly such a fault, built in.
+        /// </summary>
+        private Boolean TryToRSAPrivateKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PrivateKey,
+                                           [NotNullWhen(false)] out String?                  ErrorResponse)
+        {
+
+            PrivateKey = null;
+
+            if (AdditionalParameters.Any(parameter => parameter.Key == OtherPrimesLabel))
+            {
+                ErrorResponse = "Multi-prime RSA keys are not supported by this implementation!";
+                return false;
+            }
+
+            if (N is null || E is null)
+            {
+                ErrorResponse = "A COSE key of key type RSA must carry its modulus n and its public exponent e [RFC 8230, Section 4]!";
+                return false;
+            }
+
+            if (D is null)
+            {
+                ErrorResponse = "The COSE key holds no private key material!";
+                return false;
+            }
+
+            if (P is null || Q is null || DP is null || DQ is null || QInv is null)
+            {
+                ErrorResponse = "An RSA private key must carry d, p, q, dP, dQ and qInv [RFC 8230, Section 4]!";
+                return false;
+            }
+
+            var n     = new BigInteger(1, N);
+            var e     = new BigInteger(1, E);
+            var d     = new BigInteger(1, D);
+            var p     = new BigInteger(1, P);
+            var q     = new BigInteger(1, Q);
+            var dp    = new BigInteger(1, DP);
+            var dq    = new BigInteger(1, DQ);
+            var qInv  = new BigInteger(1, QInv);
+
+            var pMinus1 = p.Subtract(BigInteger.One);
+            var qMinus1 = q.Subtract(BigInteger.One);
+
+            if (!p.Multiply(q).Equals(n))
+            {
+                ErrorResponse = "The prime factors p and q of the RSA key are not the factors of its modulus n!";
+                return false;
+            }
+
+            // e·d ≡ 1 modulo the least common multiple of p-1 and q-1, which
+            // holds whether d was reduced modulo λ(n) or modulo φ(n).
+            var lambda = pMinus1.Multiply(qMinus1).Divide(pMinus1.Gcd(qMinus1));
+
+            if (!e.Multiply(d).Mod(lambda).Equals(BigInteger.One))
+            {
+                ErrorResponse = "The private exponent d of the RSA key does not belong to its public exponent e!";
+                return false;
+            }
+
+            if (!d.Mod(pMinus1).Equals(dp) ||
+                !d.Mod(qMinus1).Equals(dq) ||
+                !q.Multiply(qInv).Mod(p).Equals(BigInteger.One))
+            {
+                ErrorResponse = "The CRT parameters dP, dQ and qInv of the RSA key do not belong to its d, p and q!";
+                return false;
+            }
+
+            try
+            {
+
+                PrivateKey     = new RsaPrivateCrtKeyParameters(n, e, d, p, q, dp, dq, qInv);
+                ErrorResponse  = null;
+                return true;
+
+            }
+            catch (Exception exception)
+            {
+                ErrorResponse = $"The private key of the COSE key is invalid: {exception.Message}";
                 return false;
             }
 
@@ -1239,6 +1622,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             }
 
+            // An RSA key: -1 to -8 once more, with meanings of their own
+            // [RFC 8230, Section 4].
+            else if (KeyType == COSEKeyType.RSA)
+            {
+
+                if (N    is not null) parameters.Add(new (NLabel,    CBORValue.FromBytes(N)));
+                if (E    is not null) parameters.Add(new (ELabel,    CBORValue.FromBytes(E)));
+                if (D    is not null) parameters.Add(new (RSADLabel, CBORValue.FromBytes(D)));
+                if (P    is not null) parameters.Add(new (PLabel,    CBORValue.FromBytes(P)));
+                if (Q    is not null) parameters.Add(new (QLabel,    CBORValue.FromBytes(Q)));
+                if (DP   is not null) parameters.Add(new (DPLabel,   CBORValue.FromBytes(DP)));
+                if (DQ   is not null) parameters.Add(new (DQLabel,   CBORValue.FromBytes(DQ)));
+                if (QInv is not null) parameters.Add(new (QInvLabel, CBORValue.FromBytes(QInv)));
+
+            }
+
             else
             {
 
@@ -1344,6 +1743,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                     parameters.Add(new (AlgorithmLabel, Algorithm.Value.ToCBOR()));
                     parameters.Add(new (PubLabel,       CBORValue.FromBytes(Pub)));
+
+                    break;
+
+                }
+
+                case COSEKeyType.RSA:
+                {
+
+                    // The modulus and the public exponent [RFC 9679, Section
+                    // 4.3], as the fewest octets: that is why a parsed key
+                    // with a leading zero is refused rather than kept.
+                    if (N is null || E is null)
+                        throw new COSEException("The thumbprint of a COSE key of key type RSA needs its modulus and its public exponent!");
+
+                    parameters.Add(new (NLabel, CBORValue.FromBytes(N)));
+                    parameters.Add(new (ELabel, CBORValue.FromBytes(E)));
 
                     break;
 
@@ -1458,7 +1873,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     ThumbprintKeyIdentifier(LengthInBytes, HashAlgorithm),
                     Algorithm,
                     KeyOperations,
-                    AdditionalParameters);
+                    AdditionalParameters,
+                    Pub,
+                    Priv,
+                    K,
+                    N,
+                    E,
+                    P,
+                    Q,
+                    DP,
+                    DQ,
+                    QInv);
 
         #endregion
 
@@ -1488,9 +1913,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     KeyIdentifier,
                     Algorithm,
                     KeyOperations,
-                    AdditionalParameters,
+                    // The further primes of a multi-prime RSA key are private.
+                    AdditionalParameters.Where(parameter => KeyType != COSEKeyType.RSA || parameter.Key != OtherPrimesLabel),
                     Pub,
-                    null);
+                    null,
+                    null,
+                    N,
+                    E);
 
         #endregion
 
@@ -1539,7 +1968,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public override String ToString()
 
-            => $"{KeyType}{(Curve.HasValue ? $" {Curve.Value.Name}" : "")}{(IsPrivate ? " private" : " public")} key{(KeyIdentifier is not null ? $" '{KeyIdentifier.ToHexString()}'" : "")}";
+            => $"{KeyType}{(Curve.HasValue ? $" {Curve.Value.Name}" : "")}{(N is not null ? $" {new BigInteger(1, N).BitLength}" : "")}{(IsPrivate ? " private" : " public")} key{(KeyIdentifier is not null ? $" '{KeyIdentifier.ToHexString()}'" : "")}";
 
         #endregion
 

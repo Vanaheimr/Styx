@@ -135,6 +135,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {  -49, new ("ML-DSA-65", "CBOR Object Signing Algorithm for ML-DSA-65", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_65) },
             {  -50, new ("ML-DSA-87", "CBOR Object Signing Algorithm for ML-DSA-87", COSEAlgorithmFamily.MLDSA, null,                     null,                      true,  false, MLDsaParameters.ml_dsa_87) },
 
+            // RSA [RFC 8230, RFC 8812]. On no curve either: its keys are of
+            // key type RSA, and at least 2048 bits wide [RFC 8230, Section 6.1].
+            {  -37, new ("PS256",   "RSASSA-PSS w/ SHA-256",                         COSEAlgorithmFamily.RSAPSS,   HashAlgorithmName.SHA256, null,                   true,  false) },
+            {  -38, new ("PS384",   "RSASSA-PSS w/ SHA-384",                         COSEAlgorithmFamily.RSAPSS,   HashAlgorithmName.SHA384, null,                   true,  false) },
+            {  -39, new ("PS512",   "RSASSA-PSS w/ SHA-512",                         COSEAlgorithmFamily.RSAPSS,   HashAlgorithmName.SHA512, null,                   true,  false) },
+            { -257, new ("RS256",   "RSASSA-PKCS1-v1_5 using SHA-256",               COSEAlgorithmFamily.RSAPKCS1, HashAlgorithmName.SHA256, null,                   true,  false) },
+            { -258, new ("RS384",   "RSASSA-PKCS1-v1_5 using SHA-384",               COSEAlgorithmFamily.RSAPKCS1, HashAlgorithmName.SHA384, null,                   true,  false) },
+            { -259, new ("RS512",   "RSASSA-PKCS1-v1_5 using SHA-512",               COSEAlgorithmFamily.RSAPKCS1, HashAlgorithmName.SHA512, null,                   true,  false) },
+
             // HMAC [RFC 9053, Section 3.1]. Message authentication rather
             // than signature: symmetric, so IsSupportedForSigning is false for
             // all four and Sign refuses them by family. The name reads "hash
@@ -414,6 +423,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// it in CBOR rather than as base64 within JSON.
         /// </summary>
         public static COSEAlgorithm  MLDsa87    { get; } = new ( -50);
+
+        /// <summary>
+        /// RSASSA-PSS with SHA-256 (algorithm -37) [RFC 8230]: MGF1 with
+        /// SHA-256 and a 32-byte salt. The RSA algorithm to choose where RSA
+        /// has to be.
+        /// </summary>
+        public static COSEAlgorithm  PS256      { get; } = new ( -37);
+
+        /// <summary>
+        /// RSASSA-PSS with SHA-384 (algorithm -38) [RFC 8230].
+        /// </summary>
+        public static COSEAlgorithm  PS384      { get; } = new ( -38);
+
+        /// <summary>
+        /// RSASSA-PSS with SHA-512 (algorithm -39) [RFC 8230].
+        /// </summary>
+        public static COSEAlgorithm  PS512      { get; } = new ( -39);
+
+        /// <summary>
+        /// RSASSA-PKCS1-v1_5 with SHA-256 (algorithm -257) [RFC 8812], what
+        /// WebAuthn authenticators and TPMs offer when they offer RSA.
+        /// </summary>
+        public static COSEAlgorithm  RS256      { get; } = new (-257);
+
+        /// <summary>
+        /// RSASSA-PKCS1-v1_5 with SHA-384 (algorithm -258) [RFC 8812].
+        /// </summary>
+        public static COSEAlgorithm  RS384      { get; } = new (-258);
+
+        /// <summary>
+        /// RSASSA-PKCS1-v1_5 with SHA-512 (algorithm -259) [RFC 8812].
+        /// </summary>
+        public static COSEAlgorithm  RS512      { get; } = new (-259);
+
+        /// <summary>
+        /// The smallest RSA modulus the RSA algorithms accept, in bits: "A key
+        /// of size 2048 bits or larger MUST be used" [RFC 8230, Section 6.1].
+        /// </summary>
+        public const Int32 MinimumRSAModulusSizeInBits = 2048;
 
 
         /// <summary>
@@ -1077,6 +1125,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 COSEAlgorithmFamily.ECDSA  => SignECDSA(ToBeSigned, PrivateKey, Random, Deterministic),
                 COSEAlgorithmFamily.EdDSA  => SignPure (ToBeSigned, PrivateKey, CreateEdDSASigner(PrivateKey, true)),
                 COSEAlgorithmFamily.MLDSA  => SignPure (ToBeSigned, PrivateKey, CreateMLDsaSigner(Deterministic), Random),
+                COSEAlgorithmFamily.RSAPSS or
+                COSEAlgorithmFamily.RSAPKCS1
+                                           => SignPure (ToBeSigned, PrivateKey, CreateRSASigner(PrivateKey, true, Deterministic), Random),
                 _                          => throw new COSEException($"The COSE algorithm '{Name}' is not supported for signing by this implementation!")
             };
 
@@ -1130,6 +1181,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// EdDSA and ML-DSA, which sign the signature input ITSELF. There is
         /// no digest step: handing either of them a hash would produce a
         /// signature that is valid for the hash and that nobody else accepts.
+        /// The RSA signers are handed the signature input whole as well, as
+        /// they hash it themselves.
         /// </summary>
         private Byte[] SignPure(ReadOnlySpan<Byte>      ToBeSigned,
                                 AsymmetricKeyParameter  PrivateKey,
@@ -1192,6 +1245,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (private) CreateRSASigner(Key, ForSigning, Deterministic)
+
+        /// <summary>
+        /// The RSA signer of this algorithm, for a key of at least 2048 bits
+        /// [RFC 8230, Section 6.1]: a private one to sign, a public one to
+        /// verify, as Bouncy Castle would otherwise compute with whichever
+        /// exponent it is given.
+        ///
+        /// RSASSA-PSS draws its salt at random. Deterministic takes a salt of
+        /// zero bytes instead, of the same length, so that the same input
+        /// yields the same bytes. Unlike a repeated ECDSA nonce a repeated
+        /// salt reveals nothing about the key, and a verifier can not tell
+        /// the two apart: the salt is recovered from the signature, not
+        /// compared with anything [RFC 8017, Section 9.1.2].
+        ///
+        /// RSASSA-PKCS1-v1_5 has no salt and is deterministic anyway.
+        /// </summary>
+        private ISigner CreateRSASigner(AsymmetricKeyParameter  Key,
+                                        Boolean                 ForSigning,
+                                        Boolean                 Deterministic)
+        {
+
+            if (Key is not RsaKeyParameters rsaKey)
+                throw new COSEException($"The COSE algorithm '{Name}' needs an RSA key, but was given a {Key.GetType().Name}!");
+
+            if (rsaKey.IsPrivate != ForSigning)
+                throw new COSEException(ForSigning
+                                            ? $"The COSE algorithm '{Name}' needs a private RSA key to sign!"
+                                            : $"The COSE algorithm '{Name}' needs a public RSA key to verify!");
+
+            if (rsaKey.Modulus.BitLength < MinimumRSAModulusSizeInBits)
+                throw new COSEException($"The COSE algorithm '{Name}' needs an RSA key of at least {MinimumRSAModulusSizeInBits} bits [RFC 8230, Section 6.1], but the given key has {rsaKey.Modulus.BitLength} bits!");
+
+            if (Family == COSEAlgorithmFamily.RSAPKCS1)
+                return new RsaDigestSigner(CreateDigest());
+
+            var saltLength = CreateDigest().GetDigestSize();
+
+            return Deterministic
+                       ? new PssSigner(new RsaBlindedEngine(), CreateDigest(), CreateDigest(), new Byte[saltLength])
+                       : new PssSigner(new RsaBlindedEngine(), CreateDigest(), CreateDigest(), saltLength);
+
+        }
+
+        #endregion
+
         #region Verify(ToBeSigned, Signature, PublicKey, out ErrorResponse)
 
         /// <summary>
@@ -1231,6 +1330,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
                     case COSEAlgorithmFamily.MLDSA:
                         return VerifyPure(ToBeSigned, Signature, PublicKey,
                                           CreateMLDsaSigner(false), out ErrorResponse);
+
+                    case COSEAlgorithmFamily.RSAPSS:
+                    case COSEAlgorithmFamily.RSAPKCS1:
+                    {
+
+                        var verifier = CreateRSASigner(PublicKey, false, false);
+
+                        // An RSA signature is exactly as wide as the modulus,
+                        // leading zeroes included [RFC 8017, Section 8].
+                        var modulusSizeInBytes = (((RsaKeyParameters) PublicKey).Modulus.BitLength + 7) / 8;
+
+                        if (Signature.Length != modulusSizeInBytes)
+                        {
+                            ErrorResponse = $"An RSA signature of the given key must be {modulusSizeInBytes} bytes long, but was {Signature.Length} bytes long!";
+                            return false;
+                        }
+
+                        return VerifyPure(ToBeSigned, Signature, PublicKey, verifier, out ErrorResponse);
+
+                    }
 
                     default:
                         ErrorResponse = $"The COSE algorithm '{Name}' is not a signature algorithm!";
