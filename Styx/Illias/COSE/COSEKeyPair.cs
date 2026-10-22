@@ -38,85 +38,102 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                        AsymmetricCipherKeyPair  KeyPair)
     {
 
+        #region Properties
+
+        /// <summary>
+        /// The COSE algorithm identifier.
+        /// </summary>
         public COSEAlgorithm            Algorithm    { get; } = Algorithm;
+
+        /// <summary>
+        /// The asymmetric cipher key pair.
+        /// </summary>
         public AsymmetricCipherKeyPair  KeyPair      { get; } = KeyPair;
 
 
+        /// <summary>
+        /// The private key parameter.
+        /// </summary>
         public AsymmetricKeyParameter Private
             => KeyPair.Private;
 
+        /// <summary>
+        /// The public key parameter.
+        /// </summary>
         public AsymmetricKeyParameter Public
             => KeyPair.Public;
+
+        #endregion
 
 
         #region ECDSA
 
         // ES256, ES384 and ES512 leave the curve to the key: a new key is on
         // the curve they are used with in practice.
-        public static COSEKeyPair ES256   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewES256   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ES256,
                     KeyPair ?? COSECurve.P256.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ES384   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewES384   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ES384,
                     KeyPair ?? COSECurve.P384.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ES512   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewES512   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ES512,
                     KeyPair ?? COSECurve.P521.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ES256K  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewES256K  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ES256K,
                     KeyPair ?? COSECurve.Secp256k1.NewKeyPair(SecureRandom));
 
 
-        public static COSEKeyPair ESP256  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESP256  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESP256,
                     KeyPair ?? COSECurve.P256.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ESP384  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESP384  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESP384,
                     KeyPair ?? COSECurve.P384.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ESP512  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESP512  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESP512,
                     KeyPair ?? COSECurve.P521.NewKeyPair(SecureRandom));
 
 
-        public static COSEKeyPair ESB256  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESB256  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESB256,
                     KeyPair ?? COSECurve.BrainpoolP256r1.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ESB320  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESB320  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESB320,
                     KeyPair ?? COSECurve.BrainpoolP320r1.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ESB384  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESB384  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESB384,
                     KeyPair ?? COSECurve.BrainpoolP384r1.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair ESB512  (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewESB512  (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.ESB512,
                     KeyPair ?? COSECurve.BrainpoolP512r1.NewKeyPair(SecureRandom));
@@ -126,8 +143,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region EdDSA
 
         // EdDSA leaves the curve to the key: a new key is an Ed25519 key.
-        public static COSEKeyPair EdDSA   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewEdDSA   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
         {
 
             if (KeyPair is not null)
@@ -145,8 +162,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static COSEKeyPair Ed25519 (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewEd25519 (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
         {
 
             if (KeyPair is not null)
@@ -164,8 +181,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         }
 
-        public static COSEKeyPair Ed448   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewEd448   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
         {
 
             if (KeyPair is not null)
@@ -187,20 +204,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region ML-DSA
 
-        public static COSEKeyPair MLDsa44 (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewMLDsa44 (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.MLDsa44,
                     KeyPair ?? MLDsaParameters.ml_dsa_44.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair MLDsa65 (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewMLDsa65 (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.MLDsa65,
                     KeyPair ?? MLDsaParameters.ml_dsa_65.NewKeyPair(SecureRandom));
 
-        public static COSEKeyPair MLDsa87 (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null)
+        public static COSEKeyPair NewMLDsa87 (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null)
 
             => new (COSEAlgorithm.MLDsa87,
                     KeyPair ?? MLDsaParameters.ml_dsa_87.NewKeyPair(SecureRandom));
@@ -211,44 +228,44 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         // RSA keys of at least 2048 bits [RFC 8230, Section 6.1]; a new key
         // has 3072 bits, the size NIST holds sufficient beyond 2030.
-        public static COSEKeyPair PS256   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null,
-                                           Int32                     KeySizeInBits  = 3072)
+        public static COSEKeyPair NewPS256   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null,
+                                              Int32                     KeySizeInBits  = 3072)
 
             => new (COSEAlgorithm.PS256,
                     KeyPair ?? NewRSAKeyPair(KeySizeInBits, SecureRandom));
 
-        public static COSEKeyPair PS384   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null,
-                                           Int32                     KeySizeInBits  = 3072)
+        public static COSEKeyPair NewPS384   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null,
+                                              Int32                     KeySizeInBits  = 3072)
 
             => new (COSEAlgorithm.PS384,
                     KeyPair ?? NewRSAKeyPair(KeySizeInBits, SecureRandom));
 
-        public static COSEKeyPair PS512   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null,
-                                           Int32                     KeySizeInBits  = 3072)
+        public static COSEKeyPair NewPS512   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null,
+                                              Int32                     KeySizeInBits  = 3072)
 
             => new (COSEAlgorithm.PS512,
                     KeyPair ?? NewRSAKeyPair(KeySizeInBits, SecureRandom));
 
-        public static COSEKeyPair RS256   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null,
-                                           Int32                     KeySizeInBits  = 3072)
+        public static COSEKeyPair NewRS256   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null,
+                                              Int32                     KeySizeInBits  = 3072)
 
             => new (COSEAlgorithm.RS256,
                     KeyPair ?? NewRSAKeyPair(KeySizeInBits, SecureRandom));
 
-        public static COSEKeyPair RS384   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null,
-                                           Int32                     KeySizeInBits  = 3072)
+        public static COSEKeyPair NewRS384   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null,
+                                              Int32                     KeySizeInBits  = 3072)
 
             => new (COSEAlgorithm.RS384,
                     KeyPair ?? NewRSAKeyPair(KeySizeInBits, SecureRandom));
 
-        public static COSEKeyPair RS512   (AsymmetricCipherKeyPair?  KeyPair        = null,
-                                           SecureRandom?             SecureRandom   = null,
-                                           Int32                     KeySizeInBits  = 3072)
+        public static COSEKeyPair NewRS512   (AsymmetricCipherKeyPair?  KeyPair        = null,
+                                              SecureRandom?             SecureRandom   = null,
+                                              Int32                     KeySizeInBits  = 3072)
 
             => new (COSEAlgorithm.RS512,
                     KeyPair ?? NewRSAKeyPair(KeySizeInBits, SecureRandom));
