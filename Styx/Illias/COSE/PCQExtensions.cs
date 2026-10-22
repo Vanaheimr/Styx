@@ -33,15 +33,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class PCQExtensions
     {
 
-        #region NewMLDSAKeyPair (this ParameterSet, SecureRandom = null)
+        #region NewKeyPair    (this ParameterSet, SecureRandom = null)
 
         /// <summary>
         /// Generates a new ML-DSA private key for the specified parameter set.
         /// </summary>
         /// <remarks>Uses a cryptographically secure random source during key generation.</remarks>
         /// <param name="ParameterSet">The ML-DSA parameter set to use for key generation.</param>
-        public static AsymmetricCipherKeyPair NewMLDSAKeyPair(this MLDsaParameters  ParameterSet,
-                                                              SecureRandom?         SecureRandom   = null)
+        public static AsymmetricCipherKeyPair NewKeyPair(this MLDsaParameters  ParameterSet,
+                                                         SecureRandom?         SecureRandom   = null)
         {
 
             var generator = new MLDsaKeyPairGenerator();
@@ -59,7 +59,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region NewPrivateKey   (this ParameterSet, SecureRandom = null)
+        #region NewPrivateKey (this ParameterSet, SecureRandom = null)
 
         /// <summary>
         /// Generates a new ML-DSA private key for the specified parameter set.
@@ -69,7 +69,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static MLDsaPrivateKeyParameters NewPrivateKey(this MLDsaParameters  ParameterSet,
                                                               SecureRandom?         SecureRandom   = null)
 
-            => (MLDsaPrivateKeyParameters) ParameterSet.NewMLDSAKeyPair(SecureRandom).Private;
+            => (MLDsaPrivateKeyParameters) ParameterSet.NewKeyPair(SecureRandom).Private;
 
         #endregion
 
