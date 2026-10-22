@@ -21,7 +21,10 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 using Org.BouncyCastle.Asn1.X9;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 #endregion
 
@@ -58,26 +61,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// key agreement curves, and this library has no use for them beyond
         /// recognizing them.
         /// </summary>
-        private static readonly Dictionary<Int32, (String Name, COSEKeyType KeyType, String? BouncyCastleName, Int32? OctetKeySize)> registry = new () {
-            {   1, ("P-256",           COSEKeyType.EC2, "secp256r1",       null) },
-            {   2, ("P-384",           COSEKeyType.EC2, "secp384r1",       null) },
-            {   3, ("P-521",           COSEKeyType.EC2, "secp521r1",       null) },
-            {   4, ("X25519",          COSEKeyType.OKP, null,              null) },
-            {   5, ("X448",            COSEKeyType.OKP, null,              null) },
-            {   6, ("Ed25519",         COSEKeyType.OKP, null,              32  ) },
-            {   7, ("Ed448",           COSEKeyType.OKP, null,              57  ) },
-            {   8, ("secp256k1",       COSEKeyType.EC2, "secp256k1",       null) },
-            { 256, ("brainpoolP256r1", COSEKeyType.EC2, "brainpoolP256r1", null) },
-            { 257, ("brainpoolP320r1", COSEKeyType.EC2, "brainpoolP320r1", null) },
-            { 258, ("brainpoolP384r1", COSEKeyType.EC2, "brainpoolP384r1", null) },
-            { 259, ("brainpoolP512r1", COSEKeyType.EC2, "brainpoolP512r1", null) }
-        };
+        private static readonly Dictionary<Int32, (String       Name,
+                                                   COSEKeyType  KeyType,
+                                                   String?      BouncyCastleName,
+                                                   Int32?       OctetKeySize)>
+            registry = new () {
+
+                           {   1, ("P-256",           COSEKeyType.EC2, "secp256r1",       null) },
+                           {   2, ("P-384",           COSEKeyType.EC2, "secp384r1",       null) },
+                           {   3, ("P-521",           COSEKeyType.EC2, "secp521r1",       null) },
+                           {   4, ("X25519",          COSEKeyType.OKP,  null,             null) },
+                           {   5, ("X448",            COSEKeyType.OKP,  null,             null) },
+                           {   6, ("Ed25519",         COSEKeyType.OKP,  null,             32  ) },
+                           {   7, ("Ed448",           COSEKeyType.OKP,  null,             57  ) },
+                           {   8, ("secp256k1",       COSEKeyType.EC2, "secp256k1",       null) },
+                           { 256, ("brainpoolP256r1", COSEKeyType.EC2, "brainpoolP256r1", null) },
+                           { 257, ("brainpoolP320r1", COSEKeyType.EC2, "brainpoolP320r1", null) },
+                           { 258, ("brainpoolP384r1", COSEKeyType.EC2, "brainpoolP384r1", null) },
+                           { 259, ("brainpoolP512r1", COSEKeyType.EC2, "brainpoolP512r1", null) }
+
+                       };
 
         /// <summary>
         /// A cache of the elliptic curve domain parameters, as looking them
         /// up within Bouncy Castle rebuilds the curve every single time.
         /// </summary>
-        private static readonly ConcurrentDictionary<Int32, ECDomainParameters>  domainParameterCache   = [];
+        private static readonly ConcurrentDictionary<Int32, ECDomainParameters> domainParameterCache = [];
 
         #endregion
 
@@ -86,13 +95,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <summary>
         /// The numeric identification of this elliptic curve.
         /// </summary>
-        public Int32       Value               { get; }
+        public Int32         Value               { get; }
 
         /// <summary>
         /// Whether this elliptic curve is registered and known
         /// to this implementation.
         /// </summary>
-        public Boolean     IsKnown
+        public Boolean       IsKnown
 
             => registry.ContainsKey(Value);
 
@@ -100,7 +109,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The registered name of this elliptic curve, e.g. "P-256",
         /// or its numeric identification when unknown.
         /// </summary>
-        public String      Name
+        public String        Name
 
             => registry.TryGetValue(Value, out var entry)
                    ? entry.Name
@@ -119,7 +128,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The elliptic curve domain parameters of this curve,
         /// or null when this implementation can not compute with it.
         /// </summary>
-        public ECDomainParameters?  DomainParameters
+        public ECDomainParameters? DomainParameters
 
             => registry.TryGetValue(Value, out var entry) &&
                entry.BouncyCastleName is not null
@@ -150,7 +159,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// the fixed width of the encoded x and y coordinates
         /// [RFC 9053, Section 7.1.1].
         /// </summary>
-        public Int32?      FieldSizeInBytes
+        public Int32? FieldSizeInBytes
         {
             get
             {
@@ -171,7 +180,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// the fixed width of both ECDSA signature components and of an
         /// encoded private key [RFC 9053, Section 2.1].
         /// </summary>
-        public Int32?      OrderSizeInBytes
+        public Int32? OrderSizeInBytes
         {
             get
             {
@@ -189,7 +198,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The fixed width of an EdDSA key on this curve, or null when the
         /// curve is not one this library signs with [RFC 8032].
         /// </summary>
-        public Int32?      OctetKeySizeInBytes
+        public Int32? OctetKeySizeInBytes
 
             => registry.TryGetValue(Value, out var entry)
                    ? entry.OctetKeySize
@@ -207,6 +216,195 @@ namespace org.GraphDefined.Vanaheimr.Illias
         {
             this.Value = Value;
         }
+
+        #endregion
+
+
+        #region (static) Parse     (Name)
+
+        /// <summary>
+        /// Parse the given text as a COSE elliptic curve name.
+        /// </summary>
+        /// <param name="Name">The registered name of an elliptic curve.</param>
+        public static COSECurve Parse(String Name)
+        {
+
+            if (TryParse(Name, out var curve))
+                return curve;
+
+            throw new COSEException($"The given text '{Name}' is not a known COSE elliptic curve name!");
+
+        }
+
+        #endregion
+
+        #region (static) TryParse  (Name,             out Curve)
+
+        /// <summary>
+        /// Try to parse the given text as a COSE elliptic curve name.
+        /// Names are compared case-sensitively, as "P-256" and "p-256"
+        /// are not the same registered name.
+        /// </summary>
+        /// <param name="Name">The registered name of an elliptic curve.</param>
+        /// <param name="Curve">The parsed elliptic curve.</param>
+        public static Boolean TryParse(String Name, out COSECurve Curve)
+        {
+
+            foreach (var entry in registry)
+            {
+                if (String.Equals(entry.Value.Name, Name, StringComparison.Ordinal))
+                {
+                    Curve = new COSECurve(entry.Key);
+                    return true;
+                }
+            }
+
+            Curve = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse  (Number,           out Curve)
+
+        /// <summary>
+        /// Try to parse the given number as a COSE elliptic curve identifier
+        /// known to this implementation.
+        /// </summary>
+        /// <param name="Number">The numeric identification of an elliptic curve.</param>
+        /// <param name="Curve">The parsed elliptic curve.</param>
+        public static Boolean TryParse(Int32 Number, out COSECurve Curve)
+        {
+
+            if (registry.ContainsKey(Number))
+            {
+                Curve = new COSECurve(Number);
+                return true;
+            }
+
+            Curve = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryGetFor (DomainParameters, out Curve)
+
+        /// <summary>
+        /// Try to find the COSE elliptic curve identifier of the given
+        /// elliptic curve domain parameters, e.g. in order to serialize
+        /// a Bouncy Castle key as a COSE_Key.
+        /// </summary>
+        /// <param name="DomainParameters">Elliptic curve domain parameters.</param>
+        /// <param name="Curve">The matching elliptic curve.</param>
+        public static Boolean TryGetFor(ECDomainParameters DomainParameters, out COSECurve Curve)
+        {
+
+            foreach (var entry in registry)
+            {
+
+                if (entry.Value.BouncyCastleName is null)
+                    continue;
+
+                var candidate = new COSECurve(entry.Key).DomainParameters;
+
+                if (candidate is not null &&
+                    candidate.Curve.Equals(DomainParameters.Curve) &&
+                    candidate.N.    Equals(DomainParameters.N))
+                {
+                    Curve = new COSECurve(entry.Key);
+                    return true;
+                }
+
+            }
+
+            Curve = default;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) TryParse  (CBOR,             out Curve, out ErrorResponse)
+
+        /// <summary>
+        /// Try to parse the given CBOR value as a COSE elliptic curve identifier.
+        /// </summary>
+        /// <param name="CBOR">A CBOR representation of an elliptic curve identifier.</param>
+        /// <param name="Curve">The parsed elliptic curve.</param>
+        /// <param name="ErrorResponse">An optional error response.</param>
+        public static Boolean TryParse(CBORValue                         CBOR,
+                                       out COSECurve                     Curve,
+                                       [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            Curve = default;
+
+            if (!CBOR.TryGetInt64(out var value) ||
+                value < Int32.MinValue ||
+                value > Int32.MaxValue)
+            {
+                ErrorResponse = "The COSE elliptic curve identifier must be a valid Int32!";
+                return false;
+            }
+
+            Curve          = new COSECurve((Int32) value);
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        #endregion
+
+        #region ToCBOR()
+
+        /// <summary>
+        /// Return a CBOR representation of this elliptic curve identifier.
+        /// </summary>
+        public CBORValue ToCBOR()
+
+            => CBORValue.FromInt64(Value);
+
+        #endregion
+
+
+        #region NewKeyPair   (SecureRandom = null)
+
+        /// <summary>
+        /// Generates a new elliptic curve key pair using the configured domain parameters
+        /// and a cryptographically secure random source.
+        /// </summary>
+        public AsymmetricCipherKeyPair NewKeyPair(SecureRandom? SecureRandom = null)
+        {
+
+            if (DomainParameters is null)
+                throw new COSEException($"The elliptic curve '{Name}' is not supported for key generation!");
+
+            var generator = new ECKeyPairGenerator();
+
+            generator.Init(
+                new ECKeyGenerationParameters(
+                    DomainParameters,
+                    SecureRandom ?? new SecureRandom()
+                )
+            );
+
+            return generator.GenerateKeyPair();
+
+        }
+
+        #endregion
+
+        #region NewPublicKey (SecureRandom = null)
+
+        /// <summary>
+        /// Creates a new elliptic curve private key.
+        /// </summary>
+        public ECPrivateKeyParameters NewPrivateKey(SecureRandom? SecureRandom = null)
+
+            => (ECPrivateKeyParameters) NewKeyPair(SecureRandom).Private;
 
         #endregion
 
@@ -274,162 +472,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static COSECurve  BrainpoolP512r1    { get; } = new (259);
 
+
         /// <summary>
         /// An enumeration of all elliptic curves known to this implementation.
         /// </summary>
         public static IEnumerable<COSECurve> All
 
             => registry.Keys.Select(static value => new COSECurve(value));
-
-        #endregion
-
-
-        #region (static) Parse    (Name)
-
-        /// <summary>
-        /// Parse the given text as a COSE elliptic curve name.
-        /// </summary>
-        /// <param name="Name">The registered name of an elliptic curve.</param>
-        public static COSECurve Parse(String Name)
-        {
-
-            if (TryParse(Name, out var curve))
-                return curve;
-
-            throw new COSEException($"The given text '{Name}' is not a known COSE elliptic curve name!");
-
-        }
-
-        #endregion
-
-        #region (static) TryParse (Name,             out Curve)
-
-        /// <summary>
-        /// Try to parse the given text as a COSE elliptic curve name.
-        /// Names are compared case-sensitively, as "P-256" and "p-256"
-        /// are not the same registered name.
-        /// </summary>
-        /// <param name="Name">The registered name of an elliptic curve.</param>
-        /// <param name="Curve">The parsed elliptic curve.</param>
-        public static Boolean TryParse(String Name, out COSECurve Curve)
-        {
-
-            foreach (var entry in registry)
-            {
-                if (String.Equals(entry.Value.Name, Name, StringComparison.Ordinal))
-                {
-                    Curve = new COSECurve(entry.Key);
-                    return true;
-                }
-            }
-
-            Curve = default;
-            return false;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse (Number,           out Curve)
-
-        /// <summary>
-        /// Try to parse the given number as a COSE elliptic curve identifier
-        /// known to this implementation.
-        /// </summary>
-        /// <param name="Number">The numeric identification of an elliptic curve.</param>
-        /// <param name="Curve">The parsed elliptic curve.</param>
-        public static Boolean TryParse(Int32 Number, out COSECurve Curve)
-        {
-
-            if (registry.ContainsKey(Number))
-            {
-                Curve = new COSECurve(Number);
-                return true;
-            }
-
-            Curve = default;
-            return false;
-
-        }
-
-        #endregion
-
-        #region (static) TryGetFor(DomainParameters, out Curve)
-
-        /// <summary>
-        /// Try to find the COSE elliptic curve identifier of the given
-        /// elliptic curve domain parameters, e.g. in order to serialize
-        /// a Bouncy Castle key as a COSE_Key.
-        /// </summary>
-        /// <param name="DomainParameters">Elliptic curve domain parameters.</param>
-        /// <param name="Curve">The matching elliptic curve.</param>
-        public static Boolean TryGetFor(ECDomainParameters DomainParameters, out COSECurve Curve)
-        {
-
-            foreach (var entry in registry)
-            {
-
-                if (entry.Value.BouncyCastleName is null)
-                    continue;
-
-                var candidate = new COSECurve(entry.Key).DomainParameters;
-
-                if (candidate is not null &&
-                    candidate.Curve.Equals(DomainParameters.Curve) &&
-                    candidate.N.    Equals(DomainParameters.N))
-                {
-                    Curve = new COSECurve(entry.Key);
-                    return true;
-                }
-
-            }
-
-            Curve = default;
-            return false;
-
-        }
-
-        #endregion
-
-        #region (static) TryParse (CBOR,             out Curve, out ErrorResponse)
-
-        /// <summary>
-        /// Try to parse the given CBOR value as a COSE elliptic curve identifier.
-        /// </summary>
-        /// <param name="CBOR">A CBOR representation of an elliptic curve identifier.</param>
-        /// <param name="Curve">The parsed elliptic curve.</param>
-        /// <param name="ErrorResponse">An optional error response.</param>
-        public static Boolean TryParse(CBORValue                        CBOR,
-                                       out COSECurve                    Curve,
-                                       [NotNullWhen(false)] out String?  ErrorResponse)
-        {
-
-            Curve = default;
-
-            if (!CBOR.TryGetInt64(out var value) ||
-                value < Int32.MinValue ||
-                value > Int32.MaxValue)
-            {
-                ErrorResponse = "The COSE elliptic curve identifier must be an integer!";
-                return false;
-            }
-
-            Curve          = new COSECurve((Int32) value);
-            ErrorResponse  = null;
-            return true;
-
-        }
-
-        #endregion
-
-        #region ToCBOR()
-
-        /// <summary>
-        /// Return a CBOR representation of this elliptic curve identifier.
-        /// </summary>
-        public CBORValue ToCBOR()
-
-            => CBORValue.FromInt64(Value);
 
         #endregion
 
