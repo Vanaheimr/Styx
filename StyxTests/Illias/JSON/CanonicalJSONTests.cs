@@ -105,6 +105,33 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Written_to_a_stream_it_is_the_canonical_JSON()
+
+        [Test]
+        public void Written_to_a_stream_it_is_the_canonical_JSON()
+        {
+
+            // Larger than what a writer holds before it flushes to the stream, and nested, with text of every kind.
+            var json = new JObject(
+                           new JProperty("z", new JArray(Enumerable.Range(0, 20_000).Select(i => new JObject(
+                                                  new JProperty("name",   $"Ladepark Düsseldorf \"{i}\" é中"),
+                                                  new JProperty("value",  i * 1.5m),
+                                                  new JProperty("items",  new JArray(i, true, JValue.CreateNull()))
+                                              )))),
+                           new JProperty("a", "first")
+                       );
+
+            using var stream = new MemoryStream();
+
+            CanonicalJSON.Write(stream, json);
+
+            Assert.That(stream.Length,    Is.GreaterThan(1 << 20));
+            Assert.That(stream.ToArray(), Is.EqualTo(CanonicalJSON.ToUTF8Bytes(json)));
+
+        }
+
+        #endregion
+
     }
 
 }

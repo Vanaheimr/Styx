@@ -129,6 +129,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region Write(Stream, Token)
+
+        /// <summary>
+        /// Write the canonical JSON of the given token to the given stream, as Serialize() makes it, without making it
+        /// a string or an array first: also a JSON longer than a string or an array may be, e.g. a snapshot of a large
+        /// roaming network. The stream is flushed, not closed.
+        /// </summary>
+        /// <param name="Stream">A stream to write to.</param>
+        /// <param name="Token">The JSON.</param>
+        public static void Write(Stream  Stream,
+                                 JToken  Token)
+        {
+
+            using var writer = new Utf8JsonWriter(Stream, writerOptions);
+
+            WriteNewtonsoftToken(writer, Token);
+
+            writer.Flush();
+
+        }
+
+        #endregion
+
+
         #region ToUTF8Bytes(Token)
 
         public static Byte[] ToUTF8Bytes(JToken Token)
@@ -164,8 +188,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region WriteNewtonsoftToken(Writer, Token)
 
+        /// <summary>
+        /// What a writer may hold before it is flushed to its stream: a writer flushes only when told to.
+        /// </summary>
+        private const Int32 FlushAbove = 1 << 20;
+
         private static void WriteNewtonsoftToken(Utf8JsonWriter Writer, JToken Token)
         {
+
+            if (Writer.BytesPending > FlushAbove)
+                Writer.Flush();
 
             switch (Token.Type)
             {
