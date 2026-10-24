@@ -215,8 +215,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(dotNetKey.VerifyData(content, first, HashAlgorithmName.SHA256, RSASignaturePadding.Pss),  Is.True);
 
             // A random salt makes two signatures of the same content differ.
-            Assert.That(COSEAlgorithm.PS256.Sign(content, privateKey),
-                        Is.Not.EqualTo(COSEAlgorithm.PS256.Sign(content, privateKey)));
+            var salted       = COSEAlgorithm.PS256.Sign(content, privateKey);
+            var saltedAgain  = COSEAlgorithm.PS256.Sign(content, privateKey);
+
+            Assert.That(saltedAgain, Is.Not.EqualTo(salted));
 
         }
 
