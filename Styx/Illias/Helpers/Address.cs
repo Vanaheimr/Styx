@@ -19,6 +19,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 #endregion
@@ -400,7 +401,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 #region Parse CustomData            [optional]
 
-                var customData = JSON[nameof(CustomData)] as JObject;
+                var customData = JSON["customData"] as JObject;
 
                 #endregion
 
@@ -421,7 +422,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               comment,
 
                               customData is not null
-                                  ? CustomDataNew.ParseJSON(customData.ToString(Newtonsoft.Json.Formatting.None))
+                                  ? CustomDataNew.ParseJObject(customData)
                                   : null
 
                           );
@@ -463,7 +464,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                return TryParse(JObject.Parse(Text),
+                // Read as written: a text of its custom data that looks like a point in time stays a text, a number
+                // with a fraction keeps its decimal places, as CustomDataNew.ParseJObject() takes them.
+                using var reader = new JsonTextReader(new StringReader(Text)) {
+                                       DateParseHandling   = DateParseHandling.None,
+                                       FloatParseHandling  = FloatParseHandling.Decimal
+                                   };
+
+                var json = JObject.Load(reader);
+
+                // As JObject.Parse() does: anything but a comment after the JSON object is refused.
+                while (reader.Read()) { }
+
+                return TryParse(json,
                                 out Address,
                                 out ErrorResponse,
                                 CustomAddressParser);

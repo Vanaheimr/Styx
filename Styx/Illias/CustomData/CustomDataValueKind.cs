@@ -31,7 +31,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         Double,
         String,
         Object,
-        Array
+        Array,
+
+        /// <summary>
+        /// A JSON number neither an Int64, an UInt64 nor a decimal holds as written, kept as its JSON text, e.g. 1e-30,
+        /// 1.5e2 or an integer beyond 64 bits.
+        /// </summary>
+        Number
     }
 
 }

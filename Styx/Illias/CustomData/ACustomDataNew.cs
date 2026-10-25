@@ -130,13 +130,28 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region ToJObject()
 
         /// <summary>
-        /// Serialize this object as a Newtonsoft.Json.Linq.JObject.
+        /// Serialize this object as a Newtonsoft.Json.Linq.JObject, as Newtonsoft reads its JSON text with
+        /// DateParseHandling.None and FloatParseHandling.Decimal: a text stays a text, also one that looks like a
+        /// point in time, a decimal keeps its decimal places.
         /// </summary>
+        /// <remarks>
+        /// It was its JSON text read again with the defaults of Newtonsoft: 1.50 became the double 1.5, and
+        /// "2024-01-01T12:00:00Z" a date, written as "2024-01-01T12:00:00.0000000Z" by the canonical JSON; one with
+        /// an offset was taken into the time zone of the machine. Two servers in different time zones held the same
+        /// custom data otherwise.
+        /// </remarks>
         public JObject ToJObject()
+        {
 
-            => JObject.Parse(
-                   ToJSONString()
-               );
+            var json = new JObject();
+
+            foreach (var property in this)
+                json.Add(CustomDataPropertyKeyLookup.GetText(property.KeyId),
+                         property.Value.ToJToken());
+
+            return json;
+
+        }
 
         #endregion
 

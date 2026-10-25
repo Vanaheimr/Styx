@@ -287,8 +287,22 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
 
+        /// <summary>
+        /// Parse a Newtonsoft.Json.Linq.JObject, each value as the JSON object holds it: a decimal with its decimal
+        /// places, an integer beyond 64 bits with all its digits, a text as the text.
+        /// </summary>
+        /// <remarks>
+        /// It was read from the JSON text Newtonsoft writes of it, which writes a decimal without decimal places with
+        /// one: the decimal 150 became 150.0.
+        /// </remarks>
         public static CustomDataNew ParseJObject(Newtonsoft.Json.Linq.JObject JSONObject)
-            => ParseJSON(JSONObject.ToString(Newtonsoft.Json.Formatting.None));
+
+            => new (
+                   JSONObject.Properties().Select(property => CustomDataProperty.Create(
+                                                                  property.Name,
+                                                                  CustomDataValue.ParseJToken(property.Value)
+                                                              ))
+               );
 
 
         public CustomDataNew Clone()
@@ -320,7 +334,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
 
         public static implicit operator Newtonsoft.Json.Linq.JObject(CustomDataNew JSONObject)
-            => Newtonsoft.Json.Linq.JObject.Parse(JSONObject.ToJSONString());
+            => JSONObject.ToJObject();
 
 
         #region (private) FindPropertyIndex(PropertyKeyId)

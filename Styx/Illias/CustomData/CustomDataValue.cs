@@ -17,7 +17,13 @@
 
 #region Usings
 
+using System.Text;
+using System.Buffers;
+using System.Numerics;
 using System.Text.Json;
+using System.Globalization;
+
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -112,6 +118,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static CustomDataValue From(CustomDataArray Value)
             => new(CustomDataValueKind.Array, ArrayValue: Value);
 
+        private static CustomDataValue FromNumber(String JSONNumber)
+            => new(CustomDataValueKind.Number, StringValue: JSONNumber);
+
         #endregion
 
         #region (static) ParseJSON(ref Reader)
@@ -152,6 +161,146 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region (static) ParseJToken(Token)
+
+        /// <summary>
+        /// The value of the given JSON token, as the token holds it: a decimal with its decimal places, an integer
+        /// beyond 64 bits with all its digits, a double as the double, a text as the text.
+        /// </summary>
+        /// <remarks>
+        /// Other tokens are read from the JSON text Newtonsoft writes of them, e.g. a date, which only a JSON text read
+        /// with DateParseHandling.DateTime holds: as Newtonsoft writes it, "2024-01-01T12:00:00Z", the text it was read
+        /// from is lost.
+        /// </remarks>
+        internal static CustomDataValue ParseJToken(JToken Token)
+        {
+
+            switch (Token.Type)
+            {
+
+                case JTokenType.Object:
+                    return From(CustomDataNew.ParseJObject((JObject) Token));
+
+                case JTokenType.Array:
+                    var array = (JArray) Token;
+                    return From(array.Count == 0
+                                    ? CustomDataArray.Empty
+                                    : new CustomDataArray(array.Select(ParseJToken)));
+
+                case JTokenType.Null:
+                    return Null;
+
+                case JTokenType.Boolean:
+                    return From(Token.Value<Boolean>());
+
+                case JTokenType.String:
+                    return Token.Value<String>() is String text
+                               ? From(text)
+                               : Null;
+
+                case JTokenType.Integer:
+                    return ((JValue) Token).Value switch {
+                               BigInteger bigInteger when bigInteger >= Int64.MinValue && bigInteger <= Int64.MaxValue   => From((Int64)  bigInteger),
+                               BigInteger bigInteger when bigInteger >= 0              && bigInteger <= UInt64.MaxValue  => From((UInt64) bigInteger),
+                               BigInteger bigInteger                                                                     => FromNumber(bigInteger.ToString(CultureInfo.InvariantCulture)),
+                               UInt64     unsigned   when unsigned   >  Int64.MaxValue                                   => From(unsigned),
+                               var        integer                                                                        => From(Convert.ToInt64(integer, CultureInfo.InvariantCulture))
+                           };
+
+                case JTokenType.Float:
+
+                    if (((JValue) Token).Value is Decimal decimalValue)
+                        return From(decimalValue);
+
+                    var doubleValue = Token.Value<Double>();
+
+                    if (!Double.IsFinite(doubleValue))
+                        throw new JsonException($"The number {doubleValue} can not be represented as JSON.");
+
+                    return From(doubleValue);
+
+                default:
+                    var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(Token.ToString(Newtonsoft.Json.Formatting.None)));
+                    reader.Read();
+                    return ParseJSON(ref reader);
+
+            }
+
+        }
+
+        #endregion
+
+        #region ToJToken()
+
+        /// <summary>
+        /// This value as a JSON token, as Newtonsoft reads its JSON text with DateParseHandling.None and
+        /// FloatParseHandling.Decimal: a text stays a text, also one that looks like a point in time, a decimal keeps
+        /// its decimal places.
+        /// </summary>
+        /// <remarks>
+        /// A number kept as its JSON text is a JSON token only as precise as Newtonsoft reads it: an integer beyond
+        /// 64 bits as the BigInteger, any other number as a decimal, rounded to 28 decimal places, or as a double,
+        /// when it is beyond the range of a decimal.
+        /// </remarks>
+        public JToken ToJToken()
+        {
+
+            switch (Kind)
+            {
+
+                case CustomDataValueKind.Null:
+                    return JValue.CreateNull();
+
+                case CustomDataValueKind.Boolean:
+                    return new JValue(BooleanValue);
+
+                case CustomDataValueKind.Int64:
+                    return new JValue(Int64Value);
+
+                case CustomDataValueKind.UInt64:
+                    return new JValue(UInt64Value);
+
+                case CustomDataValueKind.Decimal:
+                    return new JValue(DecimalValue);
+
+                case CustomDataValueKind.Double:
+                    return new JValue(DoubleValue);
+
+                case CustomDataValueKind.String:
+                    return JValue.CreateString(StringValue);
+
+                case CustomDataValueKind.Number:
+                    try
+                    {
+                        using var reader = new Newtonsoft.Json.JsonTextReader(new StringReader(StringValue!)) {
+                                               FloatParseHandling = Newtonsoft.Json.FloatParseHandling.Decimal
+                                           };
+                        return JToken.ReadFrom(reader);
+                    }
+                    catch (Newtonsoft.Json.JsonReaderException)
+                    {
+                        return new JValue(Double.Parse(StringValue!, NumberStyles.Float, CultureInfo.InvariantCulture));
+                    }
+
+                case CustomDataValueKind.Object:
+                    return ObjectValue is not null
+                               ? ObjectValue.ToJObject()
+                               : JValue.CreateNull();
+
+                case CustomDataValueKind.Array:
+                    return ArrayValue is not null
+                               ? new JArray(ArrayValue.Select(value => value.ToJToken()))
+                               : JValue.CreateNull();
+
+                default:
+                    throw new JsonException($"Unsupported custom data value kind '{Kind}'.");
+
+            }
+
+        }
+
+        #endregion
+
         #region WriteJSON(Writer)
 
         public void WriteJSON(Utf8JsonWriter Writer)
@@ -182,6 +331,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 case CustomDataValueKind.Double:
                     Writer.WriteNumberValue(DoubleValue);
+                    break;
+
+                case CustomDataValueKind.Number:
+                    Writer.WriteRawValue(StringValue!, skipInputValidation: false);
                     break;
 
                 case CustomDataValueKind.String:
@@ -245,6 +398,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
                 case CustomDataValueKind.Double:
                     Writer.WriteNumberValue(DoubleValue);
+                    break;
+
+                case CustomDataValueKind.Number:
+                    Writer.WriteRawValue(StringValue!, skipInputValidation: false);
                     break;
 
                 case CustomDataValueKind.String:
@@ -346,6 +503,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region (private static) ParseNumber(ref Reader)
 
+        /// <summary>
+        /// A JSON number as written: an integer as an Int64 or an UInt64, a number with a fraction as a decimal, when
+        /// the decimal is written as the number was, e.g. 1.50 with its two decimal places. Any other number is kept as
+        /// its JSON text: an integer beyond 64 bits, which Newtonsoft reads as a BigInteger, a number with an exponent,
+        /// with more than 28 decimal places or with a mantissa above 96 bits, which a decimal rounds, 1e-30 to 0, and a
+        /// double even more.
+        /// </summary>
         private static CustomDataValue ParseNumber(ref Utf8JsonReader Reader)
         {
 
@@ -355,13 +519,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Reader.TryGetUInt64(out var uint64Value))
                 return From(uint64Value);
 
-            if (Reader.TryGetDecimal(out var decimalValue))
+            ReadOnlySpan<Byte> number = Reader.HasValueSequence
+                                            ? Reader.ValueSequence.ToArray()
+                                            : Reader.ValueSpan;
+
+            Span<Byte> decimalText = stackalloc Byte[64];
+
+            if (number.IndexOfAny((Byte) '.', (Byte) 'e', (Byte) 'E') >= 0 &&
+                Reader.TryGetDecimal(out var decimalValue) &&
+                decimalValue.TryFormat(decimalText, out var length, default, CultureInfo.InvariantCulture) &&
+                decimalText[..length].SequenceEqual(number))
+            {
                 return From(decimalValue);
+            }
 
-            if (Reader.TryGetDouble(out var doubleValue))
-                return From(doubleValue);
-
-            throw new JsonException("Invalid JSON number.");
+            return FromNumber(Encoding.UTF8.GetString(number));
 
         }
 
