@@ -26,7 +26,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #region Data
 
-        private static TimeSpan timeTravel = TimeSpan.Zero;
+        /// <summary>
+        /// How far the timestamp is ahead of the clock, in ticks: behind it when negative. Read and changed atomically,
+        /// as e.g. timers read the timestamp while a test travels.
+        /// </summary>
+        private static Int64 timeTravel;
 
         #endregion
 
@@ -38,7 +42,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static DateTimeOffset Now
 
-            => DateTimeOffset.UtcNow + timeTravel;
+            => DateTimeOffset.UtcNow + TimeSpan.FromTicks(Interlocked.Read(ref timeTravel));
                // Stopwatch.GetTimestamp() + timeTravel; <= Might be much faster, but changes semantics!
 
         #endregion
@@ -97,17 +101,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TravelBackInTime   (TimeTravel)
 
         /// <summary>
-        /// Travel back in time.
+        /// Travel back in time: the timestamp goes back by the given amount, whatever its sign.
         /// </summary>
         /// <param name="TimeTravel">The amount of time you want to travel back in time.</param>
         public static void TravelBackInTime(TimeSpan TimeTravel)
         {
-
-            if (TimeTravel.Ticks < 0)
-                TimeTravel.Negate();
-
-            timeTravel += TimeTravel;
-
+            Interlocked.Add(ref timeTravel, -TimeTravel.Duration().Ticks);
         }
 
         #endregion
@@ -115,17 +114,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (static) TravelForwardInTime(TimeTravel)
 
         /// <summary>
-        /// Travel forward in time.
+        /// Travel forward in time: the timestamp goes forward by the given amount, whatever its sign.
         /// </summary>
         /// <param name="TimeTravel">The amount of time you want to travel forward in time.</param>
         public static void TravelForwardInTime(TimeSpan TimeTravel)
         {
-
-            if (TimeTravel.Ticks < 0)
-                TimeTravel.Negate();
-
-            timeTravel += TimeTravel;
-
+            Interlocked.Add(ref timeTravel, TimeTravel.Duration().Ticks);
         }
 
         #endregion
@@ -137,7 +131,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static void Reset()
         {
-            timeTravel = TimeSpan.Zero;
+            Interlocked.Exchange(ref timeTravel, 0);
         }
 
         #endregion
