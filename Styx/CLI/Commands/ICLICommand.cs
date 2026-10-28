@@ -23,6 +23,17 @@ namespace org.GraphDefined.Vanaheimr.CLI
         IEnumerable<SuggestionResponse> Suggest(String[] Arguments);
         Task<String[]> Execute(String[] Arguments, CancellationToken CancellationToken);
         String Help();
+
+        /// <summary>
+        /// Whether the given command line may be kept in a history file, beyond
+        /// the session it was typed in - false for one that carries a secret,
+        /// such as a key given to be added. It is kept in the session's own
+        /// history either way, as it stands on the screen anyway.
+        /// </summary>
+        /// <param name="Arguments">The command line, split into its words.</param>
+        Boolean MayBeKept(String[] Arguments)
+            => true;
+
     }
 
 }

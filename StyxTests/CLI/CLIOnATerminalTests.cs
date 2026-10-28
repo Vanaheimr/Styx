@@ -99,15 +99,20 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #region (private) Typing(Width = 80)
 
         /// <summary>
-        /// A command line on a terminal of the given width, running, and the
-        /// screen at the far end of it.
+        /// A command line on a terminal of the given width, keeping its history
+        /// in the given file if one is, running, and the screen at the far end
+        /// of it.
         /// </summary>
-        private static (Screen Screen, VT100Terminal Terminal, TestCLI CLI, Task Running) Typing(Int32 Width = 80)
+        private static (Screen Screen, VT100Terminal Terminal, TestCLI CLI, Task Running) Typing(Int32         Width    = 80,
+                                                                                               HistoryFile?  History  = null)
         {
 
             var screen    = new Screen();
             var terminal  = new VT100Terminal(screen.SendAsync, Width);
             var cli       = new TestCLI(terminal);
+
+            if (History is not null)
+                cli.KeepHistoryIn(History);
 
             return (screen, terminal, cli, Task.Run(() => cli.Run()));
 
@@ -255,6 +260,57 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
             await Ended(running, "the end of the input did not end the command line");
 
             await terminal.DisposeAsync();
+
+        }
+
+        #endregion
+
+        #region UpBringsBackALineOfTheLastSession()
+
+        /// <summary>
+        /// A session that keeps its history in a file brings back with Up what
+        /// was typed in the last one, the newest first, before anything was
+        /// typed in this one.
+        /// </summary>
+        [Test]
+        public async Task UpBringsBackALineOfTheLastSession()
+        {
+
+            var directory = Path.Combine(Path.GetTempPath(), $"styx-history-{Guid.NewGuid().ToString("N")[..12]}");
+
+            try
+            {
+
+                var (screen1, terminal1, _, running1) = Typing(History: new HistoryFile(Path.Combine(directory, "history")));
+
+                terminal1.Feed("echo once\r"u8);
+                await screen1.WaitForAsync(s => s.Rows.Contains("said: once"), "the first answer");
+
+                terminal1.Feed("echo twice\r"u8);
+                await screen1.WaitForAsync(s => s.Rows.Contains("said: twice"), "the second answer");
+
+                terminal1.Complete();
+                await Ended(running1, "the end of the input did not end the first command line");
+                await terminal1.DisposeAsync();
+
+                var (screen2, terminal2, _, running2) = Typing(History: new HistoryFile(Path.Combine(directory, "history")));
+
+                terminal2.Feed("\x1b[A"u8);
+                await screen2.WaitForAsync(s => s.CursorRow == "> echo twice", "the newest line of the last session");
+
+                terminal2.Feed("\x1b[A"u8);
+                await screen2.WaitForAsync(s => s.CursorRow == "> echo once", "the line before it");
+
+                terminal2.Complete();
+                await Ended(running2, "the end of the input did not end the second command line");
+                await terminal2.DisposeAsync();
+
+            }
+            finally
+            {
+                if (Directory.Exists(directory))
+                    Directory.Delete(directory, recursive: true);
+            }
 
         }
 

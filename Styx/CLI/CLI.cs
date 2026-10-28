@@ -328,6 +328,11 @@ namespace org.GraphDefined.Vanaheimr.CLI
         private readonly  List<String>             commandHistory   = [];
 
         /// <summary>
+        /// Where the history is kept between sessions; null where it is not.
+        /// </summary>
+        private           HistoryFile?             historyFile;
+
+        /// <summary>
         /// What this is typed at and written on, and whether it was made here -
         /// the console's is, and is let go of with this.
         /// </summary>
@@ -399,6 +404,12 @@ namespace org.GraphDefined.Vanaheimr.CLI
         public IEnumerable<String>                                           CommandHistory
             => commandHistory;
 
+        /// <summary>
+        /// Where the history is kept between sessions; null where it is not.
+        /// </summary>
+        public HistoryFile?                                                  HistoryFile
+            => historyFile;
+
         public Boolean                                                       QuitCLI        { get; set; } = false;
 
 
@@ -452,6 +463,37 @@ namespace org.GraphDefined.Vanaheimr.CLI
             terminal.Resized      += OnResized;
 
             RegisterAssemblies([ typeof(CLI).Assembly, .. AssembliesWithCLICommands ]);
+
+        }
+
+        #endregion
+
+
+        #region KeepHistoryIn(HistoryFile)
+
+        /// <summary>
+        /// Keep the history in the given file between sessions: what it holds
+        /// comes back with Up from now on, before anything typed here, and
+        /// every command line from now on is written to it - where a command
+        /// answers to it, and says it may be kept.
+        /// </summary>
+        /// <remarks>
+        /// A mistyped line stays in this session's history only, to be put
+        /// right: nothing answered to it, so nothing can say whether it
+        /// carries a secret, and the file is no place to find that out.
+        /// </remarks>
+        /// <param name="HistoryFile">The file.</param>
+        public void KeepHistoryIn(HistoryFile HistoryFile)
+        {
+
+            historyFile = HistoryFile;
+
+            var kept = HistoryFile.Read();
+
+            if (kept.Count > 0 && commandHistory.Count > 0 && kept[^1] == commandHistory[0])
+                kept = kept.Take(kept.Count - 1).ToArray();
+
+            commandHistory.InsertRange(0, kept);
 
         }
 
@@ -849,16 +891,13 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 // shell keeps it: a mistyped command is the one most often
                 // wanted back, to be put right. Not 'history' itself, and not
                 // the same line twice in a row.
-                if (InputArguments.Length > 0 &&
-                    !String.Equals(HistoryCommand.CommandName, InputArguments[0], StringComparison.OrdinalIgnoreCase))
-                {
+                var line = InputArguments.Length > 0 &&
+                           !String.Equals(HistoryCommand.CommandName, InputArguments[0], StringComparison.OrdinalIgnoreCase)
+                               ? String.Join(" ", InputArguments)
+                               : null;
 
-                    var command = String.Join(" ", InputArguments);
-
-                    if (commandHistory.LastOrDefault() != command)
-                        commandHistory.Add(command);
-
-                }
+                if (line is not null && commandHistory.LastOrDefault() != line)
+                    commandHistory.Add(line);
 
                 var matchingCommands = commands.Where(c => {
 
@@ -869,7 +908,18 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                                                      }).ToArray();
                 if (matchingCommands.Length == 1)
-                    return await matchingCommands.First().Execute(InputArguments, thisCommand.Token);
+                {
+
+                    var command = matchingCommands[0];
+
+                    // Into the file before it runs: a command that never ends,
+                    // or a connection that breaks under it, is still kept.
+                    if (line is not null && historyFile is not null && command.MayBeKept(InputArguments))
+                        historyFile.Add(line);
+
+                    return await command.Execute(InputArguments, thisCommand.Token);
+
+                }
 
                 return [$"Unknown command: {InputArguments[0]}"];
 

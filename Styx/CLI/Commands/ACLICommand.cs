@@ -29,6 +29,14 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         public abstract String Help();
 
+        /// <summary>
+        /// Whether the given command line may be kept in a history file, beyond
+        /// the session it was typed in - false for one that carries a secret.
+        /// </summary>
+        /// <param name="Arguments">The command line, split into its words.</param>
+        public virtual Boolean MayBeKept(String[] Arguments)
+            => true;
+
     }
 
 
