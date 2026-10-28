@@ -845,6 +845,21 @@ namespace org.GraphDefined.Vanaheimr.CLI
             try
             {
 
+                // Into the history whether anything answers to it or not, as a
+                // shell keeps it: a mistyped command is the one most often
+                // wanted back, to be put right. Not 'history' itself, and not
+                // the same line twice in a row.
+                if (InputArguments.Length > 0 &&
+                    !String.Equals(HistoryCommand.CommandName, InputArguments[0], StringComparison.OrdinalIgnoreCase))
+                {
+
+                    var command = String.Join(" ", InputArguments);
+
+                    if (commandHistory.LastOrDefault() != command)
+                        commandHistory.Add(command);
+
+                }
+
                 var matchingCommands = commands.Where(c => {
 
                                                         var s = c.Suggest([InputArguments[0]]).FirstOrDefault()?.Suggestion ?? "";
@@ -854,26 +869,9 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
                                                      }).ToArray();
                 if (matchingCommands.Length == 1)
-                {
-
-                    if (InputArguments.Length > 0 &&
-                        !String.Equals(HistoryCommand.CommandName, InputArguments[0], StringComparison.OrdinalIgnoreCase))
-                    {
-
-                        var command = String.Join(" ", InputArguments);
-
-                        if (commandHistory.LastOrDefault() != command)
-                            commandHistory.Add(command);
-
-                    }
-
                     return await matchingCommands.First().Execute(InputArguments, thisCommand.Token);
 
-                }
-                else
-                {
-                     return [$"Unknown command: {InputArguments[0]}"];
-                }
+                return [$"Unknown command: {InputArguments[0]}"];
 
             }
             catch (OperationCanceledException)

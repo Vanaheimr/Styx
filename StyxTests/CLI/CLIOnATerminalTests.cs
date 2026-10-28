@@ -229,6 +229,37 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
         #endregion
 
+        #region UpBringsBackAMistypedCommand()
+
+        /// <summary>
+        /// Up brings back a command nothing answered to as well, to be put right
+        /// - the line most often wanted back - and Down goes back to the empty
+        /// line it left.
+        /// </summary>
+        [Test]
+        public async Task UpBringsBackAMistypedCommand()
+        {
+
+            var (screen, terminal, cli, running) = Typing();
+
+            terminal.Feed("ecoh once\r"u8);
+            await screen.WaitForAsync(s => s.Rows.Contains("Unknown command: ecoh"), "the answer");
+
+            terminal.Feed("\x1b[A"u8);
+            await screen.WaitForAsync(s => s.CursorRow == "> ecoh once", "the mistyped command again");
+
+            terminal.Feed("\x1b[B"u8);
+            await screen.WaitForAsync(s => s.CursorRow == ">", "the empty line again");
+
+            terminal.Complete();
+            await Ended(running, "the end of the input did not end the command line");
+
+            await terminal.DisposeAsync();
+
+        }
+
+        #endregion
+
         #region CtrlCAbandonsTheLine()
 
         /// <summary>

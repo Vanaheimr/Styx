@@ -199,6 +199,35 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
 
         #endregion
 
+        #region A_mistyped_command_is_kept_in_the_history()
+
+        /// <summary>
+        /// A command line nothing answers to - mistyped, or a prefix of more
+        /// than one command - is kept in the history like any other, as a
+        /// shell keeps it: the mistake is what is to be brought back and put
+        /// right. 'history' itself still is not, nor twice the same in a row.
+        /// </summary>
+        [Test]
+        public async Task A_mistyped_command_is_kept_in_the_history()
+        {
+
+            var cli = new CLI();
+
+            var e1  = await cli.Execute("addEnw a 1");
+            var e2  = await cli.Execute("addEnw a 1");
+            var e3  = await cli.Execute("re a");
+            var e4  = await cli.Execute("history");
+
+            Assert.That(e1.First(),            Is.EqualTo("Unknown command: addEnw"));
+            Assert.That(e3.First(),            Is.EqualTo("Unknown command: re"));
+            Assert.That(e4,                    Is.EqualTo(new[] { "Command History:", "addEnw a 1", "re a" }));
+
+            Assert.That(cli.CommandHistory,    Is.EqualTo(new[] { "addEnw a 1", "re a" }));
+
+        }
+
+        #endregion
+
 
         #region A_block_arrives_in_one_piece()
 
