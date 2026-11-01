@@ -20,6 +20,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
+using Org.BouncyCastle.X509;
+
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
@@ -128,6 +130,31 @@ namespace org.GraphDefined.Vanaheimr.Illias
             => ProtectedHeader.  KeyIdentifier ??
                UnprotectedHeader.KeyIdentifier;
 
+        /// <summary>
+        /// The thumbprint of the certificate this recipient names [RFC 9360],
+        /// taken from the "x5t" header parameter (label 34), protected header
+        /// bucket first. Throws when the parameter is present but is not a
+        /// COSE_CertHash.
+        /// </summary>
+        public COSECertificateHash?          CertificateThumbprint
+        {
+            get
+            {
+
+                if (!ProtectedHeader.  TryGet(COSEHeaderLabel.X5T, out var value) &&
+                    !UnprotectedHeader.TryGet(COSEHeaderLabel.X5T, out value))
+                {
+                    return null;
+                }
+
+                if (!COSECertificateHash.TryParse(value, out var thumbprint, out var errorResponse))
+                    throw new COSEException($"The certificate thumbprint of this COSE recipient is invalid: {errorResponse}");
+
+                return thumbprint;
+
+            }
+        }
+
         #endregion
 
         #region Constructor(s)
@@ -226,6 +253,45 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
+        #region IsFor(Certificate)
+
+        /// <summary>
+        /// Whether this recipient may be meant for the key of the given
+        /// certificate: false when it names a certificate by "x5t" and that is
+        /// another one, or when what it names is not a thumbprint at all.
+        ///
+        /// A recipient that names no certificate may be meant for anybody, and
+        /// is tried as before. One that names another certificate is somebody
+        /// else's - or the recipient's own, under a key it no longer uses - and
+        /// trying the key on it would only ever fail later and less clearly.
+        ///
+        /// The thumbprint names a certificate; it does not vouch for one.
+        /// Whether the certificate belongs to the key it is used with, and
+        /// whether it may be trusted, is the caller's to have established.
+        /// COSE.TS draws the same line.
+        /// </summary>
+        /// <param name="Certificate">The certificate of the key the caller holds.</param>
+        public Boolean IsFor(X509Certificate Certificate)
+        {
+
+            COSECertificateHash? thumbprint;
+
+            try
+            {
+                thumbprint = CertificateThumbprint;
+            }
+            catch (COSEException)
+            {
+                return false;
+            }
+
+            return thumbprint is null ||
+                   thumbprint.Matches(Certificate, out _);
+
+        }
+
+        #endregion
+
         #region (static) ECDHDirect (RecipientKey, EphemeralKey, ContentAlgorithm, ...)
 
         /// <summary>
@@ -249,15 +315,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PartyV">Optional PartyV information (header parameters -24 to -26).</param>
         /// <param name="KeyIdentifier">An optional key identifier, defaulting to the recipient key's own.</param>
         /// <param name="Recipients">Optional recipient structures nested below this one.</param>
+        /// <param name="CertificateThumbprint">The optional thumbprint of the recipient's certificate, written as "x5t" (header parameter 34) [RFC 9360].</param>
         public static (COSERecipient Recipient, COSEKey ContentKey) ECDHDirect(COSEKey                      RecipientKey,
                                                                                COSEKey                      EphemeralKey,
                                                                                COSEAlgorithm                ContentAlgorithm,
-                                                                               COSEAlgorithm?               Algorithm       = null,
-                                                                               Byte[]?                      Salt            = null,
-                                                                               COSEPartyInfo?               PartyU          = null,
-                                                                               COSEPartyInfo?               PartyV          = null,
-                                                                               Byte[]?                      KeyIdentifier   = null,
-                                                                               IEnumerable<COSERecipient>?  Recipients      = null)
+                                                                               COSEAlgorithm?               Algorithm               = null,
+                                                                               Byte[]?                      Salt                    = null,
+                                                                               COSEPartyInfo?               PartyU                  = null,
+                                                                               COSEPartyInfo?               PartyV                  = null,
+                                                                               Byte[]?                      KeyIdentifier           = null,
+                                                                               IEnumerable<COSERecipient>?  Recipients              = null,
+                                                                               COSECertificateHash?         CertificateThumbprint   = null)
         {
 
             var algorithm = Algorithm ?? COSEAlgorithm.ECDH_ES_HKDF_256;
@@ -280,7 +348,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return (
                        new COSERecipient(
                            protectedHeaderBytes,
-                           ECDHHeadersFor(EphemeralKey, Salt, PartyU, PartyV, KeyIdentifier ?? RecipientKey.KeyIdentifier),
+                           ECDHHeadersFor(EphemeralKey, Salt, PartyU, PartyV, KeyIdentifier ?? RecipientKey.KeyIdentifier, CertificateThumbprint),
                            [],
                            Recipients
                        ),
@@ -311,15 +379,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="PartyV">Optional PartyV information (header parameters -24 to -26).</param>
         /// <param name="KeyIdentifier">An optional key identifier, defaulting to the recipient key's own.</param>
         /// <param name="Recipients">Optional recipient structures nested below this one.</param>
+        /// <param name="CertificateThumbprint">The optional thumbprint of the recipient's certificate, written as "x5t" (header parameter 34) [RFC 9360].</param>
         public static COSERecipient ECDHKeyWrap(Byte[]                       ContentKey,
                                                 COSEKey                      RecipientKey,
                                                 COSEKey                      EphemeralKey,
                                                 COSEAlgorithm                Algorithm,
-                                                Byte[]?                      Salt            = null,
-                                                COSEPartyInfo?               PartyU          = null,
-                                                COSEPartyInfo?               PartyV          = null,
-                                                Byte[]?                      KeyIdentifier   = null,
-                                                IEnumerable<COSERecipient>?  Recipients      = null)
+                                                Byte[]?                      Salt                    = null,
+                                                COSEPartyInfo?               PartyU                  = null,
+                                                COSEPartyInfo?               PartyV                  = null,
+                                                Byte[]?                      KeyIdentifier           = null,
+                                                IEnumerable<COSERecipient>?  Recipients              = null,
+                                                COSECertificateHash?         CertificateThumbprint   = null)
         {
 
             if (Algorithm.Family != COSEAlgorithmFamily.ECDHKeyWrap || Algorithm.KeySizeInBytes is not Int32 keySize)
@@ -339,7 +409,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             return new COSERecipient(
                        protectedHeaderBytes,
-                       ECDHHeadersFor(EphemeralKey, Salt, PartyU, PartyV, KeyIdentifier ?? RecipientKey.KeyIdentifier),
+                       ECDHHeadersFor(EphemeralKey, Salt, PartyU, PartyV, KeyIdentifier ?? RecipientKey.KeyIdentifier, CertificateThumbprint),
                        keyWrap.WrapKey(ContentKey, keyEncryptionKey),
                        Recipients
                    );
@@ -715,13 +785,15 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// The unprotected bucket of an ECDH-ES recipient: the ephemeral public
         /// key first, then whatever the sender adds to the KDF context, then
         /// the key identifier of the recipient key - the order of the published
-        /// examples.
+        /// examples - and last the thumbprint of the recipient's certificate,
+        /// which they do not use.
         /// </summary>
-        private static COSEHeaders ECDHHeadersFor(COSEKey         EphemeralKey,
-                                                  Byte[]?         Salt,
-                                                  COSEPartyInfo?  PartyU,
-                                                  COSEPartyInfo?  PartyV,
-                                                  Byte[]?         KeyIdentifier)
+        private static COSEHeaders ECDHHeadersFor(COSEKey               EphemeralKey,
+                                                  Byte[]?               Salt,
+                                                  COSEPartyInfo?        PartyU,
+                                                  COSEPartyInfo?        PartyV,
+                                                  Byte[]?               KeyIdentifier,
+                                                  COSECertificateHash?  CertificateThumbprint)
         {
 
             var parameters = new List<(CBORValue, CBORValue)> {
@@ -750,6 +822,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (KeyIdentifier is not null)
                 parameters.Add((COSEHeaderLabel.KeyIdentifier, CBORValue.FromBytes(KeyIdentifier)));
+
+            if (CertificateThumbprint is not null)
+                parameters.Add((COSEHeaderLabel.X5T, CertificateThumbprint.ToCBOR()));
 
             return new COSEHeaders([.. parameters]);
 

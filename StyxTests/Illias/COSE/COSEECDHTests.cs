@@ -21,8 +21,11 @@ using System.Text;
 
 using NUnit.Framework;
 
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto.Operators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
+using Org.BouncyCastle.X509;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -969,6 +972,144 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.COSE
 
             // Asked without the content algorithm, a direct recipient derives nothing.
             Assert.That(agreed.Recipient.ContentKey(Bob),  Is.Null);
+
+        }
+
+
+        #region (private static) KeyAgreementCertificate(Subject, Key)
+
+        /// <summary>
+        /// A certificate for an ECDH key on P-256, shaped like the
+        /// key-agreement certificates of EVQI Transport section 6.8: keyUsage
+        /// keyAgreement and nothing else, critical, issued by a key of its
+        /// own rather than signed with the key it certifies.
+        /// </summary>
+        private static X509Certificate KeyAgreementCertificate(String Subject, Byte[] D)
+        {
+
+            var domain    = COSECurve.P256.DomainParameters!;
+            var issuerKey = new ECPrivateKeyParameters("EC", new BigInteger(1, Enumerable.Repeat((Byte) 0x7A, 32).ToArray()), domain);
+            var generator = new X509V3CertificateGenerator();
+
+            generator.SetSerialNumber(BigInteger.ValueOf(D[0]));
+            generator.SetSubjectDN   (new X509Name($"CN={Subject}"));
+            generator.SetIssuerDN    (new X509Name("CN=Test CA"));
+            generator.SetNotBefore   (DateTime.UtcNow.AddDays(-1));
+            generator.SetNotAfter    (DateTime.UtcNow.AddDays(90));
+            generator.SetPublicKey   (new ECPublicKeyParameters("EC", domain.G.Multiply(new BigInteger(1, D)).Normalize(), domain));
+
+            generator.AddExtension(X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.KeyAgreement));
+
+            return generator.Generate(new Asn1SignatureFactory("SHA256withECDSA", issuerKey));
+
+        }
+
+        #endregion
+
+        [Test]
+        public void A_recipient_named_by_its_certificate_carries_x5t_after_the_ephemeral_key()
+        {
+
+            var stationD    = Enumerable.Repeat((Byte) 0x22, 32).ToArray();
+            var station     = PrivateKey(COSECurve.P256, stationD);
+            var certificate = KeyAgreementCertificate("station", stationD);
+            var thumbprint  = COSECertificateHash.From(certificate);
+
+            var agreed      = COSERecipient.ECDHDirect(PublicKeyOf(station),
+                                                       PrivateKey(COSECurve.P256, Enumerable.Repeat((Byte) 0x11, 32).ToArray()),
+                                                       COSEAlgorithm.A128GCM,
+                                                       CertificateThumbprint: thumbprint);
+
+            var message     = COSEEncrypt.Encrypt(content, agreed.ContentKey, [agreed.Recipient], iv);
+
+            Assert.That(COSEEncrypt.TryParse(message.ToByteArray(), out var parsed, out var parseError),  Is.True, parseError);
+
+            var recipient   = parsed!.Recipients[0];
+
+            Assert.Multiple(() => {
+                Assert.That(recipient.CertificateThumbprint!.Algorithm,  Is.EqualTo(COSEAlgorithm.SHA256));
+                Assert.That(recipient.CertificateThumbprint!.Value,      Is.EqualTo(thumbprint.Value));
+                Assert.That(recipient.KeyIdentifier,                     Is.Null);
+                // Label 34, then [-16, h'...'] - SHA-256 by its RFC 9054 identifier.
+                Assert.That(Convert.ToHexString(message.ToByteArray()),  Does.Contain("1822822F5820" + Convert.ToHexString(thumbprint.Value)));
+            });
+
+        }
+
+        [Test]
+        public void A_recipient_naming_another_certificate_is_passed_over_and_one_naming_none_is_still_tried()
+        {
+
+            var stationD    = Enumerable.Repeat((Byte) 0x22, 32).ToArray();
+            var station     = PrivateKey(COSECurve.P256, stationD);
+            var ephemeral   = PrivateKey(COSECurve.P256, Enumerable.Repeat((Byte) 0x11, 32).ToArray());
+            var mine        = KeyAgreementCertificate("station",         stationD);
+            var another     = KeyAgreementCertificate("another station", Enumerable.Repeat((Byte) 0x33, 32).ToArray());
+
+            COSEEncrypt EncryptedFor(X509Certificate? Certificate)
+            {
+                var agreed = COSERecipient.ECDHDirect(PublicKeyOf(station), ephemeral, COSEAlgorithm.A128GCM,
+                                                      CertificateThumbprint: Certificate is null ? null : COSECertificateHash.From(Certificate));
+                return COSEEncrypt.Encrypt(content, agreed.ContentKey, [agreed.Recipient], iv);
+            }
+
+            Assert.Multiple(() => {
+
+                Assert.That(EncryptedFor(mine).   Decrypt(station, out var opened, out var errorResponse, RecipientCertificate: mine),  Is.True, errorResponse);
+                Assert.That(opened,                                                                                               Is.EqualTo(content));
+
+                Assert.That(EncryptedFor(another).Decrypt(station, out _, out var passedOver, RecipientCertificate: mine),          Is.False);
+                Assert.That(passedOver,                                                                                           Does.Contain("None of the recipients"));
+
+                // Nothing changes for a caller who does not say which certificate the key has,
+                Assert.That(EncryptedFor(another).Decrypt(station, out _, out _),                                                 Is.True);
+
+                // and a recipient that names no certificate is tried as before.
+                Assert.That(EncryptedFor(null).   Decrypt(station, out _, out _, RecipientCertificate: mine),                     Is.True);
+
+            });
+
+        }
+
+        [Test]
+        public void An_x5t_that_is_not_a_COSE_CertHash_names_somebody_else()
+        {
+
+            var agreed      = COSERecipient.ECDHDirect(PublicKeyOf(Bob), Alice, COSEAlgorithm.A128GCM);
+            var certificate = KeyAgreementCertificate("station", Enumerable.Repeat((Byte) 0x22, 32).ToArray());
+
+            Assert.That(agreed.Recipient.UnprotectedHeader.TryGet(COSEHeaderLabel.EphemeralKey, out var ephemeral),  Is.True);
+
+            var broken      = new COSERecipient(agreed.Recipient.ProtectedHeaderBytes,
+                                                new COSEHeaders((COSEHeaderLabel.EphemeralKey, ephemeral),
+                                                                (COSEHeaderLabel.X5T,          CBORValue.FromBytes(COSEAlgorithm.SHA256.Hash(certificate.GetEncoded())))),
+                                                []);
+
+            Assert.Throws<COSEException>(() => _ = broken.CertificateThumbprint);
+            Assert.That(broken.IsFor(certificate),  Is.False);
+
+        }
+
+        [Test]
+        public void A_COSE_Mac_selects_its_recipient_the_same_way()
+        {
+
+            var stationD    = Enumerable.Repeat((Byte) 0x22, 32).ToArray();
+            var station     = PrivateKey(COSECurve.P256, stationD);
+            var mine        = KeyAgreementCertificate("station",         stationD);
+            var another     = KeyAgreementCertificate("another station", Enumerable.Repeat((Byte) 0x33, 32).ToArray());
+
+            var agreed      = COSERecipient.ECDHDirect(PublicKeyOf(station),
+                                                       PrivateKey(COSECurve.P256, Enumerable.Repeat((Byte) 0x11, 32).ToArray()),
+                                                       COSEAlgorithm.HMAC256_256,
+                                                       CertificateThumbprint: COSECertificateHash.From(mine));
+
+            var message     = COSEMac.Create(content, agreed.ContentKey, [agreed.Recipient]);
+
+            Assert.Multiple(() => {
+                Assert.That(message.Verify(station, out var errorResponse, RecipientCertificate: mine),  Is.True, errorResponse);
+                Assert.That(message.Verify(station, out _,                 RecipientCertificate: another),  Is.False);
+            });
 
         }
 

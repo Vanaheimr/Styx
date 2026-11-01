@@ -19,6 +19,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Org.BouncyCastle.X509;
+
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
@@ -309,11 +311,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
         /// <param name="ExpectedAlgorithm">The MAC algorithm the caller expects.</param>
+        /// <param name="RecipientCertificate">The certificate of the key, when this party holds one: recipient structures naming another certificate by "x5t" are then passed over rather than tried (see COSERecipient.IsFor).</param>
         public Boolean Verify(COSEKey                           Key,
                               [NotNullWhen(false)] out String?  ErrorResponse,
-                              Byte[]?                           ExternalAAD         = null,
-                              Byte[]?                           DetachedPayload     = null,
-                              COSEAlgorithm?                    ExpectedAlgorithm   = null)
+                              Byte[]?                           ExternalAAD            = null,
+                              Byte[]?                           DetachedPayload        = null,
+                              COSEAlgorithm?                    ExpectedAlgorithm      = null,
+                              X509Certificate?                  RecipientCertificate   = null)
         {
 
             if (!COSEHeaders.VerifyCriticalHeaderParameters(ProtectedHeader,
@@ -360,6 +364,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             foreach (var recipient in Recipients)
             {
+
+                if (RecipientCertificate is not null && !recipient.IsFor(RecipientCertificate))
+                    continue;
 
                 var contentKey = recipient.ContentKey(Key, algorithm.Value);
 

@@ -19,6 +19,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Org.BouncyCastle.X509;
+
 #endregion
 
 namespace org.GraphDefined.Vanaheimr.Illias
@@ -247,12 +249,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// <param name="ExternalAAD">Optional externally supplied data.</param>
         /// <param name="DetachedCiphertext">The ciphertext, when this message carries a detached one.</param>
         /// <param name="ExpectedAlgorithm">The content encryption algorithm the caller expects.</param>
+        /// <param name="RecipientCertificate">The certificate of the key, when this party holds one: recipient structures naming another certificate by "x5t" are then passed over rather than tried (see COSERecipient.IsFor).</param>
         public Boolean Decrypt(COSEKey                           Key,
                                [NotNullWhen(true)]  out Byte[]?  Plaintext,
                                [NotNullWhen(false)] out String?  ErrorResponse,
-                               Byte[]?                           ExternalAAD          = null,
-                               Byte[]?                           DetachedCiphertext   = null,
-                               COSEAlgorithm?                    ExpectedAlgorithm    = null)
+                               Byte[]?                           ExternalAAD            = null,
+                               Byte[]?                           DetachedCiphertext     = null,
+                               COSEAlgorithm?                    ExpectedAlgorithm      = null,
+                               X509Certificate?                  RecipientCertificate   = null)
         {
 
             Plaintext = null;
@@ -269,6 +273,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             foreach (var recipient in Recipients)
             {
+
+                if (RecipientCertificate is not null && !recipient.IsFor(RecipientCertificate))
+                    continue;
 
                 var contentKey = recipient.ContentKey(Key, ExpectedAlgorithm ?? Algorithm);
 
