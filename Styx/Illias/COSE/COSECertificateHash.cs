@@ -87,6 +87,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var algorithm = Algorithm ?? COSEAlgorithm.SHA256;
 
+            if (!IsHashAlgorithm(algorithm))
+                throw new COSEException($"The COSE algorithm '{algorithm.Name}' is not a hash algorithm!");
+
             return new COSECertificateHash(
                        algorithm,
                        algorithm.Hash(Certificate.GetEncoded())
@@ -128,6 +131,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (!COSEAlgorithm.TryParse(items[0], out var algorithm, out ErrorResponse))
                 return false;
 
+            if (!IsHashAlgorithm(algorithm))
+            {
+                ErrorResponse = $"The COSE algorithm '{algorithm.Name}' of the COSE_CertHash is not a hash algorithm!";
+                return false;
+            }
+
             if (!items[1].TryGetBytes(out var value))
             {
                 ErrorResponse = "The hash value of a COSE_CertHash must be a byte string!";
@@ -153,9 +162,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                [NotNullWhen(false)] out String?  ErrorResponse)
         {
 
-            if (Algorithm.HashAlgorithm is null)
+            if (!IsHashAlgorithm(Algorithm))
             {
-                ErrorResponse = $"The certificate thumbprint uses the hash algorithm '{Algorithm.Name}', which this implementation does not compute!";
+                ErrorResponse = $"The certificate thumbprint uses the algorithm '{Algorithm.Name}', which is not a hash algorithm this implementation computes!";
                 return false;
             }
 
@@ -169,6 +178,26 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return true;
 
         }
+
+        #endregion
+
+        #region (private static) IsHashAlgorithm(Algorithm)
+
+        /// <summary>
+        /// Whether the given algorithm is a hash algorithm [RFC 9054].
+        ///
+        /// Not every algorithm that names a digest is one. ES256 names SHA-256
+        /// for the signature it makes, HMAC 256/256 for its tag and
+        /// ECDH-ES + HKDF-256 for its key derivation - and a thumbprint naming
+        /// any of them would claim a computation nobody performed. x5t carries
+        /// a hash, and only the hash algorithms compute one: the entries of
+        /// family None that name a digest. COSE.TS draws the same line, so the
+        /// two reach the same verdict about the same message.
+        /// </summary>
+        private static Boolean IsHashAlgorithm(COSEAlgorithm Algorithm)
+
+            => Algorithm.Family == COSEAlgorithmFamily.None &&
+               Algorithm.HashAlgorithm is not null;
 
         #endregion
 

@@ -395,6 +395,41 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Only_a_hash_algorithm_makes_a_thumbprint()
+
+        [Test]
+        public void Only_a_hash_algorithm_makes_a_thumbprint()
+        {
+
+            // Each of these names SHA-256 for a computation of its own - a
+            // signature, a tag, a key derivation - and none of them is the
+            // thumbprint x5t carries. The digest of the certificate is the same
+            // bytes either way, which is exactly why a lax check passed them.
+            // COSE.TS refuses the same three in the same three places.
+            var (_, _, leaf, _) = BuildPKI();
+            var sha256          = COSECertificateHash.From(leaf.Certificate);
+
+            foreach (var impostor in new[] { COSEAlgorithm.ES256, COSEAlgorithm.HMAC256_256, COSEAlgorithm.ECDH_ES_HKDF_256 })
+            {
+
+                var made = Assert.Throws<COSEException>(() => COSECertificateHash.From(leaf.Certificate, impostor));
+                Assert.That(made!.Message,  Does.Contain("not a hash algorithm"),  impostor.Name);
+
+                Assert.That(COSECertificateHash.TryParse(CBORValue.FromArray(impostor.ToCBOR(), CBORValue.FromBytes(sha256.Value)),
+                                                         out _, out var parseError),  Is.False,  impostor.Name);
+                Assert.That(parseError,  Does.Contain("not a hash algorithm"),  impostor.Name);
+
+                Assert.That(new COSECertificateHash(impostor, sha256.Value).Matches(leaf.Certificate, out _),  Is.False,  impostor.Name);
+
+            }
+
+            foreach (var hash in new[] { COSEAlgorithm.SHA256, COSEAlgorithm.SHA384, COSEAlgorithm.SHA512 })
+                Assert.That(COSECertificateHash.From(leaf.Certificate, hash).Matches(leaf.Certificate, out var errorResponse),  Is.True, errorResponse);
+
+        }
+
+        #endregion
+
         #region A_single_certificate_is_a_bare_byte_string()
 
         [Test]
