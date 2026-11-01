@@ -58,6 +58,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
     public static class CBORJSON
     {
 
+        #region Data
+
+        /// <summary>
+        /// 0001-01-01T00:00:00Z and 9999-12-31T23:59:59Z in epoch seconds, and
+        /// the first and last microsecond of those years: the instants the
+        /// four-digit year of tag 1's text can name (metrological-text.md,
+        /// Section 3.1).
+        /// </summary>
+        private const Decimal  FirstEpochSecond       =      -62_135_596_800m;
+        private const Decimal  LastEpochSecond        =      253_402_300_799m;
+        private const Int64    FirstEpochMicrosecond  = -62_135_596_800_000_000L;
+        private const Int64    LastEpochMicrosecond   = 253_402_300_799_999_999L;
+
+        #endregion
+
         #region (class)  JSONSink
 
         /// <summary>
@@ -621,11 +636,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             return;
                         }
 
+                        // The text has four digits for the year, so it names the
+                        // instants from 0001-01-01 to 9999-12-31 and no others
+                        // (metrological-text.md, Section 3.1). Outside that range a
+                        // tag 1 is refused as invalid data, not left to the
+                        // ArgumentOutOfRangeException DateTimeOffset would throw.
                         if (tag == CBORTag.EpochDateTime &&
                             CBOR.UntaggedValue.TryGetDecimal(out var epoch))
                         {
+
+                            if (epoch < FirstEpochSecond || epoch >= LastEpochSecond + 1)
+                                throw new CBORException($"The epoch-based date/time '{epoch.ToString(CultureInfo.InvariantCulture)}' lies outside the years 0001 to 9999!");
+
                             Sink.WriteString(DateTimeOffset.FromUnixTimeMilliseconds((Int64) (epoch * 1000)).UtcDateTime.ToISO8601());
                             return;
+
                         }
 
                         // Epoch seconds with a fraction are a float (RFC 8949 §3.4.2):
@@ -640,15 +665,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
                             if (!Double.IsFinite(seconds))
                                 throw new CBORException($"Invalid epoch-based date/time '{seconds}'!");
 
-                            var microseconds = Math.Round(seconds * 1_000_000, MidpointRounding.AwayFromZero);
+                            // The bounds are compared as Int64, not as Double: the last
+                            // microsecond of 9999, 253402300799999999, has no Double of
+                            // its own and rounds up to the first microsecond of 10000,
+                            // which a comparison in Double therefore let through. The
+                            // magnitude check first keeps the cast from overflowing.
+                            if (Math.Abs(seconds) > 1e12)
+                                throw new CBORException($"The epoch-based date/time '{seconds.ToString("R", CultureInfo.InvariantCulture)}' lies outside the years 0001 to 9999!");
 
-                            if (microseconds < (DateTimeOffset.MinValue - DateTimeOffset.UnixEpoch).Ticks / 10 ||
-                                microseconds > (DateTimeOffset.MaxValue - DateTimeOffset.UnixEpoch).Ticks / 10)
-                            {
-                                throw new CBORException($"The epoch-based date/time '{seconds}' is out of range!");
-                            }
+                            var microseconds = (Int64) Math.Round(seconds * 1_000_000, MidpointRounding.AwayFromZero);
 
-                            Sink.WriteString(DateTimeOffset.UnixEpoch.AddTicks((Int64) microseconds * 10).UtcDateTime.ToISO8601());
+                            if (microseconds < FirstEpochMicrosecond || microseconds > LastEpochMicrosecond)
+                                throw new CBORException($"The epoch-based date/time '{seconds.ToString("R", CultureInfo.InvariantCulture)}' lies outside the years 0001 to 9999!");
+
+                            Sink.WriteString(DateTimeOffset.UnixEpoch.AddTicks(microseconds * 10).UtcDateTime.ToISO8601());
                             return;
 
                         }

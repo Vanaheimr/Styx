@@ -459,6 +459,32 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(() => CBORJSON.ToJSON(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromDouble(Double.NaN))),
                         Throws.TypeOf<CBORException>());
 
+            // The four-digit year names 0001 to 9999 and nothing else, at both
+            // ends and for integers as for floats (metrological-text.md 3.1).
+            Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromInt64(-62_135_596_800))),
+                        Is.EqualTo("\"0001-01-01T00:00:00.000Z\""));
+
+            Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromInt64(253_402_300_799))),
+                        Is.EqualTo("\"9999-12-31T23:59:59.000Z\""));
+
+            Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.EpochDateTime, CBORValue.FromDouble(253_402_300_799.999))),
+                        Is.EqualTo("\"9999-12-31T23:59:59.999Z\""));
+
+            // Outside it, a CBORException rather than whatever DateTimeOffset
+            // throws - and 253402300800.0 used to pass a bounds check made in
+            // Double, where the last microsecond of 9999 has no value of its own.
+            foreach (var outside in new[] {
+                                        CBORValue.FromInt64 ( 253_402_300_800),
+                                        CBORValue.FromInt64 ( -62_135_596_801),
+                                        CBORValue.FromDouble( 253_402_300_800.0),
+                                        CBORValue.FromDouble( -62_135_596_800.001),
+                                        CBORValue.FromDouble( 1e300)
+                                    })
+            {
+                Assert.That(() => CBORJSON.ToJSON    (CBORValue.Tagged(CBORTag.EpochDateTime, outside)), Throws.TypeOf<CBORException>());
+                Assert.That(() => CBORJSON.ToJSONText(CBORValue.Tagged(CBORTag.EpochDateTime, outside)), Throws.TypeOf<CBORException>());
+            }
+
             var uuid = Guid.Parse("f81d4fae-7dec-11d0-a765-00a0c91e6bf6");
 
             Assert.That(BothPathsAgree(CBORValue.Tagged(CBORTag.UUID, CBORValue.FromBytes(uuid.ToByteArray(true)))),
