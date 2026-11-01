@@ -227,14 +227,13 @@ how one gets both, and COSE nests, so both can travel at once.
 **ChaCha20/Poly1305 is there for hardware without AES instructions.** A charging
 station's controller often has none, and a software AES there is slow or leaks
 its key through cache timing; ChaCha20 is additions, rotations and XORs,
-constant-time by construction. EVQI Transport names it beside AES-GCM for that
-reason. Within COSE it is shaped like `A256GCM` on purpose — one 256-bit key, a
-96-bit nonce, the 128-bit tag appended — so the nonce rule above applies
-unchanged. It is computed by Bouncy Castle rather than by
-`System.Security.Cryptography`, whose `ChaCha20Poly1305` exists only where the
-platform provides it. Pinned against RFC 8439 §2.8.2 and the COSE working
-group's two ChaCha20/Poly1305 examples, `Enc_structure` included — the same
-values COSE.TS is held to.
+constant-time by construction. EVQI Transport §7.2 names it beside AES-GCM.
+Within COSE it is shaped like `A256GCM` on purpose — one 256-bit key, a 96-bit
+nonce, the 128-bit tag appended — so the nonce rule above applies unchanged. It
+is computed by Bouncy Castle rather than by `System.Security.Cryptography`,
+whose `ChaCha20Poly1305` exists only where the platform provides it. Pinned
+against RFC 8439 §2.8.2 and the COSE working group's two ChaCha20/Poly1305
+examples, `Enc_structure` included — the same values COSE.TS is held to.
 
 Not implemented: AES-CCM — eight registered variants of nonce and tag width for
 a constrained-radio world this library does not serve.
