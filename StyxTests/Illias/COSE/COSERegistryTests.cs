@@ -110,6 +110,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSEAlgorithm.A256KW,    -5, "A256KW",  false, false, null),
                                (COSEAlgorithm.Direct,    -6, "direct",  false, false, null),
 
+                               // ECDH-ES [RFC 9053, Section 6.3]: recipient
+                               // algorithms that need only a public key.
+                               (COSEAlgorithm.ECDH_ES_HKDF_256, -25, "ECDH-ES + HKDF-256", false, false, null),
+                               (COSEAlgorithm.ECDH_ES_HKDF_512, -26, "ECDH-ES + HKDF-512", false, false, null),
+                               (COSEAlgorithm.ECDH_ES_A128KW,   -29, "ECDH-ES + A128KW",   false, false, null),
+                               (COSEAlgorithm.ECDH_ES_A192KW,   -30, "ECDH-ES + A192KW",   false, false, null),
+                               (COSEAlgorithm.ECDH_ES_A256KW,   -31, "ECDH-ES + A256KW",   false, false, null),
+
                                // Hash algorithms [RFC 9054]: they sign nothing,
                                // they name the digest of a thumbprint.
                                (COSEAlgorithm.SHA256,   -16, "SHA-256", false, false, null),
@@ -155,8 +163,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSECurve.P256,               1, "P-256",             COSEKeyType.EC2,   32,   32),
                                (COSECurve.P384,               2, "P-384",             COSEKeyType.EC2,   48,   48),
                                (COSECurve.P521,               3, "P-521",             COSEKeyType.EC2,   66,   66),
-                               (COSECurve.X25519,             4, "X25519",            COSEKeyType.OKP, null, null),
-                               (COSECurve.X448,               5, "X448",              COSEKeyType.OKP, null, null),
+                               // The key agreement curves of RFC 7748: both
+                               // halves of a key are one u-coordinate.
+                               (COSECurve.X25519,             4, "X25519",            COSEKeyType.OKP,   32,   32),
+                               (COSECurve.X448,               5, "X448",              COSEKeyType.OKP,   56,   56),
                                // An EdDSA key is a fixed-width octet string
                                // rather than a point, and Ed448 is 57 bytes
                                // and not 56: RFC 8032 appends a sign bit.

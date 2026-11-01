@@ -57,9 +57,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// RFC 8032 appends a sign bit to the 456-bit encoding, which costs a
         /// whole further octet.
         ///
-        /// X25519 and X448 carry no size, because they sign nothing: they are
-        /// key agreement curves, and this library has no use for them beyond
-        /// recognizing them.
+        /// X25519 and X448 sign nothing: they are the key agreement curves of
+        /// RFC 7748, used by ECDH-ES, and both halves of one of their keys are
+        /// a single u-coordinate of 32 and 56 bytes.
         /// </summary>
         private static readonly Dictionary<Int32, (String       Name,
                                                    COSEKeyType  KeyType,
@@ -70,8 +70,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
                            {   1, ("P-256",           COSEKeyType.EC2, "secp256r1",       null) },
                            {   2, ("P-384",           COSEKeyType.EC2, "secp384r1",       null) },
                            {   3, ("P-521",           COSEKeyType.EC2, "secp521r1",       null) },
-                           {   4, ("X25519",          COSEKeyType.OKP,  null,             null) },
-                           {   5, ("X448",            COSEKeyType.OKP,  null,             null) },
+                           {   4, ("X25519",          COSEKeyType.OKP,  null,             32  ) },
+                           {   5, ("X448",            COSEKeyType.OKP,  null,             56  ) },
                            {   6, ("Ed25519",         COSEKeyType.OKP,  null,             32  ) },
                            {   7, ("Ed448",           COSEKeyType.OKP,  null,             57  ) },
                            {   8, ("secp256k1",       COSEKeyType.EC2, "secp256k1",       null) },
@@ -195,8 +195,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
         }
 
         /// <summary>
-        /// The fixed width of an EdDSA key on this curve, or null when the
-        /// curve is not one this library signs with [RFC 8032].
+        /// The fixed width of a key on this OKP curve - an EdDSA key on
+        /// Ed25519 and Ed448 [RFC 8032], a key agreement key on X25519 and
+        /// X448 [RFC 7748] - or null for a curve that is not of key type OKP.
         /// </summary>
         public Int32? OctetKeySizeInBytes
 

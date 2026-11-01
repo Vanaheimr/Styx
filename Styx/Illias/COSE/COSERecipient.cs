@@ -18,6 +18,7 @@
 #region Usings
 
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 
 #endregion
 
@@ -42,8 +43,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// message. One content key protects the body, and one recipient structure
     /// per party delivers that key by a route only that party can walk.
     ///
-    /// Two routes are implemented, and they are the two reachable from a
-    /// pre-shared secret:
+    /// Four routes are implemented. Two of them start from a secret both
+    /// parties already hold:
     ///
     /// - "direct" [RFC 9053, Section 6.1.1] - the recipient's key IS the
     ///   content key. Nothing is transported: the protected bucket and the
@@ -52,12 +53,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
     /// - AES key wrap [RFC 9053 Section 6.2.1, RFC 3394] - the content key is
     ///   encrypted under a key-encryption key the recipient holds.
     ///
-    /// NOT implemented: ECDH key agreement and the HKDF-based key derivations.
-    /// Both need COSE_KDF_Context [RFC 9053, Section 5.2], a structure of its
-    /// own carrying PartyU and PartyV information and the supplementary public
-    /// info - and one whose fields, got subtly wrong, derive a key that agrees
-    /// only with an implementation making the same mistake. It is a piece of
-    /// work in its own right rather than a variation on this one.
+    /// The other two need nothing shared at all, only the recipient's public
+    /// key [RFC 9053, Section 6.3]; how the key is agreed is told in
+    /// COSEKeyAgreement:
+    ///
+    /// - ECDH-ES + HKDF - the agreed key IS the content key, so a message may
+    ///   carry only this one recipient.
+    /// - ECDH-ES + AES key wrap - the agreed key wraps the content key, so
+    ///   every recipient gets the same content key through a key of its own.
+    ///
+    /// NOT implemented: the static-static variants (ECDH-SS), in which the
+    /// sender agrees the key from a long-lived key of its own. What they add
+    /// is that the recipient learns who sent the message, and a signature
+    /// inside the envelope says that to everybody rather than to the
+    /// recipient alone.
     ///
     /// The "? recipients" at the end is not decoration: recipient structures
     /// NEST, so a key can be wrapped to a group whose key is in turn wrapped
@@ -217,7 +226,129 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region ContentKey(Key)
+        #region (static) ECDHDirect (RecipientKey, EphemeralKey, ContentAlgorithm, ...)
+
+        /// <summary>
+        /// An ECDH-ES recipient with direct key agreement [RFC 9053, Section
+        /// 6.3]: the key agreed with the recipient's public key IS the content
+        /// key. Returns the structure together with that content key, which
+        /// the message is then encrypted or authenticated with and which never
+        /// travels.
+        ///
+        /// The content algorithm is part of the derivation - the key is
+        /// derived FOR it - so it has to be the algorithm of the message. The
+        /// ephemeral key is a private key on the recipient's curve, made for
+        /// this one message.
+        /// </summary>
+        /// <param name="RecipientKey">The recipient's public key.</param>
+        /// <param name="EphemeralKey">A private key on the same curve, made for this one message.</param>
+        /// <param name="ContentAlgorithm">The algorithm the content key is for.</param>
+        /// <param name="Algorithm">ECDH-ES + HKDF-256 (the default) or + HKDF-512.</param>
+        /// <param name="Salt">An optional HKDF salt (header parameter -20).</param>
+        /// <param name="PartyU">Optional PartyU information (header parameters -21 to -23).</param>
+        /// <param name="PartyV">Optional PartyV information (header parameters -24 to -26).</param>
+        /// <param name="KeyIdentifier">An optional key identifier, defaulting to the recipient key's own.</param>
+        /// <param name="Recipients">Optional recipient structures nested below this one.</param>
+        public static (COSERecipient Recipient, COSEKey ContentKey) ECDHDirect(COSEKey                      RecipientKey,
+                                                                               COSEKey                      EphemeralKey,
+                                                                               COSEAlgorithm                ContentAlgorithm,
+                                                                               COSEAlgorithm?               Algorithm       = null,
+                                                                               Byte[]?                      Salt            = null,
+                                                                               COSEPartyInfo?               PartyU          = null,
+                                                                               COSEPartyInfo?               PartyV          = null,
+                                                                               Byte[]?                      KeyIdentifier   = null,
+                                                                               IEnumerable<COSERecipient>?  Recipients      = null)
+        {
+
+            var algorithm = Algorithm ?? COSEAlgorithm.ECDH_ES_HKDF_256;
+
+            if (algorithm.Family != COSEAlgorithmFamily.ECDHDirect)
+                throw new COSEException($"The COSE algorithm '{algorithm.Name}' is not a direct ECDH key agreement algorithm!");
+
+            var keyLength            = ContentKeySizeOf(ContentAlgorithm);
+            var protectedHeaderBytes = COSEHeaders.Create(algorithm).ToProtectedByteArray();
+            var secret               = COSEKeyAgreement.SharedSecret(EphemeralKey, RecipientKey);
+
+            var contentKey = COSEKeyAgreement.DeriveKey(
+                                 HashOf(algorithm),
+                                 secret,
+                                 COSEKeyAgreement.KDFContext(ContentAlgorithm, keyLength, protectedHeaderBytes, PartyU, PartyV),
+                                 keyLength,
+                                 Salt
+                             );
+
+            return (
+                       new COSERecipient(
+                           protectedHeaderBytes,
+                           ECDHHeadersFor(EphemeralKey, Salt, PartyU, PartyV, KeyIdentifier ?? RecipientKey.KeyIdentifier),
+                           [],
+                           Recipients
+                       ),
+                       COSEKey.FromSymmetricKey(contentKey, Algorithm: ContentAlgorithm)
+                   );
+
+        }
+
+        #endregion
+
+        #region (static) ECDHKeyWrap(ContentKey, RecipientKey, EphemeralKey, Algorithm, ...)
+
+        /// <summary>
+        /// An ECDH-ES recipient with key wrap [RFC 9053, Section 6.3]: the key
+        /// agreed with the recipient's public key wraps the content key.
+        ///
+        /// The algorithm - ECDH-ES + A128KW, + A192KW or + A256KW - names the
+        /// width of the key-encryption key, which is agreed rather than held.
+        /// Unlike direct agreement, any number of these may share a message:
+        /// each recipient unwraps the one content key with a key of its own.
+        /// </summary>
+        /// <param name="ContentKey">The content key to deliver.</param>
+        /// <param name="RecipientKey">The recipient's public key.</param>
+        /// <param name="EphemeralKey">A private key on the same curve, made for this one message.</param>
+        /// <param name="Algorithm">ECDH-ES + A128KW, + A192KW or + A256KW.</param>
+        /// <param name="Salt">An optional HKDF salt (header parameter -20).</param>
+        /// <param name="PartyU">Optional PartyU information (header parameters -21 to -23).</param>
+        /// <param name="PartyV">Optional PartyV information (header parameters -24 to -26).</param>
+        /// <param name="KeyIdentifier">An optional key identifier, defaulting to the recipient key's own.</param>
+        /// <param name="Recipients">Optional recipient structures nested below this one.</param>
+        public static COSERecipient ECDHKeyWrap(Byte[]                       ContentKey,
+                                                COSEKey                      RecipientKey,
+                                                COSEKey                      EphemeralKey,
+                                                COSEAlgorithm                Algorithm,
+                                                Byte[]?                      Salt            = null,
+                                                COSEPartyInfo?               PartyU          = null,
+                                                COSEPartyInfo?               PartyV          = null,
+                                                Byte[]?                      KeyIdentifier   = null,
+                                                IEnumerable<COSERecipient>?  Recipients      = null)
+        {
+
+            if (Algorithm.Family != COSEAlgorithmFamily.ECDHKeyWrap || Algorithm.KeySizeInBytes is not Int32 keySize)
+                throw new COSEException($"The COSE algorithm '{Algorithm.Name}' is not an ECDH key agreement with key wrap!");
+
+            var keyWrap              = COSEAlgorithm.ForKeyWrap(keySize);
+            var protectedHeaderBytes = COSEHeaders.Create(Algorithm).ToProtectedByteArray();
+            var secret               = COSEKeyAgreement.SharedSecret(EphemeralKey, RecipientKey);
+
+            var keyEncryptionKey = COSEKeyAgreement.DeriveKey(
+                                       HashOf(Algorithm),
+                                       secret,
+                                       COSEKeyAgreement.KDFContext(keyWrap, keySize, protectedHeaderBytes, PartyU, PartyV),
+                                       keySize,
+                                       Salt
+                                   );
+
+            return new COSERecipient(
+                       protectedHeaderBytes,
+                       ECDHHeadersFor(EphemeralKey, Salt, PartyU, PartyV, KeyIdentifier ?? RecipientKey.KeyIdentifier),
+                       keyWrap.WrapKey(ContentKey, keyEncryptionKey),
+                       Recipients
+                   );
+
+        }
+
+        #endregion
+
+        #region ContentKey(Key, ContentAlgorithm = null)
 
         /// <summary>
         /// The content key this recipient carries, or null when the given key
@@ -230,13 +361,21 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// distinguishes a wrong key from a right one, and saying more about
         /// which would say something about the key.
         /// </summary>
-        /// <param name="Key">A symmetric COSE key this party holds.</param>
-        public Byte[]? ContentKey(COSEKey Key)
+        /// <param name="Key">A COSE key this party holds: symmetric for "direct" and key wrap, a private EC2 or OKP key for ECDH-ES.</param>
+        /// <param name="ContentAlgorithm">The algorithm of the enclosing message. Only direct key agreement needs it, because there the content key is derived FOR it; the enclosing message passes it in.</param>
+        public Byte[]? ContentKey(COSEKey         Key,
+                                  COSEAlgorithm?  ContentAlgorithm   = null)
         {
 
             var algorithm = Algorithm;
 
-            if (!algorithm.HasValue || Key.KeyType != COSEKeyType.Symmetric || Key.K is null)
+            if (!algorithm.HasValue)
+                return null;
+
+            if (algorithm.Value.Family is COSEAlgorithmFamily.ECDHDirect or COSEAlgorithmFamily.ECDHKeyWrap)
+                return AgreedContentKey(algorithm.Value, Key, ContentAlgorithm);
+
+            if (Key.KeyType != COSEKeyType.Symmetric || Key.K is null)
                 return null;
 
             if (algorithm.Value.Family == COSEAlgorithmFamily.Direct)
@@ -265,6 +404,141 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
 
             return null;
+
+        }
+
+        #endregion
+
+
+        #region (private) AgreedContentKey(Algorithm, Key, ContentAlgorithm)
+
+        /// <summary>
+        /// The content key of an ECDH-ES recipient, agreed between the given
+        /// private key and the ephemeral key the sender left in the headers.
+        ///
+        /// Null for every way of not being this recipient's key: a key without
+        /// a private half, one on another curve, an ephemeral key that is
+        /// missing or not a point, and - for direct agreement - a call that
+        /// does not say which content algorithm the key is for, since the
+        /// derivation depends on it and a guess would derive a key for the
+        /// wrong one.
+        /// </summary>
+        private Byte[]? AgreedContentKey(COSEAlgorithm   Algorithm,
+                                         COSEKey         Key,
+                                         COSEAlgorithm?  ContentAlgorithm)
+        {
+
+            if ((Key.KeyType != COSEKeyType.EC2 && Key.KeyType != COSEKeyType.OKP) || !Key.IsPrivate)
+                return null;
+
+            if (!TryGetParameter(COSEHeaderLabel.EphemeralKey, out var ephemeralValue) ||
+                !COSEKey.TryParse(ephemeralValue, out var ephemeral, out _))
+            {
+                return null;
+            }
+
+            if (ephemeral.KeyType != Key.KeyType || ephemeral.Curve != Key.Curve)
+                return null;
+
+            Byte[]         secret;
+            Byte[]?        salt;
+            COSEPartyInfo  partyU;
+            COSEPartyInfo  partyV;
+
+            try
+            {
+                secret  = COSEKeyAgreement.SharedSecret(Key, ephemeral);
+                salt    = BytesParameter(COSEHeaderLabel.Salt);
+                partyU  = PartyInfo(COSEHeaderLabel.PartyUIdentity, COSEHeaderLabel.PartyUNonce, COSEHeaderLabel.PartyUOther);
+                partyV  = PartyInfo(COSEHeaderLabel.PartyVIdentity, COSEHeaderLabel.PartyVNonce, COSEHeaderLabel.PartyVOther);
+            }
+            catch (COSEException)
+            {
+                return null;
+            }
+
+            if (Algorithm.Family == COSEAlgorithmFamily.ECDHDirect)
+            {
+
+                // The agreed key is the content key: nothing to unwrap, and
+                // nothing that may pretend to be something to unwrap.
+                if (!ContentAlgorithm.HasValue || Ciphertext.Length != 0)
+                    return null;
+
+                Int32 keyLength;
+
+                try
+                {
+                    keyLength = ContentKeySizeOf(ContentAlgorithm.Value);
+                }
+                catch (COSEException)
+                {
+                    return null;
+                }
+
+                return COSEKeyAgreement.DeriveKey(
+                           HashOf(Algorithm),
+                           secret,
+                           COSEKeyAgreement.KDFContext(ContentAlgorithm.Value, keyLength, ProtectedHeaderBytes, partyU, partyV),
+                           keyLength,
+                           salt
+                       );
+
+            }
+
+            if (Algorithm.KeySizeInBytes is not Int32 keySize)
+                return null;
+
+            var keyWrap = COSEAlgorithm.ForKeyWrap(keySize);
+
+            var keyEncryptionKey = COSEKeyAgreement.DeriveKey(
+                                       HashOf(Algorithm),
+                                       secret,
+                                       COSEKeyAgreement.KDFContext(keyWrap, keySize, ProtectedHeaderBytes, partyU, partyV),
+                                       keySize,
+                                       salt
+                                   );
+
+            return keyWrap.UnwrapKey(Ciphertext, keyEncryptionKey);
+
+        }
+
+        /// <summary>A header parameter of this recipient, protected bucket first.</summary>
+        private Boolean TryGetParameter(CBORValue Label, out CBORValue Value)
+
+            => ProtectedHeader.  TryGet(Label, out Value) ||
+               UnprotectedHeader.TryGet(Label, out Value);
+
+        /// <summary>A byte-string header parameter, or null when absent; any other type is refused.</summary>
+        private Byte[]? BytesParameter(CBORValue Label)
+        {
+
+            if (!TryGetParameter(Label, out var value))
+                return null;
+
+            if (!value.TryGetBytes(out var bytes))
+                throw new COSEException($"The ECDH header parameter '{COSEHeaderLabel.Name(Label)}' must be a byte string!");
+
+            return bytes;
+
+        }
+
+        private COSEPartyInfo PartyInfo(CBORValue Identity, CBORValue Nonce, CBORValue Other)
+        {
+
+            CBORValue? nonce = null;
+
+            if (TryGetParameter(Nonce, out var nonceValue))
+            {
+
+                if (!nonceValue.TryGetBytes(out _) && !nonceValue.TryGetInt64(out _))
+                    throw new COSEException("A party nonce must be a byte string or an integer!");
+
+                nonce = nonceValue;
+
+            }
+
+            return new COSEPartyInfo(BytesParameter(Identity), nonce, BytesParameter(Other));
 
         }
 
@@ -383,7 +657,128 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region (internal static) EnsureRecipientsCompatible(Recipients, What)
+
+        /// <summary>
+        /// One that agrees its content key directly with a recipient may have
+        /// only that recipient [RFC 9053, Section 6.3], since every other
+        /// recipient would have to be handed the key that recipient agreed -
+        /// which is the one thing ECDH-ES is there to keep from anybody else.
+        /// </summary>
+        internal static void EnsureRecipientsCompatible(IReadOnlyCollection<COSERecipient>  Recipients,
+                                                        String                              What)
+        {
+
+            if (Recipients.Count > 1 &&
+                Recipients.Any(static recipient => recipient.Algorithm?.Family == COSEAlgorithmFamily.ECDHDirect))
+            {
+                throw new COSEException($"{What} with a direct ECDH key agreement recipient may have only that one recipient!");
+            }
+
+        }
+
+        #endregion
+
+
         #region (private static) helpers
+
+        /// <summary>
+        /// The width of the key a content algorithm needs: what AES-GCM names,
+        /// and for HMAC the width of its hash - which is what the published
+        /// examples derive for HMAC 512/512, and what RFC 9053 Section 3.1 asks
+        /// an HMAC key to be.
+        /// </summary>
+        private static Int32 ContentKeySizeOf(COSEAlgorithm Algorithm)
+        {
+
+            if (Algorithm.Family == COSEAlgorithmFamily.AESGCM && Algorithm.KeySizeInBytes is Int32 keySize)
+                return keySize;
+
+            if (Algorithm.Family == COSEAlgorithmFamily.HMAC)
+            {
+                if (Algorithm.HashAlgorithm == HashAlgorithmName.SHA256) return 32;
+                if (Algorithm.HashAlgorithm == HashAlgorithmName.SHA384) return 48;
+                if (Algorithm.HashAlgorithm == HashAlgorithmName.SHA512) return 64;
+            }
+
+            throw new COSEException($"The COSE algorithm '{Algorithm.Name}' is not a content algorithm a key can be agreed for!");
+
+        }
+
+        private static HashAlgorithmName HashOf(COSEAlgorithm Algorithm)
+
+            => Algorithm.HashAlgorithm
+                   ?? throw new COSEException($"The COSE algorithm '{Algorithm.Name}' names no HKDF hash!");
+
+        /// <summary>
+        /// The unprotected bucket of an ECDH-ES recipient: the ephemeral public
+        /// key first, then whatever the sender adds to the KDF context, then
+        /// the key identifier of the recipient key - the order of the published
+        /// examples.
+        /// </summary>
+        private static COSEHeaders ECDHHeadersFor(COSEKey         EphemeralKey,
+                                                  Byte[]?         Salt,
+                                                  COSEPartyInfo?  PartyU,
+                                                  COSEPartyInfo?  PartyV,
+                                                  Byte[]?         KeyIdentifier)
+        {
+
+            var parameters = new List<(CBORValue, CBORValue)> {
+                                 (COSEHeaderLabel.EphemeralKey, EphemeralPublicKey(EphemeralKey))
+                             };
+
+            void Bytes(CBORValue Label, Byte[]? Value)
+            {
+                if (Value is not null)
+                    parameters.Add((Label, CBORValue.FromBytes(Value)));
+            }
+
+            void Nonce(CBORValue Label, CBORValue? Value)
+            {
+                if (Value is CBORValue nonce)
+                    parameters.Add((Label, nonce));
+            }
+
+            Bytes(COSEHeaderLabel.Salt,           Salt);
+            Bytes(COSEHeaderLabel.PartyUIdentity, PartyU?.Identity);
+            Nonce(COSEHeaderLabel.PartyUNonce,    PartyU?.Nonce);
+            Bytes(COSEHeaderLabel.PartyUOther,    PartyU?.Other);
+            Bytes(COSEHeaderLabel.PartyVIdentity, PartyV?.Identity);
+            Nonce(COSEHeaderLabel.PartyVNonce,    PartyV?.Nonce);
+            Bytes(COSEHeaderLabel.PartyVOther,    PartyV?.Other);
+
+            if (KeyIdentifier is not null)
+                parameters.Add((COSEHeaderLabel.KeyIdentifier, CBORValue.FromBytes(KeyIdentifier)));
+
+            return new COSEHeaders([.. parameters]);
+
+        }
+
+        /// <summary>
+        /// The ephemeral key as it travels: its key type, curve and public
+        /// part, and nothing more - no key identifier, no algorithm, and above
+        /// all no private half, whatever the key handed in carries.
+        /// </summary>
+        private static CBORValue EphemeralPublicKey(COSEKey Key)
+        {
+
+            var curve = COSEKeyAgreement.RequireAgreementCurve(Key, "The ephemeral key");
+
+            if (Key.X is null || (Key.KeyType == COSEKeyType.EC2 && Key.Y is null))
+                throw new COSEException("The ephemeral key carries no public key!");
+
+            var entries = new List<KeyValuePair<CBORValue, CBORValue>> {
+                              new (COSEKey.KeyTypeLabel, CBORValue.FromInt64((Int64) Key.KeyType)),
+                              new (COSEKey.CurveLabel,   curve.ToCBOR()),
+                              new (COSEKey.XLabel,       CBORValue.FromBytes(Key.X))
+                          };
+
+            if (Key.KeyType == COSEKeyType.EC2)
+                entries.Add(new (COSEKey.YLabel, CBORValue.FromBytes(Key.Y!)));
+
+            return CBORValue.FromMap(entries);
+
+        }
 
         private static void EnsureSymmetric(COSEKey Key, String What)
         {

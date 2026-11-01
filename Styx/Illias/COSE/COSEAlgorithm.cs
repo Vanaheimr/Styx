@@ -169,6 +169,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             {   -6, new ("direct",  "Direct use of content encryption key (CEK)", COSEAlgorithmFamily.Direct,  null,                     null,                      false, false) },
 
+            // ECDH-ES [RFC 9053, Section 6.3]: recipient algorithms that need
+            // only the recipient's public key. The hash is HKDF's. The direct
+            // pair uses the agreed key AS the content key; the key-wrap three
+            // wrap the content key with it, and their key size is the width
+            // of that agreed key-encryption key, as it is for A128KW.
+            {  -25, new ("ECDH-ES + HKDF-256", "ECDH ES w/ HKDF - generate key directly",           COSEAlgorithmFamily.ECDHDirect,  HashAlgorithmName.SHA256, null, false, false) },
+            {  -26, new ("ECDH-ES + HKDF-512", "ECDH ES w/ HKDF - generate key directly",           COSEAlgorithmFamily.ECDHDirect,  HashAlgorithmName.SHA512, null, false, false) },
+            {  -29, new ("ECDH-ES + A128KW",   "ECDH ES w/ HKDF and AES Key Wrap w/ 128-bit key",   COSEAlgorithmFamily.ECDHKeyWrap, HashAlgorithmName.SHA256, null, false, false, null, null, 16) },
+            {  -30, new ("ECDH-ES + A192KW",   "ECDH ES w/ HKDF and AES Key Wrap w/ 192-bit key",   COSEAlgorithmFamily.ECDHKeyWrap, HashAlgorithmName.SHA256, null, false, false, null, null, 24) },
+            {  -31, new ("ECDH-ES + A256KW",   "ECDH ES w/ HKDF and AES Key Wrap w/ 256-bit key",   COSEAlgorithmFamily.ECDHKeyWrap, HashAlgorithmName.SHA256, null, false, false, null, null, 32) },
+
             // Hash algorithms [RFC 9054]. They sign nothing; they name the
             // digest of a certificate thumbprint (x5t) and the like.
             {  -16, new ("SHA-256", "SHA-2 256-bit Hash",                            COSEAlgorithmFamily.None,  HashAlgorithmName.SHA256, null,                      false, false) },
@@ -548,6 +559,36 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// and nothing is transported.
         /// </summary>
         public static COSEAlgorithm  Direct      { get; } = new (  -6);
+
+        /// <summary>
+        /// ECDH-ES with HKDF-SHA-256, generating the content key directly
+        /// (algorithm -25) [RFC 9053, Section 6.3].
+        /// </summary>
+        public static COSEAlgorithm  ECDH_ES_HKDF_256  { get; } = new ( -25);
+
+        /// <summary>
+        /// ECDH-ES with HKDF-SHA-512, generating the content key directly
+        /// (algorithm -26) [RFC 9053, Section 6.3].
+        /// </summary>
+        public static COSEAlgorithm  ECDH_ES_HKDF_512  { get; } = new ( -26);
+
+        /// <summary>
+        /// ECDH-ES with HKDF-SHA-256 and AES key wrap with a 128-bit key
+        /// (algorithm -29) [RFC 9053, Section 6.3].
+        /// </summary>
+        public static COSEAlgorithm  ECDH_ES_A128KW    { get; } = new ( -29);
+
+        /// <summary>
+        /// ECDH-ES with HKDF-SHA-256 and AES key wrap with a 192-bit key
+        /// (algorithm -30) [RFC 9053, Section 6.3].
+        /// </summary>
+        public static COSEAlgorithm  ECDH_ES_A192KW    { get; } = new ( -30);
+
+        /// <summary>
+        /// ECDH-ES with HKDF-SHA-256 and AES key wrap with a 256-bit key
+        /// (algorithm -31) [RFC 9053, Section 6.3].
+        /// </summary>
+        public static COSEAlgorithm  ECDH_ES_A256KW    { get; } = new ( -31);
 
 
         /// <summary>

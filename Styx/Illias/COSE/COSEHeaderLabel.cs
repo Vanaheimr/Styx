@@ -102,6 +102,52 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public static CBORValue  X5U                   { get; } = CBORValue.FromInt64(35);
 
+
+        // The ECDH-ES parameters of a recipient structure [RFC 9053, Section
+        // 6.3]. Negative, which is the registry's way of saying they mean
+        // something only for the algorithm that defines them: label -1 is the
+        // ephemeral key here and nothing at all on a signature.
+
+        /// <summary>
+        /// The sender's ephemeral public key, a COSE_Key (label -1) [RFC 9053].
+        /// </summary>
+        public static CBORValue  EphemeralKey          { get; } = CBORValue.FromInt64( -1);
+
+        /// <summary>
+        /// The HKDF salt (label -20) [RFC 9053].
+        /// </summary>
+        public static CBORValue  Salt                  { get; } = CBORValue.FromInt64(-20);
+
+        /// <summary>
+        /// PartyU identity information for the KDF context (label -21) [RFC 9053].
+        /// </summary>
+        public static CBORValue  PartyUIdentity        { get; } = CBORValue.FromInt64(-21);
+
+        /// <summary>
+        /// PartyU nonce for the KDF context (label -22) [RFC 9053].
+        /// </summary>
+        public static CBORValue  PartyUNonce           { get; } = CBORValue.FromInt64(-22);
+
+        /// <summary>
+        /// PartyU other information for the KDF context (label -23) [RFC 9053].
+        /// </summary>
+        public static CBORValue  PartyUOther           { get; } = CBORValue.FromInt64(-23);
+
+        /// <summary>
+        /// PartyV identity information for the KDF context (label -24) [RFC 9053].
+        /// </summary>
+        public static CBORValue  PartyVIdentity        { get; } = CBORValue.FromInt64(-24);
+
+        /// <summary>
+        /// PartyV nonce for the KDF context (label -25) [RFC 9053].
+        /// </summary>
+        public static CBORValue  PartyVNonce           { get; } = CBORValue.FromInt64(-25);
+
+        /// <summary>
+        /// PartyV other information for the KDF context (label -26) [RFC 9053].
+        /// </summary>
+        public static CBORValue  PartyVOther           { get; } = CBORValue.FromInt64(-26);
+
         #endregion
 
 
@@ -152,6 +198,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (Label == X5Chain)               return "x5chain";
             if (Label == X5T)                   return "x5t";
             if (Label == X5U)                   return "x5u";
+            if (Label == EphemeralKey)          return "ephemeral key";
+            if (Label == Salt)                  return "salt";
+            if (Label == PartyUIdentity)        return "PartyU identity";
+            if (Label == PartyUNonce)           return "PartyU nonce";
+            if (Label == PartyUOther)           return "PartyU other";
+            if (Label == PartyVIdentity)        return "PartyV identity";
+            if (Label == PartyVNonce)           return "PartyV nonce";
+            if (Label == PartyVOther)           return "PartyV other";
 
             return Label.ToDiagnosticString();
 

@@ -292,16 +292,20 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         public void Every_key_type_is_read_in_its_own_light()
         {
 
-            // A key agreement curve signs nothing, whatever key type it is
-            // wrapped in.
+            // A key agreement curve is read as one: an X25519 key becomes an
+            // X25519 key for ECDH-ES - never an Ed25519 key, although both
+            // are 32 bytes - and signing with it is refused by name.
             var x25519 = new COSEKey(
                              COSEKeyType.OKP,
                              COSECurve.X25519,
                              new Byte[32]
                          );
 
-            Assert.That(x25519.TryToPublicKey(out _, out var notASigningCurve),  Is.False);
-            Assert.That(notASigningCurve,  Does.Contain("not an EdDSA signature curve"));
+            Assert.That(x25519.TryToPublicKey(out var agreementKey, out var x25519Error),  Is.True, x25519Error);
+            Assert.That(agreementKey,  Is.InstanceOf<Org.BouncyCastle.Crypto.Parameters.X25519PublicKeyParameters>());
+
+            Assert.That(COSEAlgorithm.EdDSA.Verify(new Byte[1], new Byte[64], agreementKey!, out var notASigningKey),  Is.False);
+            Assert.That(notASigningKey,  Does.Contain("needs an Ed25519 or Ed448 key"));
 
             // An EdDSA key of the wrong width is refused before it reaches the
             // curve arithmetic: Ed448 is 57 bytes, not 56.

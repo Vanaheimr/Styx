@@ -42,6 +42,8 @@ by a test.
 | `HMAC 256/64` / `256/256` / `384/384` / `512/512` | 4 / 5 / 6 / 7 | *(none — a shared secret)* | SHA-256 / 256 / 384 / 512 |
 | `A128GCM` / `A192GCM` / `A256GCM` | 1 / 2 / 3 | *(none — a shared secret)* | *(none — an AEAD)* |
 | `A128KW` / `A192KW` / `A256KW` / `direct` | −3 / −4 / −5 / −6 | *(none — recipient algorithms)* | *(none)* |
+| `ECDH-ES + HKDF-256` / `+ HKDF-512` | −25 / −26 | any EC2 curve, X25519, X448 | HKDF-SHA-256 / 512 |
+| `ECDH-ES + A128KW` / `+ A192KW` / `+ A256KW` | −29 / −30 / −31 | any EC2 curve, X25519, X448 | HKDF-SHA-256 |
 
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
   header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
@@ -53,9 +55,11 @@ by a test.
   small signature — see below.
 - **`COSEEncrypt0` / `COSEEncrypt`** — content encrypted with AES-GCM (CBOR
   tags 16 and 96).
-- **`COSERecipient`** — how a content key reaches a party: `direct` and AES key
-  wrap ([RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)). This is what the
-  enveloped forms have and the bare ones do not.
+- **`COSERecipient`** — how a content key reaches a party: `direct`, AES key
+  wrap ([RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)), and ECDH-ES with
+  HKDF ([RFC 9053 §6.3](https://www.rfc-editor.org/rfc/rfc9053#section-6.3)),
+  directly or with key wrap. This is what the enveloped forms have and the
+  bare ones do not.
 
 ### Message authentication is not signing
 
@@ -129,8 +133,8 @@ delivering the one content key to one party by a route only that party can
 walk. The bare forms assume both sides already hold the key; these solve the
 distribution problem inside the message.
 
-Two routes are implemented, and they are the two reachable from a pre-shared
-secret. **`direct`** transports nothing — the recipient's key *is* the content
+Four routes are implemented. Two of them start from a pre-shared secret.
+**`direct`** transports nothing — the recipient's key *is* the content
 key, and the structure carries an empty protected bucket, an empty ciphertext
 and a key identifier. That makes a one-`direct`-recipient `COSEMac` a
 `COSEMac0` with ceremony, which is why the bare forms exist at all. **AES key
@@ -146,11 +150,51 @@ distinguishing them: any recipient can produce a message the others will accept
 as coming from the sender. RFC 9052 §8.2 is blunt about it — a MAC *"cannot be
 used to prove the identity of the sender to a third party"*.
 
-Not implemented: ECDH key agreement and the HKDF-based key derivations. Both
-need `COSE_KDF_Context` ([RFC 9053 §5.2](https://www.rfc-editor.org/rfc/rfc9053#section-5.2)),
-a structure of its own carrying PartyU and PartyV information and the
-supplementary public info — and one whose fields, got subtly wrong, derive a
-key that agrees only with an implementation making the same mistake.
+#### Encrypting to a public key: ECDH-ES
+
+The other two routes need no shared secret at all, only the recipient's
+**public** key — the one in its certificate, say. The sender makes a key pair
+for this one message (the *ephemeral* key), agrees a secret between its
+private half and the recipient's public key, and sends the ephemeral public
+half along in the recipient structure; the recipient agrees the same secret
+from the other side. HKDF turns the secret into a key, and then either
+**ECDH-ES + HKDF-256** uses it as the content key — so the message may have
+only this one recipient — or **ECDH-ES + A128KW** (192, 256) wraps the content
+key with it, so any number of recipients can each receive it.
+
+```csharp
+var (recipient, contentKey) = COSERecipient.ECDHDirect(theirPublicKey, ephemeralKey, COSEAlgorithm.A128GCM);
+
+var message = COSEEncrypt.Encrypt(plaintext, contentKey, [recipient], iv);
+
+message.Decrypt(theirPrivateKey, out var opened, out var errorResponse);
+```
+
+The ephemeral key is the caller's, like the nonce and the content key, so that
+every message can be rewritten byte for byte — which is what lets the
+cross-signing suite compare this implementation with COSE.TS on the bytes.
+Making a fresh one per message is the caller's duty: a reused ephemeral key
+gives every message to the same recipient the same key.
+
+Three things decide whether two implementations derive the same key, and all
+three live in `COSE_KDF_Context` ([RFC 9053 §5.2](https://www.rfc-editor.org/rfc/rfc9053#section-5.2)),
+the info HKDF derives *for*: **`AlgorithmID` names what the key is for** — the
+content algorithm when the key *is* the content key, `A128KW` when it wraps one
+— and never the ECDH algorithm; **the key length is in bits**; and **the
+recipient's protected bucket is part of it**, so a recipient re-read as another
+variant of itself derives a different key and opens nothing. Salt and the
+PartyU and PartyV information travel in the recipient's headers when a sender
+wants them. `COSEKeyAgreement` holds the pieces — the shared secret, the
+context, the derivation — for whoever needs to check one of them alone.
+
+The secret of an EC2 agreement is the x coordinate, padded to the field. An
+X25519 or X448 public key of small order yields an all-zero secret that anybody
+can compute, and is refused.
+
+Not implemented: the static-static variants (ECDH-SS), in which the sender
+agrees the key from a long-lived key of its own. What they add is that the
+recipient learns who sent the message, and a signature inside the envelope says
+that to everybody rather than to the recipient alone.
 
 ### Encryption
 
@@ -462,6 +506,15 @@ in one chain. The working group's AES-GCM examples carry whole messages
 key, the nonce — and every one of those is checked rather than only the final
 bytes: a message that comes out right by way of a wrong additional-data
 structure stops coming out right the moment anything changes.
+
+**ECDH-ES** is pinned against all 31 ephemeral-static ECDH examples of the
+working group — P-256, P-521 and X25519, direct and wrapped, under AES-GCM and
+HMAC — at every step they publish: the agreed secret from both sides, the
+encoded `COSE_KDF_Context`, the derived key, then the whole message, written
+byte for byte and opened from its published bytes. The table is transcribed
+from COSE.TS's corpus, so both implementations meet the same values, and the
+two agree byte for byte beyond them too — with salt and party information, on
+X448, brainpool and P-384. RFC 7748's X25519 key pairs are checked as well.
 
 **EdDSA** is pinned against RFC 8032 — Section 7.1 for Ed25519, Section 7.4 for
 Ed448 — and those are checked harder than any ECDSA vector allows: EdDSA has no

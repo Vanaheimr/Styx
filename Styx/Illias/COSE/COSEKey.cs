@@ -478,6 +478,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        => new (COSEKeyType.OKP, COSECurve.Ed448,
                                ed448Public.GetEncoded(), null, null, KeyIdentifier, Algorithm),
 
+                   // X25519 and X448 [RFC 7748]: key agreement keys for
+                   // ECDH-ES, an octet key pair like EdDSA's but a different
+                   // curve with a different public key.
+                   X25519PrivateKeyParameters   x25519Private
+                       => new (COSEKeyType.OKP, COSECurve.X25519,
+                               x25519Private.GeneratePublicKey().GetEncoded(), null,
+                               x25519Private.GetEncoded(), KeyIdentifier, Algorithm),
+
+                   X25519PublicKeyParameters    x25519Public
+                       => new (COSEKeyType.OKP, COSECurve.X25519,
+                               x25519Public.GetEncoded(), null, null, KeyIdentifier, Algorithm),
+
+                   X448PrivateKeyParameters     x448Private
+                       => new (COSEKeyType.OKP, COSECurve.X448,
+                               x448Private.GeneratePublicKey().GetEncoded(), null,
+                               x448Private.GetEncoded(), KeyIdentifier, Algorithm),
+
+                   X448PublicKeyParameters      x448Public
+                       => new (COSEKeyType.OKP, COSECurve.X448,
+                               x448Public.GetEncoded(), null, null, KeyIdentifier, Algorithm),
+
                    // ML-DSA: no curve, and the private key is the seed.
                    MLDsaPrivateKeyParameters    mlDsaPrivate
                        => new (COSEKeyType.AKP,
@@ -1059,8 +1080,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (private) TryToOkpPublicKey / TryToAkpPublicKey
 
         /// <summary>
-        /// An EdDSA public key, which is the whole of x: an octet key pair has
-        /// no second coordinate.
+        /// The public key of an octet key pair, which is the whole of x: there
+        /// is no second coordinate. An EdDSA key on Ed25519 and Ed448, a key
+        /// agreement key on X25519 and X448 - and which of the four is decided
+        /// by the curve and nothing else, since all four are bare octet
+        /// strings and two of them are 32 bytes wide.
         /// </summary>
         private Boolean TryToOkpPublicKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PublicKey,
                                           [NotNullWhen(false)] out String?                  ErrorResponse)
@@ -1078,7 +1102,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (expected is null)
             {
-                ErrorResponse = $"The curve '{Curve.Value.Name}' is not an EdDSA signature curve!";
+                ErrorResponse = $"The curve '{Curve.Value.Name}' is not a curve of key type OKP!";
                 return false;
             }
 
@@ -1091,9 +1115,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                PublicKey      = Curve.Value == COSECurve.Ed448
-                                     ? new Ed448PublicKeyParameters  (X, 0)
-                                     : new Ed25519PublicKeyParameters(X, 0);
+                PublicKey      = Curve.Value == COSECurve.Ed448  ? new Ed448PublicKeyParameters  (X, 0)
+                               : Curve.Value == COSECurve.X25519 ? new X25519PublicKeyParameters (X, 0)
+                               : Curve.Value == COSECurve.X448   ? new X448PublicKeyParameters   (X, 0)
+                               :                                   new Ed25519PublicKeyParameters(X, 0);
 
                 ErrorResponse  = null;
                 return true;
@@ -1294,7 +1319,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (expected is null)
             {
-                ErrorResponse = $"The curve '{Curve.Value.Name}' is not an EdDSA signature curve!";
+                ErrorResponse = $"The curve '{Curve.Value.Name}' is not a curve of key type OKP!";
                 return false;
             }
 
@@ -1310,9 +1335,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            PrivateKey     = Curve.Value == COSECurve.Ed448
-                                 ? new Ed448PrivateKeyParameters  (D, 0)
-                                 : new Ed25519PrivateKeyParameters(D, 0);
+            PrivateKey     = Curve.Value == COSECurve.Ed448  ? new Ed448PrivateKeyParameters  (D, 0)
+                           : Curve.Value == COSECurve.X25519 ? new X25519PrivateKeyParameters (D, 0)
+                           : Curve.Value == COSECurve.X448   ? new X448PrivateKeyParameters   (D, 0)
+                           :                                   new Ed25519PrivateKeyParameters(D, 0);
 
             ErrorResponse  = null;
             return true;

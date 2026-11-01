@@ -207,6 +207,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             COSEEncrypt0.EnsureUsable(ContentKey, algorithm);
 
+            var recipients = Recipients.ToArray();
+
+            COSERecipient.EnsureRecipientsCompatible(recipients, "A COSE_Encrypt message");
+
             var protectedHeaderBytes = COSEHeaders.Create(algorithm).ToProtectedByteArray();
 
             var ciphertext = algorithm.Encrypt(
@@ -220,7 +224,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        protectedHeaderBytes,
                        new COSEHeaders([(COSEHeaderLabel.IV, CBORValue.FromBytes(IV))]),
                        DetachPayload ? null : ciphertext,
-                       Recipients,
+                       recipients,
                        Tagged
                    );
 
@@ -237,7 +241,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// generally know which entry in the list is theirs. A recipient that
         /// does not yield a key is not an error - it is somebody else's.
         /// </summary>
-        /// <param name="Key">A symmetric COSE key this party holds.</param>
+        /// <param name="Key">A COSE key this party holds: symmetric for "direct" and key wrap, the private half of an EC2 or OKP key pair for ECDH-ES.</param>
         /// <param name="Plaintext">The decrypted content.</param>
         /// <param name="ErrorResponse">The reason why the decryption failed.</param>
         /// <param name="ExternalAAD">Optional externally supplied data.</param>
@@ -253,11 +257,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             Plaintext = null;
 
-            if (Key.KeyType != COSEKeyType.Symmetric || Key.K is null)
-            {
-                ErrorResponse = $"A COSE_Encrypt message needs a COSE key of key type Symmetric, but a key of key type {Key.KeyType} was given!";
-                return false;
-            }
+            // Which kind of key fits is the recipients' to say rather than this
+            // message's: a symmetric one for direct and key wrap, the private
+            // half of an EC2 or OKP key pair for ECDH-ES. One that fits none
+            // of them ends below, as a recipient list that yielded nothing.
 
             // The body is decrypted through the COSE_Encrypt0 machinery, which
             // is the same machinery with a different context string.
@@ -267,7 +270,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             foreach (var recipient in Recipients)
             {
 
-                var contentKey = recipient.ContentKey(Key);
+                var contentKey = recipient.ContentKey(Key, ExpectedAlgorithm ?? Algorithm);
 
                 if (contentKey is null)
                     continue;

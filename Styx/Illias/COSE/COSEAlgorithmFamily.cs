@@ -123,7 +123,23 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// and its ciphertext must both be empty, which is what makes a
         /// COSE_Mac with one direct recipient a COSE_Mac0 with ceremony.
         /// </summary>
-        Direct
+        Direct,
+
+        /// <summary>
+        /// ECDH-ES with HKDF [RFC 9053, Section 6.3], a recipient algorithm
+        /// that needs no shared secret: the key agreed between an ephemeral
+        /// key of the sender and the recipient's public key IS the content
+        /// key. Which is why a message carrying one may have only that one
+        /// recipient.
+        /// </summary>
+        ECDHDirect,
+
+        /// <summary>
+        /// ECDH-ES with HKDF and AES key wrap [RFC 9053, Section 6.3]: the
+        /// agreed key wraps the content key, so any number of recipients can
+        /// each receive the one content key through a key of their own.
+        /// </summary>
+        ECDHKeyWrap
 
     }
 

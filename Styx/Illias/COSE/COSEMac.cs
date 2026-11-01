@@ -262,6 +262,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (ContentKey.KeyType != COSEKeyType.Symmetric || ContentKey.K is null)
                 throw new COSEException($"A COSE_Mac message needs a content key of key type Symmetric, but a key of key type {ContentKey.KeyType} was given!");
 
+            var recipients = Recipients.ToArray();
+
+            COSERecipient.EnsureRecipientsCompatible(recipients, "A COSE_Mac message");
+
             var protectedHeaderBytes = COSEHeaders.Create(algorithm).ToProtectedByteArray();
 
             var payload = CanonicalizePayload
@@ -284,7 +288,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                        null,
                        DetachPayload ? null : payload,
                        tag,
-                       Recipients,
+                       recipients,
                        Tagged
                    );
 
@@ -300,7 +304,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// Every recipient is tried, because a party holding one key does not
         /// generally know which entry in the list is theirs.
         /// </summary>
-        /// <param name="Key">A symmetric COSE key this party holds.</param>
+        /// <param name="Key">A COSE key this party holds: symmetric for "direct" and key wrap, the private half of an EC2 or OKP key pair for ECDH-ES.</param>
         /// <param name="ErrorResponse">The reason why the verification failed.</param>
         /// <param name="ExternalAAD">Optional externally supplied data.</param>
         /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
@@ -333,11 +337,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (Key.KeyType != COSEKeyType.Symmetric || Key.K is null)
-            {
-                ErrorResponse = $"A COSE_Mac message needs a COSE key of key type Symmetric, but a key of key type {Key.KeyType} was given!";
-                return false;
-            }
+            // Which kind of key fits is the recipients' to say, as for
+            // COSE_Encrypt: symmetric for direct and key wrap, a private EC2
+            // or OKP key for ECDH-ES.
 
             if (Payload is not null && DetachedPayload is not null)
             {
@@ -359,7 +361,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             foreach (var recipient in Recipients)
             {
 
-                var contentKey = recipient.ContentKey(Key);
+                var contentKey = recipient.ContentKey(Key, algorithm.Value);
 
                 if (contentKey is null)
                     continue;
