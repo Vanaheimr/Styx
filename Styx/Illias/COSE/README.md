@@ -432,6 +432,14 @@ caller's question.
 A single certificate travels as a bare byte string, two or more as an array,
 end-entity first; the trust anchor need not be included.
 
+**A certificate is read only if it is DER**, as RFC 5280 requires: one
+certificate, every length in its shortest form, nothing after it. Bouncy
+Castle would also read BER, and what it hands back encodes the certificate
+anew, so without that check an `x5t` would be compared with bytes the sender
+never sent: the honest thumbprint over what travelled would fail, and one over
+an encoding nobody saw would pass. Since the bytes that are accepted are the
+bytes Bouncy Castle writes, the thumbprint covers what travelled.
+
 ### `crit` and honesty about what was checked
 
 `COSEHeaderLabel.IsUnderstood` deliberately does *not* list `x5chain`, because

@@ -459,6 +459,60 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region Only_a_certificate_in_DER_is_read()
+
+        [Test]
+        public void Only_a_certificate_in_DER_is_read()
+        {
+
+            var rootKey  = NewKey();
+            var der      = Issue("Self-signed meter", rootKey, true).GetEncoded();
+
+            // The outer SEQUENCE is 30 82 hi lo, the TBSCertificate follows at
+            // offset 4 as 30 82 hi lo as well, and the signatureAlgorithm of an
+            // ECDSA certificate after it as 30 0A. Every forgery below changes
+            // only bytes outside the TBSCertificate, so the issuer's signature
+            // still holds and a lenient parser has nothing else to stumble over.
+            Assert.That(der[0..2],  Is.EqualTo(new Byte[] { 0x30, 0x82 }));
+            Assert.That(der[4..6],  Is.EqualTo(new Byte[] { 0x30, 0x82 }));
+
+            var length    = (der[2] << 8) | der[3];
+            var content   = der[4..];
+            var tbsEnd    = 4 + 4 + ((der[6] << 8) | der[7]);
+            Assert.That(der[tbsEnd..(tbsEnd + 2)],  Is.EqualTo(new Byte[] { 0x30, 0x0A }));
+
+            var forgeries = new (String Name, Byte[] Bytes)[] {
+                ("a length with a leading zero",
+                 [ 0x30, 0x83, 0x00, der[2], der[3], ..content ]),
+                ("an indefinite length",
+                 [ 0x30, 0x80, ..content, 0x00, 0x00 ]),
+                ("a byte after the certificate",
+                 [ ..der, 0x00 ]),
+                ("a signatureAlgorithm length in long form",
+                 [ 0x30, 0x82, (Byte) ((length + 1) >> 8), (Byte) (length + 1),
+                   ..der[4..tbsEnd], 0x30, 0x81, 0x0A, ..der[(tbsEnd + 2)..] ])
+            };
+
+            Assert.That(COSECertificateChain.TryParse(CBORValue.FromBytes(der), out _, out var controlError),  Is.True, controlError);
+
+            foreach (var (name, bytes) in forgeries)
+            {
+
+                Assert.That(COSECertificateChain.TryParse(CBORValue.FromBytes(bytes), out _, out var errorResponse),  Is.False, name);
+                Assert.That(errorResponse,  Does.Contain("not a single DER-encoded certificate"), name);
+
+                // The same certificate at the second position of a chain.
+                Assert.That(COSECertificateChain.TryParse(CBORValue.FromArray(CBORValue.FromBytes(der), CBORValue.FromBytes(bytes)),
+                                                          out _,
+                                                          out var chainError),  Is.False, name);
+                Assert.That(chainError,  Does.Contain("position 1"), name);
+
+            }
+
+        }
+
+        #endregion
+
         #region A_sender_may_now_demand_that_the_chain_be_processed()
 
         [Test]

@@ -150,11 +150,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                var parser = new X509CertificateParser();
+                var parser  = new X509CertificateParser();
+                var certs   = new List<X509Certificate>();
 
-                Chain          = new COSECertificateChain(
-                                     encoded.Select(certificate => parser.ReadCertificate(certificate))
-                                 );
+                for (var position = 0; position < encoded.Count; position++)
+                {
+
+                    var certificate = parser.ReadCertificate(encoded[position]);
+
+                    // RFC 5280 requires a certificate to be DER, and RFC 9360
+                    // takes x5t over that DER encoding. Bouncy Castle also reads
+                    // BER, stops after the first certificate, and GetEncoded()
+                    // encodes anew rather than returning what was read - so a
+                    // thumbprint would cover bytes nobody sent. Only a
+                    // certificate whose encoding is the bytes it travelled as is
+                    // accepted, and then what x5t hashes is what travelled.
+                    if (certificate is null ||
+                        !certificate.GetEncoded().SequenceEqual(encoded[position]))
+                    {
+                        ErrorResponse = $"The certificate at position {position} of the COSE_X509 is not a single DER-encoded certificate!";
+                        return false;
+                    }
+
+                    certs.Add(certificate);
+
+                }
+
+                Chain          = new COSECertificateChain(certs);
 
                 ErrorResponse  = null;
                 return true;
