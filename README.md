@@ -58,6 +58,7 @@ You will see the current timestamp and value of a slow sinus wave on the console
 
 Additional help and much more examples can be found in the [Wiki](http://github.com/Vanaheimr/Styx/wiki).   
 News and updates can also be found on twitter by following: [@ahzf](http://www.twitter.com/ahzf).
+The object identifiers under GraphDefined's Private Enterprise Number 60483 are recorded in the [OID registry](OID-Registry.md).
 
 #### Installation
 
