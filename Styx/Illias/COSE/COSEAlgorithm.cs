@@ -161,6 +161,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {    2, new ("A192GCM", "AES-GCM mode w/ 192-bit key, 128-bit tag",   COSEAlgorithmFamily.AESGCM,  null,                     null,                      false, false, null, 16,   24) },
             {    3, new ("A256GCM", "AES-GCM mode w/ 256-bit key, 128-bit tag",   COSEAlgorithmFamily.AESGCM,  null,                     null,                      false, false, null, 16,   32) },
 
+            // ChaCha20/Poly1305 [RFC 9053, Section 4.3; RFC 8439]: one key
+            // width, one nonce width, one tag width.
+            {   24, new ("ChaCha20/Poly1305", "ChaCha20/Poly1305 w/ 256-bit key, 128-bit tag", COSEAlgorithmFamily.ChaCha20Poly1305, null, null, false, false, null, 16, 32) },
+
             // AES key wrap [RFC 9053 Section 6.2.1, RFC 3394]. The width named
             // is that of the KEY-ENCRYPTION key, not of the key being wrapped.
             {   -3, new ("A128KW",  "AES Key Wrap w/ 128-bit key",                COSEAlgorithmFamily.KeyWrap, null,                     null,                      false, false, null, null, 16) },
@@ -538,6 +542,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static COSEAlgorithm  A256GCM     { get; } = new (   3);
 
         /// <summary>
+        /// ChaCha20/Poly1305 with a 256-bit key and a 128-bit tag (algorithm
+        /// 24) [RFC 9053, Section 4.3].
+        /// </summary>
+        public static COSEAlgorithm  ChaCha20Poly1305 { get; } = new (  24);
+
+        /// <summary>
+        /// Whether this is one of the two AEADs this implementation encrypts
+        /// content with: AES-GCM or ChaCha20/Poly1305.
+        /// </summary>
+        public Boolean IsContentEncryption
+
+            => Family is COSEAlgorithmFamily.AESGCM or COSEAlgorithmFamily.ChaCha20Poly1305;
+
+        /// <summary>
         /// AES key wrap with a 128-bit key-encryption key (algorithm -3)
         /// [RFC 9053, Section 6.2.1].
         /// </summary>
@@ -859,7 +877,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Encrypt(Plaintext, Key, Nonce, AdditionalData)
 
         /// <summary>
-        /// Encrypt with AES-GCM, returning ciphertext with the 16-byte
+        /// Encrypt with AES-GCM or ChaCha20/Poly1305 - whichever this
+        /// algorithm is - returning ciphertext with the 16-byte
         /// authentication tag APPENDED.
         ///
         /// That the tag is appended rather than carried in a field of its own
@@ -882,7 +901,24 @@ namespace org.GraphDefined.Vanaheimr.Illias
                               ReadOnlySpan<Byte>  AdditionalData)
         {
 
-            EnsureAESGCM(Key, Nonce);
+            EnsureContentEncryption(Key, Nonce);
+
+            if (Family == COSEAlgorithmFamily.ChaCha20Poly1305)
+            {
+
+                // Bouncy Castle rather than System.Security.Cryptography,
+                // whose ChaCha20Poly1305 exists only where the platform
+                // provides it.
+                var chacha = new Org.BouncyCastle.Crypto.Modes.ChaCha20Poly1305();
+                chacha.Init(true, new AeadParameters(new KeyParameter(Key), AESGCMTagSize * 8, Nonce, AdditionalData.ToArray()));
+
+                var sealed_ = new Byte[chacha.GetOutputSize(Plaintext.Length)];
+                var length  = chacha.ProcessBytes(Plaintext.ToArray(), 0, Plaintext.Length, sealed_, 0);
+                chacha.DoFinal(sealed_, length);
+
+                return sealed_;
+
+            }
 
             var ciphertext = new Byte[Plaintext.Length + AESGCMTagSize];
 
@@ -903,8 +939,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region Decrypt(Ciphertext, Key, Nonce, AdditionalData)
 
         /// <summary>
-        /// Decrypt with AES-GCM, or return null when the message does not
-        /// authenticate.
+        /// Decrypt with AES-GCM or ChaCha20/Poly1305, or return null when the
+        /// message does not authenticate.
         ///
         /// Null rather than an exception, and null rather than a partial
         /// plaintext: an AEAD failure means the WHOLE message is
@@ -922,10 +958,33 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                ReadOnlySpan<Byte>  AdditionalData)
         {
 
-            EnsureAESGCM(Key, Nonce);
+            EnsureContentEncryption(Key, Nonce);
 
             if (Ciphertext.Length < AESGCMTagSize)
                 return null;
+
+            if (Family == COSEAlgorithmFamily.ChaCha20Poly1305)
+            {
+
+                try
+                {
+
+                    var chacha = new Org.BouncyCastle.Crypto.Modes.ChaCha20Poly1305();
+                    chacha.Init(false, new AeadParameters(new KeyParameter(Key), AESGCMTagSize * 8, Nonce, AdditionalData.ToArray()));
+
+                    var opened = new Byte[chacha.GetOutputSize(Ciphertext.Length)];
+                    var length = chacha.ProcessBytes(Ciphertext, 0, Ciphertext.Length, opened, 0);
+                    chacha.DoFinal(opened, length);
+
+                    return opened;
+
+                }
+                catch (InvalidCipherTextException)
+                {
+                    return null;
+                }
+
+            }
 
             var plaintext = new Byte[Ciphertext.Length - AESGCMTagSize];
 
@@ -952,12 +1011,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         #endregion
 
-        #region (private) EnsureAESGCM(Key, Nonce)
+        #region (private) EnsureContentEncryption(Key, Nonce)
 
-        private void EnsureAESGCM(Byte[] Key, Byte[] Nonce)
+        private void EnsureContentEncryption(Byte[] Key, Byte[] Nonce)
         {
 
-            if (Family != COSEAlgorithmFamily.AESGCM)
+            if (!IsContentEncryption)
                 throw new COSEException($"The COSE algorithm '{Name}' is not a content encryption algorithm supported by this implementation!");
 
             var keySize = KeySizeInBytes
@@ -967,7 +1026,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 throw new COSEException($"The COSE algorithm '{Name}' needs a {keySize}-byte key, but a {Key.Length}-byte key was given!");
 
             if (Nonce.Length != AESGCMNonceSize)
-                throw new COSEException($"AES-GCM within COSE uses a {AESGCMNonceSize}-byte nonce [RFC 9053, Section 4.1], but a {Nonce.Length}-byte one was given!");
+                throw new COSEException($"{Name} within COSE uses a {AESGCMNonceSize}-byte nonce [RFC 9053, Section 4], but a {Nonce.Length}-byte one was given!");
 
         }
 

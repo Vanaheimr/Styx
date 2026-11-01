@@ -107,6 +107,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
         AESGCM,
 
         /// <summary>
+        /// ChaCha20/Poly1305 [RFC 9053, Section 4.3; RFC 8439], the second
+        /// content encryption algorithm: for hardware without AES
+        /// instructions, where a software AES is slow or leaks its key through
+        /// cache timing. Shaped like A256GCM on purpose - one 256-bit key, a
+        /// 96-bit nonce, the 128-bit tag appended - and everything said about
+        /// AES-GCM's nonce applies unchanged.
+        /// </summary>
+        ChaCha20Poly1305,
+
+        /// <summary>
         /// AES key wrap [RFC 9053 Section 6.2.1, RFC 3394], a RECIPIENT
         /// algorithm: it carries a content key rather than content.
         ///

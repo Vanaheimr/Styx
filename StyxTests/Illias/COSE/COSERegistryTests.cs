@@ -100,6 +100,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                (COSEAlgorithm.A128GCM,    1, "A128GCM", false, false, null),
                                (COSEAlgorithm.A192GCM,    2, "A192GCM", false, false, null),
                                (COSEAlgorithm.A256GCM,    3, "A256GCM", false, false, null),
+                               (COSEAlgorithm.ChaCha20Poly1305, 24, "ChaCha20/Poly1305", false, false, null),
 
                                // The recipient algorithms: they carry a content
                                // key rather than content. The width named by a

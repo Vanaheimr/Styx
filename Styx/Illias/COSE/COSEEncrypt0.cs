@@ -326,7 +326,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         internal static void EnsureUsable(COSEKey Key, COSEAlgorithm Algorithm)
         {
 
-            if (Algorithm.Family != COSEAlgorithmFamily.AESGCM)
+            if (!Algorithm.IsContentEncryption)
                 throw new COSEException($"The COSE algorithm '{Algorithm.Name}' is not a content encryption algorithm supported by this implementation!");
 
             if (Key.KeyType != COSEKeyType.Symmetric || Key.K is null)
@@ -422,7 +422,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (algorithm.Value.Family != COSEAlgorithmFamily.AESGCM)
+            if (!algorithm.Value.IsContentEncryption)
             {
                 ErrorResponse = $"The COSE algorithm '{algorithm.Value.Name}' is not a content encryption algorithm supported by this implementation!";
                 return false;

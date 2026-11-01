@@ -683,7 +683,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #region (private static) helpers
 
         /// <summary>
-        /// The width of the key a content algorithm needs: what AES-GCM names,
+        /// The width of the key a content algorithm needs: what AES-GCM or
+        /// ChaCha20/Poly1305 names,
         /// and for HMAC the width of its hash - which is what the published
         /// examples derive for HMAC 512/512, and what RFC 9053 Section 3.1 asks
         /// an HMAC key to be.
@@ -691,7 +692,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
         private static Int32 ContentKeySizeOf(COSEAlgorithm Algorithm)
         {
 
-            if (Algorithm.Family == COSEAlgorithmFamily.AESGCM && Algorithm.KeySizeInBytes is Int32 keySize)
+            if (Algorithm.IsContentEncryption && Algorithm.KeySizeInBytes is Int32 keySize)
                 return keySize;
 
             if (Algorithm.Family == COSEAlgorithmFamily.HMAC)

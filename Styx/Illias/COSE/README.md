@@ -41,6 +41,7 @@ by a test.
 | `ML-DSA-44` / `-65` / `-87` | −48 / −49 / −50 | *(none — an algorithm key pair)* | *(none — pure)* |
 | `HMAC 256/64` / `256/256` / `384/384` / `512/512` | 4 / 5 / 6 / 7 | *(none — a shared secret)* | SHA-256 / 256 / 384 / 512 |
 | `A128GCM` / `A192GCM` / `A256GCM` | 1 / 2 / 3 | *(none — a shared secret)* | *(none — an AEAD)* |
+| `ChaCha20/Poly1305` | 24 | *(none — a shared secret)* | *(none — an AEAD)* |
 | `A128KW` / `A192KW` / `A256KW` / `direct` | −3 / −4 / −5 / −6 | *(none — recipient algorithms)* | *(none)* |
 | `ECDH-ES + HKDF-256` / `+ HKDF-512` | −25 / −26 | any EC2 curve, X25519, X448 | HKDF-SHA-256 / 512 |
 | `ECDH-ES + A128KW` / `+ A192KW` / `+ A256KW` | −29 / −30 / −31 | any EC2 curve, X25519, X448 | HKDF-SHA-256 |
@@ -53,8 +54,8 @@ by a test.
   (CBOR tags 17 and 97), with the HMAC algorithms of
   [RFC 9053 §3.1](https://www.rfc-editor.org/rfc/rfc9053#section-3.1). Not a
   small signature — see below.
-- **`COSEEncrypt0` / `COSEEncrypt`** — content encrypted with AES-GCM (CBOR
-  tags 16 and 96).
+- **`COSEEncrypt0` / `COSEEncrypt`** — content encrypted with AES-GCM or
+  ChaCha20/Poly1305 (CBOR tags 16 and 96).
 - **`COSERecipient`** — how a content key reaches a party: `direct`, AES key
   wrap ([RFC 3394](https://www.rfc-editor.org/rfc/rfc3394)), and ECDH-ES with
   HKDF ([RFC 9053 §6.3](https://www.rfc-editor.org/rfc/rfc9053#section-6.3)),
@@ -198,16 +199,18 @@ that to everybody rather than to the recipient alone.
 
 ### Encryption
 
-AES-GCM in all three key widths. Three things differ from everything else in
-this namespace, and all three catch people out.
+AES-GCM in all three key widths, or ChaCha20/Poly1305
+([RFC 9053 §4.3](https://www.rfc-editor.org/rfc/rfc9053#section-4.3)); the key
+says which. Three things differ from everything else in this namespace, and all
+three catch people out.
 
 **The `Enc_structure` has three elements, not four** — `[context, protected,
 external_aad]`, no payload. The payload is what is being *encrypted*; the
 `Enc_structure` is what is merely *authenticated* alongside it, as the AEAD's
 additional data.
 
-**The authentication tag is not a field.** AES-GCM's 16-byte tag is appended to
-the ciphertext and travels inside the same byte string.
+**The authentication tag is not a field.** The AEAD's 16-byte tag is appended
+to the ciphertext and travels inside the same byte string.
 
 **The nonce is public and must never repeat.** It travels in the `iv` header
 parameter in the clear, which is fine; using one twice with the same key is
@@ -221,7 +224,20 @@ And an encrypted message says nothing about *who* sent it. AEAD integrity means
 limited data origination"*. A signed payload inside an encrypted envelope is
 how one gets both, and COSE nests, so both can travel at once.
 
-Not implemented: AES-CCM and ChaCha20/Poly1305.
+**ChaCha20/Poly1305 is there for hardware without AES instructions.** A charging
+station's controller often has none, and a software AES there is slow or leaks
+its key through cache timing; ChaCha20 is additions, rotations and XORs,
+constant-time by construction. EVQI Transport names it beside AES-GCM for that
+reason. Within COSE it is shaped like `A256GCM` on purpose — one 256-bit key, a
+96-bit nonce, the 128-bit tag appended — so the nonce rule above applies
+unchanged. It is computed by Bouncy Castle rather than by
+`System.Security.Cryptography`, whose `ChaCha20Poly1305` exists only where the
+platform provides it. Pinned against RFC 8439 §2.8.2 and the COSE working
+group's two ChaCha20/Poly1305 examples, `Enc_structure` included — the same
+values COSE.TS is held to.
+
+Not implemented: AES-CCM — eight registered variants of nonce and tag width for
+a constrained-radio world this library does not serve.
 
 ### The two pure families
 
