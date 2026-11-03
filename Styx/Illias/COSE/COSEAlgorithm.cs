@@ -1485,16 +1485,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            if (FixedCurve.HasValue)
+            var knownCurve = COSECurve.TryGetFor(ecPublicKey.Parameters, out var curve);
+
+            if (FixedCurve.HasValue &&
+               (!knownCurve || curve != FixedCurve.Value))
             {
-
-                if (!COSECurve.TryGetFor(ecPublicKey.Parameters, out var curve) ||
-                    curve != FixedCurve.Value)
-                {
-                    ErrorResponse = $"The COSE algorithm '{Name}' is defined for the elliptic curve '{FixedCurve.Value.Name}', which is not the curve of the given key!";
-                    return false;
-                }
-
+                ErrorResponse = $"The COSE algorithm '{Name}' is defined for the elliptic curve '{FixedCurve.Value.Name}', which is not the curve of the given key!";
+                return false;
             }
 
             var componentSizeInBytes = (ecPublicKey.Parameters.N.BitLength + 7) / 8;
@@ -1505,12 +1502,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
-            var verifier = new ECDsaSigner();
-            verifier.Init(false, ecPublicKey);
+            var hash   = Hash(ToBeSigned);
+            var valid  = knownCurve && NativeCurveOf(curve) is System.Security.Cryptography.ECCurve nativeCurve
 
-            if (!verifier.VerifySignature(Hash(ToBeSigned),
-                                          new BigInteger(1, Signature, 0,                    componentSizeInBytes),
-                                          new BigInteger(1, Signature, componentSizeInBytes, componentSizeInBytes)))
+                             // The NIST curves by the platform (CNG, OpenSSL), many times faster than Bouncy Castle;
+                             // COSE writes r and s as the platform reads them: concatenated, each of the size of the order.
+                             ? VerifyNatively(nativeCurve, ecPublicKey, hash, Signature)
+
+                             : VerifyByBouncyCastle(ecPublicKey, hash, Signature, componentSizeInBytes);
+
+            if (!valid)
             {
                 ErrorResponse = "The signature is invalid!";
                 return false;
@@ -1518,6 +1519,64 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             ErrorResponse = null;
             return true;
+
+        }
+
+        #endregion
+
+        #region (private static) NativeCurveOf(Curve)
+
+        /// <summary>
+        /// The elliptic curve the platform verifies signatures on everywhere .NET runs, or null.
+        /// </summary>
+        /// <param name="Curve">A COSE elliptic curve.</param>
+        private static System.Security.Cryptography.ECCurve? NativeCurveOf(COSECurve Curve)
+
+            => Curve == COSECurve.P256 ? System.Security.Cryptography.ECCurve.NamedCurves.nistP256
+             : Curve == COSECurve.P384 ? System.Security.Cryptography.ECCurve.NamedCurves.nistP384
+             : Curve == COSECurve.P521 ? System.Security.Cryptography.ECCurve.NamedCurves.nistP521
+             : null;
+
+        #endregion
+
+        #region (private static) VerifyNatively(Curve, PublicKey, Hash, Signature)
+
+        private static Boolean VerifyNatively(System.Security.Cryptography.ECCurve  Curve,
+                                              ECPublicKeyParameters                 PublicKey,
+                                              Byte[]                                Hash,
+                                              Byte[]                                Signature)
+        {
+
+            var q = PublicKey.Q.Normalize();
+
+            using var ecdsa = ECDsa.Create(new ECParameters {
+                                               Curve  = Curve,
+                                               Q      = new System.Security.Cryptography.ECPoint {
+                                                            X = q.AffineXCoord.GetEncoded(),
+                                                            Y = q.AffineYCoord.GetEncoded()
+                                                        }
+                                           });
+
+            return ecdsa.VerifyHash(Hash, Signature, DSASignatureFormat.IeeeP1363FixedFieldConcatenation);
+
+        }
+
+        #endregion
+
+        #region (private static) VerifyByBouncyCastle(PublicKey, Hash, Signature, ComponentSizeInBytes)
+
+        private static Boolean VerifyByBouncyCastle(ECPublicKeyParameters  PublicKey,
+                                                    Byte[]                 Hash,
+                                                    Byte[]                 Signature,
+                                                    Int32                  ComponentSizeInBytes)
+        {
+
+            var verifier = new ECDsaSigner();
+            verifier.Init(false, PublicKey);
+
+            return verifier.VerifySignature(Hash,
+                                            new BigInteger(1, Signature, 0,                    ComponentSizeInBytes),
+                                            new BigInteger(1, Signature, ComponentSizeInBytes, ComponentSizeInBytes));
 
         }
 

@@ -295,6 +295,14 @@ var verified  = message.Verify(publicKey, out var errorResponse);
 A failed verification is not an exception — it is the expected outcome of
 checking untrusted data, and `errorResponse` says why.
 
+ECDSA signatures on P-256, P-384 and P-521 are verified by the platform,
+through `System.Security.Cryptography` (CNG on Windows, OpenSSL on Linux),
+several times faster than by Bouncy Castle: a server taking change sets of
+many signatures spends most of its time verifying them. The other curves,
+Brainpool and secp256k1, which the platform does not provide everywhere, stay
+with Bouncy Castle, and so does signing, as the platform derives no nonces as
+RFC 6979 does. A test holds both ways to the same decisions.
+
 Passing `Deterministic: true` derives the ECDSA nonce from the private key and
 the message ([RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)) instead of
 drawing it at random. Signing the same data then yields the same bytes every
