@@ -387,6 +387,48 @@ namespace org.GraphDefined.Vanaheimr.Illias
         #endregion
 
 
+        #region (static) VerifyInitializationVectors(ProtectedHeader, UnprotectedHeader, out ErrorResponse)
+
+        /// <summary>
+        /// Verify that one security layer does not carry both an IV and a
+        /// Partial IV [RFC 9052, Section 3.1]: A Partial IV carries only the
+        /// part of the nonce that changes from message to message, the rest
+        /// being a Context IV that travels with the key and is composed with
+        /// it by whoever decrypts. A layer stating both parameters states its
+        /// nonce twice, in two ways that cannot be reconciled, which is why
+        /// the section forbids the combination outright instead of giving a
+        /// precedence rule. This library writes an IV and never a Partial IV,
+        /// so the prohibition is met on the way out by construction and can
+        /// only be broken on the way in.
+        /// </summary>
+        /// <param name="ProtectedHeader">The protected header parameters.</param>
+        /// <param name="UnprotectedHeader">The unprotected header parameters.</param>
+        /// <param name="ErrorResponse">The reason why the header parameters were rejected.</param>
+        public static Boolean VerifyInitializationVectors(COSEHeaders                       ProtectedHeader,
+                                                          COSEHeaders                       UnprotectedHeader,
+                                                          [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            var iv         = ProtectedHeader.  Contains(COSEHeaderLabel.IV) ||
+                             UnprotectedHeader.Contains(COSEHeaderLabel.IV);
+
+            var partialIV  = ProtectedHeader.  Contains(COSEHeaderLabel.PartialIV) ||
+                             UnprotectedHeader.Contains(COSEHeaderLabel.PartialIV);
+
+            if (iv && partialIV)
+            {
+                ErrorResponse = "The \"IV\" and \"Partial IV\" header parameters must not both be present within the same security layer!";
+                return false;
+            }
+
+            ErrorResponse = null;
+            return true;
+
+        }
+
+        #endregion
+
+
         #region TryGet  (Label, out Value)
 
         /// <summary>

@@ -406,6 +406,17 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
+            // After the crit check and not before it: where a message breaks a
+            // crit rule as well, the sender's own declaration is the more
+            // specific fault and is the one reported, which is what keeps a
+            // critical Partial IV distinguishable from a merely forbidden one.
+            if (!COSEHeaders.VerifyInitializationVectors(ProtectedHeader,
+                                                         UnprotectedHeader,
+                                                         out ErrorResponse))
+            {
+                return false;
+            }
+
             var algorithm = ExpectedAlgorithm ?? Algorithm;
 
             if (!algorithm.HasValue)

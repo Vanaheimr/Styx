@@ -58,6 +58,9 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.COSE
 
         private static readonly Byte[] iv        = Convert.FromHexString("02D1F7E6F26C43D4868D87CE");
 
+        /// <summary>The Partial IV of the RFC 9052 Appendix C.4.2 example, whose algorithm this library does not offer.</summary>
+        private static readonly Byte[] partialIV = Convert.FromHexString("61A7");
+
         /// <summary>The 128-, 192- and 256-bit content keys of the working group's examples.</summary>
         private static readonly Byte[] cek128    = Convert.FromHexString("849B57219DAE48DE646D07DBB533566E");
         private static readonly Byte[] cek192    = Convert.FromHexString("0F1E2D3C4B5A69788796A5B4C3D2E1F01F2E3D4C5B6A7988");
@@ -228,6 +231,70 @@ namespace org.GraphDefined.Vanaheimr.Styx.UnitTests.COSE
                             );
 
             Assert.That(exception!.Message, Does.Contain("12-byte nonce"));
+
+        }
+
+        [Test]
+        public void A_Partial_IV_beside_the_IV_is_refused_by_no_precedence_rule()
+        {
+
+            // RFC 9052, Section 3.1 forbids the two parameters in one security
+            // layer, and this is the only way to build such a message here:
+            // Encrypt writes the IV and cannot be told about a Partial IV at
+            // all, so the prohibition is kept on the way out by construction.
+            var key      = COSEKey.FromSymmetricKey(cek128, null, COSEAlgorithm.A128GCM);
+            var message  = COSEEncrypt0.Encrypt(plaintext,
+                                                key,
+                                                COSEHeaders.Create(COSEAlgorithm.A128GCM),
+                                                new COSEHeaders((COSEHeaderLabel.IV,        CBORValue.FromBytes(iv)),
+                                                                (COSEHeaderLabel.PartialIV, CBORValue.FromBytes(partialIV))),
+                                                iv);
+
+            Assert.Multiple(() => {
+                Assert.That(message.Decrypt(key, out _, out var errorResponse),  Is.False);
+                Assert.That(errorResponse,                                       Does.Contain("must not both be present within the same security layer"));
+            });
+
+        }
+
+        [Test]
+        public void The_crit_is_named_before_the_combination_in_the_order_the_RFC_gives()
+        {
+
+            // The same message with crit [6], which is refused for the crit
+            // and not for the combination - and for which of the two crit
+            // rules depends on where the Partial IV sits. Unprotected, it is
+            // Section 3.1's fatal error: a crit listing a label whose
+            // parameter is not in the protected bucket. Protected, the crit is
+            // well formed and what remains is the demand itself, which this
+            // implementation cannot meet.
+            var key               = COSEKey.FromSymmetricKey(cek128, null, COSEAlgorithm.A128GCM);
+            var crit              = COSEHeaders.Create(COSEAlgorithm.A128GCM).
+                                        Set(COSEHeaderLabel.Critical,
+                                            CBORValue.FromArray(COSEHeaderLabel.PartialIV));
+
+            var unprotectedLabel  = COSEEncrypt0.Encrypt(plaintext,
+                                                         key,
+                                                         crit,
+                                                         new COSEHeaders((COSEHeaderLabel.IV,        CBORValue.FromBytes(iv)),
+                                                                         (COSEHeaderLabel.PartialIV, CBORValue.FromBytes(partialIV))),
+                                                         iv);
+
+            var protectedLabel    = COSEEncrypt0.Encrypt(plaintext,
+                                                         key,
+                                                         crit.Set(COSEHeaderLabel.PartialIV, CBORValue.FromBytes(partialIV)),
+                                                         new COSEHeaders((COSEHeaderLabel.IV, CBORValue.FromBytes(iv))),
+                                                         iv);
+
+            Assert.Multiple(() => {
+
+                Assert.That(unprotectedLabel.Decrypt(key, out _, out var first),   Is.False);
+                Assert.That(first,   Does.Contain("is not present within the protected header bucket"));
+
+                Assert.That(protectedLabel.  Decrypt(key, out _, out var second),  Is.False);
+                Assert.That(second,  Does.Contain("'Partial IV' be understood"));
+
+            });
 
         }
 
