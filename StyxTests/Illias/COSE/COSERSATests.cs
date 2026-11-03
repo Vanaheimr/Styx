@@ -321,7 +321,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(bare.TryToPrivateKey(out _, out error),  Is.False);
             Assert.That(error,  Does.Contain("d, p, q, dP, dQ and qInv"));
 
-            // A multi-prime key: kept, but not computed with.
+            // A multi-prime key that names no further prime: the field is
+            // to be absent then [RFC 8230, Section 4]. The keys that do name
+            // one are COSERSAMultiPrimeTests' business.
             var multiPrime  = new COSEKey(COSEKeyType.RSA,
                                           D:                     key.D,
                                           AdditionalParameters:  [ new (COSEKey.OtherPrimesLabel, CBORValue.FromArray([])) ],
@@ -334,7 +336,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                           QInv:                  key.QInv);
 
             Assert.That(multiPrime.TryToPrivateKey(out _, out error),  Is.False);
-            Assert.That(error,  Does.Contain("Multi-prime"));
+            Assert.That(error,  Does.Contain("at least one prime"));
             Assert.That(multiPrime.ToPublicCOSEKey().AdditionalParameters,  Is.Empty);
 
         }

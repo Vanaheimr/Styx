@@ -1361,6 +1361,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// compared with anything [RFC 8017, Section 9.1.2].
         ///
         /// RSASSA-PKCS1-v1_5 has no salt and is deterministic anyway.
+        ///
+        /// A key of more than two primes takes the multi-prime core in place
+        /// of Bouncy Castle's, which knows two; the blinded engine around it
+        /// and the encodings around that stay Bouncy Castle's.
         /// </summary>
         private ISigner CreateRSASigner(AsymmetricKeyParameter  Key,
                                         Boolean                 ForSigning,
@@ -1378,14 +1382,30 @@ namespace org.GraphDefined.Vanaheimr.Illias
             if (rsaKey.Modulus.BitLength < MinimumRSAModulusSizeInBits)
                 throw new COSEException($"The COSE algorithm '{Name}' needs an RSA key of at least {MinimumRSAModulusSizeInBits} bits [RFC 8230, Section 6.1], but the given key has {rsaKey.Modulus.BitLength} bits!");
 
+            var multiPrime = rsaKey is RSAMultiPrimePrivateKeyParameters;
+
             if (Family == COSEAlgorithmFamily.RSAPKCS1)
-                return new RsaDigestSigner(CreateDigest());
+            {
+
+                if (!multiPrime)
+                    return new RsaDigestSigner(CreateDigest());
+
+                var digest = CreateDigest();
+
+                return new RsaDigestSigner(new RSAMultiPrimeCore(), digest, DigestUtilities.GetObjectIdentifier(digest.AlgorithmName));
+
+            }
+
+            RsaBlindedEngine NewEngine()
+                => multiPrime
+                       ? new (new RSAMultiPrimeCore())
+                       : new ();
 
             var saltLength = CreateDigest().GetDigestSize();
 
             return Deterministic
-                       ? new PssSigner(new RsaBlindedEngine(), CreateDigest(), CreateDigest(), new Byte[saltLength])
-                       : new PssSigner(new RsaBlindedEngine(), CreateDigest(), CreateDigest(), saltLength);
+                       ? new PssSigner(NewEngine(), CreateDigest(), CreateDigest(), new Byte[saltLength])
+                       : new PssSigner(NewEngine(), CreateDigest(), CreateDigest(), saltLength);
 
         }
 

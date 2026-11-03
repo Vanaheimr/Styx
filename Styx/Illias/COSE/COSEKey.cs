@@ -150,10 +150,27 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public static CBORValue  QInvLabel            { get; } = CBORValue.FromInt64(-8);
 
         /// <summary>
-        /// The further primes of a multi-prime RSA key (label -9), which this
-        /// implementation keeps but can not compute with.
+        /// The further primes of a multi-prime RSA key (label -9): an array
+        /// of one map per prime after p and q [RFC 8230, Section 4].
         /// </summary>
         public static CBORValue  OtherPrimesLabel     { get; } = CBORValue.FromInt64(-9);
+
+        /// <summary>
+        /// A further prime factor r_i (label -10). This label and the next two
+        /// belong to the maps of the further primes, never to the key itself.
+        /// </summary>
+        public static CBORValue  RILabel              { get; } = CBORValue.FromInt64(-10);
+
+        /// <summary>
+        /// The CRT exponent d_i = d mod (r_i - 1) of a further prime (label -11).
+        /// </summary>
+        public static CBORValue  DILabel              { get; } = CBORValue.FromInt64(-11);
+
+        /// <summary>
+        /// The CRT coefficient t_i of a further prime (label -12): the inverse,
+        /// modulo r_i, of the product of the primes before it.
+        /// </summary>
+        public static CBORValue  TILabel              { get; } = CBORValue.FromInt64(-12);
 
         #endregion
 
@@ -517,8 +534,25 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                Pub:            mlDsaPublic.GetEncoded()),
 
                    // RSA: every parameter an integer of the fewest octets
-                   // [RFC 8230, Section 4]. A private key without its CRT
-                   // parameters does not even know its public exponent.
+                   // [RFC 8230, Section 4]. A key of more than two primes is
+                   // matched first, as it is a two-prime CRT key as well and
+                   // would otherwise lose its further primes.
+                   RSAMultiPrimePrivateKeyParameters  rsaMultiPrime
+                       => new (COSEKeyType.RSA,
+                               D:                     BigIntegers.AsUnsignedByteArray(rsaMultiPrime.Exponent),
+                               KeyIdentifier:         KeyIdentifier,
+                               Algorithm:             Algorithm,
+                               AdditionalParameters:  [ new (OtherPrimesLabel, OtherPrimesToCBOR(rsaMultiPrime.OtherPrimes)) ],
+                               N:                     BigIntegers.AsUnsignedByteArray(rsaMultiPrime.Modulus),
+                               E:                     BigIntegers.AsUnsignedByteArray(rsaMultiPrime.PublicExponent),
+                               P:                     BigIntegers.AsUnsignedByteArray(rsaMultiPrime.P),
+                               Q:                     BigIntegers.AsUnsignedByteArray(rsaMultiPrime.Q),
+                               DP:                    BigIntegers.AsUnsignedByteArray(rsaMultiPrime.DP),
+                               DQ:                    BigIntegers.AsUnsignedByteArray(rsaMultiPrime.DQ),
+                               QInv:                  BigIntegers.AsUnsignedByteArray(rsaMultiPrime.QInv)),
+
+                   // A private key without its CRT parameters does not even
+                   // know its public exponent.
                    RsaPrivateCrtKeyParameters   rsaPrivate
                        => new (COSEKeyType.RSA,
                                D:              BigIntegers.AsUnsignedByteArray(rsaPrivate.Exponent),
@@ -857,6 +891,18 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return false;
                 }
 
+                // The further primes are read here to refuse a malformed array
+                // early, and kept as they were written for the round trip.
+                else if (isRSA && parameter.Key == OtherPrimesLabel)
+                {
+
+                    if (!TryReadOtherPrimes(parameter.Value, out _, out ErrorResponse))
+                        return false;
+
+                    additionalParameters.Add(parameter);
+
+                }
+
                 else
                     additionalParameters.Add(parameter);
 
@@ -971,6 +1017,101 @@ namespace org.GraphDefined.Vanaheimr.Illias
             return true;
 
         }
+
+        #endregion
+
+        #region (private static) TryReadOtherPrimes(Value, out OtherPrimes, out ErrorResponse)
+
+        /// <summary>
+        /// Read the further primes of a multi-prime RSA key: an array of at
+        /// least one map, each carrying r_i, d_i and t_i [RFC 8230,
+        /// Section 4], each an RSA integer of the fewest octets. Whether they
+        /// belong to the rest of the key is checked where the key is used.
+        /// </summary>
+        private static Boolean TryReadOtherPrimes(CBORValue                                               Value,
+                                                  [NotNullWhen(true)]  out IReadOnlyList<RSAOtherPrime>?  OtherPrimes,
+                                                  [NotNullWhen(false)] out String?                        ErrorResponse)
+        {
+
+            OtherPrimes = null;
+
+            if (Value.Kind != CBORValueKind.Array)
+            {
+                ErrorResponse = "The further primes of a multi-prime RSA key must be an array of maps [RFC 8230, Section 4]!";
+                return false;
+            }
+
+            var entries = Value.AsArray();
+
+            if (entries.Count == 0)
+            {
+                ErrorResponse = "The further primes of a multi-prime RSA key must name at least one prime, or the field must be absent [RFC 8230, Section 4]!";
+                return false;
+            }
+
+            var otherPrimes = new List<RSAOtherPrime>();
+
+            for (var index = 0; index < entries.Count; index++)
+            {
+
+                var which = $"of prime {3 + index}";
+                var entry = entries[index];
+
+                if (entry.Kind != CBORValueKind.Map)
+                {
+                    ErrorResponse = $"The further primes of a multi-prime RSA key are maps, and the entry {which} is not one [RFC 8230, Section 4]!";
+                    return false;
+                }
+
+                if (!TryReadOtherPrimeInteger(entry, RILabel, "prime factor r_i",    which, out var r, out ErrorResponse) ||
+                    !TryReadOtherPrimeInteger(entry, DILabel, "exponent d_i",        which, out var d, out ErrorResponse) ||
+                    !TryReadOtherPrimeInteger(entry, TILabel, "CRT coefficient t_i", which, out var t, out ErrorResponse))
+                    return false;
+
+                otherPrimes.Add(new (new BigInteger(1, r), new BigInteger(1, d), new BigInteger(1, t)));
+
+            }
+
+            OtherPrimes    = otherPrimes;
+            ErrorResponse  = null;
+            return true;
+
+        }
+
+        private static Boolean TryReadOtherPrimeInteger(CBORValue                         Map,
+                                                        CBORValue                         Label,
+                                                        String                            Name,
+                                                        String                            Which,
+                                                        [NotNullWhen(true)]  out Byte[]?  Integer,
+                                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            if (!Map.TryGetValue(Label, out var value))
+            {
+                Integer       = null;
+                ErrorResponse = $"A prime of a multi-prime RSA key carries r_i, d_i and t_i [RFC 8230, Section 4], and the map {Which} carries no {Name}!";
+                return false;
+            }
+
+            return TryReadRSAInteger(value, $"{Name} {Which}", out Integer, out ErrorResponse);
+
+        }
+
+        #endregion
+
+        #region (private static) OtherPrimesToCBOR(OtherPrimes)
+
+        /// <summary>
+        /// The further primes of a multi-prime RSA key as the array of maps
+        /// of RFC 8230, Section 4.
+        /// </summary>
+        private static CBORValue OtherPrimesToCBOR(IEnumerable<RSAOtherPrime> OtherPrimes)
+
+            => CBORValue.FromArray(OtherPrimes.Select(other => CBORValue.FromMap([
+                   new (RILabel, CBORValue.FromBytes(BigIntegers.AsUnsignedByteArray(other.Prime))),
+                   new (DILabel, CBORValue.FromBytes(BigIntegers.AsUnsignedByteArray(other.Exponent))),
+                   new (TILabel, CBORValue.FromBytes(BigIntegers.AsUnsignedByteArray(other.Coefficient)))
+               ])));
 
         #endregion
 
@@ -1423,13 +1564,16 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
         /// <summary>
         /// An RSA private key with all of its CRT parameters, which RFC 8230
-        /// requires of a two-prime key, and which must agree with each other.
+        /// requires of a private key, and which must agree with each other:
+        /// a key of two primes, or of more, whose further primes come as an
+        /// array at label -9 [RFC 8230, Section 4].
         ///
         /// The check is not pedantry. A CRT signer computes the signature
-        /// modulo p and modulo q and joins the halves; if one half is wrong,
-        /// the faulty signature and the message give away a factor of n
+        /// modulo each prime and joins the parts; if one part is wrong, the
+        /// faulty signature and the message give away a factor of n
         /// [Boneh, DeMillo, Lipton 1997]. A key whose dP does not belong to
-        /// its d is exactly such a fault, built in.
+        /// its d is exactly such a fault, built in, and so is a further prime
+        /// whose t_i does not belong to the primes before it.
         /// </summary>
         private Boolean TryToRSAPrivateKey([NotNullWhen(true)]  out AsymmetricKeyParameter?  PrivateKey,
                                            [NotNullWhen(false)] out String?                  ErrorResponse)
@@ -1437,10 +1581,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             PrivateKey = null;
 
-            if (AdditionalParameters.Any(parameter => parameter.Key == OtherPrimesLabel))
+            IReadOnlyList<RSAOtherPrime>? otherPrimes = null;
+
+            foreach (var parameter in AdditionalParameters)
             {
-                ErrorResponse = "Multi-prime RSA keys are not supported by this implementation!";
-                return false;
+                if (parameter.Key == OtherPrimesLabel &&
+                    !TryReadOtherPrimes(parameter.Value, out otherPrimes, out ErrorResponse))
+                    return false;
             }
 
             if (N is null || E is null)
@@ -1470,18 +1617,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var dq    = new BigInteger(1, DQ);
             var qInv  = new BigInteger(1, QInv);
 
-            var pMinus1 = p.Subtract(BigInteger.One);
-            var qMinus1 = q.Subtract(BigInteger.One);
+            BigInteger[] primes = [ p, q, .. otherPrimes?.Select(other => other.Prime) ?? [] ];
 
-            if (!p.Multiply(q).Equals(n))
+            // A factor of one would leave nothing to reduce modulo r - 1.
+            if (primes.Any(prime => prime.CompareTo(BigInteger.One) <= 0))
             {
-                ErrorResponse = "The prime factors p and q of the RSA key are not the factors of its modulus n!";
+                ErrorResponse = "The prime factors of an RSA key must be greater than one!";
                 return false;
             }
 
-            // e·d ≡ 1 modulo the least common multiple of p-1 and q-1, which
+            var pMinus1 = p.Subtract(BigInteger.One);
+            var qMinus1 = q.Subtract(BigInteger.One);
+
+            if (!primes.Aggregate(BigInteger.One, (product, prime) => product.Multiply(prime)).Equals(n))
+            {
+                ErrorResponse = otherPrimes is null
+                                    ? "The prime factors p and q of the RSA key are not the factors of its modulus n!"
+                                    : $"The {primes.Length} prime factors of the multi-prime RSA key are not the factors of its modulus n!";
+                return false;
+            }
+
+            // e·d ≡ 1 modulo the least common multiple of every r - 1, which
             // holds whether d was reduced modulo λ(n) or modulo φ(n).
-            var lambda = pMinus1.Multiply(qMinus1).Divide(pMinus1.Gcd(qMinus1));
+            var lambda = primes.Aggregate(BigInteger.One, (lcm, prime) => {
+                             var primeMinus1 = prime.Subtract(BigInteger.One);
+                             return lcm.Multiply(primeMinus1).Divide(lcm.Gcd(primeMinus1));
+                         });
 
             if (!e.Multiply(d).Mod(lambda).Equals(BigInteger.One))
             {
@@ -1497,10 +1658,32 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
+            // t_i is the inverse of the product of the primes before r_i
+            // [RFC 8017, Section 3.2], and that product grows with every one.
+            var before = p.Multiply(q);
+
+            for (var index = 0; index < (otherPrimes?.Count ?? 0); index++)
+            {
+
+                var other = otherPrimes![index];
+
+                if (!d.Mod(other.Prime.Subtract(BigInteger.One)).Equals(other.Exponent) ||
+                    !before.Multiply(other.Coefficient).Mod(other.Prime).Equals(BigInteger.One))
+                {
+                    ErrorResponse = $"The CRT parameters d_i and t_i of prime {3 + index} of the multi-prime RSA key do not belong to its d and the primes before it!";
+                    return false;
+                }
+
+                before = before.Multiply(other.Prime);
+
+            }
+
             try
             {
 
-                PrivateKey     = new RsaPrivateCrtKeyParameters(n, e, d, p, q, dp, dq, qInv);
+                PrivateKey     = otherPrimes is null
+                                     ? new RsaPrivateCrtKeyParameters(n, e, d, p, q, dp, dq, qInv)
+                                     : new RSAMultiPrimePrivateKeyParameters(n, e, d, p, q, dp, dq, qInv, otherPrimes);
                 ErrorResponse  = null;
                 return true;
 
