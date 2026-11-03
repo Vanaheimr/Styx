@@ -246,6 +246,44 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
+        #region A_status_read_while_it_is_inserted_is_told_of_once()
+
+        /// <summary>
+        /// A reader waiting for the lock while a status is inserted must not tell of its change once more.
+        /// </summary>
+        [Test]
+        public async Task A_status_read_while_it_is_inserted_is_told_of_once()
+        {
+
+            var now       = Timestamp.Now;
+            var schedule  = new StatusSchedule<String>([ new Timestamped<String>(now - TimeSpan.FromDays(1), "available") ]);
+            var changes   = 0;
+
+            schedule.OnStatusChanged += (timestamp, eventTrackingId, statusSchedule, newStatus, oldStatus, dataSource) => {
+                Interlocked.Increment(ref changes);
+                return Task.CompletedTask;
+            };
+
+            using var stop     = new CancellationTokenSource();
+            var       readers  = Enumerable.Range(0, 4).
+                                            Select(reader => Task.Run(() => {
+                                                while (!stop.IsCancellationRequested)
+                                                    _ = schedule.CurrentStatus;
+                                            })).
+                                            ToArray();
+
+            for (var i = 1; i <= 500; i++)
+                schedule.Insert(i % 2 == 1 ? "offline" : "available", now - TimeSpan.FromDays(1) + TimeSpan.FromSeconds(i));
+
+            stop.Cancel();
+            await Task.WhenAll(readers);
+
+            Assert.That(Volatile.Read(ref changes), Is.EqualTo(500));
+
+        }
+
+        #endregion
+
     }
 
 }
