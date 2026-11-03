@@ -426,6 +426,21 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             foreach (var hash in new[] { COSEAlgorithm.SHA256, COSEAlgorithm.SHA384, COSEAlgorithm.SHA512 })
                 Assert.That(COSECertificateHash.From(leaf.Certificate, hash).Matches(leaf.Certificate, out var errorResponse),  Is.True, errorResponse);
 
+            // And SHA-1, which is a different refusal: it IS a hash algorithm
+            // [RFC 9054, Section 3.1, registered for this very field and
+            // recommended "Filter Only"], and this implementation does not
+            // compute it. The reason given has to be the true one - until
+            // 2026-11-03 it said SHA-1 was not a hash algorithm.
+            var sha1 = Assert.Throws<COSEException>(() => COSECertificateHash.From(leaf.Certificate, COSEAlgorithm.SHA1));
+            Assert.That(sha1!.Message,  Does.Contain("is a hash algorithm this implementation does not compute"));
+
+            Assert.That(COSECertificateHash.TryParse(CBORValue.FromArray(COSEAlgorithm.SHA1.ToCBOR(), CBORValue.FromBytes(new Byte[20])),
+                                                     out _, out var sha1ParseError),  Is.False);
+            Assert.That(sha1ParseError,  Does.Contain("is a hash algorithm this implementation does not compute"));
+
+            Assert.That(new COSECertificateHash(COSEAlgorithm.SHA1, new Byte[20]).Matches(leaf.Certificate, out var sha1MatchError),  Is.False);
+            Assert.That(sha1MatchError,  Does.Contain("is a hash algorithm this implementation does not compute"));
+
         }
 
         #endregion

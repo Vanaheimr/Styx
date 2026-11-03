@@ -88,7 +88,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             var algorithm = Algorithm ?? COSEAlgorithm.SHA256;
 
             if (!IsHashAlgorithm(algorithm))
-                throw new COSEException($"The COSE algorithm '{algorithm.Name}' is not a hash algorithm!");
+                throw new COSEException(NotAUsableHash(algorithm, ""));
 
             return new COSECertificateHash(
                        algorithm,
@@ -133,7 +133,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!IsHashAlgorithm(algorithm))
             {
-                ErrorResponse = $"The COSE algorithm '{algorithm.Name}' of the COSE_CertHash is not a hash algorithm!";
+                ErrorResponse = NotAUsableHash(algorithm, " of the COSE_CertHash");
                 return false;
             }
 
@@ -164,7 +164,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             if (!IsHashAlgorithm(Algorithm))
             {
-                ErrorResponse = $"The certificate thumbprint uses the algorithm '{Algorithm.Name}', which is not a hash algorithm this implementation computes!";
+                ErrorResponse = NotAUsableHash(Algorithm, " of the certificate thumbprint");
                 return false;
             }
 
@@ -193,11 +193,38 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// a hash, and only the hash algorithms compute one: the entries of
         /// family None that name a digest. COSE.TS draws the same line, so the
         /// two reach the same verdict about the same message.
+        ///
+        /// And not every hash algorithm names a digest HERE. SHA-1 is one -
+        /// RFC 9054 Section 3.1 registers it for exactly this field and
+        /// recommends it "Filter Only", which is not for anything needing
+        /// collision resistance - and this implementation does not compute it,
+        /// so a thumbprint labelled SHA-1 is refused as well. Same verdict,
+        /// different reason, and NotAUsableHash is what says which.
         /// </summary>
         private static Boolean IsHashAlgorithm(COSEAlgorithm Algorithm)
 
             => Algorithm.Family == COSEAlgorithmFamily.None &&
                Algorithm.HashAlgorithm is not null;
+
+        #endregion
+
+        #region (private static) NotAUsableHash(Algorithm, Where)
+
+        /// <summary>
+        /// Why a thumbprint can be neither computed nor checked with this
+        /// algorithm, which is two reasons and was one sentence until
+        /// 2026-11-03. ES256 is no hash algorithm at all. SHA-1 is one, and
+        /// this implementation does not compute it. Both are refused, and
+        /// saying of SHA-1 that it is not a hash algorithm was untrue.
+        /// </summary>
+        /// <param name="Algorithm">The algorithm the thumbprint named.</param>
+        /// <param name="Where">Where it was read from, so each caller keeps the wording it had.</param>
+        private static String NotAUsableHash(COSEAlgorithm  Algorithm,
+                                             String         Where)
+
+            => Algorithm.Family == COSEAlgorithmFamily.None
+                   ? $"The COSE algorithm '{Algorithm.Name}'{Where} is a hash algorithm this implementation does not compute!"
+                   : $"The COSE algorithm '{Algorithm.Name}'{Where} is not a hash algorithm!";
 
         #endregion
 
