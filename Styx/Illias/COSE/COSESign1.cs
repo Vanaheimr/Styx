@@ -71,6 +71,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// </summary>
         public const String CountersignatureContext = "CounterSignatureV2";
 
+        /// <summary>
+        /// The context text string of the countersignature of RFC 8152
+        /// (header parameter 7), which RFC 9338 deprecated: it covers the
+        /// payload but not the signature it countersigns
+        /// [RFC 8152, Section 4.4].
+        /// </summary>
+        public const String RFC8152CountersignatureContext = "CounterSignature";
+
         #endregion
 
         #region Properties
@@ -846,46 +854,84 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// not a countersignature, rather than pretending there is none.
         /// </summary>
         public IReadOnlyList<COSESignature>  Countersignatures
+
+            => CountersignaturesAt(COSEHeaderLabel.CounterSignatureV2,
+                                   "The countersignature header parameter must be a COSE_Countersignature or an array of them!",
+                                   "countersignature");
+
+        /// <summary>
+        /// The countersignatures of RFC 8152 on this message, taken from the
+        /// "counter signature" header parameter (label 7) of the unprotected
+        /// bucket: a COSE_Signature, or an array of them, in the same two
+        /// shapes as label 11 [RFC 8152, Section 3.1].
+        ///
+        /// RFC 9338 deprecated this header parameter, because its signature
+        /// covers the payload and the body's protected bucket but NOT the
+        /// signature it countersigns. Such a countersignature therefore says
+        /// "I signed the same thing", and not "I vouch for that signature".
+        /// It is read all the same, because RFC 9052, Section 3.1 says it
+        /// "must be understood by new implementations, to remain compatible
+        /// with senders that adhere to" RFC 8152. This implementation does
+        /// not write one: AddCountersignature writes version 2.
+        ///
+        /// Throws when the header parameter is present but not a
+        /// countersignature, rather than pretending there is none.
+        /// </summary>
+        public IReadOnlyList<COSESignature>  RFC8152Countersignatures
+
+            => CountersignaturesAt(COSEHeaderLabel.CounterSignature,
+                                   "The RFC 8152 counter signature header parameter must be a COSE_Signature or an array of them!",
+                                   "RFC 8152 countersignature");
+
+        #endregion
+
+        #region (private) CountersignaturesAt(Label, NotAnArray, What)
+
+        /// <summary>
+        /// The countersignatures within the given header parameter of the
+        /// unprotected bucket. Labels 7 and 11 share their two shapes:
+        /// a single one written bare, several written as an array of them.
+        /// </summary>
+        private IReadOnlyList<COSESignature> CountersignaturesAt(CBORValue  Label,
+                                                                 String     NotAnArray,
+                                                                 String     What)
         {
-            get
+
+            if (!UnprotectedHeader.TryGet(Label, out var value))
+                return [];
+
+            if (value.Kind != CBORValueKind.Array)
+                throw new COSEException(NotAnArray);
+
+            var items = value.AsArray();
+
+            // The first element tells the two shapes apart: a single
+            // countersignature starts with its protected bucket, a byte
+            // string, whereas an array of them starts with an array.
+            if (items.Count > 0 && items[0].Kind == CBORValueKind.Array)
             {
 
-                if (!UnprotectedHeader.TryGet(COSEHeaderLabel.CounterSignatureV2, out var value))
-                    return [];
+                var countersignatures = new List<COSESignature>();
 
-                if (value.Kind != CBORValueKind.Array)
-                    throw new COSEException("The countersignature header parameter must be a COSE_Countersignature or an array of them!");
-
-                var items = value.AsArray();
-
-                // The first element tells the two shapes apart: a single
-                // countersignature starts with its protected bucket, a byte
-                // string, whereas an array of them starts with an array.
-                if (items.Count > 0 && items[0].Kind == CBORValueKind.Array)
+                foreach (var item in items)
                 {
 
-                    var countersignatures = new List<COSESignature>();
+                    if (!COSESignature.TryParse(item, out var countersignature, out var itemError))
+                        throw new COSEException($"A {What} of this COSE_Sign1 message is invalid: {itemError}");
 
-                    foreach (var item in items)
-                    {
-
-                        if (!COSESignature.TryParse(item, out var countersignature, out var itemError))
-                            throw new COSEException($"A countersignature of this COSE_Sign1 message is invalid: {itemError}");
-
-                        countersignatures.Add(countersignature);
-
-                    }
-
-                    return countersignatures;
+                    countersignatures.Add(countersignature);
 
                 }
 
-                if (!COSESignature.TryParse(value, out var single, out var errorResponse))
-                    throw new COSEException($"The countersignature of this COSE_Sign1 message is invalid: {errorResponse}");
-
-                return [single];
+                return countersignatures;
 
             }
+
+            if (!COSESignature.TryParse(value, out var single, out var errorResponse))
+                throw new COSEException($"The {What} of this COSE_Sign1 message is invalid: {errorResponse}");
+
+            return [single];
+
         }
 
         #endregion
@@ -936,6 +982,51 @@ namespace org.GraphDefined.Vanaheimr.Illias
             writer.WriteStartArray(1);
             writer.WriteByteString(Signature);
             writer.WriteEndArray();
+            writer.WriteEndArray();
+
+            return writer.ToByteArray();
+
+        }
+
+        #endregion
+
+        #region (static) ToBeRFC8152Countersigned(BodyProtectedHeaderBytes, CountersignatureProtectedHeaderBytes, Payload, ExternalAAD = null)
+
+        /// <summary>
+        /// Return the encoded Sig_structure of an RFC 8152 countersignature on
+        /// a COSE_Sign1 message [RFC 8152, Section 4.4]:
+        ///
+        /// <code>
+        /// Sig_structure = [
+        ///     context        : "CounterSignature",
+        ///     body_protected : empty_or_serialized_map,
+        ///     sign_protected : empty_or_serialized_map,
+        ///     external_aad   : bstr,
+        ///     payload        : bstr
+        /// ]
+        /// </code>
+        ///
+        /// Five elements, and the signature being countersigned is not one of
+        /// them. That is the flaw RFC 9338 replaced it for.
+        /// </summary>
+        /// <param name="BodyProtectedHeaderBytes">The serialized protected header bucket of the countersigned message.</param>
+        /// <param name="CountersignatureProtectedHeaderBytes">The serialized protected header bucket of the countersignature itself.</param>
+        /// <param name="Payload">The payload of the countersigned message, also when it is transported detached.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that is signed along with the payload without being transported within the message.</param>
+        public static Byte[] ToBeRFC8152Countersigned(Byte[]   BodyProtectedHeaderBytes,
+                                                      Byte[]   CountersignatureProtectedHeaderBytes,
+                                                      Byte[]   Payload,
+                                                      Byte[]?  ExternalAAD   = null)
+        {
+
+            var writer = new CBORWriter();
+
+            writer.WriteStartArray(5);
+            writer.WriteTextString(RFC8152CountersignatureContext);
+            writer.WriteByteString(BodyProtectedHeaderBytes);
+            writer.WriteByteString(CountersignatureProtectedHeaderBytes);
+            writer.WriteByteString(ExternalAAD ?? []);
+            writer.WriteByteString(Payload);
             writer.WriteEndArray();
 
             return writer.ToByteArray();
@@ -1090,6 +1181,73 @@ namespace org.GraphDefined.Vanaheimr.Illias
                                               Byte[]?                           ExternalAAD         = null,
                                               Byte[]?                           DetachedPayload     = null,
                                               COSEAlgorithm?                    ExpectedAlgorithm   = null)
+
+            => VerifyAnyCountersignature(Countersignature,
+                                         PublicKey,
+                                         out ErrorResponse,
+                                         DetachedPayload,
+                                         ExpectedAlgorithm,
+                                         payload => ToBeCountersigned(ProtectedHeaderBytes,
+                                                                   Countersignature.ProtectedHeaderBytes,
+                                                                   payload,
+                                                                   Signature,
+                                                                   ExternalAAD));
+
+        #endregion
+
+        #region VerifyRFC8152Countersignature(Countersignature, PublicKey, out ErrorResponse, ...)
+
+        /// <summary>
+        /// Verify an RFC 8152 countersignature on this message (header
+        /// parameter 7), over the Sig_structure with the context
+        /// "CounterSignature" [RFC 8152, Section 4.4].
+        ///
+        /// Mind what a valid one says. Its signer signed this payload under
+        /// this message's protected bucket. It does NOT say that its signer
+        /// saw the body signature, which it does not cover: the body
+        /// signature can be replaced by another one and this countersignature
+        /// still verifies. Nor does it say whether the body signature is
+        /// valid, which Verify(...) answers.
+        /// </summary>
+        /// <param name="Countersignature">An RFC 8152 countersignature on this message.</param>
+        /// <param name="PublicKey">A public key.</param>
+        /// <param name="ErrorResponse">The reason why the verification failed.</param>
+        /// <param name="ExternalAAD">Optional externally supplied data that was signed along with the payload.</param>
+        /// <param name="DetachedPayload">The payload, when this message carries a detached one.</param>
+        /// <param name="ExpectedAlgorithm">The signature algorithm the caller expects, required whenever the countersignature states its algorithm within its unprotected header bucket only.</param>
+        public Boolean VerifyRFC8152Countersignature(COSESignature                     Countersignature,
+                                                     AsymmetricKeyParameter            PublicKey,
+                                                     [NotNullWhen(false)] out String?  ErrorResponse,
+                                                     Byte[]?                           ExternalAAD         = null,
+                                                     Byte[]?                           DetachedPayload     = null,
+                                                     COSEAlgorithm?                    ExpectedAlgorithm   = null)
+
+            => VerifyAnyCountersignature(Countersignature,
+                                         PublicKey,
+                                         out ErrorResponse,
+                                         DetachedPayload,
+                                         ExpectedAlgorithm,
+                                         payload => ToBeRFC8152Countersigned(ProtectedHeaderBytes,
+                                                                          Countersignature.ProtectedHeaderBytes,
+                                                                          payload,
+                                                                          ExternalAAD));
+
+        #endregion
+
+        #region (private) VerifyAnyCountersignature(Countersignature, PublicKey, out ErrorResponse, DetachedPayload, ExpectedAlgorithm, ToBeSigned)
+
+        /// <summary>
+        /// What the two kinds of countersignature have in common: the crit of
+        /// the countersignature, the algorithm it states or the caller
+        /// expects, and the payload. They differ in the structure that was
+        /// signed, which ToBeSigned builds from the payload.
+        /// </summary>
+        private Boolean VerifyAnyCountersignature(COSESignature                     Countersignature,
+                                                  AsymmetricKeyParameter            PublicKey,
+                                                  [NotNullWhen(false)] out String?  ErrorResponse,
+                                                  Byte[]?                           DetachedPayload,
+                                                  COSEAlgorithm?                    ExpectedAlgorithm,
+                                                  Func<Byte[], Byte[]>              ToBeSigned)
         {
 
             if (!COSEHeaders.VerifyCriticalHeaderParameters(Countersignature.ProtectedHeader,
@@ -1125,11 +1283,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
 
             return algorithm.Value.Verify(
-                       ToBeCountersigned(ProtectedHeaderBytes,
-                                         Countersignature.ProtectedHeaderBytes,
-                                         payload,
-                                         Signature,
-                                         ExternalAAD),
+                       ToBeSigned(payload),
                        Countersignature.Signature,
                        PublicKey,
                        out ErrorResponse

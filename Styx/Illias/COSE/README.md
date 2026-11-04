@@ -47,7 +47,9 @@ by a test.
 | `ECDH-ES + A128KW` / `+ A192KW` / `+ A256KW` | −29 / −30 / −31 | any EC2 curve, X25519, X448 | HKDF-SHA-256 |
 
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
-  header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
+  header parameter 11) on a `COSE_Sign1` — a signature *of a signature*. The
+  deprecated `counter signature` of RFC 8152 (header parameter 7) is read and
+  verified as well, but never written.
 - **X.509 certificate chains** ([RFC 9360](https://www.rfc-editor.org/rfc/rfc9360)) —
   `x5chain` and `x5t`, validated against configured trust anchors. An
   `id-RSASSA-PSS` key whose parameters name a hash verifies only the PS* those
@@ -493,6 +495,21 @@ attested to having seen it. Version 2 appends that signature as
 `other_fields`, which is why replacing the body signature — even with another
 valid one over the same payload — invalidates the countersignature. There is a
 test that does exactly that.
+
+The countersignature of RFC 8152 is still **read**, at header parameter 7,
+because RFC 9052 §3.1 says it "must be understood by new implementations, to
+remain compatible with senders that adhere to" RFC 8152:
+
+```csharp
+foreach (var legacy in message.RFC8152Countersignatures)
+    message.VerifyRFC8152Countersignature(legacy, publicKey, out var error);
+```
+
+A valid one says that its signer signed this payload under this protected
+bucket, and nothing about the body signature: replace that, and the RFC 8152
+countersignature still verifies. That is a test too, against the COSE working
+group's own examples `countersign/signed1-01` and `signed1-02`. Nothing here
+writes one. `AddCountersignature` writes version 2.
 
 ## Five things that are easy to get wrong
 
