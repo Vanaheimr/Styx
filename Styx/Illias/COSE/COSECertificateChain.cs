@@ -177,6 +177,12 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return false;
                     }
 
+                    if (!HasPKCS1SignatureParameters(certificate, out var signatureAlgorithm))
+                    {
+                        ErrorResponse = $"The certificate at position {position} of the COSE_X509 says it was signed with '{signatureAlgorithm}' and carries parameters beside it, where RFC 4055 Section 5 allows a NULL or nothing at all!";
+                        return false;
+                    }
+
                     certs.Add(certificate);
 
                 }
@@ -192,6 +198,60 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 ErrorResponse = $"A certificate of the COSE_X509 could not be read: {e.Message}";
                 return false;
             }
+
+        }
+
+        #endregion
+
+        #region (private static) HasPKCS1SignatureParameters(Certificate, out SignatureAlgorithm)
+
+        /// <summary>
+        /// The RSASSA-PKCS1-v1_5 signature algorithms, whose parameters are a
+        /// NULL [RFC 3279, Section 2.2.1; RFC 4055, Section 5].
+        /// </summary>
+        private static readonly HashSet<DerObjectIdentifier> pkcs1SignatureAlgorithms = [
+            PkcsObjectIdentifiers.MD5WithRsaEncryption,
+            PkcsObjectIdentifiers.Sha1WithRsaEncryption,
+            PkcsObjectIdentifiers.Sha224WithRsaEncryption,
+            PkcsObjectIdentifiers.Sha256WithRsaEncryption,
+            PkcsObjectIdentifiers.Sha384WithRsaEncryption,
+            PkcsObjectIdentifiers.Sha512WithRsaEncryption
+        ];
+
+        /// <summary>
+        /// Whether a certificate signed with RSASSA-PKCS1-v1_5 writes its
+        /// signature algorithm as RFC 4055 Section 5 says: "When any of these
+        /// four object identifiers appears within an AlgorithmIdentifier, the
+        /// parameters MUST be NULL. Implementations MUST accept the
+        /// parameters being absent as well as present." Anything else beside
+        /// such an identifier is not a valid certificate.
+        ///
+        /// Bouncy Castle does not ask this. It compares the parameters of the
+        /// two copies of the signature algorithm, the one within the signed
+        /// body and the one beside it, but it accepts any parameters both
+        /// copies share, because it has no use for them. Both copies are
+        /// checked here, so that this answer does not depend on that
+        /// comparison happening later. A certificate signed with any other
+        /// algorithm passes this method unchanged.
+        /// </summary>
+        /// <param name="Certificate">The certificate.</param>
+        /// <param name="SignatureAlgorithm">The identifier of its signature algorithm.</param>
+        private static Boolean HasPKCS1SignatureParameters(X509Certificate                  Certificate,
+                                                           out DerObjectIdentifier          SignatureAlgorithm)
+        {
+
+            var outer           = Certificate.CertificateStructure.SignatureAlgorithm;
+            var inner           = Certificate.CertificateStructure.TbsCertificate.Signature;
+
+            SignatureAlgorithm  = outer.Algorithm;
+
+            static Boolean NullOrAbsent(AlgorithmIdentifier Identifier)
+
+                => Identifier.Parameters is null ||
+                   Identifier.Parameters.ToAsn1Object() is Asn1Null;
+
+            return (!pkcs1SignatureAlgorithms.Contains(outer.Algorithm) || NullOrAbsent(outer)) &&
+                   (!pkcs1SignatureAlgorithms.Contains(inner.Algorithm) || NullOrAbsent(inner));
 
         }
 

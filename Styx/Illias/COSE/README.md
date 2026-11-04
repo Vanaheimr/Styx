@@ -54,6 +54,8 @@ by a test.
   parameters describe, as Section 3.3 of
   [RFC 4055](https://www.rfc-editor.org/rfc/rfc4055#section-3.3) requires. Its
   salt length is a floor. The restriction to the scheme alone is not enforced.
+  A certificate signed with RSASSA-PKCS1-v1_5 must carry a NULL or nothing
+  beside its signature algorithm, as Section 5 of RFC 4055 requires.
 - **`COSEMac0` / `COSEMac`** — a payload authenticated with a shared key
   (CBOR tags 17 and 97), with the HMAC algorithms of
   [RFC 9053 §3.1](https://www.rfc-editor.org/rfc/rfc9053#section-3.1). Not a
