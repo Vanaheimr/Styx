@@ -20,7 +20,12 @@
 using System.Diagnostics.CodeAnalysis;
 
 using Org.BouncyCastle.X509;
+using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Asn1.Oiw;
+using Org.BouncyCastle.Asn1.Nist;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
 
 #endregion
 
@@ -403,6 +408,131 @@ namespace org.GraphDefined.Vanaheimr.Illias
         public AsymmetricKeyParameter PublicKey()
 
             => EndEntity.GetPublicKey();
+
+        #endregion
+
+        #region PermitsAlgorithm(Algorithm, out ErrorResponse)
+
+        /// <summary>
+        /// Whether the end-entity certificate allows its key to verify a
+        /// message signed with the given algorithm, as far as the certificate
+        /// itself restricts the key.
+        ///
+        /// One key type does that: id-RSASSA-PSS [RFC 4055, Section 3.1],
+        /// written "when the RSA private key owner wishes to limit the use of
+        /// the public key exclusively to RSASSA-PSS". Bouncy Castle reads such
+        /// a key as an RsaKeyParameters that cannot be told apart from an
+        /// rsaEncryption key, and keeps the identifier on the certificate. So
+        /// the restriction reaches the verification only if it is read here.
+        ///
+        /// What is enforced is scenario 3 of RFC 4055, Section 3.3, which is a
+        /// MUST. A key with parameters names a hash, a mask generation function
+        /// and a salt, and "all parameters in the signature structure algorithm
+        /// identifier MUST match the parameters in the key structure algorithm
+        /// identifier except the saltLength field", which "MUST be greater or
+        /// equal to that in the key parameters field". A COSE PS* is MGF1 over
+        /// its own hash with a salt as long as that hash [RFC 8230, Section 2].
+        /// The key's parameters therefore have to name exactly that hash and
+        /// that MGF1, and its salt is a floor the hash has to reach. A key
+        /// without parameters is scenario 2 and restricts nothing but the
+        /// scheme.
+        ///
+        /// What is not enforced is the scheme itself, i.e. an
+        /// RSASSA-PKCS1-v1_5 message under an id-RSASSA-PSS key. RFC 4055
+        /// states that restriction as what the key owner wishes, and neither
+        /// it nor RFC 9360 makes it a duty of the verifier. Refusing it is a
+        /// separate decision, so this method answers only for RSASSA-PSS
+        /// messages.
+        /// </summary>
+        /// <param name="Algorithm">The algorithm the message was signed with.</param>
+        /// <param name="ErrorResponse">Why the certificate does not allow it.</param>
+        public Boolean PermitsAlgorithm(COSEAlgorithm                     Algorithm,
+                                        [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse     = null;
+
+            var keyAlgorithm  = EndEntity.SubjectPublicKeyInfo.Algorithm;
+
+            if (!keyAlgorithm.Algorithm.Equals(PkcsObjectIdentifiers.IdRsassaPss) ||
+                Algorithm.Family != COSEAlgorithmFamily.RSAPSS                     ||
+                keyAlgorithm.Parameters is null)
+            {
+                return true;
+            }
+
+            var restricts = $"The end-entity certificate '{EndEntity.SubjectDN}' restricts its key to RSASSA-PSS";
+
+            var (hash, hashLength) = Algorithm.HashAlgorithm?.Name switch {
+                                         "SHA256" => (NistObjectIdentifiers.IdSha256, 32),
+                                         "SHA384" => (NistObjectIdentifiers.IdSha384, 48),
+                                         "SHA512" => (NistObjectIdentifiers.IdSha512, 64),
+                                         _        => throw new COSEException($"The RSASSA-PSS algorithm '{Algorithm.Name}' names no hash this implementation knows!")
+                                     };
+
+            try
+            {
+
+                var restriction = RsassaPssParameters.GetInstance(keyAlgorithm.Parameters);
+
+                var keyHash     = restriction.HashAlgorithm.Algorithm;
+
+                if (!keyHash.Equals(hash))
+                {
+                    ErrorResponse = $"{restricts} with {HashName(keyHash)}, and this message is signed with '{Algorithm.Name}', which hashes with {HashName(hash)}: RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                    return false;
+                }
+
+                if (!restriction.MaskGenAlgorithm.Algorithm.Equals(PkcsObjectIdentifiers.IdMgf1))
+                {
+                    ErrorResponse = $"{restricts} with the mask generation function '{restriction.MaskGenAlgorithm.Algorithm}', and '{Algorithm.Name}' masks with MGF1 [RFC 8230, Section 2]: RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                    return false;
+                }
+
+                var maskHash = AlgorithmIdentifier.GetInstance(restriction.MaskGenAlgorithm.Parameters).Algorithm;
+
+                if (!maskHash.Equals(hash))
+                {
+                    ErrorResponse = $"{restricts} with MGF1 over {HashName(maskHash)}, and '{Algorithm.Name}' masks with MGF1 over {HashName(hash)} [RFC 8230, Section 2]: RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                    return false;
+                }
+
+                var trailerField = restriction.TrailerField.IntValueExact;
+
+                if (trailerField != 1)
+                {
+                    ErrorResponse = $"{restricts} with the trailer field {trailerField}, where RFC 4055 Section 3.1 says the value must be 1!";
+                    return false;
+                }
+
+                // The one field a key states differently from a signature: a
+                // floor, not the width that was used.
+                var saltLength = restriction.SaltLength.IntValueExact;
+
+                if (saltLength > hashLength)
+                {
+                    ErrorResponse = $"{restricts} with a salt of at least {saltLength} octets, and '{Algorithm.Name}' signs with a salt of {hashLength} [RFC 4055, Section 3.3; RFC 8230, Section 2]!";
+                    return false;
+                }
+
+            }
+            catch (Exception e) when (e is ArgumentException or InvalidCastException or ArithmeticException)
+            {
+                ErrorResponse = $"{restricts} with parameters that are not RSASSA-PSS-params [RFC 4055, Section 3.1]: {e.Message}";
+                return false;
+            }
+
+            return true;
+
+        }
+
+        private static String HashName(DerObjectIdentifier Hash)
+
+            => Hash.Equals(OiwObjectIdentifiers.IdSha1)    ? "SHA-1"
+             : Hash.Equals(NistObjectIdentifiers.IdSha256) ? "SHA-256"
+             : Hash.Equals(NistObjectIdentifiers.IdSha384) ? "SHA-384"
+             : Hash.Equals(NistObjectIdentifiers.IdSha512) ? "SHA-512"
+             : $"the hash '{Hash}'";
 
         #endregion
 

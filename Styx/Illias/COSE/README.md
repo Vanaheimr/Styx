@@ -49,7 +49,11 @@ by a test.
 - **Countersignatures** ([RFC 9338](https://www.rfc-editor.org/rfc/rfc9338),
   header parameter 11) on a `COSE_Sign1` — a signature *of a signature*.
 - **X.509 certificate chains** ([RFC 9360](https://www.rfc-editor.org/rfc/rfc9360)) —
-  `x5chain` and `x5t`, validated against configured trust anchors.
+  `x5chain` and `x5t`, validated against configured trust anchors. An
+  `id-RSASSA-PSS` key whose parameters name a hash verifies only the PS* those
+  parameters describe, as Section 3.3 of
+  [RFC 4055](https://www.rfc-editor.org/rfc/rfc4055#section-3.3) requires. Its
+  salt length is a floor. The restriction to the scheme alone is not enforced.
 - **`COSEMac0` / `COSEMac`** — a payload authenticated with a shared key
   (CBOR tags 17 and 97), with the HMAC algorithms of
   [RFC 9053 §3.1](https://www.rfc-editor.org/rfc/rfc9053#section-3.1). Not a

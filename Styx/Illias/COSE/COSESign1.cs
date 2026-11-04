@@ -785,6 +785,19 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #endregion
 
+            #region ...what the certificate restricts its key to
+
+            // An id-RSASSA-PSS key with parameters names the one RSASSA-PSS
+            // it is for [RFC 4055, Section 3.3], and Bouncy Castle's key
+            // object no longer knows it, so the certificate is asked.
+            if (Algorithm is COSEAlgorithm algorithm &&
+                !chain.PermitsAlgorithm(algorithm, out ErrorResponse))
+            {
+                return false;
+            }
+
+            #endregion
+
             #region ...and the binding: the certified key must be the signing key
 
             // Whether the certified key is one this algorithm can verify with
