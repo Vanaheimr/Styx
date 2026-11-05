@@ -65,9 +65,10 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         private static Int64 serialNumber;
 
-        private AsymmetricCipherKeyPair  rootKey  = null!;
-        private AsymmetricCipherKeyPair  leafKey  = null!;
-        private X509Certificate          root     = null!;
+        private AsymmetricCipherKeyPair  rootKey       = null!;
+        private AsymmetricCipherKeyPair  leafKey       = null!;
+        private AsymmetricCipherKeyPair  authorityKey  = null!;
+        private X509Certificate          root          = null!;
 
         #endregion
 
@@ -80,12 +81,13 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             var generator = new RsaKeyPairGenerator();
             generator.Init(new RsaKeyGenerationParameters(BigInteger.ValueOf(65537), new SecureRandom(), 2048, 100));
 
-            rootKey  = generator.GenerateKeyPair();
-            leafKey  = generator.GenerateKeyPair();
+            rootKey       = generator.GenerateKeyPair();
+            leafKey       = generator.GenerateKeyPair();
+            authorityKey  = generator.GenerateKeyPair();
 
-            root     = Issue("RSA Test Root CA",
-                             SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(rootKey.Public),
-                             IsCA: true);
+            root          = Issue("RSA Test Root CA",
+                                  SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(rootKey.Public),
+                                  IsCA: true);
 
         }
 
@@ -101,13 +103,31 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         private X509Certificate Issue(String                Subject,
                                       SubjectPublicKeyInfo  PublicKeyInfo,
                                       Boolean               IsCA   = false)
+
+            => IssueBy(Subject, PublicKeyInfo, "RSA Test Root CA", rootKey, "SHA256WITHRSA", IsCA);
+
+        #endregion
+
+        #region (private) IssueBy(Subject, PublicKeyInfo, Issuer, IssuerKey, SignatureAlgorithm, IsCA = false)
+
+        /// <summary>
+        /// Issue a certificate for the given subject public key info, signed by
+        /// the given issuer with the given signature algorithm, as Bouncy Castle
+        /// names it.
+        /// </summary>
+        private static X509Certificate IssueBy(String                   Subject,
+                                               SubjectPublicKeyInfo     PublicKeyInfo,
+                                               String                   Issuer,
+                                               AsymmetricCipherKeyPair  IssuerKey,
+                                               String                   SignatureAlgorithm,
+                                               Boolean                  IsCA   = false)
         {
 
             var generator = new X509V3CertificateGenerator();
 
             generator.SetSerialNumber         (BigInteger.ValueOf(Interlocked.Increment(ref serialNumber)));
             generator.SetSubjectDN            (new X509Name($"CN={Subject}"));
-            generator.SetIssuerDN             (new X509Name("CN=RSA Test Root CA"));
+            generator.SetIssuerDN             (new X509Name($"CN={Issuer}"));
             generator.SetNotBefore            (DateTime.UtcNow.AddYears(-1));
             generator.SetNotAfter             (DateTime.UtcNow.AddYears( 1));
             generator.SetSubjectPublicKeyInfo (PublicKeyInfo);
@@ -122,7 +142,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
                                                     ? KeyUsage.KeyCertSign | KeyUsage.DigitalSignature
                                                     : KeyUsage.DigitalSignature));
 
-            return generator.Generate(new Asn1SignatureFactory("SHA256WITHRSA", rootKey.Private));
+            return generator.Generate(new Asn1SignatureFactory(SignatureAlgorithm, IssuerKey.Private));
 
         }
 
@@ -131,13 +151,14 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
         #region (private) PssKey(Parameters)
 
         /// <summary>
-        /// The leaf key as an id-RSASSA-PSS subject public key info, with the
-        /// given parameters or, for null, with none at all.
+        /// The leaf key, or the given one, as an id-RSASSA-PSS subject public
+        /// key info, with the given parameters or, for null, with none at all.
         /// </summary>
-        private SubjectPublicKeyInfo PssKey(Asn1Encodable? Parameters)
+        private SubjectPublicKeyInfo PssKey(Asn1Encodable?            Parameters,
+                                            AsymmetricCipherKeyPair?  Key   = null)
         {
 
-            var key = (RsaKeyParameters) leafKey.Public;
+            var key = (RsaKeyParameters) (Key ?? leafKey).Public;
 
             return new SubjectPublicKeyInfo(Parameters is null
                                                 ? new AlgorithmIdentifier(PkcsObjectIdentifiers.IdRsassaPss)
@@ -406,6 +427,162 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             foreach (var algorithm in new[] { COSEAlgorithm.PS256, COSEAlgorithm.PS384, COSEAlgorithm.PS512, COSEAlgorithm.RS256 })
                 Assert.That(Verify(certificate, algorithm, out var errorResponse),
                             Is.True, $"{algorithm.Name}: {errorResponse}");
+
+        }
+
+        #endregion
+
+
+        #region (private) ValidateUnder(Restriction, SignatureAlgorithm, out ErrorResponse)
+
+        /// <summary>
+        /// An authority whose key is written as id-RSASSA-PSS with the given
+        /// parameters (or none, for null), issued by the root with
+        /// sha256WithRSAEncryption, and a meter certificate the authority
+        /// signs with the given algorithm. The chain of the two is validated
+        /// against the root.
+        /// </summary>
+        private Boolean ValidateUnder(Asn1Encodable?   Restriction,
+                                      String           SignatureAlgorithm,
+                                      out String?      ErrorResponse)
+        {
+
+            var authority = Issue("PSS Authority", PssKey(Restriction, authorityKey), IsCA: true);
+
+            var meter     = IssueBy("Meter",
+                                    SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(leafKey.Public),
+                                    "PSS Authority",
+                                    authorityKey,
+                                    SignatureAlgorithm);
+
+            return new COSECertificateChain([ meter, authority ]).
+                       Validate([ root ], out ErrorResponse);
+
+        }
+
+        #endregion
+
+        #region An_authority_restricted_to_RSASSA_PSS_signs_no_certificate_in_the_other_scheme(Parameters)
+
+        private static readonly Object?[] authorityRestrictions = [
+            new Object?[] { null },
+            new Object?[] { Restriction(NistObjectIdentifiers.IdSha256, 32) },
+        ];
+
+        [TestCaseSource(nameof(authorityRestrictions))]
+        public void An_authority_restricted_to_RSASSA_PSS_signs_no_certificate_in_the_other_scheme(Asn1Encodable? Parameters)
+        {
+
+            // The restriction is the key's, and the key of an authority is
+            // what signs certificates. Bouncy Castle verifies this signature
+            // under the authority's two integers and would accept it.
+            Assert.That(ValidateUnder(Parameters, "SHA256WITHRSA", out var errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("CN=Meter' is signed with"));
+            Assert.That(errorResponse,  Does.Contain("which is not RSASSA-PSS, by 'CN=PSS Authority', which restricts its key to RSASSA-PSS [RFC 4055, Section 3.1]"));
+
+        }
+
+        #endregion
+
+        #region An_authority_restricted_to_RSASSA_PSS_signs_with_it()
+
+        [Test]
+        public void An_authority_restricted_to_RSASSA_PSS_signs_with_it()
+        {
+
+            // Scenario 2 restricts the scheme and no hash.
+            foreach (var algorithm in new[] { "SHA256WITHRSAANDMGF1", "SHA384WITHRSAANDMGF1", "SHA512WITHRSAANDMGF1" })
+                Assert.That(ValidateUnder(null, algorithm, out var errorResponse),
+                            Is.True, $"{algorithm}: {errorResponse}");
+
+            // Scenario 3, with the parameters Bouncy Castle signs with for
+            // SHA-256 and with Section 3.1's DEFAULT salt as the floor.
+            foreach (var salt in new[] { 20, 32 })
+                Assert.That(ValidateUnder(Restriction(NistObjectIdentifiers.IdSha256, salt), "SHA256WITHRSAANDMGF1", out var errorResponse),
+                            Is.True, $"salt {salt}: {errorResponse}");
+
+        }
+
+        #endregion
+
+        #region An_authority_restricted_by_its_parameters_signs_with_them_only()
+
+        [Test]
+        public void An_authority_restricted_by_its_parameters_signs_with_them_only()
+        {
+
+            // Another hash.
+            Assert.That(ValidateUnder(Restriction(NistObjectIdentifiers.IdSha256, 32), "SHA384WITHRSAANDMGF1", out var errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("restricts its key to RSASSA-PSS with SHA-256, and the certificate is signed over SHA-384"));
+
+            // A salt floor above the 32 octets Bouncy Castle signs with.
+            Assert.That(ValidateUnder(Restriction(NistObjectIdentifiers.IdSha256, 33), "SHA256WITHRSAANDMGF1", out errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("a salt of at least 33 octets, and the certificate is signed with a salt of 32"));
+
+            // Another mask.
+            Assert.That(ValidateUnder(Restriction(NistObjectIdentifiers.IdSha256, 32, MaskHash: NistObjectIdentifiers.IdSha384), "SHA256WITHRSAANDMGF1", out errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("with MGF1 over SHA-384, and the certificate is masked with MGF1 over SHA-256"));
+
+        }
+
+        #endregion
+
+        #region A_trust_anchor_restricted_to_RSASSA_PSS_is_held_to_it()
+
+        [Test]
+        public void A_trust_anchor_restricted_to_RSASSA_PSS_is_held_to_it()
+        {
+
+            // An anchor is trusted to be who it is, not to sign however it
+            // likes: the last certificate of a chain is checked against it
+            // like against any other issuer.
+            var anchor  = Issue("PSS Authority", PssKey(null, authorityKey), IsCA: true);
+
+            var meter   = IssueBy("Meter",
+                                  SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(leafKey.Public),
+                                  "PSS Authority",
+                                  authorityKey,
+                                  "SHA256WITHRSA");
+
+            Assert.That(new COSECertificateChain([ meter ]).Validate([ anchor ], out var errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("restricts its key to RSASSA-PSS [RFC 4055, Section 3.1]"));
+
+        }
+
+        #endregion
+
+        #region An_authority_with_an_rsaEncryption_key_signs_in_either_scheme()
+
+        [Test]
+        public void An_authority_with_an_rsaEncryption_key_signs_in_either_scheme()
+        {
+
+            // The control: the same authority key, written as rsaEncryption.
+            var authority = Issue("RSA Authority", SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(authorityKey.Public), IsCA: true);
+
+            foreach (var algorithm in new[] { "SHA256WITHRSA", "SHA256WITHRSAANDMGF1", "SHA384WITHRSAANDMGF1" })
+            {
+
+                var meter = IssueBy("Meter",
+                                    SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(leafKey.Public),
+                                    "RSA Authority",
+                                    authorityKey,
+                                    algorithm);
+
+                Assert.That(new COSECertificateChain([ meter, authority ]).Validate([ root ], out var errorResponse),
+                            Is.True, $"{algorithm}: {errorResponse}");
+
+            }
 
         }
 

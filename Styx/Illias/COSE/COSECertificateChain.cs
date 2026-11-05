@@ -400,6 +400,9 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 return false;
             }
 
+            if (!IssuerKeyPermits(Certificate, Issuer, out ErrorResponse))
+                return false;
+
             try
             {
                 Certificate.Verify(Issuer.GetPublicKey());
@@ -411,6 +414,130 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 ErrorResponse = $"The certificate '{Certificate.SubjectDN}' was not signed by '{Issuer.SubjectDN}': {e.Message}";
                 return false;
             }
+
+        }
+
+        #endregion
+
+        #region (private static) IssuerKeyPermits(Certificate, Issuer, out ErrorResponse)
+
+        /// <summary>
+        /// Whether the key of the issuer may have signed the certificate, as
+        /// far as the issuer's own certificate restricts that key.
+        ///
+        /// It is the restriction PermitsAlgorithm reads for a message, and it
+        /// is the key's rather than the message's: an authority whose key is
+        /// written as id-RSASSA-PSS has limited it "exclusively to RSASSA-PSS"
+        /// [RFC 4055, Section 3.1], and the certificates it signs are no
+        /// exception. Where its parameters are present, scenario 3 of Section
+        /// 3.3 applies as written, because the signature of a certificate
+        /// carries RSASSA-PSS-params of its own: "all parameters in the
+        /// signature structure algorithm identifier MUST match the parameters
+        /// in the key structure algorithm identifier except the saltLength
+        /// field", which "MUST be greater or equal to that in the key
+        /// parameters field".
+        ///
+        /// Bouncy Castle's Verify takes the issuer's key as two integers and
+        /// never sees the identifier it was written with, so it is read here.
+        /// A trust anchor is held to it like any other issuer, because the
+        /// last certificate of a chain is checked against it by IsIssuedBy.
+        /// </summary>
+        private static Boolean IssuerKeyPermits(X509Certificate                   Certificate,
+                                                X509Certificate                   Issuer,
+                                                [NotNullWhen(false)] out String?  ErrorResponse)
+        {
+
+            ErrorResponse           = null;
+
+            var keyAlgorithm        = Issuer.SubjectPublicKeyInfo.Algorithm;
+
+            if (!keyAlgorithm.Algorithm.Equals(PkcsObjectIdentifiers.IdRsassaPss))
+                return true;
+
+            var signatureAlgorithm  = Certificate.CertificateStructure.SignatureAlgorithm;
+
+            // The scheme, whatever the parameters say.
+            if (!signatureAlgorithm.Algorithm.Equals(PkcsObjectIdentifiers.IdRsassaPss))
+            {
+                ErrorResponse = $"The certificate '{Certificate.SubjectDN}' is signed with '{Certificate.SigAlgName}', which is not RSASSA-PSS, by '{Issuer.SubjectDN}', which restricts its key to RSASSA-PSS [RFC 4055, Section 3.1]!";
+                return false;
+            }
+
+            if (keyAlgorithm.Parameters is null)
+                return true;
+
+            var restricts = $"The certificate '{Certificate.SubjectDN}' is signed by '{Issuer.SubjectDN}', which restricts its key to RSASSA-PSS";
+
+            try
+            {
+
+                var key        = RsassaPssParameters.GetInstance(keyAlgorithm.Parameters);
+
+                // Absent parameters beside id-RSASSA-PSS are every DEFAULT.
+                var signature  = signatureAlgorithm.Parameters is null
+                                     ? new RsassaPssParameters()
+                                     : RsassaPssParameters.GetInstance(signatureAlgorithm.Parameters);
+
+                var keyHash        = key.      HashAlgorithm.Algorithm;
+                var signatureHash  = signature.HashAlgorithm.Algorithm;
+
+                if (!keyHash.Equals(signatureHash))
+                {
+                    ErrorResponse = $"{restricts} with {HashName(keyHash)}, and the certificate is signed over {HashName(signatureHash)}: RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                    return false;
+                }
+
+                var keyMask        = key.      MaskGenAlgorithm.Algorithm;
+                var signatureMask  = signature.MaskGenAlgorithm.Algorithm;
+
+                if (!keyMask.Equals(signatureMask))
+                {
+                    ErrorResponse = $"{restricts} with the mask generation function '{keyMask}', and the certificate is signed with '{signatureMask}': RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                    return false;
+                }
+
+                if (keyMask.Equals(PkcsObjectIdentifiers.IdMgf1))
+                {
+
+                    var keyMaskHash        = AlgorithmIdentifier.GetInstance(key.      MaskGenAlgorithm.Parameters).Algorithm;
+                    var signatureMaskHash  = AlgorithmIdentifier.GetInstance(signature.MaskGenAlgorithm.Parameters).Algorithm;
+
+                    if (!keyMaskHash.Equals(signatureMaskHash))
+                    {
+                        ErrorResponse = $"{restricts} with MGF1 over {HashName(keyMaskHash)}, and the certificate is masked with MGF1 over {HashName(signatureMaskHash)}: RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                        return false;
+                    }
+
+                }
+
+                var keyTrailer        = key.      TrailerField.IntValueExact;
+                var signatureTrailer  = signature.TrailerField.IntValueExact;
+
+                if (keyTrailer != signatureTrailer)
+                {
+                    ErrorResponse = $"{restricts} with the trailer field {keyTrailer}, and the certificate is signed with {signatureTrailer}: RFC 4055 Section 3.3 requires the parameters of the signature to be the key's!";
+                    return false;
+                }
+
+                // The one field a key states differently from a signature: a
+                // floor, not the width that was used.
+                var keySalt        = key.      SaltLength.IntValueExact;
+                var signatureSalt  = signature.SaltLength.IntValueExact;
+
+                if (signatureSalt < keySalt)
+                {
+                    ErrorResponse = $"{restricts} with a salt of at least {keySalt} octets, and the certificate is signed with a salt of {signatureSalt} [RFC 4055, Section 3.3]!";
+                    return false;
+                }
+
+            }
+            catch (Exception e) when (e is ArgumentException or InvalidCastException or ArithmeticException)
+            {
+                ErrorResponse = $"{restricts} with parameters that are not RSASSA-PSS-params, or the certificate is signed with such [RFC 4055, Section 3.1]: {e.Message}";
+                return false;
+            }
+
+            return true;
 
         }
 

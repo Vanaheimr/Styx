@@ -56,7 +56,10 @@ by a test.
   parameters describe, as Section 3.3 of
   [RFC 4055](https://www.rfc-editor.org/rfc/rfc4055#section-3.3) requires. Its
   salt length is a floor. The scheme is enforced as well: under such a key,
-  with or without parameters, nothing but RSASSA-PSS verifies.
+  with or without parameters, nothing but RSASSA-PSS verifies. The same holds
+  for the certificates an authority with such a key signs, in the chain or as
+  the trust anchor: RSASSA-PSS only, and with parameters that match the key's,
+  the salt length again a floor.
   A certificate signed with RSASSA-PKCS1-v1_5 must carry a NULL or nothing
   beside its signature algorithm, as Section 5 of RFC 4055 requires.
 - **`COSEMac0` / `COSEMac`** — a payload authenticated with a shared key
