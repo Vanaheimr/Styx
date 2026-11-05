@@ -497,12 +497,14 @@ namespace org.GraphDefined.Vanaheimr.Illias
         /// without parameters is scenario 2 and restricts nothing but the
         /// scheme.
         ///
-        /// What is not enforced is the scheme itself, i.e. an
-        /// RSASSA-PKCS1-v1_5 message under an id-RSASSA-PSS key. RFC 4055
-        /// states that restriction as what the key owner wishes, and neither
-        /// it nor RFC 9360 makes it a duty of the verifier. Refusing it is a
-        /// separate decision, so this method answers only for RSASSA-PSS
-        /// messages.
+        /// The scheme is enforced as well: a message signed with anything but
+        /// RSASSA-PSS, RSASSA-PKCS1-v1_5 in particular, is refused under such
+        /// a key, with or without parameters. RFC 4055 states that
+        /// restriction as what the key owner wishes, and neither it nor RFC
+        /// 9360 makes it a duty of the verifier in so many words. It is
+        /// honoured all the same: the owner said what the key is for, and a
+        /// verifier that accepts another scheme gains nothing a legitimate
+        /// signer needs.
         /// </summary>
         /// <param name="Algorithm">The algorithm the message was signed with.</param>
         /// <param name="ErrorResponse">Why the certificate does not allow it.</param>
@@ -514,14 +516,20 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             var keyAlgorithm  = EndEntity.SubjectPublicKeyInfo.Algorithm;
 
-            if (!keyAlgorithm.Algorithm.Equals(PkcsObjectIdentifiers.IdRsassaPss) ||
-                Algorithm.Family != COSEAlgorithmFamily.RSAPSS                     ||
-                keyAlgorithm.Parameters is null)
-            {
+            if (!keyAlgorithm.Algorithm.Equals(PkcsObjectIdentifiers.IdRsassaPss))
                 return true;
-            }
 
             var restricts = $"The end-entity certificate '{EndEntity.SubjectDN}' restricts its key to RSASSA-PSS";
+
+            // The scheme, whatever the parameters say.
+            if (Algorithm.Family != COSEAlgorithmFamily.RSAPSS)
+            {
+                ErrorResponse = $"{restricts}, and this message is signed with '{Algorithm.Name}', which is not RSASSA-PSS [RFC 4055, Section 3.1]!";
+                return false;
+            }
+
+            if (keyAlgorithm.Parameters is null)
+                return true;
 
             var (hash, hashLength) = Algorithm.HashAlgorithm?.Name switch {
                                          "SHA256" => (NistObjectIdentifiers.IdSha256, 32),

@@ -344,22 +344,50 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         #endregion
 
-        #region The_scheme_itself_is_not_enforced()
+        #region The_scheme_is_enforced(Algorithm)
 
-        [Test]
-        public void The_scheme_itself_is_not_enforced()
+        private static readonly Object[] otherSchemes = [
+            new Object[] { "RS256" },
+            new Object[] { "RS384" },
+            new Object[] { "RS512" },
+        ];
+
+        [TestCaseSource(nameof(otherSchemes))]
+        public void The_scheme_is_enforced(String Algorithm)
         {
 
             // RFC 4055 states the restriction to RSASSA-PSS as what the key
-            // owner wishes, and makes the parameters a MUST. Only the MUST is
-            // enforced, so a PKCS #1 v1.5 message under this key still
-            // verifies. Whether it should is a separate decision. The
-            // conformance suite records it as the survey row
+            // owner wishes, and it is honoured: a PKCS #1 v1.5 message under
+            // this key is refused, even with the very hash the key names. The
+            // conformance suite asks the same in its row
             // a-key-restricted-to-the-other-rsa-scheme.
             var certificate = Issue("Meter PSS", PssKey(Restriction(NistObjectIdentifiers.IdSha256, 32)));
 
+            Assert.That(Verify(certificate, COSEAlgorithm.Parse(Algorithm), out var errorResponse),
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("restricts its key to RSASSA-PSS"));
+            Assert.That(errorResponse,  Does.Contain($"'{Algorithm}', which is not RSASSA-PSS"));
+
+        }
+
+        #endregion
+
+        #region A_key_without_parameters_still_restricts_the_scheme()
+
+        [Test]
+        public void A_key_without_parameters_still_restricts_the_scheme()
+        {
+
+            // Scenario 2 names no hash, and still names the scheme. The
+            // conformance suite asks this in its row
+            // a-restriction-that-names-no-hash-with-the-other-scheme.
+            var certificate = Issue("Meter PSS", PssKey(null));
+
             Assert.That(Verify(certificate, COSEAlgorithm.RS256, out var errorResponse),
-                        Is.True, errorResponse);
+                        Is.False);
+
+            Assert.That(errorResponse,  Does.Contain("'RS256', which is not RSASSA-PSS"));
 
         }
 

@@ -55,7 +55,8 @@ by a test.
   `id-RSASSA-PSS` key whose parameters name a hash verifies only the PS* those
   parameters describe, as Section 3.3 of
   [RFC 4055](https://www.rfc-editor.org/rfc/rfc4055#section-3.3) requires. Its
-  salt length is a floor. The restriction to the scheme alone is not enforced.
+  salt length is a floor. The scheme is enforced as well: under such a key,
+  with or without parameters, nothing but RSASSA-PSS verifies.
   A certificate signed with RSASSA-PKCS1-v1_5 must carry a NULL or nothing
   beside its signature algorithm, as Section 5 of RFC 4055 requires.
 - **`COSEMac0` / `COSEMac`** — a payload authenticated with a shared key
