@@ -233,7 +233,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         private static readonly Object[] otherParameters = [
             new Object[] { "a zero-length OCTET STRING", new DerOctetString(Array.Empty<Byte>()) },
-            new Object[] { "an INTEGER",                 new DerInteger(0) },
+            new Object[] { "an INTEGER",                 DerInteger.ValueOf(0) },
             new Object[] { "an empty SEQUENCE",          DerSequence.Empty }
         ];
 

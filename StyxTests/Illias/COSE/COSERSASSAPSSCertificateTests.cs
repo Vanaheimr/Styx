@@ -182,8 +182,8 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             => new (new AlgorithmIdentifier(Hash, DerNull.Instance),
                     new AlgorithmIdentifier(PkcsObjectIdentifiers.IdMgf1,
                                             new AlgorithmIdentifier(MaskHash ?? Hash, DerNull.Instance)),
-                    new DerInteger(Salt),
-                    new DerInteger(Trailer));
+                    DerInteger.ValueOf(Salt),
+                    DerInteger.ValueOf(Trailer));
 
         #endregion
 
