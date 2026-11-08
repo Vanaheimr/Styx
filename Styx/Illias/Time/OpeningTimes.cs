@@ -894,7 +894,8 @@ namespace org.GraphDefined.Vanaheimr.Illias
             catch (Exception e)
             {
                 OpeningTimes   = null;
-                ErrorResponse  = "Invalid opening times: " + e.Message;
+                // Its own words, as its other refusals: whoever reads it within something says where.
+                ErrorResponse  = e.Message;
                 return false;
             }
 
@@ -931,7 +932,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             }
             catch (Exception e)
             {
-                ErrorResponse = "Invalid opening times: " + e.Message;
+                ErrorResponse = "The CBOR representation of opening times can not be read: " + e.Message;
                 return false;
             }
 
