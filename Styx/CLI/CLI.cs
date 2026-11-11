@@ -571,6 +571,24 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
         #endregion
 
+        #region RegisterCommands   (Commands)
+
+        /// <summary>
+        /// Register the given commands, as they are.
+        /// </summary>
+        /// <remarks>
+        /// For commands that are not to be found by their type alone: one
+        /// made by hand, or one wrapped in another that decides first whether
+        /// whoever is typing may run it at all.
+        /// </remarks>
+        /// <param name="Commands">The commands.</param>
+        public void RegisterCommands(params ICLICommand[] Commands)
+        {
+            commands.AddRange(Commands);
+        }
+
+        #endregion
+
         #region RegisterAssemblies (CLIType, AssembliesWithCLICommands)
 
         /// <summary>
