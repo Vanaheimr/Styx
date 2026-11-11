@@ -1334,13 +1334,13 @@ namespace org.GraphDefined.Vanaheimr.Illias
                 entries.Add(new (CBORValue.FromUInt64(2), ToCBORNumber(Uncertainty.CoverageFactor)));
 
             if (Uncertainty.CoverageProbability.HasValue)
-                entries.Add(new (CBORValue.FromUInt64(3), ToCBORNumber((Decimal) Uncertainty.CoverageProbability.Value)));
+                entries.Add(new (CBORValue.FromUInt64(3), ToCBORNumber(Uncertainty.CoverageProbability.Value.AsDecimal())));
 
             if (Uncertainty.Distribution != UncertaintyDistribution.Unspecified)
                 entries.Add(new (CBORValue.FromUInt64(4), CBORValue.FromUInt64((UInt64) Uncertainty.Distribution)));
 
             if (Uncertainty.DegreesOfFreedom.HasValue)
-                entries.Add(new (CBORValue.FromUInt64(5), ToCBORNumber((Decimal) Uncertainty.DegreesOfFreedom.Value)));
+                entries.Add(new (CBORValue.FromUInt64(5), ToCBORNumber(Uncertainty.DegreesOfFreedom.Value.AsDecimal())));
 
             return CBORValue.FromMap(entries);
 
@@ -1456,7 +1456,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             try
             {
-                Number = Token.Value<Decimal>();
+                Number = Token.AsDecimal();
                 return true;
             }
             catch (Exception)

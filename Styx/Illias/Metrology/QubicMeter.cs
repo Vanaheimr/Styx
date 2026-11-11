@@ -598,7 +598,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                QubicMeter = new QubicMeter((Decimal) (Number * Math.Pow(10, Exponent ?? 0)));
+                QubicMeter = new QubicMeter((Number * Math.Pow(10, Exponent ?? 0)).AsDecimal());
 
                 if (Number < 0)
                     return false;
@@ -683,7 +683,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                QubicMeter = new QubicMeter(1000 * (Decimal) (Number * Math.Pow(10, Exponent ?? 0)));
+                QubicMeter = new QubicMeter(1000 * (Number * Math.Pow(10, Exponent ?? 0)).AsDecimal());
 
                 if (Number < 0)
                     return false;

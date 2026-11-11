@@ -598,7 +598,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                SquareMeter = new SquareMeter((Decimal) (Number * Math.Pow(10, Exponent ?? 0)));
+                SquareMeter = new SquareMeter((Number * Math.Pow(10, Exponent ?? 0)).AsDecimal());
 
                 if (Number < 0)
                     return false;
@@ -683,7 +683,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             try
             {
 
-                SquareMeter = new SquareMeter(1000 * (Decimal) (Number * Math.Pow(10, Exponent ?? 0)));
+                SquareMeter = new SquareMeter(1000 * (Number * Math.Pow(10, Exponent ?? 0)).AsDecimal());
 
                 if (Number < 0)
                     return false;

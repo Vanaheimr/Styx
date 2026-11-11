@@ -233,11 +233,11 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             return new StdDev<Decimal>(
                        mean,
-                       (Decimal) Math.Sqrt(
+                       Math.Sqrt(
                            (Double) (m2 / Decimal.CreateChecked(IsSampleData == true
                                                                     ? count - 1
                                                                     : count))
-                       )
+                       ).AsDecimal()
                    );
 
         }
