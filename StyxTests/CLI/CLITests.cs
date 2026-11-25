@@ -229,6 +229,80 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         #endregion
 
 
+        #region ParseCommandLine_SplitsAtWhitespace_ButNotWithinQuotes(Input, Words)
+
+        /// <summary>
+        /// A command line split into its words: at whitespace, except within
+        /// double quotes; within them \" is a double quote and \\ a backslash,
+        /// and every other backslash - and every one outside of them - is itself.
+        /// A quote that is not closed is no quote, as while it is being typed.
+        /// </summary>
+        [TestCase("add a 1",                          new[] { "add", "a", "1" })]
+        [TestCase("  add   a\t1  ",                   new[] { "add", "a", "1" })]
+        [TestCase("",                                 new String[0])]
+        [TestCase("txt add x \"a b\" 1h",             new[] { "txt", "add", "x", "a b", "1h" })]
+        [TestCase("txt add x \"\"",                   new[] { "txt", "add", "x", "" })]
+        [TestCase("say \"\\\"hello\\\"\"",            new[] { "say", "\"hello\"" })]
+        [TestCase("say \"v=spf1 \\\"q\\\" -all\"",    new[] { "say", "v=spf1 \"q\" -all" })]
+        [TestCase("say \"back\\\\slash\"",            new[] { "say", "back\\slash" })]
+        [TestCase("say \"ends with \\\\\"",           new[] { "say", "ends with \\" })]
+        [TestCase("say \"C:\\Users\\x\"",             new[] { "say", "C:\\Users\\x" })]
+        [TestCase("open C:\\Users\\x \\\\server\\s",  new[] { "open", "C:\\Users\\x", "\\\\server\\s" })]
+        [TestCase("say \"a b\"c",                     new[] { "say", "a b", "c" })]
+        [TestCase("say ab\"c d\"",                    new[] { "say", "ab\"c", "d\"" })]
+        [TestCase("say \"not closed",                 new[] { "say", "\"not", "closed" })]
+        [TestCase("say \"not closed\\\"",             new[] { "say", "\"not", "closed\\\"" })]
+        public void ParseCommandLine_SplitsAtWhitespace_ButNotWithinQuotes(String Input, String[] Words)
+        {
+            Assert.That(CLI.ParseCommandLine(Input), Is.EqualTo(Words));
+        }
+
+        #endregion
+
+        #region ToCommandLine_IsParsedIntoTheSameWords(Words)
+
+        /// <summary>
+        /// Words put together by ToCommandLine are split into the same words by
+        /// ParseCommandLine - quoted only where they have to be.
+        /// </summary>
+        [TestCase(new[] { "add", "a", "1" },                         "add a 1")]
+        [TestCase(new[] { "txt", "add", "x", "a b" },                "txt add x \"a b\"")]
+        [TestCase(new[] { "txt", "add", "x", "" },                   "txt add x \"\"")]
+        [TestCase(new[] { "say", "\"hello\"" },                      "say \"\\\"hello\\\"\"")]
+        [TestCase(new[] { "say", "C:\\My Documents\\" },             "say \"C:\\\\My Documents\\\\\"")]
+        [TestCase(new[] { "open", "C:\\Users\\x" },                  "open C:\\Users\\x")]
+        public void ToCommandLine_IsParsedIntoTheSameWords(String[] Words, String Line)
+        {
+
+            Assert.That(CLI.ToCommandLine(Words),                    Is.EqualTo(Line));
+            Assert.That(CLI.ParseCommandLine(CLI.ToCommandLine(Words)), Is.EqualTo(Words));
+
+        }
+
+        #endregion
+
+        #region A_quoted_word_is_kept_quoted_in_the_history()
+
+        /// <summary>
+        /// The history keeps a command line so that it is the same command when
+        /// it is brought back: a word in quotes stays one word.
+        /// </summary>
+        [Test]
+        public async Task A_quoted_word_is_kept_quoted_in_the_history()
+        {
+
+            var cli = new CLI();
+
+            await cli.Execute("say \"two words\" \"a \\\"quote\\\"\"");
+
+            Assert.That(cli.CommandHistory,                                     Is.EqualTo(new[] { "say \"two words\" \"a \\\"quote\\\"\"" }));
+            Assert.That(CLI.ParseCommandLine(cli.CommandHistory.Single()),      Is.EqualTo(new[] { "say", "two words", "a \"quote\"" }));
+
+        }
+
+        #endregion
+
+
         #region A_block_arrives_in_one_piece()
 
         /// <summary>

@@ -20,7 +20,7 @@
 using System.Reflection;
 using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Text.RegularExpressions;
+using System.Text;
 
 #endregion
 
@@ -809,30 +809,122 @@ namespace org.GraphDefined.Vanaheimr.CLI
 
 
 
-        public static string[] ParseCommandLine(string input)
-        {
-            // This pattern matches either:
-            // 1) Quoted text: "([^"]*)"
-            // 2) Or unquoted segments: ([^\s]+)
-            var matches = Regex.Matches(input, "\"([^\"]*)\"|([^\\s]+)");
-            var tokens = new List<string>();
+        #region (static) ParseCommandLine(Input)
 
-            foreach (Match match in matches)
+        /// <summary>
+        /// A command line split into its words: at whitespace, except within
+        /// double quotes, which keep a word together - spaces and all - and are
+        /// not part of it.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Within double quotes, \" is a double quote and \\ a backslash, so that
+        /// a word can hold a double quote itself: "say \"hello\"" is the one word
+        /// say "hello". Every other backslash is itself, and outside of double
+        /// quotes every backslash is: C:\Users\x is C:\Users\x.
+        /// </para>
+        /// <para>
+        /// A double quote that is not closed is no quote: "abc is the word "abc,
+        /// as it is while it is still being typed.
+        /// </para>
+        /// </remarks>
+        /// <param name="Input">The command line, as it was typed.</param>
+        public static String[] ParseCommandLine(String Input)
+        {
+
+            var words  = new List<String>();
+            var at     = 0;
+
+            while (at < Input.Length)
             {
-                // If Group[1] is not empty, that's the quoted segment (without the quotes)
-                if (!string.IsNullOrEmpty(match.Groups[1].Value))
+
+                if (Char.IsWhiteSpace(Input[at]))
                 {
-                    tokens.Add(match.Groups[1].Value);
+                    at++;
+                    continue;
                 }
-                else
+
+                if (Input[at] == '"' && TryQuoted(Input, at, out var quoted, out var end))
                 {
-                    // Otherwise, it's a regular token
-                    tokens.Add(match.Groups[2].Value);
+                    words.Add(quoted);
+                    at = end;
+                    continue;
                 }
+
+                // A word without quotes: up to the next whitespace.
+                var start = at;
+
+                while (at < Input.Length && !Char.IsWhiteSpace(Input[at]))
+                    at++;
+
+                words.Add(Input[start..at]);
+
             }
 
-            return tokens.ToArray();
+            return [ .. words ];
+
         }
+
+        /// <summary>
+        /// The word in double quotes that begins at the given position: without
+        /// its quotes, with \" and \\ read as a double quote and a backslash -
+        /// and where it ends, past its closing quote. False where it is not
+        /// closed.
+        /// </summary>
+        private static Boolean TryQuoted(String      Input,
+                                         Int32       Start,
+                                         out String  Word,
+                                         out Int32   End)
+        {
+
+            var word = new StringBuilder();
+
+            for (var at = Start + 1; at < Input.Length; at++)
+            {
+
+                var c = Input[at];
+
+                if (c == '"')
+                {
+                    Word  = word.ToString();
+                    End   = at + 1;
+                    return true;
+                }
+
+                if (c == '\\' && at + 1 < Input.Length && Input[at + 1] is '"' or '\\')
+                {
+                    word.Append(Input[++at]);
+                    continue;
+                }
+
+                word.Append(c);
+
+            }
+
+            Word  = "";
+            End   = Start;
+            return false;
+
+        }
+
+        #endregion
+
+        #region (static) ToCommandLine(Words)
+
+        /// <summary>
+        /// Words put together into a command line that ParseCommandLine splits
+        /// into the same words again: a word that is empty, or holds whitespace
+        /// or a double quote, in double quotes, with \" and \\ inside.
+        /// </summary>
+        /// <param name="Words">The words of a command line.</param>
+        public static String ToCommandLine(IEnumerable<String> Words)
+
+            => String.Join(" ",
+                           Words.Select(word => word.Length == 0 || word.Any(c => Char.IsWhiteSpace(c) || c == '"')
+                                                    ? "\"" + word.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\""
+                                                    : word));
+
+        #endregion
 
 
         #region Suggest(Command)
@@ -911,7 +1003,7 @@ namespace org.GraphDefined.Vanaheimr.CLI
                 // the same line twice in a row.
                 var line = InputArguments.Length > 0 &&
                            !String.Equals(HistoryCommand.CommandName, InputArguments[0], StringComparison.OrdinalIgnoreCase)
-                               ? String.Join(" ", InputArguments)
+                               ? ToCommandLine(InputArguments)
                                : null;
 
                 if (line is not null && commandHistory.LastOrDefault() != line)
