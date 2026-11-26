@@ -59,7 +59,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
             {
                 var bytes = new Byte[InputStream.Length];
                 InputStream.Seek(0, SeekOrigin.Begin);
-                InputStream.Read(bytes);
+                InputStream.ReadExactly(bytes);
                 return bytes;
             }
 

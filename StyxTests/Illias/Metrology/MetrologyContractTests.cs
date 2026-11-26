@@ -58,8 +58,9 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
 
         {
 
-            var name  = typeof(T).Name;
-            var same  = Smaller;
+            var name     = typeof(T).Name;
+            var same     = Smaller;
+            var nothing  = (Object?) null;  // not the literal: Equals(null) would be a null test to the compiler
 
             // '==' must not negate, '!=' must...
             Assert.That(Smaller == same,               Is.True,     $"{name}: 'a == a' must hold!");
@@ -90,7 +91,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Tests
             Assert.That(Smaller.Equals(Larger),        Is.False,    $"{name}: Equals must reject a different value!");
             Assert.That(Smaller.Equals((Object) same), Is.True,     $"{name}: Equals(Object) must accept an equal value!");
             Assert.That(Smaller.Equals("not a unit"),  Is.False,    $"{name}: Equals(Object) must reject a foreign type!");
-            Assert.That(Smaller.Equals(null),          Is.False,    $"{name}: Equals(Object) must reject null!");
+            Assert.That(Smaller.Equals(nothing),       Is.False,    $"{name}: Equals(Object) must reject null!");
 
             Assert.That(Smaller.GetHashCode(),         Is.EqualTo(same.GetHashCode()),
                                                                     $"{name}: equal values must share their hash code!");

@@ -366,7 +366,7 @@ namespace org.GraphDefined.Vanaheimr.Illias.Transactions
 
                 // Running => Rolledback
                 case TransactionState.Running:
-                    var _NestedTransaction = new Transaction<TTransactionId, TSystemId, TTransactionObject>(default(TTransactionId), SystemId, this);
+                    var _NestedTransaction = new Transaction<TTransactionId, TSystemId, TTransactionObject>(Id, SystemId, this);
                     nestedTransactions.Add(_NestedTransaction);
                     return _NestedTransaction;
 

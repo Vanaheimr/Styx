@@ -582,7 +582,7 @@ namespace org.GraphDefined.Vanaheimr.Illias
                         return false;
                     }
 
-                    exponentText = UnitExpression.FromSuperscript(text[exponentStart..end]) ?? "";
+                    exponentText = UnitExpression.FromSuperscript(text.AsSpan(exponentStart, end - exponentStart)) ?? "";
 
                 }
 

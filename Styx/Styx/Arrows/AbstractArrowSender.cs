@@ -40,7 +40,10 @@ namespace org.GraphDefined.Vanaheimr.Styx.Arrows
         /// <summary>
         /// An event for signaling the start of a message delivery.
         /// </summary>
+        // IArrowSender has it, but this base class never raises it.
+#pragma warning disable CS0067
         public event StartedEventHandler?               OnStarted;
+#pragma warning restore CS0067
 
         /// <summary>
         /// An event for message delivery.

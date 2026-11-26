@@ -336,7 +336,10 @@ namespace org.GraphDefined.Vanaheimr.CLI.Tests
         {
 
             if (OperatingSystem.IsWindows())
+            {
                 Assert.Ignore("Windows has no file modes; the file inherits the ACL of the directory above.");
+                return;
+            }
 
             var file = new HistoryFile(InTheDirectory());
 

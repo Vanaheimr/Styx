@@ -610,7 +610,10 @@ namespace org.GraphDefined.Vanaheimr.Illias
 
             #region Events
 
+            // Subscribed to as the event of the data it builds, but a builder never raises it.
+#pragma warning disable CS0067
             public event OnPropertyChangedDelegate? OnPropertyChanged;
+#pragma warning restore CS0067
 
             #endregion
 
